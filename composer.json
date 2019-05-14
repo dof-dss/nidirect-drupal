@@ -1,6 +1,6 @@
 {
-    "name": "drupal-composer/drupal-project",
-    "description": "Project template for Drupal 8 projects with composer",
+    "name": "nics/nidirect",
+    "description": "NI Direct Drupal 8 - Based on drupal-composer/drupal-project",
     "type": "project",
     "license": "GPL-2.0-or-later",
     "authors": [
@@ -44,7 +44,7 @@
         "drupal/migrate_plus": "^4.2",
         "drupal/migrate_tools": "^4.1",
         "drupal/migrate_upgrade": "^3.0",
-        "nics/nidirect-migrations": "dev",
+        "nics/nidirect-migrations": "dev-development",
         "webflo/drupal-core-require-dev": "^8.7.0"
     },
     "conflict": {
@@ -83,11 +83,11 @@
         "installer-paths": {
             "web/core": ["type:drupal-core"],
             "web/libraries/{$name}": ["type:drupal-library"],
+            "web/modules/migrate/{$name}": ["nics/nidirect-migrations"],
             "web/modules/contrib/{$name}": ["type:drupal-module"],
             "web/profiles/contrib/{$name}": ["type:drupal-profile"],
             "web/themes/contrib/{$name}": ["type:drupal-theme"],
-            "drush/Commands/{$name}": ["type:drupal-drush"],
-            "web/modules/migrate/{$name}": ["nics/nidirect-migrations"]
+            "drush/Commands/{$name}": ["type:drupal-drush"]
         },
         "drupal-scaffold": {
             "initial": {
