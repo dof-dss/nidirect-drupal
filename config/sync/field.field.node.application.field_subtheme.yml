@@ -1,0 +1,21 @@
+uuid: 57cc5a13-9cd2-407f-8ede-a9d3082d22d8
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_subtheme
+    - node.type.application
+id: node.application.field_subtheme
+field_name: field_subtheme
+entity_type: node
+bundle: application
+label: Theme/subtheme
+description: 'Select the theme and subtheme for this application. This is used to create breadcrumbs for this application.'
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:taxonomy_term'
+  handler_settings: {  }
+field_type: entity_reference

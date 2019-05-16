@@ -1,0 +1,62 @@
+uuid: ed9216d6-9a69-4d5f-ad8f-3ced3660a4ba
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.node.application.body
+    - field.field.node.application.field_additional_info
+    - field.field.node.application.field_link
+    - field.field.node.application.field_site_topics
+    - field.field.node.application.field_subtheme
+    - field.field.node.application.field_summary
+    - field.field.node.application.field_teaser
+    - field.field.node.application.field_top_level_theme
+    - node.type.application
+  module:
+    - link
+    - text
+    - user
+id: node.application.default
+targetEntityType: node
+bundle: application
+mode: default
+content:
+  body:
+    label: above
+    type: text_default
+    weight: 1
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+  field_additional_info:
+    type: text_default
+    weight: 3
+    region: content
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+  field_link:
+    type: link
+    weight: 2
+    region: content
+    label: hidden
+    settings:
+      trim_length: null
+      url_only: false
+      url_plain: false
+      rel: '0'
+      target: '0'
+    third_party_settings: {  }
+  field_summary:
+    weight: 0
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
+    type: text_default
+    region: content
+hidden:
+  field_site_topics: true
+  field_subtheme: true
+  field_teaser: true
+  field_top_level_theme: true
+  links: true

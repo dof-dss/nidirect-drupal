@@ -1,0 +1,21 @@
+uuid: dc9dff1c-d71c-4017-bf7c-0563be00dba1
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_top_level_theme
+    - node.type.application
+id: node.application.field_top_level_theme
+field_name: field_top_level_theme
+entity_type: node
+bundle: application
+label: 'Top level theme'
+description: 'A hidden field to store the top level theme. No need to specify a value here as it is set programatically at node save.'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:taxonomy_term'
+  handler_settings: {  }
+field_type: entity_reference

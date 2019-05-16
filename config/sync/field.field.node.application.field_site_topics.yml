@@ -1,0 +1,21 @@
+uuid: 05269721-25ee-48af-a5a8-7868ba22be49
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_site_topics
+    - node.type.application
+id: node.application.field_site_topics
+field_name: field_site_topics
+entity_type: node
+bundle: application
+label: 'Supplementary subthemes'
+description: 'Enter optional supplementary subthemes for this article. This allows the article to appear in those subtheme listing pages.'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:taxonomy_term'
+  handler_settings: {  }
+field_type: entity_reference
