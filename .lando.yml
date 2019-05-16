@@ -1,0 +1,20 @@
+name: nidirect-d8
+recipe: drupal8
+config:
+  webroot: web
+  config:
+    php: config/php.ini
+    database: config/my.cnf
+services:
+  appserver:
+    xdebug: true
+  memcached:
+    type: memcached
+    portforward: true
+tooling:
+  drush:
+    cmd:
+      - appserver: drush -r /app/web
+  phpcs:
+    cmd:
+      - appserver: /app/phpcs.sh "/app" "/app/web/modules/migrate /app/web/modules/custom /app/web/themes/custom/nidirect"
