@@ -1,0 +1,29 @@
+uuid: f9a6d754-5cfd-445f-8e6e-691a51139725
+langcode: en
+status: true
+dependencies:
+  module:
+    - taxonomy
+id: hide_topic
+label: 'Hide topic'
+bundles:
+  - site_topics
+entity_type: taxonomy_term
+global: true
+weight: 0
+flag_short: 'Hide this topic'
+flag_long: 'Check this box to hide this topic in views'
+flag_message: '[term:name] is now hidden'
+unflag_short: 'Un-hide this topic'
+unflag_long: 'Uncheck this box to make this topic visible in views'
+unflag_message: '[term:name] is now visible'
+unflag_denied_text: ''
+flag_type: 'entity:taxonomy_term'
+link_type: ajax_link
+flagTypeConfig:
+  show_in_links: {  }
+  show_as_field: false
+  show_on_form: true
+  show_contextual_link: false
+  extra_permissions: {  }
+linkTypeConfig: {  }
