@@ -1,0 +1,31 @@
+uuid: 2049b7b6-842c-43ca-8f37-85cc3a3d95ec
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.taxonomy_term.hc_symptoms.field_term_hc_synonyms
+    - taxonomy.vocabulary.hc_symptoms
+  module:
+    - text
+id: taxonomy_term.hc_symptoms.default
+targetEntityType: taxonomy_term
+bundle: hc_symptoms
+mode: default
+content:
+  description:
+    label: hidden
+    type: text_default
+    weight: 0
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_term_hc_synonyms:
+    label: above
+    weight: 0
+    type: string
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    region: content
+hidden:
+  langcode: true
