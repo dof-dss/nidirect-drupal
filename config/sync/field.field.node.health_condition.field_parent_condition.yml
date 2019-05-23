@@ -1,0 +1,29 @@
+uuid: 43a3eaac-90c2-4313-af8e-5dcf1895aefb
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_parent_condition
+    - node.type.health_condition
+id: node.health_condition.field_parent_condition
+field_name: field_parent_condition
+entity_type: node
+bundle: health_condition
+label: 'A-Z Parent'
+description: 'Enter the name of the parent of this condition (optional). You can add multiple parents by clicking "Add another item" below.  A condition would normally only have one parent.'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:node'
+  handler_settings:
+    behaviors:
+      views-select-list:
+        status: 0
+    sort:
+      field: _none
+      direction: ASC
+    target_bundles:
+      health_condition: health_condition
+field_type: entity_reference

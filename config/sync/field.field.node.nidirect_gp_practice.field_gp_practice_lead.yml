@@ -1,0 +1,30 @@
+uuid: 7a51e9a3-e00f-4177-a035-278d3f45b617
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_gp_practice_lead
+    - node.type.nidirect_gp
+    - node.type.nidirect_gp_practice
+id: node.nidirect_gp_practice.field_gp_practice_lead
+field_name: field_gp_practice_lead
+entity_type: node
+bundle: nidirect_gp_practice
+label: 'Lead GP'
+description: 'Choose the lead GP for this practice from the list of all GPs'
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:node'
+  handler_settings:
+    behaviors:
+      views-select-list:
+        status: 0
+    sort:
+      field: _none
+      direction: ASC
+    target_bundles:
+      nidirect_gp: nidirect_gp
+field_type: entity_reference

@@ -1,0 +1,21 @@
+uuid: 2696b411-04b2-4fe7-a9f5-d3967ca2b59a
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_site_topics
+    - node.type.gallery
+id: node.gallery.field_site_topics
+field_name: field_site_topics
+entity_type: node
+bundle: gallery
+label: 'Supplementary subthemes'
+description: 'Enter optional supplementary subthemes for this gallery. This allows the gallery to appear in those subtheme listing pages.'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:taxonomy_term'
+  handler_settings: {  }
+field_type: entity_reference

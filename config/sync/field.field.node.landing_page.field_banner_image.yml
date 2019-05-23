@@ -1,0 +1,33 @@
+uuid: 92e535d4-828e-4310-9444-823f4d963448
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_banner_image
+    - node.type.landing_page
+  module:
+    - image
+id: node.landing_page.field_banner_image
+field_name: field_banner_image
+entity_type: node
+bundle: landing_page
+label: 'Banner image'
+description: 'Select an optional banner image to be displayed on this landing page.'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  alt_field: false
+  default_image: 0
+  file_directory: banners
+  file_extensions: 'png gif jpg jpeg'
+  max_filesize: ''
+  max_resolution: ''
+  min_resolution: ''
+  title_field: false
+  alt_field_required: true
+  title_field_required: false
+  handler: 'default:file'
+  handler_settings: {  }
+field_type: image

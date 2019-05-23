@@ -1,0 +1,28 @@
+uuid: 6de19b2c-e11c-4fe8-90c1-04a168a98858
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.node.embargoed_publication.body
+    - node.type.embargoed_publication
+  module:
+    - text
+    - user
+id: node.embargoed_publication.default
+targetEntityType: node
+bundle: embargoed_publication
+mode: default
+content:
+  body:
+    label: hidden
+    type: text_default
+    weight: 101
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+  links:
+    weight: 100
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+hidden: {  }

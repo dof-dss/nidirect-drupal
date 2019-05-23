@@ -1,0 +1,21 @@
+uuid: f2adf2cd-b632-44a4-9672-e483fdf3775a
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_subtheme
+    - node.type.external_link
+id: node.external_link.field_subtheme
+field_name: field_subtheme
+entity_type: node
+bundle: external_link
+label: Theme/subtheme
+description: 'Select the theme and subtheme for this external link. This is used to create breadcrumbs for this external link.'
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:taxonomy_term'
+  handler_settings: {  }
+field_type: entity_reference
