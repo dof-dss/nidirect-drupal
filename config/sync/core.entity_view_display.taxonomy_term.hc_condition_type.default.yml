@@ -1,0 +1,31 @@
+uuid: 89905842-0366-4277-84b5-9fb11fc2ea69
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.taxonomy_term.hc_condition_type.field_term_hc_synonyms
+    - taxonomy.vocabulary.hc_condition_type
+  module:
+    - text
+id: taxonomy_term.hc_condition_type.default
+targetEntityType: taxonomy_term
+bundle: hc_condition_type
+mode: default
+content:
+  description:
+    label: hidden
+    type: text_default
+    weight: 0
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_term_hc_synonyms:
+    label: above
+    weight: 0
+    type: string
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    region: content
+hidden:
+  langcode: true

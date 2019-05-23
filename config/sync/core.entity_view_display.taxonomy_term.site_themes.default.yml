@@ -1,0 +1,73 @@
+uuid: b8d306b8-f36c-44b8-8a1c-75b1223fd952
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.taxonomy_term.site_themes.field_additional_info
+    - field.field.taxonomy_term.site_themes.field_banner_image
+    - field.field.taxonomy_term.site_themes.field_enable_toc
+    - field.field.taxonomy_term.site_themes.field_photo
+    - field.field.taxonomy_term.site_themes.field_supplementary_parents
+    - field.field.taxonomy_term.site_themes.field_taxonomy_rank
+    - field.field.taxonomy_term.site_themes.field_teaser
+    - field.field.taxonomy_term.site_themes.field_top_level_theme
+    - taxonomy.vocabulary.site_themes
+  module:
+    - text
+id: taxonomy_term.site_themes.default
+targetEntityType: taxonomy_term
+bundle: site_themes
+mode: default
+content:
+  description:
+    label: hidden
+    type: text_default
+    weight: 0
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_additional_info:
+    label: above
+    weight: 5
+    type: text_default
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+  field_supplementary_parents:
+    label: above
+    weight: 6
+    type: entity_reference_label
+    settings:
+      link: true
+    third_party_settings: {  }
+    region: content
+  field_taxonomy_rank:
+    label: above
+    weight: 9
+    type: number_integer
+    settings:
+      thousand_separator: ''
+      prefix_suffix: true
+    third_party_settings: {  }
+    region: content
+  field_teaser:
+    label: above
+    weight: 1
+    type: string
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    region: content
+  field_top_level_theme:
+    label: above
+    weight: 8
+    type: entity_reference_label
+    settings:
+      link: true
+    third_party_settings: {  }
+    region: content
+hidden:
+  field_banner_image: true
+  field_enable_toc: true
+  field_photo: true
+  langcode: true
