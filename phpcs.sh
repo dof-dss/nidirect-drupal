@@ -25,7 +25,7 @@ DRUPAL_EXCLUDED_SNIFFS=(
 echo "Running coding standard checks in ${PHPCS_CHECK_DIR}"
 
 # Configure PHPCS.
-${PHPCS_PATH} --config-set installed_paths vendor/drupal/coder/coder_sniffer
+${PHPCS_PATH} --config-set installed_paths ${DRUPAL_DEPLOY_PATH}/vendor/drupal/coder/coder_sniffer
 
 EXCLUDE=$(IFS=, ; echo "${DRUPAL_EXCLUDED_SNIFFS[*]}")
 ${PHPCS_PATH} -nq --standard=Drupal --extensions=${PHPCS_EXTENSIONS} --exclude=${EXCLUDE} --ignore=${IGNORE} ${PHPCS_CHECK_DIR}
