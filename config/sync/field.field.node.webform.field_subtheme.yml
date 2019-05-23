@@ -1,0 +1,21 @@
+uuid: ddea84e1-ceb4-4615-9626-aef991a7f886
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_subtheme
+    - node.type.webform
+id: node.webform.field_subtheme
+field_name: field_subtheme
+entity_type: node
+bundle: webform
+label: Theme/subtheme
+description: 'If appropriate, select the theme and subtheme for this webform. This is used to surface the form in theme landing pages and sets the breadcrumbs for the form.'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:taxonomy_term'
+  handler_settings: {  }
+field_type: entity_reference

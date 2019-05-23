@@ -1,0 +1,33 @@
+uuid: 6adb4f10-3950-4bd9-8a4a-ca9314485d3e
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_photo
+    - node.type.article
+  module:
+    - image
+id: node.article.field_photo
+field_name: field_photo
+entity_type: node
+bundle: article
+label: Photo
+description: 'Choose a photo to be displayed with this article.'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  alt_field: false
+  default_image: 0
+  file_directory: images/articles
+  file_extensions: 'png gif jpg jpeg'
+  max_filesize: ''
+  max_resolution: ''
+  min_resolution: ''
+  title_field: false
+  alt_field_required: true
+  title_field_required: false
+  handler: 'default:file'
+  handler_settings: {  }
+field_type: image

@@ -1,0 +1,23 @@
+uuid: a0692969-5d13-42cf-b7e0-b448e36f746a
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_link
+    - node.type.external_link
+  module:
+    - link
+id: node.external_link.field_link
+field_name: field_link
+entity_type: node
+bundle: external_link
+label: Link
+description: 'Paste in the URL to the external link and the text to be displayed. Remember to include http:// or https://'
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  title: 1
+  link_type: 17
+field_type: link

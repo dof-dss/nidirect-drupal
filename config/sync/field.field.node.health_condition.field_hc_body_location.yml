@@ -1,0 +1,21 @@
+uuid: 7d57866a-fb65-45c0-9dbe-003973950c32
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_hc_body_location
+    - node.type.health_condition
+id: node.health_condition.field_hc_body_location
+field_name: field_hc_body_location
+entity_type: node
+bundle: health_condition
+label: 'Body location'
+description: 'Choose one or more body locations associated with this health condition.'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:taxonomy_term'
+  handler_settings: {  }
+field_type: entity_reference
