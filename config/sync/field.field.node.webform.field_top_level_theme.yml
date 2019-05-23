@@ -1,0 +1,21 @@
+uuid: ea05097d-270e-40c4-b171-a3892dd0b174
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_top_level_theme
+    - node.type.webform
+id: node.webform.field_top_level_theme
+field_name: field_top_level_theme
+entity_type: node
+bundle: webform
+label: 'Top level theme'
+description: 'A hidden field to store the top level theme. No need to specify a value here as it is set programatically at node save.'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:taxonomy_term'
+  handler_settings: {  }
+field_type: entity_reference

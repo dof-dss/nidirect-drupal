@@ -1,0 +1,30 @@
+uuid: 8d726c4c-8204-480d-8e09-b543a0ba9406
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.node.teaser
+    - field.field.node.health_condition.body
+    - node.type.health_condition
+  module:
+    - text
+    - user
+id: node.health_condition.teaser
+targetEntityType: node
+bundle: health_condition
+mode: teaser
+content:
+  body:
+    label: hidden
+    type: text_summary_or_trimmed
+    weight: 101
+    settings:
+      trim_length: 600
+    third_party_settings: {  }
+    region: content
+  links:
+    weight: 100
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+hidden: {  }

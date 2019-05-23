@@ -1,0 +1,21 @@
+uuid: f94a146e-e0b7-4b8c-a8fc-17e0b9a3a86b
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_hc_primary_symptom_4
+    - node.type.health_condition
+id: node.health_condition.field_hc_primary_symptom_4
+field_name: field_hc_primary_symptom_4
+entity_type: node
+bundle: health_condition
+label: 'Primary symptom 4'
+description: 'Choose up to four primary symptoms associated with this health condition.'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:taxonomy_term'
+  handler_settings: {  }
+field_type: entity_reference

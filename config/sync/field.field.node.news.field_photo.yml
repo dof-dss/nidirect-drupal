@@ -1,0 +1,33 @@
+uuid: 890661f3-9e21-46a1-b024-66cb4cafb8b3
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_photo
+    - node.type.news
+  module:
+    - image
+id: node.news.field_photo
+field_name: field_photo
+entity_type: node
+bundle: news
+label: Photo
+description: 'Please choose an image  to be displayed with this news item. '
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  alt_field: false
+  default_image: 0
+  file_directory: images/news
+  file_extensions: 'png jpg jpeg gif'
+  max_filesize: '5 MB'
+  max_resolution: ''
+  min_resolution: 600x400
+  title_field: false
+  alt_field_required: true
+  title_field_required: false
+  handler: 'default:file'
+  handler_settings: {  }
+field_type: image

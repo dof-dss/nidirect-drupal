@@ -1,0 +1,30 @@
+uuid: e7dfc0a9-2e1b-4657-9779-0039bcce267c
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.node.teaser
+    - field.field.node.nidirect_contact.body
+    - node.type.nidirect_contact
+  module:
+    - text
+    - user
+id: node.nidirect_contact.teaser
+targetEntityType: node
+bundle: nidirect_contact
+mode: teaser
+content:
+  body:
+    label: hidden
+    type: text_summary_or_trimmed
+    weight: 101
+    settings:
+      trim_length: 600
+    third_party_settings: {  }
+    region: content
+  links:
+    weight: 100
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+hidden: {  }

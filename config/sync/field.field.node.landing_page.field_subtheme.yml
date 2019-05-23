@@ -1,0 +1,21 @@
+uuid: e0a14039-6bb5-4f31-9f6e-345253e46486
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_subtheme
+    - node.type.landing_page
+id: node.landing_page.field_subtheme
+field_name: field_subtheme
+entity_type: node
+bundle: landing_page
+label: Theme/subtheme
+description: 'Select the theme and subtheme for this landing page. This is used to create breadcrumbs for this landing page.'
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:taxonomy_term'
+  handler_settings: {  }
+field_type: entity_reference
