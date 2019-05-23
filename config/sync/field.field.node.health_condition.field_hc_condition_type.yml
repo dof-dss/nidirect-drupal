@@ -1,0 +1,21 @@
+uuid: 669bea3f-fb14-487e-8a95-d115945e9e4c
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_hc_condition_type
+    - node.type.health_condition
+id: node.health_condition.field_hc_condition_type
+field_name: field_hc_condition_type
+entity_type: node
+bundle: health_condition
+label: 'Condtion type / disease process'
+description: 'Choose one or more condition types or disease processes associated with this health condition.'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:taxonomy_term'
+  handler_settings: {  }
+field_type: entity_reference

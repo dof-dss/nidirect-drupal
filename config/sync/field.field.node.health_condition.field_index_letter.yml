@@ -1,0 +1,21 @@
+uuid: f4b8c7a9-ba8b-4ad9-964b-631babd1878e
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_index_letter
+    - node.type.health_condition
+  module:
+    - options
+id: node.health_condition.field_index_letter
+field_name: field_index_letter
+entity_type: node
+bundle: health_condition
+label: 'Index under'
+description: 'A hidden field to store the letter(s) under which this conditions will be indexed on the A-Z page. No need to specify a value here as it is set programatically at node save, but authors can manually set this and add additional values where it is appropriate to do so.'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: list_string
