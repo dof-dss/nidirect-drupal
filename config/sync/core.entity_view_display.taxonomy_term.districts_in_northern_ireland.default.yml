@@ -1,0 +1,31 @@
+uuid: 7c563a47-bdd7-4db4-bada-d14ae61b6178
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.taxonomy_term.districts_in_northern_ireland.field_county
+    - taxonomy.vocabulary.districts_in_northern_ireland
+  module:
+    - options
+    - text
+id: taxonomy_term.districts_in_northern_ireland.default
+targetEntityType: taxonomy_term
+bundle: districts_in_northern_ireland
+mode: default
+content:
+  description:
+    label: hidden
+    type: text_default
+    weight: 0
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_county:
+    label: above
+    weight: 0
+    type: list_default
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+hidden:
+  langcode: true

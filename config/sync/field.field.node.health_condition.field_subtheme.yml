@@ -1,0 +1,23 @@
+uuid: d0494fb6-48a9-43d1-98a9-2944ee2da2b9
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_subtheme
+    - node.type.health_condition
+id: node.health_condition.field_subtheme
+field_name: field_subtheme
+entity_type: node
+bundle: health_condition
+label: Theme/subtheme
+description: 'Select the theme and subtheme for this health condition.'
+required: true
+translatable: false
+default_value:
+  -
+    tid: 322
+default_value_callback: ''
+settings:
+  handler: 'default:taxonomy_term'
+  handler_settings: {  }
+field_type: entity_reference

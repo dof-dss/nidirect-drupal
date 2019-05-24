@@ -1,0 +1,21 @@
+uuid: 0e9f21d2-b796-4eee-a230-e198a9130e94
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_hc_secondary_symptoms
+    - node.type.health_condition
+id: node.health_condition.field_hc_secondary_symptoms
+field_name: field_hc_secondary_symptoms
+entity_type: node
+bundle: health_condition
+label: 'Secondary symptoms'
+description: 'Choose one or more secondary symptoms associated with this health condition.'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:taxonomy_term'
+  handler_settings: {  }
+field_type: entity_reference
