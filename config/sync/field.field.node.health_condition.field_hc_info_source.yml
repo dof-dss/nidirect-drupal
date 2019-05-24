@@ -1,0 +1,21 @@
+uuid: 2701b78d-9b91-4074-9c09-f10367aa017e
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_hc_info_source
+    - node.type.health_condition
+id: node.health_condition.field_hc_info_source
+field_name: field_hc_info_source
+entity_type: node
+bundle: health_condition
+label: 'Information source'
+description: 'The source of the content. Leave blank or click N/A if the content is specific to Nidirect. Contact the helpdesk to have additional sources listed.'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:taxonomy_term'
+  handler_settings: {  }
+field_type: entity_reference

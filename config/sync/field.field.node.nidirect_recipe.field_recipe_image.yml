@@ -1,0 +1,33 @@
+uuid: b91ed8bd-7161-46c9-bfb0-5681eb96782a
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_recipe_image
+    - node.type.nidirect_recipe
+  module:
+    - image
+id: node.nidirect_recipe.field_recipe_image
+field_name: field_recipe_image
+entity_type: node
+bundle: nidirect_recipe
+label: Image
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  alt_field: false
+  default_image: 0
+  file_directory: images/recipes
+  file_extensions: 'png gif jpg jpeg'
+  max_filesize: ''
+  max_resolution: ''
+  min_resolution: ''
+  title_field: false
+  alt_field_required: true
+  title_field_required: false
+  handler: 'default:file'
+  handler_settings: {  }
+field_type: image

@@ -1,0 +1,30 @@
+uuid: 6036f2e9-a902-405f-9279-94a1deea8945
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.node.teaser
+    - field.field.node.embargoed_publication.body
+    - node.type.embargoed_publication
+  module:
+    - text
+    - user
+id: node.embargoed_publication.teaser
+targetEntityType: node
+bundle: embargoed_publication
+mode: teaser
+content:
+  body:
+    label: hidden
+    type: text_summary_or_trimmed
+    weight: 101
+    settings:
+      trim_length: 600
+    third_party_settings: {  }
+    region: content
+  links:
+    weight: 100
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+hidden: {  }
