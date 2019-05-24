@@ -1,0 +1,30 @@
+uuid: 7ee11d7d-8b69-4643-81f1-d1d0da6ab114
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.node.cold_weather_payment.field_app_payment_period
+    - field.field.node.cold_weather_payment.field_meta_tags
+    - node.type.cold_weather_payment
+  module:
+    - metatag
+    - user
+id: node.cold_weather_payment.default
+targetEntityType: node
+bundle: cold_weather_payment
+mode: default
+content:
+  field_meta_tags:
+    weight: 101
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    type: metatag_empty_formatter
+    region: content
+  links:
+    weight: 100
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+hidden:
+  field_app_payment_period: true

@@ -4,8 +4,13 @@ status: true
 dependencies:
   config:
     - field.field.node.contact.body
+    - field.field.node.contact.field_enable_toc
+    - field.field.node.contact.field_meta_tags
+    - field.field.node.contact.field_summary
+    - field.field.node.contact.field_supplementary_contact
     - node.type.contact
   module:
+    - metatag
     - text
     - user
 id: node.contact.default
@@ -20,9 +25,25 @@ content:
     settings: {  }
     third_party_settings: {  }
     region: content
+  field_meta_tags:
+    weight: 103
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    type: metatag_empty_formatter
+    region: content
+  field_summary:
+    weight: 102
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    type: text_default
+    region: content
   links:
     weight: 100
     settings: {  }
     third_party_settings: {  }
     region: content
-hidden: {  }
+hidden:
+  field_enable_toc: true
+  field_supplementary_contact: true

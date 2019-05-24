@@ -1,36 +1,41 @@
-uuid: 22700564-c1fc-4efd-82bc-1d800ef6ad8c
+uuid: 58fb184a-01c6-4f46-a66f-5428008b4e6b
 langcode: en
 status: true
 dependencies:
   config:
-    - field.field.node.webform.body
-    - node.type.webform
+    - field.field.node.cold_weather_payment.field_app_payment_period
+    - field.field.node.cold_weather_payment.field_meta_tags
+    - node.type.cold_weather_payment
   module:
+    - datetime
+    - metatag
     - path
-    - text
-id: node.webform.default
+id: node.cold_weather_payment.default
 targetEntityType: node
-bundle: webform
+bundle: cold_weather_payment
 mode: default
 content:
-  body:
-    type: text_textarea_with_summary
-    weight: 121
-    settings:
-      rows: 9
-      summary_rows: 3
-      placeholder: ''
-    third_party_settings: {  }
-    region: content
   created:
     type: datetime_timestamp
-    weight: 10
+    weight: 3
     region: content
     settings: {  }
     third_party_settings: {  }
+  field_app_payment_period:
+    type: datetime_default
+    weight: 1
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_meta_tags:
+    weight: 26
+    settings: {  }
+    third_party_settings: {  }
+    type: metatag_firehose
+    region: content
   path:
     type: path
-    weight: 30
+    weight: 6
     region: content
     settings: {  }
     third_party_settings: {  }
@@ -38,26 +43,26 @@ content:
     type: boolean_checkbox
     settings:
       display_label: true
-    weight: 15
+    weight: 4
     region: content
     third_party_settings: {  }
   status:
     type: boolean_checkbox
     settings:
       display_label: true
-    weight: 120
+    weight: 7
     region: content
     third_party_settings: {  }
   sticky:
     type: boolean_checkbox
     settings:
       display_label: true
-    weight: 16
+    weight: 5
     region: content
     third_party_settings: {  }
   title:
     type: string_textfield
-    weight: -5
+    weight: 0
     region: content
     settings:
       size: 60
@@ -65,15 +70,11 @@ content:
     third_party_settings: {  }
   uid:
     type: entity_reference_autocomplete
-    weight: 5
+    weight: 2
     settings:
       match_operator: CONTAINS
       size: 60
       placeholder: ''
     region: content
     third_party_settings: {  }
-hidden:
-  field_site_topics: true
-  field_subtheme: true
-  field_teaser: true
-  field_top_level_theme: true
+hidden: {  }
