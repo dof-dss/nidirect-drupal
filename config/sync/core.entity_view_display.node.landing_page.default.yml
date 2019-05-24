@@ -4,8 +4,18 @@ status: true
 dependencies:
   config:
     - field.field.node.landing_page.body
+    - field.field.node.landing_page.field_banner_image
+    - field.field.node.landing_page.field_banner_image_overlay
+    - field.field.node.landing_page.field_enable_title
+    - field.field.node.landing_page.field_meta_tags
+    - field.field.node.landing_page.field_subtheme
+    - field.field.node.landing_page.field_summary
+    - field.field.node.landing_page.field_teaser
+    - field.field.node.landing_page.field_top_level_theme
     - node.type.landing_page
   module:
+    - image
+    - metatag
     - text
     - user
 id: node.landing_page.default
@@ -16,19 +26,71 @@ content:
   body:
     label: hidden
     type: text_default
-    weight: 101
+    weight: 4
     settings: {  }
     third_party_settings: {  }
     region: content
+  field_banner_image:
+    type: image
+    weight: 1
+    region: content
+    label: above
+    settings:
+      image_style: ''
+      image_link: ''
+    third_party_settings: {  }
+  field_enable_title:
+    type: boolean
+    weight: 5
+    region: content
+    label: above
+    settings:
+      format: default
+      format_custom_false: ''
+      format_custom_true: ''
+    third_party_settings: {  }
+  field_meta_tags:
+    weight: 8
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    type: metatag_empty_formatter
+    region: content
+  field_subtheme:
+    type: entity_reference_label
+    weight: 0
+    region: content
+    label: above
+    settings:
+      link: true
+    third_party_settings: {  }
+  field_summary:
+    weight: 3
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    type: text_default
+    region: content
+  field_teaser:
+    type: string
+    weight: 2
+    region: content
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+  field_top_level_theme:
+    type: entity_reference_label
+    weight: 6
+    region: content
+    label: above
+    settings:
+      link: true
+    third_party_settings: {  }
   links:
-    weight: 100
+    weight: 7
+    region: content
     settings: {  }
     third_party_settings: {  }
-    region: content
 hidden:
-  field_banner_image: true
   field_banner_image_overlay: true
-  field_enable_title: true
-  field_subtheme: true
-  field_teaser: true
-  field_top_level_theme: true

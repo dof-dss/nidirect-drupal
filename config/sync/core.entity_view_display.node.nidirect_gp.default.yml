@@ -1,0 +1,55 @@
+uuid: 83405288-4085-476e-9c6a-d25ec9e917b2
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.node.nidirect_gp.field_gp_cypher
+    - field.field.node.nidirect_gp.field_gp_forename
+    - field.field.node.nidirect_gp.field_gp_name
+    - field.field.node.nidirect_gp.field_meta_tags
+    - node.type.nidirect_gp
+  module:
+    - metatag
+    - user
+id: node.nidirect_gp.default
+targetEntityType: node
+bundle: nidirect_gp
+mode: default
+content:
+  field_gp_cypher:
+    type: string
+    weight: 2
+    region: content
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+  field_gp_forename:
+    type: string
+    weight: 1
+    region: content
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+  field_gp_name:
+    type: string
+    weight: 0
+    region: content
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+  field_meta_tags:
+    weight: 4
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    type: metatag_empty_formatter
+    region: content
+  links:
+    weight: 3
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+hidden: {  }
