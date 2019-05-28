@@ -1,0 +1,58 @@
+uuid: ba13f075-6651-4365-aa9d-e9e11ae5ac84
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.node.nidirect_gp_practice.field_contact_address_01
+    - field.field.node.nidirect_gp_practice.field_contact_address_02
+    - field.field.node.nidirect_gp_practice.field_contact_phone
+    - field.field.node.nidirect_gp_practice.field_contact_postcode
+    - field.field.node.nidirect_gp_practice.field_contact_town_city
+    - field.field.node.nidirect_gp_practice.field_gp_appointments
+    - field.field.node.nidirect_gp_practice.field_gp_lcg
+    - field.field.node.nidirect_gp_practice.field_gp_partnership_no
+    - field.field.node.nidirect_gp_practice.field_gp_practice_lead
+    - field.field.node.nidirect_gp_practice.field_gp_practice_member
+    - field.field.node.nidirect_gp_practice.field_gp_practice_name
+    - field.field.node.nidirect_gp_practice.field_gp_practice_no
+    - field.field.node.nidirect_gp_practice.field_gp_practice_website
+    - field.field.node.nidirect_gp_practice.field_gp_prescriptions
+    - field.field.node.nidirect_gp_practice.field_gp_surgery_name
+    - field.field.node.nidirect_gp_practice.field_meta_tags
+    - node.type.nidirect_gp_practice
+  module:
+    - metatag
+    - user
+id: node.nidirect_gp_practice.default
+targetEntityType: node
+bundle: nidirect_gp_practice
+mode: default
+content:
+  field_meta_tags:
+    weight: 101
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    type: metatag_empty_formatter
+    region: content
+  links:
+    weight: 100
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+hidden:
+  field_contact_address_01: true
+  field_contact_address_02: true
+  field_contact_phone: true
+  field_contact_postcode: true
+  field_contact_town_city: true
+  field_gp_appointments: true
+  field_gp_lcg: true
+  field_gp_partnership_no: true
+  field_gp_practice_lead: true
+  field_gp_practice_member: true
+  field_gp_practice_name: true
+  field_gp_practice_no: true
+  field_gp_practice_website: true
+  field_gp_prescriptions: true
+  field_gp_surgery_name: true

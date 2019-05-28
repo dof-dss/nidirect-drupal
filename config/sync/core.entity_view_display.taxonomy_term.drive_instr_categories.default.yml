@@ -1,0 +1,30 @@
+uuid: 34998b94-6422-4cb3-a5d5-1d479f6cd71c
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.taxonomy_term.drive_instr_categories.field_meta_tags
+    - taxonomy.vocabulary.drive_instr_categories
+  module:
+    - metatag
+    - text
+id: taxonomy_term.drive_instr_categories.default
+targetEntityType: taxonomy_term
+bundle: drive_instr_categories
+mode: default
+content:
+  description:
+    label: hidden
+    type: text_default
+    weight: 0
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_meta_tags:
+    weight: 1
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    type: metatag_empty_formatter
+    region: content
+hidden: {  }

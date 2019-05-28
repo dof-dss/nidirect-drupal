@@ -4,8 +4,35 @@ status: true
 dependencies:
   config:
     - field.field.node.nidirect_ub.body
+    - field.field.node.nidirect_ub.field_contact_address_01
+    - field.field.node.nidirect_ub.field_contact_address_02
+    - field.field.node.nidirect_ub.field_contact_address_03
+    - field.field.node.nidirect_ub.field_contact_address_04
+    - field.field.node.nidirect_ub.field_contact_address_05
+    - field.field.node.nidirect_ub.field_contact_phone
+    - field.field.node.nidirect_ub.field_contact_postcode
+    - field.field.node.nidirect_ub.field_contact_town_city
+    - field.field.node.nidirect_ub.field_contact_website
+    - field.field.node.nidirect_ub.field_county
+    - field.field.node.nidirect_ub.field_district
+    - field.field.node.nidirect_ub.field_email_address
+    - field.field.node.nidirect_ub.field_livelink_url
+    - field.field.node.nidirect_ub.field_meta_tags
+    - field.field.node.nidirect_ub.field_ub_all_ni
+    - field.field.node.nidirect_ub.field_ub_contact
+    - field.field.node.nidirect_ub.field_ub_counties
+    - field.field.node.nidirect_ub.field_ub_date_issued
+    - field.field.node.nidirect_ub.field_ub_price
+    - field.field.node.nidirect_ub.field_ub_price_addinfo
+    - field.field.node.nidirect_ub.field_ub_price_volunteer
+    - field.field.node.nidirect_ub.field_ub_sector
+    - field.field.node.nidirect_ub.field_ub_services
     - node.type.nidirect_ub
   module:
+    - datetime
+    - link
+    - metatag
+    - options
     - text
     - user
 id: node.nidirect_ub.default
@@ -16,13 +43,203 @@ content:
   body:
     label: hidden
     type: text_default
-    weight: 101
+    weight: 1
     settings: {  }
     third_party_settings: {  }
     region: content
+  field_contact_address_01:
+    type: string
+    weight: 3
+    region: content
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+  field_contact_address_02:
+    type: string
+    weight: 4
+    region: content
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+  field_contact_address_03:
+    type: string
+    weight: 5
+    region: content
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+  field_contact_address_04:
+    type: string
+    weight: 6
+    region: content
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+  field_contact_address_05:
+    type: string
+    weight: 7
+    region: content
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+  field_contact_phone:
+    type: string
+    weight: 12
+    region: content
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+  field_contact_postcode:
+    type: string
+    weight: 9
+    region: content
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+  field_contact_town_city:
+    type: string
+    weight: 8
+    region: content
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+  field_contact_website:
+    type: link
+    weight: 11
+    region: content
+    label: above
+    settings:
+      trim_length: 80
+      url_only: false
+      url_plain: false
+      rel: ''
+      target: ''
+    third_party_settings: {  }
+  field_county:
+    type: list_default
+    weight: 13
+    region: content
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+  field_district:
+    type: entity_reference_label
+    weight: 14
+    region: content
+    label: above
+    settings:
+      link: true
+    third_party_settings: {  }
+  field_email_address:
+    type: basic_string
+    weight: 10
+    region: content
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+  field_livelink_url:
+    type: link
+    weight: 2
+    region: content
+    label: above
+    settings:
+      trim_length: 80
+      url_only: false
+      url_plain: false
+      rel: ''
+      target: ''
+    third_party_settings: {  }
+  field_meta_tags:
+    weight: 24
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    type: metatag_empty_formatter
+    region: content
+  field_ub_all_ni:
+    type: boolean
+    weight: 18
+    region: content
+    label: above
+    settings:
+      format: default
+      format_custom_false: ''
+      format_custom_true: ''
+    third_party_settings: {  }
+  field_ub_contact:
+    type: string
+    weight: 19
+    region: content
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+  field_ub_counties:
+    type: list_key
+    weight: 23
+    region: content
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+  field_ub_date_issued:
+    type: datetime_default
+    weight: 17
+    region: content
+    label: above
+    settings:
+      format_type: medium
+      timezone_override: ''
+    third_party_settings: {  }
+  field_ub_price:
+    type: string
+    weight: 21
+    region: content
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+  field_ub_price_addinfo:
+    type: text_default
+    weight: 20
+    region: content
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+  field_ub_price_volunteer:
+    type: string
+    weight: 22
+    region: content
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+  field_ub_sector:
+    type: entity_reference_label
+    weight: 15
+    region: content
+    label: above
+    settings:
+      link: true
+    third_party_settings: {  }
+  field_ub_services:
+    type: entity_reference_label
+    weight: 16
+    region: content
+    label: above
+    settings:
+      link: true
+    third_party_settings: {  }
   links:
-    weight: 100
+    weight: 0
+    region: content
     settings: {  }
     third_party_settings: {  }
-    region: content
 hidden: {  }

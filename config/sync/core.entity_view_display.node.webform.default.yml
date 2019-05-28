@@ -4,8 +4,14 @@ status: true
 dependencies:
   config:
     - field.field.node.webform.body
+    - field.field.node.webform.field_meta_tags
+    - field.field.node.webform.field_site_topics
+    - field.field.node.webform.field_subtheme
+    - field.field.node.webform.field_teaser
+    - field.field.node.webform.field_top_level_theme
     - node.type.webform
   module:
+    - metatag
     - text
     - user
 id: node.webform.default
@@ -16,13 +22,52 @@ content:
   body:
     label: hidden
     type: text_default
-    weight: 101
+    weight: 0
     settings: {  }
     third_party_settings: {  }
     region: content
+  field_meta_tags:
+    weight: 6
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    type: metatag_empty_formatter
+    region: content
+  field_site_topics:
+    type: entity_reference_label
+    weight: 3
+    region: content
+    label: above
+    settings:
+      link: true
+    third_party_settings: {  }
+  field_subtheme:
+    type: entity_reference_label
+    weight: 2
+    region: content
+    label: above
+    settings:
+      link: true
+    third_party_settings: {  }
+  field_teaser:
+    type: string
+    weight: 4
+    region: content
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+  field_top_level_theme:
+    type: entity_reference_label
+    weight: 1
+    region: content
+    label: above
+    settings:
+      link: true
+    third_party_settings: {  }
   links:
-    weight: 100
+    weight: 5
+    region: content
     settings: {  }
     third_party_settings: {  }
-    region: content
 hidden: {  }

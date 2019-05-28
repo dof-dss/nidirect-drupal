@@ -4,8 +4,17 @@ status: true
 dependencies:
   config:
     - field.field.node.external_link.body
+    - field.field.node.external_link.field_link
+    - field.field.node.external_link.field_meta_tags
+    - field.field.node.external_link.field_site_topics
+    - field.field.node.external_link.field_subtheme
+    - field.field.node.external_link.field_summary
+    - field.field.node.external_link.field_teaser
+    - field.field.node.external_link.field_top_level_theme
     - node.type.external_link
   module:
+    - link
+    - metatag
     - text
     - user
 id: node.external_link.default
@@ -16,13 +25,71 @@ content:
   body:
     label: hidden
     type: text_default
-    weight: 101
+    weight: 2
     settings: {  }
     third_party_settings: {  }
     region: content
+  field_link:
+    type: link
+    weight: 3
+    region: content
+    label: above
+    settings:
+      trim_length: 80
+      url_only: false
+      url_plain: false
+      rel: ''
+      target: ''
+    third_party_settings: {  }
+  field_meta_tags:
+    weight: 8
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    type: metatag_empty_formatter
+    region: content
+  field_site_topics:
+    type: entity_reference_label
+    weight: 0
+    region: content
+    label: above
+    settings:
+      link: true
+    third_party_settings: {  }
+  field_subtheme:
+    type: entity_reference_label
+    weight: 4
+    region: content
+    label: above
+    settings:
+      link: true
+    third_party_settings: {  }
+  field_summary:
+    weight: 1
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    type: text_default
+    region: content
+  field_teaser:
+    type: string
+    weight: 5
+    region: content
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+  field_top_level_theme:
+    type: entity_reference_label
+    weight: 6
+    region: content
+    label: above
+    settings:
+      link: true
+    third_party_settings: {  }
   links:
-    weight: 100
+    weight: 7
+    region: content
     settings: {  }
     third_party_settings: {  }
-    region: content
 hidden: {  }

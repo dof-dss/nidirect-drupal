@@ -4,8 +4,12 @@ status: true
 dependencies:
   config:
     - field.field.node.homepage.body
+    - field.field.node.homepage.field_link_url
+    - field.field.node.homepage.field_meta_tags
     - node.type.homepage
   module:
+    - link
+    - metatag
     - text
     - user
 id: node.homepage.default
@@ -16,13 +20,32 @@ content:
   body:
     label: hidden
     type: text_default
-    weight: 101
+    weight: 1
     settings: {  }
     third_party_settings: {  }
+    region: content
+  field_link_url:
+    type: link
+    weight: 2
+    region: content
+    label: above
+    settings:
+      trim_length: 80
+      url_only: false
+      url_plain: false
+      rel: ''
+      target: ''
+    third_party_settings: {  }
+  field_meta_tags:
+    weight: 3
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    type: metatag_empty_formatter
     region: content
   links:
-    weight: 100
+    weight: 0
+    region: content
     settings: {  }
     third_party_settings: {  }
-    region: content
 hidden: {  }

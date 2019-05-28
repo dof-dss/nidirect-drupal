@@ -4,8 +4,10 @@ status: true
 dependencies:
   config:
     - field.field.taxonomy_term.districts_in_northern_ireland.field_county
+    - field.field.taxonomy_term.districts_in_northern_ireland.field_meta_tags
     - taxonomy.vocabulary.districts_in_northern_ireland
   module:
+    - metatag
     - options
     - text
 id: taxonomy_term.districts_in_northern_ireland.default
@@ -27,5 +29,11 @@ content:
     settings: {  }
     third_party_settings: {  }
     region: content
-hidden:
-  langcode: true
+  field_meta_tags:
+    weight: 1
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    type: metatag_empty_formatter
+    region: content
+hidden: {  }
