@@ -1,17 +1,16 @@
-uuid: 2049b7b6-842c-43ca-8f37-85cc3a3d95ec
+uuid: 0199a9fa-d817-4bb2-83b4-4fedcf29b3d4
 langcode: en
 status: true
 dependencies:
   config:
-    - field.field.taxonomy_term.hc_symptoms.field_meta_tags
-    - field.field.taxonomy_term.hc_symptoms.field_term_hc_synonyms
-    - taxonomy.vocabulary.hc_symptoms
+    - field.field.taxonomy_term.contact_categories.field_meta_tags
+    - taxonomy.vocabulary.contact_categories
   module:
     - metatag
     - text
-id: taxonomy_term.hc_symptoms.default
+id: taxonomy_term.contact_categories.default
 targetEntityType: taxonomy_term
-bundle: hc_symptoms
+bundle: contact_categories
 mode: default
 content:
   description:
@@ -27,13 +26,5 @@ content:
     settings: {  }
     third_party_settings: {  }
     type: metatag_empty_formatter
-    region: content
-  field_term_hc_synonyms:
-    label: above
-    weight: 0
-    type: string
-    settings:
-      link_to_entity: false
-    third_party_settings: {  }
     region: content
 hidden: {  }

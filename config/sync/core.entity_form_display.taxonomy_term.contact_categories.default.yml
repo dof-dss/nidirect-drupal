@@ -1,18 +1,17 @@
-uuid: b899f417-0c4c-4cb5-a227-a402a484fdbc
+uuid: 3ccda132-2ea5-4123-b35c-92d8c6ee5545
 langcode: en
 status: true
 dependencies:
   config:
-    - field.field.taxonomy_term.hc_condition_type.field_meta_tags
-    - field.field.taxonomy_term.hc_condition_type.field_term_hc_synonyms
-    - taxonomy.vocabulary.hc_condition_type
+    - field.field.taxonomy_term.contact_categories.field_meta_tags
+    - taxonomy.vocabulary.contact_categories
   module:
     - metatag
     - path
     - text
-id: taxonomy_term.hc_condition_type.default
+id: taxonomy_term.contact_categories.default
 targetEntityType: taxonomy_term
-bundle: hc_condition_type
+bundle: contact_categories
 mode: default
 content:
   description:
@@ -28,14 +27,6 @@ content:
     settings: {  }
     third_party_settings: {  }
     type: metatag_firehose
-    region: content
-  field_term_hc_synonyms:
-    weight: -4
-    type: string_textfield
-    settings:
-      size: 100
-      placeholder: ''
-    third_party_settings: {  }
     region: content
   name:
     type: string_textfield

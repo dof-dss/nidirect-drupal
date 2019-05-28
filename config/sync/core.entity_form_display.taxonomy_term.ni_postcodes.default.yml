@@ -1,18 +1,17 @@
-uuid: b899f417-0c4c-4cb5-a227-a402a484fdbc
+uuid: 0a030def-4c52-4cb9-aac0-04ca02b7261b
 langcode: en
 status: true
 dependencies:
   config:
-    - field.field.taxonomy_term.hc_condition_type.field_meta_tags
-    - field.field.taxonomy_term.hc_condition_type.field_term_hc_synonyms
-    - taxonomy.vocabulary.hc_condition_type
+    - field.field.taxonomy_term.ni_postcodes.field_meta_tags
+    - taxonomy.vocabulary.ni_postcodes
   module:
     - metatag
     - path
     - text
-id: taxonomy_term.hc_condition_type.default
+id: taxonomy_term.ni_postcodes.default
 targetEntityType: taxonomy_term
-bundle: hc_condition_type
+bundle: ni_postcodes
 mode: default
 content:
   description:
@@ -28,14 +27,6 @@ content:
     settings: {  }
     third_party_settings: {  }
     type: metatag_firehose
-    region: content
-  field_term_hc_synonyms:
-    weight: -4
-    type: string_textfield
-    settings:
-      size: 100
-      placeholder: ''
-    third_party_settings: {  }
     region: content
   name:
     type: string_textfield

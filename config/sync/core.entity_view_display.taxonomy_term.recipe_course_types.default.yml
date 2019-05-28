@@ -1,17 +1,16 @@
-uuid: 2049b7b6-842c-43ca-8f37-85cc3a3d95ec
+uuid: e90bd6a8-645d-4e57-bd2b-6bdee37ad8f8
 langcode: en
 status: true
 dependencies:
   config:
-    - field.field.taxonomy_term.hc_symptoms.field_meta_tags
-    - field.field.taxonomy_term.hc_symptoms.field_term_hc_synonyms
-    - taxonomy.vocabulary.hc_symptoms
+    - field.field.taxonomy_term.recipe_course_types.field_meta_tags
+    - taxonomy.vocabulary.recipe_course_types
   module:
     - metatag
     - text
-id: taxonomy_term.hc_symptoms.default
+id: taxonomy_term.recipe_course_types.default
 targetEntityType: taxonomy_term
-bundle: hc_symptoms
+bundle: recipe_course_types
 mode: default
 content:
   description:
@@ -27,13 +26,5 @@ content:
     settings: {  }
     third_party_settings: {  }
     type: metatag_empty_formatter
-    region: content
-  field_term_hc_synonyms:
-    label: above
-    weight: 0
-    type: string
-    settings:
-      link_to_entity: false
-    third_party_settings: {  }
     region: content
 hidden: {  }
