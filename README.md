@@ -2,6 +2,15 @@
 
 Drupal 8 install based on drupal-composer/drupal-project with that project set at the upstream remote.
 
+# Importing Config
+
+If you are running this inside the 'D7 to D8' Lando container and have installed Drupal, you will need 
+to run these commands before you can import config:
+
+- lando drush config-set "system.site" uuid 8504fb68-5bf0-4d09-869b-245412b8c47d
+- lando drush ev '\Drupal::entityManager()->getStorage("shortcut_set")->load("default")->delete();'
+
+
 # Composer template for Drupal projects
 
 [![Build Status](https://travis-ci.org/drupal-composer/drupal-project.svg?branch=8.x)](https://travis-ci.org/drupal-composer/drupal-project)
