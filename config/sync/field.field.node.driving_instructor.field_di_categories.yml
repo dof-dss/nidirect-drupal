@@ -1,0 +1,21 @@
+uuid: 2df12d88-d5ac-45d9-9395-59942164d3cb
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_di_categories
+    - node.type.driving_instructor
+id: node.driving_instructor.field_di_categories
+field_name: field_di_categories
+entity_type: node
+bundle: driving_instructor
+label: Categories
+description: 'Select which categories the instructor provides their services for'
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:taxonomy_term'
+  handler_settings: {  }
+field_type: entity_reference
