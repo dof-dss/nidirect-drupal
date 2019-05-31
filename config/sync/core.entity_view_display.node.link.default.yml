@@ -1,0 +1,51 @@
+uuid: 1ea62c60-78b9-47ab-9a4d-8c9124a6d554
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.node.link.field_link_type
+    - field.field.node.link.field_link_url
+    - field.field.node.link.field_meta_tags
+    - node.type.link
+  module:
+    - link
+    - metatag
+    - options
+    - user
+id: node.link.default
+targetEntityType: node
+bundle: link
+mode: default
+content:
+  field_link_type:
+    type: list_default
+    weight: 1
+    region: content
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+  field_link_url:
+    type: link
+    weight: 0
+    region: content
+    label: above
+    settings:
+      trim_length: 80
+      url_only: false
+      url_plain: false
+      rel: ''
+      target: ''
+    third_party_settings: {  }
+  field_meta_tags:
+    weight: 3
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    type: metatag_empty_formatter
+    region: content
+  links:
+    weight: 2
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+hidden: {  }

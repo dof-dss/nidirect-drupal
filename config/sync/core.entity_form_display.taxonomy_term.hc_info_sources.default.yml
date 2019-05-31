@@ -1,0 +1,45 @@
+uuid: ed72bbed-8f66-4133-8dbc-7112b552334b
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.taxonomy_term.hc_info_sources.field_meta_tags
+    - taxonomy.vocabulary.hc_info_sources
+  module:
+    - metatag
+    - path
+    - text
+id: taxonomy_term.hc_info_sources.default
+targetEntityType: taxonomy_term
+bundle: hc_info_sources
+mode: default
+content:
+  description:
+    type: text_textfield
+    weight: 0
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+  field_meta_tags:
+    weight: 31
+    settings: {  }
+    third_party_settings: {  }
+    type: metatag_firehose
+    region: content
+  name:
+    type: string_textfield
+    weight: -5
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+  path:
+    type: path
+    weight: 30
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+hidden: {  }

@@ -1,0 +1,21 @@
+uuid: 5575d24a-7ffd-47d3-8f4c-5d230d522eb6
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_recipe_course_type
+    - node.type.recipe
+id: node.recipe.field_recipe_course_type
+field_name: field_recipe_course_type
+entity_type: node
+bundle: recipe
+label: 'Course type'
+description: ''
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:taxonomy_term'
+  handler_settings: {  }
+field_type: entity_reference

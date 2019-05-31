@@ -3,9 +3,11 @@ langcode: en
 status: true
 dependencies:
   config:
+    - field.field.taxonomy_term.hc_condition_type.field_meta_tags
     - field.field.taxonomy_term.hc_condition_type.field_term_hc_synonyms
     - taxonomy.vocabulary.hc_condition_type
   module:
+    - metatag
     - text
 id: taxonomy_term.hc_condition_type.default
 targetEntityType: taxonomy_term
@@ -19,6 +21,13 @@ content:
     region: content
     settings: {  }
     third_party_settings: {  }
+  field_meta_tags:
+    weight: 1
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    type: metatag_empty_formatter
+    region: content
   field_term_hc_synonyms:
     label: above
     weight: 0
@@ -27,5 +36,4 @@ content:
       link_to_entity: false
     third_party_settings: {  }
     region: content
-hidden:
-  langcode: true
+hidden: {  }

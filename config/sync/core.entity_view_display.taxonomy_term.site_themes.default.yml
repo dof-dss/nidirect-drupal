@@ -6,13 +6,17 @@ dependencies:
     - field.field.taxonomy_term.site_themes.field_additional_info
     - field.field.taxonomy_term.site_themes.field_banner_image
     - field.field.taxonomy_term.site_themes.field_enable_toc
+    - field.field.taxonomy_term.site_themes.field_meta_tags
     - field.field.taxonomy_term.site_themes.field_photo
     - field.field.taxonomy_term.site_themes.field_supplementary_parents
     - field.field.taxonomy_term.site_themes.field_taxonomy_rank
     - field.field.taxonomy_term.site_themes.field_teaser
+    - field.field.taxonomy_term.site_themes.field_theme_summary
     - field.field.taxonomy_term.site_themes.field_top_level_theme
     - taxonomy.vocabulary.site_themes
   module:
+    - image
+    - metatag
     - text
 id: taxonomy_term.site_themes.default
 targetEntityType: taxonomy_term
@@ -22,7 +26,7 @@ content:
   description:
     label: hidden
     type: text_default
-    weight: 0
+    weight: 4
     region: content
     settings: {  }
     third_party_settings: {  }
@@ -32,6 +36,32 @@ content:
     type: text_default
     settings: {  }
     third_party_settings: {  }
+    region: content
+  field_banner_image:
+    type: image
+    weight: 0
+    region: content
+    label: above
+    settings:
+      image_style: ''
+      image_link: ''
+    third_party_settings: {  }
+  field_enable_toc:
+    type: boolean
+    weight: 3
+    region: content
+    label: above
+    settings:
+      format: default
+      format_custom_false: ''
+      format_custom_true: ''
+    third_party_settings: {  }
+  field_meta_tags:
+    weight: 9
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    type: metatag_empty_formatter
     region: content
   field_supplementary_parents:
     label: above
@@ -43,7 +73,7 @@ content:
     region: content
   field_taxonomy_rank:
     label: above
-    weight: 9
+    weight: 8
     type: number_integer
     settings:
       thousand_separator: ''
@@ -58,16 +88,20 @@ content:
       link_to_entity: false
     third_party_settings: {  }
     region: content
+  field_theme_summary:
+    weight: 2
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    type: text_default
+    region: content
   field_top_level_theme:
     label: above
-    weight: 8
+    weight: 7
     type: entity_reference_label
     settings:
       link: true
     third_party_settings: {  }
     region: content
 hidden:
-  field_banner_image: true
-  field_enable_toc: true
   field_photo: true
-  langcode: true

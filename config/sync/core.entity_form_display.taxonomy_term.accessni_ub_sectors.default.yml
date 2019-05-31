@@ -1,0 +1,45 @@
+uuid: 4ce3a6e4-f962-4da6-a05c-82c944bbd918
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.taxonomy_term.accessni_ub_sectors.field_meta_tags
+    - taxonomy.vocabulary.accessni_ub_sectors
+  module:
+    - metatag
+    - path
+    - text
+id: taxonomy_term.accessni_ub_sectors.default
+targetEntityType: taxonomy_term
+bundle: accessni_ub_sectors
+mode: default
+content:
+  description:
+    type: text_textarea
+    weight: 1
+    region: content
+    settings:
+      placeholder: ''
+      rows: 5
+    third_party_settings: {  }
+  field_meta_tags:
+    weight: 2
+    settings: {  }
+    third_party_settings: {  }
+    type: metatag_firehose
+    region: content
+  name:
+    type: string_textfield
+    weight: 0
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+  path:
+    type: path
+    weight: 3
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+hidden: {  }

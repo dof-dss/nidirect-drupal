@@ -1,0 +1,45 @@
+uuid: ca9edccd-7d8d-4d39-8250-76bc6e36d07d
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.taxonomy_term.drive_instr_categories.field_meta_tags
+    - taxonomy.vocabulary.drive_instr_categories
+  module:
+    - metatag
+    - path
+    - text
+id: taxonomy_term.drive_instr_categories.default
+targetEntityType: taxonomy_term
+bundle: drive_instr_categories
+mode: default
+content:
+  description:
+    type: text_textfield
+    weight: 0
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+  field_meta_tags:
+    weight: 31
+    settings: {  }
+    third_party_settings: {  }
+    type: metatag_firehose
+    region: content
+  name:
+    type: string_textfield
+    weight: -5
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+  path:
+    type: path
+    weight: 30
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+hidden: {  }

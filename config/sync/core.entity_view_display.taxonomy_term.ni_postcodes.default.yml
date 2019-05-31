@@ -1,0 +1,30 @@
+uuid: 0f91f548-19ec-4140-b166-1baa3f515efd
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.taxonomy_term.ni_postcodes.field_meta_tags
+    - taxonomy.vocabulary.ni_postcodes
+  module:
+    - metatag
+    - text
+id: taxonomy_term.ni_postcodes.default
+targetEntityType: taxonomy_term
+bundle: ni_postcodes
+mode: default
+content:
+  description:
+    label: hidden
+    type: text_default
+    weight: 0
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_meta_tags:
+    weight: 1
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    type: metatag_empty_formatter
+    region: content
+hidden: {  }
