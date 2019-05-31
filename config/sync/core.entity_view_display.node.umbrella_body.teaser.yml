@@ -1,0 +1,53 @@
+uuid: 6dfea009-d483-4c4f-99b3-e00f07bd7d34
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.node.teaser
+    - field.field.node.umbrella_body.body
+    - node.type.umbrella_body
+  module:
+    - text
+    - user
+id: node.umbrella_body.teaser
+targetEntityType: node
+bundle: umbrella_body
+mode: teaser
+content:
+  body:
+    label: hidden
+    type: text_summary_or_trimmed
+    weight: 101
+    settings:
+      trim_length: 600
+    third_party_settings: {  }
+    region: content
+  links:
+    weight: 100
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+hidden:
+  field_contact_address_01: true
+  field_contact_address_02: true
+  field_contact_address_03: true
+  field_contact_address_04: true
+  field_contact_address_05: true
+  field_contact_phone: true
+  field_contact_postcode: true
+  field_contact_town_city: true
+  field_contact_website: true
+  field_county: true
+  field_district: true
+  field_email_address: true
+  field_livelink_url: true
+  field_meta_tags: true
+  field_ub_all_ni: true
+  field_ub_contact: true
+  field_ub_counties: true
+  field_ub_date_issued: true
+  field_ub_price: true
+  field_ub_price_addinfo: true
+  field_ub_price_volunteer: true
+  field_ub_sector: true
+  field_ub_services: true
