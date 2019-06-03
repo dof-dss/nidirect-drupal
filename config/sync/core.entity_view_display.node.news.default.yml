@@ -8,6 +8,7 @@ dependencies:
     - field.field.node.news.field_meta_tags
     - field.field.node.news.field_photo
     - field.field.node.news.field_published_date
+    - field.field.node.news.field_summary
     - field.field.node.news.field_teaser
     - node.type.news
   module:
@@ -53,6 +54,13 @@ content:
       format_type: medium
       timezone_override: ''
     third_party_settings: {  }
+  field_summary:
+    weight: 6
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    type: text_default
+    region: content
   field_teaser:
     type: string
     weight: 1
