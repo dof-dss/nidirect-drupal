@@ -33,6 +33,7 @@ dependencies:
     - link
     - metatag
     - path
+    - shs
     - text
 id: node.nidirect_contact.default
 targetEntityType: node
@@ -223,13 +224,14 @@ content:
     type: metatag_firehose
     region: content
   field_site_topics:
-    type: entity_reference_autocomplete
+    type: options_shs
     weight: 23
     region: content
     settings:
-      match_operator: CONTAINS
-      size: 60
-      placeholder: ''
+      display_node_count: false
+      create_new_items: false
+      create_new_levels: false
+      force_deepest: false
     third_party_settings: {  }
   field_summary:
     weight: 5
@@ -290,5 +292,10 @@ content:
       size: 60
       placeholder: ''
     region: content
+    third_party_settings: {  }
+  url_redirects:
+    weight: 50
+    region: content
+    settings: {  }
     third_party_settings: {  }
 hidden: {  }

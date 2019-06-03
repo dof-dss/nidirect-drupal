@@ -5,6 +5,7 @@ dependencies:
   config:
     - field.storage.node.field_top_level_theme
     - node.type.application
+    - taxonomy.vocabulary.site_themes
 id: node.application.field_top_level_theme
 field_name: field_top_level_theme
 entity_type: node
@@ -17,5 +18,12 @@ default_value: {  }
 default_value_callback: ''
 settings:
   handler: 'default:taxonomy_term'
-  handler_settings: {  }
+  handler_settings:
+    target_bundles:
+      site_themes: site_themes
+    sort:
+      field: name
+      direction: asc
+    auto_create: false
+    auto_create_bundle: ''
 field_type: entity_reference
