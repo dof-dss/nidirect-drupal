@@ -11,6 +11,7 @@ dependencies:
     - field.field.node.recipe.field_recipe_allergy_advice
     - field.field.node.recipe.field_recipe_course_type
     - field.field.node.recipe.field_recipe_description
+    - field.field.node.recipe.field_recipe_fat_content
     - field.field.node.recipe.field_recipe_food_safety
     - field.field.node.recipe.field_recipe_image
     - field.field.node.recipe.field_recipe_ingredients
@@ -19,9 +20,12 @@ dependencies:
     - field.field.node.recipe.field_recipe_nutrition_info
     - field.field.node.recipe.field_recipe_other_options
     - field.field.node.recipe.field_recipe_preptime
+    - field.field.node.recipe.field_recipe_salt
+    - field.field.node.recipe.field_recipe_saturates
     - field.field.node.recipe.field_recipe_season
     - field.field.node.recipe.field_recipe_serves
     - field.field.node.recipe.field_recipe_special_diet
+    - field.field.node.recipe.field_recipe_sugar
     - node.type.recipe
   module:
     - entity_browser
@@ -30,6 +34,7 @@ dependencies:
     - metatag
     - path
     - text
+    - traffic_light_rating
 id: node.recipe.default
 targetEntityType: node
 bundle: recipe
@@ -37,13 +42,13 @@ mode: default
 content:
   created:
     type: datetime_timestamp
-    weight: 21
+    weight: 25
     region: content
     settings: {  }
     third_party_settings: {  }
   field_livelink_id:
     type: string_textfield
-    weight: 19
+    weight: 23
     region: content
     settings:
       size: 60
@@ -51,7 +56,7 @@ content:
     third_party_settings: {  }
   field_livelink_url:
     type: link_default
-    weight: 18
+    weight: 22
     region: content
     settings:
       placeholder_url: ''
@@ -65,14 +70,14 @@ content:
     region: content
   field_recipe_allergens:
     type: boolean_checkbox
-    weight: 10
+    weight: 14
     region: content
     settings:
       display_label: true
     third_party_settings: {  }
   field_recipe_allergy_advice:
     type: text_textarea
-    weight: 16
+    weight: 20
     region: content
     settings:
       rows: 5
@@ -80,7 +85,7 @@ content:
     third_party_settings: {  }
   field_recipe_course_type:
     type: options_select
-    weight: 5
+    weight: 9
     region: content
     settings: {  }
     third_party_settings: {  }
@@ -92,9 +97,15 @@ content:
       rows: 5
       placeholder: ''
     third_party_settings: {  }
+  field_recipe_fat_content:
+    weight: 4
+    settings: {  }
+    third_party_settings: {  }
+    type: traffic_light_rating_default
+    region: content
   field_recipe_food_safety:
     type: text_textarea
-    weight: 17
+    weight: 21
     region: content
     settings:
       rows: 5
@@ -102,7 +113,7 @@ content:
     third_party_settings: {  }
   field_recipe_image:
     type: entity_browser_file
-    weight: 11
+    weight: 15
     region: content
     settings:
       entity_browser: media_entity_browser
@@ -116,7 +127,7 @@ content:
     third_party_settings: {  }
   field_recipe_ingredients:
     type: text_textarea
-    weight: 13
+    weight: 17
     region: content
     settings:
       rows: 5
@@ -124,13 +135,13 @@ content:
     third_party_settings: {  }
   field_recipe_main_ingredient:
     type: options_select
-    weight: 4
+    weight: 8
     region: content
     settings: {  }
     third_party_settings: {  }
   field_recipe_method:
     type: text_textarea
-    weight: 14
+    weight: 18
     region: content
     settings:
       rows: 5
@@ -138,7 +149,7 @@ content:
     third_party_settings: {  }
   field_recipe_nutrition_info:
     type: text_textarea
-    weight: 15
+    weight: 19
     region: content
     settings:
       rows: 5
@@ -146,14 +157,14 @@ content:
     third_party_settings: {  }
   field_recipe_other_options:
     type: text_textarea
-    weight: 12
+    weight: 16
     region: content
     settings:
       rows: 5
       placeholder: ''
     third_party_settings: {  }
   field_recipe_preptime:
-    weight: 7
+    weight: 11
     settings:
       format: 'h:mm'
       default_placeholder: 1
@@ -161,24 +172,42 @@ content:
     third_party_settings: {  }
     type: hms_default
     region: content
+  field_recipe_salt:
+    weight: 7
+    settings: {  }
+    third_party_settings: {  }
+    type: traffic_light_rating_default
+    region: content
+  field_recipe_saturates:
+    weight: 5
+    settings: {  }
+    third_party_settings: {  }
+    type: traffic_light_rating_default
+    region: content
   field_recipe_season:
     type: options_select
-    weight: 8
+    weight: 12
     region: content
     settings: {  }
     third_party_settings: {  }
   field_recipe_serves:
     type: options_select
-    weight: 9
+    weight: 13
     region: content
     settings: {  }
     third_party_settings: {  }
   field_recipe_special_diet:
     type: options_select
-    weight: 6
+    weight: 10
     region: content
     settings: {  }
     third_party_settings: {  }
+  field_recipe_sugar:
+    weight: 6
+    settings: {  }
+    third_party_settings: {  }
+    type: traffic_light_rating_default
+    region: content
   path:
     type: path
     weight: 1
@@ -189,21 +218,21 @@ content:
     type: boolean_checkbox
     settings:
       display_label: true
-    weight: 23
+    weight: 27
     region: content
     third_party_settings: {  }
   status:
     type: boolean_checkbox
     settings:
       display_label: true
-    weight: 24
+    weight: 28
     region: content
     third_party_settings: {  }
   sticky:
     type: boolean_checkbox
     settings:
       display_label: true
-    weight: 22
+    weight: 26
     region: content
     third_party_settings: {  }
   title:
@@ -216,7 +245,7 @@ content:
     third_party_settings: {  }
   uid:
     type: entity_reference_autocomplete
-    weight: 20
+    weight: 24
     settings:
       match_operator: CONTAINS
       size: 60
