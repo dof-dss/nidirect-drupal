@@ -120,13 +120,10 @@ content:
       placeholder: ''
     third_party_settings: {  }
   field_hc_info_source:
-    type: entity_reference_autocomplete
+    type: options_buttons
     weight: 14
     region: content
-    settings:
-      match_operator: CONTAINS
-      size: 60
-      placeholder: ''
+    settings: {  }
     third_party_settings: {  }
   field_hc_primary_symptom_1:
     type: entity_reference_autocomplete
@@ -174,7 +171,7 @@ content:
       placeholder: ''
     third_party_settings: {  }
   field_index_letter:
-    type: options_buttons
+    type: options_select
     weight: 2
     region: content
     settings: {  }
@@ -204,10 +201,13 @@ content:
       time_type: '24'
     third_party_settings: {  }
   field_parent_condition:
-    type: options_buttons
+    type: entity_reference_autocomplete
     weight: 3
     region: content
-    settings: {  }
+    settings:
+      match_operator: CONTAINS
+      size: 60
+      placeholder: ''
     third_party_settings: {  }
   field_photo:
     type: image_image
@@ -224,10 +224,13 @@ content:
     settings: {  }
     third_party_settings: {  }
   field_related_conditions:
-    type: options_buttons
+    type: entity_reference_autocomplete
     weight: 4
     region: content
-    settings: {  }
+    settings:
+      match_operator: CONTAINS
+      size: 60
+      placeholder: ''
     third_party_settings: {  }
   field_related_info:
     type: link_default
