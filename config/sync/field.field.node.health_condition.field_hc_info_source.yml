@@ -5,6 +5,7 @@ dependencies:
   config:
     - field.storage.node.field_hc_info_source
     - node.type.health_condition
+    - taxonomy.vocabulary.hc_info_sources
 id: node.health_condition.field_hc_info_source
 field_name: field_hc_info_source
 entity_type: node
@@ -17,5 +18,12 @@ default_value: {  }
 default_value_callback: ''
 settings:
   handler: 'default:taxonomy_term'
-  handler_settings: {  }
+  handler_settings:
+    target_bundles:
+      hc_info_sources: hc_info_sources
+    sort:
+      field: name
+      direction: asc
+    auto_create: false
+    auto_create_bundle: ''
 field_type: entity_reference
