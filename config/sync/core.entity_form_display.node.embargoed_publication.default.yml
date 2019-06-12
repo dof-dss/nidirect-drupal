@@ -15,7 +15,6 @@ dependencies:
     - node.type.embargoed_publication
   module:
     - datetime
-    - file
     - metatag
     - path
     - shs
@@ -59,12 +58,14 @@ content:
     settings: {  }
     third_party_settings: {  }
   field_secure_attachment:
-    type: file_generic
-    weight: 6
-    region: content
+    weight: 26
     settings:
-      progress_indicator: throbber
+      match_operator: CONTAINS
+      size: 60
+      placeholder: ''
     third_party_settings: {  }
+    type: entity_reference_autocomplete
+    region: content
   field_site_themes:
     type: options_shs
     weight: 2
