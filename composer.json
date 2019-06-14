@@ -17,6 +17,10 @@
         {
             "type": "vcs",
             "url": "git@svegit01.thestables.net:dss/nidirect-d8-mig-mods"
+        },
+        {
+            "type": "vcs",
+            "url": "git@svegit01.thestables.net:dss/nidirect-site-modules.git"
         }
     ],
     "require": {
@@ -49,6 +53,7 @@
         "drupal/token": "^1.5",
         "drupal/traffic_light_rating": "1.x-dev",
         "drush/drush": "^9.0.0",
+        "nics/nidirect-site-modules": "dev-development",
         "vlucas/phpdotenv": "^2.4",
         "webflo/drupal-finder": "^1.0.0",
         "webmozart/path-util": "^2.3",
@@ -106,6 +111,9 @@
             ],
             "web/libraries/{$name}": [
                 "type:drupal-library"
+            ],
+            "web/modules/custom/{$name}": [
+                "nics/nidirect-site-modules"
             ],
             "web/modules/migrate/{$name}": [
                 "nics/nidirect-migrations"
