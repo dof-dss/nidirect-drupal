@@ -3,11 +3,8 @@ langcode: en
 status: true
 dependencies:
   config:
-    - field.field.node.gp_practice.field_contact_address_01
-    - field.field.node.gp_practice.field_contact_address_02
+    - field.field.node.gp_practice.field_address
     - field.field.node.gp_practice.field_contact_phone
-    - field.field.node.gp_practice.field_contact_postcode
-    - field.field.node.gp_practice.field_contact_town_city
     - field.field.node.gp_practice.field_gp_appointments
     - field.field.node.gp_practice.field_gp_lcg
     - field.field.node.gp_practice.field_gp_partnership_no
@@ -18,9 +15,12 @@ dependencies:
     - field.field.node.gp_practice.field_gp_practice_website
     - field.field.node.gp_practice.field_gp_prescriptions
     - field.field.node.gp_practice.field_gp_surgery_name
+    - field.field.node.gp_practice.field_location
     - field.field.node.gp_practice.field_meta_tags
     - node.type.gp_practice
   module:
+    - address
+    - geolocation
     - link
     - metatag
     - path
@@ -31,7 +31,13 @@ mode: default
 content:
   created:
     type: datetime_timestamp
-    weight: 17
+    weight: 15
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_address:
+    type: address_default
+    weight: 10
     region: content
     settings: {  }
     third_party_settings: {  }
@@ -53,7 +59,7 @@ content:
     third_party_settings: {  }
   field_contact_phone:
     type: string_textfield
-    weight: 9
+    weight: 11
     region: content
     settings:
       size: 60
@@ -99,7 +105,7 @@ content:
     third_party_settings: {  }
   field_gp_practice_lead:
     type: entity_reference_autocomplete
-    weight: 14
+    weight: 12
     region: content
     settings:
       match_operator: CONTAINS
@@ -108,7 +114,7 @@ content:
     third_party_settings: {  }
   field_gp_practice_member:
     type: entity_reference_autocomplete
-    weight: 15
+    weight: 13
     region: content
     settings:
       match_operator: CONTAINS
@@ -155,15 +161,50 @@ content:
       size: 60
       placeholder: ''
     third_party_settings: {  }
+  field_location:
+    type: geolocation_googlegeocoder
+    weight: 9
+    region: content
+    settings:
+      default_longitude: ''
+      default_latitude: ''
+      populate_address_field: '1'
+      target_address_field: field_address
+      google_map_settings:
+        height: 400px
+        width: 100%
+        type: ROADMAP
+        zoom: '10'
+        maxZoom: '18'
+        minZoom: '0'
+        mapTypeControl: '1'
+        streetViewControl: '1'
+        zoomControl: '1'
+        scrollwheel: '1'
+        gestureHandling: auto
+        draggable: '1'
+        style: ''
+        info_auto_display: '1'
+        marker_icon_path: ''
+        disableAutoPan: '1'
+        rotateControl: 0
+        fullscreenControl: 0
+        preferScrollingToZooming: 0
+        disableDoubleClickZoom: 0
+      auto_client_location: 0
+      auto_client_location_marker: 0
+      explicite_actions_address_field: 0
+      allow_override_map_settings: 0
+    third_party_settings: {  }
   field_meta_tags:
-    weight: 22
+    weight: 20
     settings: {  }
     third_party_settings: {  }
     type: metatag_firehose
     region: content
   path:
     type: path
-    weight: 20
+    weight: 18
     region: content
     settings: {  }
     third_party_settings: {  }
@@ -171,21 +212,21 @@ content:
     type: boolean_checkbox
     settings:
       display_label: true
-    weight: 18
+    weight: 16
     region: content
     third_party_settings: {  }
   status:
     type: boolean_checkbox
     settings:
       display_label: true
-    weight: 21
+    weight: 19
     region: content
     third_party_settings: {  }
   sticky:
     type: boolean_checkbox
     settings:
       display_label: true
-    weight: 19
+    weight: 17
     region: content
     third_party_settings: {  }
   title:
@@ -198,7 +239,7 @@ content:
     third_party_settings: {  }
   uid:
     type: entity_reference_autocomplete
-    weight: 16
+    weight: 14
     settings:
       match_operator: CONTAINS
       size: 60

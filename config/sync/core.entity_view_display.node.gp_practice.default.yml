@@ -3,11 +3,8 @@ langcode: en
 status: true
 dependencies:
   config:
-    - field.field.node.gp_practice.field_contact_address_01
-    - field.field.node.gp_practice.field_contact_address_02
+    - field.field.node.gp_practice.field_address
     - field.field.node.gp_practice.field_contact_phone
-    - field.field.node.gp_practice.field_contact_postcode
-    - field.field.node.gp_practice.field_contact_town_city
     - field.field.node.gp_practice.field_gp_appointments
     - field.field.node.gp_practice.field_gp_lcg
     - field.field.node.gp_practice.field_gp_partnership_no
@@ -18,41 +15,94 @@ dependencies:
     - field.field.node.gp_practice.field_gp_practice_website
     - field.field.node.gp_practice.field_gp_prescriptions
     - field.field.node.gp_practice.field_gp_surgery_name
+    - field.field.node.gp_practice.field_location
     - field.field.node.gp_practice.field_meta_tags
     - node.type.gp_practice
   module:
-    - metatag
+    - address
+    - geolocation
     - user
 id: node.gp_practice.default
 targetEntityType: node
 bundle: gp_practice
 mode: default
 content:
-  field_meta_tags:
-    weight: 101
+  field_address:
+    type: address_default
+    weight: 2
+    region: content
     label: above
     settings: {  }
     third_party_settings: {  }
-    type: metatag_empty_formatter
+  field_contact_phone:
+    type: string
+    weight: 3
     region: content
-  links:
-    weight: 100
-    settings: {  }
+    label: inline
+    settings:
+      link_to_entity: false
     third_party_settings: {  }
+  field_gp_practice_lead:
+    type: entity_reference_label
+    weight: 0
     region: content
+    label: hidden
+    settings:
+      link: false
+    third_party_settings: {  }
+  field_gp_practice_member:
+    type: entity_reference_label
+    weight: 1
+    region: content
+    label: hidden
+    settings:
+      link: false
+    third_party_settings: {  }
+  field_location:
+    type: geolocation_map
+    weight: 4
+    region: content
+    label: hidden
+    settings:
+      title: ''
+      set_marker: true
+      common_map: false
+      info_text: ''
+      use_overridden_map_settings: false
+      google_map_settings:
+        type: ROADMAP
+        zoom: 10
+        minZoom: 0
+        maxZoom: 18
+        rotateControl: false
+        mapTypeControl: true
+        streetViewControl: true
+        zoomControl: true
+        fullscreenControl: false
+        scrollwheel: true
+        disableDoubleClickZoom: false
+        draggable: true
+        height: 400px
+        width: 100%
+        info_auto_display: true
+        marker_icon_path: ''
+        disableAutoPan: true
+        style: ''
+        preferScrollingToZooming: false
+        gestureHandling: auto
+    third_party_settings: {  }
 hidden:
   field_contact_address_01: true
   field_contact_address_02: true
-  field_contact_phone: true
   field_contact_postcode: true
   field_contact_town_city: true
   field_gp_appointments: true
   field_gp_lcg: true
   field_gp_partnership_no: true
-  field_gp_practice_lead: true
-  field_gp_practice_member: true
   field_gp_practice_name: true
   field_gp_practice_no: true
   field_gp_practice_website: true
   field_gp_prescriptions: true
   field_gp_surgery_name: true
+  field_meta_tags: true
+  links: true
