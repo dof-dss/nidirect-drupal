@@ -1,149 +1,114 @@
 # NI Direct Drupal 8
 
+Drupal source code for the NIDirect website: https://www.nidirect.gov.uk.
+
 Drupal 8 install based on drupal-composer/drupal-project with that project set at the upstream remote.
 
-# Composer template for Drupal projects
+## Getting started
 
-[![Build Status](https://travis-ci.org/drupal-composer/drupal-project.svg?branch=8.x)](https://travis-ci.org/drupal-composer/drupal-project)
+For local development, please review the [README file for the local development framework](https://svegit01.thestables.net/dss/lando-d7-to-d8-migrate/blob/development/README.md).
 
-This project template provides a starter kit for managing your site
-dependencies with [Composer](https://getcomposer.org/).
+This document intends to cover an overview of how the site is structured and how it approaches certain Drupal topics.
 
-If you want to know how to use it as replacement for
-[Drush Make](https://github.com/drush-ops/drush/blob/8.x/docs/make.md) visit
-the [Documentation on drupal.org](https://www.drupal.org/node/2471553).
+## Project structure
 
-## Usage
-
-First you need to [install composer](https://getcomposer.org/doc/00-intro.md#installation-linux-unix-osx).
-
-> Note: The instructions below refer to the [global composer installation](https://getcomposer.org/doc/00-intro.md#globally).
-You might need to replace `composer` with `php composer.phar` (or similar) 
-for your setup.
-
-After that you can create the project:
+Some key project directories and/or files:
 
 ```
-composer create-project drupal-composer/drupal-project:8.x-dev some-dir --no-interaction
+composer.json (defines project dependencies)
+composer.lock (what composer install uses when running, ensure this is always in sync with composer.json)
+config (configuration management folder)
+phpcs.sh (shell script to simplify invocation of PHPCS tool)
+vendor (third party dependencies and libraries; sourced by composer)
+web (docroot folder)
+web/core (Drupal core; don't alter except via composer patches)
+web/modules/contrib (community modules; don't alter except via composer patches)
+web/modules/custom (custom code; sourced from other repository by composer)
+web/modules/migrate/nidirect_migrations (migration modules; sourced from other repository by composer)
+web/themes/custom/nidirect (custom site theme)
+web/sites/default/settings.php (generated settings file, see note below):
 ```
 
-With `composer require ...` you can download new dependencies to your 
-installation.
+## Drupal settings file
+
+Rather than store a per-environment file and symlink/swap in at build time to replace `sites/default/settings.php`, this file is always regenerated using the example settings file provided by Drupal Core itself. Specific feature flags and/or variable values are provided by environment variables to ensure maximum portability for the single file across all environments.
+
+Do not make changes directly to this file where you find it because they will be overwritten whenever the site is deployed or rebuilt.
+
+## Code workflow
+
+Like the popular git-flow workflow, but without the more complex elements:
+
+- `development` bleeding-edge. All feature branches originate from here.
+- `master` stable, cut release tags from here.
+
+Preferred feature branch naming convention: `TICKET_REF-short-desc`, for example: `D8NID-123-event-listing`
+
+We highly recommend developers use a tool such as [Talisman](https://github.com/thoughtworks/talisman) to ensure they do not commit potentially sensitive material into the codebase.
+
+API keys, auth tokens or other credentials values *must* be stored as environment variables and never stored in the codebase itself.
+
+## Continuous integration
+
+Automated testing is configured to check:
+
+- Static analysis of custom PHP code against drupal.org coding standards using [phpcs](https://github.com/squizlabs/PHP_CodeSniffer).
+- Analysis of custom code for deprecated code using [drupal-check](https://github.com/mglaman/drupal-check).
+- Run any defined unit tests via [phpunit](https://phpunit.de/).
+- Run functional UI tests using [nightwatch.js](https://nightwatchjs.org).
+
+All of these tools can be run locally - and you should at least once per feature - and the CI service is present to ensure that even if you do not then you cannot merge your code until any issues are corrected.
+
+## Contribution
+
+All changes **must** be submitted with an appropriate pull request (PR) in GitHub. Direct commits to `master` or `development` are not permitted.
+
+## Configuration management
+
+This project employs a suite of modules to control how site configuration is imported and behaves:
+
+- [config_split](https://www.drupal.org/project/config_split): Allows configuration to be defined per environment. Ie: development modules will be enabled for local work, and remain off/absent from others.
+- [config_readonly](https://www.drupal.org/project/config_readonly): Ensures that active configuration cannot be changed by site admins, but blocking certain system forms from saving. A whitelist is available for 'admin content' that is not necessarily tracked in code or is needed to be changed regularly by site admins.
+- [config_ignore](https://www.drupal.org/project/config_ignore): Ensures that some site configuration is not overwritten during configuration import during deployments.
+
+TL;DR: Site admins are restricted to make changes to active configuration via the site UI, because it can be lost when syncing with the config kept in code.
+
+## Front-end toolchain
+
+> Details of the front-end toolchain and approach, even if it's just a link to a README.md file in the theme folder/repo.
+
+## Deployment
+
+> TODO: outline how to release/deploy code for this project.
+
+### Release naming conventions
+
+The project operates using [semantic versioning](https://semver.org/), amended slightly to be more Drupal-centric in structure:
+
+Given the below as a starting point:
 
 ```
-cd some-dir
-composer require drupal/devel:~1.0
+8.x-Y.Z
 ```
 
-The `composer create-project` command passes ownership of all files to the 
-project that is created. You should create a new git repository, and commit 
-all files not excluded by the .gitignore file.
+- Major change (core update): Incremenent `8.x`, for example: `8.x-3.0 > 9.x-1.0`.
+- Routine change (new feature): Increment `Y`. For example, `8.x-1.4 > 8.x-2.0` or `8.x-9.0 > 8.x-10.0`.
+- Small change: Increment `Z`. For example, `8.x-1.4 > 8.x-1.5` or `8.x-2.9 > 8.x-2.10`.
 
-## What does the template do?
+## Project workflow
 
-When installing the given `composer.json` some tasks are taken care of:
+The project presently uses a [Lean with Kanban](https://inviqa.com/blog/introduction-lean-kanban-software-development) methodology. At it's core, this emphasises the team to:
 
-* Drupal will be installed in the `web`-directory.
-* Autoloader is implemented to use the generated composer autoloader in `vendor/autoload.php`,
-  instead of the one provided by Drupal (`web/vendor/autoload.php`).
-* Modules (packages of type `drupal-module`) will be placed in `web/modules/contrib/`
-* Theme (packages of type `drupal-theme`) will be placed in `web/themes/contrib/`
-* Profiles (packages of type `drupal-profile`) will be placed in `web/profiles/contrib/`
-* Creates default writable versions of `settings.php` and `services.yml`.
-* Creates `web/sites/default/files`-directory.
-* Latest version of drush is installed locally for use at `vendor/bin/drush`.
-* Latest version of DrupalConsole is installed locally for use at `vendor/bin/drupal`.
-* Creates environment variables based on your .env file. See [.env.example](.env.example).
+- Visualise progress.
+- Limit work in progress (WIP).
+- Manage the workflow.
+- Make policies explicit.
+- Implement feedback loops.
+- Improve and evolve collaboratively.
 
-## Updating Drupal Core
+New bugs, tasks or features should be added to the [JIRA backlog](https://digitaldevelopment.atlassian.net/browse/D8NID). The backlog is reviewed and prioritised at least every two weeks.
 
-This project will attempt to keep all of your Drupal Core files up-to-date; the 
-project [drupal-composer/drupal-scaffold](https://github.com/drupal-composer/drupal-scaffold) 
-is used to ensure that your scaffold files are updated every time drupal/core is 
-updated. If you customize any of the "scaffolding" files (commonly .htaccess), 
-you may need to merge conflicts if any of your modified files are updated in a 
-new release of Drupal core.
+There are limits on WIP - which may change - so pay attention to these.
 
-Follow the steps below to update your core files.
-
-1. Run `composer update drupal/core webflo/drupal-core-require-dev "symfony/*" --with-dependencies` to update Drupal Core and its dependencies.
-1. Run `git diff` to determine if any of the scaffolding files have changed. 
-   Review the files for any changes and restore any customizations to 
-  `.htaccess` or `robots.txt`.
-1. Commit everything all together in a single commit, so `web` will remain in
-   sync with the `core` when checking out branches or running `git bisect`.
-1. In the event that there are non-trivial conflicts in step 2, you may wish 
-   to perform these steps on a branch, and use `git merge` to combine the 
-   updated core files with your customized files. This facilitates the use 
-   of a [three-way merge tool such as kdiff3](http://www.gitshah.com/2010/12/how-to-setup-kdiff-as-diff-tool-for-git.html). This setup is not necessary if your changes are simple; 
-   keeping all of your modifications at the beginning or end of the file is a 
-   good strategy to keep merges easy.
-
-## Generate composer.json from existing project
-
-With using [the "Composer Generate" drush extension](https://www.drupal.org/project/composer_generate)
-you can now generate a basic `composer.json` file from an existing project. Note
-that the generated `composer.json` might differ from this project's file.
-
-
-## FAQ
-
-### Should I commit the contrib modules I download?
-
-Composer recommends **no**. They provide [argumentation against but also 
-workrounds if a project decides to do it anyway](https://getcomposer.org/doc/faqs/should-i-commit-the-dependencies-in-my-vendor-directory.md).
-
-### Should I commit the scaffolding files?
-
-The [drupal-scaffold](https://github.com/drupal-composer/drupal-scaffold) plugin can download the scaffold files (like
-index.php, update.php, …) to the web/ directory of your project. If you have not customized those files you could choose
-to not check them into your version control system (e.g. git). If that is the case for your project it might be
-convenient to automatically run the drupal-scaffold plugin after every install or update of your project. You can
-achieve that by registering `@composer drupal:scaffold` as post-install and post-update command in your composer.json:
-
-```json
-"scripts": {
-    "post-install-cmd": [
-        "@composer drupal:scaffold",
-        "..."
-    ],
-    "post-update-cmd": [
-        "@composer drupal:scaffold",
-        "..."
-    ]
-},
-```
-### How can I apply patches to downloaded modules?
-
-If you need to apply patches (depending on the project being modified, a pull 
-request is often a better solution), you can do so with the 
-[composer-patches](https://github.com/cweagans/composer-patches) plugin.
-
-To add a patch to drupal module foobar insert the patches section in the extra 
-section of composer.json:
-```json
-"extra": {
-    "patches": {
-        "drupal/foobar": {
-            "Patch description": "URL or local path to patch"
-        }
-    }
-}
-```
-### How do I switch from packagist.drupal-composer.org to packages.drupal.org?
-
-Follow the instructions in the [documentation on drupal.org](https://www.drupal.org/docs/develop/using-composer/using-packagesdrupalorg).
-
-### How do I specify a PHP version ?
-
-This project supports PHP 5.6 as minimum version (see [Drupal 8 PHP requirements](https://www.drupal.org/docs/8/system-requirements/drupal-8-php-requirements)), however it's possible that a `composer update` will upgrade some package that will then require PHP 7+.
-
-To prevent this you can add this code to specify the PHP version you want to use in the `config` section of `composer.json`:
-```json
-"config": {
-    "sort-packages": true,
-    "platform": {
-        "php": "5.6.40"
-    }
-},
-```
+# Licence
+Unless stated otherwise, the codebase is released under [the MIT License](http://www.opensource.org/licenses/mit-license.php). This covers both the codebase and any sample code in the documentation.
