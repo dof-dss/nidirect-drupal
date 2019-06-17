@@ -4,14 +4,13 @@ status: true
 dependencies:
   config:
     - field.field.node.umbrella_body.body
+    - field.field.node.umbrella_body.field_address
     - field.field.node.umbrella_body.field_contact_phone
-    - field.field.node.umbrella_body.field_contact_postcode
-    - field.field.node.umbrella_body.field_contact_town_city
     - field.field.node.umbrella_body.field_contact_website
-    - field.field.node.umbrella_body.field_county
     - field.field.node.umbrella_body.field_district
     - field.field.node.umbrella_body.field_email_address
     - field.field.node.umbrella_body.field_livelink_url
+    - field.field.node.umbrella_body.field_location
     - field.field.node.umbrella_body.field_meta_tags
     - field.field.node.umbrella_body.field_ub_all_ni
     - field.field.node.umbrella_body.field_ub_contact
@@ -24,7 +23,9 @@ dependencies:
     - field.field.node.umbrella_body.field_ub_services
     - node.type.umbrella_body
   module:
+    - address
     - datetime
+    - geolocation
     - link
     - metatag
     - path
@@ -45,29 +46,19 @@ content:
     region: content
   created:
     type: datetime_timestamp
-    weight: 25
+    weight: 22
     region: content
     settings: {  }
     third_party_settings: {  }
+  field_address:
+    weight: 11
+    settings: {  }
+    third_party_settings: {  }
+    type: address_default
+    region: content
   field_contact_phone:
     type: string_textfield
-    weight: 21
-    region: content
-    settings:
-      size: 60
-      placeholder: ''
-    third_party_settings: {  }
-  field_contact_postcode:
-    type: string_textfield
-    weight: 18
-    region: content
-    settings:
-      size: 60
-      placeholder: ''
-    third_party_settings: {  }
-  field_contact_town_city:
-    type: string_textfield
-    weight: 16
+    weight: 17
     region: content
     settings:
       size: 60
@@ -75,17 +66,11 @@ content:
     third_party_settings: {  }
   field_contact_website:
     type: link_default
-    weight: 20
+    weight: 16
     region: content
     settings:
       placeholder_url: ''
       placeholder_title: ''
-    third_party_settings: {  }
-  field_county:
-    type: options_select
-    weight: 17
-    region: content
-    settings: {  }
     third_party_settings: {  }
   field_district:
     type: options_select
@@ -95,7 +80,7 @@ content:
     third_party_settings: {  }
   field_email_address:
     type: email_default
-    weight: 19
+    weight: 15
     region: content
     settings:
       size: 60
@@ -103,14 +88,49 @@ content:
     third_party_settings: {  }
   field_livelink_url:
     type: link_default
-    weight: 22
+    weight: 19
     region: content
     settings:
       placeholder_url: ''
       placeholder_title: ''
     third_party_settings: {  }
+  field_location:
+    weight: 18
+    settings:
+      populate_address_field: ''
+      target_address_field: null
+      explicite_actions_address_field: ''
+      default_longitude: null
+      default_latitude: null
+      auto_client_location: ''
+      auto_client_location_marker: ''
+      allow_override_map_settings: 0
+      google_map_settings:
+        type: ROADMAP
+        zoom: '10'
+        minZoom: 0
+        maxZoom: 18
+        rotateControl: 0
+        mapTypeControl: 1
+        streetViewControl: 1
+        zoomControl: 1
+        fullscreenControl: 0
+        scrollwheel: 1
+        disableDoubleClickZoom: 0
+        draggable: 1
+        height: 400px
+        width: 100%
+        info_auto_display: 1
+        marker_icon_path: ''
+        disableAutoPan: 1
+        style: ''
+        preferScrollingToZooming: 0
+        gestureHandling: auto
+    third_party_settings: {  }
+    type: geolocation_googlegeocoder
+    region: content
   field_meta_tags:
-    weight: 30
+    weight: 27
     settings: {  }
     third_party_settings: {  }
     type: metatag_firehose
@@ -138,7 +158,7 @@ content:
     third_party_settings: {  }
   field_ub_date_issued:
     type: datetime_default
-    weight: 23
+    weight: 20
     region: content
     settings: {  }
     third_party_settings: {  }
@@ -180,7 +200,7 @@ content:
     third_party_settings: {  }
   path:
     type: path
-    weight: 28
+    weight: 25
     region: content
     settings: {  }
     third_party_settings: {  }
@@ -188,21 +208,21 @@ content:
     type: boolean_checkbox
     settings:
       display_label: true
-    weight: 26
+    weight: 23
     region: content
     third_party_settings: {  }
   status:
     type: boolean_checkbox
     settings:
       display_label: true
-    weight: 29
+    weight: 26
     region: content
     third_party_settings: {  }
   sticky:
     type: boolean_checkbox
     settings:
       display_label: true
-    weight: 27
+    weight: 24
     region: content
     third_party_settings: {  }
   title:
@@ -215,7 +235,7 @@ content:
     third_party_settings: {  }
   uid:
     type: entity_reference_autocomplete
-    weight: 24
+    weight: 21
     settings:
       match_operator: CONTAINS
       size: 60
