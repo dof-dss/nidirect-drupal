@@ -20,10 +20,72 @@ dependencies:
     - node.type.gp_practice
   module:
     - address
+    - field_group
     - geolocation
     - link
     - metatag
     - path
+third_party_settings:
+  field_group:
+    group_practice_details:
+      children:
+        - title
+        - field_gp_practice_name
+        - field_gp_practice_no
+        - field_gp_surgery_name
+        - field_gp_partnership_no
+        - field_gp_lcg
+        - field_gp_appointments
+        - field_gp_prescriptions
+      parent_name: ''
+      weight: 0
+      format_type: details
+      format_settings:
+        id: group_gp_practice_details
+        classes: ''
+        open: false
+        required_fields: true
+      label: 'Practice details'
+    group_contact_details:
+      children:
+        - field_gp_practice_website
+        - field_contact_phone
+        - field_address
+        - field_location
+      parent_name: ''
+      weight: 1
+      format_type: details
+      format_settings:
+        id: group_gp_practice_contact
+        classes: ''
+        open: false
+        required_fields: true
+      label: 'Contact details'
+    group_practice_members:
+      children:
+        - field_gp_practice_lead
+        - group_other_gps_in_this_practice
+      parent_name: ''
+      weight: 2
+      format_type: details
+      format_settings:
+        id: group_gp_practice_members
+        classes: ''
+        open: false
+        required_fields: true
+      label: 'Practice members'
+    group_other_gps_in_this_practice:
+      children:
+        - field_gp_practice_member
+      parent_name: group_practice_members
+      weight: 4
+      format_type: details
+      format_settings:
+        id: group_gp_practice_members_other
+        classes: ''
+        open: false
+        required_fields: true
+      label: 'Other GPs in this practice'
 id: node.gp_practice.default
 targetEntityType: node
 bundle: gp_practice
@@ -37,13 +99,13 @@ content:
     third_party_settings: {  }
   field_address:
     type: address_default
-    weight: 10
+    weight: 3
     region: content
     settings: {  }
     third_party_settings: {  }
   field_contact_address_01:
     type: string_textfield
-    weight: 10
+    weight: 3
     region: content
     settings:
       size: 60
@@ -51,7 +113,7 @@ content:
     third_party_settings: {  }
   field_contact_address_02:
     type: string_textfield
-    weight: 11
+    weight: 4
     region: content
     settings:
       size: 60
@@ -59,7 +121,7 @@ content:
     third_party_settings: {  }
   field_contact_phone:
     type: string_textfield
-    weight: 11
+    weight: 2
     region: content
     settings:
       size: 60
@@ -67,7 +129,7 @@ content:
     third_party_settings: {  }
   field_contact_postcode:
     type: string_textfield
-    weight: 13
+    weight: 6
     region: content
     settings:
       size: 60
@@ -75,7 +137,7 @@ content:
     third_party_settings: {  }
   field_contact_town_city:
     type: string_textfield
-    weight: 12
+    weight: 5
     region: content
     settings:
       size: 60
@@ -105,7 +167,7 @@ content:
     third_party_settings: {  }
   field_gp_practice_lead:
     type: entity_reference_autocomplete
-    weight: 12
+    weight: 3
     region: content
     settings:
       match_operator: CONTAINS
@@ -114,7 +176,7 @@ content:
     third_party_settings: {  }
   field_gp_practice_member:
     type: entity_reference_autocomplete
-    weight: 13
+    weight: 4
     region: content
     settings:
       match_operator: CONTAINS
@@ -139,7 +201,7 @@ content:
     third_party_settings: {  }
   field_gp_practice_website:
     type: link_default
-    weight: 8
+    weight: 1
     region: content
     settings:
       placeholder_url: ''
@@ -163,7 +225,7 @@ content:
     third_party_settings: {  }
   field_location:
     type: geolocation_googlegeocoder
-    weight: 9
+    weight: 4
     region: content
     settings:
       default_longitude: ''
@@ -197,14 +259,14 @@ content:
       allow_override_map_settings: 0
     third_party_settings: {  }
   field_meta_tags:
-    weight: 20
+    weight: 11
     settings: {  }
     third_party_settings: {  }
     type: metatag_firehose
     region: content
   path:
     type: path
-    weight: 18
+    weight: 9
     region: content
     settings: {  }
     third_party_settings: {  }
@@ -212,21 +274,21 @@ content:
     type: boolean_checkbox
     settings:
       display_label: true
-    weight: 16
+    weight: 7
     region: content
     third_party_settings: {  }
   status:
     type: boolean_checkbox
     settings:
       display_label: true
-    weight: 19
+    weight: 10
     region: content
     third_party_settings: {  }
   sticky:
     type: boolean_checkbox
     settings:
       display_label: true
-    weight: 17
+    weight: 8
     region: content
     third_party_settings: {  }
   title:
@@ -239,7 +301,7 @@ content:
     third_party_settings: {  }
   uid:
     type: entity_reference_autocomplete
-    weight: 14
+    weight: 5
     settings:
       match_operator: CONTAINS
       size: 60

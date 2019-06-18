@@ -25,11 +25,59 @@ dependencies:
   module:
     - address
     - datetime
+    - field_group
     - geolocation
     - link
     - metatag
     - path
     - text
+third_party_settings:
+  field_group:
+    group_pricing:
+      children:
+        - field_ub_price_volunteer
+        - field_ub_price
+        - field_ub_price_addinfo
+      parent_name: ''
+      weight: 4
+      format_type: details
+      format_settings:
+        id: group_pricing
+        classes: ''
+        open: false
+        required_fields: true
+      label: Pricing
+    group_geographical_areas_covered:
+      children:
+        - field_ub_counties
+        - field_district
+        - field_ub_all_ni
+      parent_name: ''
+      weight: 5
+      format_type: details
+      format_settings:
+        id: group_geo_areas
+        classes: ''
+        open: false
+        required_fields: true
+      label: 'Geographical areas covered'
+    group_contact_details:
+      children:
+        - field_ub_contact
+        - field_location
+        - field_address
+        - field_contact_phone
+        - field_email_address
+        - field_contact_website
+      parent_name: ''
+      weight: 6
+      format_type: details
+      format_settings:
+        id: group_contact_info
+        classes: ''
+        open: false
+        required_fields: true
+      label: 'Contact details'
 id: node.umbrella_body.default
 targetEntityType: node
 bundle: umbrella_body
@@ -51,14 +99,14 @@ content:
     settings: {  }
     third_party_settings: {  }
   field_address:
-    weight: 11
+    weight: 9
     settings: {  }
     third_party_settings: {  }
     type: address_default
     region: content
   field_contact_phone:
     type: string_textfield
-    weight: 17
+    weight: 10
     region: content
     settings:
       size: 60
@@ -66,7 +114,7 @@ content:
     third_party_settings: {  }
   field_contact_website:
     type: link_default
-    weight: 16
+    weight: 12
     region: content
     settings:
       placeholder_url: ''
@@ -74,13 +122,13 @@ content:
     third_party_settings: {  }
   field_district:
     type: options_select
-    weight: 8
+    weight: 7
     region: content
     settings: {  }
     third_party_settings: {  }
   field_email_address:
     type: email_default
-    weight: 15
+    weight: 11
     region: content
     settings:
       size: 60
@@ -95,7 +143,7 @@ content:
       placeholder_title: ''
     third_party_settings: {  }
   field_location:
-    weight: 18
+    weight: 8
     settings:
       default_longitude: ''
       default_latitude: ''
@@ -137,14 +185,14 @@ content:
     region: content
   field_ub_all_ni:
     type: boolean_checkbox
-    weight: 9
+    weight: 8
     region: content
     settings:
       display_label: true
     third_party_settings: {  }
   field_ub_contact:
     type: string_textfield
-    weight: 10
+    weight: 7
     region: content
     settings:
       size: 60
@@ -152,7 +200,7 @@ content:
     third_party_settings: {  }
   field_ub_counties:
     type: options_select
-    weight: 7
+    weight: 6
     region: content
     settings: {  }
     third_party_settings: {  }
