@@ -97,35 +97,35 @@ content:
   field_location:
     weight: 18
     settings:
-      populate_address_field: ''
-      target_address_field: null
-      explicite_actions_address_field: ''
-      default_longitude: null
-      default_latitude: null
-      auto_client_location: ''
-      auto_client_location_marker: ''
-      allow_override_map_settings: 0
+      default_longitude: ''
+      default_latitude: ''
+      populate_address_field: '1'
+      target_address_field: field_address
       google_map_settings:
+        height: 400px
+        width: 100%
         type: ROADMAP
         zoom: '10'
-        minZoom: 0
         maxZoom: 18
-        rotateControl: 0
+        minZoom: 0
         mapTypeControl: 1
         streetViewControl: 1
         zoomControl: 1
-        fullscreenControl: 0
         scrollwheel: 1
-        disableDoubleClickZoom: 0
+        gestureHandling: auto
         draggable: 1
-        height: 400px
-        width: 100%
+        style: ''
         info_auto_display: 1
         marker_icon_path: ''
         disableAutoPan: 1
-        style: ''
+        rotateControl: 0
+        fullscreenControl: 0
         preferScrollingToZooming: 0
-        gestureHandling: auto
+        disableDoubleClickZoom: 0
+      auto_client_location: '0'
+      auto_client_location_marker: '0'
+      explicite_actions_address_field: '0'
+      allow_override_map_settings: 0
     third_party_settings: {  }
     type: geolocation_googlegeocoder
     region: content
