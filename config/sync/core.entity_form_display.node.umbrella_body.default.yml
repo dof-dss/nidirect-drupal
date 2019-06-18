@@ -4,19 +4,13 @@ status: true
 dependencies:
   config:
     - field.field.node.umbrella_body.body
-    - field.field.node.umbrella_body.field_contact_address_01
-    - field.field.node.umbrella_body.field_contact_address_02
-    - field.field.node.umbrella_body.field_contact_address_03
-    - field.field.node.umbrella_body.field_contact_address_04
-    - field.field.node.umbrella_body.field_contact_address_05
+    - field.field.node.umbrella_body.field_address
     - field.field.node.umbrella_body.field_contact_phone
-    - field.field.node.umbrella_body.field_contact_postcode
-    - field.field.node.umbrella_body.field_contact_town_city
     - field.field.node.umbrella_body.field_contact_website
-    - field.field.node.umbrella_body.field_county
     - field.field.node.umbrella_body.field_district
     - field.field.node.umbrella_body.field_email_address
     - field.field.node.umbrella_body.field_livelink_url
+    - field.field.node.umbrella_body.field_location
     - field.field.node.umbrella_body.field_meta_tags
     - field.field.node.umbrella_body.field_ub_all_ni
     - field.field.node.umbrella_body.field_ub_contact
@@ -29,8 +23,10 @@ dependencies:
     - field.field.node.umbrella_body.field_ub_services
     - node.type.umbrella_body
   module:
+    - address
     - datetime
     - field_group
+    - geolocation
     - link
     - metatag
     - path
@@ -68,17 +64,11 @@ third_party_settings:
     group_contact_details:
       children:
         - field_ub_contact
-        - field_contact_address_01
-        - field_contact_address_02
-        - field_contact_address_03
-        - field_contact_address_04
-        - field_contact_address_05
-        - field_contact_town_city
-        - field_county
-        - field_contact_postcode
+        - field_location
+        - field_address
+        - field_contact_phone
         - field_email_address
         - field_contact_website
-        - field_contact_phone
       parent_name: ''
       weight: 6
       format_type: details
@@ -108,23 +98,13 @@ content:
     region: content
     settings: {  }
     third_party_settings: {  }
-  field_contact_address_01:
-    type: string_textfield
-    weight: 8
-    region: content
-    settings:
-      size: 60
-      placeholder: ''
-    third_party_settings: {  }
-  field_contact_address_02:
-    type: string_textfield
+  field_address:
     weight: 9
-    region: content
-    settings:
-      size: 60
-      placeholder: ''
+    settings: {  }
     third_party_settings: {  }
-  field_contact_address_03:
+    type: address_default
+    region: content
+  field_contact_phone:
     type: string_textfield
     weight: 10
     region: content
@@ -132,59 +112,13 @@ content:
       size: 60
       placeholder: ''
     third_party_settings: {  }
-  field_contact_address_04:
-    type: string_textfield
-    weight: 11
-    region: content
-    settings:
-      size: 60
-      placeholder: ''
-    third_party_settings: {  }
-  field_contact_address_05:
-    type: string_textfield
-    weight: 12
-    region: content
-    settings:
-      size: 60
-      placeholder: ''
-    third_party_settings: {  }
-  field_contact_phone:
-    type: string_textfield
-    weight: 18
-    region: content
-    settings:
-      size: 60
-      placeholder: ''
-    third_party_settings: {  }
-  field_contact_postcode:
-    type: string_textfield
-    weight: 15
-    region: content
-    settings:
-      size: 60
-      placeholder: ''
-    third_party_settings: {  }
-  field_contact_town_city:
-    type: string_textfield
-    weight: 13
-    region: content
-    settings:
-      size: 60
-      placeholder: ''
-    third_party_settings: {  }
   field_contact_website:
     type: link_default
-    weight: 17
+    weight: 12
     region: content
     settings:
       placeholder_url: ''
       placeholder_title: ''
-    third_party_settings: {  }
-  field_county:
-    type: options_select
-    weight: 14
-    region: content
-    settings: {  }
     third_party_settings: {  }
   field_district:
     type: options_select
@@ -194,7 +128,7 @@ content:
     third_party_settings: {  }
   field_email_address:
     type: email_default
-    weight: 16
+    weight: 11
     region: content
     settings:
       size: 60
@@ -208,6 +142,41 @@ content:
       placeholder_url: ''
       placeholder_title: ''
     third_party_settings: {  }
+  field_location:
+    weight: 8
+    settings:
+      default_longitude: ''
+      default_latitude: ''
+      populate_address_field: '1'
+      target_address_field: field_address
+      google_map_settings:
+        height: 400px
+        width: 100%
+        type: ROADMAP
+        zoom: '10'
+        maxZoom: 18
+        minZoom: 0
+        mapTypeControl: 1
+        streetViewControl: 1
+        zoomControl: 1
+        scrollwheel: 1
+        gestureHandling: auto
+        draggable: 1
+        style: ''
+        info_auto_display: 1
+        marker_icon_path: ''
+        disableAutoPan: 1
+        rotateControl: 0
+        fullscreenControl: 0
+        preferScrollingToZooming: 0
+        disableDoubleClickZoom: 0
+      auto_client_location: '0'
+      auto_client_location_marker: '0'
+      explicite_actions_address_field: '0'
+      allow_override_map_settings: 0
+    third_party_settings: {  }
+    type: geolocation_googlegeocoder
+    region: content
   field_meta_tags:
     weight: 27
     settings: {  }
