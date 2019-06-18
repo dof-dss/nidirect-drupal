@@ -75,13 +75,10 @@ content:
       placeholder: ''
     third_party_settings: {  }
   field_contact_category:
-    type: entity_reference_autocomplete
-    weight: 4
+    type: options_select
+    weight: 1
     region: content
-    settings:
-      match_operator: CONTAINS
-      size: 60
-      placeholder: ''
+    settings: {  }
     third_party_settings: {  }
   field_contact_emp_svcs_no:
     type: string_textfield
@@ -101,7 +98,7 @@ content:
     third_party_settings: {  }
   field_contact_group:
     type: entity_reference_autocomplete
-    weight: 1
+    weight: 2
     region: content
     settings:
       match_operator: CONTAINS
@@ -225,7 +222,7 @@ content:
     region: content
   field_supplementary_contact:
     type: string_textfield
-    weight: 3
+    weight: 4
     region: content
     settings:
       size: 60
@@ -268,7 +265,7 @@ content:
     third_party_settings: {  }
   uid:
     type: entity_reference_autocomplete
-    weight: 2
+    weight: 3
     settings:
       match_operator: CONTAINS
       size: 60

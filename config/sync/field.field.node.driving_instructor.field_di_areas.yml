@@ -5,6 +5,7 @@ dependencies:
   config:
     - field.storage.node.field_di_areas
     - node.type.driving_instructor
+    - taxonomy.vocabulary.ni_postcodes
 id: node.driving_instructor.field_di_areas
 field_name: field_di_areas
 entity_type: node
@@ -17,5 +18,12 @@ default_value: {  }
 default_value_callback: ''
 settings:
   handler: 'default:taxonomy_term'
-  handler_settings: {  }
+  handler_settings:
+    target_bundles:
+      ni_postcodes: ni_postcodes
+    sort:
+      field: name
+      direction: asc
+    auto_create: false
+    auto_create_bundle: ''
 field_type: entity_reference
