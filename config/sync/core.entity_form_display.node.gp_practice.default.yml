@@ -20,8 +20,8 @@ dependencies:
     - node.type.gp_practice
   module:
     - address
-    - geolocation
     - field_group
+    - geolocation
     - link
     - metatag
     - path
@@ -50,10 +50,8 @@ third_party_settings:
       children:
         - field_gp_practice_website
         - field_contact_phone
-        - field_contact_address_01
-        - field_contact_address_02
-        - field_contact_town_city
-        - field_contact_postcode
+        - field_address
+        - field_location
       parent_name: ''
       weight: 1
       format_type: details
@@ -101,7 +99,7 @@ content:
     third_party_settings: {  }
   field_address:
     type: address_default
-    weight: 6
+    weight: 3
     region: content
     settings: {  }
     third_party_settings: {  }
@@ -227,7 +225,7 @@ content:
     third_party_settings: {  }
   field_location:
     type: geolocation_googlegeocoder
-    weight: 9
+    weight: 4
     region: content
     settings:
       default_longitude: ''
@@ -239,25 +237,25 @@ content:
         width: 100%
         type: ROADMAP
         zoom: '10'
-        maxZoom: '18'
-        minZoom: '0'
-        mapTypeControl: '1'
-        streetViewControl: '1'
-        zoomControl: '1'
-        scrollwheel: '1'
+        maxZoom: 18
+        minZoom: 0
+        mapTypeControl: 1
+        streetViewControl: 1
+        zoomControl: 1
+        scrollwheel: 1
         gestureHandling: auto
-        draggable: '1'
+        draggable: 1
         style: ''
-        info_auto_display: '1'
+        info_auto_display: 1
         marker_icon_path: ''
-        disableAutoPan: '1'
+        disableAutoPan: 1
         rotateControl: 0
         fullscreenControl: 0
         preferScrollingToZooming: 0
         disableDoubleClickZoom: 0
-      auto_client_location: 0
-      auto_client_location_marker: 0
-      explicite_actions_address_field: 0
+      auto_client_location: '0'
+      auto_client_location_marker: '0'
+      explicite_actions_address_field: '0'
       allow_override_map_settings: 0
     third_party_settings: {  }
   field_meta_tags:
