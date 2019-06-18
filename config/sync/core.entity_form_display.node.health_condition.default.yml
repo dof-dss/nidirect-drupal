@@ -35,12 +35,34 @@ dependencies:
     - node.type.health_condition
   module:
     - datetime
+    - field_group
     - image
     - link
     - metatag
     - path
     - shs
     - text
+third_party_settings:
+  field_group:
+    group_classification_information:
+      children:
+        - field_hc_body_location
+        - field_hc_body_system
+        - field_hc_condition_type
+        - field_hc_primary_symptom_1
+        - field_hc_primary_symptom_2
+        - field_hc_primary_symptom_3
+        - field_hc_primary_symptom_4
+        - field_hc_secondary_symptoms
+      parent_name: ''
+      weight: 19
+      format_type: details
+      format_settings:
+        id: group_hc_classification
+        classes: ''
+        open: false
+        required_fields: true
+      label: 'Classification information'
 id: node.health_condition.default
 targetEntityType: node
 bundle: health_condition
@@ -57,7 +79,7 @@ content:
     region: content
   created:
     type: datetime_timestamp
-    weight: 28
+    weight: 29
     region: content
     settings: {  }
     third_party_settings: {  }
@@ -94,7 +116,7 @@ content:
     third_party_settings: {  }
   field_hc_body_location:
     type: entity_reference_autocomplete
-    weight: 19
+    weight: 20
     region: content
     settings:
       match_operator: CONTAINS
@@ -103,7 +125,7 @@ content:
     third_party_settings: {  }
   field_hc_body_system:
     type: entity_reference_autocomplete
-    weight: 20
+    weight: 21
     region: content
     settings:
       match_operator: CONTAINS
@@ -112,7 +134,7 @@ content:
     third_party_settings: {  }
   field_hc_condition_type:
     type: entity_reference_autocomplete
-    weight: 21
+    weight: 22
     region: content
     settings:
       match_operator: CONTAINS
@@ -127,7 +149,7 @@ content:
     third_party_settings: {  }
   field_hc_primary_symptom_1:
     type: entity_reference_autocomplete
-    weight: 22
+    weight: 23
     region: content
     settings:
       match_operator: CONTAINS
@@ -136,7 +158,7 @@ content:
     third_party_settings: {  }
   field_hc_primary_symptom_2:
     type: entity_reference_autocomplete
-    weight: 23
+    weight: 24
     region: content
     settings:
       match_operator: CONTAINS
@@ -145,7 +167,7 @@ content:
     third_party_settings: {  }
   field_hc_primary_symptom_3:
     type: entity_reference_autocomplete
-    weight: 24
+    weight: 25
     region: content
     settings:
       match_operator: CONTAINS
@@ -154,7 +176,7 @@ content:
     third_party_settings: {  }
   field_hc_primary_symptom_4:
     type: entity_reference_autocomplete
-    weight: 25
+    weight: 26
     region: content
     settings:
       match_operator: CONTAINS
@@ -163,7 +185,7 @@ content:
     third_party_settings: {  }
   field_hc_secondary_symptoms:
     type: entity_reference_autocomplete
-    weight: 26
+    weight: 27
     region: content
     settings:
       match_operator: CONTAINS
@@ -183,7 +205,7 @@ content:
     settings: {  }
     third_party_settings: {  }
   field_meta_tags:
-    weight: 33
+    weight: 34
     settings: {  }
     third_party_settings: {  }
     type: metatag_firehose
@@ -272,7 +294,7 @@ content:
     third_party_settings: {  }
   path:
     type: path
-    weight: 31
+    weight: 32
     region: content
     settings: {  }
     third_party_settings: {  }
@@ -280,21 +302,21 @@ content:
     type: boolean_checkbox
     settings:
       display_label: true
-    weight: 29
+    weight: 30
     region: content
     third_party_settings: {  }
   status:
     type: boolean_checkbox
     settings:
       display_label: true
-    weight: 32
+    weight: 33
     region: content
     third_party_settings: {  }
   sticky:
     type: boolean_checkbox
     settings:
       display_label: true
-    weight: 30
+    weight: 31
     region: content
     third_party_settings: {  }
   title:
@@ -307,7 +329,7 @@ content:
     third_party_settings: {  }
   uid:
     type: entity_reference_autocomplete
-    weight: 27
+    weight: 28
     settings:
       match_operator: CONTAINS
       size: 60
