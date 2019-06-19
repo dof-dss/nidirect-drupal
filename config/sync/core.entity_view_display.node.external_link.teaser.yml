@@ -1,27 +1,21 @@
 uuid: 447943b0-89f3-40c2-908a-92ecf776499f
 langcode: en
-status: true
+status: false
 dependencies:
   config:
     - core.entity_view_mode.node.teaser
-    - field.field.node.external_link.body
+    - field.field.node.external_link.field_link
+    - field.field.node.external_link.field_site_themes
+    - field.field.node.external_link.field_subtheme
+    - field.field.node.external_link.field_top_level_theme
     - node.type.external_link
   module:
-    - text
     - user
 id: node.external_link.teaser
 targetEntityType: node
 bundle: external_link
 mode: teaser
 content:
-  body:
-    label: hidden
-    type: text_summary_or_trimmed
-    weight: 101
-    settings:
-      trim_length: 600
-    third_party_settings: {  }
-    region: content
   links:
     weight: 100
     settings: {  }
@@ -29,9 +23,6 @@ content:
     region: content
 hidden:
   field_link: true
-  field_meta_tags: true
   field_site_themes: true
   field_subtheme: true
-  field_summary: true
-  field_teaser: true
   field_top_level_theme: true
