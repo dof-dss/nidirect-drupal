@@ -36,12 +36,34 @@ dependencies:
   module:
     - chosen_field
     - datetime
+    - field_group
     - image
     - link
     - metatag
     - path
     - shs
     - text
+third_party_settings:
+  field_group:
+    group_classification_information:
+      children:
+        - field_hc_body_location
+        - field_hc_body_system
+        - field_hc_condition_type
+        - field_hc_primary_symptom_1
+        - field_hc_primary_symptom_2
+        - field_hc_primary_symptom_3
+        - field_hc_primary_symptom_4
+        - field_hc_secondary_symptoms
+      parent_name: ''
+      weight: 19
+      format_type: details
+      format_settings:
+        id: group_hc_classification
+        classes: ''
+        open: false
+        required_fields: true
+      label: 'Classification information'
 id: node.health_condition.default
 targetEntityType: node
 bundle: health_condition
@@ -58,7 +80,7 @@ content:
     region: content
   created:
     type: datetime_timestamp
-    weight: 28
+    weight: 29
     region: content
     settings: {  }
     third_party_settings: {  }
@@ -95,7 +117,7 @@ content:
     third_party_settings: {  }
   field_hc_body_location:
     type: entity_reference_autocomplete
-    weight: 19
+    weight: 20
     region: content
     settings:
       match_operator: CONTAINS
@@ -104,7 +126,7 @@ content:
     third_party_settings: {  }
   field_hc_body_system:
     type: entity_reference_autocomplete
-    weight: 20
+    weight: 21
     region: content
     settings:
       match_operator: CONTAINS
@@ -113,24 +135,6 @@ content:
     third_party_settings: {  }
   field_hc_condition_type:
     type: entity_reference_autocomplete
-    weight: 21
-    region: content
-    settings:
-      match_operator: CONTAINS
-      size: 60
-      placeholder: ''
-    third_party_settings: {  }
-  field_hc_info_source:
-    type: entity_reference_autocomplete
-    weight: 14
-    region: content
-    settings:
-      match_operator: CONTAINS
-      size: 60
-      placeholder: ''
-    third_party_settings: {  }
-  field_hc_primary_symptom_1:
-    type: entity_reference_autocomplete
     weight: 22
     region: content
     settings:
@@ -138,7 +142,13 @@ content:
       size: 60
       placeholder: ''
     third_party_settings: {  }
-  field_hc_primary_symptom_2:
+  field_hc_info_source:
+    type: options_buttons
+    weight: 14
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_hc_primary_symptom_1:
     type: entity_reference_autocomplete
     weight: 23
     region: content
@@ -147,7 +157,7 @@ content:
       size: 60
       placeholder: ''
     third_party_settings: {  }
-  field_hc_primary_symptom_3:
+  field_hc_primary_symptom_2:
     type: entity_reference_autocomplete
     weight: 24
     region: content
@@ -156,7 +166,7 @@ content:
       size: 60
       placeholder: ''
     third_party_settings: {  }
-  field_hc_primary_symptom_4:
+  field_hc_primary_symptom_3:
     type: entity_reference_autocomplete
     weight: 25
     region: content
@@ -165,9 +175,18 @@ content:
       size: 60
       placeholder: ''
     third_party_settings: {  }
-  field_hc_secondary_symptoms:
+  field_hc_primary_symptom_4:
     type: entity_reference_autocomplete
     weight: 26
+    region: content
+    settings:
+      match_operator: CONTAINS
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+  field_hc_secondary_symptoms:
+    type: entity_reference_autocomplete
+    weight: 27
     region: content
     settings:
       match_operator: CONTAINS
@@ -181,34 +200,31 @@ content:
     settings: {  }
     third_party_settings: {  }
   field_last_review_date:
-    type: datetime_datelist
+    type: datetime_default
     weight: 17
     region: content
-    settings:
-      increment: 15
-      date_order: YMD
-      time_type: '24'
+    settings: {  }
     third_party_settings: {  }
   field_meta_tags:
-    weight: 33
+    weight: 34
     settings: {  }
     third_party_settings: {  }
     type: metatag_firehose
     region: content
   field_next_review_date:
-    type: datetime_datelist
+    type: datetime_default
     weight: 18
     region: content
-    settings:
-      increment: 15
-      date_order: YMD
-      time_type: '24'
+    settings: {  }
     third_party_settings: {  }
   field_parent_condition:
-    type: options_buttons
+    type: entity_reference_autocomplete
     weight: 3
     region: content
-    settings: {  }
+    settings:
+      match_operator: CONTAINS
+      size: 60
+      placeholder: ''
     third_party_settings: {  }
   field_photo:
     type: image_image
@@ -225,10 +241,13 @@ content:
     settings: {  }
     third_party_settings: {  }
   field_related_conditions:
-    type: options_buttons
+    type: entity_reference_autocomplete
     weight: 4
     region: content
-    settings: {  }
+    settings:
+      match_operator: CONTAINS
+      size: 60
+      placeholder: ''
     third_party_settings: {  }
   field_related_info:
     type: link_default
@@ -276,7 +295,7 @@ content:
     third_party_settings: {  }
   path:
     type: path
-    weight: 31
+    weight: 32
     region: content
     settings: {  }
     third_party_settings: {  }
@@ -284,21 +303,21 @@ content:
     type: boolean_checkbox
     settings:
       display_label: true
-    weight: 29
+    weight: 30
     region: content
     third_party_settings: {  }
   status:
     type: boolean_checkbox
     settings:
       display_label: true
-    weight: 32
+    weight: 33
     region: content
     third_party_settings: {  }
   sticky:
     type: boolean_checkbox
     settings:
       display_label: true
-    weight: 30
+    weight: 31
     region: content
     third_party_settings: {  }
   title:
@@ -311,7 +330,7 @@ content:
     third_party_settings: {  }
   uid:
     type: entity_reference_autocomplete
-    weight: 27
+    weight: 28
     settings:
       match_operator: CONTAINS
       size: 60

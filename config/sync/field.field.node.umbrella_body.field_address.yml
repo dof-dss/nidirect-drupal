@@ -1,0 +1,47 @@
+uuid: 89eb7a67-40a2-4cc6-8480-3c21cbfe5010
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_address
+    - node.type.umbrella_body
+  module:
+    - address
+id: node.umbrella_body.field_address
+field_name: field_address
+entity_type: node
+bundle: umbrella_body
+label: Address
+description: ''
+required: false
+translatable: true
+default_value:
+  -
+    langcode: ''
+    country_code: GB
+    administrative_area: null
+    locality: ''
+    dependent_locality: null
+    postal_code: ''
+    sorting_code: null
+    address_line1: ''
+    address_line2: ''
+    organization: ''
+    given_name: ''
+    additional_name: null
+    family_name: ''
+default_value_callback: ''
+settings:
+  available_countries: {  }
+  langcode_override: ''
+  field_overrides:
+    givenName:
+      override: hidden
+    additionalName:
+      override: hidden
+    familyName:
+      override: hidden
+    organization:
+      override: optional
+  fields: {  }
+field_type: address
