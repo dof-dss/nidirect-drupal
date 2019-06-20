@@ -17,6 +17,21 @@
         {
             "type": "vcs",
             "url": "git@svegit01.thestables.net:dss/nidirect-d8-mig-mods"
+        },
+        {
+            "type": "package",
+            "package": {
+              "name": "harvesthq/chosen",
+              "version": "1.8.2",
+              "type": "drupal-library",
+              "dist": {
+                "url": "https://github.com/harvesthq/chosen/releases/download/v1.8.2/chosen_v1.8.2.zip",
+                "type": "zip"
+              },
+              "require": {
+                  "composer/installers": "^1.2.0"
+              }
+            }
         }
     ],
     "require": {
@@ -47,6 +62,7 @@
         "drupal/token": "^1.5",
         "drupal/traffic_light_rating": "1.x-dev",
         "drush/drush": "^9.0.0",
+        "harvesthq/chosen": "^1.8",
         "vlucas/phpdotenv": "^2.4",
         "webflo/drupal-finder": "^1.0.0",
         "webmozart/path-util": "^2.3",
