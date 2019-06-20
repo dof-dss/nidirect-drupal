@@ -15,6 +15,7 @@ dependencies:
     - field.field.node.driving_instructor.field_meta_tags
     - node.type.driving_instructor
   module:
+    - chosen_field
     - link
     - metatag
     - path
@@ -54,22 +55,16 @@ content:
       placeholder: ''
     third_party_settings: {  }
   field_di_areas:
-    type: entity_reference_autocomplete
-    weight: 9
-    region: content
-    settings:
-      match_operator: CONTAINS
-      size: 60
-      placeholder: ''
-    third_party_settings: {  }
-  field_di_categories:
-    type: entity_reference_autocomplete
+    type: options_buttons
     weight: 8
     region: content
-    settings:
-      match_operator: CONTAINS
-      size: 60
-      placeholder: ''
+    settings: {  }
+    third_party_settings: {  }
+  field_di_categories:
+    type: chosen_select
+    weight: 7
+    region: content
+    settings: {  }
     third_party_settings: {  }
   field_di_firstname:
     type: string_textfield
@@ -155,7 +150,7 @@ content:
     third_party_settings: {  }
   url_redirects:
     weight: 50
+    region: content
     settings: {  }
     third_party_settings: {  }
-    region: content
 hidden: {  }
