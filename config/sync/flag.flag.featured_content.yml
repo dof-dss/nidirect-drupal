@@ -1,0 +1,33 @@
+uuid: 42f7b2ef-ca19-4ac3-afa4-8af233b469f9
+langcode: en
+status: true
+dependencies:
+  module:
+    - node
+id: featured_content
+label: 'Featured content'
+bundles:
+  - application
+  - article
+  - health_condition
+  - news
+entity_type: node
+global: true
+weight: 0
+flag_short: 'Mark this content as being featured'
+flag_long: 'Check this box to indicate that this content should be featured and given higher prominence on listing pages.'
+flag_message: '[node:title] is now featured.'
+unflag_short: 'Un-mark this content as being featured'
+unflag_long: 'Check this box to indicate that this content should no longer be featured and given higher prominence on listing pages.'
+unflag_message: '[node:title] is no longer featured.'
+unflag_denied_text: ''
+flag_type: 'entity:node'
+link_type: ajax_link
+flagTypeConfig:
+  show_in_links: {  }
+  show_as_field: false
+  show_on_form: true
+  show_contextual_link: false
+  extra_permissions:
+    owner: '0'
+linkTypeConfig: {  }
