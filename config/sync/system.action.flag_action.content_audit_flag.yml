@@ -2,12 +2,14 @@ uuid: 5105e2d1-afbc-406f-90e9-229f8b70c7ef
 langcode: en
 status: true
 dependencies:
+  config:
+    - flag.flag.content_audit
   module:
     - flag
-id: flag_action.content_audit.flag
+id: flag_action.content_audit_flag
 label: 'Flag content for audit'
 type: node
-plugin: 'flag_action:content_audit.flag'
+plugin: 'flag_action:content_audit_flag'
 configuration:
   flag_id: content_audit
   flag_action: flag
