@@ -2,12 +2,14 @@ uuid: 0dc279c9-0c65-4d8e-9e72-d6536608c5a3
 langcode: en
 status: true
 dependencies:
+  config:
+    - flag.flag.featured_content
   module:
     - flag
-id: flag_action.featured_content.flag
+id: flag_action.featured_content_flag
 label: 'Mark this content as being featured'
 type: node
-plugin: 'flag_action:featured_content.flag'
+plugin: 'flag_action:featured_content_flag'
 configuration:
   flag_id: featured_content
   flag_action: flag

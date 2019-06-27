@@ -2,12 +2,14 @@ uuid: b478fb16-0132-48df-94fa-7eeb722c9b4a
 langcode: en
 status: true
 dependencies:
+  config:
+    - flag.flag.promote_to_all_pages
   module:
     - flag
-id: flag_action.promote_to_all_pages.flag
+id: flag_action.promote_to_all_pages_flag
 label: 'Mark this content to display on all pages'
 type: node
-plugin: 'flag_action:promote_to_all_pages.flag'
+plugin: 'flag_action:promote_to_all_pages_flag'
 configuration:
   flag_id: promote_to_all_pages
   flag_action: flag
