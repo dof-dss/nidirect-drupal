@@ -1,0 +1,29 @@
+uuid: 06e02123-41e6-43d4-bcd8-8bb4a34b887d
+langcode: en
+status: true
+dependencies:
+  module:
+    - taxonomy
+id: hide_theme
+label: 'Hide theme'
+bundles:
+  - site_themes
+entity_type: taxonomy_term
+global: true
+weight: 0
+flag_short: 'Hide this theme'
+flag_long: 'Check this box to hide this theme in views'
+flag_message: '[term:name] is now hidden'
+unflag_short: 'Un-hide this theme'
+unflag_long: 'Uncheck this box to make this theme visible in views'
+unflag_message: '[term:name] is now visible'
+unflag_denied_text: ''
+flag_type: 'entity:taxonomy_term'
+link_type: ajax_link
+flagTypeConfig:
+  show_in_links: {  }
+  show_as_field: false
+  show_on_form: true
+  show_contextual_link: false
+  extra_permissions: {  }
+linkTypeConfig: {  }
