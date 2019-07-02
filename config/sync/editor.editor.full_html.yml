@@ -18,14 +18,19 @@ settings:
           name: Formatting
           items:
             - Bold
-            - Italic
-            - Strike
             - '-'
+            - Blockquote
+            - Superscript
             - RemoveFormat
+        -
+          name: 'Block Formatting'
+          items:
+            - Format
+            - Table
         -
           name: Linking
           items:
-            - DrupalLink
+            - Linkit
             - DrupalUnlink
         -
           name: Lists
@@ -35,22 +40,30 @@ settings:
         -
           name: Media
           items:
-            - Blockquote
             - paragraphs_inline_entity_form
             - image_embed
         -
-          name: 'Block Formatting'
+          name: Tasks
           items:
-            - Format
+            - Undo
+            - Redo
         -
           name: Tools
           items:
+            - Cut
+            - Copy
+            - PasteText
+            - PasteFromWord
+            - SpecialChar
+            - Maximize
             - Source
   plugins:
     stylescombo:
       styles: ''
     language:
       language_list: un
+    linkit:
+      linkit_profile: default
 image_upload:
   status: true
   scheme: public
