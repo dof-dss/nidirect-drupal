@@ -1,12 +1,13 @@
-uuid: ecee6967-0ec5-4862-a692-725df3e54a74
+uuid: e4b07c91-da08-45fb-909d-054d07e8d55a
 langcode: en
 status: true
 dependencies:
   config:
     - core.entity_view_mode.paragraph.preview
     - entity_browser.browser.paragraph_items
+    - paragraphs.paragraphs_type.map
   content:
-    - 'file:file:988be8c5-5c90-4069-97d3-ba01b46f5473'
+    - 'file:file:79a84844-55c4-4f7f-867f-b50c978afa9b'
   module:
     - entity_embed
     - paragraphs
@@ -17,10 +18,11 @@ id: paragraphs_inline_entity_form
 type_id: entity
 type_settings:
   entity_type: paragraph
-  bundles: {  }
+  bundles:
+    - map
   display_plugins:
     - 'view_mode:paragraph.preview'
   entity_browser: paragraph_items
   entity_browser_settings:
     display_review: false
-icon_uuid: 988be8c5-5c90-4069-97d3-ba01b46f5473
+icon_uuid: 79a84844-55c4-4f7f-867f-b50c978afa9b
