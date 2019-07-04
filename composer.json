@@ -36,6 +36,10 @@
         {
             "type": "vcs",
             "url": "git@svegit01.thestables.net:dss/nidirect-site-modules.git"
+        },
+        {
+            "type": "vcs",
+            "url": "git@svegit01.thestables.net:dss/nidirect-d8-test-install-profile.git"
         }
     ],
     "require": {
@@ -74,6 +78,7 @@
         "drush/drush": "^9.0.0",
         "harvesthq/chosen": "^1.8",
         "nics/nidirect-site-modules": "dev-development",
+        "nics/nidirect-d8-test-install-profile": "dev-development",
         "vlucas/phpdotenv": "^2.4",
         "webflo/drupal-finder": "^1.0.0",
         "webmozart/path-util": "^2.3",
@@ -141,6 +146,9 @@
             ],
             "web/modules/migrate/{$name}": [
                 "nics/nidirect-migrations"
+            ],
+            "web/profiles/custom/{$name}": [
+                "nics/nidirect-d8-test-install-profile"
             ],
             "web/modules/contrib/{$name}": [
                 "type:drupal-module"
