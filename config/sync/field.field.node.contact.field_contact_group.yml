@@ -4,11 +4,11 @@ status: true
 dependencies:
   config:
     - field.storage.node.field_contact_group
-    - node.type.nidirect_contact
-id: node.nidirect_contact.field_contact_group
+    - node.type.contact
+id: node.contact.field_contact_group
 field_name: field_contact_group
 entity_type: node
-bundle: nidirect_contact
+bundle: contact
 label: 'Parent contact'
 description: 'Enter the name of a parent contact to group this point of contact under.'
 required: false
@@ -19,7 +19,7 @@ settings:
   handler: 'default:node'
   handler_settings:
     target_bundles:
-      nidirect_contact: nidirect_contact
+      contact: contact
     sort:
       field: _none
     auto_create: false

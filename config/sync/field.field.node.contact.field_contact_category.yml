@@ -4,11 +4,12 @@ status: true
 dependencies:
   config:
     - field.storage.node.field_contact_category
-    - node.type.nidirect_contact
-id: node.nidirect_contact.field_contact_category
+    - node.type.contact
+    - taxonomy.vocabulary.contact_categories
+id: node.contact.field_contact_category
 field_name: field_contact_category
 entity_type: node
-bundle: nidirect_contact
+bundle: contact
 label: Category
 description: 'If the contact belongs to one of the Nidirect predefined categories, select it from the list.'
 required: false
@@ -17,5 +18,12 @@ default_value: {  }
 default_value_callback: ''
 settings:
   handler: 'default:taxonomy_term'
-  handler_settings: {  }
+  handler_settings:
+    target_bundles:
+      contact_categories: contact_categories
+    sort:
+      field: name
+      direction: asc
+    auto_create: false
+    auto_create_bundle: ''
 field_type: entity_reference

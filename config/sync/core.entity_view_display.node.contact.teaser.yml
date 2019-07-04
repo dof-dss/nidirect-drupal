@@ -4,14 +4,14 @@ status: true
 dependencies:
   config:
     - core.entity_view_mode.node.teaser
-    - field.field.node.nidirect_contact.body
-    - node.type.nidirect_contact
+    - field.field.node.contact.body
+    - node.type.contact
   module:
     - text
     - user
-id: node.nidirect_contact.teaser
+id: node.contact.teaser
 targetEntityType: node
-bundle: nidirect_contact
+bundle: contact
 mode: teaser
 content:
   body:
@@ -28,6 +28,7 @@ content:
     third_party_settings: {  }
     region: content
 hidden:
+  field_address: true
   field_contact_additional_info: true
   field_contact_address_01: true
   field_contact_address_02: true
@@ -46,8 +47,10 @@ hidden:
   field_contact_town_city: true
   field_contact_website: true
   field_email_address: true
+  field_enable_toc: true
   field_livelink_id: true
   field_livelink_url: true
+  field_location: true
   field_meta_tags: true
   field_site_themes: true
   field_summary: true
