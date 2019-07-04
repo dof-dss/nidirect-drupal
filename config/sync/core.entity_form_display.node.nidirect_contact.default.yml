@@ -26,12 +26,54 @@ dependencies:
     - node.type.nidirect_contact
   module:
     - address
+    - field_group
     - geolocation
     - link
     - metatag
     - path
     - shs
     - text
+third_party_settings:
+  field_group:
+    group_general:
+      children:
+        - field_supplementary_contact
+        - field_summary
+        - body
+        - field_contact_additional_info
+      parent_name: ''
+      weight: -1
+      format_type: details
+      format_settings:
+        open: false
+        required_fields: true
+        classes: ''
+        id: ''
+      label: General
+    group_detail:
+      children:
+        - field_contact_category
+        - field_contact_group
+        - field_location
+        - field_address
+        - field_email_address
+        - field_contact_website
+        - field_contact_phone
+        - field_contact_benefits_no
+        - field_contact_emp_svcs_no
+        - field_contact_fax
+        - field_contact_sms
+        - field_contact_hours
+        - field_site_themes
+      parent_name: ''
+      weight: 0
+      format_type: details
+      format_settings:
+        open: false
+        required_fields: true
+        classes: ''
+        id: ''
+      label: Detail
 id: node.nidirect_contact.default
 targetEntityType: node
 bundle: nidirect_contact
@@ -145,22 +187,6 @@ content:
       size: 60
       placeholder: ''
     third_party_settings: {  }
-  field_livelink_id:
-    type: string_textfield
-    weight: 20
-    region: content
-    settings:
-      size: 60
-      placeholder: ''
-    third_party_settings: {  }
-  field_livelink_url:
-    type: link_default
-    weight: 19
-    region: content
-    settings:
-      placeholder_url: ''
-      placeholder_title: ''
-    third_party_settings: {  }
   field_location:
     weight: 7
     settings:
@@ -228,6 +254,11 @@ content:
       size: 60
       placeholder: ''
     third_party_settings: {  }
+  flag:
+    weight: 10
+    region: content
+    settings: {  }
+    third_party_settings: {  }
   path:
     type: path
     weight: 24
@@ -257,7 +288,7 @@ content:
     third_party_settings: {  }
   title:
     type: string_textfield
-    weight: 0
+    weight: -5
     region: content
     settings:
       size: 60
@@ -277,4 +308,6 @@ content:
     region: content
     settings: {  }
     third_party_settings: {  }
-hidden: {  }
+hidden:
+  field_livelink_id: true
+  field_livelink_url: true
