@@ -4,7 +4,6 @@ status: true
 dependencies:
   config:
     - field.storage.node.field_contact_group
-    - node.type.contact
     - node.type.nidirect_contact
 id: node.nidirect_contact.field_contact_group
 field_name: field_contact_group
@@ -19,12 +18,10 @@ default_value_callback: ''
 settings:
   handler: 'default:node'
   handler_settings:
-    behaviors:
-      views-select-list:
-        status: 0
+    target_bundles:
+      nidirect_contact: nidirect_contact
     sort:
       field: _none
-      direction: ASC
-    target_bundles:
-      contact: contact
+    auto_create: false
+    auto_create_bundle: ''
 field_type: entity_reference
