@@ -4,6 +4,10 @@ Drupal source code for the NIDirect website: https://www.nidirect.gov.uk.
 
 Drupal 8 install based on drupal-composer/drupal-project with that project set at the upstream remote.
 
+## Updating Core
+
+Follow the instructions at: https://github.com/drupal-composer/drupal-project
+
 ## Getting started
 
 For local development, please review the [README file for the local development framework](https://svegit01.thestables.net/dss/lando-d7-to-d8-migrate/blob/development/README.md).
