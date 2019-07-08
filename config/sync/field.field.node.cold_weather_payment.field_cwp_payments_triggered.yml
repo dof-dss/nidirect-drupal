@@ -1,0 +1,25 @@
+uuid: b5d04e0a-98bb-4a72-89d2-b46280d165a0
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_cwp_payments_triggered
+    - node.type.cold_weather_payment
+  module:
+    - nidirect_cold_weather_payments
+id: node.cold_weather_payment.field_cwp_payments_triggered
+field_name: field_cwp_payments_triggered
+entity_type: node
+bundle: cold_weather_payment
+label: 'Payments triggered'
+description: ''
+required: false
+translatable: false
+default_value:
+  -
+    date_start: ''
+    date_end: ''
+    stations: ''
+default_value_callback: ''
+settings: {  }
+field_type: nidirect_cold_weather_period
