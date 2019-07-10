@@ -4,8 +4,6 @@ status: true
 dependencies:
   config:
     - core.entity_view_mode.node.full
-    - field.field.node.recipe.field_livelink_id
-    - field.field.node.recipe.field_livelink_url
     - field.field.node.recipe.field_meta_tags
     - field.field.node.recipe.field_recipe_allergens
     - field.field.node.recipe.field_recipe_allergy_advice
@@ -36,26 +34,6 @@ targetEntityType: node
 bundle: recipe
 mode: full
 content:
-  field_livelink_id:
-    type: string
-    weight: 10
-    region: content
-    label: above
-    settings:
-      link_to_entity: false
-    third_party_settings: {  }
-  field_livelink_url:
-    type: link
-    weight: 9
-    region: content
-    label: above
-    settings:
-      trim_length: 80
-      url_only: false
-      url_plain: false
-      rel: ''
-      target: ''
-    third_party_settings: {  }
   field_meta_tags:
     weight: 17
     label: above
