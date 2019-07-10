@@ -3,17 +3,37 @@ langcode: en
 status: true
 dependencies:
   config:
-    - field.field.node.cold_weather_payment.field_app_payment_period
+    - field.field.node.cold_weather_payment.field_cwp_payments_period
+    - field.field.node.cold_weather_payment.field_cwp_payments_triggered
     - field.field.node.cold_weather_payment.field_meta_tags
     - node.type.cold_weather_payment
   module:
+    - datetime_range
     - metatag
+    - nidirect_cold_weather_payments
     - user
 id: node.cold_weather_payment.default
 targetEntityType: node
 bundle: cold_weather_payment
 mode: default
 content:
+  field_cwp_payments_period:
+    weight: 102
+    label: above
+    settings:
+      separator: '-'
+      format_type: medium
+      timezone_override: ''
+    third_party_settings: {  }
+    type: daterange_default
+    region: content
+  field_cwp_payments_triggered:
+    weight: 103
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    type: nidirect_cold_weather_period
+    region: content
   field_meta_tags:
     weight: 101
     label: above
@@ -26,5 +46,4 @@ content:
     settings: {  }
     third_party_settings: {  }
     region: content
-hidden:
-  field_app_payment_period: true
+hidden: {  }
