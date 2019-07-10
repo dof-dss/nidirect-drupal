@@ -1,0 +1,217 @@
+uuid: 12c565dd-7053-4406-b05e-cfea7ed5664e
+langcode: en
+status: true
+dependencies:
+  module:
+    - search_api_solr
+    - node
+    - search_api
+  config:
+    - field.storage.node.field_alternative_title
+    - field.storage.node.body
+    - field.storage.node.field_hc_body_location
+    - field.storage.node.field_hc_condition_type
+    - field.storage.node.field_index_letter
+    - field.storage.node.field_hc_primary_symptom_1
+    - field.storage.node.field_hc_primary_symptom_2
+    - field.storage.node.field_hc_primary_symptom_3
+    - field.storage.node.field_hc_primary_symptom_4
+    - field.storage.node.field_hc_secondary_symptoms
+    - field.storage.node.field_summary
+    - field.storage.node.field_teaser
+    - search_api.server.health_conditions
+third_party_settings:
+  search_api_solr:
+    finalize: false
+    commit_before_finalize: false
+    commit_after_finalize: false
+    multilingual:
+      limit_to_content_language: false
+      include_language_independent: true
+    highlighter:
+      maxAnalyzedChars: 51200
+      fragmenter: gap
+      regex:
+        slop: 0.5
+        pattern: blank
+        maxAnalyzedChars: 10000
+      usePhraseHighlighter: true
+      highlightMultiTerm: true
+      preserveMulti: false
+      highlight:
+        mergeContiguous: false
+        requireFieldMatch: false
+        snippets: 3
+        fragsize: 0
+    mlt:
+      mintf: 1
+      mindf: 1
+      maxdf: 0
+      maxdfpct: 0
+      minwl: 0
+      maxwl: 0
+      maxqt: 100
+      maxntp: 2000
+      boost: false
+      interestingTerms: none
+    advanced:
+      index_prefix: ''
+      collection: ''
+      timezone: ''
+id: health_conditions
+name: 'Health conditions'
+description: ''
+read_only: false
+field_settings:
+  body:
+    label: Body
+    datasource_id: 'entity:node'
+    property_path: body
+    type: text
+    dependencies:
+      config:
+        - field.storage.node.body
+  field_alternative_title:
+    label: 'Alternative title'
+    datasource_id: 'entity:node'
+    property_path: field_alternative_title
+    type: string
+    dependencies:
+      config:
+        - field.storage.node.field_alternative_title
+  field_hc_body_location:
+    label: 'Body location'
+    datasource_id: 'entity:node'
+    property_path: field_hc_body_location
+    type: integer
+    dependencies:
+      config:
+        - field.storage.node.field_hc_body_location
+  field_hc_body_location_1:
+    label: 'Body location'
+    datasource_id: 'entity:node'
+    property_path: field_hc_body_location
+    type: integer
+    dependencies:
+      config:
+        - field.storage.node.field_hc_body_location
+  field_hc_condition_type:
+    label: 'Condition type / disease process'
+    datasource_id: 'entity:node'
+    property_path: field_hc_condition_type
+    type: integer
+    dependencies:
+      config:
+        - field.storage.node.field_hc_condition_type
+  field_hc_condition_type_1:
+    label: 'Condition type / disease process'
+    datasource_id: 'entity:node'
+    property_path: field_hc_condition_type
+    type: integer
+    dependencies:
+      config:
+        - field.storage.node.field_hc_condition_type
+  field_hc_primary_symptom_1:
+    label: 'Primary symptom 1'
+    datasource_id: 'entity:node'
+    property_path: field_hc_primary_symptom_1
+    type: integer
+    dependencies:
+      config:
+        - field.storage.node.field_hc_primary_symptom_1
+  field_hc_primary_symptom_2:
+    label: 'Primary symptom 2'
+    datasource_id: 'entity:node'
+    property_path: field_hc_primary_symptom_2
+    type: integer
+    dependencies:
+      config:
+        - field.storage.node.field_hc_primary_symptom_2
+  field_hc_primary_symptom_3:
+    label: 'Primary symptom 3'
+    datasource_id: 'entity:node'
+    property_path: field_hc_primary_symptom_3
+    type: integer
+    dependencies:
+      config:
+        - field.storage.node.field_hc_primary_symptom_3
+  field_hc_primary_symptom_4:
+    label: 'Primary symptom 4'
+    datasource_id: 'entity:node'
+    property_path: field_hc_primary_symptom_4
+    type: integer
+    dependencies:
+      config:
+        - field.storage.node.field_hc_primary_symptom_4
+  field_hc_secondary_symptoms:
+    label: 'Secondary symptoms'
+    datasource_id: 'entity:node'
+    property_path: field_hc_secondary_symptoms
+    type: integer
+    dependencies:
+      config:
+        - field.storage.node.field_hc_secondary_symptoms
+  field_index_letter:
+    label: 'Index under'
+    datasource_id: 'entity:node'
+    property_path: field_index_letter
+    type: string
+    dependencies:
+      config:
+        - field.storage.node.field_index_letter
+  field_summary:
+    label: Summary
+    datasource_id: 'entity:node'
+    property_path: field_summary
+    type: text
+    dependencies:
+      config:
+        - field.storage.node.field_summary
+  field_teaser:
+    label: Teaser
+    datasource_id: 'entity:node'
+    property_path: field_teaser
+    type: string
+    dependencies:
+      config:
+        - field.storage.node.field_teaser
+  nid:
+    label: ID
+    datasource_id: 'entity:node'
+    property_path: nid
+    type: integer
+    dependencies:
+      module:
+        - node
+  title:
+    label: Title
+    datasource_id: 'entity:node'
+    property_path: title
+    type: string
+    dependencies:
+      module:
+        - node
+datasource_settings:
+  'entity:node':
+    bundles:
+      default: false
+      selected:
+        - health_condition
+    languages:
+      default: true
+      selected: {  }
+processor_settings:
+  add_url: {  }
+  aggregated_field: {  }
+  entity_status: {  }
+  rendered_item: {  }
+  solr_date_range:
+    weights:
+      preprocess_index: 0
+tracker_settings:
+  default:
+    indexing_order: fifo
+options:
+  index_directly: true
+  cron_limit: 50
+server: health_conditions
