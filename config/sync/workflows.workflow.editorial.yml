@@ -1,0 +1,91 @@
+uuid: 16112d9b-ae7e-4931-ba06-fa0b6a88cf0f
+langcode: en
+status: true
+dependencies:
+  config:
+    - node.type.application
+    - node.type.article
+    - node.type.contact
+    - node.type.driving_instructor
+    - node.type.embargoed_publication
+    - node.type.external_link
+    - node.type.gp_practice
+    - node.type.health_condition
+    - node.type.landing_page
+    - node.type.news
+    - node.type.page
+    - node.type.publication
+    - node.type.recipe
+    - node.type.umbrella_body
+  module:
+    - content_moderation
+_core:
+  default_config_hash: Ln7YAg2WXZ-5wn9ib-v9qOKFxF2YZLnwSKtX-V455hE
+id: editorial
+label: Editorial
+type: content_moderation
+type_settings:
+  states:
+    draft:
+      label: Draft
+      published: false
+      default_revision: false
+      weight: -5
+    needs_review:
+      published: false
+      default_revision: false
+      label: 'Needs Review'
+      weight: 6
+    published:
+      label: Published
+      published: true
+      default_revision: true
+      weight: 0
+  transitions:
+    publish:
+      label: Publish
+      to: published
+      weight: 0
+      from:
+        - needs_review
+    quick_publish:
+      label: 'Quick Publish'
+      from:
+        - draft
+      to: published
+      weight: -2
+    reject:
+      label: Reject
+      from:
+        - needs_review
+      to: draft
+      weight: -1
+    submit_for_review:
+      label: 'Submit for Review'
+      from:
+        - draft
+      to: needs_review
+      weight: -3
+    unpublish:
+      label: Unpublish
+      from:
+        - published
+      to: needs_review
+      weight: 1
+  entity_types:
+    node:
+      - application
+      - article
+      - contact
+      - driving_instructor
+      - embargoed_publication
+      - external_link
+      - gp_practice
+      - health_condition
+      - landing_page
+      - news
+      - page
+      - publication
+      - recipe
+      - umbrella_body
+  default_moderation_state: draft
