@@ -29,7 +29,6 @@ dependencies:
     - entity_browser
     - field_group
     - hms_field
-    - link
     - metatag
     - path
     - text
@@ -256,6 +255,13 @@ content:
     third_party_settings: {  }
     type: traffic_light_rating_default
     region: content
+  langcode:
+    type: language_select
+    weight: 2
+    region: content
+    settings:
+      include_locked: true
+    third_party_settings: {  }
   path:
     type: path
     weight: 1
