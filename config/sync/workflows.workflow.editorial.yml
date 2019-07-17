@@ -42,10 +42,16 @@ type_settings:
       default_revision: true
       weight: 0
   transitions:
+    create_new_draft:
+      label: 'Create new Draft'
+      from:
+        - draft
+      to: draft
+      weight: -3
     publish:
       label: Publish
       to: published
-      weight: 0
+      weight: 1
       from:
         - needs_review
     quick_publish:
@@ -53,25 +59,25 @@ type_settings:
       from:
         - draft
       to: published
-      weight: -2
+      weight: -1
     reject:
       label: Reject
       from:
         - needs_review
       to: draft
-      weight: -1
+      weight: 0
     submit_for_review:
       label: 'Submit for Review'
       from:
         - draft
       to: needs_review
-      weight: -3
+      weight: -2
     unpublish:
       label: Unpublish
       from:
         - published
       to: needs_review
-      weight: 1
+      weight: 2
   entity_types:
     node:
       - application
