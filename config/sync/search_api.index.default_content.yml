@@ -1,4 +1,4 @@
-uuid: 7c323995-de3a-4586-bd73-af9165185824
+uuid: ca79e148-601d-4725-9673-7d8dfc5763b9
 langcode: en
 status: true
 dependencies:
@@ -7,17 +7,25 @@ dependencies:
     - node
     - search_api
   config:
+    - field.storage.node.field_address
     - field.storage.node.body
-    - field.storage.node.field_email_address
-    - field.storage.node.field_published_date
-    - field.storage.node.field_recipe_course_type
-    - field.storage.node.field_recipe_main_ingredient
-    - field.storage.node.field_recipe_season
-    - field.storage.node.field_site_themes
-    - field.storage.node.field_summary
-    - field.storage.node.field_teaser
+    - field.storage.node.field_contact_category
     - field.storage.node.field_ub_contact
-    - search_api.server.default_content
+    - field.storage.node.field_recipe_allergens
+    - field.storage.node.field_ub_counties
+    - field.storage.node.field_recipe_course_type
+    - field.storage.node.field_email_address
+    - field.storage.node.field_recipe_main_ingredient
+    - field.storage.node.field_published_date
+    - field.storage.node.field_recipe_season
+    - field.storage.node.field_ub_sector
+    - field.storage.node.field_ub_services
+    - field.storage.node.field_recipe_description
+    - field.storage.node.field_recipe_special_diet
+    - field.storage.node.field_summary
+    - field.storage.node.field_site_themes
+    - field.storage.node.field_subtheme
+    - search_api.server.solr_default
 third_party_settings:
   search_api_solr:
     finalize: false
@@ -61,14 +69,63 @@ name: 'Default content'
 description: ''
 read_only: false
 field_settings:
+  address_line1:
+    label: 'Address » The first line of the address block.'
+    datasource_id: 'entity:node'
+    property_path: 'field_address:address_line1'
+    type: text
+    dependencies:
+      config:
+        - field.storage.node.field_address
+  address_line2:
+    label: 'Address » The second line of the address block.'
+    datasource_id: 'entity:node'
+    property_path: 'field_address:address_line2'
+    type: text
+    dependencies:
+      config:
+        - field.storage.node.field_address
+  administrative_area:
+    label: 'Address » The top-level administrative subdivision of the country.'
+    datasource_id: 'entity:node'
+    property_path: 'field_address:administrative_area'
+    type: text
+    dependencies:
+      config:
+        - field.storage.node.field_address
   body:
     label: Body
     datasource_id: 'entity:node'
     property_path: body
     type: text
+    boost: 0.5
     dependencies:
       config:
         - field.storage.node.body
+  changed:
+    label: Changed
+    datasource_id: 'entity:node'
+    property_path: changed
+    type: date
+    dependencies:
+      module:
+        - node
+  country_code:
+    label: 'Address » The two-letter country code.'
+    datasource_id: 'entity:node'
+    property_path: 'field_address:country_code'
+    type: text
+    dependencies:
+      config:
+        - field.storage.node.field_address
+  field_contact_category:
+    label: Category
+    datasource_id: 'entity:node'
+    property_path: field_contact_category
+    type: integer
+    dependencies:
+      config:
+        - field.storage.node.field_contact_category
   field_email_address:
     label: Email
     datasource_id: 'entity:node'
@@ -85,6 +142,14 @@ field_settings:
     dependencies:
       config:
         - field.storage.node.field_published_date
+  field_recipe_allergens:
+    label: 'Contains allergens'
+    datasource_id: 'entity:node'
+    property_path: field_recipe_allergens
+    type: boolean
+    dependencies:
+      config:
+        - field.storage.node.field_recipe_allergens
   field_recipe_course_type:
     label: 'Course type'
     datasource_id: 'entity:node'
@@ -93,14 +158,14 @@ field_settings:
     dependencies:
       config:
         - field.storage.node.field_recipe_course_type
-  field_recipe_course_type_1:
-    label: 'Course type'
+  field_recipe_description:
+    label: 'Short description'
     datasource_id: 'entity:node'
-    property_path: field_recipe_course_type
-    type: integer
+    property_path: field_recipe_description
+    type: text
     dependencies:
       config:
-        - field.storage.node.field_recipe_course_type
+        - field.storage.node.field_recipe_description
   field_recipe_main_ingredient:
     label: 'Main ingredient'
     datasource_id: 'entity:node'
@@ -117,6 +182,14 @@ field_settings:
     dependencies:
       config:
         - field.storage.node.field_recipe_season
+  field_recipe_special_diet:
+    label: 'Special diet'
+    datasource_id: 'entity:node'
+    property_path: field_recipe_special_diet
+    type: integer
+    dependencies:
+      config:
+        - field.storage.node.field_recipe_special_diet
   field_site_themes:
     label: 'Supplementary subthemes'
     datasource_id: 'entity:node'
@@ -125,6 +198,30 @@ field_settings:
     dependencies:
       config:
         - field.storage.node.field_site_themes
+  field_site_themes_1:
+    label: 'Supplementary subthemes'
+    datasource_id: 'entity:node'
+    property_path: field_site_themes
+    type: integer
+    dependencies:
+      config:
+        - field.storage.node.field_site_themes
+  field_site_themes_2:
+    label: 'Supplementary subthemes'
+    datasource_id: 'entity:node'
+    property_path: field_site_themes
+    type: integer
+    dependencies:
+      config:
+        - field.storage.node.field_site_themes
+  field_subtheme:
+    label: Theme/subtheme
+    datasource_id: 'entity:node'
+    property_path: field_subtheme
+    type: integer
+    dependencies:
+      config:
+        - field.storage.node.field_subtheme
   field_summary:
     label: Summary
     datasource_id: 'entity:node'
@@ -133,27 +230,76 @@ field_settings:
     dependencies:
       config:
         - field.storage.node.field_summary
-  field_teaser:
-    label: Teaser
-    datasource_id: 'entity:node'
-    property_path: field_teaser
-    type: string
-    dependencies:
-      config:
-        - field.storage.node.field_teaser
   field_ub_contact:
     label: 'Contact name'
     datasource_id: 'entity:node'
     property_path: field_ub_contact
-    type: string
+    type: text
     dependencies:
       config:
         - field.storage.node.field_ub_contact
+  field_ub_counties:
+    label: Counties
+    datasource_id: 'entity:node'
+    property_path: field_ub_counties
+    type: string
+    dependencies:
+      config:
+        - field.storage.node.field_ub_counties
+  field_ub_sector:
+    label: 'Sectors covered'
+    datasource_id: 'entity:node'
+    property_path: field_ub_sector
+    type: integer
+    dependencies:
+      config:
+        - field.storage.node.field_ub_sector
+  field_ub_services:
+    label: 'Services provided'
+    datasource_id: 'entity:node'
+    property_path: field_ub_services
+    type: integer
+    dependencies:
+      config:
+        - field.storage.node.field_ub_services
+  langcode:
+    label: Language
+    datasource_id: 'entity:node'
+    property_path: langcode
+    type: string
+    dependencies:
+      module:
+        - node
+  locality:
+    label: 'Address » The locality (i.e. city).'
+    datasource_id: 'entity:node'
+    property_path: 'field_address:locality'
+    type: text
+    dependencies:
+      config:
+        - field.storage.node.field_address
+  postal_code:
+    label: 'Address » The postal code.'
+    datasource_id: 'entity:node'
+    property_path: 'field_address:postal_code'
+    type: text
+    dependencies:
+      config:
+        - field.storage.node.field_address
+  status:
+    label: Published
+    datasource_id: 'entity:node'
+    property_path: status
+    type: boolean
+    dependencies:
+      module:
+        - node
   title:
     label: Title
     datasource_id: 'entity:node'
     property_path: title
-    type: string
+    type: text
+    boost: !!float 21
     dependencies:
       module:
         - node
@@ -162,6 +308,14 @@ field_settings:
     datasource_id: 'entity:node'
     property_path: type
     type: string
+    dependencies:
+      module:
+        - node
+  uid:
+    label: 'Authored by'
+    datasource_id: 'entity:node'
+    property_path: uid
+    type: integer
     dependencies:
       module:
         - node
@@ -175,7 +329,6 @@ datasource_settings:
         - contact
         - driving_instructor
         - embargoed_publication
-        - gp_practice
         - landing_page
         - news
         - page
@@ -189,6 +342,16 @@ processor_settings:
   add_url: {  }
   aggregated_field: {  }
   entity_status: {  }
+  highlight:
+    highlight: always
+    highlight_partial: false
+    excerpt: true
+    excerpt_length: 256
+    exclude_fields: {  }
+    prefix: '<strong>'
+    suffix: '</strong>'
+    weights:
+      postprocess_query: 0
   rendered_item: {  }
   solr_date_range:
     weights:
@@ -199,4 +362,4 @@ tracker_settings:
 options:
   index_directly: true
   cron_limit: 50
-server: default_content
+server: solr_default

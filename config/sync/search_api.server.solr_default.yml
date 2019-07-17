@@ -1,4 +1,4 @@
-uuid: b4cd5d13-ed34-4df0-ad5c-d3e9bb0f9357
+uuid: 7281c1c7-6458-4505-b0af-fc265e29d1b0
 langcode: en
 status: true
 dependencies:
@@ -13,15 +13,15 @@ dependencies:
     - search_api_solr.solr_field_type.text_und_7_0_0
   module:
     - search_api_solr
-id: default_content
-name: 'Default content'
+id: solr_default
+name: 'Solr default'
 description: ''
 backend: search_api_solr
 backend_config:
   connector: standard
   connector_config:
     scheme: http
-    host: solr-default
+    host: solr
     port: 8983
     path: /
     core: default
