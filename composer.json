@@ -40,6 +40,14 @@
         {
             "type": "vcs",
             "url": "git@svegit01.thestables.net:dss/nidirect-d8-test-install-profile.git"
+        },
+        {
+            "type": "vcs",
+            "url": "git@github.com:dof-dss/nicsdru_origins_theme.git"
+        },
+        {
+            "type": "vcs",
+            "url": "git@github.com:dof-dss/nicsdru_nidirect_theme.git"
         }
     ],
     "require": {
@@ -48,6 +56,7 @@
         "drupal-composer/drupal-scaffold": "^2.5",
         "drupal/address": "^1.7",
         "drupal/admin_toolbar": "^1.26",
+        "drupal/adminimal_theme": "^1.5",
         "drupal/chosen": "^2.7",
         "drupal/config_filter": "^1.4",
         "drupal/config_ignore": "^2.1",
@@ -86,7 +95,9 @@
         "vlucas/phpdotenv": "^2.4",
         "webflo/drupal-finder": "^1.0.0",
         "webmozart/path-util": "^2.3",
-        "zaporylie/composer-drupal-optimizations": "^1.0"
+        "zaporylie/composer-drupal-optimizations": "^1.0",
+        "dof-dss/nicsdru_origins_theme": "dev-master",
+        "dof-dss/nicsdru_nidirect_theme": "dev-master"
     },
     "require-dev": {
         "drupal/coder": "^8.3",
@@ -164,6 +175,9 @@
             ],
             "web/themes/contrib/{$name}": [
                 "type:drupal-theme"
+            ],
+            "web/themes/custom/{$name}": [
+                "type:drupal-custom-theme"
             ],
             "drush/Commands/{$name}": [
                 "type:drupal-drush"
