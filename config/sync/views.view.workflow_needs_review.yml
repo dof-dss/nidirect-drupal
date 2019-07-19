@@ -242,6 +242,55 @@ display:
           field_api_classes: false
           entity_type: node
           plugin_id: field
+        nothing:
+          id: nothing
+          table: views
+          field: nothing
+          relationship: none
+          group_type: group
+          admin_label: ''
+          label: 'Set moderation state'
+          exclude: false
+          alter:
+            alter_text: true
+            text: "<div><a href='/nidirect_workflow/change_state/{{ nid }}/draft?destination=/admin/workbench/needs-review'>Change to Draft</a></div>\r\n<div><a href='/nidirect_workflow/change_state/{{ nid }}/published?destination=/admin/workbench/needs-review'>Change to Published</a></div>"
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: false
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: false
+          plugin_id: custom
         title:
           id: title
           table: node_field_data
