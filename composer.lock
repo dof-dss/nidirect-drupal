@@ -1,10 +1,10 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "dd89d2ee93bf8371b743d2944aebf5f2",
+    "content-hash": "9f9f756a2f8f2f07e6b83b343756d0ab",
     "packages": [
         {
             "name": "alchemy/zippy",
@@ -4882,6 +4882,63 @@
             }
         },
         {
+            "name": "drupal/search_api_autocomplete",
+            "version": "1.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://git.drupalcode.org/project/search_api_autocomplete.git",
+                "reference": "8.x-1.2"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://ftp.drupal.org/files/projects/search_api_autocomplete-8.x-1.2.zip",
+                "reference": "8.x-1.2",
+                "shasum": "606908583c1e0aff57a4215355d1d3e07a1d50d2"
+            },
+            "require": {
+                "drupal/core": "~8.0",
+                "drupal/search_api": "1.x"
+            },
+            "require-dev": {
+                "drupal/search_api_page": "@dev"
+            },
+            "type": "drupal-module",
+            "extra": {
+                "branch-alias": {
+                    "dev-1.x": "1.x-dev"
+                },
+                "drupal": {
+                    "version": "8.x-1.2",
+                    "datestamp": "1552333980",
+                    "security-coverage": {
+                        "status": "covered",
+                        "message": "Covered by Drupal's security advisory policy"
+                    }
+                }
+            },
+            "notification-url": "https://packages.drupal.org/8/downloads",
+            "license": [
+                "GPL-2.0+"
+            ],
+            "authors": [
+                {
+                    "name": "Thomas Seidl",
+                    "homepage": "https://www.drupal.org/u/drunken-monkey"
+                },
+                {
+                    "name": "See other contributors",
+                    "homepage": "https://www.drupal.org/node/1142202/committers"
+                }
+            ],
+            "description": "Adds autocomplete functionality to searches.",
+            "homepage": "https://www.drupal.org/project/search_api_autocomplete",
+            "support": {
+                "source": "http://git.drupal.org/project/search_api_autocomplete.git",
+                "issues": "https://www.drupal.org/project/issues/search_api_autocomplete",
+                "irc": "irc://irc.freenode.org/drupal-search-api"
+            }
+        },
+        {
             "name": "drupal/search_api_solr",
             "version": "3.2.0",
             "source": {
@@ -5930,9 +5987,7 @@
             "version": "1.8.2",
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/harvesthq/chosen/releases/download/v1.8.2/chosen_v1.8.2.zip",
-                "reference": null,
-                "shasum": null
+                "url": "https://github.com/harvesthq/chosen/releases/download/v1.8.2/chosen_v1.8.2.zip"
             },
             "require": {
                 "composer/installers": "^1.2.0"
@@ -12317,6 +12372,8 @@
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
+        "dof-dss/nicsdru_nidirect_theme": 20,
+        "dof-dss/nicsdru_origins_theme": 20,
         "drupal/config_readonly": 10,
         "drupal/flag": 20,
         "drupal/hms_field": 10,
@@ -12326,8 +12383,6 @@
         "drupal/traffic_light_rating": 20,
         "drupal/ultimate_cron": 15,
         "nics/nidirect-site-modules": 20,
-        "dof-dss/nicsdru_origins_theme": 20,
-        "dof-dss/nicsdru_nidirect_theme": 20,
         "drupal/stage_file_proxy": 10,
         "nics/nidirect-migrations": 20,
         "nics/nidirect-d8-test-install-profile": 20
