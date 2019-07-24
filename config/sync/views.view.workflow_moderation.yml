@@ -4,6 +4,19 @@ status: true
 dependencies:
   config:
     - taxonomy.vocabulary.site_themes
+    - user.role.admin_user
+    - user.role.administrator
+    - user.role.apps_user
+    - user.role.authenticated
+    - user.role.author_user
+    - user.role.driving_instructor_supervisor_user
+    - user.role.editor_user
+    - user.role.gp_author_user
+    - user.role.gp_supervisor_user
+    - user.role.health_condition_author_user
+    - user.role.health_condition_supervisor_user
+    - user.role.news_supervisor
+    - user.role.supervisor_user
     - workflows.workflow.editorial
   module:
     - content_moderation
@@ -13,7 +26,7 @@ dependencies:
 id: workflow_moderation
 label: 'Workflow: Moderation'
 module: views
-description: ''
+description: 'NIDirect custom views to appear under the custom ''My Workbench'' menu'
 tag: ''
 base_table: node_field_revision
 base_field: vid
@@ -26,9 +39,22 @@ display:
     position: 0
     display_options:
       access:
-        type: perm
+        type: role
         options:
-          perm: 'view all revisions'
+          role:
+            authenticated: authenticated
+            administrator: administrator
+            gp_author_user: gp_author_user
+            author_user: author_user
+            gp_supervisor_user: gp_supervisor_user
+            news_supervisor: news_supervisor
+            supervisor_user: supervisor_user
+            editor_user: editor_user
+            admin_user: admin_user
+            apps_user: apps_user
+            health_condition_author_user: health_condition_author_user
+            health_condition_supervisor_user: health_condition_supervisor_user
+            driving_instructor_supervisor_user: driving_instructor_supervisor_user
       cache:
         type: tag
         options: {  }
@@ -776,7 +802,7 @@ display:
         - url
         - url.query_args
         - 'user.node_grants:view'
-        - user.permissions
+        - user.roles
       tags:
         - 'config:workflow_list'
   page_1:
@@ -1036,7 +1062,7 @@ display:
         - url
         - url.query_args
         - 'user.node_grants:view'
-        - user.permissions
+        - user.roles
       tags:
         - 'config:workflow_list'
   page_2:
@@ -1998,7 +2024,7 @@ display:
         - url.query_args
         - user
         - 'user.node_grants:view'
-        - user.permissions
+        - user.roles
       tags:
         - 'config:workflow_list'
   page_3:
@@ -2975,6 +3001,6 @@ display:
         - url.query_args
         - user
         - 'user.node_grants:view'
-        - user.permissions
+        - user.roles
       tags:
         - 'config:workflow_list'
