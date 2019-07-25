@@ -15,10 +15,6 @@
             "url": "https://packages.drupal.org/8"
         },
         {
-            "type": "vcs",
-            "url": "git@github.com:dof-dss/nidirect-d8-mig-mods"
-        },
-        {
             "type": "package",
             "package": {
                 "name": "harvesthq/chosen",
@@ -32,6 +28,10 @@
                     "composer/installers": "^1.2.0"
                 }
             }
+        },
+        {
+            "type": "vcs",
+            "url": "git@github.com:dof-dss/nidirect-d8-mig-mods.git"
         },
         {
             "type": "vcs",
@@ -53,6 +53,9 @@
     "require": {
         "composer/installers": "^1.2",
         "cweagans/composer-patches": "^1.6.5",
+        "dof-dss/nidirect-site-modules": "dev-development",
+        "dof-dss/nicsdru_origins_theme": "dev-master",
+        "dof-dss/nicsdru_nidirect_theme": "dev-master",
         "drupal-composer/drupal-scaffold": "^2.5",
         "drupal/address": "^1.7",
         "drupal/admin_toolbar": "^1.26",
@@ -91,15 +94,14 @@
         "drupal/ultimate_cron": "^2.0@alpha",
         "drush/drush": "^9.0.0",
         "harvesthq/chosen": "^1.8",
-        "nics/nidirect-site-modules": "dev-development",
         "vlucas/phpdotenv": "^2.4",
         "webflo/drupal-finder": "^1.0.0",
         "webmozart/path-util": "^2.3",
-        "zaporylie/composer-drupal-optimizations": "^1.0",
-        "dof-dss/nicsdru_origins_theme": "dev-master",
-        "dof-dss/nicsdru_nidirect_theme": "dev-master"
+        "zaporylie/composer-drupal-optimizations": "^1.0"
     },
     "require-dev": {
+        "dof-dss/nidirect-migrations": "dev-development",
+        "dof-dss/nidirect-d8-test-install-profile": "dev-development",
         "drupal/coder": "^8.3",
         "drupal/devel": "^2.1",
         "drupal/easy_install": "^10.1",
@@ -108,8 +110,6 @@
         "drupal/migrate_upgrade": "^3.0",
         "drupal/restui": "^1.17",
         "drupal/stage_file_proxy": "^1.0@beta",
-        "nics/nidirect-migrations": "dev-development",
-        "nics/nidirect-d8-test-install-profile": "dev-development",
         "webflo/drupal-core-require-dev": "^8.7.0"
     },
     "conflict": {
@@ -159,13 +159,13 @@
                 "type:drupal-library"
             ],
             "web/modules/custom": [
-                "nics/nidirect-site-modules"
+                "dof-dss/nidirect-site-modules"
             ],
             "web/modules/migrate/{$name}": [
-                "nics/nidirect-migrations"
+                "dof-dss/nidirect-migrations"
             ],
             "web/profiles/custom": [
-                "nics/nidirect-d8-test-install-profile"
+                "dof-dss/nidirect-d8-test-install-profile"
             ],
             "web/modules/contrib/{$name}": [
                 "type:drupal-module"
