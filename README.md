@@ -10,7 +10,7 @@ Follow the instructions at: https://github.com/drupal-composer/drupal-project
 
 ## Getting started
 
-For local development, please review the [README file for the local development framework](https://svegit01.thestables.net/dss/lando-d7-to-d8-migrate/blob/development/README.md).
+For local development, please review the [README file for the local development framework](https://github.com/dof-dss/lando-d7-to-d8-migrate).
 
 This document intends to cover an overview of how the site is structured and how it approaches certain Drupal topics.
 
