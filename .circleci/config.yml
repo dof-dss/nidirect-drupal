@@ -31,7 +31,7 @@ jobs:
             - vendor
       - run:
             name: Unit tests
-            command: /home/circleci/project/vendor/bin/phpunit -c /home/circleci/project/web/core/phpunit.xml.dist --testsuite=unit
+            command: /home/circleci/project/vendor/bin/phpunit -c /home/circleci/project/web/core/phpunit.xml.dist /home/circleci/project/web/modules/custom
     #   - run:
     #       name: PHPCS static analysis
     #       command: /home/circleci/project/phpcs.sh /home/circleci/project "/home/circleci/project/web/modules/custom /home/circleci/project/web/modules/migrate /home/circleci/project/web/themes/custom"
