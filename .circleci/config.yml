@@ -25,6 +25,7 @@ jobs:
       - run:
           name: Fetch dependencies with composer
           command: composer install --no-interaction --optimize-autoloader
+      - run: "pwd && ls -la"
       - save_cache:
           key: composer-{{ checksum "composer.lock" }}
           paths:
