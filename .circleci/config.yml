@@ -25,11 +25,10 @@ jobs:
       - run:
           name: Fetch dependencies with composer
           command: composer install --no-interaction --optimize-autoloader
-      - run: "pwd && ls -la"
       - save_cache:
           key: composer-{{ checksum "composer.lock" }}
           paths:
             - vendor
       - run:
           name: PHPCS static analysis
-          command: cd $CIRCLE_WORKING_DIRECTORY && ./phpcs.sh ./ "web/modules/custom web/modules/migrate web/themes/custom"
+          command: ./phpcs.sh ./ "web/modules/custom web/modules/migrate web/themes/custom"
