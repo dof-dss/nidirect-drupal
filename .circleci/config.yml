@@ -34,6 +34,6 @@ jobs:
          name: Deprecated code check
          command: |
             curl -O -L https://github.com/mglaman/drupal-check/releases/latest/download/drupal-check.phar
-            mv drupal-check.phar $CIRCLE_WORKING_DIRECTORY/drupal-check
-            chmod +x $CIRCLE_WORKING_DIRECTORY/drupal-check
-            $CIRCLE_WORKING_DIRECTORY/drupal-check $CIRCLE_WORKING_DIRECTORY/web/modules/custom
+            mv drupal-check.phar /home/circleci/project/drupal-check
+            chmod +x /home/circleci/project/drupal-check
+            /home/circleci/project/drupal-check /home/circleci/project/web/modules/custom
