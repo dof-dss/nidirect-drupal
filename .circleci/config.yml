@@ -20,8 +20,6 @@ jobs:
       - restore_cache:
           keys:
           - composer-{{ checksum "composer.lock" }}
-          # fallback to using the latest cache if no exact match is found
-          - composer-
       - run:
           name: Fetch dependencies with composer
           command: composer install --no-interaction --optimize-autoloader
