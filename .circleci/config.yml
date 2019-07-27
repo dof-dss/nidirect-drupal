@@ -31,4 +31,4 @@ jobs:
             - vendor
       - run:
           name: PHPCS static analysis
-          command: phpcs.sh ./ "web/modules/custom web/modules/migrate web/themes/custom"
+          command: cd $CIRCLE_WORKING_DIRECTORY && ./phpcs.sh ./ "web/modules/custom web/modules/migrate web/themes/custom"
