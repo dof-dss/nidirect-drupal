@@ -27,6 +27,13 @@ jobs:
           key: composer-{{ checksum "composer.lock" }}
           paths:
             - vendor
+    #   - run:
+    #       name: PHPCS static analysis
+    #       command: /home/circleci/project/phpcs.sh /home/circleci/project "/home/circleci/project/web/modules/custom /home/circleci/project/web/modules/migrate /home/circleci/project/web/themes/custom"
       - run:
-          name: PHPCS static analysis
-          command: /home/circleci/project/phpcs.sh /home/circleci/project "/home/circleci/project/web/modules/custom /home/circleci/project/web/modules/migrate /home/circleci/project/web/themes/custom"
+         name: Deprecated code check
+         command: |
+            curl -O -L https://github.com/mglaman/drupal-check/releases/latest/download/drupal-check.phar
+            mv drupal-check.phar $CIRCLE_WORKING_DIRECTORY/drupal-check
+            chmod +x $CIRCLE_WORKING_DIRECTORY/drupal-check
+            $CIRCLE_WORKING_DIRECTORY/drupal-check $CIRCLE_WORKING_DIRECTORY/web/modules/custom
