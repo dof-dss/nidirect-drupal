@@ -20,6 +20,9 @@ jobs:
           name: Validate composer.json and composer.lock file for consistency
           command: composer validate --no-check-all --strict
       - run:
+          name: Add GitHub access token for composer
+          command: echo 'composer config -g github-oauth.github.com $GITHUB_TOKEN' >> $BASH_ENV
+      - run:
           name: Fetch latest commits from dev-* dependencies
           command: composer require dof-dss/nicsdru_nidirect_theme:dev-master dof-dss/nicsdru_origins_theme:dev-master dof-dss/nidirect-site-modules:dev-development dof-dss/nidirect-migrations:dev-development dof-dss/nidirect-d8-test-install-profile:dev-development
       - restore_cache:
@@ -67,6 +70,9 @@ jobs:
       - run:
           name: Validate composer.json and composer.lock file for consistency
           command: composer validate --no-check-all --strict
+      - run:
+          name: Add GitHub access token for composer
+          command: echo 'composer config -g github-oauth.github.com $GITHUB_TOKEN' >> $BASH_ENV
       - run:
           name: Fetch latest commits from dev-* dependencies
           command: composer require dof-dss/nicsdru_nidirect_theme:dev-master dof-dss/nicsdru_origins_theme:dev-master dof-dss/nidirect-site-modules:dev-development dof-dss/nidirect-migrations:dev-development dof-dss/nidirect-d8-test-install-profile:dev-development
