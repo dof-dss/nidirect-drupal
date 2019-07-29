@@ -31,7 +31,16 @@ jobs:
             - vendor
   test:
     docker:
-    - image: circleci/php:7.2-node-browsers
+      - image: circleci/php:7.2-node-browsers
+      - image: circleci/mysql:5.7.27
+        environment:
+          DB_HOST: 127.0.0.1
+          DB_USER: root
+          DB_NAME: circle_test
+          DB_PREFIX: ''
+          DB_PORT: 3306
+          DB_NAMESPACE: Drupal\Core\Database\Driver\mysql
+          DB_DRIVER: mysql
     steps:
       - run:
           name: Install PHP Extensions
@@ -53,6 +62,15 @@ jobs:
           key: composer-{{ checksum "composer.lock" }}
           paths:
             - vendor
+      - run:
+            name: Set up Drupal environment for CI
+            command: |
+              curl -O -L https://raw.githubusercontent.com/dof-dss/lando-d7-to-d8-migrate/development/config/drupal.settings
+              cp -v /home/circleci/project/web/sites/default/default.settings.php /home/circleci/project/web/sites/default/settings.php
+              cat drupal.settings >> /home/circleci/project/web/sites/default/settings.php
+      - run:
+            name: Install Drupal
+            command: cd /home/circleci/project/web && ../vendor/bin/drush si -y standard --site-name="NI Direct"
       - run:
             name: Unit tests
             command: /home/circleci/project/vendor/bin/phpunit -c /home/circleci/project/web/core/phpunit.xml.dist /home/circleci/project/web/modules/custom
