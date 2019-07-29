@@ -53,6 +53,8 @@ jobs:
           DB_DRIVER: mysql
     docker:
       - image: circleci/php:7.2.20-apache-node-browsers
+        environment:
+          APACHE_DOCUMENT_ROOT: /home/circleci/project/web
       - image: circleci/mysql:5.7.27
     steps:
       - run:
@@ -92,9 +94,9 @@ jobs:
           paths:
             - .composer/cache
             - vendor
-      - run:
-            name: PHPCS static analysis
-            command: /home/circleci/project/phpcs.sh /home/circleci/project "/home/circleci/project/web/modules/custom /home/circleci/project/web/modules/migrate /home/circleci/project/web/themes/custom"
+      # - run:
+      #       name: PHPCS static analysis
+      #       command: /home/circleci/project/phpcs.sh /home/circleci/project "/home/circleci/project/web/modules/custom /home/circleci/project/web/modules/migrate /home/circleci/project/web/themes/custom"
       # - run:
       #    name: Deprecated code check
       #    command: |
@@ -120,11 +122,6 @@ jobs:
             command: |
               cp web/core/phpunit.xml.dist web/core/phpunit.circleci.xml
               sed -i -e "s|name=\"SIMPLETEST_BASE_URL\" value=\"\"|name=\"SIMPLETEST_BASE_URL\" value=\"http:\/\/localhost\"|g" web/core/phpunit.circleci.xml
-              # Fire up a lightweight web server to handle the requests we send to it.
-              cd /home/circleci/project/web
-              # Background thread it and silence it.
-              ../../vendor/bin/drush --quiet rs 127.0.0.1:80 &
-              # Run out tests.
               /home/circleci/project/vendor/bin/phpunit -c /home/circleci/project/web/core/phpunit.circleci.xml /home/circleci/project/web/modules/custom
 
 workflows:
