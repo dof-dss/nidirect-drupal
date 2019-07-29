@@ -23,14 +23,14 @@ jobs:
           name: Add GitHub access token for composer
           command: echo 'composer config -g github-oauth.github.com $GITHUB_TOKEN' >> $BASH_ENV
       - run:
+          name: Install hirak/prestissimo for faster composer downloads
+          command: composer global require hirak/prestissimo
+      - run:
           name: Fetch latest commits from dev-* dependencies
           command: composer require dof-dss/nicsdru_nidirect_theme:dev-master dof-dss/nicsdru_origins_theme:dev-master dof-dss/nidirect-site-modules:dev-development dof-dss/nidirect-migrations:dev-development dof-dss/nidirect-d8-test-install-profile:dev-development
       - restore_cache:
           keys:
           - composer-{{ checksum "composer.lock" }}
-      - run:
-          name: Install hirak/prestissimo for faster composer downloads
-          command: composer global require hirak/prestissimo
       - run:
           name: Fetch dependencies with composer
           command: |
@@ -74,14 +74,14 @@ jobs:
           name: Add GitHub access token for composer
           command: echo 'composer config -g github-oauth.github.com $GITHUB_TOKEN' >> $BASH_ENV
       - run:
+          name: Install hirak/prestissimo for faster composer downloads
+          command: composer global require hirak/prestissimo
+      - run:
           name: Fetch latest commits from dev-* dependencies
           command: composer require dof-dss/nicsdru_nidirect_theme:dev-master dof-dss/nicsdru_origins_theme:dev-master dof-dss/nidirect-site-modules:dev-development dof-dss/nidirect-migrations:dev-development dof-dss/nidirect-d8-test-install-profile:dev-development
       - restore_cache:
           keys:
           - composer-{{ checksum "composer.lock" }}
-      - run:
-          name: Install hirak/prestissimo for faster composer downloads
-          command: composer global require hirak/prestissimo
       - run:
           name: Fetch dependencies with composer
           command: |
