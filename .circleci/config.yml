@@ -17,9 +17,18 @@ jobs:
           fingerprints:
             - "40:ee:b5:e2:37:3d:e5:e0:79:7f:95:a3:1d:b5:7d:c9"
       - checkout
+      - run:
+          name: Validate composer.json and composer.lock file for consistency
+          command: composer validate --no-check-all --strict
+      - run:
+          name: Fetch latest commits from dev-* dependencies
+          command: composer require dof-dss/nicsdru_nidirect_theme:dev-master dof-dss/nicsdru_origins_theme:dev-master dof-dss/nidirect-site-modules:dev-development dof-dss/nidirect-migrations:dev-development dof-dss/nidirect-d8-test-install-profile:dev-development
       - restore_cache:
           keys:
           - composer-{{ checksum "composer.lock" }}
+      - run:
+          name: Install hirak/prestissimo for faster composer downloads
+          command: composer global require hirak/prestissimo
       - run:
           name: Fetch dependencies with composer
           command: |
@@ -56,9 +65,18 @@ jobs:
           fingerprints:
             - "40:ee:b5:e2:37:3d:e5:e0:79:7f:95:a3:1d:b5:7d:c9"
       - checkout
+      - run:
+          name: Validate composer.json and composer.lock file for consistency
+          command: composer validate --no-check-all --strict
+      - run:
+          name: Fetch latest commits from dev-* dependencies
+          command: composer require dof-dss/nicsdru_nidirect_theme:dev-master dof-dss/nicsdru_origins_theme:dev-master dof-dss/nidirect-site-modules:dev-development dof-dss/nidirect-migrations:dev-development dof-dss/nidirect-d8-test-install-profile:dev-development
       - restore_cache:
           keys:
           - composer-{{ checksum "composer.lock" }}
+      - run:
+          name: Install hirak/prestissimo for faster composer downloads
+          command: composer global require hirak/prestissimo
       - run:
           name: Fetch dependencies with composer
           command: |
