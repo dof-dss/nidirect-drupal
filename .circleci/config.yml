@@ -52,18 +52,18 @@ jobs:
           DB_NAMESPACE: Drupal\Core\Database\Driver\mysql
           DB_DRIVER: mysql
     docker:
-      - image: circleci/php:7.2.20-apache-node-browsers
+      - image: devwithlando/php:7.2
         environment:
-          APACHE_DOCUMENT_ROOT: /home/circleci/project/web
+          LANDO_WEBROOT: /home/circleci/project/web
       - image: circleci/mysql:5.7.27
     steps:
-      - run:
-          name: Install PHP Extensions
-          command: |
-            sudo apt update
-            sudo apt-get install -y libpng-dev mariadb-client
-            sudo docker-php-ext-configure pdo_mysql --with-pdo-mysql=mysqlnd
-            sudo docker-php-ext-install gd pdo_mysql
+      # - run:
+      #     name: Install PHP Extensions
+      #     command: |
+      #       sudo apt update
+      #       sudo apt-get install -y libpng-dev mariadb-client
+      #       sudo docker-php-ext-configure pdo_mysql --with-pdo-mysql=mysqlnd
+      #       sudo docker-php-ext-install gd pdo_mysql
       # Add SSH user key so we can access related repositories as part of our initial clone + composer install command.
       - add_ssh_keys:
           fingerprints:
@@ -75,9 +75,9 @@ jobs:
       - run:
           name: Add GitHub access token for composer
           command: echo 'composer config -g github-oauth.github.com $GITHUB_TOKEN' >> $BASH_ENV
-      - run:
-          name: Install hirak/prestissimo for faster composer downloads
-          command: composer global require hirak/prestissimo
+      # - run:
+      #     name: Install hirak/prestissimo for faster composer downloads
+      #     command: composer global require hirak/prestissimo
       - run:
           name: Fetch latest commits from dev-* dependencies
           command: composer require dof-dss/nicsdru_nidirect_theme:dev-master dof-dss/nicsdru_origins_theme:dev-master dof-dss/nidirect-site-modules:dev-development dof-dss/nidirect-migrations:dev-development dof-dss/nidirect-d8-test-install-profile:dev-development
@@ -118,11 +118,15 @@ jobs:
               cat drupal.settings >> /home/circleci/project/web/sites/default/settings.php
               chmod -w /home/circleci/project/web/sites/default/settings.php
       - run:
-            name: PHPUnit tests (unit, kernel)
+            name: Test connection to Drupal
             command: |
-              cp web/core/phpunit.xml.dist web/core/phpunit.circleci.xml
-              sed -i -e "s|name=\"SIMPLETEST_BASE_URL\" value=\"\"|name=\"SIMPLETEST_BASE_URL\" value=\"http:\/\/localhost\"|g" web/core/phpunit.circleci.xml
-              /home/circleci/project/vendor/bin/phpunit -c /home/circleci/project/web/core/phpunit.circleci.xml /home/circleci/project/web/modules/custom
+              curl http://localhost/user
+      # - run:
+      #       name: PHPUnit tests (unit, kernel)
+      #       command: |
+      #         cp web/core/phpunit.xml.dist web/core/phpunit.circleci.xml
+      #         sed -i -e "s|name=\"SIMPLETEST_BASE_URL\" value=\"\"|name=\"SIMPLETEST_BASE_URL\" value=\"http:\/\/localhost\"|g" web/core/phpunit.circleci.xml
+      #         /home/circleci/project/vendor/bin/phpunit -c /home/circleci/project/web/core/phpunit.circleci.xml /home/circleci/project/web/modules/custom
 
 workflows:
   version: 2
