@@ -7,7 +7,7 @@ version: 2
 jobs:
   build:
     docker:
-    - image: circleci/php:7.2-node-browsers
+    - image: circleci/php:7.2.20-apache-node
     steps:
       - run:
           name: Install PHP Extensions
@@ -40,7 +40,7 @@ jobs:
           DB_NAMESPACE: Drupal\Core\Database\Driver\mysql
           DB_DRIVER: mysql
     docker:
-      - image: circleci/php:7.2-node-browsers
+      - image: circleci/php:7.2.20-apache-node
       - image: circleci/mysql:5.7.27
     steps:
       - run:
