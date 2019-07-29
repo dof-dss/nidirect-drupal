@@ -52,7 +52,7 @@ jobs:
           DB_NAMESPACE: Drupal\Core\Database\Driver\mysql
           DB_DRIVER: mysql
     docker:
-      - image: drud/ddev-webserver
+      - image: drud/ddev-webserver:v1.9.0
         environment:
           APACHE_DOCUMENT_ROOT: /home/circleci/project/web
       - image: circleci/mysql:5.7.27
