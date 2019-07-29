@@ -52,7 +52,7 @@ jobs:
           DB_NAMESPACE: Drupal\Core\Database\Driver\mysql
           DB_DRIVER: mysql
     docker:
-      - image: devwithlando/php:7.2
+      - image: devwithlando/php:7.2-fpm-2
         environment:
           LANDO_WEBROOT: /home/circleci/project/web
       - image: circleci/mysql:5.7.27
