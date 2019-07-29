@@ -70,6 +70,16 @@ jobs:
             - .composer/cache
             - vendor
       - run:
+            name: PHPCS static analysis
+            command: /home/circleci/project/phpcs.sh /home/circleci/project "/home/circleci/project/web/modules/custom /home/circleci/project/web/modules/migrate /home/circleci/project/web/themes/custom"
+      - run:
+         name: Deprecated code check
+         command: |
+            curl -O -L https://github.com/mglaman/drupal-check/releases/latest/download/drupal-check.phar
+            mv drupal-check.phar /home/circleci/project/drupal-check
+            chmod +x /home/circleci/project/drupal-check
+            /home/circleci/project/drupal-check /home/circleci/project/web/modules/custom
+      - run:
             name: Install Drupal
             command: |
               cd /home/circleci/project/web
@@ -83,18 +93,11 @@ jobs:
               cat drupal.settings >> /home/circleci/project/web/sites/default/settings.php
               chmod -w /home/circleci/project/web/sites/default/settings.php
       - run:
-            name: Unit tests
-            command: /home/circleci/project/vendor/bin/phpunit -c /home/circleci/project/web/core/phpunit.xml.dist /home/circleci/project/web/modules/custom
-      - run:
-          name: PHPCS static analysis
-          command: /home/circleci/project/phpcs.sh /home/circleci/project "/home/circleci/project/web/modules/custom /home/circleci/project/web/modules/migrate /home/circleci/project/web/themes/custom"
-      - run:
-         name: Deprecated code check
-         command: |
-            curl -O -L https://github.com/mglaman/drupal-check/releases/latest/download/drupal-check.phar
-            mv drupal-check.phar /home/circleci/project/drupal-check
-            chmod +x /home/circleci/project/drupal-check
-            /home/circleci/project/drupal-check /home/circleci/project/web/modules/custom
+            name: PHPUnit tests (unit, kernel)
+            command: |
+              cp web/core/phpunit.xml.dist web/core/phpunit.circleci.xml
+              sed -i -e "s|name=\"SIMPLETEST_BASE_URL\" value=\"\"|name=\"SIMPLETEST_BASE_URL\" value=\"http:\/\/localhost\"|g" web/core/phpunit.circleci.xml
+              /home/circleci/project/vendor/bin/phpunit -c /home/circleci/project/web/core/phpunit.circleci.xml /home/circleci/project/web/modules/custom
 
 workflows:
   version: 2
