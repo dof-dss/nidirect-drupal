@@ -7,7 +7,7 @@ version: 2
 jobs:
   build:
     docker:
-    - image: circleci/php:7.2.20
+    - image: circleci/php:7.2.20-apache-browsers
     steps:
       - run:
           name: Install PHP Extensions
@@ -28,7 +28,8 @@ jobs:
       - save_cache:
           key: composer-{{ checksum "composer.lock" }}
           paths:
-            - $HOME/.composer/cache
+            - .composer/cache
+            - vendor
   test:
     environment:
           DB_HOST: 127.0.0.1
@@ -45,7 +46,10 @@ jobs:
     steps:
       - run:
           name: Install PHP Extensions
-          command: sudo apt-get install -y libpng-dev && sudo docker-php-ext-install gd
+          command: |
+            sudo apt-get install -y libpng-dev mysql-client
+            sudo docker-php-ext-configure pdo_mysql --with-pdo-mysql=mysqlnd
+            sudo docker-php-ext-install gd pdo_mysql
       # Add SSH user key so we can access related repositories as part of our initial clone + composer install command.
       - add_ssh_keys:
           fingerprints:
@@ -62,7 +66,8 @@ jobs:
       - save_cache:
           key: composer-{{ checksum "composer.lock" }}
           paths:
-            - $HOME/.composer/cache
+            - .composer/cache
+            - vendor
       - run:
             name: Set up Drupal environment for CI
             command: |
