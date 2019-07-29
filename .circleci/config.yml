@@ -77,9 +77,9 @@ jobs:
       - run:
             name: Set up Drupal environment for CI
             command: |
+              chmod +w /home/circleci/project/web/sites/default/settings.php
               curl -O -L https://raw.githubusercontent.com/dof-dss/lando-d7-to-d8-migrate/development/config/drupal.settings
               cp -v /home/circleci/project/web/sites/default/default.settings.php /home/circleci/project/web/sites/default/settings.php
-              chmod +w /home/circleci/project/web/sites/default/settings.php
               cat drupal.settings >> /home/circleci/project/web/sites/default/settings.php
               chmod -w /home/circleci/project/web/sites/default/settings.php
       - run:
