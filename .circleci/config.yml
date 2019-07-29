@@ -36,6 +36,7 @@ jobs:
         environment:
           DB_HOST: 127.0.0.1
           DB_USER: root
+          DB_PASS: ''
           DB_NAME: circle_test
           DB_PREFIX: ''
           DB_PORT: 3306
@@ -62,6 +63,7 @@ jobs:
           key: composer-{{ checksum "composer.lock" }}
           paths:
             - vendor
+            - $HOME/.composer/cache
       - run:
             name: Set up Drupal environment for CI
             command: |
@@ -70,7 +72,11 @@ jobs:
               cat drupal.settings >> /home/circleci/project/web/sites/default/settings.php
       - run:
             name: Install Drupal
-            command: cd /home/circleci/project/web && ../vendor/bin/drush si -y standard --site-name="NI Direct"
+            command: |
+              cd /home/circleci/project/web
+              ../vendor/bin/drush version
+              ../vendor/bin/drush status
+              ../vendor/bin/drush site-install -y standard --site-name="NI Direct" --db-url=${DB_DRIVER}://${DB_USER}:${DB_PASS}@${DB_HOST}/${DB_NAME}
       - run:
             name: Unit tests
             command: /home/circleci/project/vendor/bin/phpunit -c /home/circleci/project/web/core/phpunit.xml.dist /home/circleci/project/web/modules/custom
