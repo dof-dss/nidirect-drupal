@@ -62,63 +62,69 @@ jobs:
           fingerprints:
             - "40:ee:b5:e2:37:3d:e5:e0:79:7f:95:a3:1d:b5:7d:c9"
       - checkout
-      - run:
-          name: Validate composer.json and composer.lock file for consistency
-          command: composer validate --no-check-all --strict
-      - run:
-          name: Add GitHub access token for composer
-          command: echo 'composer config -g github-oauth.github.com $GITHUB_TOKEN' >> $BASH_ENV
-      - run:
-          name: Fetch latest commits from dev-* dependencies
-          command: composer require dof-dss/nicsdru_nidirect_theme:dev-master dof-dss/nicsdru_origins_theme:dev-master dof-dss/nidirect-site-modules:dev-development dof-dss/nidirect-migrations:dev-development dof-dss/nidirect-d8-test-install-profile:dev-development
-      - restore_cache:
-          keys:
-          - composer-{{ checksum "composer.lock" }}
-      - run:
-          name: Fetch dependencies with composer
-          command: |
-            composer install --no-interaction --optimize-autoloader
-            composer drupal:scaffold
-      - save_cache:
-          key: composer-{{ checksum "composer.lock" }}
-          paths:
-            - .composer/cache
-            - vendor
-      - run:
-            name: PHPCS static analysis
-            command: /home/circleci/project/phpcs.sh /home/circleci/project "/home/circleci/project/web/modules/custom /home/circleci/project/web/modules/migrate /home/circleci/project/web/themes/custom"
-      - run:
-         name: Deprecated code check
-         command: |
-            curl -O -L https://github.com/mglaman/drupal-check/releases/latest/download/drupal-check.phar
-            mv drupal-check.phar /home/circleci/project/drupal-check
-            chmod +x /home/circleci/project/drupal-check
-            /home/circleci/project/drupal-check /home/circleci/project/web/modules/custom
-      - run:
-            name: Install Drupal
-            command: |
-              cd /home/circleci/project/web
-              ../vendor/bin/drush site-install -y standard --site-name="NI Direct" --db-url=mysql://root:@127.0.0.1/circle_test
-      - run:
-            name: Set up Drupal environment for CI
-            command: |
-              chmod +w /home/circleci/project/web/sites/default/settings.php
-              curl -O -L https://raw.githubusercontent.com/dof-dss/lando-d7-to-d8-migrate/development/config/drupal.settings
-              cp -v /home/circleci/project/web/sites/default/default.settings.php /home/circleci/project/web/sites/default/settings.php
-              cat drupal.settings >> /home/circleci/project/web/sites/default/settings.php
-              chmod -w /home/circleci/project/web/sites/default/settings.php
-              sudo mv /var/www/html /var/www/html.old
-              sudo ln -sf /home/circleci/project/web /var/www/html
-      - run:
-            name: Test connection to Drupal
-            command: |
-              curl http://localhost/user
-      - run:
-            name: PHPUnit tests (unit, kernel)
-            command: |
-              cp web/core/phpunit.xml.dist web/core/phpunit.circleci.xml
-              sed -i -e "s|name=\"SIMPLETEST_BASE_URL\" value=\"\"|name=\"SIMPLETEST_BASE_URL\" value=\"http:\/\/localhost\"|g" web/core/phpunit.circleci.xml
-              /home/circleci/project/vendor/bin/phpunit -c /home/circleci/project/web/core/phpunit.circleci.xml /home/circleci/project/web/modules/custom
+      - run: pwd
+      - run: whoami
+      - run: ls -la
+      - run: ls -la /
+      - run: ls -la ~/
+      - run: env
+      # - run:
+      #     name: Validate composer.json and composer.lock file for consistency
+      #     command: composer validate --no-check-all --strict
+      # - run:
+      #     name: Add GitHub access token for composer
+      #     command: echo 'composer config -g github-oauth.github.com $GITHUB_TOKEN' >> $BASH_ENV
+      # - run:
+      #     name: Fetch latest commits from dev-* dependencies
+      #     command: composer require dof-dss/nicsdru_nidirect_theme:dev-master dof-dss/nicsdru_origins_theme:dev-master dof-dss/nidirect-site-modules:dev-development dof-dss/nidirect-migrations:dev-development dof-dss/nidirect-d8-test-install-profile:dev-development
+      # - restore_cache:
+      #     keys:
+      #     - composer-{{ checksum "composer.lock" }}
+      # - run:
+      #     name: Fetch dependencies with composer
+      #     command: |
+      #       composer install --no-interaction --optimize-autoloader
+      #       composer drupal:scaffold
+      # - save_cache:
+      #     key: composer-{{ checksum "composer.lock" }}
+      #     paths:
+      #       - .composer/cache
+      #       - vendor
+      # - run:
+      #       name: PHPCS static analysis
+      #       command: /home/circleci/project/phpcs.sh /home/circleci/project "/home/circleci/project/web/modules/custom /home/circleci/project/web/modules/migrate /home/circleci/project/web/themes/custom"
+      # - run:
+      #    name: Deprecated code check
+      #    command: |
+      #       curl -O -L https://github.com/mglaman/drupal-check/releases/latest/download/drupal-check.phar
+      #       mv drupal-check.phar /home/circleci/project/drupal-check
+      #       chmod +x /home/circleci/project/drupal-check
+      #       /home/circleci/project/drupal-check /home/circleci/project/web/modules/custom
+      # - run:
+      #       name: Install Drupal
+      #       command: |
+      #         cd /home/circleci/project/web
+      #         ../vendor/bin/drush site-install -y standard --site-name="NI Direct" --db-url=mysql://root:@127.0.0.1/circle_test
+      # - run:
+      #       name: Set up Drupal environment for CI
+      #       command: |
+      #         chmod +w /home/circleci/project/web/sites/default/settings.php
+      #         curl -O -L https://raw.githubusercontent.com/dof-dss/lando-d7-to-d8-migrate/development/config/drupal.settings
+      #         cp -v /home/circleci/project/web/sites/default/default.settings.php /home/circleci/project/web/sites/default/settings.php
+      #         cat drupal.settings >> /home/circleci/project/web/sites/default/settings.php
+      #         chmod -w /home/circleci/project/web/sites/default/settings.php
+      #         sudo mv /var/www/html /var/www/html.old
+      #         sudo ln -sf /home/circleci/project/web /var/www/html
+      # - run:
+      #       name: Test connection to Drupal
+      #       command: |
+      #         curl http://localhost/user
+      # - run:
+      #       name: PHPUnit tests (unit, kernel)
+      #       command: |
+      #         cp web/core/phpunit.xml.dist web/core/phpunit.circleci.xml
+      #         sed -i -e "s|name=\"SIMPLETEST_BASE_URL\" value=\"\"|name=\"SIMPLETEST_BASE_URL\" value=\"http:\/\/localhost\"|g" web/core/phpunit.circleci.xml
+      #         /home/circleci/project/vendor/bin/phpunit -c /home/circleci/project/web/core/phpunit.circleci.xml /home/circleci/project/web/modules/custom
 
 workflows:
   version: 2
