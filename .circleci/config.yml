@@ -87,13 +87,13 @@ jobs:
       - run:
             name: PHPCS static analysis
             command: /home/project/phpcs.sh /home/project "/home/project/web/modules/custom /home/project/web/modules/migrate /home/project/web/themes/custom"
-      - run:
-         name: Deprecated code check
-         command: |
-            curl -O -L https://github.com/mglaman/drupal-check/releases/latest/download/drupal-check.phar
-            mv drupal-check.phar /home/project/drupal-check
-            chmod +x /home/project/drupal-check
-            /home/project/drupal-check /home/project/web/modules/custom
+      # - run:
+      #    name: Deprecated code check
+      #    command: |
+      #       curl -O -L https://github.com/mglaman/drupal-check/releases/latest/download/drupal-check.phar
+      #       mv drupal-check.phar /home/project/drupal-check
+      #       chmod +x /home/project/drupal-check
+      #       /home/project/drupal-check /home/project/web/modules/custom
       - run:
             name: Install Drupal
             command: |
