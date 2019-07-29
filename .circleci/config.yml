@@ -28,7 +28,7 @@ jobs:
       - save_cache:
           key: composer-{{ checksum "composer.lock" }}
           paths:
-            - vendor
+            - ~/home/circleci/project/.composer/cache
   test:
     docker:
       - image: circleci/php:7.2-node-browsers
@@ -69,13 +69,13 @@ jobs:
               curl -O -L https://raw.githubusercontent.com/dof-dss/lando-d7-to-d8-migrate/development/config/drupal.settings
               cp -v /home/circleci/project/web/sites/default/default.settings.php /home/circleci/project/web/sites/default/settings.php
               cat drupal.settings >> /home/circleci/project/web/sites/default/settings.php
+      - run: "cat /home/circleci/project/web/sites/default/settings.php"
       - run:
             name: Install Drupal
             command: |
               cd /home/circleci/project/web
               ../vendor/bin/drush version
               ../vendor/bin/drush status
-              cat /home/circleci/project/web/sites/default/settings.php
               ../vendor/bin/drush site-install -y standard --site-name="NI Direct" --db-url=mysql://root:@127.0.0.1/circle_test
       - run:
             name: Unit tests
