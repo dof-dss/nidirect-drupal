@@ -28,12 +28,9 @@ jobs:
       - save_cache:
           key: composer-{{ checksum "composer.lock" }}
           paths:
-            - ~/home/circleci/project/.composer/cache
+            - $HOME/.composer/cache
   test:
-    docker:
-      - image: circleci/php:7.2-node-browsers
-      - image: circleci/mysql:5.7.27
-        environment:
+    environment:
           DB_HOST: 127.0.0.1
           DB_USER: root
           DB_PASS: ''
@@ -42,6 +39,9 @@ jobs:
           DB_PORT: 3306
           DB_NAMESPACE: Drupal\Core\Database\Driver\mysql
           DB_DRIVER: mysql
+    docker:
+      - image: circleci/php:7.2-node-browsers
+      - image: circleci/mysql:5.7.27
     steps:
       - run:
           name: Install PHP Extensions
@@ -62,7 +62,7 @@ jobs:
       - save_cache:
           key: composer-{{ checksum "composer.lock" }}
           paths:
-            - ~/home/circleci/project/.composer/cache
+            - $HOME/.composer/cache
       - run:
             name: Set up Drupal environment for CI
             command: |
