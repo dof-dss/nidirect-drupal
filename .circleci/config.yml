@@ -48,9 +48,9 @@ jobs:
           name: Install PHP Extensions
           command: |
             sudo apt update
+            sudo apt-get install -y libpng-dev mysql-client
             sudo docker-php-ext-configure pdo_mysql --with-pdo-mysql=mysqlnd
             sudo docker-php-ext-install gd pdo_mysql
-            sudo apt-get install -y libpng-dev mysql-client
       # Add SSH user key so we can access related repositories as part of our initial clone + composer install command.
       - add_ssh_keys:
           fingerprints:
