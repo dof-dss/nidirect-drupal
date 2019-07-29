@@ -70,19 +70,16 @@ jobs:
             - .composer/cache
             - vendor
       - run:
+            name: Install Drupal
+            command: |
+              cd /home/circleci/project/web
+              ../vendor/bin/drush site-install -y standard --site-name="NI Direct" --db-url=mysql://root:@127.0.0.1/circle_test
+      - run:
             name: Set up Drupal environment for CI
             command: |
               curl -O -L https://raw.githubusercontent.com/dof-dss/lando-d7-to-d8-migrate/development/config/drupal.settings
               cp -v /home/circleci/project/web/sites/default/default.settings.php /home/circleci/project/web/sites/default/settings.php
               cat drupal.settings >> /home/circleci/project/web/sites/default/settings.php
-      - run: "cat /home/circleci/project/web/sites/default/settings.php"
-      - run:
-            name: Install Drupal
-            command: |
-              cd /home/circleci/project/web
-              ../vendor/bin/drush version
-              ../vendor/bin/drush status
-              ../vendor/bin/drush site-install -y standard --site-name="NI Direct" --db-url=mysql://root:@127.0.0.1/circle_test
       - run:
             name: Unit tests
             command: /home/circleci/project/vendor/bin/phpunit -c /home/circleci/project/web/core/phpunit.xml.dist /home/circleci/project/web/modules/custom
