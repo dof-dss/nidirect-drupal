@@ -1,0 +1,20 @@
+<VirtualHost *:80>
+    RewriteEngine On
+    #RewriteCond %{HTTP:X-Forwarded-Proto} =https
+    RewriteCond    %{DOCUMENT_ROOT}%{REQUEST_FILENAME} -d
+    #RewriteRule    ^(.+[^/])$           http://%{HTTP_HOST}$1/ [redirect,last]
+
+	ServerAdmin webmaster@localhost
+	DocumentRoot /var/www/html/web
+	<Directory "/var/www/html/web/">
+
+	# Available loglevels: trace8, ..., trace1, debug, info, notice, warn,
+	# error, crit, alert, emerg.
+	# It is also possible to configure the loglevel for particular
+	# modules, e.g.
+	#LogLevel info ssl:warn
+
+	ErrorLog /dev/stdout
+	CustomLog /var/log/apache2/access.log combined
+
+</VirtualHost>
