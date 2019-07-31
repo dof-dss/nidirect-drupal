@@ -61,11 +61,11 @@ jobs:
               cd /home/circleci/project/web
               cp sites/default/default.settings.php sites/default/settings.php
               cp sites/default/default.services.yml sites/default/services.yml
-              ../vendor/bin/drush site-install -y standard --site-name="NI Direct" --db-url=mysql://root:@127.0.0.1/circle_test
               chmod +w sites/default/settings.php
               # Copy in our environment specific settings to the settings.php file.
-              cp ../.circleci/drupal.settings.php sites/default/settings.php
+              cp /home/circleci/project/.circleci/drupal.settings.php sites/default/settings.php
               chmod -w sites/default/settings.php
+              ../vendor/bin/drush site-install -y standard --site-name="NI Direct"
       - run:
             name: Copy files into webroot
             command: |
