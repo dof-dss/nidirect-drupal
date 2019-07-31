@@ -1,20 +1,28 @@
 <VirtualHost *:80>
-    RewriteEngine On
-    #RewriteCond %{HTTP:X-Forwarded-Proto} =https
-    RewriteCond    %{DOCUMENT_ROOT}%{REQUEST_FILENAME} -d
-    #RewriteRule    ^(.+[^/])$           http://%{HTTP_HOST}$1/ [redirect,last]
-
 	ServerAdmin webmaster@localhost
 	DocumentRoot /var/www/html/web
+  # ServerName circleci
+
+  RewriteEngine on
+  RewriteBase /
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteCond %{REQUEST_URI} !=/favicon.ico
+  RewriteRule ^ index.php [L]
+
+  <Directory />
+    Options FollowSymLinks
+    AllowOverride None
+  </Directory>
+
 	<Directory "/var/www/html/web/">
+    Options Indexes FollowSymLinks
+    AllowOverride All
+    Order allow,deny
+    Allow from all
+  </Directory>
 
-	# Available loglevels: trace8, ..., trace1, debug, info, notice, warn,
-	# error, crit, alert, emerg.
-	# It is also possible to configure the loglevel for particular
-	# modules, e.g.
-	#LogLevel info ssl:warn
-
-	ErrorLog /dev/stdout
-	CustomLog /var/log/apache2/access.log combined
+  ErrorLog /dev/stdout
+  CustomLog ${APACHE_LOG_DIR}/access.log combined
 
 </VirtualHost>
