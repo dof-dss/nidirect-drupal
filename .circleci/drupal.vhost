@@ -1,25 +1,21 @@
 <VirtualHost *:80>
 	ServerAdmin webmaster@localhost
-	DocumentRoot /var/www/html/web
-  # ServerName circleci
-
-  RewriteEngine on
-  RewriteBase /
-  RewriteCond %{REQUEST_FILENAME} !-f
-  RewriteCond %{REQUEST_FILENAME} !-d
-  RewriteCond %{REQUEST_URI} !=/favicon.ico
-  RewriteRule ^ index.php [L]
-
-  <Directory />
-    Options FollowSymLinks
-    AllowOverride None
-  </Directory>
+	DocumentRoot /var/www/html
 
 	<Directory "/var/www/html/web/">
+
     Options Indexes FollowSymLinks
     AllowOverride All
     Order allow,deny
     Allow from all
+
+    RewriteEngine on
+    RewriteBase /
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_URI} !=/favicon.ico
+    RewriteRule ^ index.php [L]
+
   </Directory>
 
   ErrorLog /dev/stdout

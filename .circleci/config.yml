@@ -18,12 +18,13 @@ jobs:
       - image: circleci/php:7.2.20-apache-browsers
       - image: circleci/mysql:5.7.27
     steps:
-      - run:
-            name: Add PHP extensions
-            command: |
-              sudo apt-get update
-              sudo apt-get install -y libpng-dev mariadb-client
-              sudo docker-php-ext-install gd pdo_mysql
+      # - run:
+      #       name: Add OS and PHP extensions
+      #       command: |
+      #         sudo apt-get update
+      #         sudo apt-get install -y libpng-dev mariadb-client rsync
+      #         sudo docker-php-ext-install gd pdo_mysql
+      #         composer global require hirak/prestissimo
       # Add SSH user key so we can access related repositories as part of our initial clone + composer install command.
       - add_ssh_keys:
           fingerprints:
@@ -39,43 +40,51 @@ jobs:
               sudo service apache2 start
               sudo a2dissite 000-default
               sudo a2ensite drupal
-      - run:
-          name: Validate composer.json and composer.lock file for consistency
-          command: composer validate --no-check-all --strict
-      - run:
-          name: Add GitHub access token for composer
-          command: echo 'composer config -g github-oauth.github.com $GITHUB_TOKEN' >> $BASH_ENV
-      - run:
-          name: Fetch dependencies with composer
-          command: |
-            composer install --no-interaction --optimize-autoloader
-            composer drupal:scaffold
-      - run:
-            name: Install Drupal and configure settings
-            command: |
-              # Should be scaffolded by now.
-              cd /home/circleci/project/web
-              cp sites/default/default.settings.php sites/default/settings.php
-              ../vendor/bin/drush site-install -y standard --site-name="NI Direct" --db-url=mysql://root:@127.0.0.1/circle_test
-              chmod +w sites/default/settings.php
-              curl -O -L https://raw.githubusercontent.com/dof-dss/lando-d7-to-d8-migrate/development/config/drupal.settings
-              # Append our environment specific settings to the settings.php file.
-              cat drupal.settings >> sites/default/settings.php
-              # Switch off write access when done as recommended by Drupal installer.
-              chmod -w sites/default/settings.php
-      - run:
-            name: Set up Drupal environment for CI
-            command: |
-              # Move old docroot to the site.
-              sudo mv /var/www/html /var/www/html.old
-              # Copy our build into position.
-              sudo cp -R /home/circleci/project /var/www/html
-      - run:
-            name: Test connection to Drupal
-            command: |
-              # Fetch a static file.
-              curl http://localhost/README.md
-              # Fetch a php file
-              curl http://localhost/install.php
-              # Fetch an aliased path.
-              curl http://localhost/user/login
+              sudo service apache2 reload
+              sudo apache2ctl -S
+              # sudo apachectl -k restart
+      # - run:
+      #     name: Validate composer.json and composer.lock file for consistency
+      #     command: composer validate --no-check-all --strict
+      # - run:
+      #     name: Add GitHub access token for composer
+      #     command: echo 'composer config -g github-oauth.github.com $GITHUB_TOKEN' >> $BASH_ENV
+      # - run:
+      #     name: Fetch dependencies with composer
+      #     command: |
+      #       composer install --no-interaction --optimize-autoloader
+      #       composer drupal:scaffold
+      #       composer run-script post-install-cmd
+      # - run:
+      #       name: Install Drupal and configure settings
+      #       command: |
+      #         # Should be scaffolded by now.
+      #         cd /home/circleci/project/web
+      #         cp sites/default/default.settings.php sites/default/settings.php
+      #         ../vendor/bin/drush site-install -y standard --site-name="NI Direct" --db-url=mysql://root:@127.0.0.1/circle_test
+      #         chmod +w sites/default/settings.php
+      #         curl -O -L https://raw.githubusercontent.com/dof-dss/lando-d7-to-d8-migrate/development/config/drupal.settings
+      #         # Append our environment specific settings to the settings.php file.
+      #         cat drupal.settings >> sites/default/settings.php
+      #         echo '$config_directories[CONFIG_SYNC_DIRECTORY] = "../config/sync";' >> sites/default/settings.php
+      # - run:
+      #       name: Set up Drupal environment for CI
+      #       command: |
+      #         # Move old docroot to the site.
+      #         sudo mv /var/www/html /var/www/html.old
+      #         # Copy our build into position (./ suffix ensures hidden files are copied too).
+      #         sudo rsync -av /home/circleci/project/. /var/www/html
+      # - run:
+      #       name: Test Drupal status with ../vendor/bin/drush
+      #       command: |
+      #         cd /var/www/html/web
+      #         ../vendor/bin/drush status
+      # - run:
+      #       name: What is in the docroot?
+      #       command: |
+      #         ls -la /var/www/html/web
+      # - run:
+      #       name: Test connection to Drupal
+      #       command: |
+      #         # Fetch an aliased path.
+      #         curl http://localhost/user/login
