@@ -60,25 +60,38 @@ jobs:
               # Should be scaffolded by now.
               cd /home/circleci/project/web
               cp sites/default/default.settings.php sites/default/settings.php
+              cp sites/default/default.services.yml sites/default/services.yml
               ../vendor/bin/drush site-install -y standard --site-name="NI Direct" --db-url=mysql://root:@127.0.0.1/circle_test
               chmod +w sites/default/settings.php
-              curl -O -L https://raw.githubusercontent.com/dof-dss/lando-d7-to-d8-migrate/development/config/drupal.settings
-              # Append our environment specific settings to the settings.php file.
-              cat drupal.settings >> sites/default/settings.php
-              echo '$config_directories[CONFIG_SYNC_DIRECTORY] = "../config/sync";' >> sites/default/settings.php
+              # Copy in our environment specific settings to the settings.php file.
+              cp ../.circleci/drupal.settings.php sites/default/settings.php
+              chmod -w sites/default/settings.php
       - run:
-            name: Set up Drupal environment for CI
+            name: Copy files into webroot
             command: |
               # Copy our build into position (./ suffix ensures hidden files are copied too).
-              sudo rsync -av /home/circleci/project/. /var/www/html
+              sudo rsync -avq /home/circleci/project/. /var/www/html
       - run:
-            name: Test connection to Drupal
-            command: |
-              # Fetch an aliased path.
-              curl http://localhost/user/login
-      - run:
-          name: See what is bothering or mising in Drupal
+          name: Test Drush commands (cron)
           command: |
             cd /var/www/html/web
-            ../vendor/bin/drush ws
-            cat /var/log/apache2/error.log
+            ../vendor/bin/drush --uri=http://localhost cron
+
+      - run:
+            name: Dump settings file
+            command: |
+              cat /var/www/html/web/sites/default/settings.php
+      - run:
+            name: Test connection to Drupal homepage
+            command: |
+              # Fetch homepage
+              curl http://localhost/
+      - run:
+            name: Test connection to Drupal path
+            command: |
+              curl http://localhost/user/register
+      - run:
+          name: DB log
+          command: |
+            cd /var/www/html/web
+            ../vendor/bin/drush --uri=http://localhost ws
