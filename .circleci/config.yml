@@ -73,11 +73,10 @@ jobs:
       - run:
             name: Enable web server and vhosts
             command: |
-              sudo service apache2 start
+              sudo a2enmod rewrite
               sudo a2dissite 000-default
               sudo a2ensite drupal
-              sudo a2enmod rewrite
-              sudo service apache2 restart
+              sudo service apache2 start
       - run:
           name: Validate composer.json and composer.lock file for consistency
           command: composer validate --no-check-all --strict
