@@ -72,16 +72,13 @@ jobs:
               # Copy our build into position (./ suffix ensures hidden files are copied too).
               sudo rsync -av /home/circleci/project/. /var/www/html
       - run:
-            name: Test Drupal status with ../vendor/bin/drush
-            command: |
-              cd /var/www/html/web
-              ../vendor/bin/drush status
-      - run:
-            name: What is in the docroot?
-            command: |
-              ls -la /var/www/html/web
-      - run:
             name: Test connection to Drupal
             command: |
               # Fetch an aliased path.
               curl http://localhost/user/login
+      - run:
+          name: See what is bothering or mising in Drupal
+          command: |
+            cd /var/www/html/web
+            ../vendor/bin/drush ws
+            cat /var/log/apache2/error.log
