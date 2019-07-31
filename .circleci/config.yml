@@ -4,6 +4,42 @@
 version: 2
 
 jobs:
+  build:
+    docker:
+      - image: circleci/php:7.2.20-apache-browsers
+    steps:
+      - run:
+            name: Add OS and PHP extensions
+            command: |
+              sudo apt-get update
+              sudo apt-get install -y libpng-dev
+              sudo docker-php-ext-install gd
+              composer global require hirak/prestissimo
+      # Add SSH user key so we can access related repositories as part of our initial clone + composer install command.
+      - add_ssh_keys:
+          fingerprints:
+            - "40:ee:b5:e2:37:3d:e5:e0:79:7f:95:a3:1d:b5:7d:c9"
+      - checkout
+      - run:
+          name: Validate composer.json and composer.lock file for consistency
+          command: composer validate --no-check-all --strict
+      - run:
+          name: Add GitHub access token for composer
+          command: echo 'composer config -g github-oauth.github.com $GITHUB_TOKEN' >> $BASH_ENV
+      - restore_cache:
+          keys:
+          - composer-{{ checksum "composer.lock" }}
+      - run:
+          name: Fetch dependencies with composer
+          command: |
+            composer install --no-interaction --optimize-autoloader
+            composer drupal:scaffold
+            composer run-script post-install-cmd
+      - save_cache:
+          key: composer-{{ checksum "composer.lock" }}
+          paths:
+            - $HOME/.composer/cache
+
   test:
     environment:
           DB_HOST: 127.0.0.1
@@ -48,12 +84,31 @@ jobs:
       - run:
           name: Add GitHub access token for composer
           command: echo 'composer config -g github-oauth.github.com $GITHUB_TOKEN' >> $BASH_ENV
+      - restore_cache:
+          keys:
+          - composer-{{ checksum "composer.lock" }}
       - run:
           name: Fetch dependencies with composer
           command: |
             composer install --no-interaction --optimize-autoloader
             composer drupal:scaffold
             composer run-script post-install-cmd
+      - save_cache:
+          key: composer-{{ checksum "composer.lock" }}
+          paths:
+            - $HOME/.composer/cache
+      # PHPCS (bail early if there are basic faults).
+      - run:
+          name: PHPCS static analysis
+          command: /home/circleci/project/phpcs.sh /home/circleci/project "/home/circleci/project/web/modules/custom /home/circleci/project/web/modules/migrate /home/circleci/project/web/themes/custom"
+      # Deprecated code check (stop early if we're using code we need to fix).
+      # - run:
+      #    name: Deprecated code check
+      #    command: |
+      #       curl -O -L https://github.com/mglaman/drupal-check/releases/latest/download/drupal-check.phar
+      #       mv drupal-check.phar /home/circleci/project/drupal-check
+      #       chmod +x /home/circleci/project/drupal-check
+      #       /home/circleci/project/drupal-check /home/circleci/project/web/modules/custom
       - run:
             name: Install Drupal and configure settings
             command: |
@@ -63,6 +118,10 @@ jobs:
               cp sites/default/default.services.yml sites/default/services.yml
               # Copy in our environment specific settings to the settings.php file.
               cp /home/circleci/project/.circleci/drupal.settings.php sites/default/settings.php
+              # PHPUnit config.
+              cp core/phpunit.xml.dist core/phpunit.circleci.xml
+              sed -i -e "s|name=\"SIMPLETEST_BASE_URL\" value=\"\"|name=\"SIMPLETEST_BASE_URL\" value=\"http:\/\/localhost\"|g" core/phpunit.circleci.xml
+              # Install Drupal (or restore from DB dump at this point).
               ../vendor/bin/drush site-install -y standard --site-name="NI Direct"
       - run:
             name: Copy files into webroot
@@ -70,26 +129,14 @@ jobs:
               # Copy our build into position (./ suffix ensures hidden files are copied too).
               sudo rsync -avq /home/circleci/project/. /var/www/html
       - run:
-          name: Test Drush commands (cron)
-          command: |
-            cd /var/www/html/web
-            ../vendor/bin/drush --uri=http://localhost cron
+            name: PHPUnit tests (unit, kernel)
+            command: |
+              cd /var/www/html/web
+              ../vendor/bin/phpunit -c core/phpunit.circleci.xml modules/custom
 
-      - run:
-            name: Dump settings file
-            command: |
-              cat /var/www/html/web/sites/default/settings.php
-      - run:
-            name: Test connection to Drupal homepage
-            command: |
-              # Fetch homepage
-              curl http://localhost/
-      - run:
-            name: Test connection to Drupal path
-            command: |
-              curl http://localhost/user/register
-      - run:
-          name: DB log
-          command: |
-            cd /var/www/html/web
-            ../vendor/bin/drush --uri=http://localhost ws
+workflows:
+  version: 2
+  build_and_test: # A single workflow named "build_and_test"
+    jobs: # we run our `build` job and `test` job in sequence.
+      - build
+      - test
