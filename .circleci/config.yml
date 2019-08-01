@@ -131,7 +131,8 @@ jobs:
             name: PHPUnit tests (unit, kernel)
             command: |
               cd /var/www/html/web
-              ../vendor/bin/phpunit -c core/phpunit.circleci.xml modules/custom
+              # Run as www-data to ensure any underlying file/folder permissions are respected.
+              sudo -u www-data ../vendor/bin/phpunit -c core/phpunit.circleci.xml modules/custom
 
 workflows:
   version: 2
