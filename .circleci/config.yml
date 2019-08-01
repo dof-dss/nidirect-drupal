@@ -119,11 +119,15 @@ jobs:
               cp sites/default/default.services.yml sites/default/services.yml
               # Copy in our environment specific settings to the settings.php file.
               cp /home/circleci/project/.circleci/drupal.settings.php sites/default/settings.php
-              # PHPUnit config.
-              cp core/phpunit.xml.dist core/phpunit.circleci.xml
-              sed -i -e "s|name=\"SIMPLETEST_BASE_URL\" value=\"\"|name=\"SIMPLETEST_BASE_URL\" value=\"http:\/\/localhost\"|g" core/phpunit.circleci.xml
+              # Copy PHPUnit config into core folder.
+              cp /home/circleci/project/.circleci/phpunit.circleci.xml core/phpunit.xml
               # Install Drupal (or restore from DB dump at this point).
               ../vendor/bin/drush site-install -y standard --site-name="NI Direct"
+      - run:
+            name: Set up PHPUnit directories/settings
+            command: |
+              mkdir -p /var/www/html/web/sites/default/files/simpletest/browser_output
+              sudo chmod 755 -R /var/www/html/web/sites/default/files/simpletest
       - run:
             name: Copy files into webroot
             command: |
@@ -133,8 +137,7 @@ jobs:
             name: PHPUnit tests (unit, kernel)
             command: |
               cd /var/www/html/web
-              # Run as www-data to ensure any underlying file/folder permissions are respected.
-              sudo -u www-data ../vendor/bin/phpunit -c core/phpunit.circleci.xml modules/custom
+              ../vendor/bin/phpunit -c core/phpunit.circleci.xml modules/custom
 
 workflows:
   version: 2
