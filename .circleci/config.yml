@@ -7,6 +7,7 @@ jobs:
   build:
     docker:
       - image: circleci/php:7.2.20-apache-browsers
+    parallelism: 2
     steps:
       - run:
             name: Add OS and PHP extensions
