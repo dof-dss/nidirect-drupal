@@ -120,7 +120,7 @@ jobs:
               # Copy in our environment specific settings to the settings.php file.
               cp /home/circleci/project/.circleci/drupal.settings.php sites/default/settings.php
               # Copy PHPUnit config into core folder.
-              cp /home/circleci/project/.circleci/phpunit.circleci.xml core/phpunit.xml
+              cp /home/circleci/project/.circleci/phpunit.circleci.xml core/
               # Install Drupal (or restore from DB dump at this point).
               ../vendor/bin/drush site-install -y standard --site-name="NI Direct"
       - run:
