@@ -53,6 +53,7 @@ jobs:
     docker:
       - image: circleci/php:7.2.20-apache-browsers
       - image: circleci/mysql:5.7.27
+    parallelism: 4
     steps:
       - run:
             name: Add OS and PHP extensions
