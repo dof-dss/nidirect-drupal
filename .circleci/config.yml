@@ -57,12 +57,13 @@ jobs:
     parallelism: 4
     steps:
       - run:
-            name: Add OS and PHP extensions
+            name: Add OS and PHP extensions/config
             command: |
               sudo apt-get update
               sudo apt-get install -y libpng-dev mariadb-client rsync
               sudo docker-php-ext-install gd pdo_mysql
               composer global require hirak/prestissimo
+              echo “memory_limit = 512M” > PHPENV_ROOT/versions/(phpenv global)/etc/conf.d/memory.ini
       # Add SSH user key so we can access related repositories as part of our initial clone + composer install command.
       - add_ssh_keys:
           fingerprints:
