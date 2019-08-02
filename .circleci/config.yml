@@ -131,10 +131,20 @@ jobs:
               # Copy our build into position (./ suffix ensures hidden files are copied too).
               sudo rsync -avq /home/circleci/project/. /var/www/html
       - run:
-            name: PHPUnit tests (unit, kernel)
+            name: PHPUnit tests (unit)
             command: |
               cd /var/www/html/web
-              ../vendor/bin/phpunit -c core/phpunit.circleci.xml modules/custom
+              ../vendor/bin/phpunit -c core/phpunit.circleci.xml modules/custom --group=unit
+      - run:
+            name: PHPUnit tests (kernel)
+            command: |
+              cd /var/www/html/web
+              ../vendor/bin/phpunit -c core/phpunit.circleci.xml modules/custom --group=kernel
+      # - run:
+      #       name: PHPUnit tests (browser)
+      #       command: |
+      #         cd /var/www/html/web
+      #         ../vendor/bin/phpunit -c core/phpunit.circleci.xml modules/custom --group=browser
 
 workflows:
   version: 2
