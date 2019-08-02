@@ -64,6 +64,7 @@ jobs:
               sudo docker-php-ext-install gd pdo_mysql
               composer global require hirak/prestissimo
               sudo sed -i -e"s|memory_limit = 128M|memory_limit = 512M|g" /usr/local/etc/php/php.ini-production
+              sudo sed -i -e"s|memory_limit = 128M|memory_limit = 512M|g" /usr/local/etc/php/php.ini-development
       # Add SSH user key so we can access related repositories as part of our initial clone + composer install command.
       - add_ssh_keys:
           fingerprints:
