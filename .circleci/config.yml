@@ -63,7 +63,7 @@ jobs:
               sudo apt-get install -y libpng-dev mariadb-client rsync
               sudo docker-php-ext-install gd pdo_mysql
               composer global require hirak/prestissimo
-              echo “memory_limit = 512M” > PHPENV_ROOT/versions/(phpenv global)/etc/conf.d/memory.ini
+              echo "memory_limit = 512M" > /opt/circleci/php/$(phpenv global)/etc/conf.d/memory.ini
       # Add SSH user key so we can access related repositories as part of our initial clone + composer install command.
       - add_ssh_keys:
           fingerprints:
