@@ -127,8 +127,9 @@ jobs:
               ../vendor/bin/drush site-install -y standard --site-name="NI Direct"
               # Enable migrate_nidirect_utils.
               ../vendor/bin/drush en -y migrate_nidirect_utils
-              # Run drupal console commands to ease config import.
-              ../vendor/bin/drupal nidirect:migrate:pre
+              # No migrate db, so fudge the drupal-console commands into drush equivalents.
+              ../vendor/bin/drush cset -y "system.site" uuid "8504fb68-5bf0-4d09-869b-245412b8c47d"
+              ../vendor/bin/drush ev '\Drupal::entityManager()->getStorage("shortcut_set")->load("default")->delete();'
               # Import our config.
               ../vendor/bin/drush cim -y
       - run:
