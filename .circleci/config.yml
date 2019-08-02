@@ -4,42 +4,42 @@
 version: 2
 
 jobs:
-  build:
-    docker:
-      - image: circleci/php:7.2.20-apache-browsers
-    parallelism: 2
-    steps:
-      - run:
-            name: Add OS and PHP extensions
-            command: |
-              sudo apt-get update
-              sudo apt-get install -y libpng-dev
-              sudo docker-php-ext-install gd
-              composer global require hirak/prestissimo
-      # Add SSH user key so we can access related repositories as part of our initial clone + composer install command.
-      - add_ssh_keys:
-          fingerprints:
-            - "40:ee:b5:e2:37:3d:e5:e0:79:7f:95:a3:1d:b5:7d:c9"
-      - checkout
-      - run:
-          name: Validate composer.json and composer.lock file for consistency
-          command: composer validate --no-check-all --strict
-      - run:
-          name: Add GitHub access token for composer
-          command: echo 'composer config -g github-oauth.github.com $GITHUB_TOKEN' >> $BASH_ENV
-      - restore_cache:
-          keys:
-          - composer-{{ checksum "composer.lock" }}
-      - run:
-          name: Fetch dependencies with composer
-          command: |
-            composer install --no-interaction --optimize-autoloader
-            composer drupal:scaffold
-            composer run-script post-install-cmd
-      - save_cache:
-          key: composer-{{ checksum "composer.lock" }}
-          paths:
-            - $HOME/.composer/cache
+  # build:
+  #   docker:
+  #     - image: circleci/php:7.2.20-apache-browsers
+  #   parallelism: 2
+  #   steps:
+  #     - run:
+  #           name: Add OS and PHP extensions
+  #           command: |
+  #             sudo apt-get update
+  #             sudo apt-get install -y libpng-dev
+  #             sudo docker-php-ext-install gd
+  #             composer global require hirak/prestissimo
+  #     # Add SSH user key so we can access related repositories as part of our initial clone + composer install command.
+  #     - add_ssh_keys:
+  #         fingerprints:
+  #           - "40:ee:b5:e2:37:3d:e5:e0:79:7f:95:a3:1d:b5:7d:c9"
+  #     - checkout
+  #     - run:
+  #         name: Validate composer.json and composer.lock file for consistency
+  #         command: composer validate --no-check-all --strict
+  #     - run:
+  #         name: Add GitHub access token for composer
+  #         command: echo 'composer config -g github-oauth.github.com $GITHUB_TOKEN' >> $BASH_ENV
+  #     - restore_cache:
+  #         keys:
+  #         - composer-{{ checksum "composer.lock" }}
+  #     - run:
+  #         name: Fetch dependencies with composer
+  #         command: |
+  #           composer install --no-interaction --optimize-autoloader
+  #           composer drupal:scaffold
+  #           composer run-script post-install-cmd
+  #     - save_cache:
+  #         key: composer-{{ checksum "composer.lock" }}
+  #         paths:
+  #           - $HOME/.composer/cache
 
   test:
     environment:
@@ -115,6 +115,8 @@ jobs:
             command: |
               # Should be scaffolded by now.
               cd /home/circleci/project/web
+              mkdir -p sites/default/files
+              chmod 755 -R sites/default/files
               cp sites/default/default.settings.php sites/default/settings.php
               cp sites/default/default.services.yml sites/default/services.yml
               # Copy in our environment specific settings to the settings.php file.
@@ -143,5 +145,5 @@ workflows:
   version: 2
   build_and_test: # A single workflow named "build_and_test"
     jobs: # we run our `build` job and `test` job in sequence.
-      - build
+      # - build
       - test
