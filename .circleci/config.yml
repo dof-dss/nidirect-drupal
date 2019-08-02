@@ -125,6 +125,12 @@ jobs:
               cp /home/circleci/project/.circleci/phpunit.circleci.xml core/
               # Install Drupal (or restore from DB dump at this point).
               ../vendor/bin/drush site-install -y standard --site-name="NI Direct"
+              # Enable migrate_nidirect_utils.
+              ../vendor/bin/drush en -y migrate_nidirect_utils
+              # Run drupal console commands to ease config import.
+              ../vendor/bin/drupal nidirect:migrate:pre
+              # Import our config.
+              ../vendor/bin/drush cim -y
       - run:
             name: Copy files into webroot
             command: |
