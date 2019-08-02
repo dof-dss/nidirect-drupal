@@ -115,8 +115,8 @@ jobs:
             command: |
               # Should be scaffolded by now.
               cd /home/circleci/project/web
-              mkdir -p sites/default/files
-              chmod 755 -R sites/default/files
+              mkdir -p /var/www/html/web/sites/default/files/simpletest/browser_output
+              chmod 777 -R sites/default/files
               cp sites/default/default.settings.php sites/default/settings.php
               cp sites/default/default.services.yml sites/default/services.yml
               # Copy in our environment specific settings to the settings.php file.
@@ -125,11 +125,6 @@ jobs:
               cp /home/circleci/project/.circleci/phpunit.circleci.xml core/
               # Install Drupal (or restore from DB dump at this point).
               ../vendor/bin/drush site-install -y standard --site-name="NI Direct"
-      - run:
-            name: Set up PHPUnit directories/settings
-            command: |
-              mkdir -p /var/www/html/web/sites/default/files/simpletest/browser_output
-              sudo chmod 755 -R /var/www/html/web/sites/default/files/simpletest
       - run:
             name: Copy files into webroot
             command: |
