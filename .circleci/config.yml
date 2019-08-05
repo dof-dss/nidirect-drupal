@@ -11,7 +11,7 @@ jobs:
       - run:
             name: Add OS and PHP extensions/config
             command: |
-              sudo cp $CIRCLE_WORKING_DIRECTORY/.circleci/docker-php-circleci.ini /usr/local/etc/php/conf.d/
+              sudo cp $WORKING_DIRECTORY/.circleci/docker-php-circleci.ini /usr/local/etc/php/conf.d/
               sudo apt-get update
               sudo apt-get install -y libpng-dev
               sudo docker-php-ext-install gd
@@ -59,7 +59,7 @@ jobs:
       - run:
             name: Add OS and PHP extensions/config
             command: |
-              echo 'sudo cp $CIRCLE_WORKING_DIRECTORY/.circleci/docker-php-circleci.ini /usr/local/etc/php/conf.d/' >> $BASH_ENV
+              echo 'sudo cp $WORKING_DIRECTORY/.circleci/docker-php-circleci.ini /usr/local/etc/php/conf.d/' >> $BASH_ENV
               sudo apt-get update
               sudo apt-get install -y libpng-dev mariadb-client rsync
               sudo docker-php-ext-install gd pdo_mysql
@@ -67,7 +67,7 @@ jobs:
       - run:
             name: Copy vhost into place
             command: |
-              echo 'sudo cp $CIRCLE_WORKING_DIRECTORY/.circleci/drupal.vhost /etc/apache2/sites-available/drupal.conf' >> $BASH_ENV
+              echo 'sudo cp $WORKING_DIRECTORY/.circleci/drupal.vhost /etc/apache2/sites-available/drupal.conf' >> $BASH_ENV
       - run:
             name: Configure web server, vhosts and start service.
             command: |
@@ -102,24 +102,24 @@ jobs:
       # PHPCS (bail early if there are basic faults).
       - run:
           name: PHPCS static analysis
-          command: echo '$CIRCLE_WORKING_DIRECTORY/phpcs.sh $CIRCLE_WORKING_DIRECTORY "$CIRCLE_WORKING_DIRECTORY/web/modules/custom $CIRCLE_WORKING_DIRECTORY/web/modules/migrate $CIRCLE_WORKING_DIRECTORY/web/themes/custom"' >> $BASH_ENV
+          command: echo '$WORKING_DIRECTORY/phpcs.sh $WORKING_DIRECTORY "$WORKING_DIRECTORY/web/modules/custom $WORKING_DIRECTORY/web/modules/migrate $WORKING_DIRECTORY/web/themes/custom"' >> $BASH_ENV
       # Deprecated code check (stop early if we're using code we need to fix).
       - run:
          name: Deprecated code check
          command: |
-            echo 'cd $CIRCLE_WORKING_DIRECTORY && vendor/bin/drupal-check $CIRCLE_WORKING_DIRECTORY/web/modules/custom' >> $BASH_ENV
+            echo 'cd $WORKING_DIRECTORY && vendor/bin/drupal-check $WORKING_DIRECTORY/web/modules/custom' >> $BASH_ENV
       - run:
             name: Install Drupal and configure settings
             command: |
               # Should be scaffolded by now.
-              echo 'cd $CIRCLE_WORKING_DIRECTORY/web' >> $BASH_ENV
+              echo 'cd $WORKING_DIRECTORY/web' >> $BASH_ENV
               chmod 777 -R sites/default/files
               cp sites/default/default.settings.php sites/default/settings.php
               cp sites/default/default.services.yml sites/default/services.yml
               # Copy in our environment specific settings to the settings.php file.
-              echo 'cp $CIRCLE_WORKING_DIRECTORY/.circleci/drupal.settings.php sites/default/settings.php' >> $BASH_ENV
+              echo 'cp $WORKING_DIRECTORY/.circleci/drupal.settings.php sites/default/settings.php' >> $BASH_ENV
               # Copy PHPUnit config into core folder.
-              echo 'cp $CIRCLE_WORKING_DIRECTORY/.circleci/phpunit.circleci.xml core/' >> $BASH_ENV
+              echo 'cp $WORKING_DIRECTORY/.circleci/phpunit.circleci.xml core/' >> $BASH_ENV
               # Install Drupal (or restore from DB dump at this point).
               ../vendor/bin/drush site-install -y standard --site-name="NI Direct"
               # Enable migrate_nidirect_utils.
@@ -133,7 +133,7 @@ jobs:
             name: Copy files into webroot
             command: |
               # Copy our build into position (./ suffix ensures hidden files are copied too).
-              echo 'sudo rsync -avq $CIRCLE_WORKING_DIRECTORY/. $DOCROOT' >> $BASH_ENV
+              echo 'sudo rsync -avq $WORKING_DIRECTORY/. $DOCROOT' >> $BASH_ENV
       - run:
             name: PHPUnit tests (unit)
             command: |
