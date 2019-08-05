@@ -161,16 +161,16 @@ workflows:
   version: 2
   build-test-deploy:
     jobs:
-      - build
-      - test:
-          requires:
-            - build
-      - deploy:
-          # Deploy task only to run for tags matching the 8.x- pattern, no branches.
-          requires:
-            - test
-          filters:
-            tags:
-              only: /^8.x-*/
-            branches:
-              ignore: /.*/
+      # - build
+      - test
+      #     requires:
+      #       - build
+      # - deploy:
+      #     # Deploy task only to run for tags matching the 8.x- pattern, no branches.
+      #     requires:
+      #       - test
+      #     filters:
+      #       tags:
+      #         only: /^8.x-*/
+      #       branches:
+      #         ignore: /.*/
