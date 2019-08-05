@@ -68,16 +68,6 @@ jobs:
               sudo docker-php-ext-install gd pdo_mysql
               composer global require hirak/prestissimo
       - run:
-            name: Copy vhost into place
-            command: echo 'sudo cp $CIRCLE_WORKING_DIRECTORY/.circleci/drupal.vhost /etc/apache2/sites-available/drupal.conf' >> $BASH_ENV
-      - run:
-            name: Configure web server, vhosts and start service.
-            command: |
-              sudo a2enmod rewrite
-              sudo a2dissite 000-default
-              sudo a2ensite drupal
-              sudo service apache2 start
-      - run:
           name: Validate composer.json and composer.lock file for consistency
           command: composer validate --no-check-all --strict
       - run:
@@ -110,6 +100,16 @@ jobs:
          name: Deprecated code check
          command: |
             echo 'cd $CIRCLE_WORKING_DIRECTORY && vendor/bin/drupal-check $CIRCLE_WORKING_DIRECTORY/web/modules/custom' >> $BASH_ENV
+      - run:
+            name: Copy vhost into place
+            command: echo 'sudo cp $CIRCLE_WORKING_DIRECTORY/.circleci/drupal.vhost /etc/apache2/sites-available/drupal.conf' >> $BASH_ENV
+      - run:
+            name: Configure web server, vhosts and start service.
+            command: |
+              sudo a2enmod rewrite
+              sudo a2dissite 000-default
+              sudo a2ensite drupal
+              sudo service apache2 start
       - run:
             name: Install Drupal and configure settings
             command: |
