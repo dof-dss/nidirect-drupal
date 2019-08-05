@@ -7,28 +7,25 @@ jobs:
   build:
     docker:
       - image: circleci/php:7.2.20-apache-browsers
-    working_directory: /home/circleci/project
     steps:
       # Add SSH user key so we can access related repositories as part of our initial clone + composer install command.
       - add_ssh_keys:
           fingerprints:
             - "40:ee:b5:e2:37:3d:e5:e0:79:7f:95:a3:1d:b5:7d:c9"
       - checkout
-      - run: echo 'ls -la $CIRCLE_WORKING_DIRECTORY/' >> $BASH_ENV
-      - run:
-            name: Add OS and PHP extensions/config
-            command: |
-              echo 'sudo cp $CIRCLE_WORKING_DIRECTORY/.circleci/docker-php-circleci.ini /usr/local/etc/php/conf.d/' >> $BASH_ENV
-              sudo apt-get update
-              sudo apt-get install -y libpng-dev
-              sudo docker-php-ext-install gd
-              composer global require hirak/prestissimo
       - run:
           name: Validate composer.json and composer.lock file for consistency
           command: composer validate --no-check-all --strict
       - run:
           name: Add GitHub access token for composer
           command: echo 'composer config -g github-oauth.github.com $GITHUB_TOKEN' >> $BASH_ENV
+      - run:
+            name: Add OS and PHP extensions
+            command: |
+              sudo apt-get update
+              sudo apt-get install -y libpng-dev
+              sudo docker-php-ext-install gd
+              composer global require hirak/prestissimo
       - restore_cache:
           keys:
           - composer-{{ checksum "composer.lock" }}
@@ -46,13 +43,9 @@ jobs:
           path: test-results/build
 
   test:
-    environment:
-          DRUPAL_ROOT: /home/circleci/project/web
-          DOCROOT: /var/www/html
     docker:
       - image: circleci/php:7.2.20-apache-browsers
       - image: circleci/mysql:5.7.27
-    working_directory: /home/circleci/project
     steps:
       # Add SSH user key so we can access related repositories as part of our initial clone + composer install command.
       - add_ssh_keys:
@@ -60,19 +53,19 @@ jobs:
             - "40:ee:b5:e2:37:3d:e5:e0:79:7f:95:a3:1d:b5:7d:c9"
       - checkout
       - run:
-            name: Add OS and PHP extensions/config
-            command: |
-              echo 'sudo cp $CIRCLE_WORKING_DIRECTORY/.circleci/docker-php-circleci.ini /usr/local/etc/php/conf.d/' >> $BASH_ENV
-              sudo apt-get update
-              sudo apt-get install -y libpng-dev mariadb-client rsync
-              sudo docker-php-ext-install gd pdo_mysql
-              composer global require hirak/prestissimo
-      - run:
           name: Validate composer.json and composer.lock file for consistency
           command: composer validate --no-check-all --strict
       - run:
           name: Add GitHub access token for composer
           command: echo 'composer config -g github-oauth.github.com $GITHUB_TOKEN' >> $BASH_ENV
+      - run:
+            name: Add OS and PHP extensions/config
+            command: |
+              sudo cp /home/circleci/project/.circleci/docker-php-circleci.ini /usr/local/etc/php/conf.d/
+              sudo apt-get update
+              sudo apt-get install -y libpng-dev mariadb-client rsync
+              sudo docker-php-ext-install gd pdo_mysql
+              composer global require hirak/prestissimo
       - restore_cache:
           keys:
           - composer-{{ checksum "composer.lock" }}
@@ -91,20 +84,20 @@ jobs:
           key: composer-{{ checksum "composer.lock" }}
           paths:
             - $HOME/.composer/cache
-      # PHPCS (bail early if there are basic faults).
       - run:
           name: PHPCS static analysis
-          command: echo '$CIRCLE_WORKING_DIRECTORY/phpcs.sh $CIRCLE_WORKING_DIRECTORY "$CIRCLE_WORKING_DIRECTORY/web/modules/custom $CIRCLE_WORKING_DIRECTORY/web/modules/migrate $CIRCLE_WORKING_DIRECTORY/web/themes/custom"' >> $BASH_ENV
-      # Deprecated code check (stop early if we're using code we need to fix).
+          command: /home/circleci/project/phpcs.sh /home/circleci/project "/home/circleci/project/web/modules/custom /home/circleci/project/web/modules/migrate /home/circleci/project/web/themes/custom"
       - run:
          name: Deprecated code check
          command: |
-            echo 'cd $CIRCLE_WORKING_DIRECTORY && vendor/bin/drupal-check $CIRCLE_WORKING_DIRECTORY/web/modules/custom' >> $BASH_ENV
+            cd /home/circleci/project
+            vendor/bin/drupal-check /home/circleci/project/web/modules/custom
       - run:
             name: Copy vhost into place
-            command: echo 'sudo cp $CIRCLE_WORKING_DIRECTORY/.circleci/drupal.vhost /etc/apache2/sites-available/drupal.conf' >> $BASH_ENV
+            command: |
+              sudo cp .circleci/drupal.vhost /etc/apache2/sites-available/drupal.conf
       - run:
-            name: Configure web server, vhosts and start service.
+            name: Enable web server and vhosts
             command: |
               sudo a2enmod rewrite
               sudo a2dissite 000-default
@@ -114,20 +107,21 @@ jobs:
             name: Install Drupal and configure settings
             command: |
               # Should be scaffolded by now.
-              echo 'cd $CIRCLE_WORKING_DIRECTORY/web' >> $BASH_ENV
+              cd /home/circleci/project/web
+              mkdir -p /var/www/html/web/sites/default/files/simpletest/browser_output
               chmod 777 -R sites/default/files
               cp sites/default/default.settings.php sites/default/settings.php
               cp sites/default/default.services.yml sites/default/services.yml
               # Copy in our environment specific settings to the settings.php file.
-              echo 'cp $CIRCLE_WORKING_DIRECTORY/.circleci/drupal.settings.php sites/default/settings.php' >> $BASH_ENV
+              cp /home/circleci/project/.circleci/drupal.settings.php sites/default/settings.php
               # Copy PHPUnit config into core folder.
-              echo 'cp $CIRCLE_WORKING_DIRECTORY/.circleci/phpunit.circleci.xml core/' >> $BASH_ENV
+              cp /home/circleci/project/.circleci/phpunit.circleci.xml core/
               # Install Drupal (or restore from DB dump at this point).
               ../vendor/bin/drush site-install -y standard --site-name="NI Direct"
               # Enable migrate_nidirect_utils.
               ../vendor/bin/drush en -y migrate_nidirect_utils
               # No migrate db, so fudge the drupal-console commands into drush equivalents.
-              echo '../vendor/bin/drush cset -y "system.site" uuid "$UUID"' >> $BASH_ENV
+              ../vendor/bin/drush cset -y "system.site" uuid "8504fb68-5bf0-4d09-869b-245412b8c47d"
               ../vendor/bin/drush ev '\Drupal::entityManager()->getStorage("shortcut_set")->load("default")->delete();'
               # Import our config.
               ../vendor/bin/drush cim -y
@@ -135,17 +129,17 @@ jobs:
             name: Copy files into webroot
             command: |
               # Copy our build into position (./ suffix ensures hidden files are copied too).
-              echo 'sudo rsync -avq $CIRCLE_WORKING_DIRECTORY/. $DOCROOT' >> $BASH_ENV
+              sudo rsync -avq /home/circleci/project/. /var/www/html
       - run:
             name: PHPUnit tests (unit)
             command: |
-              echo 'cd $DOCROOT/web/core' >> $BASH_ENV
-              echo '../../vendor/bin/phpunit -c $DOCROOT/web/core/phpunit.circleci.xml --testsuite unit --group nidirect' >> $BASH_ENV
+              cd /var/www/html/web/core
+              ../../vendor/bin/phpunit -c /var/www/html/web/core/phpunit.circleci.xml --testsuite unit --group nidirect
       - run:
             name: PHPUnit tests (kernel)
             command: |
-              echo 'cd $DOCROOT/web/core' >> $BASH_ENV
-              echo '../../vendor/bin/phpunit -c $DOCROOT/web/core/phpunit.circleci.xml --testsuite kernel --group nidirect' >> $BASH_ENV
+              cd /var/www/html/web/core
+              ../../vendor/bin/phpunit -c /var/www/html/web/core/phpunit.circleci.xml --testsuite kernel --group nidirect
       - store_test_results:
           path: test-results/test
 
