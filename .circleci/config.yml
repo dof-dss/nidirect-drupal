@@ -89,6 +89,11 @@ jobs:
       - restore_cache:
           keys:
           - composer-{{ checksum "composer.lock" }}
+      # - run:
+      #     name: Fetch latest dev branches
+      #     command: |
+      #       composer require dof-dss/nidirect-site-modules:dev-development dof-dss/nicsdru_nidirect_theme:dev-master dof-dss/nicsdru_origins_theme:dev-master
+      #       composer require --dev dof-dss/nidirect-d8-test-install-profile:dev-development dof-dss/nidirect-migrations:dev-development
       - run:
           name: Fetch dependencies with composer
           command: |
@@ -107,10 +112,6 @@ jobs:
       - run:
          name: Deprecated code check
          command: |
-            # curl -O -L https://github.com/mglaman/drupal-check/releases/latest/download/drupal-check.phar
-            # mv drupal-check.phar /home/circleci/project/drupal-check
-            # chmod +x /home/circleci/project/drupal-check
-            # /home/circleci/project/drupal-check /home/circleci/project/web/modules/custom
             cd /home/circleci/project
             vendor/bin/drupal-check /home/circleci/project/web/modules/custom
       - run:
