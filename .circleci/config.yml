@@ -104,13 +104,15 @@ jobs:
           name: PHPCS static analysis
           command: /home/circleci/project/phpcs.sh /home/circleci/project "/home/circleci/project/web/modules/custom /home/circleci/project/web/modules/migrate /home/circleci/project/web/themes/custom"
       # Deprecated code check (stop early if we're using code we need to fix).
-      # - run:
-      #    name: Deprecated code check
-      #    command: |
-      #       curl -O -L https://github.com/mglaman/drupal-check/releases/latest/download/drupal-check.phar
-      #       mv drupal-check.phar /home/circleci/project/drupal-check
-      #       chmod +x /home/circleci/project/drupal-check
-      #       /home/circleci/project/drupal-check /home/circleci/project/web/modules/custom
+      - run:
+         name: Deprecated code check
+         command: |
+            # curl -O -L https://github.com/mglaman/drupal-check/releases/latest/download/drupal-check.phar
+            # mv drupal-check.phar /home/circleci/project/drupal-check
+            # chmod +x /home/circleci/project/drupal-check
+            # /home/circleci/project/drupal-check /home/circleci/project/web/modules/custom
+            cd /home/circleci/project
+            vendor/bin/drupal-check /home/circleci/project/web/modules/custom
       - run:
             name: Install Drupal and configure settings
             command: |
