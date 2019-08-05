@@ -42,10 +42,9 @@ jobs:
       - store_test_results:
           path: test-results/build
 
-  test:
+  test_static_analysis:
     docker:
       - image: circleci/php:7.2.20-apache-browsers
-      - image: circleci/mysql:5.7.27
     steps:
       # Add SSH user key so we can access related repositories as part of our initial clone + composer install command.
       - add_ssh_keys:
@@ -92,6 +91,51 @@ jobs:
          command: |
             cd /home/circleci/project
             vendor/bin/drupal-check /home/circleci/project/web/modules/custom
+      - store_test_results:
+          path: test-results/test-static-analysis
+
+  test_unit_kernel:
+    docker:
+      - image: circleci/php:7.2.20-apache-browsers
+      - image: circleci/mysql:5.7.27
+    steps:
+      # Add SSH user key so we can access related repositories as part of our initial clone + composer install command.
+      - add_ssh_keys:
+          fingerprints:
+            - "40:ee:b5:e2:37:3d:e5:e0:79:7f:95:a3:1d:b5:7d:c9"
+      - checkout
+      - run:
+          name: Validate composer.json and composer.lock file for consistency
+          command: composer validate --no-check-all --strict
+      - run:
+          name: Add GitHub access token for composer
+          command: echo 'composer config -g github-oauth.github.com $GITHUB_TOKEN' >> $BASH_ENV
+      - run:
+            name: Add OS and PHP extensions/config
+            command: |
+              sudo cp /home/circleci/project/.circleci/docker-php-circleci.ini /usr/local/etc/php/conf.d/
+              sudo apt-get update
+              sudo apt-get install -y libpng-dev mariadb-client rsync
+              sudo docker-php-ext-install gd pdo_mysql
+              composer global require hirak/prestissimo
+      - restore_cache:
+          keys:
+          - composer-{{ checksum "composer.lock" }}
+      - run:
+          name: Fetch latest dev branches
+          command: |
+            composer require dof-dss/nidirect-site-modules:dev-development dof-dss/nicsdru_nidirect_theme:dev-master dof-dss/nicsdru_origins_theme:dev-master
+            composer require --dev dof-dss/nidirect-d8-test-install-profile:dev-development dof-dss/nidirect-migrations:dev-development
+      - run:
+          name: Fetch dependencies with composer
+          command: |
+            composer install --no-interaction --optimize-autoloader
+            composer drupal:scaffold
+            composer run-script post-install-cmd
+      - save_cache:
+          key: composer-{{ checksum "composer.lock" }}
+          paths:
+            - $HOME/.composer/cache
       - run:
             name: Copy vhost into place
             command: |
@@ -141,7 +185,7 @@ jobs:
               cd /var/www/html/web/core
               ../../vendor/bin/phpunit -c /var/www/html/web/core/phpunit.circleci.xml --testsuite kernel --group nidirect
       - store_test_results:
-          path: test-results/test
+          path: test-results/test-unit-kernel
 
   deploy:
     docker:
@@ -158,9 +202,12 @@ workflows:
   build-test-deploy:
     jobs:
       - build
-      - test:
+      - test_static_analysis:
           requires:
             - build
+      - test_unit_kernel:
+          requires:
+            - test_static_analysis
       - deploy:
           # Deploy task only to run for tags matching the 8.x- pattern, no branches.
           requires:
