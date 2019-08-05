@@ -211,7 +211,7 @@ workflows:
       - deploy:
           # Deploy task only to run for tags matching the 8.x- pattern, no branches.
           requires:
-            - test
+            - test_unit_kernel
           filters:
             tags:
               only: /^8.x-*/
