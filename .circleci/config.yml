@@ -4,57 +4,52 @@
 version: 2
 
 jobs:
-  # build:
-  #   docker:
-  #     - image: circleci/php:7.2.20-apache-browsers
-  #   parallelism: 2
-  #   steps:
-  #     - run:
-  #           name: Add OS and PHP extensions
-  #           command: |
-  #             sudo apt-get update
-  #             sudo apt-get install -y libpng-dev
-  #             sudo docker-php-ext-install gd
-  #             composer global require hirak/prestissimo
-  #     # Add SSH user key so we can access related repositories as part of our initial clone + composer install command.
-  #     - add_ssh_keys:
-  #         fingerprints:
-  #           - "40:ee:b5:e2:37:3d:e5:e0:79:7f:95:a3:1d:b5:7d:c9"
-  #     - checkout
-  #     - run:
-  #         name: Validate composer.json and composer.lock file for consistency
-  #         command: composer validate --no-check-all --strict
-  #     - run:
-  #         name: Add GitHub access token for composer
-  #         command: echo 'composer config -g github-oauth.github.com $GITHUB_TOKEN' >> $BASH_ENV
-  #     - restore_cache:
-  #         keys:
-  #         - composer-{{ checksum "composer.lock" }}
-  #     - run:
-  #         name: Fetch dependencies with composer
-  #         command: |
-  #           composer install --no-interaction --optimize-autoloader
-  #           composer drupal:scaffold
-  #           composer run-script post-install-cmd
-  #     - save_cache:
-  #         key: composer-{{ checksum "composer.lock" }}
-  #         paths:
-  #           - $HOME/.composer/cache
+  build:
+    docker:
+      - image: circleci/php:7.2.20-apache-browsers
+    steps:
+      - run:
+            name: Add OS and PHP extensions/config
+            command: |
+              sudo cp $CIRCLE_WORKING_DIRECTORY/.circleci/docker-php-circleci.ini /usr/local/etc/php/conf.d/
+              sudo apt-get update
+              sudo apt-get install -y libpng-dev
+              sudo docker-php-ext-install gd
+              composer global require hirak/prestissimo
+      # Add SSH user key so we can access related repositories as part of our initial clone + composer install command.
+      - add_ssh_keys:
+          fingerprints:
+            - "40:ee:b5:e2:37:3d:e5:e0:79:7f:95:a3:1d:b5:7d:c9"
+      - checkout
+      - run:
+          name: Validate composer.json and composer.lock file for consistency
+          command: composer validate --no-check-all --strict
+      - run:
+          name: Add GitHub access token for composer
+          command: echo 'composer config -g github-oauth.github.com $GITHUB_TOKEN' >> $BASH_ENV
+      - restore_cache:
+          keys:
+          - composer-{{ checksum "composer.lock" }}
+      - run:
+          name: Fetch dependencies with composer
+          command: |
+            composer install --no-interaction --optimize-autoloader
+            composer drupal:scaffold
+            composer run-script post-install-cmd
+      - save_cache:
+          key: composer-{{ checksum "composer.lock" }}
+          paths:
+            - $HOME/.composer/cache
+      - store_test_results:
+          path: test-results/build
 
   test:
     environment:
-          DB_HOST: 127.0.0.1
-          DB_USER: root
-          DB_PASS: ''
-          DB_NAME: circle_test
-          DB_PREFIX: ''
-          DB_PORT: 3306
-          DB_NAMESPACE: Drupal\Core\Database\Driver\mysql
-          DB_DRIVER: mysql
+          DRUPAL_ROOT: /home/circleci/project/web
+          DOCROOT: /var/www/html
     docker:
       - image: circleci/php:7.2.20-apache-browsers
       - image: circleci/mysql:5.7.27
-    parallelism: 4
     steps:
       # Add SSH user key so we can access related repositories as part of our initial clone + composer install command.
       - add_ssh_keys:
@@ -64,7 +59,7 @@ jobs:
       - run:
             name: Add OS and PHP extensions/config
             command: |
-              sudo cp /home/circleci/project/.circleci/docker-php-circleci.ini /usr/local/etc/php/conf.d/
+              echo 'sudo cp $CIRCLE_WORKING_DIRECTORY/.circleci/docker-php-circleci.ini /usr/local/etc/php/conf.d/' >> $BASH_ENV
               sudo apt-get update
               sudo apt-get install -y libpng-dev mariadb-client rsync
               sudo docker-php-ext-install gd pdo_mysql
@@ -72,9 +67,9 @@ jobs:
       - run:
             name: Copy vhost into place
             command: |
-              sudo cp .circleci/drupal.vhost /etc/apache2/sites-available/drupal.conf
+              echo 'sudo cp $CIRCLE_WORKING_DIRECTORY/.circleci/drupal.vhost /etc/apache2/sites-available/drupal.conf' >> $BASH_ENV
       - run:
-            name: Enable web server and vhosts
+            name: Configure web server, vhosts and start service.
             command: |
               sudo a2enmod rewrite
               sudo a2dissite 000-default
@@ -89,11 +84,11 @@ jobs:
       - restore_cache:
           keys:
           - composer-{{ checksum "composer.lock" }}
-      # - run:
-      #     name: Fetch latest dev branches
-      #     command: |
-      #       composer require dof-dss/nidirect-site-modules:dev-development dof-dss/nicsdru_nidirect_theme:dev-master dof-dss/nicsdru_origins_theme:dev-master
-      #       composer require --dev dof-dss/nidirect-d8-test-install-profile:dev-development dof-dss/nidirect-migrations:dev-development
+      - run:
+          name: Fetch latest dev branches
+          command: |
+            composer require dof-dss/nidirect-site-modules:dev-development dof-dss/nicsdru_nidirect_theme:dev-master dof-dss/nicsdru_origins_theme:dev-master
+            composer require --dev dof-dss/nidirect-d8-test-install-profile:dev-development dof-dss/nidirect-migrations:dev-development
       - run:
           name: Fetch dependencies with composer
           command: |
@@ -107,32 +102,30 @@ jobs:
       # PHPCS (bail early if there are basic faults).
       - run:
           name: PHPCS static analysis
-          command: /home/circleci/project/phpcs.sh /home/circleci/project "/home/circleci/project/web/modules/custom /home/circleci/project/web/modules/migrate /home/circleci/project/web/themes/custom"
+          command: echo '$CIRCLE_WORKING_DIRECTORY/phpcs.sh $CIRCLE_WORKING_DIRECTORY "$CIRCLE_WORKING_DIRECTORY/web/modules/custom $CIRCLE_WORKING_DIRECTORY/web/modules/migrate $CIRCLE_WORKING_DIRECTORY/web/themes/custom"' >> $BASH_ENV
       # Deprecated code check (stop early if we're using code we need to fix).
       - run:
          name: Deprecated code check
          command: |
-            cd /home/circleci/project
-            vendor/bin/drupal-check /home/circleci/project/web/modules/custom
+            echo 'cd $CIRCLE_WORKING_DIRECTORY && vendor/bin/drupal-check $CIRCLE_WORKING_DIRECTORY/web/modules/custom' >> $BASH_ENV
       - run:
             name: Install Drupal and configure settings
             command: |
               # Should be scaffolded by now.
-              cd /home/circleci/project/web
-              mkdir -p /var/www/html/web/sites/default/files/simpletest/browser_output
+              echo 'cd $CIRCLE_WORKING_DIRECTORY/web' >> $BASH_ENV
               chmod 777 -R sites/default/files
               cp sites/default/default.settings.php sites/default/settings.php
               cp sites/default/default.services.yml sites/default/services.yml
               # Copy in our environment specific settings to the settings.php file.
-              cp /home/circleci/project/.circleci/drupal.settings.php sites/default/settings.php
+              echo 'cp $CIRCLE_WORKING_DIRECTORY/.circleci/drupal.settings.php sites/default/settings.php' >> $BASH_ENV
               # Copy PHPUnit config into core folder.
-              cp /home/circleci/project/.circleci/phpunit.circleci.xml core/
+              echo 'cp $CIRCLE_WORKING_DIRECTORY/.circleci/phpunit.circleci.xml core/' >> $BASH_ENV
               # Install Drupal (or restore from DB dump at this point).
               ../vendor/bin/drush site-install -y standard --site-name="NI Direct"
               # Enable migrate_nidirect_utils.
               ../vendor/bin/drush en -y migrate_nidirect_utils
               # No migrate db, so fudge the drupal-console commands into drush equivalents.
-              ../vendor/bin/drush cset -y "system.site" uuid "8504fb68-5bf0-4d09-869b-245412b8c47d"
+              echo '../vendor/bin/drush cset -y "system.site" uuid "$UUID"' >> $BASH_ENV
               ../vendor/bin/drush ev '\Drupal::entityManager()->getStorage("shortcut_set")->load("default")->delete();'
               # Import our config.
               ../vendor/bin/drush cim -y
@@ -140,26 +133,44 @@ jobs:
             name: Copy files into webroot
             command: |
               # Copy our build into position (./ suffix ensures hidden files are copied too).
-              sudo rsync -avq /home/circleci/project/. /var/www/html
-      # - run:
-      #       name: PHPUnit tests (unit)
-      #       command: |
-      #         cd /var/www/html/web/core
-              # ../../vendor/bin/phpunit -c /var/www/html/web/core/phpunit.circleci.xml --group nidirect-unit
+              echo 'sudo rsync -avq $CIRCLE_WORKING_DIRECTORY/. $DOCROOT' >> $BASH_ENV
       - run:
             name: PHPUnit tests (unit)
             command: |
-              cd /var/www/html/web/core
-              ../../vendor/bin/phpunit -c /var/www/html/web/core/phpunit.circleci.xml --testsuite unit --group nidirect
+              echo 'cd $DOCROOT/web/core' >> $BASH_ENV
+              echo '../../vendor/bin/phpunit -c $DOCROOT/web/core/phpunit.circleci.xml --testsuite unit --group nidirect' >> $BASH_ENV
       - run:
             name: PHPUnit tests (kernel)
             command: |
-              cd /var/www/html/web/core
-              ../../vendor/bin/phpunit -c /var/www/html/web/core/phpunit.circleci.xml --testsuite kernel --group nidirect
+              echo 'cd $DOCROOT/web/core' >> $BASH_ENV
+              echo '../../vendor/bin/phpunit -c $DOCROOT/web/core/phpunit.circleci.xml --testsuite kernel --group nidirect' >> $BASH_ENV
+      - store_test_results:
+          path: test-results/test
+
+  deploy:
+    docker:
+      - image: circleci/php:7.2.20-apache-browsers
+    steps:
+      - add_ssh_keys:
+          fingerprints:
+            - "40:ee:b5:e2:37:3d:e5:e0:79:7f:95:a3:1d:b5:7d:c9"
+      - run: "whoami"
+      # - More deployment steps...
 
 workflows:
   version: 2
-  build_and_test: # A single workflow named "build_and_test"
-    jobs: # we run our `build` job and `test` job in sequence.
-      # - build
-      - test
+  build-test-deploy:
+    jobs:
+      - build
+      - test:
+          requires:
+            - build
+      - deploy:
+          # Deploy task only to run for tags matching the 8.x- pattern, no branches.
+          requires:
+            - test
+          filters:
+            tags:
+              only: /^8.x-*/
+            branches:
+              ignore: /.*/

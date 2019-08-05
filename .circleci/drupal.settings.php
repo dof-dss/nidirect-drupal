@@ -778,14 +778,14 @@ $settings['entity_update_backup'] = TRUE;
 #   include $app_root . '/' . $site_path . '/settings.local.php';
 # }
 $databases['default']['default'] = array (
-  'database' => 'circle_test',
-  'username' => 'root',
-  'password' => '',
-  'prefix' => '',
-  'host' => '127.0.0.1',
-  'port' => '',
-  'namespace' => 'Drupal\\Core\\Database\\Driver\\mysql',
-  'driver' => 'mysql',
+  'database' => $_SERVER['DB_NAME'],
+  'username' => $_SERVER['DB_USER'],
+  'password' => $_SERVER['DB_PASS'],
+  'prefix' => $_SERVER['DB_PREFIX'],
+  'host' => $_SERVER['DB_HOST'],
+  'port' => $_SERVER['DB_PORT'],
+  'namespace' => $_SERVER['DB_NAMESPACE'],
+  'driver' => $_SERVER['DB_DRIVER'],
 );
 
-$config_directories[CONFIG_SYNC_DIRECTORY] = "../config/sync";
+$config_directories[CONFIG_SYNC_DIRECTORY] = $_SERVER['CONFIG_SYNC_DIRECTORY'];
