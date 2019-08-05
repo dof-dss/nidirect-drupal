@@ -4,44 +4,45 @@
 version: 2
 
 jobs:
-  # build:
-  #   docker:
-  #     - image: circleci/php:7.2.20-apache-browsers
-  #   steps:
-  #     # Add SSH user key so we can access related repositories as part of our initial clone + composer install command.
-  #     - add_ssh_keys:
-  #         fingerprints:
-  #           - "40:ee:b5:e2:37:3d:e5:e0:79:7f:95:a3:1d:b5:7d:c9"
-  #     - checkout
-  #     - run:
-  #           name: Add OS and PHP extensions/config
-  #           command: |
-  #             echo 'sudo cp $CIRCLE_WORKING_DIRECTORY/.circleci/docker-php-circleci.ini /usr/local/etc/php/conf.d/' >> $BASH_ENV
-  #             sudo apt-get update
-  #             sudo apt-get install -y libpng-dev
-  #             sudo docker-php-ext-install gd
-  #             composer global require hirak/prestissimo
-  #     - run:
-  #         name: Validate composer.json and composer.lock file for consistency
-  #         command: composer validate --no-check-all --strict
-  #     - run:
-  #         name: Add GitHub access token for composer
-  #         command: echo 'composer config -g github-oauth.github.com $GITHUB_TOKEN' >> $BASH_ENV
-  #     - restore_cache:
-  #         keys:
-  #         - composer-{{ checksum "composer.lock" }}
-  #     - run:
-  #         name: Fetch dependencies with composer
-  #         command: |
-  #           composer install --no-interaction --optimize-autoloader
-  #           composer drupal:scaffold
-  #           composer run-script post-install-cmd
-  #     - save_cache:
-  #         key: composer-{{ checksum "composer.lock" }}
-  #         paths:
-  #           - $HOME/.composer/cache
-  #     - store_test_results:
-  #         path: test-results/build
+  build:
+    docker:
+      - image: circleci/php:7.2.20-apache-browsers
+    steps:
+      # Add SSH user key so we can access related repositories as part of our initial clone + composer install command.
+      - add_ssh_keys:
+          fingerprints:
+            - "40:ee:b5:e2:37:3d:e5:e0:79:7f:95:a3:1d:b5:7d:c9"
+      - checkout
+      - run: echo 'ls -la $CIRCLE_WORKING_DIRECTORY/' >> $BASH_ENV
+      - run:
+            name: Add OS and PHP extensions/config
+            command: |
+              echo 'sudo cp $CIRCLE_WORKING_DIRECTORY/.circleci/docker-php-circleci.ini /usr/local/etc/php/conf.d/' >> $BASH_ENV
+              sudo apt-get update
+              sudo apt-get install -y libpng-dev
+              sudo docker-php-ext-install gd
+              composer global require hirak/prestissimo
+      - run:
+          name: Validate composer.json and composer.lock file for consistency
+          command: composer validate --no-check-all --strict
+      - run:
+          name: Add GitHub access token for composer
+          command: echo 'composer config -g github-oauth.github.com $GITHUB_TOKEN' >> $BASH_ENV
+      - restore_cache:
+          keys:
+          - composer-{{ checksum "composer.lock" }}
+      - run:
+          name: Fetch dependencies with composer
+          command: |
+            composer install --no-interaction --optimize-autoloader
+            composer drupal:scaffold
+            composer run-script post-install-cmd
+      - save_cache:
+          key: composer-{{ checksum "composer.lock" }}
+          paths:
+            - $HOME/.composer/cache
+      - store_test_results:
+          path: test-results/build
 
   test:
     environment:
@@ -56,96 +57,95 @@ jobs:
           fingerprints:
             - "40:ee:b5:e2:37:3d:e5:e0:79:7f:95:a3:1d:b5:7d:c9"
       - checkout
-      - run: echo 'ls -la $CIRCLE_WORKING_DIRECTORY/'
-      # - run:
-      #       name: Add OS and PHP extensions/config
-      #       command: |
-      #         echo 'sudo cp $CIRCLE_WORKING_DIRECTORY/.circleci/docker-php-circleci.ini /usr/local/etc/php/conf.d/' >> $BASH_ENV
-      #         sudo apt-get update
-      #         sudo apt-get install -y libpng-dev mariadb-client rsync
-      #         sudo docker-php-ext-install gd pdo_mysql
-      #         composer global require hirak/prestissimo
-      # - run:
-      #       name: Copy vhost into place
-      #       command: echo 'sudo cp $CIRCLE_WORKING_DIRECTORY/.circleci/drupal.vhost /etc/apache2/sites-available/drupal.conf' >> $BASH_ENV
-      # - run:
-      #       name: Configure web server, vhosts and start service.
-      #       command: |
-      #         sudo a2enmod rewrite
-      #         sudo a2dissite 000-default
-      #         sudo a2ensite drupal
-      #         sudo service apache2 start
-      # - run:
-      #     name: Validate composer.json and composer.lock file for consistency
-      #     command: composer validate --no-check-all --strict
-      # - run:
-      #     name: Add GitHub access token for composer
-      #     command: echo 'composer config -g github-oauth.github.com $GITHUB_TOKEN' >> $BASH_ENV
-      # - restore_cache:
-      #     keys:
-      #     - composer-{{ checksum "composer.lock" }}
-      # - run:
-      #     name: Fetch latest dev branches
-      #     command: |
-      #       composer require dof-dss/nidirect-site-modules:dev-development dof-dss/nicsdru_nidirect_theme:dev-master dof-dss/nicsdru_origins_theme:dev-master
-      #       composer require --dev dof-dss/nidirect-d8-test-install-profile:dev-development dof-dss/nidirect-migrations:dev-development
-      # - run:
-      #     name: Fetch dependencies with composer
-      #     command: |
-      #       composer install --no-interaction --optimize-autoloader
-      #       composer drupal:scaffold
-      #       composer run-script post-install-cmd
-      # - save_cache:
-      #     key: composer-{{ checksum "composer.lock" }}
-      #     paths:
-      #       - $HOME/.composer/cache
-      # # PHPCS (bail early if there are basic faults).
-      # - run:
-      #     name: PHPCS static analysis
-      #     command: echo '$CIRCLE_WORKING_DIRECTORY/phpcs.sh $CIRCLE_WORKING_DIRECTORY "$CIRCLE_WORKING_DIRECTORY/web/modules/custom $CIRCLE_WORKING_DIRECTORY/web/modules/migrate $CIRCLE_WORKING_DIRECTORY/web/themes/custom"' >> $BASH_ENV
-      # # Deprecated code check (stop early if we're using code we need to fix).
-      # - run:
-      #    name: Deprecated code check
-      #    command: |
-      #       echo 'cd $CIRCLE_WORKING_DIRECTORY && vendor/bin/drupal-check $CIRCLE_WORKING_DIRECTORY/web/modules/custom' >> $BASH_ENV
-      # - run:
-      #       name: Install Drupal and configure settings
-      #       command: |
-      #         # Should be scaffolded by now.
-      #         echo 'cd $CIRCLE_WORKING_DIRECTORY/web' >> $BASH_ENV
-      #         chmod 777 -R sites/default/files
-      #         cp sites/default/default.settings.php sites/default/settings.php
-      #         cp sites/default/default.services.yml sites/default/services.yml
-      #         # Copy in our environment specific settings to the settings.php file.
-      #         echo 'cp $CIRCLE_WORKING_DIRECTORY/.circleci/drupal.settings.php sites/default/settings.php' >> $BASH_ENV
-      #         # Copy PHPUnit config into core folder.
-      #         echo 'cp $CIRCLE_WORKING_DIRECTORY/.circleci/phpunit.circleci.xml core/' >> $BASH_ENV
-      #         # Install Drupal (or restore from DB dump at this point).
-      #         ../vendor/bin/drush site-install -y standard --site-name="NI Direct"
-      #         # Enable migrate_nidirect_utils.
-      #         ../vendor/bin/drush en -y migrate_nidirect_utils
-      #         # No migrate db, so fudge the drupal-console commands into drush equivalents.
-      #         echo '../vendor/bin/drush cset -y "system.site" uuid "$UUID"' >> $BASH_ENV
-      #         ../vendor/bin/drush ev '\Drupal::entityManager()->getStorage("shortcut_set")->load("default")->delete();'
-      #         # Import our config.
-      #         ../vendor/bin/drush cim -y
-      # - run:
-      #       name: Copy files into webroot
-      #       command: |
-      #         # Copy our build into position (./ suffix ensures hidden files are copied too).
-      #         echo 'sudo rsync -avq $CIRCLE_WORKING_DIRECTORY/. $DOCROOT' >> $BASH_ENV
-      # - run:
-      #       name: PHPUnit tests (unit)
-      #       command: |
-      #         echo 'cd $DOCROOT/web/core' >> $BASH_ENV
-      #         echo '../../vendor/bin/phpunit -c $DOCROOT/web/core/phpunit.circleci.xml --testsuite unit --group nidirect' >> $BASH_ENV
-      # - run:
-      #       name: PHPUnit tests (kernel)
-      #       command: |
-      #         echo 'cd $DOCROOT/web/core' >> $BASH_ENV
-      #         echo '../../vendor/bin/phpunit -c $DOCROOT/web/core/phpunit.circleci.xml --testsuite kernel --group nidirect' >> $BASH_ENV
-      # - store_test_results:
-      #     path: test-results/test
+      - run:
+            name: Add OS and PHP extensions/config
+            command: |
+              echo 'sudo cp $CIRCLE_WORKING_DIRECTORY/.circleci/docker-php-circleci.ini /usr/local/etc/php/conf.d/' >> $BASH_ENV
+              sudo apt-get update
+              sudo apt-get install -y libpng-dev mariadb-client rsync
+              sudo docker-php-ext-install gd pdo_mysql
+              composer global require hirak/prestissimo
+      - run:
+            name: Copy vhost into place
+            command: echo 'sudo cp $CIRCLE_WORKING_DIRECTORY/.circleci/drupal.vhost /etc/apache2/sites-available/drupal.conf' >> $BASH_ENV
+      - run:
+            name: Configure web server, vhosts and start service.
+            command: |
+              sudo a2enmod rewrite
+              sudo a2dissite 000-default
+              sudo a2ensite drupal
+              sudo service apache2 start
+      - run:
+          name: Validate composer.json and composer.lock file for consistency
+          command: composer validate --no-check-all --strict
+      - run:
+          name: Add GitHub access token for composer
+          command: echo 'composer config -g github-oauth.github.com $GITHUB_TOKEN' >> $BASH_ENV
+      - restore_cache:
+          keys:
+          - composer-{{ checksum "composer.lock" }}
+      - run:
+          name: Fetch latest dev branches
+          command: |
+            composer require dof-dss/nidirect-site-modules:dev-development dof-dss/nicsdru_nidirect_theme:dev-master dof-dss/nicsdru_origins_theme:dev-master
+            composer require --dev dof-dss/nidirect-d8-test-install-profile:dev-development dof-dss/nidirect-migrations:dev-development
+      - run:
+          name: Fetch dependencies with composer
+          command: |
+            composer install --no-interaction --optimize-autoloader
+            composer drupal:scaffold
+            composer run-script post-install-cmd
+      - save_cache:
+          key: composer-{{ checksum "composer.lock" }}
+          paths:
+            - $HOME/.composer/cache
+      # PHPCS (bail early if there are basic faults).
+      - run:
+          name: PHPCS static analysis
+          command: echo '$CIRCLE_WORKING_DIRECTORY/phpcs.sh $CIRCLE_WORKING_DIRECTORY "$CIRCLE_WORKING_DIRECTORY/web/modules/custom $CIRCLE_WORKING_DIRECTORY/web/modules/migrate $CIRCLE_WORKING_DIRECTORY/web/themes/custom"' >> $BASH_ENV
+      # Deprecated code check (stop early if we're using code we need to fix).
+      - run:
+         name: Deprecated code check
+         command: |
+            echo 'cd $CIRCLE_WORKING_DIRECTORY && vendor/bin/drupal-check $CIRCLE_WORKING_DIRECTORY/web/modules/custom' >> $BASH_ENV
+      - run:
+            name: Install Drupal and configure settings
+            command: |
+              # Should be scaffolded by now.
+              echo 'cd $CIRCLE_WORKING_DIRECTORY/web' >> $BASH_ENV
+              chmod 777 -R sites/default/files
+              cp sites/default/default.settings.php sites/default/settings.php
+              cp sites/default/default.services.yml sites/default/services.yml
+              # Copy in our environment specific settings to the settings.php file.
+              echo 'cp $CIRCLE_WORKING_DIRECTORY/.circleci/drupal.settings.php sites/default/settings.php' >> $BASH_ENV
+              # Copy PHPUnit config into core folder.
+              echo 'cp $CIRCLE_WORKING_DIRECTORY/.circleci/phpunit.circleci.xml core/' >> $BASH_ENV
+              # Install Drupal (or restore from DB dump at this point).
+              ../vendor/bin/drush site-install -y standard --site-name="NI Direct"
+              # Enable migrate_nidirect_utils.
+              ../vendor/bin/drush en -y migrate_nidirect_utils
+              # No migrate db, so fudge the drupal-console commands into drush equivalents.
+              echo '../vendor/bin/drush cset -y "system.site" uuid "$UUID"' >> $BASH_ENV
+              ../vendor/bin/drush ev '\Drupal::entityManager()->getStorage("shortcut_set")->load("default")->delete();'
+              # Import our config.
+              ../vendor/bin/drush cim -y
+      - run:
+            name: Copy files into webroot
+            command: |
+              # Copy our build into position (./ suffix ensures hidden files are copied too).
+              echo 'sudo rsync -avq $CIRCLE_WORKING_DIRECTORY/. $DOCROOT' >> $BASH_ENV
+      - run:
+            name: PHPUnit tests (unit)
+            command: |
+              echo 'cd $DOCROOT/web/core' >> $BASH_ENV
+              echo '../../vendor/bin/phpunit -c $DOCROOT/web/core/phpunit.circleci.xml --testsuite unit --group nidirect' >> $BASH_ENV
+      - run:
+            name: PHPUnit tests (kernel)
+            command: |
+              echo 'cd $DOCROOT/web/core' >> $BASH_ENV
+              echo '../../vendor/bin/phpunit -c $DOCROOT/web/core/phpunit.circleci.xml --testsuite kernel --group nidirect' >> $BASH_ENV
+      - store_test_results:
+          path: test-results/test
 
   deploy:
     docker:
@@ -161,16 +161,16 @@ workflows:
   version: 2
   build-test-deploy:
     jobs:
-      # - build
-      - test
-      #     requires:
-      #       - build
-      # - deploy:
-      #     # Deploy task only to run for tags matching the 8.x- pattern, no branches.
-      #     requires:
-      #       - test
-      #     filters:
-      #       tags:
-      #         only: /^8.x-*/
-      #       branches:
-      #         ignore: /.*/
+      - build
+      - test:
+          requires:
+            - build
+      - deploy:
+          # Deploy task only to run for tags matching the 8.x- pattern, no branches.
+          requires:
+            - test
+          filters:
+            tags:
+              only: /^8.x-*/
+            branches:
+              ignore: /.*/
