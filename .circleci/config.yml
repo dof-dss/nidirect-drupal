@@ -165,6 +165,12 @@ jobs:
 
               composer global require hirak/prestissimo
       - run:
+          name: SSH hack for github/composer rubbish
+          command: |
+            mkdir -p /home/circleci/.ssh
+            touch /home/circleci/.ssh/known_hosts
+            ssh-keyscan github.com >> /home/circleci/.ssh/known_hosts
+      - run:
             name: Copy vhost into place
             command: |
               sudo cp .circleci/drupal.vhost /etc/apache2/sites-available/drupal.conf
