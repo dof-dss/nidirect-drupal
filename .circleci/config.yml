@@ -224,8 +224,7 @@ jobs:
               sudo rsync -avq /home/circleci/project/. /var/www/html
       - run:
             name: UI tests with Nightwatch.js
-            command: |
-              yarn --cwd=/var/www/html/web/core test:nightwatch
+            command: yarn --cwd=/var/www/html/web/core test:nightwatch --skiptags core
 
   deploy:
     docker:
