@@ -203,12 +203,12 @@ jobs:
               yarn install
 
               # Fetch database from our defined endpoint
-              curl ${DB_SOURCE_URL} -o /home/circleci/database.sql.gz
+              git clone --depth=1 ${DB_SOURCE_URL} /home/circleci/dbs
               # Restore to db service
               cd /home/circleci/project/web
-              gzip -dc /home/circleci/database.sql.gz | ../vendor/bin/drush sqlc
+              gzip -dc /home/circleci/dbs/nidirect--ui-test-sanitised.sql.gz | ../vendor/bin/drush sqlc
               # Remove downloaded db file.
-              rm /home/circleci/database.sql.gz
+              sudo rm -rf /home/circleci/dbs
               # Clear caches/container rebuild for this environment.
               ../vendor/bin/drush cr
       - run:
