@@ -140,6 +140,10 @@ jobs:
     docker:
       - image: circleci/php:7.2.20-apache-node-browsers
       - image: circleci/mysql:5.7.27
+      - image: drupalci/chromedriver:production
+        environment:
+          CHROMEDRIVER_WHITELISTED_IPS: ""
+          CHROMEDRIVER_URL_BASE: "/wd/hub"
     steps:
       # Add SSH user key so we can access related repositories as part of our initial clone + composer install command.
       - add_ssh_keys:
@@ -153,7 +157,7 @@ jobs:
               sudo cp /home/circleci/project/.circleci/docker-php-circleci.ini /usr/local/etc/php/conf.d/
               # Add yarn deb repo.
               curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
-              sudo echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
+              sudo echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
 
               sudo apt-get update
               sudo apt-get install -y libpng-dev mariadb-client rsync gnupg apt-transport-https yarn
@@ -186,7 +190,6 @@ jobs:
               cat core/.env.example | sed -e "s|\(^DRUPAL_TEST_BASE_URL\)\(.\+\)|\1=http:\/\/localhost|g" > core/.env
               sed -i -e "s|\(#\)\(DRUPAL_NIGHTWATCH_SEARCH_DIRECTORY\)=|\2=../|g" core/.env
               sed -i -e "s|sqlite:\/\/localhost\/sites\/default\/files/db.sqlite|mysql://root:@127.0.0.1/circle_test|g" core/.env
-              sed -i -e "s|\(^DRUPAL_TEST_WEBDRIVER_HOSTNAME\)=localhost|\1=chromedriver|g" core/.env
               sed -i -e "s|^DRUPAL_TEST_CHROMEDRIVER_AUTOSTART=true|DRUPAL_TEST_CHROMEDRIVER_AUTOSTART=false|g" core/.env
               sed -i -e "s|\(#\)\(DRUPAL_TEST_WEBDRIVER_CHROME_ARGS\)=|\2=\"--disable-gpu --headless --no-sandbox\"|g" core/.env
               sed -i -e "s|\(^DRUPAL_NIGHTWATCH_OUTPUT\)=reports/nightwatch|\1=/home/circleci/nightwatch-reports|g" core/.env
@@ -200,11 +203,12 @@ jobs:
               yarn install
 
               # Fetch database from our defined endpoint
-              echo 'curl $DB_SOURCE_URL -o database.sql.gz' >> $BASH_ENV
+              curl ${DB_SOURCE_URL} -o /home/circleci/database.sql.gz
               # Restore to db service
-              gzip -dc database.sql.gz | ../vendor/bin/drush sqlc
+              cd /home/circleci/project/web
+              gzip -dc /home/circleci/database.sql.gz | ../vendor/bin/drush sqlc
               # Remove downloaded db file.
-              rm database.sql.gz
+              rm /home/circleci/database.sql.gz
               # Clear caches/container rebuild for this environment.
               ../vendor/bin/drush cr
       - run:
