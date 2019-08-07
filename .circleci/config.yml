@@ -238,6 +238,9 @@ workflows:
       - unit_kernel_tests:
           requires:
             - static_analysis
+      - ui_tests:
+          requires:
+            - static_analysis
       - deploy:
           # Deploy task only to run for tags matching the 8.x- pattern, no branches.
           requires:
