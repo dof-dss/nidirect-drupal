@@ -23,8 +23,6 @@ DRUPAL_EXCLUDED_SNIFFS=(
 # IGNORE="$IGNORE,${DRUPAL_DEPLOY_PATH}/web/themes/custom/nidirect/node_modules"
 
 echo "Running coding standard checks in ${PHPCS_CHECK_DIR}"
-echo "PHPCS_PATH: ${PHPCS_PATH}"
-echo "PHPCBF_PATH: ${PHPCBF_PATH}"
 
 # Configure PHPCS.
 ${PHPCS_PATH} --config-set installed_paths ${DRUPAL_DEPLOY_PATH}/vendor/drupal/coder/coder_sniffer
