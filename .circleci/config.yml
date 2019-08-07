@@ -247,14 +247,17 @@ workflows:
             - build
       - unit_kernel_tests:
           requires:
-            - static_analysis
+            - build
       - ui_tests:
           requires:
-            - static_analysis
+            - build
       - deploy:
           # Deploy task only to run for tags matching the 8.x- pattern, no branches.
           requires:
+            - build
+            - static_analysis
             - unit_kernel_tests
+            - ui_tests
           filters:
             tags:
               only: /^8.x-*/
