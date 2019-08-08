@@ -121,9 +121,10 @@ jobs:
               ../vendor/bin/drush site-install -y standard --site-name="NI Direct"
               # Enable migrate_nidirect_utils.
               ../vendor/bin/drush en -y migrate_nidirect_utils
-              # No migrate db, so fudge the drupal-console commands into drush equivalents.
+              # No migrate db, which drupal console expects
+              # so we borrow the equivalent drupal-console commands.
               ../vendor/bin/drush cset -y "system.site" uuid "${UUID}"
-              ../vendor/bin/drush ev '\Drupal::entityManager()->getStorage("shortcut_set")->load("default")->delete();'
+              ../vendor/bin/drush scr /home/circleci/project/.circleci/drupal.delete-shortcut.php
               # Import our config.
               ../vendor/bin/drush cim -y
       - run:
