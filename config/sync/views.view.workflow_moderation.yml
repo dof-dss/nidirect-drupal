@@ -3017,6 +3017,7 @@ display:
         relationships: false
         sorts: false
         title: false
+        access: false
       filters:
         moderation_state:
           id: moderation_state
@@ -3729,6 +3730,10 @@ display:
           entity_field: revision_timestamp
           plugin_id: date
       title: 'Needs Audit'
+      access:
+        type: perm
+        options:
+          perm: 'audit content'
     cache_metadata:
       max-age: -1
       contexts:
@@ -3737,6 +3742,6 @@ display:
         - url
         - url.query_args
         - 'user.node_grants:view'
-        - user.roles
+        - user.permissions
       tags:
         - 'config:workflow_list'
