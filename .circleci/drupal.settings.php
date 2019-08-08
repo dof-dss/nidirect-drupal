@@ -792,14 +792,14 @@ $config_directories[CONFIG_SYNC_DIRECTORY] = $_SERVER['CONFIG_SYNC_DIRECTORY'];
 
 # Present, but redundant, so we can use drupal console without it complaining about this being missing.
 $databases['drupal7db']['default'] = array (
-  'database' => '',
-  'username' => '',
-  'password' => '',
+  'database' => 'placeholder',
+  'username' => 'placeholder',
+  'password' => 'placeholder',
   'prefix' => '',
-  'host' => '',
-  'port' =>' ',
-  'namespace' => '',
-  'driver' => '',
+  'host' => 'localhost',
+  'port' => '3306',
+  'namespace' => $_SERVER['DB_NAMESPACE'],
+  'driver' => $_SERVER['DB_DRIVER'],
 );
 
 // Prevent SqlBase from moaning.
