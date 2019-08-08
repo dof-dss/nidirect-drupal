@@ -124,7 +124,7 @@ jobs:
               # No migrate db, which drupal console expects
               # so we borrow the equivalent drupal-console commands.
               ../vendor/bin/drush cset -y "system.site" uuid "${UUID}"
-              ../vendor/bin/drush scr /home/circleci/project/.circleci/drupal.delete-shortcut.php
+              ../vendor/bin/drush scr ../.circleci/drupal.delete-shortcuts.php
               # Import our config.
               ../vendor/bin/drush cim -y
       - run:
