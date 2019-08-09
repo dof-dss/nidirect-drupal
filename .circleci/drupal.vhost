@@ -1,0 +1,26 @@
+<VirtualHost *:80>
+  ServerName circleci.localhost
+	ServerAdmin webmaster@localhost
+	DocumentRoot /var/www/html/web
+
+	<Directory "/var/www/html/web/">
+
+    Options Indexes FollowSymLinks
+    AllowOverride All
+    Order allow,deny
+    Allow from all
+
+    RewriteEngine on
+    RewriteBase /
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_URI} !=/favicon.ico
+    RewriteRule ^ index.php [L]
+
+  </Directory>
+
+  # ErrorLog /dev/stdout
+  ErrorLog ${APACHE_LOG_DIR}/error.log
+  CustomLog ${APACHE_LOG_DIR}/access.log combined
+
+</VirtualHost>
