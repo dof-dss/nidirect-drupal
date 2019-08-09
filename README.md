@@ -82,7 +82,7 @@ This project employs a suite of modules to control how site configuration is imp
 ```
 config/
 ├── development/ [environment specific config for development site]
-├── local_development/ [environment specific config for local development]
+├── local/ [environment specific config for local development work]
 ├── pre_production/ [environment specific config for pre-production site]
 └── sync/ [canonical site config; i.e.: live/production.]
 ```
@@ -104,7 +104,7 @@ This refers to configuration that is used in more than one environment, but may 
 Inside `sites/default/settings.php` you will find these lines:
 
 ```
-$config['config_split.config_split.local_development']['status'] = TRUE;
+$config['config_split.config_split.local']['status'] = TRUE;
 $config['config_split.config_split.development']['status'] = FALSE;
 $config['config_split.config_split.pre-production']['status'] = FALSE;
 ```
@@ -118,6 +118,12 @@ First, ensure that your active config_split configuration is correct (see above)
 Use Drupal, drush or drupal console to export as usual, e.g.: `drush cex`. Config split integrates with the config filters to correctly set your updated configuration in the correct place providing your initial settings are correct.
 
 When you create new features, you should take care to ensure that configuration is exported/applied to the correct location or your changes may not apply when deploying to other environments.
+
+*Known bug*: When exporting via drush 9.x, you will see this message:
+
+`The .yml files in your export directory (../config/sync) will be deleted and replaced with the active config`
+
+This is the default drush message and can be safely disregarded. You should, of course, always review what the end result looks like and only stage/commit the files that are relevant to your work.
 
 *NB: config_split used to rely on a specific export command (`drush csex`) but this is no longer required now that drush, config_split and config filter all work in tandem.*
 
