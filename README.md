@@ -75,11 +75,61 @@ This project employs a suite of modules to control how site configuration is imp
 - [config_readonly](https://www.drupal.org/project/config_readonly): Ensures that active configuration cannot be changed by site admins, but blocking certain system forms from saving. A whitelist is available for 'admin content' that is not necessarily tracked in code or is needed to be changed regularly by site admins.
 - [config_ignore](https://www.drupal.org/project/config_ignore): Ensures that some site configuration is not overwritten during configuration import during deployments.
 
-TL;DR: Site admins are restricted to make changes to active configuration via the site UI, because it can be lost when syncing with the config kept in code.
+> TL;DR: Site admins are restricted to make changes to active configuration via the site UI, because it can be lost when syncing with the config kept in code.
+
+### Config split
+
+```
+config/
+├── development/ [environment specific config for development site]
+├── local/ [environment specific config for local development work]
+├── pre_production/ [environment specific config for pre-production site]
+└── sync/ [canonical site config; i.e.: live/production.]
+```
+
+*'sync' rather than 'production' is used as this is the default and helps avoid problems with contrib modules and hosting platforms that assume this is always present.*
+
+#### Some key concepts:
+
+> Config blacklist
+
+This refers to configuration that is fully excluded from other environments. An example might be: the devel module; only used for debugging purposes on the local development environment.
+
+> Config graylist
+
+This refers to configuration that is used in more than one environment, but may differ slightly in each case. When config import/export is run, the config filter takes care of merging/splitting as required.
+
+> Active configuration setting
+
+Inside `sites/default/settings.php` you will find these lines:
+
+```
+$config['config_split.config_split.local']['status'] = TRUE;
+$config['config_split.config_split.development']['status'] = FALSE;
+$config['config_split.config_split.pre-production']['status'] = FALSE;
+```
+
+These indicate which config_split configuration is active at any given time. *NB: you can only have one active at a time.* The precise setting of these will, of course, vary on each environment that hosts the site to ensure that configuration imports use the correct values.
+
+> Exporting your work
+
+First, ensure that your active config_split configuration is correct (see above). If you have recently changed it, you will need to run `drush cr` to bring Drupal's service container and caches up to date.
+
+Use Drupal, drush or drupal console to export as usual, e.g.: `drush cex`. Config split integrates with the config filters to correctly set your updated configuration in the correct place providing your initial settings are correct.
+
+When you create new features, you should take care to ensure that configuration is exported/applied to the correct location or your changes may not apply when deploying to other environments.
+
+*Known bug*: When exporting via drush 9.x, you will see this message:
+
+`The .yml files in your export directory (../config/sync) will be deleted and replaced with the active config`
+
+This is the default drush message and can be safely disregarded. You should, of course, always review what the end result looks like and only stage/commit the files that are relevant to your work.
+
+*NB: config_split used to rely on a specific export command (`drush csex`) but this is no longer required now that drush, config_split and config filter all work in tandem.*
 
 ## Front-end toolchain
 
-> Details of the front-end toolchain and approach, even if it's just a link to a README.md file in the theme folder/repo.
+See https://github.com/dof-dss/nicsdru_nidirect_theme/blob/master/README.md for full details.
 
 ## Deployment
 
