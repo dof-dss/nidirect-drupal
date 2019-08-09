@@ -3264,7 +3264,50 @@ display:
             max: ''
             value: '+1 day'
             type: offset
-          group: 1
+          group: 2
+          exposed: false
+          expose:
+            operator_id: ''
+            label: ''
+            description: ''
+            use_operator: false
+            operator: ''
+            identifier: ''
+            required: false
+            remember: false
+            multiple: false
+            remember_roles:
+              authenticated: authenticated
+            placeholder: ''
+            min_placeholder: ''
+            max_placeholder: ''
+          is_grouped: false
+          group_info:
+            label: ''
+            description: ''
+            identifier: ''
+            optional: true
+            widget: select
+            multiple: false
+            remember: false
+            default_group: All
+            default_group_multiple: {  }
+            group_items: {  }
+          plugin_id: datetime
+        field_next_review_date_value:
+          id: field_next_review_date_value
+          table: node__field_next_review_date
+          field: field_next_review_date_value
+          relationship: nid
+          group_type: group
+          admin_label: ''
+          operator: '<'
+          value:
+            min: ''
+            max: ''
+            value: '+1 day'
+            type: offset
+          group: 2
           exposed: false
           expose:
             operator_id: ''
@@ -3298,6 +3341,7 @@ display:
         operator: AND
         groups:
           1: AND
+          2: OR
       fields:
         nid:
           id: nid
