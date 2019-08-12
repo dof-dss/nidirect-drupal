@@ -6,8 +6,12 @@ dependencies:
     - field.field.node.page.body
     - field.field.node.page.field_enable_toc
     - field.field.node.page.field_meta_tags
+    - field.field.node.page.field_next_audit_due
     - node.type.page
+    - workflows.workflow.editorial
   module:
+    - content_moderation
+    - datetime
     - metatag
     - path
     - text
@@ -46,12 +50,24 @@ content:
     third_party_settings: {  }
     type: metatag_firehose
     region: content
+  field_next_audit_due:
+    weight: 101
+    settings: {  }
+    third_party_settings: {  }
+    type: datetime_default
+    region: content
   langcode:
     type: language_select
     weight: 2
     region: content
     settings:
       include_locked: true
+    third_party_settings: {  }
+  moderation_state:
+    type: moderation_state_default
+    weight: 100
+    settings: {  }
+    region: content
     third_party_settings: {  }
   path:
     type: path
