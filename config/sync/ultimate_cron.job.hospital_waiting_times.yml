@@ -1,0 +1,32 @@
+uuid: aa097843-9064-4f94-a9f3-5cd514652b71
+langcode: en
+status: true
+dependencies:
+  module:
+    - nidirect_hospital_waiting_times
+_core:
+  default_config_hash: e-D5AkqY_d2s6Y13Nd07Z2uli7FM5lYKND3PUWSIMhE
+title: 'Update hospital waiting times cache.'
+id: hospital_waiting_times
+weight: 0
+module: nidirect_hospital_waiting_times
+callback: nidirect_hospital_waiting_times_update_cache
+scheduler:
+  id: crontab
+  configuration:
+    rules:
+      - '*/45 */1 * * *'
+launcher:
+  id: serial
+  configuration:
+    timeouts:
+      lock_timeout: 3600
+      max_execution_time: 3600
+    launcher:
+      max_threads: 1
+logger:
+  id: database
+  configuration:
+    method: '3'
+    expire: 1209600
+    retain: 1000

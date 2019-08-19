@@ -1,0 +1,127 @@
+uuid: bd128c56-7630-4cc8-878e-05664b858ab6
+langcode: en
+status: true
+dependencies: {  }
+_core:
+  default_config_hash: e5yRmOr-1FZ87GCGD_jI5bA1dDO424v3KMr8CyEOQZE
+id: money_advice_service_rss_articles
+class: null
+field_plugin_method: null
+cck_plugin_method: null
+migration_tags:
+  - nidirect
+migration_group: money_advice_service_rss
+label: 'Import Money Advice Service RSS feed'
+source:
+  plugin: url
+  data_fetcher_plugin: http
+  data_parser_plugin: xml
+  urls:
+    - 'https://webfeeds.moneyadviceservice.org.uk/feeds/17.rss'
+    - 'https://webfeeds.moneyadviceservice.org.uk/feeds/18.rss'
+    - 'https://webfeeds.moneyadviceservice.org.uk/feeds/21.rss'
+    - 'https://webfeeds.moneyadviceservice.org.uk/feeds/22.rss'
+    - 'https://webfeeds.moneyadviceservice.org.uk/feeds/112.rss'
+    - 'https://webfeeds.moneyadviceservice.org.uk/feeds/113.rss'
+    - 'https://webfeeds.moneyadviceservice.org.uk/feeds/115.rss'
+    - 'https://webfeeds.moneyadviceservice.org.uk/feeds/116.rss'
+    - 'https://webfeeds.moneyadviceservice.org.uk/feeds/117.rss'
+    - 'https://webfeeds.moneyadviceservice.org.uk/feeds/118.rss'
+    - 'https://webfeeds.moneyadviceservice.org.uk/feeds/120.rss'
+    - 'https://webfeeds.moneyadviceservice.org.uk/feeds/121.rss'
+    - 'https://webfeeds.moneyadviceservice.org.uk/feeds/122.rss'
+    - 'https://webfeeds.moneyadviceservice.org.uk/feeds/123.rss'
+    - 'https://webfeeds.moneyadviceservice.org.uk/feeds/124.rss'
+    - 'https://webfeeds.moneyadviceservice.org.uk/feeds/126.rss'
+    - 'https://webfeeds.moneyadviceservice.org.uk/feeds/130.rss'
+    - 'https://webfeeds.moneyadviceservice.org.uk/feeds/131.rss'
+    - 'https://webfeeds.moneyadviceservice.org.uk/feeds/161.rss'
+    - 'https://webfeeds.moneyadviceservice.org.uk/feeds/168.rss'
+    - 'https://webfeeds.moneyadviceservice.org.uk/feeds/169.rss'
+    - 'https://webfeeds.moneyadviceservice.org.uk/feeds/170.rss'
+    - 'https://webfeeds.moneyadviceservice.org.uk/feeds/172.rss'
+    - 'https://webfeeds.moneyadviceservice.org.uk/feeds/174.rss'
+    - 'https://webfeeds.moneyadviceservice.org.uk/feeds/175.rss'
+  item_selector: /rss/channel/item
+  fields:
+    -
+      name: guid
+      label: GUID
+      selector: guid
+    -
+      name: title
+      label: Title
+      selector: title
+    -
+      name: pub_date
+      label: 'Publication date'
+      selector: pubDate
+    -
+      name: body
+      label: Body
+      selector: description
+  ids:
+    guid:
+      type: string
+process:
+  title:
+    -
+      plugin: get
+      source: title
+  body:
+    -
+      plugin: get
+      source: body
+  body/0/format:
+    -
+      plugin: static_map
+      bypass: true
+      source: body/0/format
+      map:
+        filtered_html: basic_html
+        filtered_html_with_no_images: basic_html
+        filtered_html_with_templates: basic_html
+        filtered_html_with_tokens: basic_html
+        html_for_admins: full_html
+        paste_format: plain_text
+        plain_text: plain_text
+  created:
+    -
+      plugin: format_date
+      from_format: 'D, d M Y H:i:s O'
+      to_format: U
+      source: pub_date
+  published:
+    -
+      plugin: default_value
+      default_value: 1
+  field_enable_toc:
+    -
+      plugin: default_value
+      default_value: 0
+  field_summary:
+    -
+      plugin: callback
+      callable:
+        - \Drupal\nidirect_money_advice_articles\ArticleProcessors
+        - summary
+      source: body
+  field_teaser:
+    -
+      plugin: callback
+      callable:
+        - \Drupal\nidirect_money_advice_articles\ArticleProcessors
+        - teaser
+      source: body
+  field_subtheme:
+    -
+      plugin: callback
+      callable:
+        - \Drupal\nidirect_money_advice_articles\ArticleProcessors
+        - subtheme
+      source: body
+destination:
+  plugin: 'entity:node'
+  default_bundle: article
+migration_dependencies:
+  required: {  }
