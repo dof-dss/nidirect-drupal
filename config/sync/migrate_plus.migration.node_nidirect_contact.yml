@@ -1,0 +1,250 @@
+uuid: f906535b-1639-45f2-aa31-5500b1450f8c
+langcode: en
+status: true
+dependencies: {  }
+_core:
+  default_config_hash: 7i5qnNpgxJ-chZ3TRVUUtodUU2Utjbr8fjpGCpKC8x8
+id: node_nidirect_contact
+class: Drupal\migrate\Plugin\Migration
+field_plugin_method: alterFieldInstanceMigration
+cck_plugin_method: null
+migration_tags: null
+migration_group: migrate_nidirect_node_nidirect_contact
+label: 'Nodes (Nidirect contact)'
+source:
+  plugin: d7_node
+  node_type: nidirect_contact
+process:
+  nid:
+    -
+      plugin: get
+      source: tnid
+  vid:
+    -
+      plugin: get
+      source: vid
+  langcode:
+    -
+      plugin: default_value
+      source: language
+      default_value: und
+  title:
+    -
+      plugin: get
+      source: title
+  uid:
+    -
+      plugin: get
+      source: node_uid
+  status:
+    -
+      plugin: get
+      source: status
+  created:
+    -
+      plugin: get
+      source: created
+  changed:
+    -
+      plugin: get
+      source: changed
+  promote:
+    -
+      plugin: get
+      source: promote
+  sticky:
+    -
+      plugin: get
+      source: sticky
+  revision_uid:
+    -
+      plugin: get
+      source: revision_uid
+  revision_log:
+    -
+      plugin: get
+      source: log
+  revision_timestamp:
+    -
+      plugin: get
+      source: timestamp
+  comment_node_nidirect_contact/0/status:
+    -
+      plugin: get
+      source: comment
+  body:
+    -
+      plugin: get
+      source: body
+    -
+      plugin: media_wysiwyg_filter
+  body/0/format:
+    -
+      plugin: static_map
+      bypass: true
+      source: body/0/format
+      map:
+        filtered_html: basic_html
+        filtered_html_with_no_images: basic_html
+        filtered_html_with_templates: basic_html
+        filtered_html_with_tokens: basic_html
+        html_for_admins: full_html
+        paste_format: plain_text
+        plain_text: plain_text
+  field_contact_additional_info:
+    -
+      plugin: get
+      source: field_contact_additional_info
+    -
+      plugin: media_wysiwyg_filter
+  field_contact_additional_info/0/format:
+    -
+      plugin: static_map
+      bypass: true
+      source: field_contact_additional_info/0/format
+      map:
+        filtered_html: basic_html
+        filtered_html_with_no_images: basic_html
+        filtered_html_with_templates: basic_html
+        filtered_html_with_tokens: basic_html
+        html_for_admins: full_html
+        paste_format: plain_text
+        plain_text: plain_text
+  field_contact_benefits_no:
+    -
+      plugin: get
+      source: field_contact_benefits_no
+  field_contact_category:
+    -
+      plugin: sub_process
+      source: field_contact_category
+      process:
+        target_id: tid
+  field_contact_emp_svcs_no:
+    -
+      plugin: get
+      source: field_contact_emp_svcs_no
+  field_contact_fax:
+    -
+      plugin: get
+      source: field_contact_fax
+  field_contact_hours:
+    -
+      plugin: get
+      source: field_contact_hours
+    -
+      plugin: media_wysiwyg_filter
+  field_contact_hours/0/format:
+    -
+      plugin: static_map
+      bypass: true
+      source: field_contact_hours/0/format
+      map:
+        filtered_html: basic_html
+        filtered_html_with_no_images: basic_html
+        filtered_html_with_templates: basic_html
+        filtered_html_with_tokens: basic_html
+        html_for_admins: full_html
+        paste_format: plain_text
+        plain_text: plain_text
+  field_contact_phone:
+    -
+      plugin: get
+      source: field_contact_phone
+  field_contact_sms:
+    -
+      plugin: get
+      source: field_contact_sms
+  field_contact_website:
+    -
+      plugin: field_link
+      source: field_contact_website
+  field_email_address:
+    -
+      plugin: sub_process
+      source: field_email_address
+      process:
+        value: email
+  field_site_themes:
+    -
+      plugin: sub_process
+      source: field_site_topics
+      process:
+        target_id: tid
+  field_supplementary_contact:
+    -
+      plugin: get
+      source: field_supplementary_contact
+  field_summary:
+    -
+      plugin: get
+      source: field_summary
+    -
+      plugin: media_wysiwyg_filter
+  field_summary/0/format:
+    -
+      plugin: static_map
+      bypass: true
+      source: field_summary/0/format
+      map:
+        filtered_html: basic_html
+        filtered_html_with_no_images: basic_html
+        filtered_html_with_templates: basic_html
+        filtered_html_with_tokens: basic_html
+        html_for_admins: full_html
+        paste_format: plain_text
+        plain_text: plain_text
+  field_contact_group:
+    -
+      plugin: get
+      source: field_contact_group
+  field_address:
+    -
+      plugin: default_value
+      source:
+        - field_contact_address_01
+      default_value: ''
+    -
+      plugin: default_value
+      source:
+        - field_contact_address_02
+      default_value: ''
+    -
+      plugin: default_value
+      source:
+        - field_contact_town_city
+      default_value: ''
+    -
+      plugin: default_value
+      source:
+        - field_contact_postcode
+      default_value: ''
+    -
+      plugin: callback
+      callable:
+        - \Drupal\migrate_nidirect_global\AddressFieldMerge
+        - convertToAddressFieldFormat
+      source:
+        - field_contact_address_01
+        - field_contact_address_02
+        - field_contact_address_03
+        - field_contact_address_04
+        - field_contact_address_05
+        - field_contact_town_city
+        - field_contact_postcode
+    -
+      plugin: addressfield
+  field_location/lng:
+    -
+      plugin: get
+      source: field_map/0/lon
+  field_location/lat:
+    -
+      plugin: get
+      source: field_map/0/lat
+destination:
+  plugin: 'entity:node'
+  default_bundle: contact
+migration_dependencies:
+  required:
+    - upgrade_d7_user
