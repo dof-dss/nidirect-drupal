@@ -41,6 +41,11 @@
         },
         {
             "type": "github",
+            "url": "git@github.com:dof-dss/nicsdru_workflow.git",
+            "no-api": true
+        },
+        {
+            "type": "github",
             "url": "git@github.com:dof-dss/nidirect-d8-test-install-profile.git",
             "no-api": true
         },
@@ -61,6 +66,7 @@
         "dof-dss/nicsdru_nidirect_theme": "dev-master",
         "dof-dss/nicsdru_origins_theme": "dev-master",
         "dof-dss/nidirect-site-modules": "dev-development",
+        "dof-dss/nicsdru_workflow": "dev-development",
         "drupal-composer/drupal-scaffold": "^2.5",
         "drupal/address": "^1.7",
         "drupal/admin_toolbar": "^1.26",
@@ -181,6 +187,9 @@
             ],
             "web/modules/custom": [
                 "dof-dss/nidirect-site-modules"
+            ],
+            "web/modules/custom/nicsdru_workflow": [
+                "dof-dss/nicsdru_workflow"
             ],
             "web/modules/migrate/{$name}": [
                 "dof-dss/nidirect-migrations"
