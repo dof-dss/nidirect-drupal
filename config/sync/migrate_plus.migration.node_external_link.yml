@@ -1,0 +1,99 @@
+uuid: f421081c-48c9-4091-903c-630b8569a99d
+langcode: en
+status: true
+dependencies: {  }
+_core:
+  default_config_hash: x9nvcttvBFens5mHdT_6NhT5Ci2TCOWrZL_wVKUSwjo
+id: node_external_link
+class: Drupal\migrate\Plugin\Migration
+field_plugin_method: alterFieldInstanceMigration
+cck_plugin_method: null
+migration_tags: null
+migration_group: migrate_nidirect_node_external_link
+label: 'External link content type nodes'
+source:
+  plugin: d7_node
+  node_type: external_link
+process:
+  nid:
+    -
+      plugin: get
+      source: tnid
+  vid:
+    -
+      plugin: get
+      source: vid
+  langcode:
+    -
+      plugin: default_value
+      source: language
+      default_value: und
+  title:
+    -
+      plugin: get
+      source: title
+  uid:
+    -
+      plugin: get
+      source: node_uid
+  status:
+    -
+      plugin: get
+      source: status
+  created:
+    -
+      plugin: get
+      source: created
+  changed:
+    -
+      plugin: get
+      source: changed
+  promote:
+    -
+      plugin: get
+      source: promote
+  sticky:
+    -
+      plugin: get
+      source: sticky
+  revision_uid:
+    -
+      plugin: get
+      source: revision_uid
+  revision_log:
+    -
+      plugin: get
+      source: log
+  revision_timestamp:
+    -
+      plugin: get
+      source: timestamp
+  field_link:
+    -
+      plugin: field_link
+      source: field_link
+  field_site_themes:
+    -
+      plugin: sub_process
+      source: field_site_topics
+      process:
+        target_id: tid
+  field_subtheme:
+    -
+      plugin: sub_process
+      source: field_subtheme
+      process:
+        target_id: tid
+  field_top_level_theme:
+    -
+      plugin: sub_process
+      source: field_top_level_theme
+      process:
+        target_id: tid
+destination:
+  plugin: 'entity:node'
+  default_bundle: external_link
+migration_dependencies:
+  required:
+    - upgrade_d7_user
+    - upgrade_d7_taxonomy_term_site_themes

@@ -3,9 +3,7 @@ langcode: en
 status: true
 dependencies:
   config:
-    - core.entity_view_display.comment.comment.default
     - field.field.node.article.body
-    - field.field.node.article.comment
     - field.field.node.article.field_additional_info
     - field.field.node.article.field_banner_image
     - field.field.node.article.field_enable_toc
@@ -19,7 +17,6 @@ dependencies:
     - field.field.node.article.field_top_level_theme
     - node.type.article
   module:
-    - comment
     - image
     - metatag
     - text
@@ -38,15 +35,6 @@ content:
     settings: {  }
     third_party_settings: {  }
     label: above
-  comment:
-    type: comment_default
-    weight: 12
-    region: content
-    label: above
-    settings:
-      view_mode: default
-      pager_id: 0
-    third_party_settings: {  }
   content_moderation_control:
     weight: 0
     region: content

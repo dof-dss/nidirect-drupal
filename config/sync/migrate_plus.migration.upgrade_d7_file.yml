@@ -1,0 +1,69 @@
+uuid: 36b1f2a8-ae69-4cdb-917e-34680a84d9f8
+langcode: en
+status: true
+dependencies: {  }
+_core:
+  default_config_hash: jdv9talqFBIGG6tDeB3e0bLksiNyeEUmnXsMYQB8hPU
+id: upgrade_d7_file
+class: Drupal\migrate\Plugin\Migration
+field_plugin_method: alterFieldInstanceMigration
+cck_plugin_method: null
+migration_tags:
+  - 'Drupal 7'
+  - Content
+migration_group: migrate_drupal_7_file
+label: 'Public files'
+source:
+  plugin: d7_file
+  scheme: public
+  constants:
+    source_base_path: /app/imports/files/
+process:
+  fid:
+    -
+      plugin: get
+      source: fid
+  filename:
+    -
+      plugin: get
+      source: filename
+  source_full_path:
+    -
+      plugin: concat
+      delimiter: /
+      source:
+        - constants/source_base_path
+        - filepath
+    -
+      plugin: urlencode
+  uri:
+    -
+      plugin: file_copy
+      source:
+        - '@source_full_path'
+        - uri
+  filemime:
+    -
+      plugin: get
+      source: filemime
+  status:
+    -
+      plugin: get
+      source: status
+  created:
+    -
+      plugin: get
+      source: timestamp
+  changed:
+    -
+      plugin: get
+      source: timestamp
+  uid:
+    -
+      plugin: get
+      source: uid
+destination:
+  plugin: 'entity:file'
+migration_dependencies:
+  required: {  }
+  optional: {  }
