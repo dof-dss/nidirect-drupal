@@ -1,0 +1,47 @@
+uuid: a38a94e1-fe59-4196-938e-54dc863bb262
+langcode: en
+status: true
+dependencies: {  }
+_core:
+  default_config_hash: SiUk1BLxVksLurOjCfFc5C1qLr3b57HE_y-l50ANlcg
+id: upgrade_d7_file_document
+class: Drupal\migrate\Plugin\Migration
+field_plugin_method: alterFieldInstanceMigration
+cck_plugin_method: null
+migration_tags:
+  - Custom
+migration_group: migrate_drupal_7_file
+label: 'Public files'
+source:
+  plugin: file_entity
+  type: document
+  constants:
+    bundle: document
+process:
+  mid: fid
+  bundle: constants/bundle
+  langcode:
+    plugin: default_value
+    source: language
+    default_value: und
+  name: filename
+  uid:
+    -
+      plugin: skip_on_empty
+      method: process
+      source: uid
+    -
+      plugin: migration
+      migration: my_users
+  status: status
+  created: timestamp
+  changed: timestamp
+  field_media_file_1/target_id: fid
+  field_media_doc_file_language: field_file_language
+  field_media_doc_file_title: field_file_title
+destination:
+  plugin: 'entity:media'
+migration_dependencies:
+  required:
+    - upgrade_d7_file
+  optional: {  }
