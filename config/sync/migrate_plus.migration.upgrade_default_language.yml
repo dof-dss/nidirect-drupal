@@ -1,0 +1,48 @@
+uuid: ec4ed772-bbb2-4550-801f-8ee117539770
+langcode: en
+status: true
+dependencies: {  }
+_core:
+  default_config_hash: hbuBYTp1NBsDoFIKFKBsCIZJW7N5J0WlxhLWtOtiSOk
+id: upgrade_default_language
+class: Drupal\migrate\Plugin\Migration
+field_plugin_method: alterFieldInstanceMigration
+cck_plugin_method: null
+migration_tags:
+  - 'Drupal 6'
+  - 'Drupal 7'
+  - Configuration
+migration_group: migrate_drupal_7_global
+label: 'Default language'
+source:
+  plugin: variable
+  variables:
+    - language_default
+  source_module: locale
+process:
+  default_langcode:
+    -
+      plugin: default_value
+      source: language_default
+      default_value:
+        language: en
+    -
+      plugin: callback
+      callable:
+        - \Drupal\Component\Serialization\Json
+        - encode
+    -
+      plugin: callback
+      callable:
+        - \Drupal\Component\Serialization\Json
+        - decode
+    -
+      plugin: extract
+      index:
+        - language
+destination:
+  plugin: default_langcode
+  config_name: system.site
+migration_dependencies:
+  required: {  }
+  optional: {  }
