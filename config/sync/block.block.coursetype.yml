@@ -1,0 +1,29 @@
+uuid: 2b55a1e7-e65b-4b23-a314-8c421409e424
+langcode: en
+status: true
+dependencies:
+  config:
+    - facets.facet.course_type
+  module:
+    - facets
+    - system
+  theme:
+    - bartik
+id: coursetype
+theme: bartik
+region: sidebar_first
+weight: 0
+provider: null
+plugin: 'facet_block:course_type'
+settings:
+  id: 'facet_block:course_type'
+  label: 'Course type'
+  provider: facets
+  label_display: visible
+  block_id: coursetype
+visibility:
+  request_path:
+    id: request_path
+    pages: '/information-and-services/eat-well/recipes*'
+    negate: false
+    context_mapping: {  }
