@@ -1,4 +1,4 @@
-uuid: 8844bd2a-97f1-4c7c-84a5-2af7e2253f24
+uuid: 1d478460-0861-414c-a6f3-19f292bcbb28
 langcode: en
 status: true
 dependencies:
@@ -6,13 +6,12 @@ dependencies:
     - facets.facet.main_ingredient
   module:
     - facets
-    - system
   theme:
     - bartik
 id: mainingredient
 theme: bartik
 region: sidebar_first
-weight: 0
+weight: -6
 provider: null
 plugin: 'facet_block:main_ingredient'
 settings:
@@ -21,9 +20,4 @@ settings:
   provider: facets
   label_display: visible
   block_id: mainingredient
-visibility:
-  request_path:
-    id: request_path
-    pages: '/information-and-services/eat-well/recipes*'
-    negate: false
-    context_mapping: {  }
+visibility: {  }
