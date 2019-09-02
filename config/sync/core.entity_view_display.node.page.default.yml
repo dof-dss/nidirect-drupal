@@ -7,11 +7,124 @@ dependencies:
     - field.field.node.page.field_enable_toc
     - field.field.node.page.field_meta_tags
     - field.field.node.page.field_next_audit_due
+    - field.field.node.page.layout_builder__layout
     - node.type.page
   module:
+    - layout_builder
+    - layout_builder_restrictions
+    - layout_discovery
     - metatag
     - text
     - user
+third_party_settings:
+  layout_builder:
+    allow_custom: true
+    enabled: true
+    sections:
+      -
+        layout_id: layout_onecol
+        layout_settings: {  }
+        components:
+          0e0147db-dfba-4ebe-9c9e-c8b923e7cca2:
+            uuid: 0e0147db-dfba-4ebe-9c9e-c8b923e7cca2
+            region: content
+            configuration:
+              label_display: '0'
+              context_mapping:
+                entity: layout_builder.entity
+              id: 'extra_field_block:node:page:content_moderation_control'
+            additional: {  }
+            weight: 0
+          1265f629-33b8-4925-b98d-bc528eeb452d:
+            uuid: 1265f629-33b8-4925-b98d-bc528eeb452d
+            region: content
+            configuration:
+              label_display: '0'
+              context_mapping:
+                entity: layout_builder.entity
+              id: 'field_block:node:page:field_enable_toc'
+              formatter:
+                type: boolean
+                label: above
+                settings:
+                  format: default
+                  format_custom_false: ''
+                  format_custom_true: ''
+                third_party_settings: {  }
+            additional: {  }
+            weight: 1
+          7b749ad5-1d5d-4e84-8688-f3c0b0cd0bdd:
+            uuid: 7b749ad5-1d5d-4e84-8688-f3c0b0cd0bdd
+            region: content
+            configuration:
+              label_display: '0'
+              context_mapping:
+                entity: layout_builder.entity
+              id: 'field_block:node:page:body'
+              formatter:
+                label: hidden
+                type: text_default
+                settings: {  }
+                third_party_settings: {  }
+            additional: {  }
+            weight: 2
+          5657fbd8-f081-437f-b7cf-a2c7290117cd:
+            uuid: 5657fbd8-f081-437f-b7cf-a2c7290117cd
+            region: content
+            configuration:
+              label_display: '0'
+              context_mapping:
+                entity: layout_builder.entity
+              id: 'extra_field_block:node:page:links'
+            additional: {  }
+            weight: 3
+          bcae0924-2c73-4cab-86be-094a7069329a:
+            uuid: bcae0924-2c73-4cab-86be-094a7069329a
+            region: content
+            configuration:
+              label_display: '0'
+              context_mapping:
+                entity: layout_builder.entity
+              id: 'field_block:node:page:field_meta_tags'
+              formatter:
+                label: above
+                settings: {  }
+                third_party_settings: {  }
+                type: metatag_empty_formatter
+            additional: {  }
+            weight: 4
+        third_party_settings: {  }
+  layout_builder_restrictions:
+    entity_view_mode_restriction:
+      allowed_blocks:
+        'Chaos Tools': {  }
+        Content: {  }
+        'Content fields':
+          - 'field_block:node:page:body'
+          - 'field_block:node:page:title'
+        'Custom block types':
+          - basic
+        Devel: {  }
+        Forms: {  }
+        Help: {  }
+        'Inline blocks':
+          - 'inline_block:basic'
+        'Lists (Views)': {  }
+        Menus: {  }
+        'NI Direct': {  }
+        NIDirect:
+          - in_page_navigation_block
+        'NIDirect Contacts':
+          - contact_az_block
+        System:
+          - system_main_block
+        User: {  }
+        'User fields': {  }
+        Webform:
+          - webform_block
+        core:
+          - page_title_block
+      allowed_layouts: {  }
 _core:
   default_config_hash: g1S3_GLaxq4l3I9RIca5Mlz02MxI2KmOquZpHw59akM
 id: node.page.default
@@ -56,4 +169,5 @@ content:
 hidden:
   field_next_audit_due: true
   langcode: true
+  layout_builder__layout: true
   search_api_excerpt: true
