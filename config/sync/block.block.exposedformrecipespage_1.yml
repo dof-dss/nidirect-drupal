@@ -1,0 +1,29 @@
+uuid: 69574ec5-1590-4831-90b2-b6bb9314fb3e
+langcode: en
+status: true
+dependencies:
+  config:
+    - views.view.recipes
+  module:
+    - system
+    - views
+  theme:
+    - bartik
+id: exposedformrecipespage_1
+theme: bartik
+region: sidebar_first
+weight: -8
+provider: null
+plugin: 'views_exposed_filter_block:recipes-page_1'
+settings:
+  id: 'views_exposed_filter_block:recipes-page_1'
+  label: ''
+  provider: views
+  label_display: '0'
+  views_label: ''
+visibility:
+  request_path:
+    id: request_path
+    pages: "/information-and-services/eat-well/recipes\r\n/information-and-services/eat-well/recipes/*"
+    negate: false
+    context_mapping: {  }
