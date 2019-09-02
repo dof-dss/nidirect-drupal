@@ -7,6 +7,7 @@ dependencies:
   module:
     - node
     - user
+    - views_custom_cache_tag
 id: contacts_a_z
 label: 'Contacts: A to Z'
 module: views
@@ -27,8 +28,9 @@ display:
         options:
           perm: 'access content'
       cache:
-        type: tag
-        options: {  }
+        type: custom_tag
+        options:
+          custom_tag: 'node:type:{{ raw_arguments.type }}'
       query:
         type: views_query
         options:

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c5978b2e029fa84d53e07d31bfe02f04",
+    "content-hash": "e26c81a205c4022c6de936fc5bb2aa73",
     "packages": [
         {
             "name": "alchemy/zippy",
@@ -4015,6 +4015,9 @@
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
                     }
+                },
+                "patches_applied": {
+                    "Hide facets when it is configured to hide the block without losing support for bigpipe and ajax facets": "https://www.drupal.org/files/issues/2019-06-11/facets-empty-block-2984465-31.patch"
                 }
             },
             "notification-url": "https://packages.drupal.org/8/downloads",
@@ -4074,9 +4077,6 @@
                         "status": "not-covered",
                         "message": "Project has not opted into security advisory coverage!"
                     }
-                },
-                "patches_applied": {
-                    "Pretty paths option without Taxonomy ID": "https://www.drupal.org/files/issues/2019-02-21/3024640-3.patch"
                 }
             },
             "notification-url": "https://packages.drupal.org/8/downloads",
@@ -4288,6 +4288,53 @@
             "homepage": "https://www.drupal.org/project/geolocation",
             "support": {
                 "source": "https://git.drupalcode.org/project/geolocation"
+            }
+        },
+        {
+            "name": "drupal/handy_cache_tags",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://git.drupalcode.org/project/handy_cache_tags.git",
+                "reference": "8.x-1.0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://ftp.drupal.org/files/projects/handy_cache_tags-8.x-1.0.zip",
+                "reference": "8.x-1.0",
+                "shasum": "dfffee442d67bf10e66d3f21dcc96b992fcc7c1f"
+            },
+            "require": {
+                "drupal/core": "~8.0"
+            },
+            "type": "drupal-module",
+            "extra": {
+                "branch-alias": {
+                    "dev-1.x": "1.x-dev"
+                },
+                "drupal": {
+                    "version": "8.x-1.0",
+                    "datestamp": "1518785580",
+                    "security-coverage": {
+                        "status": "covered",
+                        "message": "Covered by Drupal's security advisory policy"
+                    }
+                }
+            },
+            "notification-url": "https://packages.drupal.org/8/downloads",
+            "license": [
+                "GPL-2.0-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "eiriksm",
+                    "homepage": "https://www.drupal.org/user/1014468"
+                }
+            ],
+            "description": "Provides some handy cache tags for developers.",
+            "homepage": "https://www.drupal.org/project/handy_cache_tags",
+            "support": {
+                "source": "https://git.drupalcode.org/project/handy_cache_tags"
             }
         },
         {
@@ -5671,6 +5718,53 @@
             "homepage": "https://www.drupal.org/project/ultimate_cron",
             "support": {
                 "source": "https://git.drupalcode.org/project/ultimate_cron"
+            }
+        },
+        {
+            "name": "drupal/views_custom_cache_tag",
+            "version": "1.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://git.drupalcode.org/project/views_custom_cache_tag.git",
+                "reference": "8.x-1.1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://ftp.drupal.org/files/projects/views_custom_cache_tag-8.x-1.1.zip",
+                "reference": "8.x-1.1",
+                "shasum": "00230ad048e014cbd30a114c181d4aee859d3337"
+            },
+            "require": {
+                "drupal/core": "~8.0"
+            },
+            "type": "drupal-module",
+            "extra": {
+                "branch-alias": {
+                    "dev-1.x": "1.x-dev"
+                },
+                "drupal": {
+                    "version": "8.x-1.1",
+                    "datestamp": "1554840781",
+                    "security-coverage": {
+                        "status": "covered",
+                        "message": "Covered by Drupal's security advisory policy"
+                    }
+                }
+            },
+            "notification-url": "https://packages.drupal.org/8/downloads",
+            "license": [
+                "GPL-2.0-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "Berdir",
+                    "homepage": "https://www.drupal.org/user/214652"
+                }
+            ],
+            "description": "Add views custom cache tag.",
+            "homepage": "https://www.drupal.org/project/views_custom_cache_tag",
+            "support": {
+                "source": "https://git.drupalcode.org/project/views_custom_cache_tag"
             }
         },
         {
@@ -10506,53 +10600,6 @@
             }
         },
         {
-            "name": "drupal/handy_cache_tags",
-            "version": "1.0.0",
-            "source": {
-                "type": "git",
-                "url": "https://git.drupalcode.org/project/handy_cache_tags.git",
-                "reference": "8.x-1.0"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/handy_cache_tags-8.x-1.0.zip",
-                "reference": "8.x-1.0",
-                "shasum": "dfffee442d67bf10e66d3f21dcc96b992fcc7c1f"
-            },
-            "require": {
-                "drupal/core": "~8.0"
-            },
-            "type": "drupal-module",
-            "extra": {
-                "branch-alias": {
-                    "dev-1.x": "1.x-dev"
-                },
-                "drupal": {
-                    "version": "8.x-1.0",
-                    "datestamp": "1518785580",
-                    "security-coverage": {
-                        "status": "covered",
-                        "message": "Covered by Drupal's security advisory policy"
-                    }
-                }
-            },
-            "notification-url": "https://packages.drupal.org/8/downloads",
-            "license": [
-                "GPL-2.0-or-later"
-            ],
-            "authors": [
-                {
-                    "name": "eiriksm",
-                    "homepage": "https://www.drupal.org/user/1014468"
-                }
-            ],
-            "description": "Provides some handy cache tags for developers.",
-            "homepage": "https://www.drupal.org/project/handy_cache_tags",
-            "support": {
-                "source": "https://git.drupalcode.org/project/handy_cache_tags"
-            }
-        },
-        {
             "name": "drupal/migrate_plus",
             "version": "4.2.0",
             "source": {
@@ -10889,53 +10936,6 @@
             "homepage": "https://www.drupal.org/project/stage_file_proxy",
             "support": {
                 "source": "https://git.drupalcode.org/project/stage_file_proxy"
-            }
-        },
-        {
-            "name": "drupal/views_custom_cache_tag",
-            "version": "1.1.0",
-            "source": {
-                "type": "git",
-                "url": "https://git.drupalcode.org/project/views_custom_cache_tag.git",
-                "reference": "8.x-1.1"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/views_custom_cache_tag-8.x-1.1.zip",
-                "reference": "8.x-1.1",
-                "shasum": "00230ad048e014cbd30a114c181d4aee859d3337"
-            },
-            "require": {
-                "drupal/core": "~8.0"
-            },
-            "type": "drupal-module",
-            "extra": {
-                "branch-alias": {
-                    "dev-1.x": "1.x-dev"
-                },
-                "drupal": {
-                    "version": "8.x-1.1",
-                    "datestamp": "1554840781",
-                    "security-coverage": {
-                        "status": "covered",
-                        "message": "Covered by Drupal's security advisory policy"
-                    }
-                }
-            },
-            "notification-url": "https://packages.drupal.org/8/downloads",
-            "license": [
-                "GPL-2.0-or-later"
-            ],
-            "authors": [
-                {
-                    "name": "Berdir",
-                    "homepage": "https://www.drupal.org/user/214652"
-                }
-            ],
-            "description": "Add views custom cache tag.",
-            "homepage": "https://www.drupal.org/project/views_custom_cache_tag",
-            "support": {
-                "source": "https://git.drupalcode.org/project/views_custom_cache_tag"
             }
         },
         {
