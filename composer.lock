@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e26c81a205c4022c6de936fc5bb2aa73",
+    "content-hash": "b54f02999d60130fb64d9e1292a89592",
     "packages": [
         {
             "name": "alchemy/zippy",
@@ -2150,6 +2150,33 @@
             "time": "2019-08-14T08:30:34+00:00"
         },
         {
+            "name": "dof-dss/nicsdru_origins_modules",
+            "version": "dev-development",
+            "source": {
+                "type": "git",
+                "url": "git@github.com:dof-dss/nicsdru_origins_modules.git",
+                "reference": "6ccb24e06ff24dda57f99acf2f26d9ff4f8e3d9f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/dof-dss/nicsdru_origins_modules/zipball/6ccb24e06ff24dda57f99acf2f26d9ff4f8e3d9f",
+                "reference": "6ccb24e06ff24dda57f99acf2f26d9ff4f8e3d9f",
+                "shasum": ""
+            },
+            "require": {
+                "composer/installers": "^1.6"
+            },
+            "type": "drupal-module",
+            "authors": [
+                {
+                    "name": "Stephen Cousins",
+                    "email": "hello@onemanandhismouse.com"
+                }
+            ],
+            "description": "Generic modules for DOF-DSS Drupal sites",
+            "time": "2019-09-02T10:07:12+00:00"
+        },
+        {
             "name": "dof-dss/nicsdru_origins_theme",
             "version": "dev-master",
             "source": {
@@ -2185,33 +2212,6 @@
                 "issues": "https://github.com/dof-dss/nicsdru_origins_theme/issues"
             },
             "time": "2019-08-13T13:43:29+00:00"
-        },
-        {
-            "name": "dof-dss/nicsdru_workflow",
-            "version": "dev-development",
-            "source": {
-                "type": "git",
-                "url": "git@github.com:dof-dss/nicsdru_workflow.git",
-                "reference": "8d012bb6b2ffa5936acae5165484df5a4d6032c8"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/dof-dss/nicsdru_workflow/zipball/8d012bb6b2ffa5936acae5165484df5a4d6032c8",
-                "reference": "8d012bb6b2ffa5936acae5165484df5a4d6032c8",
-                "shasum": ""
-            },
-            "require": {
-                "composer/installers": "^1.6"
-            },
-            "type": "drupal-module",
-            "authors": [
-                {
-                    "name": "Martin Dutton",
-                    "email": "mail@martinduttonconsulting.co.uk"
-                }
-            ],
-            "description": "Drupal module to provide workflow functionality for NICS websites",
-            "time": "2019-08-28T10:30:48+00:00"
         },
         {
             "name": "dof-dss/nidirect-site-modules",
@@ -2486,6 +2486,53 @@
             "support": {
                 "source": "https://git.drupalcode.org/project/adminimal_theme",
                 "issues": "https://www.drupal.org/project/issues/adminimal_theme"
+            }
+        },
+        {
+            "name": "drupal/block_blacklist",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://git.drupalcode.org/project/block_blacklist.git",
+                "reference": "8.x-1.0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://ftp.drupal.org/files/projects/block_blacklist-8.x-1.0.zip",
+                "reference": "8.x-1.0",
+                "shasum": "61fffe5742c6873c62d2afc76ffc892e3574e2a1"
+            },
+            "require": {
+                "drupal/core": "*"
+            },
+            "type": "drupal-module",
+            "extra": {
+                "branch-alias": {
+                    "dev-1.x": "1.x-dev"
+                },
+                "drupal": {
+                    "version": "8.x-1.0",
+                    "datestamp": "1552606684",
+                    "security-coverage": {
+                        "status": "covered",
+                        "message": "Covered by Drupal's security advisory policy"
+                    }
+                }
+            },
+            "notification-url": "https://packages.drupal.org/8/downloads",
+            "license": [
+                "GPL-2.0-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "KarenS",
+                    "homepage": "https://www.drupal.org/user/45874"
+                }
+            ],
+            "description": "Remove unnecessary blocks from the block list for better system performance.",
+            "homepage": "https://www.drupal.org/project/block_blacklist",
+            "support": {
+                "source": "https://git.drupalcode.org/project/block_blacklist"
             }
         },
         {
@@ -13870,8 +13917,8 @@
     "minimum-stability": "dev",
     "stability-flags": {
         "dof-dss/nicsdru_nidirect_theme": 20,
+        "dof-dss/nicsdru_origins_modules": 20,
         "dof-dss/nicsdru_origins_theme": 20,
-        "dof-dss/nicsdru_workflow": 20,
         "dof-dss/nidirect-site-modules": 20,
         "drupal/config_readonly": 10,
         "drupal/facets_pretty_paths": 10,
