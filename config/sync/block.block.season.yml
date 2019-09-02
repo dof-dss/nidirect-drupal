@@ -1,0 +1,29 @@
+uuid: 0ed2776f-332d-4214-89d3-d40b7bea76c6
+langcode: en
+status: true
+dependencies:
+  config:
+    - facets.facet.season
+  module:
+    - facets
+    - system
+  theme:
+    - bartik
+id: season
+theme: bartik
+region: sidebar_first
+weight: -5
+provider: null
+plugin: 'facet_block:season'
+settings:
+  id: 'facet_block:season'
+  label: Season
+  provider: facets
+  label_display: visible
+  block_id: season
+visibility:
+  request_path:
+    id: request_path
+    pages: '/information-and-services/eat-well/recipes*'
+    negate: false
+    context_mapping: {  }
