@@ -1,0 +1,75 @@
+uuid: a6f1cb12-6ef5-4c19-b3a7-c81e58d3866e
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.node.search_result
+    - field.field.node.recipe.field_meta_tags
+    - field.field.node.recipe.field_recipe_allergens
+    - field.field.node.recipe.field_recipe_allergy_advice
+    - field.field.node.recipe.field_recipe_course_type
+    - field.field.node.recipe.field_recipe_description
+    - field.field.node.recipe.field_recipe_fat_content
+    - field.field.node.recipe.field_recipe_food_safety
+    - field.field.node.recipe.field_recipe_image
+    - field.field.node.recipe.field_recipe_ingredients
+    - field.field.node.recipe.field_recipe_main_ingredient
+    - field.field.node.recipe.field_recipe_method
+    - field.field.node.recipe.field_recipe_nutrition_info
+    - field.field.node.recipe.field_recipe_other_options
+    - field.field.node.recipe.field_recipe_preptime
+    - field.field.node.recipe.field_recipe_salt
+    - field.field.node.recipe.field_recipe_saturates
+    - field.field.node.recipe.field_recipe_season
+    - field.field.node.recipe.field_recipe_serves
+    - field.field.node.recipe.field_recipe_special_diet
+    - field.field.node.recipe.field_recipe_sugar
+    - image.style.medium
+    - node.type.recipe
+  module:
+    - image
+    - user
+id: node.recipe.search_result
+targetEntityType: node
+bundle: recipe
+mode: search_result
+content:
+  field_recipe_description:
+    type: basic_string
+    weight: 1
+    region: content
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
+  field_recipe_image:
+    type: image
+    weight: 0
+    region: content
+    label: hidden
+    settings:
+      image_style: medium
+      image_link: ''
+    third_party_settings: {  }
+hidden:
+  content_moderation_control: true
+  field_meta_tags: true
+  field_recipe_allergens: true
+  field_recipe_allergy_advice: true
+  field_recipe_course_type: true
+  field_recipe_fat_content: true
+  field_recipe_food_safety: true
+  field_recipe_ingredients: true
+  field_recipe_main_ingredient: true
+  field_recipe_method: true
+  field_recipe_nutrition_info: true
+  field_recipe_other_options: true
+  field_recipe_preptime: true
+  field_recipe_salt: true
+  field_recipe_saturates: true
+  field_recipe_season: true
+  field_recipe_serves: true
+  field_recipe_special_diet: true
+  field_recipe_sugar: true
+  langcode: true
+  links: true
+  search_api_excerpt: true

@@ -1,0 +1,29 @@
+uuid: d7d1ffa3-7a86-4c1b-9420-5486942857eb
+langcode: en
+status: true
+dependencies:
+  config:
+    - facets.facet.special_diet
+  module:
+    - facets
+    - system
+  theme:
+    - bartik
+id: specialdiet
+theme: bartik
+region: sidebar_first
+weight: -4
+provider: null
+plugin: 'facet_block:special_diet'
+settings:
+  id: 'facet_block:special_diet'
+  label: 'Special diet'
+  provider: facets
+  label_display: visible
+  block_id: specialdiet
+visibility:
+  request_path:
+    id: request_path
+    pages: '/information-and-services/eat-well/recipes*'
+    negate: false
+    context_mapping: {  }
