@@ -13,7 +13,6 @@ dependencies:
     - node.type.news
   module:
     - datetime
-    - metatag
     - text
     - user
 id: node.news.default
@@ -28,53 +27,28 @@ content:
     settings: {  }
     third_party_settings: {  }
     region: content
-  field_enable_toc:
-    type: boolean
-    weight: 3
-    region: content
-    label: above
-    settings:
-      format: default
-      format_custom_false: ''
-      format_custom_true: ''
-    third_party_settings: {  }
-  field_meta_tags:
-    weight: 5
-    label: above
-    settings: {  }
-    third_party_settings: {  }
-    type: metatag_empty_formatter
-    region: content
   field_published_date:
     type: datetime_default
     weight: 0
     region: content
-    label: above
+    label: inline
     settings:
-      format_type: medium
       timezone_override: ''
+      format_type: medium_date
     third_party_settings: {  }
   field_summary:
-    weight: 6
-    label: above
+    weight: 1
+    label: hidden
     settings: {  }
     third_party_settings: {  }
     type: text_default
     region: content
-  field_teaser:
-    type: string
-    weight: 1
-    region: content
-    label: above
-    settings:
-      link_to_entity: false
-    third_party_settings: {  }
-  links:
-    weight: 4
-    region: content
-    settings: {  }
-    third_party_settings: {  }
 hidden:
+  content_moderation_control: true
+  field_enable_toc: true
+  field_meta_tags: true
   field_photo: true
+  field_teaser: true
   langcode: true
+  links: true
   search_api_excerpt: true
