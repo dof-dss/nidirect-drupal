@@ -1,0 +1,32 @@
+uuid: 18cecb4c-56de-4a0d-ab6b-5ca8e6ac6bae
+langcode: en
+status: true
+dependencies:
+  config:
+    - views.view.news
+  module:
+    - node
+    - views
+  theme:
+    - bartik
+id: views_block__news_latest_news_block
+theme: bartik
+region: sidebar_first
+weight: 0
+provider: null
+plugin: 'views_block:news-latest_news_block'
+settings:
+  id: 'views_block:news-latest_news_block'
+  label: ''
+  provider: views
+  label_display: visible
+  views_label: ''
+  items_per_page: none
+visibility:
+  node_type:
+    id: node_type
+    bundles:
+      news: news
+    negate: false
+    context_mapping:
+      node: '@node.node_route_context:node'
