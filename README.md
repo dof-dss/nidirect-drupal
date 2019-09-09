@@ -19,18 +19,22 @@ This document intends to cover an overview of how the site is structured and how
 Some key project directories and/or files:
 
 ```
-composer.json (defines project dependencies)
-composer.lock (what composer install uses when running, ensure this is always in sync with composer.json)
-config (configuration management folder)
-phpcs.sh (shell script to simplify invocation of PHPCS tool)
-vendor (third party dependencies and libraries; sourced by composer)
-web (docroot folder)
-web/core (Drupal core; don't alter except via composer patches)
-web/modules/contrib (community modules; don't alter except via composer patches)
-web/modules/custom (custom code; sourced from other repository by composer)
-web/modules/migrate/nidirect_migrations (migration modules; sourced from other repository by composer)
-web/themes/custom/nidirect (custom site theme)
-web/sites/default/settings.php (generated settings file, see note below):
+├── composer.json (defines project dependencies)
+├── composer.lock (what composer install uses when running, ensure this is always in sync with composer.json)
+├── config (configuration management folder)
+├── phpcs.sh (shell script to simplify invocation of PHPCS tool)
+├── vendor (third party dependencies and libraries; sourced by composer)
+├── web (docroot folder)
+├── web/core (Drupal core; don't alter except via composer patches)
+├── web/modules/contrib (community modules; don't alter except via composer patches)
+├── web/modules/custom (custom code; sourced from other repository by composer)
+├── web/modules/origins (common internal custom modules; sourced from other repository by composer)
+├── web/modules/migrate/nidirect_migrations (migration modules; sourced from other repository by composer)
+├── web/themes/custom/nicsdru_origins_theme (custom base theme)
+├── web/themes/custom/nicsdru_nidirect_theme (custom site theme)
+├── web/profiles/custom/test_profile (baseline test profile for functional tests)
+├── web/sites/default/development.services.yml (generated local services file)
+└── web/sites/default/settings.php (generated settings file, see note below):
 ```
 
 ## Drupal settings file
