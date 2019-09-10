@@ -66,12 +66,12 @@ jobs:
               composer global require hirak/prestissimo
       - run:
           name: PHPCS static analysis
-          command: /home/circleci/project/phpcs.sh /home/circleci/project "/home/circleci/project/web/modules/custom /home/circleci/project/web/modules/migrate /home/circleci/project/web/themes/custom"
+          command: /home/circleci/project/phpcs.sh /home/circleci/project "/home/circleci/project/web/modules/origins /home/circleci/project/web/modules/custom /home/circleci/project/web/modules/migrate /home/circleci/project/web/themes/custom"
       - run:
          name: Deprecated code check
          command: |
             cd /home/circleci/project
-            vendor/bin/drupal-check /home/circleci/project/web/modules/custom
+            vendor/bin/drupal-check /home/circleci/project/web/modules/custom /home/circleci/project/web/modules/origins
 
   # Run any unit tests and any kernel tests against a vanilla D8 site + our site config imported over it (no predefined content).
   unit_kernel_tests:
