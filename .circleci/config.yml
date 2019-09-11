@@ -12,7 +12,7 @@ jobs:
       # Add SSH user key so we can access related repositories as part of our initial clone + composer install command.
       - add_ssh_keys:
           fingerprints:
-            - "b3:f6:e6:98:bd:8c:dd:c9:c0:52:f6:93:a9:fd:ee:5b"
+            - "89:cc:6e:61:6a:0e:13:ab:47:0b:25:d6:bc:90:d4:d2"
       - checkout
       - run:
           name: Validate composer.json and composer.lock file for consistency
@@ -40,6 +40,27 @@ jobs:
           key: composer-{{ checksum "composer.lock" }}
           paths:
             - $HOME/.composer/cache
+      - run:
+          name: Update any projects on dev branches
+          command: |
+            REPOS=(
+              modules/custom
+              modules/origins
+              modules/migrate/nidirect-migrations
+              themes/custom/nicsdru_origins_theme
+              themes/custom/nicsdru_nidirect_theme
+              profiles/custom/test_profile
+            )
+            for repo in "${REPOS[@]}"
+            do
+              cd /home/circleci/project/web/$repo
+              if [[ $(git symbolic-ref --short HEAD) ]]; then
+                echo "Fetching latest contents of repository at /home/circleci/project/web/${repo}"
+                git pull
+              else
+                echo "Skipping /home/circleci/project/web/${repo} as it is presently checked out on release tag"
+              fi
+            done
       - persist_to_workspace:
           root: ./
           paths:
@@ -53,25 +74,24 @@ jobs:
       # Add SSH user key so we can access related repositories as part of our initial clone + composer install command.
       - add_ssh_keys:
           fingerprints:
-            # TODO: change this SSH key fingerprint to dof-dss key, once it is available.
-            - "40:ee:b5:e2:37:3d:e5:e0:79:7f:95:a3:1d:b5:7d:c9"
+            - "89:cc:6e:61:6a:0e:13:ab:47:0b:25:d6:bc:90:d4:d2"
       - attach_workspace:
           at: ./
       - run:
-            name: Add OS and PHP extensions/config
-            command: |
-              sudo apt-get update
-              sudo apt-get install -y libpng-dev
-              sudo docker-php-ext-install gd
-              composer global require hirak/prestissimo
+          name: Add OS and PHP extensions
+          command: |
+            sudo apt-get update
+            sudo apt-get install -y libpng-dev
+            sudo docker-php-ext-install gd
+            composer global require hirak/prestissimo
       - run:
           name: PHPCS static analysis
-          command: /home/circleci/project/phpcs.sh /home/circleci/project "/home/circleci/project/web/modules/custom /home/circleci/project/web/modules/migrate /home/circleci/project/web/themes/custom"
+          command: /home/circleci/project/phpcs.sh /home/circleci/project "/home/circleci/project/web/modules/origins /home/circleci/project/web/modules/custom /home/circleci/project/web/modules/migrate /home/circleci/project/web/themes/custom"
       - run:
          name: Deprecated code check
          command: |
             cd /home/circleci/project
-            vendor/bin/drupal-check /home/circleci/project/web/modules/custom
+            vendor/bin/drupal-check /home/circleci/project/web/modules/custom /home/circleci/project/web/modules/origins
 
   # Run any unit tests and any kernel tests against a vanilla D8 site + our site config imported over it (no predefined content).
   unit_kernel_tests:
@@ -82,8 +102,7 @@ jobs:
       # Add SSH user key so we can access related repositories as part of our initial clone + composer install command.
       - add_ssh_keys:
           fingerprints:
-            # TODO: change this SSH key fingerprint to dof-dss key, once it is available.
-            - "40:ee:b5:e2:37:3d:e5:e0:79:7f:95:a3:1d:b5:7d:c9"
+            - "89:cc:6e:61:6a:0e:13:ab:47:0b:25:d6:bc:90:d4:d2"
       - attach_workspace:
           at: ./
       - run:
@@ -117,15 +136,7 @@ jobs:
               # Copy PHPUnit config into core folder.
               cp /home/circleci/project/.circleci/phpunit.circleci.xml core/
               # Install Drupal (or restore from DB dump at this point).
-              ../vendor/bin/drush site-install -y standard --site-name="NI Direct"
-              # Enable migrate_nidirect_utils.
-              ../vendor/bin/drush en -y migrate_nidirect_utils
-              # No migrate db, which drupal console expects
-              # so we borrow the equivalent drupal-console commands.
-              ../vendor/bin/drush cset -y "system.site" uuid "${UUID}"
-              ../vendor/bin/drush scr ../.circleci/drupal.delete-shortcuts.php
-              # Import our config.
-              ../vendor/bin/drush cim -y
+              ../vendor/bin/drush site-install -y --existing-config
       - run:
             name: Copy files into webroot
             command: |
@@ -155,8 +166,7 @@ jobs:
       # Add SSH user key so we can access related repositories as part of our initial clone + composer install command.
       - add_ssh_keys:
           fingerprints:
-            # TODO: change this SSH key fingerprint to dof-dss key, once it is available.
-            - "40:ee:b5:e2:37:3d:e5:e0:79:7f:95:a3:1d:b5:7d:c9"
+            - "89:cc:6e:61:6a:0e:13:ab:47:0b:25:d6:bc:90:d4:d2"
       - attach_workspace:
           at: ./
       - run:
@@ -172,13 +182,6 @@ jobs:
               sudo docker-php-ext-install gd pdo_mysql
 
               composer global require hirak/prestissimo
-      # TODO: remove this step once we have db dumps available over SSH/scp location.
-      - run:
-          name: SSH hack for github/composer rubbish
-          command: |
-            mkdir -p /home/circleci/.ssh
-            touch /home/circleci/.ssh/known_hosts
-            ssh-keyscan github.com >> /home/circleci/.ssh/known_hosts
       - run:
             name: Copy vhost into place
             command: |
@@ -242,9 +245,8 @@ jobs:
     steps:
       - add_ssh_keys:
           fingerprints:
-            # TODO: change this SSH key fingerprint to dof-dss key, once it is available.
-            - "40:ee:b5:e2:37:3d:e5:e0:79:7f:95:a3:1d:b5:7d:c9"
-      - run: "TBC: Deploy task that will package up/push our code onto a target system."
+            - "89:cc:6e:61:6a:0e:13:ab:47:0b:25:d6:bc:90:d4:d2"
+      - run: 'echo TBC: Deploy task that will package up/push our code onto a target system.'
 
 workflows:
   version: 2
@@ -267,8 +269,3 @@ workflows:
             - static_analysis
             - unit_kernel_tests
             # - ui_tests
-          filters:
-            tags:
-              only: /^8.x-*/
-            branches:
-              ignore: /.*/
