@@ -4,7 +4,13 @@
 
 Drupal source code for the NIDirect website: https://www.nidirect.gov.uk.
 
-Drupal 8 install based on drupal-composer/drupal-project with that project set at the upstream remote.
+Drupal 8 project based on `drupal-composer/drupal-project`. The project comprises of a number of disparate repositories and the diagram below outlines the relationships between them.
+
+[Composer](https://getcomposer.org/) is used to define and build the project; see `composer.json` for details.
+
+> This repository corresponds to the 'Drupal 8 project template' element in the diagram.
+
+![NI Direct project components](https://mermaid.ink/img/eyJjb2RlIjoiZ3JhcGggTFJcbnN1YmdyYXBoIE5JIERpcmVjdCBEcnVwYWwgOFxubGFuZG9bXCJMb2NhbCBkZXYgZnJhbWV3b3JrIChMYW5kbylcIl1cbmQ4W0RydXBhbCA4IHByb2plY3QgdGVtcGxhdGVdXG5zdWJncmFwaCBDdXN0b20gY29kZVxuY3VzdG9tW05JRGlyZWN0IGN1c3RvbSBtb2R1bGVzXVxubWlncmF0ZVtOSURpcmVjdCBEOCBtaWdyYXRpb24gbW9kdWxlc11cbmVuZFxuc3ViZ3JhcGggRnJvbnRlbmRcbmJhc2V0aGVtZVtCYXNlIHRoZW1lOiBPcmlnaW5zXVxubmlkaXJlY3R0aGVtZVtOSURpcmVjdCB0aGVtZV1cbmVuZFxuc3ViZ3JhcGggRXh0ZXJuYWxcbmNvbnRyaWJbQ29udHJpYnV0ZWQgRHJ1cGFsIG1vZHVsZXNdXG4zcFtUaGlyZCBwYXJ0eSBsaWJyYXJpZXNdXG5lbmRcbmVuZFxubGFuZG8tLT5kOFxuZDgtLT5jdXN0b21cbmQ4LS0-bWlncmF0ZVxuZDgtLT5iYXNldGhlbWVcbmQ4LS0-bmlkaXJlY3R0aGVtZVxuZDgtLT5jb250cmliXG5kOC0tPjNwXG5cbmNsaWNrIGxhbmRvIFwiaHR0cHM6Ly9naXRodWIuY29tL2RvZi1kc3MvbGFuZG8tZDctdG8tZDgtbWlncmF0ZVwiIFwibGFuZG8tZDctdG8tZDgtbWlncmF0ZVwiXG5jbGljayBkOCBcImh0dHBzOi8vZ2l0aHViLmNvbS9kb2YtZHNzL25pZGlyZWN0LWRydXBhbFwiIFwibmlkaXJlY3QtZHJ1cGFsXCJcbmNsaWNrIGN1c3RvbSBcImh0dHBzOi8vZ2l0aHViLmNvbS9kb2YtZHNzL25pZGlyZWN0LXNpdGUtbW9kdWxlc1wiIFwibmlkaXJlY3Qtc2l0ZS1tb2R1bGVzXCJcbmNsaWNrIG1pZ3JhdGUgXCJodHRwczovL2dpdGh1Yi5jb20vZG9mLWRzcy9uaWRpcmVjdC1kOC1taWctbW9kc1wiIFwibmlkaXJlY3QtZDgtbWlnLW1vZHNcIlxuY2xpY2sgYmFzZXRoZW1lIFwiaHR0cHM6Ly9naXRodWIuY29tL2RvZi1kc3Mvbmljc2RydV9vcmlnaW5zX3RoZW1lXCIgXCJuaWNzZHJ1X29yaWdpbnNfdGhlbWVcIlxuY2xpY2sgbmlkaXJlY3R0aGVtZSBcImh0dHBzOi8vZ2l0aHViLmNvbS9kb2YtZHNzL25pY3NkcnVfbmlkaXJlY3RfdGhlbWVcIiBcIm5pY3NkcnVfbmlkaXJlY3RfdGhlbWVcIiIsIm1lcm1haWQiOnsidGhlbWUiOiJkZWZhdWx0In19 "NI Direct project components")
 
 ## Updating Core
 
@@ -67,7 +73,7 @@ Automated testing is configured to check:
 - Run any defined unit tests via [phpunit](https://phpunit.de/).
 - Run functional UI tests using [nightwatch.js](https://nightwatchjs.org).
 
-All of these tools can be run locally - and you should at least once per feature - and the CI service is present to ensure that even if you do not then you cannot merge your code until any issues are corrected.
+All of these tools can be run locally with Circle CI present to ensure that even if you do not then you cannot merge your code to production until any failing tests are corrected.
 
 ## Contribution
 
