@@ -51,18 +51,62 @@ jobs:
       - image: circleci/php:7.2.20-apache-browsers
     steps:
       # Add SSH user key so we can access related repositories as part of our initial clone + composer install command.
+#      - add_ssh_keys:
+#          fingerprints:
+#            - "89:cc:6e:61:6a:0e:13:ab:47:0b:25:d6:bc:90:d4:d2"
+#      - attach_workspace:
+#          at: ./
       - add_ssh_keys:
           fingerprints:
             - "89:cc:6e:61:6a:0e:13:ab:47:0b:25:d6:bc:90:d4:d2"
-      - attach_workspace:
-          at: ./
+      - checkout
       - run:
-            name: Add OS and PHP extensions/config
-            command: |
-              sudo apt-get update
-              sudo apt-get install -y libpng-dev
-              sudo docker-php-ext-install gd
-              composer global require hirak/prestissimo
+          name: Validate composer.json and composer.lock file for consistency
+          command: composer validate --no-check-all --strict
+      - run:
+          name: Add GitHub access token for composer
+          command: echo 'composer config -g github-oauth.github.com $GITHUB_TOKEN' >> $BASH_ENV
+      - run:
+          name: Add OS and PHP extensions
+          command: |
+            sudo apt-get update
+            sudo apt-get install -y libpng-dev
+            sudo docker-php-ext-install gd
+            composer global require hirak/prestissimo
+      # TODO: remove this step once we have db dumps available over SSH/scp location.
+      - run:
+          name: SSH hack for github/composer rubbish
+          command: |
+            mkdir -p /home/circleci/.ssh
+            touch /home/circleci/.ssh/known_hosts
+            ssh-keyscan github.com >> /home/circleci/.ssh/known_hosts
+      - run:
+          name: Fetch dependencies with composer
+          command: |
+            composer install --no-interaction --optimize-autoloader
+            composer drupal:scaffold
+            composer run-script post-install-cmd
+      - run:
+          name: Update any projects on dev branches
+          command: |
+            REPOS=(
+              modules/custom
+              modules/origins
+              modules/migrate/nidirect-migrations
+              themes/custom/nicsdru_origins_theme
+              themes/custom/nicsdru_nidirect_theme
+              profiles/custom/test_profile
+            )
+            for repo in "${REPOS[@]}"
+            do
+              cd /home/circleci/project/web/$repo
+              if [[ $(git symbolic-ref --short HEAD) ]]; then
+                echo "Fetching latest contents of repository at /home/circleci/project/web/${repo}"
+                git pull
+              else
+                echo "Skipping /home/circleci/project/web/${repo} as it is presently checked out on release tag"
+              fi
+            done
       - run:
           name: PHPCS static analysis
           command: /home/circleci/project/phpcs.sh /home/circleci/project "/home/circleci/project/web/modules/origins /home/circleci/project/web/modules/custom /home/circleci/project/web/modules/migrate /home/circleci/project/web/themes/custom"
@@ -161,13 +205,6 @@ jobs:
               sudo docker-php-ext-install gd pdo_mysql
 
               composer global require hirak/prestissimo
-      # TODO: remove this step once we have db dumps available over SSH/scp location.
-      - run:
-          name: SSH hack for github/composer rubbish
-          command: |
-            mkdir -p /home/circleci/.ssh
-            touch /home/circleci/.ssh/known_hosts
-            ssh-keyscan github.com >> /home/circleci/.ssh/known_hosts
       - run:
             name: Copy vhost into place
             command: |
