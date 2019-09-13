@@ -1,4 +1,4 @@
-uuid: 940ac73f-4519-4e90-8fe1-2bdbd6f65757
+uuid: f8872c3d-b40e-46d5-88e9-88f3bfd79913
 langcode: en
 status: true
 dependencies:
@@ -16,8 +16,8 @@ dependencies:
     - node
     - text
     - user
-id: articles_by_term
-label: 'Articles by term'
+id: related_content
+label: 'Related content'
 module: views
 description: ''
 tag: ''
@@ -372,31 +372,14 @@ display:
         - 'user.node_grants:view'
         - user.permissions
       tags: {  }
-  block_1:
+  all_content_by_theme:
     display_plugin: block
-    id: block_1
+    id: all_content_by_theme
     display_title: Block
     position: 1
     display_options:
       display_extenders: {  }
-      block_hide_empty: true
-    cache_metadata:
-      max-age: -1
-      contexts:
-        - 'languages:language_content'
-        - 'languages:language_interface'
-        - url
-        - 'user.node_grants:view'
-        - user.permissions
-      tags: {  }
-  block_2:
-    display_plugin: block
-    id: block_2
-    display_title: Block
-    position: 1
-    display_options:
-      display_extenders: {  }
-      title: 'All articles by term'
+      title: 'All content in theme'
       defaults:
         title: false
         fields: false
@@ -595,6 +578,8 @@ display:
         type: none
         options:
           offset: 0
+      display_comment: 'All content by theme'
+      block_description: 'All content by theme'
     cache_metadata:
       max-age: -1
       contexts:
@@ -606,3 +591,25 @@ display:
       tags:
         - 'config:field.storage.node.field_summary'
         - 'config:field.storage.node.field_teaser'
+  content_by_theme:
+    display_plugin: block
+    id: content_by_theme
+    display_title: Block
+    position: 1
+    display_options:
+      display_extenders: {  }
+      block_hide_empty: true
+      title: 'Content by theme'
+      defaults:
+        title: false
+      display_comment: 'Content by theme'
+      block_description: 'Content by theme'
+    cache_metadata:
+      max-age: -1
+      contexts:
+        - 'languages:language_content'
+        - 'languages:language_interface'
+        - url
+        - 'user.node_grants:view'
+        - user.permissions
+      tags: {  }
