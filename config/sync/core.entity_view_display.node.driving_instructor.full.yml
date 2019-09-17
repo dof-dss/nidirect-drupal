@@ -1,0 +1,108 @@
+uuid: abac84f0-cdb3-4395-8c83-119668c6d169
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.node.full
+    - field.field.node.driving_instructor.field_contact_phone
+    - field.field.node.driving_instructor.field_contact_sms
+    - field.field.node.driving_instructor.field_di_adi_no
+    - field.field.node.driving_instructor.field_di_areas
+    - field.field.node.driving_instructor.field_di_categories
+    - field.field.node.driving_instructor.field_di_firstname
+    - field.field.node.driving_instructor.field_di_lastname
+    - field.field.node.driving_instructor.field_email_address
+    - field.field.node.driving_instructor.field_link_url
+    - field.field.node.driving_instructor.field_meta_tags
+    - node.type.driving_instructor
+  module:
+    - layout_builder
+    - link
+    - user
+third_party_settings:
+  layout_builder:
+    allow_custom: false
+    enabled: false
+id: node.driving_instructor.full
+targetEntityType: node
+bundle: driving_instructor
+mode: full
+content:
+  content_moderation_control:
+    weight: 0
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_contact_phone:
+    type: string
+    weight: 4
+    region: content
+    label: inline
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+  field_contact_sms:
+    type: string
+    weight: 3
+    region: content
+    label: inline
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+  field_di_areas:
+    type: entity_reference_label
+    weight: 8
+    region: content
+    label: inline
+    settings:
+      link: true
+    third_party_settings: {  }
+  field_di_categories:
+    type: entity_reference_label
+    weight: 7
+    region: content
+    label: inline
+    settings:
+      link: true
+    third_party_settings: {  }
+  field_di_firstname:
+    type: string
+    weight: 1
+    region: content
+    label: inline
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+  field_di_lastname:
+    type: string
+    weight: 2
+    region: content
+    label: inline
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+  field_email_address:
+    type: basic_string
+    weight: 5
+    region: content
+    label: inline
+    settings: {  }
+    third_party_settings: {  }
+  field_link_url:
+    type: link
+    weight: 6
+    region: content
+    label: inline
+    settings:
+      trim_length: 80
+      url_only: false
+      url_plain: false
+      rel: ''
+      target: ''
+    third_party_settings: {  }
+hidden:
+  field_di_adi_no: true
+  field_meta_tags: true
+  langcode: true
+  links: true
+  search_api_excerpt: true

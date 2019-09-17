@@ -1,0 +1,76 @@
+uuid: 35e64f2a-f90c-4a30-a629-aeca6a7f9957
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.node.full
+    - field.field.node.embargoed_publication.body
+    - field.field.node.embargoed_publication.field_meta_tags
+    - field.field.node.embargoed_publication.field_publication_type
+    - field.field.node.embargoed_publication.field_published_date
+    - field.field.node.embargoed_publication.field_secure_attachment
+    - field.field.node.embargoed_publication.field_site_themes
+    - field.field.node.embargoed_publication.field_subtheme
+    - field.field.node.embargoed_publication.field_summary
+    - field.field.node.embargoed_publication.field_top_level_theme
+    - node.type.embargoed_publication
+  module:
+    - datetime
+    - layout_builder
+    - text
+    - user
+third_party_settings:
+  layout_builder:
+    allow_custom: false
+    enabled: false
+id: node.embargoed_publication.full
+targetEntityType: node
+bundle: embargoed_publication
+mode: full
+content:
+  body:
+    label: hidden
+    type: text_default
+    weight: 3
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+  content_moderation_control:
+    weight: 0
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_published_date:
+    type: datetime_default
+    weight: 1
+    region: content
+    label: above
+    settings:
+      format_type: medium
+      timezone_override: ''
+    third_party_settings: {  }
+  field_secure_attachment:
+    type: entity_reference_entity_view
+    weight: 4
+    label: above
+    settings:
+      view_mode: default
+      link: false
+    third_party_settings: {  }
+    region: content
+  field_summary:
+    weight: 2
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    type: text_default
+    region: content
+hidden:
+  field_meta_tags: true
+  field_publication_type: true
+  field_site_themes: true
+  field_subtheme: true
+  field_top_level_theme: true
+  langcode: true
+  links: true
+  search_api_excerpt: true
