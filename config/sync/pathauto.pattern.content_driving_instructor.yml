@@ -1,0 +1,22 @@
+uuid: a9ba59f5-2a7f-4db1-ab19-c2f462355788
+langcode: en
+status: true
+dependencies:
+  module:
+    - node
+id: content_driving_instructor
+label: 'Content - Driving instructor'
+type: 'canonical_entities:node'
+pattern: 'services/driving-instructors/[node:field_di_firstname]-[node:field_di_lastname]-[node:field_di_adi_no]-[node:nid]'
+selection_criteria:
+  45da0709-e774-481b-bd03-d61e3d1d5d44:
+    id: node_type
+    bundles:
+      driving_instructor: driving_instructor
+    negate: false
+    context_mapping:
+      node: node
+    uuid: 45da0709-e774-481b-bd03-d61e3d1d5d44
+selection_logic: and
+weight: -5
+relationships: {  }
