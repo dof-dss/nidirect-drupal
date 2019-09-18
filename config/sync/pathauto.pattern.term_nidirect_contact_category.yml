@@ -1,0 +1,23 @@
+uuid: e9a04baf-eeff-4523-b115-0d8121266365
+langcode: en
+status: true
+dependencies:
+  module:
+    - ctools
+    - taxonomy
+id: term_nidirect_contact_category
+label: 'Term - NIDirect contact category'
+type: 'canonical_entities:taxonomy_term'
+pattern: 'admin/contacts/[term:name]'
+selection_criteria:
+  abd4c57f-8a45-43cb-a53f-6ea4796176cb:
+    id: 'entity_bundle:taxonomy_term'
+    bundles:
+      contact_categories: contact_categories
+    negate: false
+    context_mapping:
+      taxonomy_term: taxonomy_term
+    uuid: abd4c57f-8a45-43cb-a53f-6ea4796176cb
+selection_logic: and
+weight: -5
+relationships: {  }
