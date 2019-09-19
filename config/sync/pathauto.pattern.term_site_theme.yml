@@ -1,0 +1,23 @@
+uuid: 75704424-a403-4cc7-848e-6dfdc7b6608a
+langcode: en
+status: true
+dependencies:
+  module:
+    - ctools
+    - taxonomy
+id: term_site_theme
+label: 'Term - Site theme'
+type: 'canonical_entities:taxonomy_term'
+pattern: 'information-and-services/[term:parent:name]/[term:name]'
+selection_criteria:
+  8f9f6058-5f55-415f-a8de-16da69904312:
+    id: 'entity_bundle:taxonomy_term'
+    bundles:
+      site_themes: site_themes
+    negate: false
+    context_mapping:
+      taxonomy_term: taxonomy_term
+    uuid: 8f9f6058-5f55-415f-a8de-16da69904312
+selection_logic: and
+weight: -5
+relationships: {  }
