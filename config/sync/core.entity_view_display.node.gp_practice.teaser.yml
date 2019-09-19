@@ -22,6 +22,7 @@ dependencies:
   module:
     - address
     - layout_builder
+    - link
     - user
 third_party_settings:
   layout_builder:
@@ -34,28 +35,39 @@ mode: teaser
 content:
   field_address:
     type: address_default
-    weight: 2
+    weight: 1
     region: content
     label: hidden
     settings: {  }
     third_party_settings: {  }
-  field_gp_practice_lead:
-    type: entity_reference_entity_view
+  field_gp_appointments:
+    type: link
+    weight: 2
+    region: content
+    label: hidden
+    settings:
+      trim_length: 80
+      url_only: false
+      url_plain: false
+      rel: ''
+      target: ''
+    third_party_settings: {  }
+  field_gp_prescriptions:
+    type: link
+    weight: 3
+    region: content
+    label: hidden
+    settings:
+      trim_length: 80
+      url_only: false
+      url_plain: false
+      rel: ''
+      target: ''
+    third_party_settings: {  }
+  gp_names:
     weight: 0
     region: content
-    label: hidden
-    settings:
-      link: false
-      view_mode: default
-    third_party_settings: {  }
-  field_gp_practice_member:
-    type: entity_reference_entity_view
-    weight: 1
-    region: content
-    label: hidden
-    settings:
-      link: false
-      view_mode: default
+    settings: {  }
     third_party_settings: {  }
 hidden:
   content_moderation_control: true
@@ -64,13 +76,13 @@ hidden:
   field_contact_phone: true
   field_contact_postcode: true
   field_contact_town_city: true
-  field_gp_appointments: true
   field_gp_lcg: true
   field_gp_partnership_no: true
+  field_gp_practice_lead: true
+  field_gp_practice_member: true
   field_gp_practice_name: true
   field_gp_practice_no: true
   field_gp_practice_website: true
-  field_gp_prescriptions: true
   field_gp_surgery_name: true
   field_location: true
   field_meta_tags: true
