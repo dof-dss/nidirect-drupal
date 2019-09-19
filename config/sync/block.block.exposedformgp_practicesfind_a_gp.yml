@@ -1,0 +1,29 @@
+uuid: a4fd821c-7fc4-4539-be01-f36fa097a22e
+langcode: en
+status: true
+dependencies:
+  config:
+    - views.view.gp_practices
+  module:
+    - system
+    - views
+  theme:
+    - bartik
+id: exposedformgp_practicesfind_a_gp
+theme: bartik
+region: sidebar_first
+weight: 0
+provider: null
+plugin: 'views_exposed_filter_block:gp_practices-find_a_gp'
+settings:
+  id: 'views_exposed_filter_block:gp_practices-find_a_gp'
+  label: ''
+  provider: views
+  label_display: '0'
+  views_label: ''
+visibility:
+  request_path:
+    id: request_path
+    pages: "/services/gp-practices\r\n/services/gp-practices/*"
+    negate: false
+    context_mapping: {  }
