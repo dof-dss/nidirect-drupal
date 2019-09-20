@@ -1,0 +1,26 @@
+uuid: bcd31f12-3b6f-4852-be60-03e09b9a8818
+langcode: en
+status: true
+dependencies:
+  module:
+    - nidirect_common
+    - system
+  theme:
+    - bartik
+id: sitesearchblock
+theme: bartik
+region: header
+weight: 0
+provider: null
+plugin: site_search_block
+settings:
+  id: site_search_block
+  label: 'Site search block'
+  provider: nidirect_common
+  label_display: '0'
+visibility:
+  request_path:
+    id: request_path
+    pages: '/search*'
+    negate: true
+    context_mapping: {  }
