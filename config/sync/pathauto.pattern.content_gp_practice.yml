@@ -1,0 +1,22 @@
+uuid: 96d642c5-befa-4800-9969-8fedfcbe1bd0
+langcode: en
+status: true
+dependencies:
+  module:
+    - node
+id: content_gp_practice
+label: 'Content - GP practice'
+type: 'canonical_entities:node'
+pattern: 'services/gp-practices/[node:title]'
+selection_criteria:
+  30293a9e-566d-4ecd-af4f-f255395d5928:
+    id: node_type
+    bundles:
+      gp_practice: gp_practice
+    negate: false
+    context_mapping:
+      node: node
+    uuid: 30293a9e-566d-4ecd-af4f-f255395d5928
+selection_logic: and
+weight: -5
+relationships: {  }

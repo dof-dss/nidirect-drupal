@@ -1,0 +1,22 @@
+uuid: 58064e2a-e616-40f8-a285-f12249c066e7
+langcode: en
+status: true
+dependencies:
+  module:
+    - node
+id: content_health_condition
+label: 'Content - Health condition'
+type: 'canonical_entities:node'
+pattern: 'conditions/[node:title]'
+selection_criteria:
+  61170923-a8cd-4bd1-a124-c2a9bd833872:
+    id: node_type
+    bundles:
+      health_condition: health_condition
+    negate: false
+    context_mapping:
+      node: node
+    uuid: 61170923-a8cd-4bd1-a124-c2a9bd833872
+selection_logic: and
+weight: -5
+relationships: {  }

@@ -1,0 +1,22 @@
+uuid: f37946a8-1211-4c37-a37e-20541b444edb
+langcode: en
+status: true
+dependencies:
+  module:
+    - node
+id: content_landing_page
+label: 'Content - Landing page'
+type: 'canonical_entities:node'
+pattern: 'campaigns/[node:title]'
+selection_criteria:
+  e85884b3-b509-4f23-98c3-d620c6de972e:
+    id: node_type
+    bundles:
+      landing_page: landing_page
+    negate: false
+    context_mapping:
+      node: node
+    uuid: e85884b3-b509-4f23-98c3-d620c6de972e
+selection_logic: and
+weight: -5
+relationships: {  }
