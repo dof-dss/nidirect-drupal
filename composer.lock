@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "5e42299494bd2519c0812cbd3a72f567",
+    "content-hash": "46ceea0b2e9714420403840244c1407b",
     "packages": [
         {
             "name": "alchemy/zippy",
@@ -2151,25 +2151,30 @@
         },
         {
             "name": "dof-dss/nicsdru_origins_modules",
-            "version": "0.1.1",
+            "version": "dev-development",
             "source": {
                 "type": "git",
-                "url": "https://github.com/dof-dss/nicsdru_origins_modules.git",
-                "reference": "c46b15c562e86134994028beea61ef1111cde413"
+                "url": "git@github.com:dof-dss/nicsdru_origins_modules.git",
+                "reference": "6ccb24e06ff24dda57f99acf2f26d9ff4f8e3d9f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/dof-dss/nicsdru_origins_modules/zipball/c46b15c562e86134994028beea61ef1111cde413",
-                "reference": "c46b15c562e86134994028beea61ef1111cde413",
+                "url": "https://api.github.com/repos/dof-dss/nicsdru_origins_modules/zipball/6ccb24e06ff24dda57f99acf2f26d9ff4f8e3d9f",
+                "reference": "6ccb24e06ff24dda57f99acf2f26d9ff4f8e3d9f",
                 "shasum": ""
             },
             "require": {
                 "composer/installers": "^1.6"
             },
             "type": "drupal-module",
-            "notification-url": "https://packagist.org/downloads/",
+            "authors": [
+                {
+                    "name": "Stephen Cousins",
+                    "email": "hello@onemanandhismouse.com"
+                }
+            ],
             "description": "Generic modules for DOF-DSS Drupal sites",
-            "time": "2019-09-19T13:03:50+00:00"
+            "time": "2019-09-02T10:07:12+00:00"
         },
         {
             "name": "dof-dss/nicsdru_origins_theme",
@@ -5821,6 +5826,61 @@
             "support": {
                 "source": "http://cgit.drupalcode.org/twig_extensions",
                 "issues": "http://drupal.org/project/issues/twig_extensions"
+            }
+        },
+        {
+            "name": "drupal/twig_tweak",
+            "version": "2.4.0",
+            "source": {
+                "type": "git",
+                "url": "https://git.drupalcode.org/project/twig_tweak.git",
+                "reference": "8.x-2.4"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://ftp.drupal.org/files/projects/twig_tweak-8.x-2.4.zip",
+                "reference": "8.x-2.4",
+                "shasum": "fa175b46d2b69ce0f30344579a5861169c8467a4"
+            },
+            "require": {
+                "drupal/core": "^8.7"
+            },
+            "suggest": {
+                "symfony/var-dumper": "Better dump() function for debugging Twig variables"
+            },
+            "type": "drupal-module",
+            "extra": {
+                "branch-alias": {
+                    "dev-2.x": "2.x-dev"
+                },
+                "drupal": {
+                    "version": "8.x-2.4",
+                    "datestamp": "1563099329",
+                    "security-coverage": {
+                        "status": "covered",
+                        "message": "Covered by Drupal's security advisory policy"
+                    }
+                }
+            },
+            "notification-url": "https://packages.drupal.org/8/downloads",
+            "license": [
+                "GPL-2.0+"
+            ],
+            "authors": [
+                {
+                    "name": "Chi",
+                    "homepage": "https://www.drupal.org/user/556138"
+                }
+            ],
+            "description": "A Twig extension with some useful functions and filters for Drupal development.",
+            "homepage": "https://www.drupal.org/project/twig_tweak",
+            "keywords": [
+                "Drupal",
+                "Twig"
+            ],
+            "support": {
+                "source": "https://git.drupalcode.org/project/twig_tweak",
+                "issues": "https://www.drupal.org/project/issues/twig_tweak"
             }
         },
         {
@@ -14036,6 +14096,7 @@
     "minimum-stability": "dev",
     "stability-flags": {
         "dof-dss/nicsdru_nidirect_theme": 20,
+        "dof-dss/nicsdru_origins_modules": 20,
         "dof-dss/nicsdru_origins_theme": 20,
         "dof-dss/nidirect-site-modules": 20,
         "drupal/config_readonly": 10,
