@@ -1,0 +1,107 @@
+uuid: 5dd6a2c4-0c9d-4682-b7b6-d900d3db8dab
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.node.full
+    - field.field.node.health_condition.body
+    - field.field.node.health_condition.field_additional_info
+    - field.field.node.health_condition.field_alternative_title
+    - field.field.node.health_condition.field_banner_image
+    - field.field.node.health_condition.field_enable_toc
+    - field.field.node.health_condition.field_hc_body_location
+    - field.field.node.health_condition.field_hc_body_system
+    - field.field.node.health_condition.field_hc_condition_type
+    - field.field.node.health_condition.field_hc_info_source
+    - field.field.node.health_condition.field_hc_primary_symptom_1
+    - field.field.node.health_condition.field_hc_primary_symptom_2
+    - field.field.node.health_condition.field_hc_primary_symptom_3
+    - field.field.node.health_condition.field_hc_primary_symptom_4
+    - field.field.node.health_condition.field_hc_secondary_symptoms
+    - field.field.node.health_condition.field_index_letter
+    - field.field.node.health_condition.field_last_review_date
+    - field.field.node.health_condition.field_meta_tags
+    - field.field.node.health_condition.field_next_review_date
+    - field.field.node.health_condition.field_parent_condition
+    - field.field.node.health_condition.field_photo
+    - field.field.node.health_condition.field_published_date
+    - field.field.node.health_condition.field_related_conditions
+    - field.field.node.health_condition.field_related_info
+    - field.field.node.health_condition.field_site_themes
+    - field.field.node.health_condition.field_subtheme
+    - field.field.node.health_condition.field_summary
+    - field.field.node.health_condition.field_teaser
+    - field.field.node.health_condition.field_top_level_theme
+    - node.type.health_condition
+  module:
+    - image
+    - layout_builder
+    - text
+    - user
+third_party_settings:
+  layout_builder:
+    allow_custom: false
+    enabled: false
+id: node.health_condition.full
+targetEntityType: node
+bundle: health_condition
+mode: full
+content:
+  banner_display:
+    weight: 0
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  body:
+    label: hidden
+    type: text_default
+    weight: 3
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+  field_photo:
+    type: image
+    weight: 2
+    region: content
+    label: above
+    settings:
+      image_style: ''
+      image_link: ''
+    third_party_settings: {  }
+  field_summary:
+    weight: 1
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    type: text_default
+    region: content
+hidden:
+  content_moderation_control: true
+  field_additional_info: true
+  field_alternative_title: true
+  field_banner_image: true
+  field_enable_toc: true
+  field_hc_body_location: true
+  field_hc_body_system: true
+  field_hc_condition_type: true
+  field_hc_info_source: true
+  field_hc_primary_symptom_1: true
+  field_hc_primary_symptom_2: true
+  field_hc_primary_symptom_3: true
+  field_hc_primary_symptom_4: true
+  field_hc_secondary_symptoms: true
+  field_index_letter: true
+  field_last_review_date: true
+  field_meta_tags: true
+  field_next_review_date: true
+  field_parent_condition: true
+  field_published_date: true
+  field_related_conditions: true
+  field_related_info: true
+  field_site_themes: true
+  field_subtheme: true
+  field_teaser: true
+  field_top_level_theme: true
+  langcode: true
+  links: true
+  search_api_excerpt: true
