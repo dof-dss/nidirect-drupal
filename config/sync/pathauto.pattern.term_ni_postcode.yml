@@ -1,0 +1,23 @@
+uuid: 20537db6-589b-4e17-8a70-5731a42d43c9
+langcode: en
+status: true
+dependencies:
+  module:
+    - ctools
+    - taxonomy
+id: term_ni_postcode
+label: 'Term - NI postcode'
+type: 'canonical_entities:taxonomy_term'
+pattern: 'admin/postcodes/[term:name]'
+selection_criteria:
+  57e41999-ea2a-4cab-a7eb-f8a3c9863716:
+    id: 'entity_bundle:taxonomy_term'
+    bundles:
+      ni_postcodes: ni_postcodes
+    negate: false
+    context_mapping:
+      taxonomy_term: taxonomy_term
+    uuid: 57e41999-ea2a-4cab-a7eb-f8a3c9863716
+selection_logic: and
+weight: -5
+relationships: {  }
