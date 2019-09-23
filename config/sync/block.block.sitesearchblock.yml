@@ -1,0 +1,26 @@
+uuid: c86287b8-2f26-4e18-a9a9-fb026899ea98
+langcode: en
+status: true
+dependencies:
+  module:
+    - nidirect_common
+    - system
+  theme:
+    - nicsdru_nidirect_theme
+id: sitesearchblock
+theme: nicsdru_nidirect_theme
+region: header
+weight: 0
+provider: null
+plugin: site_search_block
+settings:
+  id: site_search_block
+  label: 'Site search block'
+  provider: nidirect_common
+  label_display: '0'
+visibility:
+  request_path:
+    id: request_path
+    pages: '/search*'
+    negate: true
+    context_mapping: {  }
