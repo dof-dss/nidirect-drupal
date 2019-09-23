@@ -238,16 +238,6 @@ jobs:
             name: UI tests with Nightwatch.js
             command: yarn --cwd=/var/www/html/web/core test:nightwatch --skiptags core
 
-  # TBC: Deploy task that will package up/push our code onto a target system.
-  deploy:
-    docker:
-      - image: circleci/php:7.2.20-apache-browsers
-    steps:
-      - add_ssh_keys:
-          fingerprints:
-            - "89:cc:6e:61:6a:0e:13:ab:47:0b:25:d6:bc:90:d4:d2"
-      - run: 'echo TBC: Deploy task that will package up/push our code onto a target system.'
-
 workflows:
   version: 2
   build-test-deploy:
@@ -259,13 +249,3 @@ workflows:
       - unit_kernel_tests:
           requires:
             - build
-      # - ui_tests:
-      #     requires:
-      #       - build
-      - deploy:
-          # Deploy task only to run for tags matching the 8.x- pattern, no branches.
-          requires:
-            - build
-            - static_analysis
-            - unit_kernel_tests
-            # - ui_tests
