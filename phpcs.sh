@@ -17,6 +17,10 @@ DRUPAL_EXCLUDED_SNIFFS=(
     Drupal.Commenting.ClassComment
 )
 
+DRUPAL_PRACTICE_EXCLUDED_SNIFFS=(
+  DrupalPractice.Objects.StrictSchemaDisabled
+)
+
 # Ignore some npm or non-PHP related FE toolchain directories.
 # IGNORE="${DRUPAL_DEPLOY_PATH}/web/themes/custom/nidirect/dist"
 # IGNORE="$IGNORE,${DRUPAL_DEPLOY_PATH}/web/themes/custom/nidirect/src"
@@ -35,7 +39,8 @@ then
 fi
 
 # Run Drupal best practice checks too.
-${PHPCS_PATH} -nq --standard=DrupalPractice --extensions=${PHPCS_EXTENSIONS} --ignore=${IGNORE} ${PHPCS_CHECK_DIR}
+EXCLUDE=$(IFS=, ; echo "${DRUPAL_PRACTICE_EXCLUDED_SNIFFS[*]}")
+${PHPCS_PATH} -nq --standard=DrupalPractice --extensions=${PHPCS_EXTENSIONS} --exclude=${EXCLUDE} --ignore=${IGNORE} ${PHPCS_CHECK_DIR}
 if [ $? != 0 ]
 then
     exit 1
