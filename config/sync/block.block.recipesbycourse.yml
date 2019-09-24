@@ -1,0 +1,28 @@
+uuid: 056869fe-84cc-4ae6-8130-eca856d2c322
+langcode: en
+status: true
+dependencies:
+  module:
+    - nidirect_related_content
+    - node
+  theme:
+    - nicsdru_nidirect_theme
+id: recipesbycourse
+theme: nicsdru_nidirect_theme
+region: sidebar_first
+weight: 3
+provider: null
+plugin: recipes_by_course
+settings:
+  id: recipes_by_course
+  label: 'Recipes by course'
+  provider: nidirect_related_content
+  label_display: visible
+visibility:
+  node_type:
+    id: node_type
+    bundles:
+      recipe: recipe
+    negate: false
+    context_mapping:
+      node: '@node.node_route_context:node'
