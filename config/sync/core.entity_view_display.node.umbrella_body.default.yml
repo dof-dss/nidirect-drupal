@@ -5,7 +5,6 @@ dependencies:
   config:
     - field.field.node.umbrella_body.body
     - field.field.node.umbrella_body.field_address
-    - field.field.node.umbrella_body.field_contact_phone
     - field.field.node.umbrella_body.field_contact_website
     - field.field.node.umbrella_body.field_district
     - field.field.node.umbrella_body.field_email_address
@@ -42,6 +41,11 @@ content:
     settings: {  }
     third_party_settings: {  }
     region: content
+  content_moderation_control:
+    weight: -20
+    settings: {  }
+    third_party_settings: {  }
+    region: content
   field_address:
     weight: 25
     label: above
@@ -49,14 +53,6 @@ content:
     third_party_settings: {  }
     type: address_default
     region: content
-  field_contact_phone:
-    type: string
-    weight: 12
-    region: content
-    label: above
-    settings:
-      link_to_entity: false
-    third_party_settings: {  }
   field_contact_website:
     type: link
     weight: 11

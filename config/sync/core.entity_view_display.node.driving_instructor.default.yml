@@ -3,8 +3,6 @@ langcode: en
 status: true
 dependencies:
   config:
-    - field.field.node.driving_instructor.field_contact_phone
-    - field.field.node.driving_instructor.field_contact_sms
     - field.field.node.driving_instructor.field_di_adi_no
     - field.field.node.driving_instructor.field_di_areas
     - field.field.node.driving_instructor.field_di_categories
@@ -23,22 +21,11 @@ targetEntityType: node
 bundle: driving_instructor
 mode: default
 content:
-  field_contact_phone:
-    type: string
-    weight: 3
-    region: content
-    label: above
-    settings:
-      link_to_entity: false
+  content_moderation_control:
+    weight: -20
+    settings: {  }
     third_party_settings: {  }
-  field_contact_sms:
-    type: string
-    weight: 2
     region: content
-    label: above
-    settings:
-      link_to_entity: false
-    third_party_settings: {  }
   field_di_adi_no:
     type: string
     weight: 8

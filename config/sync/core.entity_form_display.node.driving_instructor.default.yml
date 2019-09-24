@@ -3,8 +3,6 @@ langcode: en
 status: true
 dependencies:
   config:
-    - field.field.node.driving_instructor.field_contact_phone
-    - field.field.node.driving_instructor.field_contact_sms
     - field.field.node.driving_instructor.field_di_adi_no
     - field.field.node.driving_instructor.field_di_areas
     - field.field.node.driving_instructor.field_di_categories
@@ -14,8 +12,10 @@ dependencies:
     - field.field.node.driving_instructor.field_link_url
     - field.field.node.driving_instructor.field_meta_tags
     - node.type.driving_instructor
+    - workflows.workflow.editorial
   module:
     - chosen_field
+    - content_moderation
     - link
     - metatag
     - path
@@ -29,22 +29,6 @@ content:
     weight: 11
     region: content
     settings: {  }
-    third_party_settings: {  }
-  field_contact_phone:
-    type: string_textfield
-    weight: 5
-    region: content
-    settings:
-      size: 60
-      placeholder: ''
-    third_party_settings: {  }
-  field_contact_sms:
-    type: string_textfield
-    weight: 4
-    region: content
-    settings:
-      size: 60
-      placeholder: ''
     third_party_settings: {  }
   field_di_adi_no:
     type: string_textfield
@@ -110,6 +94,12 @@ content:
     region: content
     settings:
       include_locked: true
+    third_party_settings: {  }
+  moderation_state:
+    type: moderation_state_default
+    weight: 100
+    settings: {  }
+    region: content
     third_party_settings: {  }
   path:
     type: path

@@ -4,7 +4,6 @@ status: true
 dependencies:
   config:
     - field.field.node.gp_practice.field_address
-    - field.field.node.gp_practice.field_contact_phone
     - field.field.node.gp_practice.field_gp_appointments
     - field.field.node.gp_practice.field_gp_lcg
     - field.field.node.gp_practice.field_gp_partnership_no
@@ -18,8 +17,10 @@ dependencies:
     - field.field.node.gp_practice.field_location
     - field.field.node.gp_practice.field_meta_tags
     - node.type.gp_practice
+    - workflows.workflow.editorial
   module:
     - address
+    - content_moderation
     - field_group
     - geolocation
     - link
@@ -114,14 +115,6 @@ content:
   field_contact_address_02:
     type: string_textfield
     weight: 4
-    region: content
-    settings:
-      size: 60
-      placeholder: ''
-    third_party_settings: {  }
-  field_contact_phone:
-    type: string_textfield
-    weight: 2
     region: content
     settings:
       size: 60
@@ -270,6 +263,12 @@ content:
     region: content
     settings:
       include_locked: true
+    third_party_settings: {  }
+  moderation_state:
+    type: moderation_state_default
+    weight: 100
+    settings: {  }
+    region: content
     third_party_settings: {  }
   path:
     type: path
