@@ -4,6 +4,7 @@ status: true
 dependencies:
   config:
     - field.field.node.gp_practice.field_address
+    - field.field.node.gp_practice.field_contact_phone
     - field.field.node.gp_practice.field_gp_appointments
     - field.field.node.gp_practice.field_gp_lcg
     - field.field.node.gp_practice.field_gp_partnership_no
@@ -38,6 +39,13 @@ content:
     label: above
     settings: {  }
     third_party_settings: {  }
+  field_contact_phone:
+    weight: 5
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    type: basic_string
+    region: content
   field_gp_practice_lead:
     type: entity_reference_label
     weight: 0
