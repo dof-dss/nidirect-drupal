@@ -5,6 +5,7 @@ dependencies:
   config:
     - field.field.node.umbrella_body.body
     - field.field.node.umbrella_body.field_address
+    - field.field.node.umbrella_body.field_contact_phone
     - field.field.node.umbrella_body.field_contact_website
     - field.field.node.umbrella_body.field_district
     - field.field.node.umbrella_body.field_email_address
@@ -30,6 +31,7 @@ dependencies:
     - link
     - metatag
     - path
+    - telephone
     - text
 third_party_settings:
   field_group:
@@ -103,6 +105,13 @@ content:
     settings: {  }
     third_party_settings: {  }
     type: address_default
+    region: content
+  field_contact_phone:
+    weight: 101
+    settings:
+      placeholder: ''
+    third_party_settings: {  }
+    type: telephone_default
     region: content
   field_contact_website:
     type: link_default
