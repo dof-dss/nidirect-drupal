@@ -17,6 +17,7 @@ dependencies:
   module:
     - link
     - metatag
+    - telephone
     - user
 id: node.driving_instructor.default
 targetEntityType: node
@@ -25,22 +26,24 @@ mode: default
 content:
   content_moderation_control:
     weight: -20
+    region: content
     settings: {  }
     third_party_settings: {  }
-    region: content
   field_contact_mobile:
     weight: 12
     label: above
-    settings: {  }
+    settings:
+      title: ''
     third_party_settings: {  }
-    type: basic_string
+    type: telephone_link
     region: content
   field_contact_phone:
     weight: 11
     label: above
-    settings: {  }
+    settings:
+      title: ''
     third_party_settings: {  }
-    type: basic_string
+    type: telephone_link
     region: content
   field_di_adi_no:
     type: string
