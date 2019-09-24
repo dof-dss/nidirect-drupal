@@ -3,6 +3,8 @@ langcode: en
 status: true
 dependencies:
   config:
+    - field.field.node.driving_instructor.field_contact_mobile
+    - field.field.node.driving_instructor.field_contact_phone
     - field.field.node.driving_instructor.field_di_adi_no
     - field.field.node.driving_instructor.field_di_areas
     - field.field.node.driving_instructor.field_di_categories
@@ -25,6 +27,20 @@ content:
     weight: -20
     settings: {  }
     third_party_settings: {  }
+    region: content
+  field_contact_mobile:
+    weight: 12
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    type: basic_string
+    region: content
+  field_contact_phone:
+    weight: 11
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    type: basic_string
     region: content
   field_di_adi_no:
     type: string

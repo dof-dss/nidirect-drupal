@@ -1,0 +1,21 @@
+uuid: f9741868-5ca3-496a-96c4-2b0b7f4e3331
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_contact_phone
+    - node.type.driving_instructor
+  module:
+    - telephone
+id: node.driving_instructor.field_contact_phone
+field_name: field_contact_phone
+entity_type: node
+bundle: driving_instructor
+label: 'Landline phone'
+description: "The instructor's landline telephone number.<br>\r\n<b>Note:</b> you should only add numbers to this field and not include spaces.<br>\r\nFor numbers in ROI ensure you include the international dial code and exclude any leading area code zeros eg 0035374XXXXXXX"
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: telephone
