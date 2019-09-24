@@ -1,0 +1,28 @@
+uuid: 0ed196b7-4b01-4ec3-a732-8dec43a3743a
+langcode: en
+status: true
+dependencies:
+  module:
+    - nidirect_related_content
+    - node
+  theme:
+    - bartik
+id: recipesbycourse
+theme: bartik
+region: sidebar_first
+weight: -3
+provider: null
+plugin: recipes_by_course
+settings:
+  id: recipes_by_course
+  label: 'Recipes by course'
+  provider: nidirect_related_content
+  label_display: visible
+visibility:
+  node_type:
+    id: node_type
+    bundles:
+      recipe: recipe
+    negate: false
+    context_mapping:
+      node: '@node.node_route_context:node'

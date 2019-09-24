@@ -1,0 +1,28 @@
+uuid: 34a24770-f7a0-476e-b533-2091b0d6bda7
+langcode: en
+status: true
+dependencies:
+  module:
+    - nidirect_related_content
+    - node
+  theme:
+    - bartik
+id: recipesbyspecialdiet
+theme: bartik
+region: sidebar_first
+weight: -1
+provider: null
+plugin: recipes_by_special_diet
+settings:
+  id: recipes_by_special_diet
+  label: 'Recipes by special diet'
+  provider: nidirect_related_content
+  label_display: visible
+visibility:
+  node_type:
+    id: node_type
+    bundles:
+      recipe: recipe
+    negate: false
+    context_mapping:
+      node: '@node.node_route_context:node'

@@ -1,0 +1,28 @@
+uuid: 090b4da8-ce89-43e7-8b17-1f2968754f01
+langcode: en
+status: true
+dependencies:
+  module:
+    - nidirect_related_content
+    - node
+  theme:
+    - bartik
+id: recipesbyingredient
+theme: bartik
+region: sidebar_first
+weight: -4
+provider: null
+plugin: recipes_by_ingredient
+settings:
+  id: recipes_by_ingredient
+  label: 'Similar recipes'
+  provider: nidirect_related_content
+  label_display: visible
+visibility:
+  node_type:
+    id: node_type
+    bundles:
+      recipe: recipe
+    negate: false
+    context_mapping:
+      node: '@node.node_route_context:node'
