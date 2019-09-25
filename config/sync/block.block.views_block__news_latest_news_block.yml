@@ -1,40 +1,32 @@
-uuid: c5d3203e-ad44-45cb-accd-eb99c1bd1555
+uuid: 9779be3b-346b-4473-93ff-0b0b324e9c8f
 langcode: en
 status: true
 dependencies:
   config:
-    - views.view.related_content
+    - views.view.news
   module:
     - node
     - views
   theme:
     - nicsdru_nidirect_theme
-id: views_block__related_content_content_by_theme
+id: views_block__news_latest_news_block
 theme: nicsdru_nidirect_theme
 region: sidebar_first
-weight: -6
+weight: 5
 provider: null
-plugin: 'views_block:related_content-content_by_theme'
+plugin: 'views_block:news-latest_news_block'
 settings:
-  id: 'views_block:related_content-content_by_theme'
+  id: 'views_block:news-latest_news_block'
   label: ''
   provider: views
   label_display: visible
   views_label: ''
   items_per_page: none
-  context_mapping: {  }
 visibility:
   node_type:
     id: node_type
     bundles:
-      application: application
-      article: article
-      landing_page: landing_page
       news: news
-      page: page
-      publication: publication
-      recipe: recipe
-      webform: webform
     negate: false
     context_mapping:
       node: '@node.node_route_context:node'

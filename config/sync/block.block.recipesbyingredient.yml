@@ -1,0 +1,28 @@
+uuid: d57079ef-8875-433b-a4c1-8775ac90fdd4
+langcode: en
+status: true
+dependencies:
+  module:
+    - nidirect_related_content
+    - node
+  theme:
+    - nicsdru_nidirect_theme
+id: recipesbyingredient
+theme: nicsdru_nidirect_theme
+region: sidebar_first
+weight: 1
+provider: null
+plugin: recipes_by_ingredient
+settings:
+  id: recipes_by_ingredient
+  label: 'Similar recipes'
+  provider: nidirect_related_content
+  label_display: visible
+visibility:
+  node_type:
+    id: node_type
+    bundles:
+      recipe: recipe
+    negate: false
+    context_mapping:
+      node: '@node.node_route_context:node'
