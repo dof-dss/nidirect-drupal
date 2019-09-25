@@ -6,14 +6,12 @@ dependencies:
     - field.field.node.contact.body
     - field.field.node.contact.field_address
     - field.field.node.contact.field_contact_additional_info
-    - field.field.node.contact.field_contact_benefits_no
     - field.field.node.contact.field_contact_category
-    - field.field.node.contact.field_contact_emp_svcs_no
     - field.field.node.contact.field_contact_fax
     - field.field.node.contact.field_contact_group
     - field.field.node.contact.field_contact_hours
+    - field.field.node.contact.field_contact_mobile
     - field.field.node.contact.field_contact_phone
-    - field.field.node.contact.field_contact_sms
     - field.field.node.contact.field_contact_website
     - field.field.node.contact.field_email_address
     - field.field.node.contact.field_enable_toc
@@ -35,6 +33,7 @@ dependencies:
     - metatag
     - path
     - shs
+    - telephone
     - text
 third_party_settings:
   field_group:
@@ -45,7 +44,7 @@ third_party_settings:
         - body
         - field_contact_additional_info
       parent_name: ''
-      weight: -1
+      weight: 1
       format_type: details
       format_settings:
         open: false
@@ -65,11 +64,11 @@ third_party_settings:
         - field_contact_benefits_no
         - field_contact_emp_svcs_no
         - field_contact_fax
-        - field_contact_sms
+        - field_contact_mobile
         - field_contact_hours
         - field_site_themes
       parent_name: ''
-      weight: 0
+      weight: 2
       format_type: details
       format_settings:
         open: false
@@ -93,12 +92,12 @@ content:
     region: content
   created:
     type: datetime_timestamp
-    weight: 21
+    weight: 5
     region: content
     settings: {  }
     third_party_settings: {  }
   field_address:
-    weight: 8
+    weight: 4
     settings: {  }
     third_party_settings: {  }
     type: address_default
@@ -111,31 +110,15 @@ content:
       rows: 5
       placeholder: ''
     third_party_settings: {  }
-  field_contact_benefits_no:
-    type: string_textfield
-    weight: 12
-    region: content
-    settings:
-      size: 60
-      placeholder: ''
-    third_party_settings: {  }
   field_contact_category:
     type: options_select
     weight: 1
     region: content
     settings: {  }
     third_party_settings: {  }
-  field_contact_emp_svcs_no:
-    type: string_textfield
-    weight: 13
-    region: content
-    settings:
-      size: 60
-      placeholder: ''
-    third_party_settings: {  }
   field_contact_fax:
     type: string_textfield
-    weight: 14
+    weight: 10
     region: content
     settings:
       size: 60
@@ -152,31 +135,29 @@ content:
     third_party_settings: {  }
   field_contact_hours:
     type: text_textarea
-    weight: 16
+    weight: 12
     region: content
     settings:
       rows: 5
       placeholder: ''
     third_party_settings: {  }
-  field_contact_phone:
-    type: string_textfield
+  field_contact_mobile:
     weight: 11
-    region: content
     settings:
-      size: 60
       placeholder: ''
     third_party_settings: {  }
-  field_contact_sms:
-    type: string_textfield
-    weight: 15
+    type: telephone_default
     region: content
+  field_contact_phone:
+    weight: 7
     settings:
-      size: 60
       placeholder: ''
     third_party_settings: {  }
+    type: telephone_default
+    region: content
   field_contact_website:
     type: link_default
-    weight: 10
+    weight: 6
     region: content
     settings:
       placeholder_url: ''
@@ -184,21 +165,21 @@ content:
     third_party_settings: {  }
   field_email_address:
     type: email_default
-    weight: 9
+    weight: 5
     region: content
     settings:
       size: 60
       placeholder: ''
     third_party_settings: {  }
   field_enable_toc:
-    weight: 51
+    weight: 13
     settings:
       display_label: true
     third_party_settings: {  }
     type: boolean_checkbox
     region: content
   field_location:
-    weight: 7
+    weight: 3
     settings:
       default_longitude: ''
       default_latitude: ''
@@ -233,20 +214,20 @@ content:
     type: geolocation_googlegeocoder
     region: content
   field_meta_tags:
-    weight: 26
+    weight: 11
     settings: {  }
     third_party_settings: {  }
     type: metatag_firehose
     region: content
   field_next_audit_due:
-    weight: 101
+    weight: 15
     settings: {  }
     third_party_settings: {  }
     type: datetime_default
     region: content
   field_site_themes:
     type: options_shs
-    weight: 18
+    weight: 13
     region: content
     settings:
       display_node_count: false
@@ -277,20 +258,20 @@ content:
     third_party_settings: {  }
   langcode:
     type: language_select
-    weight: 2
+    weight: 3
     region: content
     settings:
       include_locked: true
     third_party_settings: {  }
   moderation_state:
     type: moderation_state_default
-    weight: 100
+    weight: 14
     settings: {  }
     region: content
     third_party_settings: {  }
   path:
     type: path
-    weight: 24
+    weight: 9
     region: content
     settings: {  }
     third_party_settings: {  }
@@ -298,26 +279,26 @@ content:
     type: boolean_checkbox
     settings:
       display_label: true
-    weight: 22
+    weight: 6
     region: content
     third_party_settings: {  }
   status:
     type: boolean_checkbox
     settings:
       display_label: true
-    weight: 25
+    weight: 10
     region: content
     third_party_settings: {  }
   sticky:
     type: boolean_checkbox
     settings:
       display_label: true
-    weight: 23
+    weight: 7
     region: content
     third_party_settings: {  }
   title:
     type: string_textfield
-    weight: -5
+    weight: 0
     region: content
     settings:
       size: 60
@@ -325,7 +306,7 @@ content:
     third_party_settings: {  }
   uid:
     type: entity_reference_autocomplete
-    weight: 3
+    weight: 4
     settings:
       match_operator: CONTAINS
       size: 60
@@ -333,7 +314,7 @@ content:
     region: content
     third_party_settings: {  }
   url_redirects:
-    weight: 50
+    weight: 12
     region: content
     settings: {  }
     third_party_settings: {  }

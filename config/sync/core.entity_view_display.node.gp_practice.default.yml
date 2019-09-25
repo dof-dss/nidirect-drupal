@@ -27,6 +27,11 @@ targetEntityType: node
 bundle: gp_practice
 mode: default
 content:
+  content_moderation_control:
+    weight: -20
+    settings: {  }
+    third_party_settings: {  }
+    region: content
   field_address:
     type: address_default
     weight: 2
@@ -35,13 +40,12 @@ content:
     settings: {  }
     third_party_settings: {  }
   field_contact_phone:
-    type: string
-    weight: 3
-    region: content
-    label: inline
-    settings:
-      link_to_entity: false
+    weight: 5
+    label: above
+    settings: {  }
     third_party_settings: {  }
+    type: basic_string
+    region: content
   field_gp_practice_lead:
     type: entity_reference_label
     weight: 0
@@ -91,6 +95,11 @@ content:
         preferScrollingToZooming: 0
         gestureHandling: auto
     third_party_settings: {  }
+  gp_names:
+    weight: 0
+    settings: {  }
+    third_party_settings: {  }
+    region: content
 hidden:
   field_contact_address_01: true
   field_contact_address_02: true

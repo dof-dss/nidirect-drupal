@@ -1,9 +1,9 @@
-uuid: f906535b-1639-45f2-aa31-5500b1450f8c
+uuid: 97434b0e-e049-4b47-ae89-c62fdb1c3a6f
 langcode: en
 status: true
 dependencies: {  }
 _core:
-  default_config_hash: 7i5qnNpgxJ-chZ3TRVUUtodUU2Utjbr8fjpGCpKC8x8
+  default_config_hash: AWsk22kKdanTv_Z07Ck5GGb1_SbLsGJSFG8Ud58zflg
 id: node_nidirect_contact
 class: Drupal\migrate\Plugin\Migration
 field_plugin_method: alterFieldInstanceMigration
@@ -110,20 +110,12 @@ process:
         html_for_admins: full_html
         paste_format: plain_text
         plain_text: plain_text
-  field_contact_benefits_no:
-    -
-      plugin: get
-      source: field_contact_benefits_no
   field_contact_category:
     -
       plugin: sub_process
       source: field_contact_category
       process:
         target_id: tid
-  field_contact_emp_svcs_no:
-    -
-      plugin: get
-      source: field_contact_emp_svcs_no
   field_contact_fax:
     -
       plugin: get
@@ -151,7 +143,7 @@ process:
     -
       plugin: get
       source: field_contact_phone
-  field_contact_sms:
+  field_contact_mobile:
     -
       plugin: get
       source: field_contact_sms

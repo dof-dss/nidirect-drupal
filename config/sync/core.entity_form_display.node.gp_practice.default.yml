@@ -18,13 +18,16 @@ dependencies:
     - field.field.node.gp_practice.field_location
     - field.field.node.gp_practice.field_meta_tags
     - node.type.gp_practice
+    - workflows.workflow.editorial
   module:
     - address
+    - content_moderation
     - field_group
     - geolocation
     - link
     - metatag
     - path
+    - telephone
 third_party_settings:
   field_group:
     group_practice_details:
@@ -120,13 +123,12 @@ content:
       placeholder: ''
     third_party_settings: {  }
   field_contact_phone:
-    type: string_textfield
     weight: 2
-    region: content
     settings:
-      size: 60
       placeholder: ''
     third_party_settings: {  }
+    type: telephone_default
+    region: content
   field_contact_postcode:
     type: string_textfield
     weight: 6
@@ -271,6 +273,12 @@ content:
     settings:
       include_locked: true
     third_party_settings: {  }
+  moderation_state:
+    type: moderation_state_default
+    weight: 100
+    settings: {  }
+    region: content
+    third_party_settings: {  }
   path:
     type: path
     weight: 9
@@ -317,7 +325,7 @@ content:
     third_party_settings: {  }
   url_redirects:
     weight: 50
+    region: content
     settings: {  }
     third_party_settings: {  }
-    region: content
 hidden: {  }

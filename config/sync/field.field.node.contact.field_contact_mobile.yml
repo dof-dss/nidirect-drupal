@@ -1,12 +1,14 @@
-uuid: ffc52c17-b333-412a-a4c7-3dbac0e64113
+uuid: f82ab1cf-b4cf-4973-b1f6-e122df4441ce
 langcode: en
 status: true
 dependencies:
   config:
-    - field.storage.node.field_contact_sms
+    - field.storage.node.field_contact_mobile
     - node.type.contact
-id: node.contact.field_contact_sms
-field_name: field_contact_sms
+  module:
+    - telephone
+id: node.contact.field_contact_mobile
+field_name: field_contact_mobile
 entity_type: node
 bundle: contact
 label: 'Text number'
@@ -16,4 +18,4 @@ translatable: false
 default_value: {  }
 default_value_callback: ''
 settings: {  }
-field_type: string
+field_type: telephone

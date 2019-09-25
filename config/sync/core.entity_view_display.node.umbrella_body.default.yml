@@ -42,6 +42,11 @@ content:
     settings: {  }
     third_party_settings: {  }
     region: content
+  content_moderation_control:
+    weight: -20
+    settings: {  }
+    third_party_settings: {  }
+    region: content
   field_address:
     weight: 25
     label: above
@@ -50,13 +55,12 @@ content:
     type: address_default
     region: content
   field_contact_phone:
-    type: string
-    weight: 12
-    region: content
+    weight: 27
     label: above
-    settings:
-      link_to_entity: false
+    settings: {  }
     third_party_settings: {  }
+    type: basic_string
+    region: content
   field_contact_website:
     type: link
     weight: 11

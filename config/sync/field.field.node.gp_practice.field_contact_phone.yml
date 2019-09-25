@@ -1,10 +1,12 @@
-uuid: b44d65b6-29de-4b74-8c83-e0b819cdb5ac
+uuid: 72e0308f-ebc3-4e6a-801e-42edd3465f18
 langcode: en
 status: true
 dependencies:
   config:
     - field.storage.node.field_contact_phone
     - node.type.gp_practice
+  module:
+    - telephone
 id: node.gp_practice.field_contact_phone
 field_name: field_contact_phone
 entity_type: node
@@ -12,8 +14,8 @@ bundle: gp_practice
 label: Phone
 description: ''
 required: false
-translatable: false
+translatable: true
 default_value: {  }
 default_value_callback: ''
 settings: {  }
-field_type: string
+field_type: telephone

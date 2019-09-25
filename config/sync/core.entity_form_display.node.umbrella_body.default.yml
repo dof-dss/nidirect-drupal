@@ -21,14 +21,17 @@ dependencies:
     - field.field.node.umbrella_body.field_ub_sector
     - field.field.node.umbrella_body.field_ub_services
     - node.type.umbrella_body
+    - workflows.workflow.editorial
   module:
     - address
+    - content_moderation
     - datetime
     - field_group
     - geolocation
     - link
     - metatag
     - path
+    - telephone
     - text
 third_party_settings:
   field_group:
@@ -104,13 +107,12 @@ content:
     type: address_default
     region: content
   field_contact_phone:
-    type: string_textfield
-    weight: 10
-    region: content
+    weight: 101
     settings:
-      size: 60
       placeholder: ''
     third_party_settings: {  }
+    type: telephone_default
+    region: content
   field_contact_website:
     type: link_default
     weight: 12
@@ -243,6 +245,12 @@ content:
     region: content
     settings:
       include_locked: true
+    third_party_settings: {  }
+  moderation_state:
+    type: moderation_state_default
+    weight: 100
+    settings: {  }
+    region: content
     third_party_settings: {  }
   path:
     type: path
