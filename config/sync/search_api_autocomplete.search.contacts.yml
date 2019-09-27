@@ -1,0 +1,47 @@
+uuid: e9a68046-b084-4ffe-8570-4f9a9c1a606c
+langcode: en
+status: true
+dependencies:
+  config:
+    - search_api.index.default_content
+    - views.view.contacts
+  module:
+    - views
+    - search_api_autocomplete
+id: contacts
+label: Contacts
+index_id: default_content
+suggester_settings:
+  live_results:
+    fields:
+      - title
+    view_modes:
+      'entity:node':
+        application: ''
+        article: ''
+        contact: ''
+        driving_instructor: ''
+        embargoed_publication: ''
+        landing_page: ''
+        news: ''
+        page: ''
+        publication: ''
+        recipe: ''
+        umbrella_body: ''
+suggester_weights:
+  live_results: 0
+suggester_limits:
+  live_results: 5
+search_settings:
+  'views:contacts':
+    displays:
+      default: false
+      selected:
+        - contact_search
+options:
+  limit: 5
+  min_length: 1
+  show_count: false
+  autosubmit: true
+  submit_button_selector: ':submit'
+  delay: null

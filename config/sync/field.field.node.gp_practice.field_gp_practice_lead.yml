@@ -4,7 +4,6 @@ status: true
 dependencies:
   config:
     - field.storage.node.field_gp_practice_lead
-    - node.type.gp
     - node.type.gp_practice
 id: node.gp_practice.field_gp_practice_lead
 field_name: field_gp_practice_lead
@@ -17,14 +16,6 @@ translatable: false
 default_value: {  }
 default_value_callback: ''
 settings:
-  handler: 'default:node'
-  handler_settings:
-    behaviors:
-      views-select-list:
-        status: 0
-    sort:
-      field: _none
-      direction: ASC
-    target_bundles:
-      gp: gp
+  handler: 'default:gp'
+  handler_settings: {  }
 field_type: entity_reference

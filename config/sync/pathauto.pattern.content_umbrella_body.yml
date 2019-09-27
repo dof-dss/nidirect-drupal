@@ -1,0 +1,22 @@
+uuid: ff32752e-b3d4-4dc1-9b5b-99461297f988
+langcode: en
+status: true
+dependencies:
+  module:
+    - node
+id: content_umbrella_body
+label: 'Content - Umbrella body'
+type: 'canonical_entities:node'
+pattern: 'accessni/find-an-umbrella-body/[node:title]'
+selection_criteria:
+  384d5df3-bd22-47b1-b94a-1f3931618a5d:
+    id: node_type
+    bundles:
+      umbrella_body: umbrella_body
+    negate: false
+    context_mapping:
+      node: node
+    uuid: 384d5df3-bd22-47b1-b94a-1f3931618a5d
+selection_logic: and
+weight: -5
+relationships: {  }

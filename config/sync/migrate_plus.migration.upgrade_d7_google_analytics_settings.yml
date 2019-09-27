@@ -1,0 +1,175 @@
+uuid: 6c18aded-0b70-4af7-a998-e49eebf22ed6
+langcode: en
+status: true
+dependencies: {  }
+_core:
+  default_config_hash: GkmLnBHG1UDLpohhFdR5HiQTmyY8azhJ-nL6wvPQ75w
+id: upgrade_d7_google_analytics_settings
+class: Drupal\migrate\Plugin\Migration
+field_plugin_method: alterFieldFormatterMigration
+cck_plugin_method: null
+migration_tags:
+  - 'Drupal 7'
+  - Configuration
+migration_group: migrate_drupal_7_global
+label: 'Google Analytics 7 configuration'
+source:
+  plugin: variable
+  variables:
+    - googleanalytics_account
+    - googleanalytics_premium
+    - googleanalytics_cache
+    - googleanalytics_codesnippet_after
+    - googleanalytics_codesnippet_before
+    - googleanalytics_codesnippet_create
+    - googleanalytics_cross_domains
+    - googleanalytics_custom
+    - googleanalytics_custom_dimension
+    - googleanalytics_custom_metric
+    - googleanalytics_domain_mode
+    - googleanalytics_pages
+    - googleanalytics_roles
+    - googleanalytics_site_search
+    - googleanalytics_trackadsense
+    - googleanalytics_trackcolorbox
+    - googleanalytics_trackdoubleclick
+    - googleanalytics_trackmessages
+    - googleanalytics_tracker_anonymizeip
+    - googleanalytics_trackfiles
+    - googleanalytics_trackfiles_extensions
+    - googleanalytics_tracklinkid
+    - googleanalytics_trackmailto
+    - googleanalytics_trackurlfragments
+    - googleanalytics_trackuserid
+    - googleanalytics_trackoutbound
+    - googleanalytics_translation_set
+    - googleanalytics_visibility_pages
+    - googleanalytics_visibility_roles
+  source_module: googleanalytics
+process:
+  account:
+    -
+      plugin: get
+      source: googleanalytics_account
+  premium:
+    -
+      plugin: get
+      source: googleanalytics_premium
+  cache:
+    -
+      plugin: get
+      source: googleanalytics_cache
+  codesnippet/after:
+    -
+      plugin: get
+      source: googleanalytics_codesnippet_after
+  codesnippet/before:
+    -
+      plugin: get
+      source: googleanalytics_codesnippet_before
+  codesnippet/create:
+    -
+      plugin: get
+      source: googleanalytics_codesnippet_create
+  cross_domains:
+    -
+      plugin: get
+      source: googleanalytics_cross_domains
+  custom/dimension:
+    -
+      plugin: get
+      source: googleanalytics_custom_dimension
+  custom/metric:
+    -
+      plugin: get
+      source: googleanalytics_custom_metric
+  domain_mode:
+    -
+      plugin: get
+      source: googleanalytics_domain_mode
+  privacy/anonymizeip:
+    -
+      plugin: get
+      source: googleanalytics_tracker_anonymizeip
+  track/adsense:
+    -
+      plugin: get
+      source: googleanalytics_trackadsense
+  track/colorbox:
+    -
+      plugin: get
+      source: googleanalytics_trackcolorbox
+  track/displayfeatures:
+    -
+      plugin: get
+      source: googleanalytics_trackdoubleclick
+  track/files:
+    -
+      plugin: get
+      source: googleanalytics_trackfiles
+  track/files_extensions:
+    -
+      plugin: get
+      source: googleanalytics_trackfiles_extensions
+  track/linkid:
+    -
+      plugin: get
+      source: googleanalytics_tracklinkid
+  track/mailto:
+    -
+      plugin: get
+      source: googleanalytics_trackmailto
+  track/messages:
+    -
+      plugin: get
+      source: googleanalytics_trackmessages
+  track/site_search:
+    -
+      plugin: get
+      source: googleanalytics_site_search
+  track/urlfragments:
+    -
+      plugin: get
+      source: googleanalytics_trackurlfragments
+  track/userid:
+    -
+      plugin: get
+      source: googleanalytics_trackuserid
+  track/outbound:
+    -
+      plugin: get
+      source: googleanalytics_trackoutbound
+  translation_set:
+    -
+      plugin: get
+      source: googleanalytics_translation_set
+  visibility/user_account_mode:
+    -
+      plugin: get
+      source: googleanalytics_custom
+  visibility/request_path_mode:
+    -
+      plugin: get
+      source: googleanalytics_visibility_pages
+  visibility/request_path_pages:
+    -
+      plugin: google_analytics_visibility_pages
+      source:
+        - googleanalytics_visibility_pages
+        - googleanalytics_pages
+      skip_php: true
+  visibility/user_role_mode:
+    -
+      plugin: get
+      source: googleanalytics_visibility_roles
+  visibility/user_role_roles:
+    -
+      plugin: google_analytics_visibility_roles
+      source:
+        - googleanalytics_roles
+destination:
+  plugin: config
+  config_name: google_analytics.settings
+migration_dependencies:
+  optional: {  }
+  required: {  }

@@ -1,0 +1,28 @@
+uuid: 573dfb74-d427-40f3-ba72-0f7700b34c5e
+langcode: en
+status: true
+dependencies:
+  module:
+    - nidirect_related_content
+    - node
+  theme:
+    - nicsdru_nidirect_theme
+id: recipesbyseason
+theme: nicsdru_nidirect_theme
+region: sidebar_first
+weight: 3
+provider: null
+plugin: recipes_by_season
+settings:
+  id: recipes_by_season
+  label: 'Recipes by season'
+  provider: nidirect_related_content
+  label_display: visible
+visibility:
+  node_type:
+    id: node_type
+    bundles:
+      recipe: recipe
+    negate: false
+    context_mapping:
+      node: '@node.node_route_context:node'

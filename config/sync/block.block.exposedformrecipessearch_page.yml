@@ -1,0 +1,29 @@
+uuid: 977da5cc-6886-45b8-9488-4a350f5dc7fb
+langcode: en
+status: true
+dependencies:
+  config:
+    - views.view.recipes
+  module:
+    - system
+    - views
+  theme:
+    - nicsdru_nidirect_theme
+id: exposedformrecipessearch_page
+theme: nicsdru_nidirect_theme
+region: sidebar_first
+weight: -4
+provider: null
+plugin: 'views_exposed_filter_block:recipes-search_page'
+settings:
+  id: 'views_exposed_filter_block:recipes-search_page'
+  label: ''
+  provider: views
+  label_display: visible
+  views_label: ''
+visibility:
+  request_path:
+    id: request_path
+    pages: "/information-and-services/eat-well/recipes\r\n/information-and-services/eat-well/recipes/*"
+    negate: false
+    context_mapping: {  }

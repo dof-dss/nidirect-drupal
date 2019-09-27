@@ -1,10 +1,12 @@
-uuid: 2d5f2797-9370-425c-bab7-5526ae56f423
+uuid: 18f3951a-359b-4e01-ad49-67363d159ea5
 langcode: en
 status: true
 dependencies:
   config:
     - field.storage.node.field_contact_phone
     - node.type.umbrella_body
+  module:
+    - telephone
 id: node.umbrella_body.field_contact_phone
 field_name: field_contact_phone
 entity_type: node
@@ -12,8 +14,8 @@ bundle: umbrella_body
 label: Phone
 description: ''
 required: false
-translatable: false
+translatable: true
 default_value: {  }
 default_value_callback: ''
 settings: {  }
-field_type: string
+field_type: telephone

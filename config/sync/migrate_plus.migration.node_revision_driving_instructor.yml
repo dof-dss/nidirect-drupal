@@ -1,0 +1,125 @@
+uuid: a84cca5b-a8f8-45aa-abfe-b2c55b31693e
+langcode: en
+status: true
+dependencies: {  }
+_core:
+  default_config_hash: iwe8-PeYfWi19YUurbbPt35lyg1_stOE9_EiSs1Hdfc
+id: node_revision_driving_instructor
+class: Drupal\migrate\Plugin\Migration
+field_plugin_method: alterFieldFormatterMigration
+cck_plugin_method: null
+migration_tags:
+  - 'Drupal 7'
+  - Content
+migration_group: migrate_nidirect_node_driving_instructor
+label: 'Node revisions (Nidirect driving instructor)'
+source:
+  plugin: d7_node_revision
+  node_type: nidirect_driving_instructor
+process:
+  nid:
+    -
+      plugin: get
+      source: nid
+  vid:
+    -
+      plugin: get
+      source: vid
+  langcode:
+    -
+      plugin: default_value
+      source: language
+      default_value: und
+  title:
+    -
+      plugin: get
+      source: title
+  uid:
+    -
+      plugin: get
+      source: node_uid
+  status:
+    -
+      plugin: get
+      source: status
+  created:
+    -
+      plugin: get
+      source: created
+  changed:
+    -
+      plugin: get
+      source: changed
+  promote:
+    -
+      plugin: get
+      source: promote
+  sticky:
+    -
+      plugin: get
+      source: sticky
+  revision_uid:
+    -
+      plugin: get
+      source: revision_uid
+  revision_log:
+    -
+      plugin: get
+      source: log
+  revision_timestamp:
+    -
+      plugin: get
+      source: timestamp
+  comment_node_nidirect_driving_instructor/0/status:
+    -
+      plugin: get
+      source: comment
+  field_contact_phone:
+    -
+      plugin: get
+      source: field_contact_phone
+  field_contact_mobile:
+    -
+      plugin: get
+      source: field_contact_sms
+  field_di_adi_no:
+    -
+      plugin: get
+      source: field_di_adi_no
+  field_di_areas:
+    -
+      plugin: sub_process
+      source: field_di_areas
+      process:
+        target_id: tid
+  field_di_categories:
+    -
+      plugin: sub_process
+      source: field_di_categories
+      process:
+        target_id: tid
+  field_di_firstname:
+    -
+      plugin: get
+      source: field_di_firstname
+  field_di_lastname:
+    -
+      plugin: get
+      source: field_di_lastname
+  field_email_address:
+    -
+      plugin: sub_process
+      source: field_email_address
+      process:
+        value: email
+  field_link_url:
+    -
+      plugin: field_link
+      source: field_link_url
+destination:
+  plugin: 'entity_revision:node'
+  default_bundle: driving_instructor
+migration_dependencies:
+  required:
+    - node_driving_instructor
+  optional: {  }

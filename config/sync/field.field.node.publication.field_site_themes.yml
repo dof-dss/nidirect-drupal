@@ -1,0 +1,29 @@
+uuid: 7ec9397e-77c8-42d5-b37b-c9de46b7ff93
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_site_themes
+    - node.type.publication
+    - taxonomy.vocabulary.site_themes
+id: node.publication.field_site_themes
+field_name: field_site_themes
+entity_type: node
+bundle: publication
+label: 'Supplementary subthemes'
+description: 'Enter optional supplementary subthemes for this publication. This allows the publication to appear in those subtheme listing pages.'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:taxonomy_term'
+  handler_settings:
+    target_bundles:
+      site_themes: site_themes
+    sort:
+      field: name
+      direction: asc
+    auto_create: false
+    auto_create_bundle: ''
+field_type: entity_reference

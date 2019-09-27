@@ -1,0 +1,30 @@
+uuid: 3ccbc505-f06f-4068-9314-99d125233ecb
+langcode: en
+status: true
+dependencies:
+  module:
+    - node
+id: promote_to_all_pages
+label: 'Promote to all pages'
+bundles:
+  - news
+entity_type: node
+global: true
+weight: 0
+flag_short: 'Mark this content to display on all pages'
+flag_long: 'Check this box to indicate that this content is to be featured in the alert banner below the main nav'
+flag_message: '[node:title] is now displayed in the alert banner on all pages.'
+unflag_short: 'Un-mark this content as from displaying in the alert banner'
+unflag_long: 'Check this box to indicate that this content should no longer be featured in the alert banner below the main nav'
+unflag_message: '[node:title] is no longer displayed in the alert banner on all pages.'
+unflag_denied_text: ''
+flag_type: 'entity:node'
+link_type: ajax_link
+flagTypeConfig:
+  show_in_links: {  }
+  show_as_field: false
+  show_on_form: true
+  show_contextual_link: false
+  extra_permissions:
+    owner: '0'
+linkTypeConfig: {  }

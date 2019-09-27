@@ -3,11 +3,8 @@ langcode: en
 status: true
 dependencies:
   config:
-    - field.field.node.gp_practice.field_contact_address_01
-    - field.field.node.gp_practice.field_contact_address_02
+    - field.field.node.gp_practice.field_address
     - field.field.node.gp_practice.field_contact_phone
-    - field.field.node.gp_practice.field_contact_postcode
-    - field.field.node.gp_practice.field_contact_town_city
     - field.field.node.gp_practice.field_gp_appointments
     - field.field.node.gp_practice.field_gp_lcg
     - field.field.node.gp_practice.field_gp_partnership_no
@@ -18,12 +15,80 @@ dependencies:
     - field.field.node.gp_practice.field_gp_practice_website
     - field.field.node.gp_practice.field_gp_prescriptions
     - field.field.node.gp_practice.field_gp_surgery_name
+    - field.field.node.gp_practice.field_location
     - field.field.node.gp_practice.field_meta_tags
     - node.type.gp_practice
+    - workflows.workflow.editorial
   module:
+    - address
+    - content_moderation
+    - field_group
+    - geolocation
     - link
     - metatag
     - path
+    - telephone
+third_party_settings:
+  field_group:
+    group_practice_details:
+      children:
+        - title
+        - field_gp_practice_name
+        - field_gp_practice_no
+        - field_gp_surgery_name
+        - field_gp_partnership_no
+        - field_gp_lcg
+        - field_gp_appointments
+        - field_gp_prescriptions
+      parent_name: ''
+      weight: 0
+      format_type: details
+      format_settings:
+        id: group_gp_practice_details
+        classes: ''
+        open: false
+        required_fields: true
+      label: 'Practice details'
+    group_contact_details:
+      children:
+        - field_gp_practice_website
+        - field_contact_phone
+        - field_address
+        - field_location
+      parent_name: ''
+      weight: 1
+      format_type: details
+      format_settings:
+        id: group_gp_practice_contact
+        classes: ''
+        open: false
+        required_fields: true
+      label: 'Contact details'
+    group_practice_members:
+      children:
+        - field_gp_practice_lead
+        - group_other_gps_in_this_practice
+      parent_name: ''
+      weight: 2
+      format_type: details
+      format_settings:
+        id: group_gp_practice_members
+        classes: ''
+        open: false
+        required_fields: true
+      label: 'Practice members'
+    group_other_gps_in_this_practice:
+      children:
+        - field_gp_practice_member
+      parent_name: group_practice_members
+      weight: 4
+      format_type: details
+      format_settings:
+        id: group_gp_practice_members_other
+        classes: ''
+        open: false
+        required_fields: true
+      label: 'Other GPs in this practice'
 id: node.gp_practice.default
 targetEntityType: node
 bundle: gp_practice
@@ -31,13 +96,19 @@ mode: default
 content:
   created:
     type: datetime_timestamp
-    weight: 17
+    weight: 15
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_address:
+    type: address_default
+    weight: 3
     region: content
     settings: {  }
     third_party_settings: {  }
   field_contact_address_01:
     type: string_textfield
-    weight: 10
+    weight: 3
     region: content
     settings:
       size: 60
@@ -45,23 +116,22 @@ content:
     third_party_settings: {  }
   field_contact_address_02:
     type: string_textfield
-    weight: 11
+    weight: 4
     region: content
     settings:
       size: 60
       placeholder: ''
     third_party_settings: {  }
   field_contact_phone:
-    type: string_textfield
-    weight: 9
-    region: content
+    weight: 2
     settings:
-      size: 60
       placeholder: ''
     third_party_settings: {  }
+    type: telephone_default
+    region: content
   field_contact_postcode:
     type: string_textfield
-    weight: 13
+    weight: 6
     region: content
     settings:
       size: 60
@@ -69,7 +139,7 @@ content:
     third_party_settings: {  }
   field_contact_town_city:
     type: string_textfield
-    weight: 12
+    weight: 5
     region: content
     settings:
       size: 60
@@ -84,7 +154,7 @@ content:
       placeholder_title: ''
     third_party_settings: {  }
   field_gp_lcg:
-    type: options_buttons
+    type: options_select
     weight: 5
     region: content
     settings: {  }
@@ -99,7 +169,7 @@ content:
     third_party_settings: {  }
   field_gp_practice_lead:
     type: entity_reference_autocomplete
-    weight: 14
+    weight: 3
     region: content
     settings:
       match_operator: CONTAINS
@@ -108,7 +178,7 @@ content:
     third_party_settings: {  }
   field_gp_practice_member:
     type: entity_reference_autocomplete
-    weight: 15
+    weight: 4
     region: content
     settings:
       match_operator: CONTAINS
@@ -133,7 +203,7 @@ content:
     third_party_settings: {  }
   field_gp_practice_website:
     type: link_default
-    weight: 8
+    weight: 1
     region: content
     settings:
       placeholder_url: ''
@@ -155,15 +225,63 @@ content:
       size: 60
       placeholder: ''
     third_party_settings: {  }
+  field_location:
+    type: geolocation_googlegeocoder
+    weight: 4
+    region: content
+    settings:
+      default_longitude: ''
+      default_latitude: ''
+      populate_address_field: '1'
+      target_address_field: field_address
+      google_map_settings:
+        height: 400px
+        width: 100%
+        type: ROADMAP
+        zoom: '10'
+        maxZoom: 18
+        minZoom: 0
+        mapTypeControl: 1
+        streetViewControl: 1
+        zoomControl: 1
+        scrollwheel: 1
+        gestureHandling: auto
+        draggable: 1
+        style: ''
+        info_auto_display: 1
+        marker_icon_path: ''
+        disableAutoPan: 1
+        rotateControl: 0
+        fullscreenControl: 0
+        preferScrollingToZooming: 0
+        disableDoubleClickZoom: 0
+      auto_client_location: '0'
+      auto_client_location_marker: '0'
+      explicite_actions_address_field: '0'
+      allow_override_map_settings: 0
+    third_party_settings: {  }
   field_meta_tags:
-    weight: 22
+    weight: 11
     settings: {  }
     third_party_settings: {  }
     type: metatag_firehose
     region: content
+  langcode:
+    type: language_select
+    weight: 2
+    region: content
+    settings:
+      include_locked: true
+    third_party_settings: {  }
+  moderation_state:
+    type: moderation_state_default
+    weight: 100
+    settings: {  }
+    region: content
+    third_party_settings: {  }
   path:
     type: path
-    weight: 20
+    weight: 9
     region: content
     settings: {  }
     third_party_settings: {  }
@@ -171,21 +289,21 @@ content:
     type: boolean_checkbox
     settings:
       display_label: true
-    weight: 18
+    weight: 7
     region: content
     third_party_settings: {  }
   status:
     type: boolean_checkbox
     settings:
       display_label: true
-    weight: 21
+    weight: 10
     region: content
     third_party_settings: {  }
   sticky:
     type: boolean_checkbox
     settings:
       display_label: true
-    weight: 19
+    weight: 8
     region: content
     third_party_settings: {  }
   title:
@@ -198,11 +316,16 @@ content:
     third_party_settings: {  }
   uid:
     type: entity_reference_autocomplete
-    weight: 16
+    weight: 5
     settings:
       match_operator: CONTAINS
       size: 60
       placeholder: ''
     region: content
+    third_party_settings: {  }
+  url_redirects:
+    weight: 50
+    region: content
+    settings: {  }
     third_party_settings: {  }
 hidden: {  }

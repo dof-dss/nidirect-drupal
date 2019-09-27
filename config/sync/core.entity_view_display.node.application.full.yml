@@ -7,7 +7,8 @@ dependencies:
     - field.field.node.application.body
     - field.field.node.application.field_additional_info
     - field.field.node.application.field_link
-    - field.field.node.application.field_site_topics
+    - field.field.node.application.field_meta_tags
+    - field.field.node.application.field_site_themes
     - field.field.node.application.field_subtheme
     - field.field.node.application.field_summary
     - field.field.node.application.field_teaser
@@ -22,23 +23,28 @@ targetEntityType: node
 bundle: application
 mode: full
 content:
+  banner_display:
+    weight: 0
+    region: content
+    settings: {  }
+    third_party_settings: {  }
   body:
     label: above
     type: text_default
-    weight: 1
+    weight: 2
     settings: {  }
     third_party_settings: {  }
     region: content
   field_additional_info:
     type: text_default
-    weight: 3
+    weight: 4
     region: content
     label: above
     settings: {  }
     third_party_settings: {  }
   field_link:
     type: link
-    weight: 2
+    weight: 3
     region: content
     label: hidden
     settings:
@@ -49,15 +55,19 @@ content:
       target: '0'
     third_party_settings: {  }
   field_summary:
-    weight: 0
+    weight: 1
     label: hidden
     settings: {  }
     third_party_settings: {  }
     type: text_default
     region: content
 hidden:
-  field_site_topics: true
+  content_moderation_control: true
+  field_meta_tags: true
+  field_site_themes: true
   field_subtheme: true
   field_teaser: true
   field_top_level_theme: true
+  langcode: true
   links: true
+  search_api_excerpt: true

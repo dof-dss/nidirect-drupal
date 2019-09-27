@@ -1,0 +1,29 @@
+uuid: 80e92766-ac69-4dbb-b3d9-5bcc49d929a6
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_site_themes
+    - node.type.embargoed_publication
+    - taxonomy.vocabulary.site_themes
+id: node.embargoed_publication.field_site_themes
+field_name: field_site_themes
+entity_type: node
+bundle: embargoed_publication
+label: 'Supplementary subthemes'
+description: 'Enter optional supplementary subthemes for this embargoed publication. This allows the embargoed publication to appear in those subtheme listing pages.'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:taxonomy_term'
+  handler_settings:
+    target_bundles:
+      site_themes: site_themes
+    sort:
+      field: name
+      direction: asc
+    auto_create: false
+    auto_create_bundle: ''
+field_type: entity_reference

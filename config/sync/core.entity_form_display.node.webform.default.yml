@@ -5,7 +5,7 @@ dependencies:
   config:
     - field.field.node.webform.body
     - field.field.node.webform.field_meta_tags
-    - field.field.node.webform.field_site_topics
+    - field.field.node.webform.field_site_themes
     - field.field.node.webform.field_subtheme
     - field.field.node.webform.field_teaser
     - field.field.node.webform.field_top_level_theme
@@ -13,6 +13,7 @@ dependencies:
   module:
     - metatag
     - path
+    - shs
     - text
 id: node.webform.default
 targetEntityType: node
@@ -21,7 +22,7 @@ mode: default
 content:
   body:
     type: text_textarea_with_summary
-    weight: 5
+    weight: 4
     settings:
       rows: 9
       summary_rows: 3
@@ -30,54 +31,54 @@ content:
     region: content
   created:
     type: datetime_timestamp
-    weight: 7
+    weight: 6
     region: content
     settings: {  }
     third_party_settings: {  }
   field_meta_tags:
-    weight: 12
+    weight: 11
     settings: {  }
     third_party_settings: {  }
     type: metatag_firehose
     region: content
-  field_site_topics:
-    type: entity_reference_autocomplete
-    weight: 3
-    region: content
-    settings:
-      match_operator: CONTAINS
-      size: 60
-      placeholder: ''
-    third_party_settings: {  }
-  field_subtheme:
-    type: entity_reference_autocomplete
+  field_site_themes:
+    type: options_shs
     weight: 2
     region: content
     settings:
-      match_operator: CONTAINS
-      size: 60
-      placeholder: ''
+      display_node_count: false
+      create_new_items: false
+      create_new_levels: false
+      force_deepest: false
     third_party_settings: {  }
-  field_teaser:
-    type: string_textfield
-    weight: 4
-    region: content
-    settings:
-      size: 60
-      placeholder: ''
-    third_party_settings: {  }
-  field_top_level_theme:
-    type: entity_reference_autocomplete
+  field_subtheme:
+    type: options_shs
     weight: 1
     region: content
     settings:
-      match_operator: CONTAINS
+      display_node_count: false
+      create_new_items: false
+      create_new_levels: false
+      force_deepest: false
+    third_party_settings: {  }
+  field_teaser:
+    type: string_textfield
+    weight: 3
+    region: content
+    settings:
       size: 60
       placeholder: ''
     third_party_settings: {  }
+  langcode:
+    type: language_select
+    weight: 2
+    region: content
+    settings:
+      include_locked: true
+    third_party_settings: {  }
   path:
     type: path
-    weight: 10
+    weight: 9
     region: content
     settings: {  }
     third_party_settings: {  }
@@ -85,21 +86,21 @@ content:
     type: boolean_checkbox
     settings:
       display_label: true
-    weight: 8
+    weight: 7
     region: content
     third_party_settings: {  }
   status:
     type: boolean_checkbox
     settings:
       display_label: true
-    weight: 11
+    weight: 10
     region: content
     third_party_settings: {  }
   sticky:
     type: boolean_checkbox
     settings:
       display_label: true
-    weight: 9
+    weight: 8
     region: content
     third_party_settings: {  }
   title:
@@ -112,11 +113,17 @@ content:
     third_party_settings: {  }
   uid:
     type: entity_reference_autocomplete
-    weight: 6
+    weight: 5
     settings:
       match_operator: CONTAINS
       size: 60
       placeholder: ''
     region: content
     third_party_settings: {  }
-hidden: {  }
+  url_redirects:
+    weight: 12
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+hidden:
+  field_top_level_theme: true

@@ -1,0 +1,22 @@
+uuid: db69820a-2106-4086-9a8d-2611ef6b57b6
+langcode: en
+status: true
+dependencies:
+  module:
+    - node
+id: content_webforms
+label: 'Content - Webforms'
+type: 'canonical_entities:node'
+pattern: 'forms/[node:title]'
+selection_criteria:
+  d28187e1-5890-4859-90b3-15459ad47cdf:
+    id: node_type
+    bundles:
+      webform: webform
+    negate: false
+    context_mapping:
+      node: node
+    uuid: d28187e1-5890-4859-90b3-15459ad47cdf
+selection_logic: and
+weight: -5
+relationships: {  }

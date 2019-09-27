@@ -8,7 +8,7 @@ dependencies:
     - field.field.node.publication.field_meta_tags
     - field.field.node.publication.field_publication_type
     - field.field.node.publication.field_published_date
-    - field.field.node.publication.field_site_topics
+    - field.field.node.publication.field_site_themes
     - field.field.node.publication.field_subtheme
     - field.field.node.publication.field_summary
     - field.field.node.publication.field_top_level_theme
@@ -63,7 +63,7 @@ content:
       format_type: medium
       timezone_override: ''
     third_party_settings: {  }
-  field_site_topics:
+  field_site_themes:
     type: entity_reference_label
     weight: 0
     region: content
@@ -99,4 +99,6 @@ content:
     region: content
     settings: {  }
     third_party_settings: {  }
-hidden: {  }
+hidden:
+  langcode: true
+  search_api_excerpt: true
