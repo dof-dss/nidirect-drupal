@@ -1,0 +1,277 @@
+uuid: 7513b690-b093-4b29-a2a9-403000fa5086
+langcode: en
+status: true
+dependencies: {  }
+_core:
+  default_config_hash: VnMnvpVfWsw1h6GgvfrttIkrLSQZ87kAunjpXOZTYi4
+id: node_recipe
+class: Drupal\migrate\Plugin\Migration
+field_plugin_method: alterFieldInstanceMigration
+cck_plugin_method: null
+migration_tags: null
+migration_group: migrate_nidirect_node_recipe
+label: 'Recipe content type nodes'
+source:
+  plugin: d7_node
+  node_type: nidirect_recipe
+process:
+  nid:
+    -
+      plugin: get
+      source: tnid
+  vid:
+    -
+      plugin: get
+      source: vid
+  langcode:
+    -
+      plugin: default_value
+      source: language
+      default_value: und
+  title:
+    -
+      plugin: get
+      source: title
+  uid:
+    -
+      plugin: get
+      source: node_uid
+  status:
+    -
+      plugin: get
+      source: status
+  created:
+    -
+      plugin: get
+      source: created
+  changed:
+    -
+      plugin: get
+      source: changed
+  promote:
+    -
+      plugin: get
+      source: promote
+  sticky:
+    -
+      plugin: get
+      source: sticky
+  revision_uid:
+    -
+      plugin: get
+      source: revision_uid
+  revision_log:
+    -
+      plugin: get
+      source: log
+  revision_timestamp:
+    -
+      plugin: get
+      source: timestamp
+  comment_node_recipe/0/status:
+    -
+      plugin: get
+      source: comment
+  field_recipe_description:
+    -
+      plugin: get
+      source: field_recipe_description
+  field_recipe_main_ingredient:
+    -
+      plugin: sub_process
+      source: field_recipe_main_ingredient
+      process:
+        target_id: tid
+  field_recipe_course_type:
+    -
+      plugin: sub_process
+      source: field_recipe_course_type
+      process:
+        target_id: tid
+  field_recipe_special_diet:
+    -
+      plugin: sub_process
+      source: field_recipe_special_diet
+      process:
+        target_id: tid
+  field_recipe_preptime:
+    -
+      plugin: get
+      source: field_recipe_preptime
+  field_recipe_season:
+    -
+      plugin: get
+      source: field_recipe_season
+  field_recipe_serves:
+    -
+      plugin: get
+      source: field_recipe_serves
+  field_recipe_allergens:
+    -
+      plugin: get
+      source: field_recipe_allergens
+  field_recipe_image:
+    -
+      plugin: sub_process
+      source: field_recipe_image
+      process:
+        target_id: fid
+        alt: alt
+        title: title
+        width: width
+        height: height
+  field_recipe_other_options:
+    -
+      plugin: get
+      source: field_recipe_other_options
+    -
+      plugin: media_wysiwyg_filter
+  field_recipe_other_options/0/format:
+    -
+      plugin: static_map
+      bypass: true
+      source: field_recipe_other_options/0/format
+      map:
+        filtered_html: basic_html
+        filtered_html_with_no_images: basic_html
+        filtered_html_with_templates: basic_html
+        filtered_html_with_tokens: basic_html
+        html_for_admins: full_html
+        paste_format: plain_text
+        plain_text: plain_text
+  field_recipe_ingredients:
+    -
+      plugin: get
+      source: field_recipe_ingredients
+    -
+      plugin: media_wysiwyg_filter
+  field_recipe_ingredients/0/format:
+    -
+      plugin: static_map
+      bypass: true
+      source: field_recipe_ingredients/0/format
+      map:
+        filtered_html: basic_html
+        filtered_html_with_no_images: basic_html
+        filtered_html_with_templates: basic_html
+        filtered_html_with_tokens: basic_html
+        html_for_admins: full_html
+        paste_format: plain_text
+        plain_text: plain_text
+  field_recipe_method:
+    -
+      plugin: get
+      source: field_recipe_method
+    -
+      plugin: media_wysiwyg_filter
+  field_recipe_method/0/format:
+    -
+      plugin: static_map
+      bypass: true
+      source: field_recipe_method/0/format
+      map:
+        filtered_html: basic_html
+        filtered_html_with_no_images: basic_html
+        filtered_html_with_templates: basic_html
+        filtered_html_with_tokens: basic_html
+        html_for_admins: full_html
+        paste_format: plain_text
+        plain_text: plain_text
+  field_recipe_nutrition_info:
+    -
+      plugin: get
+      source: field_recipe_nutrition_info
+    -
+      plugin: media_wysiwyg_filter
+  field_recipe_nutrition_info/0/format:
+    -
+      plugin: static_map
+      bypass: true
+      source: field_recipe_nutrition_info/0/format
+      map:
+        filtered_html: basic_html
+        filtered_html_with_no_images: basic_html
+        filtered_html_with_templates: basic_html
+        filtered_html_with_tokens: basic_html
+        html_for_admins: full_html
+        paste_format: plain_text
+        plain_text: plain_text
+  field_recipe_allergy_advice:
+    -
+      plugin: get
+      source: field_recipe_allergy_advice
+    -
+      plugin: media_wysiwyg_filter
+  field_recipe_allergy_advice/0/format:
+    -
+      plugin: static_map
+      bypass: true
+      source: field_recipe_allergy_advice/0/format
+      map:
+        filtered_html: basic_html
+        filtered_html_with_no_images: basic_html
+        filtered_html_with_templates: basic_html
+        filtered_html_with_tokens: basic_html
+        html_for_admins: full_html
+        paste_format: plain_text
+        plain_text: plain_text
+  field_recipe_food_safety:
+    -
+      plugin: get
+      source: field_recipe_food_safety
+    -
+      plugin: media_wysiwyg_filter
+  field_recipe_food_safety/0/format:
+    -
+      plugin: static_map
+      bypass: true
+      source: field_recipe_food_safety/0/format
+      map:
+        filtered_html: basic_html
+        filtered_html_with_no_images: basic_html
+        filtered_html_with_templates: basic_html
+        filtered_html_with_tokens: basic_html
+        html_for_admins: full_html
+        paste_format: plain_text
+        plain_text: plain_text
+  field_recipe_fat_content:
+    -
+      plugin: get
+      source: field_recipe_fat_content
+    -
+      plugin: media_wysiwyg_filter
+  field_recipe_fat_content/0/format:
+    -
+      plugin: static_map
+      bypass: true
+      source: field_recipe_fat_content/0/format
+      map:
+        filtered_html: basic_html
+        filtered_html_with_no_images: basic_html
+        filtered_html_with_templates: basic_html
+        filtered_html_with_tokens: basic_html
+        html_for_admins: full_html
+        paste_format: plain_text
+        plain_text: plain_text
+  field_recipe_saturates:
+    -
+      plugin: get
+      source: field_recipe_saturates
+  field_recipe_sugar:
+    -
+      plugin: get
+      source: field_recipe_sugar
+  field_recipe_salt:
+    -
+      plugin: get
+      source: field_recipe_salt
+destination:
+  plugin: 'entity:node'
+  default_bundle: recipe
+migration_dependencies:
+  required:
+    - upgrade_d7_user
+    - upgrade_d7_file
+    - upgrade_d7_recipe_course_type
+    - upgrade_d7_recipe_ingredient
+    - upgrade_d7_recipe_special_diet
