@@ -5,26 +5,37 @@ dependencies:
   module:
     - search_api_solr
     - node
+    - taxonomy
     - search_api
   config:
     - field.storage.node.field_address
     - field.storage.node.body
+    - field.storage.node.field_hc_body_location
+    - field.storage.taxonomy_term.field_term_hc_synonyms
+    - field.storage.node.field_hc_body_system
     - field.storage.node.field_contact_category
-    - field.storage.node.field_email_address
-    - field.storage.node.field_published_date
-    - field.storage.node.field_recipe_allergens
-    - field.storage.node.field_recipe_course_type
-    - field.storage.node.field_recipe_description
-    - field.storage.node.field_recipe_main_ingredient
-    - field.storage.node.field_recipe_season
-    - field.storage.node.field_recipe_special_diet
-    - field.storage.node.field_site_themes
-    - field.storage.node.field_subtheme
-    - field.storage.node.field_summary
+    - field.storage.node.field_hc_condition_type
     - field.storage.node.field_ub_contact
+    - field.storage.node.field_recipe_allergens
     - field.storage.node.field_ub_counties
+    - field.storage.node.field_recipe_course_type
+    - field.storage.node.field_email_address
+    - field.storage.node.field_index_letter
+    - field.storage.node.field_recipe_main_ingredient
+    - field.storage.node.field_hc_primary_symptom_1
+    - field.storage.node.field_hc_primary_symptom_2
+    - field.storage.node.field_hc_primary_symptom_3
+    - field.storage.node.field_hc_primary_symptom_4
+    - field.storage.node.field_published_date
+    - field.storage.node.field_recipe_season
+    - field.storage.node.field_hc_secondary_symptoms
     - field.storage.node.field_ub_sector
     - field.storage.node.field_ub_services
+    - field.storage.node.field_recipe_description
+    - field.storage.node.field_recipe_special_diet
+    - field.storage.node.field_summary
+    - field.storage.node.field_site_themes
+    - field.storage.node.field_subtheme
     - search_api.server.solr_default
 third_party_settings:
   search_api_solr:
@@ -134,6 +145,138 @@ field_settings:
     dependencies:
       config:
         - field.storage.node.field_email_address
+  field_hc_body_location:
+    label: 'Body location'
+    datasource_id: 'entity:node'
+    property_path: field_hc_body_location
+    type: integer
+    dependencies:
+      config:
+        - field.storage.node.field_hc_body_location
+  field_hc_body_location_synonyms:
+    label: 'Body location » Taxonomy term » Synonyms'
+    datasource_id: 'entity:node'
+    property_path: 'field_hc_body_location:entity:field_term_hc_synonyms'
+    type: text
+    boost: !!float 8
+    dependencies:
+      config:
+        - field.storage.node.field_hc_body_location
+        - field.storage.taxonomy_term.field_term_hc_synonyms
+      module:
+        - taxonomy
+  field_hc_body_system_synonyms:
+    label: 'Body system » Taxonomy term » Synonyms'
+    datasource_id: 'entity:node'
+    property_path: 'field_hc_body_system:entity:field_term_hc_synonyms'
+    type: text
+    boost: !!float 8
+    dependencies:
+      config:
+        - field.storage.node.field_hc_body_system
+        - field.storage.taxonomy_term.field_term_hc_synonyms
+      module:
+        - taxonomy
+  field_hc_condition_type:
+    label: 'Condition type / disease process'
+    datasource_id: 'entity:node'
+    property_path: field_hc_condition_type
+    type: integer
+    dependencies:
+      config:
+        - field.storage.node.field_hc_condition_type
+  field_hc_condition_type_name:
+    label: 'Condition type / disease process » Taxonomy term » Name'
+    datasource_id: 'entity:node'
+    property_path: 'field_hc_condition_type:entity:name'
+    type: text
+    boost: !!float 21
+    dependencies:
+      config:
+        - field.storage.node.field_hc_condition_type
+      module:
+        - taxonomy
+        - taxonomy
+  field_hc_condition_type_synonyms:
+    label: 'Condition type / disease process » Taxonomy term » Synonyms'
+    datasource_id: 'entity:node'
+    property_path: 'field_hc_condition_type:entity:field_term_hc_synonyms'
+    type: text
+    boost: !!float 8
+    dependencies:
+      config:
+        - field.storage.node.field_hc_condition_type
+        - field.storage.taxonomy_term.field_term_hc_synonyms
+      module:
+        - taxonomy
+  field_hc_primary_symptom_1_synonyms:
+    label: 'Primary symptom 1 » Taxonomy term » Synonyms'
+    datasource_id: 'entity:node'
+    property_path: 'field_hc_primary_symptom_1:entity:field_term_hc_synonyms'
+    type: text
+    boost: !!float 8
+    dependencies:
+      config:
+        - field.storage.node.field_hc_primary_symptom_1
+        - field.storage.taxonomy_term.field_term_hc_synonyms
+      module:
+        - taxonomy
+  field_hc_primary_symptom_2_synonyms:
+    label: 'Primary symptom 2 » Taxonomy term » Synonyms'
+    datasource_id: 'entity:node'
+    property_path: 'field_hc_primary_symptom_2:entity:field_term_hc_synonyms'
+    type: text
+    boost: !!float 8
+    dependencies:
+      config:
+        - field.storage.node.field_hc_primary_symptom_2
+        - field.storage.taxonomy_term.field_term_hc_synonyms
+      module:
+        - taxonomy
+  field_hc_primary_symptom_3_synonyms:
+    label: 'Primary symptom 3 » Taxonomy term » Synonyms'
+    datasource_id: 'entity:node'
+    property_path: 'field_hc_primary_symptom_3:entity:field_term_hc_synonyms'
+    type: text
+    boost: !!float 8
+    dependencies:
+      config:
+        - field.storage.node.field_hc_primary_symptom_3
+        - field.storage.taxonomy_term.field_term_hc_synonyms
+      module:
+        - taxonomy
+  field_hc_primary_symptom_4_synonyms:
+    label: 'Primary symptom 4 » Taxonomy term » Synonyms'
+    datasource_id: 'entity:node'
+    property_path: 'field_hc_primary_symptom_4:entity:field_term_hc_synonyms'
+    type: text
+    boost: !!float 8
+    dependencies:
+      config:
+        - field.storage.node.field_hc_primary_symptom_4
+        - field.storage.taxonomy_term.field_term_hc_synonyms
+      module:
+        - taxonomy
+  field_hc_secondary_symptoms_synonyms:
+    label: 'Secondary symptoms » Taxonomy term » Synonyms'
+    datasource_id: 'entity:node'
+    property_path: 'field_hc_secondary_symptoms:entity:field_term_hc_synonyms'
+    type: text
+    boost: !!float 8
+    dependencies:
+      config:
+        - field.storage.node.field_hc_secondary_symptoms
+        - field.storage.taxonomy_term.field_term_hc_synonyms
+      module:
+        - taxonomy
+  field_index_letter:
+    label: 'Index under'
+    datasource_id: 'entity:node'
+    property_path: field_index_letter
+    type: string
+    dependencies:
+      config:
+        - field.storage.node.field_index_letter
   field_published_date:
     label: 'Published date'
     datasource_id: 'entity:node'
@@ -278,6 +421,18 @@ field_settings:
     dependencies:
       config:
         - field.storage.node.field_address
+  name:
+    label: 'Body location » Taxonomy term » Name'
+    datasource_id: 'entity:node'
+    property_path: 'field_hc_body_location:entity:name'
+    type: text
+    boost: !!float 21
+    dependencies:
+      config:
+        - field.storage.node.field_hc_body_location
+      module:
+        - taxonomy
+        - taxonomy
   postal_code:
     label: 'Address » The postal code.'
     datasource_id: 'entity:node'
@@ -298,11 +453,20 @@ field_settings:
     label: Title
     datasource_id: 'entity:node'
     property_path: title
-    type: text
+    type: string
     boost: !!float 21
     dependencies:
       module:
         - node
+  title_fulltext:
+    label: 'Searchable title'
+    property_path: aggregated_field
+    type: text
+    boost: !!float 21
+    configuration:
+      type: union
+      fields:
+        - 'entity:node/title'
   type:
     label: 'Content type'
     datasource_id: 'entity:node'
@@ -330,6 +494,7 @@ datasource_settings:
         - driving_instructor
         - embargoed_publication
         - gp_practice
+        - health_condition
         - landing_page
         - news
         - page
