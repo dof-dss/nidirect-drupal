@@ -1,0 +1,148 @@
+uuid: ed87ef5f-49c6-40d0-80ff-c341bd14990c
+langcode: en
+status: true
+dependencies: {  }
+_core:
+  default_config_hash: pOo-uj_dUqLGU34Fw1WDeSIlWES7i6cCnHZxfrjE6P8
+id: node_revision_gp_practice
+class: Drupal\migrate\Plugin\Migration
+field_plugin_method: alterFieldFormatterMigration
+cck_plugin_method: null
+migration_tags: null
+migration_group: migrate_nidirect_node_gp_practice
+label: 'GP Practice content type nodes (Revisions)'
+source:
+  plugin: d7_node
+  node_type: nidirect_gp_practice
+process:
+  nid:
+    -
+      plugin: get
+      source: tnid
+  vid:
+    -
+      plugin: get
+      source: vid
+  langcode:
+    -
+      plugin: default_value
+      source: language
+      default_value: und
+  title:
+    -
+      plugin: get
+      source: title
+  uid:
+    -
+      plugin: get
+      source: node_uid
+  status:
+    -
+      plugin: get
+      source: status
+  created:
+    -
+      plugin: get
+      source: created
+  changed:
+    -
+      plugin: get
+      source: changed
+  promote:
+    -
+      plugin: get
+      source: promote
+  sticky:
+    -
+      plugin: get
+      source: sticky
+  revision_uid:
+    -
+      plugin: get
+      source: revision_uid
+  revision_log:
+    -
+      plugin: get
+      source: log
+  revision_timestamp:
+    -
+      plugin: get
+      source: timestamp
+  comment_node_page/0/status:
+    -
+      plugin: get
+      source: comment
+  field_gp_practice_name:
+    -
+      plugin: get
+      source: field_gp_practice_name
+  field_gp_practice_no:
+    -
+      plugin: get
+      source: field_gp_practice_no
+  field_gp_surgery_name:
+    -
+      plugin: get
+      source: field_gp_surgery_name
+  field_gp_partnership_no:
+    -
+      plugin: get
+      source: field_gp_partnership_no
+  field_gp_lcg:
+    -
+      plugin: get
+      source: field_gp_lcg
+  field_gp_appointments:
+    -
+      plugin: field_link
+      source: field_gp_appointments
+  field_gp_prescriptions:
+    -
+      plugin: field_link
+      source: field_gp_prescriptions
+  field_gp_practice_website:
+    -
+      plugin: field_link
+      source: field_gp_practice_website
+  field_contact_phone:
+    -
+      plugin: get
+      source: field_contact_phone
+  field_gp_practice_lead:
+    -
+      plugin: get
+      source: field_gp_practice_lead
+  field_gp_practice_member:
+    -
+      plugin: get
+      source: field_gp_practice_member
+  field_address:
+    -
+      plugin: callback
+      callable:
+        - \Drupal\migrate_nidirect_global\AddressFieldMerge
+        - convertToAddressFieldFormat
+      source:
+        - field_contact_address_01
+        - field_contact_address_02
+        - ''
+        - ''
+        - ''
+        - field_contact_town_city
+        - field_contact_postcode
+    -
+      plugin: addressfield
+  field_location/lng:
+    -
+      plugin: get
+      source: field_map/0/lon
+  field_location/lat:
+    -
+      plugin: get
+      source: field_map/0/lat
+destination:
+  plugin: 'entity:node'
+  default_bundle: gp_practice
+migration_dependencies:
+  required:
+    - node_gp_practice

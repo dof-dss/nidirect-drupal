@@ -1,0 +1,141 @@
+uuid: e0fe6a08-e227-4133-a6ad-3a5d110694e8
+langcode: en
+status: true
+dependencies: {  }
+_core:
+  default_config_hash: zIHoeFyPEtoY7WJtA1Be6RWiMhnoq-ScZwd_KEepHxg
+id: node_contact
+class: Drupal\migrate\Plugin\Migration
+field_plugin_method: alterFieldInstanceMigration
+cck_plugin_method: null
+migration_tags: null
+migration_group: migrate_nidirect_node_contact
+label: 'Nodes (Contact)'
+source:
+  plugin: d7_node
+  node_type: contact
+process:
+  nid:
+    -
+      plugin: get
+      source: tnid
+  vid:
+    -
+      plugin: get
+      source: vid
+  langcode:
+    -
+      plugin: default_value
+      source: language
+      default_value: und
+  title:
+    -
+      plugin: get
+      source: title
+  uid:
+    -
+      plugin: get
+      source: node_uid
+  status:
+    -
+      plugin: get
+      source: status
+  created:
+    -
+      plugin: get
+      source: created
+  changed:
+    -
+      plugin: get
+      source: changed
+  promote:
+    -
+      plugin: get
+      source: promote
+  sticky:
+    -
+      plugin: get
+      source: sticky
+  revision_uid:
+    -
+      plugin: get
+      source: revision_uid
+  revision_log:
+    -
+      plugin: get
+      source: log
+  revision_timestamp:
+    -
+      plugin: get
+      source: timestamp
+  comment_node_contact/0/status:
+    -
+      plugin: get
+      source: comment
+  body:
+    -
+      plugin: get
+      source: body
+    -
+      plugin: media_wysiwyg_filter
+  body/0/format:
+    -
+      plugin: static_map
+      bypass: true
+      source: body/0/format
+      map:
+        filtered_html: basic_html
+        filtered_html_with_no_images: basic_html
+        filtered_html_with_templates: basic_html
+        filtered_html_with_tokens: basic_html
+        html_for_admins: full_html
+        paste_format: plain_text
+        plain_text: plain_text
+  field_contact_additional_info:
+    -
+      plugin: get
+      source: field_contact_additional_info
+    -
+      plugin: media_wysiwyg_filter
+  field_contact_additional_info/0/format:
+    -
+      plugin: static_map
+      bypass: true
+      source: field_contact_additional_info/0/format
+      map:
+        filtered_html: basic_html
+        filtered_html_with_no_images: basic_html
+        filtered_html_with_templates: basic_html
+        filtered_html_with_tokens: basic_html
+        html_for_admins: full_html
+        paste_format: plain_text
+        plain_text: plain_text
+  field_supplementary_contact:
+    -
+      plugin: get
+      source: field_supplementary_contact
+  field_summary:
+    -
+      plugin: get
+      source: field_summary
+    -
+      plugin: media_wysiwyg_filter
+  field_summary/0/format:
+    -
+      plugin: static_map
+      bypass: true
+      source: field_summary/0/format
+      map:
+        filtered_html: basic_html
+        filtered_html_with_no_images: basic_html
+        filtered_html_with_templates: basic_html
+        filtered_html_with_tokens: basic_html
+        html_for_admins: full_html
+        paste_format: plain_text
+        plain_text: plain_text
+destination:
+  plugin: 'entity:node'
+  default_bundle: contact
+migration_dependencies:
+  required:
+    - upgrade_d7_user
