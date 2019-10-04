@@ -1,29 +1,29 @@
-uuid: 3928b8fd-8a7a-4dcd-9b46-c01d390475a7
+uuid: eb756a73-5e8d-47e7-9a33-9563cd70ff61
 langcode: en
 status: true
 dependencies:
   config:
-    - facets.facet.season
+    - facets.facet.condition_type
   module:
     - facets
     - system
   theme:
     - nicsdru_nidirect_theme
-id: season
+id: conditiontype
 theme: nicsdru_nidirect_theme
 region: sidebar_first
-weight: -2
+weight: 7
 provider: null
-plugin: 'facet_block:season'
+plugin: 'facet_block:condition_type'
 settings:
-  id: 'facet_block:season'
-  label: Season
+  id: 'facet_block:condition_type'
+  label: 'Condition type'
   provider: facets
   label_display: visible
-  block_id: season
+  block_id: conditiontype
 visibility:
   request_path:
     id: request_path
-    pages: '/information-and-services/eat-well/recipes*'
+    pages: "/services/health-conditions-a-z\r\n/services/health-conditions-a-z/*"
     negate: false
     context_mapping: {  }
