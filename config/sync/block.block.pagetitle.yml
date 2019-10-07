@@ -1,0 +1,28 @@
+uuid: 554b419e-fd41-4b3f-bc26-f33a254ce0ad
+langcode: en
+status: true
+dependencies:
+  module:
+    - ctools
+  theme:
+    - nicsdru_nidirect_theme
+id: pagetitle
+theme: nicsdru_nidirect_theme
+region: content
+weight: -8
+provider: null
+plugin: page_title_block
+settings:
+  id: page_title_block
+  label: 'Page title'
+  provider: core
+  label_display: '0'
+visibility:
+  'entity_bundle:node':
+    id: 'entity_bundle:node'
+    bundles:
+      application: application
+      article: article
+    negate: true
+    context_mapping:
+      node: '@node.node_route_context:node'
