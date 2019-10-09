@@ -1,26 +1,23 @@
-uuid: d8e8bb80-637b-4e81-b7b1-f9da2d5a9b7c
+uuid: d5b1c6b9-0ccd-4ab7-aaee-47c0cf4004f1
 langcode: en
 status: true
 dependencies:
-  config:
-    - views.view.health_conditions
   module:
+    - nidirect_health_conditions
     - system
-    - views
   theme:
     - nicsdru_nidirect_theme
-id: exposedformhealth_conditionssearch_page
+id: healthconditionsatoz
 theme: nicsdru_nidirect_theme
 region: sidebar_first
-weight: 4
+weight: 5
 provider: null
-plugin: 'views_exposed_filter_block:health_conditions-search_page'
+plugin: healthconditions_az_block
 settings:
-  id: 'views_exposed_filter_block:health_conditions-search_page'
-  label: ''
-  provider: views
+  id: healthconditions_az_block
+  label: 'Health Conditions A to Z'
+  provider: nidirect_health_conditions
   label_display: '0'
-  views_label: ''
 visibility:
   request_path:
     id: request_path

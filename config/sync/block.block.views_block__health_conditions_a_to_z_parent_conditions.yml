@@ -1,32 +1,33 @@
-uuid: 9779be3b-346b-4473-93ff-0b0b324e9c8f
+uuid: 277c8360-0bcf-469d-bd98-28cac9b1991b
 langcode: en
 status: true
 dependencies:
   config:
-    - views.view.news
+    - views.view.health_conditions_a_to_z
   module:
     - node
     - views
   theme:
     - nicsdru_nidirect_theme
-id: views_block__news_latest_news_block
+id: views_block__health_conditions_a_to_z_parent_conditions
 theme: nicsdru_nidirect_theme
 region: sidebar_first
-weight: 3
+weight: 8
 provider: null
-plugin: 'views_block:news-latest_news_block'
+plugin: 'views_block:health_conditions_a_to_z-parent_conditions'
 settings:
-  id: 'views_block:news-latest_news_block'
+  id: 'views_block:health_conditions_a_to_z-parent_conditions'
   label: ''
   provider: views
   label_display: visible
   views_label: ''
   items_per_page: none
+  context_mapping: {  }
 visibility:
   node_type:
     id: node_type
     bundles:
-      news: news
+      health_condition: health_condition
     negate: false
     context_mapping:
       node: '@node.node_route_context:node'
