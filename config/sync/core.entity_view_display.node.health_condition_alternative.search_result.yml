@@ -1,0 +1,33 @@
+uuid: 11cefa86-2c19-49d6-9dd7-9c910cfb2dfd
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.node.search_result
+    - field.field.node.health_condition_alternative.field_parent_condition
+    - node.type.health_condition_alternative
+  module:
+    - layout_builder
+    - user
+third_party_settings:
+  layout_builder:
+    allow_custom: false
+    enabled: false
+id: node.health_condition_alternative.search_result
+targetEntityType: node
+bundle: health_condition_alternative
+mode: search_result
+content:
+  field_parent_condition:
+    weight: 0
+    label: hidden
+    settings:
+      view_mode: search_result
+      link: false
+    third_party_settings: {  }
+    type: entity_reference_entity_view
+    region: content
+hidden:
+  langcode: true
+  links: true
+  search_api_excerpt: true

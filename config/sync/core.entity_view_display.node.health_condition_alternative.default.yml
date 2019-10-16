@@ -1,0 +1,30 @@
+uuid: 2f5f3c77-8e35-430b-95f7-2d36dc3a20ee
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.node.health_condition_alternative.field_parent_condition
+    - node.type.health_condition_alternative
+  module:
+    - user
+id: node.health_condition_alternative.default
+targetEntityType: node
+bundle: health_condition_alternative
+mode: default
+content:
+  field_parent_condition:
+    weight: 101
+    label: above
+    settings:
+      link: true
+    third_party_settings: {  }
+    type: entity_reference_label
+    region: content
+  links:
+    weight: 100
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+hidden:
+  langcode: true
+  search_api_excerpt: true
