@@ -33,21 +33,16 @@ targetEntityType: node
 bundle: article
 mode: full
 content:
-  banner_display:
-    weight: 0
-    region: content
-    settings: {  }
-    third_party_settings: {  }
   body:
     type: text_default
-    weight: 3
+    weight: 2
     region: content
     settings: {  }
     third_party_settings: {  }
     label: hidden
   field_photo:
     type: image
-    weight: 2
+    weight: 1
     region: content
     label: hidden
     settings:
@@ -55,13 +50,14 @@ content:
       image_style: ''
     third_party_settings: {  }
   field_summary:
-    weight: 1
+    weight: 0
     label: hidden
     settings: {  }
     third_party_settings: {  }
     type: text_default
     region: content
 hidden:
+  banner_display: true
   content_moderation_control: true
   field_additional_info: true
   field_banner_image: true
