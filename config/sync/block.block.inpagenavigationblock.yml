@@ -1,0 +1,36 @@
+uuid: ad201655-9bb5-4f5b-b3ca-83be1d02d3de
+langcode: en
+status: true
+dependencies:
+  module:
+    - ctools
+    - origins_common
+  theme:
+    - nicsdru_nidirect_theme
+id: inpagenavigationblock
+theme: nicsdru_nidirect_theme
+region: sidebar_second
+weight: -13
+provider: null
+plugin: in_page_navigation_block
+settings:
+  id: in_page_navigation_block
+  label: 'On this page'
+  provider: origins_common
+  label_display: visible
+  machine_name: inpagenavigationblock
+  ipn_source: content
+  ipn_element: h2
+  ipn_exclusions: ''
+visibility:
+  'entity_bundle:node':
+    id: 'entity_bundle:node'
+    bundles:
+      article: article
+      contact: contact
+      health_condition: health_condition
+      news: news
+      page: page
+    negate: false
+    context_mapping:
+      node: '@node.node_route_context:node'
