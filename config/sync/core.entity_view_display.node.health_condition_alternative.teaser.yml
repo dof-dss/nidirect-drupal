@@ -1,0 +1,24 @@
+uuid: bc057266-be8d-495e-bef0-e2de23b15712
+langcode: en
+status: false
+dependencies:
+  config:
+    - core.entity_view_mode.node.teaser
+    - field.field.node.health_condition_alternative.field_parent_condition
+    - node.type.health_condition_alternative
+  module:
+    - user
+id: node.health_condition_alternative.teaser
+targetEntityType: node
+bundle: health_condition_alternative
+mode: teaser
+content:
+  links:
+    weight: 100
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+hidden:
+  field_parent_condition: true
+  langcode: true
+  search_api_excerpt: true
