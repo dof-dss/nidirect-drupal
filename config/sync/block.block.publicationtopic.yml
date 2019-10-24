@@ -1,0 +1,29 @@
+uuid: 958d5ead-181f-47b8-a45b-2c3e78fb8057
+langcode: en
+status: true
+dependencies:
+  config:
+    - facets.facet.publication_topic
+  module:
+    - facets
+    - system
+  theme:
+    - nicsdru_nidirect_theme
+id: publicationtopic
+theme: nicsdru_nidirect_theme
+region: sidebar_first
+weight: 4
+provider: null
+plugin: 'facet_block:publication_topic'
+settings:
+  id: 'facet_block:publication_topic'
+  label: 'Publication topic'
+  provider: facets
+  label_display: visible
+  block_id: publicationtopic
+visibility:
+  request_path:
+    id: request_path
+    pages: /publications
+    negate: false
+    context_mapping: {  }

@@ -1,0 +1,29 @@
+uuid: 7a37c160-d4c0-40a5-90dc-a231f90d9d1e
+langcode: en
+status: true
+dependencies:
+  config:
+    - facets.facet.publication_date
+  module:
+    - facets
+    - system
+  theme:
+    - nicsdru_nidirect_theme
+id: publicationdate
+theme: nicsdru_nidirect_theme
+region: sidebar_first
+weight: 3
+provider: null
+plugin: 'facet_block:publication_date'
+settings:
+  id: 'facet_block:publication_date'
+  label: 'Publication date'
+  provider: facets
+  label_display: visible
+  block_id: publicationdate
+visibility:
+  request_path:
+    id: request_path
+    pages: /publications
+    negate: false
+    context_mapping: {  }
