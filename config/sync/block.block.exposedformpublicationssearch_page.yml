@@ -1,22 +1,22 @@
-uuid: d2daa92b-61b2-4ce3-8156-9a7b7e975e37
+uuid: c1d77c4f-5d10-4b04-bcad-f8533341fc42
 langcode: en
 status: true
 dependencies:
   config:
-    - views.view.gp_practices
+    - views.view.publications
   module:
     - system
     - views
   theme:
     - nicsdru_nidirect_theme
-id: exposedformgp_practicesfind_a_gp
+id: exposedformpublicationssearch_page
 theme: nicsdru_nidirect_theme
 region: sidebar_first
-weight: -14
+weight: 2
 provider: null
-plugin: 'views_exposed_filter_block:gp_practices-find_a_gp'
+plugin: 'views_exposed_filter_block:publications-search_page'
 settings:
-  id: 'views_exposed_filter_block:gp_practices-find_a_gp'
+  id: 'views_exposed_filter_block:publications-search_page'
   label: ''
   provider: views
   label_display: '0'
@@ -24,6 +24,6 @@ settings:
 visibility:
   request_path:
     id: request_path
-    pages: "/services/gp-practices\r\n/services/gp-practices/*"
+    pages: /publications
     negate: false
     context_mapping: {  }
