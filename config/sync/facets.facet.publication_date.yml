@@ -10,7 +10,7 @@ dependencies:
     - search_api
 third_party_settings:
   facets_pretty_paths:
-    coder: taxonomy_term_coder
+    coder: default_coder
 id: publication_date
 name: 'Publication date'
 url_alias: date
@@ -23,9 +23,9 @@ widget:
   type: links
   config:
     show_numbers: true
-    soft_limit: 0
+    soft_limit: 20
     soft_limit_settings:
-      show_less_label: 'Show less'
+      show_less_label: 'Show fewer'
       show_more_label: 'Show more'
     show_reset_link: false
     reset_text: 'Show all'
@@ -50,14 +50,8 @@ processor_configs:
       build: 35
     settings:
       date_display: actual_date
-      granularity: 5
+      granularity: 6
       date_format: ''
-  display_value_widget_order:
-    processor_id: display_value_widget_order
-    weights:
-      sort: 40
-    settings:
-      sort: ASC
   hide_1_result_facet:
     processor_id: hide_1_result_facet
     weights:
@@ -68,6 +62,12 @@ processor_configs:
     weights:
       build: 5
     settings: {  }
+  raw_value_widget_order:
+    processor_id: raw_value_widget_order
+    weights:
+      sort: 50
+    settings:
+      sort: DESC
   url_processor_handler:
     processor_id: url_processor_handler
     weights:
