@@ -11,7 +11,6 @@ dependencies:
     - field.field.node.contact.field_contact_group
     - field.field.node.contact.field_contact_hours
     - field.field.node.contact.field_contact_mobile
-    - field.field.node.contact.field_contact_phone
     - field.field.node.contact.field_contact_website
     - field.field.node.contact.field_email_address
     - field.field.node.contact.field_enable_toc
@@ -21,12 +20,14 @@ dependencies:
     - field.field.node.contact.field_site_themes
     - field.field.node.contact.field_summary
     - field.field.node.contact.field_supplementary_contact
+    - field.field.node.contact.field_telephone
     - node.type.contact
   module:
     - address
     - geolocation
     - metatag
     - telephone
+    - telephone_plus
     - text
     - user
 id: node.contact.default
@@ -61,16 +62,8 @@ content:
     third_party_settings: {  }
     type: telephone_link
     region: content
-  field_contact_phone:
-    weight: 8
-    label: above
-    settings:
-      title: ''
-    third_party_settings: {  }
-    type: telephone_link
-    region: content
   field_enable_toc:
-    weight: 7
+    weight: 8
     label: above
     settings:
       format: default
@@ -125,6 +118,14 @@ content:
     settings: {  }
     third_party_settings: {  }
     type: text_default
+    region: content
+  field_telephone:
+    weight: 7
+    label: above
+    settings:
+      vcard: true
+    third_party_settings: {  }
+    type: telephone_plus_link
     region: content
   links:
     weight: 1
