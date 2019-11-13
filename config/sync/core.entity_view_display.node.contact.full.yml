@@ -1,4 +1,4 @@
-uuid: e59d9537-9967-47f4-8c23-22622155b913
+uuid: a3245831-66f9-4d6a-9ce5-61aaff8542ce
 langcode: en
 status: true
 dependencies:
@@ -12,7 +12,6 @@ dependencies:
     - field.field.node.contact.field_contact_group
     - field.field.node.contact.field_contact_hours
     - field.field.node.contact.field_contact_mobile
-    - field.field.node.contact.field_contact_phone
     - field.field.node.contact.field_contact_website
     - field.field.node.contact.field_email_address
     - field.field.node.contact.field_enable_toc
@@ -22,6 +21,7 @@ dependencies:
     - field.field.node.contact.field_site_themes
     - field.field.node.contact.field_summary
     - field.field.node.contact.field_supplementary_contact
+    - field.field.node.contact.field_telephone
     - node.type.contact
   module:
     - address
@@ -29,6 +29,7 @@ dependencies:
     - layout_builder
     - link
     - telephone
+    - telephone_plus
     - text
     - user
 third_party_settings:
@@ -89,14 +90,6 @@ content:
     third_party_settings: {  }
     type: telephone_link
     region: content
-  field_contact_phone:
-    weight: 4
-    label: inline
-    settings:
-      title: ''
-    third_party_settings: {  }
-    type: telephone_link
-    region: content
   field_contact_website:
     type: link
     weight: 8
@@ -110,7 +103,7 @@ content:
       target: ''
     third_party_settings: {  }
   field_email_address:
-    type: email_mailto
+    type: basic_string
     weight: 7
     region: content
     label: inline
@@ -148,6 +141,14 @@ content:
         gestureHandling: auto
     third_party_settings: {  }
     type: geolocation_map
+    region: content
+  field_telephone:
+    weight: 4
+    label: hidden
+    settings:
+      vcard: '1'
+    third_party_settings: {  }
+    type: telephone_plus_link
     region: content
   links:
     weight: 1
