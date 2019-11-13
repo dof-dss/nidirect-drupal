@@ -3,8 +3,6 @@ langcode: en
 status: true
 dependencies:
   config:
-    - field.field.node.driving_instructor.field_contact_mobile
-    - field.field.node.driving_instructor.field_contact_phone
     - field.field.node.driving_instructor.field_di_adi_no
     - field.field.node.driving_instructor.field_di_areas
     - field.field.node.driving_instructor.field_di_categories
@@ -13,6 +11,7 @@ dependencies:
     - field.field.node.driving_instructor.field_email_address
     - field.field.node.driving_instructor.field_link_url
     - field.field.node.driving_instructor.field_meta_tags
+    - field.field.node.driving_instructor.field_telephone
     - node.type.driving_instructor
     - workflows.workflow.editorial
   module:
@@ -21,7 +20,8 @@ dependencies:
     - link
     - metatag
     - path
-    - telephone
+    - scheduler
+    - telephone_plus
 id: node.driving_instructor.default
 targetEntityType: node
 bundle: driving_instructor
@@ -29,24 +29,10 @@ mode: default
 content:
   created:
     type: datetime_timestamp
-    weight: 12
+    weight: 13
     region: content
     settings: {  }
     third_party_settings: {  }
-  field_contact_mobile:
-    weight: 5
-    settings:
-      placeholder: ''
-    third_party_settings: {  }
-    type: telephone_default
-    region: content
-  field_contact_phone:
-    weight: 6
-    settings:
-      placeholder: ''
-    third_party_settings: {  }
-    type: telephone_default
-    region: content
   field_di_adi_no:
     type: string_textfield
     weight: 4
@@ -57,13 +43,13 @@ content:
     third_party_settings: {  }
   field_di_areas:
     type: options_buttons
-    weight: 10
+    weight: 11
     region: content
     settings: {  }
     third_party_settings: {  }
   field_di_categories:
     type: chosen_select
-    weight: 9
+    weight: 10
     region: content
     settings: {  }
     third_party_settings: {  }
@@ -85,7 +71,7 @@ content:
     third_party_settings: {  }
   field_email_address:
     type: email_default
-    weight: 7
+    weight: 8
     region: content
     settings:
       size: 60
@@ -93,17 +79,23 @@ content:
     third_party_settings: {  }
   field_link_url:
     type: link_default
-    weight: 8
+    weight: 9
     region: content
     settings:
       placeholder_url: ''
       placeholder_title: ''
     third_party_settings: {  }
   field_meta_tags:
-    weight: 17
+    weight: 18
     settings: {  }
     third_party_settings: {  }
     type: metatag_firehose
+    region: content
+  field_telephone:
+    weight: 26
+    settings: {  }
+    third_party_settings: {  }
+    type: telephone_plus_widget
     region: content
   langcode:
     type: language_select
@@ -114,13 +106,13 @@ content:
     third_party_settings: {  }
   moderation_state:
     type: moderation_state_default
-    weight: 19
+    weight: 20
     settings: {  }
     region: content
     third_party_settings: {  }
   path:
     type: path
-    weight: 15
+    weight: 16
     region: content
     settings: {  }
     third_party_settings: {  }
@@ -128,21 +120,32 @@ content:
     type: boolean_checkbox
     settings:
       display_label: true
-    weight: 13
+    weight: 14
     region: content
+    third_party_settings: {  }
+  publish_on:
+    type: datetime_timestamp_no_default
+    weight: 23
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  scheduler_settings:
+    weight: 21
+    region: content
+    settings: {  }
     third_party_settings: {  }
   status:
     type: boolean_checkbox
     settings:
       display_label: true
-    weight: 16
+    weight: 17
     region: content
     third_party_settings: {  }
   sticky:
     type: boolean_checkbox
     settings:
       display_label: true
-    weight: 14
+    weight: 15
     region: content
     third_party_settings: {  }
   title:
@@ -155,15 +158,21 @@ content:
     third_party_settings: {  }
   uid:
     type: entity_reference_autocomplete
-    weight: 11
+    weight: 12
     settings:
       match_operator: CONTAINS
       size: 60
       placeholder: ''
     region: content
     third_party_settings: {  }
+  unpublish_on:
+    type: datetime_timestamp_no_default
+    weight: 22
+    region: content
+    settings: {  }
+    third_party_settings: {  }
   url_redirects:
-    weight: 18
+    weight: 19
     region: content
     settings: {  }
     third_party_settings: {  }
