@@ -3,8 +3,6 @@ langcode: en
 status: true
 dependencies:
   config:
-    - field.field.node.driving_instructor.field_contact_mobile
-    - field.field.node.driving_instructor.field_contact_phone
     - field.field.node.driving_instructor.field_di_adi_no
     - field.field.node.driving_instructor.field_di_areas
     - field.field.node.driving_instructor.field_di_categories
@@ -13,11 +11,12 @@ dependencies:
     - field.field.node.driving_instructor.field_email_address
     - field.field.node.driving_instructor.field_link_url
     - field.field.node.driving_instructor.field_meta_tags
+    - field.field.node.driving_instructor.field_telephone
     - node.type.driving_instructor
   module:
     - link
     - metatag
-    - telephone
+    - telephone_plus
     - user
 id: node.driving_instructor.default
 targetEntityType: node
@@ -29,22 +28,6 @@ content:
     region: content
     settings: {  }
     third_party_settings: {  }
-  field_contact_mobile:
-    weight: 12
-    label: above
-    settings:
-      title: ''
-    third_party_settings: {  }
-    type: telephone_link
-    region: content
-  field_contact_phone:
-    weight: 11
-    label: above
-    settings:
-      title: ''
-    third_party_settings: {  }
-    type: telephone_link
-    region: content
   field_di_adi_no:
     type: string
     weight: 8
@@ -110,6 +93,14 @@ content:
     settings: {  }
     third_party_settings: {  }
     type: metatag_empty_formatter
+    region: content
+  field_telephone:
+    weight: 14
+    label: above
+    settings:
+      vcard: true
+    third_party_settings: {  }
+    type: telephone_plus_link
     region: content
   links:
     weight: 9
