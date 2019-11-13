@@ -1,35 +1,31 @@
-uuid: ad201655-9bb5-4f5b-b3ca-83be1d02d3de
+uuid: 371460b8-b03d-4f30-9747-1fa6d087f98d
 langcode: en
 status: true
 dependencies:
+  config:
+    - views.view.health_conditions
   module:
     - ctools
+    - views
   theme:
     - nicsdru_nidirect_theme
-id: inpagenavigationblock
+id: exposedformhealth_conditionssearch_page_2
 theme: nicsdru_nidirect_theme
 region: sidebar_second
-weight: -16
+weight: -13
 provider: null
-plugin: in_page_navigation_block
+plugin: 'views_exposed_filter_block:health_conditions-search_page'
 settings:
-  id: in_page_navigation_block
-  label: 'On this page'
-  provider: origins_common
+  id: 'views_exposed_filter_block:health_conditions-search_page'
+  label: ''
+  provider: views
   label_display: visible
-  machine_name: inpagenavigationblock
-  ipn_source: content
-  ipn_element: h2
-  ipn_exclusions: ''
+  views_label: ''
 visibility:
   'entity_bundle:node':
     id: 'entity_bundle:node'
     bundles:
-      article: article
-      contact: contact
       health_condition: health_condition
-      news: news
-      page: page
     negate: false
     context_mapping:
       node: '@node.node_route_context:node'
