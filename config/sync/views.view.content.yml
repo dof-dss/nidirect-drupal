@@ -3,10 +3,12 @@ langcode: en
 status: true
 dependencies:
   config:
+    - taxonomy.vocabulary.site_themes
     - workflows.workflow.editorial
   module:
     - content_moderation
     - node
+    - taxonomy
     - user
 _core:
   default_config_hash: tS8PbpJX90aRFC3-UTgXzdqkq7_2frk2pz4TMijEebM
@@ -271,7 +273,7 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
-          label: Status
+          label: 'Moderation state'
           exclude: false
           alter:
             alter_text: false
@@ -531,6 +533,62 @@ display:
           plugin_id: node_status
           group: 1
           entity_type: node
+        field_subtheme_target_id:
+          id: field_subtheme_target_id
+          table: node__field_subtheme
+          field: field_subtheme_target_id
+          relationship: none
+          group_type: group
+          admin_label: ''
+          operator: or
+          value: {  }
+          group: 1
+          exposed: true
+          expose:
+            operator_id: field_subtheme_target_id_op
+            label: 'Theme/subtheme (field_subtheme)'
+            description: ''
+            use_operator: false
+            operator: field_subtheme_target_id_op
+            identifier: field_subtheme_target_id
+            required: false
+            remember: false
+            multiple: false
+            remember_roles:
+              authenticated: authenticated
+              anonymous: '0'
+              administrator: '0'
+              gp_author_user: '0'
+              author_user: '0'
+              gp_supervisor_user: '0'
+              news_supervisor: '0'
+              supervisor_user: '0'
+              editor_user: '0'
+              admin_user: '0'
+              apps_user: '0'
+              health_condition_author_user: '0'
+              health_condition_supervisor_user: '0'
+              driving_instructor_supervisor_user: '0'
+            reduce: false
+          is_grouped: false
+          group_info:
+            label: ''
+            description: ''
+            identifier: ''
+            optional: true
+            widget: select
+            multiple: false
+            remember: false
+            default_group: All
+            default_group_multiple: {  }
+            group_items: {  }
+          reduce_duplicates: false
+          type: select
+          limit: true
+          vid: site_themes
+          hierarchy: true
+          error_message: true
+          plugin_id: taxonomy_index_tid
         moderation_state:
           id: moderation_state
           table: node_field_revision
