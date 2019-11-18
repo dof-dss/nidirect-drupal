@@ -1,0 +1,28 @@
+uuid: dc903a0d-cd7e-4249-82fe-919a3bbc61b9
+langcode: en
+status: true
+dependencies:
+  module:
+    - nidirect_health_conditions
+    - node
+  theme:
+    - nicsdru_nidirect_theme
+id: healthconditionsrelatedconditions
+theme: nicsdru_nidirect_theme
+region: sidebar_second
+weight: 0
+provider: null
+plugin: healthconditions_related_conditions
+settings:
+  id: healthconditions_related_conditions
+  label: 'Related conditions'
+  provider: nidirect_health_conditions
+  label_display: visible
+visibility:
+  node_type:
+    id: node_type
+    bundles:
+      health_condition: health_condition
+    negate: false
+    context_mapping:
+      node: '@node.node_route_context:node'
