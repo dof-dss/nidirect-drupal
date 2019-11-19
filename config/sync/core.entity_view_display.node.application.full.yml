@@ -23,28 +23,23 @@ targetEntityType: node
 bundle: application
 mode: full
 content:
-  banner_display:
-    weight: 0
-    region: content
-    settings: {  }
-    third_party_settings: {  }
   body:
     label: above
     type: text_default
-    weight: 2
+    weight: 1
     settings: {  }
     third_party_settings: {  }
     region: content
   field_additional_info:
     type: text_default
-    weight: 4
+    weight: 3
     region: content
     label: above
     settings: {  }
     third_party_settings: {  }
   field_link:
     type: link
-    weight: 3
+    weight: 2
     region: content
     label: hidden
     settings:
@@ -55,13 +50,14 @@ content:
       target: '0'
     third_party_settings: {  }
   field_summary:
-    weight: 1
+    weight: 0
     label: hidden
     settings: {  }
     third_party_settings: {  }
     type: text_default
     region: content
 hidden:
+  banner_display: true
   content_moderation_control: true
   field_meta_tags: true
   field_site_themes: true
