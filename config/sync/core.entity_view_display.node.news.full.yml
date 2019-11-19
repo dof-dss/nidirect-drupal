@@ -1,22 +1,20 @@
-uuid: 8770dd77-2afa-4f5d-8626-3c56c023e93a
+uuid: 8ced946a-d814-430e-9c17-a863a03755f3
 langcode: en
 status: true
 dependencies:
   config:
     - core.entity_view_mode.node.full
-    - field.field.node.publication.body
-    - field.field.node.publication.field_attachment
-    - field.field.node.publication.field_meta_tags
-    - field.field.node.publication.field_publication_type
-    - field.field.node.publication.field_published_date
-    - field.field.node.publication.field_site_themes
-    - field.field.node.publication.field_subtheme
-    - field.field.node.publication.field_summary
-    - field.field.node.publication.field_top_level_theme
-    - node.type.publication
+    - field.field.node.news.body
+    - field.field.node.news.field_enable_toc
+    - field.field.node.news.field_meta_tags
+    - field.field.node.news.field_photo
+    - field.field.node.news.field_published_date
+    - field.field.node.news.field_summary
+    - field.field.node.news.field_teaser
+    - node.type.news
   module:
     - datetime
-    - file
+    - image
     - layout_builder
     - text
     - user
@@ -24,25 +22,26 @@ third_party_settings:
   layout_builder:
     allow_custom: false
     enabled: false
-id: node.publication.full
+id: node.news.full
 targetEntityType: node
-bundle: publication
+bundle: news
 mode: full
 content:
   body:
     label: hidden
     type: text_default
-    weight: 2
+    weight: 3
     settings: {  }
     third_party_settings: {  }
     region: content
-  field_attachment:
-    type: file_default
-    weight: 3
+  field_photo:
+    type: image
+    weight: 2
     region: content
-    label: above
+    label: hidden
     settings:
-      use_description_as_link_text: true
+      image_style: ''
+      image_link: ''
     third_party_settings: {  }
   field_published_date:
     type: datetime_default
@@ -50,8 +49,8 @@ content:
     region: content
     label: inline
     settings:
-      format_type: medium
       timezone_override: ''
+      format_type: medium_date
     third_party_settings: {  }
   field_summary:
     weight: 1
@@ -61,13 +60,10 @@ content:
     type: text_default
     region: content
 hidden:
-  banner_display: true
   content_moderation_control: true
+  field_enable_toc: true
   field_meta_tags: true
-  field_publication_type: true
-  field_site_themes: true
-  field_subtheme: true
-  field_top_level_theme: true
+  field_teaser: true
   langcode: true
   links: true
   search_api_excerpt: true
