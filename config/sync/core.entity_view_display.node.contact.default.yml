@@ -7,10 +7,8 @@ dependencies:
     - field.field.node.contact.field_address
     - field.field.node.contact.field_contact_additional_info
     - field.field.node.contact.field_contact_category
-    - field.field.node.contact.field_contact_fax
     - field.field.node.contact.field_contact_group
     - field.field.node.contact.field_contact_hours
-    - field.field.node.contact.field_contact_mobile
     - field.field.node.contact.field_contact_website
     - field.field.node.contact.field_email_address
     - field.field.node.contact.field_enable_toc
@@ -26,7 +24,6 @@ dependencies:
     - address
     - geolocation
     - metatag
-    - telephone
     - telephone_plus
     - text
     - user
@@ -48,19 +45,11 @@ content:
     settings: {  }
     third_party_settings: {  }
   field_address:
-    weight: 5
+    weight: 6
     label: above
     settings: {  }
     third_party_settings: {  }
     type: address_default
-    region: content
-  field_contact_mobile:
-    weight: 9
-    label: above
-    settings:
-      title: ''
-    third_party_settings: {  }
-    type: telephone_link
     region: content
   field_enable_toc:
     weight: 8
@@ -73,7 +62,7 @@ content:
     type: boolean
     region: content
   field_location:
-    weight: 6
+    weight: 7
     label: above
     settings:
       title: ''
@@ -120,7 +109,7 @@ content:
     type: text_default
     region: content
   field_telephone:
-    weight: 7
+    weight: 5
     label: above
     settings:
       vcard: true
@@ -135,7 +124,6 @@ content:
 hidden:
   field_contact_additional_info: true
   field_contact_category: true
-  field_contact_fax: true
   field_contact_group: true
   field_contact_hours: true
   field_contact_website: true
