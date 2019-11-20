@@ -1,9 +1,11 @@
-uuid: ba13f075-6651-4365-aa9d-e9e11ae5ac84
+uuid: 8f8c5d03-5c28-4e9c-bd46-b27768a84c58
 langcode: en
 status: true
 dependencies:
   config:
+    - core.entity_view_mode.node.full
     - field.field.node.gp_practice.field_address
+    - field.field.node.gp_practice.field_contact_phone
     - field.field.node.gp_practice.field_gp_appointments
     - field.field.node.gp_practice.field_gp_lcg
     - field.field.node.gp_practice.field_gp_partnership_no
@@ -16,39 +18,78 @@ dependencies:
     - field.field.node.gp_practice.field_gp_surgery_name
     - field.field.node.gp_practice.field_location
     - field.field.node.gp_practice.field_meta_tags
-    - field.field.node.gp_practice.field_telephone
     - node.type.gp_practice
   module:
     - address
+    - field_group
     - geolocation
-    - telephone_plus
+    - layout_builder
+    - link
+    - telephone
     - user
-id: node.gp_practice.default
+third_party_settings:
+  layout_builder:
+    allow_custom: false
+    enabled: false
+  field_group:
+    group_address:
+      children:
+        - field_address
+        - field_contact_phone
+        - field_gp_practice_website
+      parent_name: ''
+      weight: 3
+      format_type: html_element
+      format_settings:
+        id: ''
+        classes: vcard
+        element: address
+        show_label: false
+        label_element: h3
+        label_element_classes: ''
+        attributes: ''
+        effect: none
+        speed: fast
+      label: address
+      region: content
+id: node.gp_practice.full
 targetEntityType: node
 bundle: gp_practice
-mode: default
+mode: full
 content:
   content_moderation_control:
-    weight: -20
+    weight: 0
     region: content
     settings: {  }
     third_party_settings: {  }
   field_address:
     type: address_default
-    weight: 2
-    region: content
-    label: above
-    settings: {  }
-    third_party_settings: {  }
-  field_gp_practice_lead:
-    type: entity_reference_label
-    weight: 0
+    weight: 4
     region: content
     label: hidden
-    settings:
-      link: false
+    settings: {  }
     third_party_settings: {  }
-  field_gp_practice_member:
+  field_contact_phone:
+    weight: 5
+    label: inline
+    settings:
+      title: ''
+    third_party_settings: {  }
+    type: telephone_link
+    region: content
+  field_gp_appointments:
+    type: link
+    weight: 7
+    region: content
+    label: visually_hidden
+    settings:
+      trim_length: 80
+      url_only: false
+      url_plain: false
+      rel: ''
+      target: ''
+    third_party_settings: {  }
+  field_gp_practice_lead:
     type: entity_reference_label
     weight: 1
     region: content
@@ -56,11 +97,43 @@ content:
     settings:
       link: false
     third_party_settings: {  }
-  field_location:
-    type: geolocation_map
-    weight: 4
+  field_gp_practice_member:
+    type: entity_reference_label
+    weight: 2
     region: content
     label: hidden
+    settings:
+      link: false
+    third_party_settings: {  }
+  field_gp_practice_website:
+    type: link
+    weight: 6
+    region: content
+    label: inline
+    settings:
+      trim_length: 80
+      url_only: false
+      url_plain: false
+      rel: ''
+      target: ''
+    third_party_settings: {  }
+  field_gp_prescriptions:
+    type: link
+    weight: 8
+    region: content
+    label: visually_hidden
+    settings:
+      trim_length: 80
+      url_only: false
+      url_plain: false
+      rel: ''
+      target: ''
+    third_party_settings: {  }
+  field_location:
+    type: geolocation_map
+    weight: 9
+    region: content
+    label: above
     settings:
       title: ''
       set_marker: '1'
@@ -89,33 +162,18 @@ content:
         preferScrollingToZooming: 0
         gestureHandling: auto
     third_party_settings: {  }
-  field_telephone:
-    weight: 5
-    label: above
-    settings:
-      vcard: true
-    third_party_settings: {  }
-    type: telephone_plus_link
-    region: content
-  gp_names:
-    weight: 0
-    region: content
-    settings: {  }
-    third_party_settings: {  }
 hidden:
   field_contact_address_01: true
   field_contact_address_02: true
   field_contact_postcode: true
   field_contact_town_city: true
-  field_gp_appointments: true
   field_gp_lcg: true
   field_gp_partnership_no: true
   field_gp_practice_name: true
   field_gp_practice_no: true
-  field_gp_practice_website: true
-  field_gp_prescriptions: true
   field_gp_surgery_name: true
   field_meta_tags: true
+  gp_names: true
   langcode: true
   links: true
   search_api_excerpt: true
