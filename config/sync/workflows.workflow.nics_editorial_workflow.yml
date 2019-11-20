@@ -1,4 +1,4 @@
-uuid: 16112d9b-ae7e-4931-ba06-fa0b6a88cf0f
+uuid: 7c950010-8d89-4c93-a261-097cfe0cef27
 langcode: en
 status: true
 dependencies:
@@ -20,9 +20,9 @@ dependencies:
   module:
     - content_moderation
 _core:
-  default_config_hash: Ln7YAg2WXZ-5wn9ib-v9qOKFxF2YZLnwSKtX-V455hE
-id: editorial
-label: Editorial
+  default_config_hash: Pf-noR7M5kiAU_I_A7LYJsNLCwd1kxZtm73fJVcBwoY
+id: nics_editorial_workflow
+label: 'NICS Editorial Workflow'
 type: content_moderation
 type_settings:
   states:
@@ -30,24 +30,24 @@ type_settings:
       label: Draft
       published: false
       default_revision: false
-      weight: -5
+      weight: 0
     needs_review:
       published: false
       default_revision: false
       label: 'Needs Review'
-      weight: 6
+      weight: 2
     published:
       label: Published
       published: true
       default_revision: true
-      weight: 0
+      weight: 1
   transitions:
     create_new_draft:
-      label: 'Create new Draft'
-      from:
-        - draft
+      label: 'Create New Draft'
       to: draft
       weight: -3
+      from:
+        - draft
     publish:
       label: Publish
       to: published
