@@ -1,0 +1,97 @@
+uuid: 7c950010-8d89-4c93-a261-097cfe0cef27
+langcode: en
+status: true
+dependencies:
+  config:
+    - node.type.application
+    - node.type.article
+    - node.type.contact
+    - node.type.driving_instructor
+    - node.type.embargoed_publication
+    - node.type.external_link
+    - node.type.gp_practice
+    - node.type.health_condition
+    - node.type.landing_page
+    - node.type.news
+    - node.type.page
+    - node.type.publication
+    - node.type.recipe
+    - node.type.umbrella_body
+  module:
+    - content_moderation
+_core:
+  default_config_hash: Pf-noR7M5kiAU_I_A7LYJsNLCwd1kxZtm73fJVcBwoY
+id: nics_editorial_workflow
+label: 'NICS Editorial Workflow'
+type: content_moderation
+type_settings:
+  states:
+    draft:
+      label: Draft
+      published: false
+      default_revision: false
+      weight: 0
+    needs_review:
+      published: false
+      default_revision: false
+      label: 'Needs Review'
+      weight: 2
+    published:
+      label: Published
+      published: true
+      default_revision: true
+      weight: 1
+  transitions:
+    create_new_draft:
+      label: 'Create New Draft'
+      to: draft
+      weight: -3
+      from:
+        - draft
+    publish:
+      label: Publish
+      to: published
+      weight: 1
+      from:
+        - needs_review
+    quick_publish:
+      label: 'Quick Publish'
+      from:
+        - draft
+      to: published
+      weight: -1
+    reject:
+      label: Reject
+      from:
+        - needs_review
+      to: draft
+      weight: 0
+    submit_for_review:
+      label: 'Submit for Review'
+      from:
+        - draft
+      to: needs_review
+      weight: -2
+    unpublish:
+      label: Unpublish
+      from:
+        - published
+      to: needs_review
+      weight: 2
+  entity_types:
+    node:
+      - application
+      - article
+      - contact
+      - driving_instructor
+      - embargoed_publication
+      - external_link
+      - gp_practice
+      - health_condition
+      - landing_page
+      - news
+      - page
+      - publication
+      - recipe
+      - umbrella_body
+  default_moderation_state: draft
