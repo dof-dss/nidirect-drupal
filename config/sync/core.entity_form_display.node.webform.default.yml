@@ -11,9 +11,11 @@ dependencies:
     - field.field.node.webform.webform
     - node.type.webform
   module:
+    - chosen_field
     - content_moderation
     - path
     - scheduler
+    - shs
     - text
     - webform
 _core:
@@ -41,20 +43,22 @@ content:
   field_site_themes:
     weight: 3
     settings:
-      match_operator: CONTAINS
-      size: 60
-      placeholder: ''
+      display_node_count: false
+      create_new_items: false
+      create_new_levels: false
+      force_deepest: false
     third_party_settings: {  }
-    type: entity_reference_autocomplete
+    type: options_shs
     region: content
   field_subtheme:
     weight: 2
     settings:
-      match_operator: CONTAINS
-      size: 60
-      placeholder: ''
+      display_node_count: false
+      create_new_items: false
+      create_new_levels: false
+      force_deepest: false
     third_party_settings: {  }
-    type: entity_reference_autocomplete
+    type: options_shs
     region: content
   field_teaser:
     weight: 4
@@ -66,12 +70,9 @@ content:
     region: content
   field_top_level_theme:
     weight: 1
-    settings:
-      match_operator: CONTAINS
-      size: 60
-      placeholder: ''
+    settings: {  }
     third_party_settings: {  }
-    type: entity_reference_autocomplete
+    type: chosen_select
     region: content
   langcode:
     type: language_select
