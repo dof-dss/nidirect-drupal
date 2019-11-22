@@ -5,6 +5,7 @@ dependencies:
   module:
     - editor
     - entity_embed
+    - media_browser_responsive_images
     - noreferrer
     - token_filter
 _core:
@@ -16,7 +17,7 @@ filters:
   filter_html:
     id: filter_html
     provider: filter
-    status: true
+    status: false
     weight: -50
     settings:
       allowed_html: '<em> <strong> <cite> <blockquote cite> <code> <ul type> <ol start type> <li> <dl> <dt> <dd> <h2 id> <h3 id> <h4 id> <h5 id> <h6 id> <p> <br> <span> <img src alt height width data-entity-type data-entity-uuid data-align data-caption> <drupal-entity alt title data-entity-type data-entity-uuid data-entity-embed-display data-entity-embed-display-settings data-align data-caption data-embed-button> <sup> <a href hreflang !href accesskey id rel target title> <table> <caption> <tbody> <thead> <tfoot> <th> <td> <tr>'
@@ -49,13 +50,13 @@ filters:
   filter_autop:
     id: filter_autop
     provider: filter
-    status: true
+    status: false
     weight: -47
     settings: {  }
   filter_htmlcorrector:
     id: filter_htmlcorrector
     provider: filter
-    status: true
+    status: false
     weight: -48
     settings: {  }
   filter_html_escape:
@@ -67,7 +68,7 @@ filters:
   filter_url:
     id: filter_url
     provider: filter
-    status: true
+    status: false
     weight: -49
     settings:
       filter_url_length: 72
@@ -80,7 +81,7 @@ filters:
   noreferrer:
     id: noreferrer
     provider: noreferrer
-    status: true
+    status: false
     weight: -46
     settings: {  }
   token_filter:
@@ -90,3 +91,11 @@ filters:
     weight: -39
     settings:
       replace_empty: '0'
+  filter_media_responsive_image_style:
+    id: filter_media_responsive_image_style
+    provider: media_browser_responsive_images
+    status: true
+    weight: 0
+    settings:
+      responsive_style_inline: '1'
+      responsive_style_inline_xl_tbc: '1'
