@@ -5,6 +5,7 @@ dependencies:
   module:
     - editor
     - entity_embed
+    - media_browser_responsive_images
     - noreferrer
     - token_filter
 _core:
@@ -90,3 +91,11 @@ filters:
     weight: -39
     settings:
       replace_empty: '0'
+  filter_media_responsive_image_style:
+    id: filter_media_responsive_image_style
+    provider: media_browser_responsive_images
+    status: true
+    weight: 0
+    settings:
+      responsive_style_inline: '1'
+      responsive_style_inline_xl_tbc: '1'
