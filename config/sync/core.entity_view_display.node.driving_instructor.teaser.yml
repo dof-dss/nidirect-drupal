@@ -1,0 +1,148 @@
+uuid: 62ac8205-9115-4ef0-8bfd-bf43683682da
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.node.teaser
+    - field.field.node.driving_instructor.field_di_adi_no
+    - field.field.node.driving_instructor.field_di_areas
+    - field.field.node.driving_instructor.field_di_categories
+    - field.field.node.driving_instructor.field_di_firstname
+    - field.field.node.driving_instructor.field_di_lastname
+    - field.field.node.driving_instructor.field_email_address
+    - field.field.node.driving_instructor.field_link_url
+    - field.field.node.driving_instructor.field_meta_tags
+    - field.field.node.driving_instructor.field_telephone
+    - node.type.driving_instructor
+  module:
+    - field_group
+    - layout_builder
+    - link
+    - metatag
+    - telephone_plus
+    - user
+third_party_settings:
+  layout_builder:
+    allow_custom: false
+    enabled: false
+  field_group:
+    group_teaser_title:
+      children:
+        - field_di_firstname
+        - field_di_lastname
+      parent_name: ''
+      weight: 1
+      format_type: html_element
+      format_settings:
+        id: ''
+        classes: ''
+        element: h3
+        show_label: false
+        label_element: h3
+        label_element_classes: ''
+        attributes: ''
+        effect: none
+        speed: fast
+      label: 'Teaser title'
+      region: content
+    group_contact_info:
+      children:
+        - field_telephone
+        - field_email_address
+        - field_link_url
+      parent_name: ''
+      weight: 4
+      format_type: html_element
+      format_settings:
+        id: ''
+        classes: ''
+        element: div
+        show_label: false
+        label_element: h3
+        label_element_classes: ''
+        attributes: ''
+        effect: none
+        speed: fast
+      label: 'Contact info'
+      region: content
+id: node.driving_instructor.teaser
+targetEntityType: node
+bundle: driving_instructor
+mode: teaser
+content:
+  content_moderation_control:
+    weight: 0
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_di_adi_no:
+    type: string
+    weight: 2
+    region: content
+    label: inline
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+  field_di_categories:
+    type: entity_reference_label
+    weight: 3
+    region: content
+    label: visually_hidden
+    settings:
+      link: true
+    third_party_settings: {  }
+  field_di_firstname:
+    type: string
+    weight: 2
+    region: content
+    label: hidden
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+  field_di_lastname:
+    type: string
+    weight: 3
+    region: content
+    label: hidden
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+  field_email_address:
+    type: email_mailto
+    weight: 6
+    region: content
+    label: inline
+    settings: {  }
+    third_party_settings: {  }
+  field_link_url:
+    type: link
+    weight: 7
+    region: content
+    label: inline
+    settings:
+      trim_length: 80
+      url_only: false
+      url_plain: false
+      rel: ''
+      target: ''
+    third_party_settings: {  }
+  field_meta_tags:
+    weight: 5
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    type: metatag_empty_formatter
+    region: content
+  field_telephone:
+    weight: 5
+    label: inline
+    settings:
+      vcard: true
+    third_party_settings: {  }
+    type: telephone_plus_link
+    region: content
+hidden:
+  field_di_areas: true
+  langcode: true
+  links: true
+  search_api_excerpt: true
