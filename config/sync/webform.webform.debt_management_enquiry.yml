@@ -1,23 +1,18 @@
-uuid: cc3f4d2f-b0ab-4121-a21d-9cc8a17aa139
+uuid: 9ec1ddb3-ac8a-47be-90ec-db85eab66d49
 langcode: en
 status: open
-dependencies:
-  enforced:
-    module:
-      - webform
-_core:
-  default_config_hash: CjLyKc08W5pQDmtIk0iDWmit1eCAlCVJtOzxMdHI51Q
+dependencies: {  }
 open: null
 close: null
 weight: 0
-uid: null
+uid: 1
 template: false
 archive: false
-id: contact
-title: Contact
-description: 'Basic email contact webform.'
+id: debt_management_enquiry
+title: 'Debt Management enquiry'
+description: ''
 category: ''
-elements: "name:\n  '#title': 'Your Name'\n  '#type': textfield\n  '#required': true\n  '#default_value': '[current-user:display-name]'\nemail:\n  '#title': 'Your Email'\n  '#type': email\n  '#required': true\n  '#default_value': '[current-user:mail]'\nsubject:\n  '#title': Subject\n  '#type': textfield\n  '#required': true\n  '#test': 'Testing contact webform from [site:name]'\nmessage:\n  '#title': Message\n  '#type': textarea\n  '#required': true\n  '#test': 'Please ignore this email.'\nactions:\n  '#type': webform_actions\n  '#title': 'Submit button(s)'\n  '#submit__label': 'Send message'\n"
+elements: "your_details:\n  '#type': fieldset\n  '#title': 'Your details'\n  full_name:\n    '#type': textfield\n    '#title': 'Full name'\n    '#maxlength': '100'\n  are_you_the_customer_:\n    '#type': radios\n    '#title': 'Are you the customer?'\n    '#options':\n      'yes': 'Yes'\n      'no': 'No'\n  what_is_the_customer_s_full_name_:\n    '#type': textfield\n    '#title': 'What is the customer''s full name?'\n    '#maxlength': '100'\n    '#states':\n      visible:\n        ':input[name=\"are_you_the_customer_\"]':\n          value: 'no'\n  what_is_your_relationship_to_the_customer_:\n    '#type': textfield\n    '#title': 'What is your relationship to the customer?'\n    '#description': 'Please note, Debt Management will only respond to your query if we hold the respective customer consent for you to act on their behalf or if you are a Next of Kin dealing with deceased affairs.'\n    '#description_display': before\n    '#states':\n      visible:\n        ':input[name=\"are_you_the_customer_\"]':\n          value: 'no'\n  debt_reference_number:\n    '#type': textfield\n    '#title': 'Debt reference number'\n    '#description': 'This may be found on a letter from Debt Management'\n    '#description_display': before\n    '#maxlength': '10'\ncontact_details:\n  '#type': fieldset\n  '#title': 'Contact details'\n  address:\n    '#type': textarea\n    '#title': Address\n    '#maxlength': '500'\n  postcode:\n    '#type': textfield\n    '#title': Postcode\n    '#maxlength': '8'\n    '#pattern': '([Gg][Ii][Rr] 0[Aa]{2})|((([A-Za-z][0-9]{1,2})|(([A-Za-z][A-Ha-hJ-Yj-y][0-9]{1,2})|(([A-Za-z][0-9][A-Za-z])|([A-Za-z][A-Ha-hJ-Yj-y][0-9][A-Za-z]?))))\\s?[0-9][A-Za-z]{2})'\n    '#pattern_error': 'Please enter a valid UK postcode'\n  contact_telephone_number:\n    '#type': textfield\n    '#title': 'Contact telephone number'\n    '#maxlength': '20'\n  mobile_number:\n    '#type': textfield\n    '#title': 'Mobile number (if different)'\n    '#maxlength': '1'\n  email_address:\n    '#type': email\n    '#title': 'Email address'\n    '#maxlength': '255'\nenquiry_details:\n  '#type': fieldset\n  '#title': 'Enquiry details'\n  what_is_you_query_about_:\n    '#type': webform_select_other\n    '#title': 'What is you query about?'\n    '#options':\n      overpayment_recovery: 'Overpayment recovery'\n      recovery_from_estates: 'Recovery from estates'\n      civil_proceedings: 'Civil proceedings'\n      making_a_payment: 'Making a payment'\n      third_party_deductions: 'Third party deductions'\n      complaint: Complaint\n      compensation_recovery_scheme: 'Compensation recovery scheme'\n      discretionary_support_social_fund: 'Discretionary support social fund'\n      welfare_supplementary_payment: 'Welfare supplementary payment'\n    '#empty_option': '- Please select - '\n    '#other__option_label': 'Other (please specify)'\n    '#other__title': 'Please briefly specify the subject of your query'\n    '#other__placeholder': ''\n  please_tell_us_your_query:\n    '#type': textarea\n    '#title': 'Please tell us your query'\n    '#description': 'Please give us as much information as you can as this will help us to get back to to you as soon as possible. DO NOT include personal or financial information such as date of birth, National Insurance number, or bank and credit card details.'\n    '#description_display': before\n    '#maxlength': '3000'\nactions:\n  '#type': webform_actions\n  '#title': 'Submit button(s)'\n  '#submit__label': 'Submit enquiry'"
 css: ''
 javascript: ''
 settings:
@@ -30,7 +25,7 @@ settings:
   page_submit_path: ''
   page_confirm_path: ''
   page_admin_theme: false
-  form_title: source_entity_webform
+  form_title: both
   form_submit_once: false
   form_exception_message: ''
   form_open_message: ''
@@ -83,6 +78,7 @@ settings:
   wizard_progress_pages: false
   wizard_progress_percentage: false
   wizard_progress_link: false
+  wizard_progress_states: false
   wizard_start_label: ''
   wizard_preview_link: false
   wizard_confirmation: true
@@ -103,12 +99,12 @@ settings:
   draft_loaded_message: ''
   draft_pending_single_message: ''
   draft_pending_multiple_message: ''
-  confirmation_type: url_message
+  confirmation_type: page
   confirmation_title: ''
-  confirmation_message: 'Your message has been sent.'
-  confirmation_url: '<front>'
+  confirmation_message: 'Thank you for your enquiry. We aim to respond to you within 2 working days.'
+  confirmation_url: ''
   confirmation_attributes: {  }
-  confirmation_back: true
+  confirmation_back: false
   confirmation_back_label: ''
   confirmation_back_attributes: {  }
   confirmation_exclude_query: false
@@ -179,27 +175,27 @@ access:
     users: {  }
     permissions: {  }
 handlers:
-  email_confirmation:
+  email:
     id: email
-    label: 'Email confirmation'
-    handler_id: email_confirmation
+    label: Email
+    handler_id: email
     status: true
     conditions: {  }
-    weight: 1
+    weight: 0
     settings:
       states:
         - completed
-      to_mail: '[webform_submission:values:email:raw]'
+      to_mail: BELFASTCOLLEGESTREETDCNI.DEBTMANAGEMENTCUSTOMERENQUIRIES@NISSA.GSI.GOV.UK
       to_options: {  }
       cc_mail: ''
       cc_options: {  }
       bcc_mail: ''
       bcc_options: {  }
-      from_mail: _default
+      from_mail: feedback@nidirect.gov.uk
       from_options: {  }
-      from_name: _default
-      subject: '[webform_submission:values:subject:raw]'
-      body: '[webform_submission:values:message:value]'
+      from_name: nidirect
+      subject: 'Debt Management Enquiry from nidirect.gov.uk'
+      body: "&lt;p&gt;Submitted on [current-date:long]&lt;/p&gt;<br />\r\n&lt;p&gt;Submitted values are:&lt;/p&gt;<br />\r\n[webform_submission:values]"
       excluded_elements: {  }
       ignore_access: false
       exclude_empty: true
@@ -207,45 +203,10 @@ handlers:
       html: true
       attachments: false
       twig: false
-      theme_name: ''
       debug: false
       reply_to: ''
       return_path: ''
       sender_mail: ''
       sender_name: ''
-      parameters: {  }
-  email_notification:
-    id: email
-    label: 'Email notification'
-    handler_id: email_notification
-    status: true
-    conditions: {  }
-    weight: 2
-    settings:
-      states:
-        - completed
-      to_mail: _default
-      to_options: {  }
-      cc_mail: ''
-      cc_options: {  }
-      bcc_mail: ''
-      bcc_options: {  }
-      from_mail: '[webform_submission:values:email:raw]'
-      from_options: {  }
-      from_name: '[webform_submission:values:name:raw]'
-      subject: '[webform_submission:values:subject:raw]'
-      body: '[webform_submission:values:message:value]'
-      excluded_elements: {  }
-      ignore_access: false
-      exclude_empty: true
-      exclude_empty_checkbox: false
-      html: true
-      attachments: false
-      twig: false
       theme_name: ''
-      debug: false
-      reply_to: ''
-      return_path: ''
-      sender_mail: ''
-      sender_name: ''
       parameters: {  }

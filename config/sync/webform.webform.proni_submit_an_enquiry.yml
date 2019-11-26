@@ -1,23 +1,18 @@
-uuid: cc3f4d2f-b0ab-4121-a21d-9cc8a17aa139
+uuid: a70cf37f-3172-48f2-841a-0c166498015c
 langcode: en
 status: open
-dependencies:
-  enforced:
-    module:
-      - webform
-_core:
-  default_config_hash: CjLyKc08W5pQDmtIk0iDWmit1eCAlCVJtOzxMdHI51Q
+dependencies: {  }
 open: null
 close: null
 weight: 0
-uid: null
+uid: 1
 template: false
 archive: false
-id: contact
-title: Contact
-description: 'Basic email contact webform.'
+id: proni_submit_an_enquiry
+title: 'PRONI - Submit an Enquiry'
+description: ''
 category: ''
-elements: "name:\n  '#title': 'Your Name'\n  '#type': textfield\n  '#required': true\n  '#default_value': '[current-user:display-name]'\nemail:\n  '#title': 'Your Email'\n  '#type': email\n  '#required': true\n  '#default_value': '[current-user:mail]'\nsubject:\n  '#title': Subject\n  '#type': textfield\n  '#required': true\n  '#test': 'Testing contact webform from [site:name]'\nmessage:\n  '#title': Message\n  '#type': textarea\n  '#required': true\n  '#test': 'Please ignore this email.'\nactions:\n  '#type': webform_actions\n  '#title': 'Submit button(s)'\n  '#submit__label': 'Send message'\n"
+elements: "your_query:\n  '#type': fieldset\n  '#title': 'Your query'\n  textarea_query:\n    '#type': textarea\n    '#title': 'Please enter your query'\n    '#placeholder': 'Plain text only (3,000 characters maximum)'\n    '#required': true\n    '#required_error': 'You must fill in this field'\n    '#counter_type': character\n    '#counter_maximum': '3000'\nyour_details:\n  '#type': fieldset\n  '#title': 'Your details'\n  first_name:\n    '#type': textfield\n    '#title': 'First name'\n    '#required': true\n    '#required_error': 'You must fill in this field'\n    '#counter_type': character\n    '#counter_maximum': '100'\n  last_name:\n    '#type': textfield\n    '#title': 'Last name'\n    '#required': true\n    '#required_error': 'You must fill in this field'\n    '#counter_type': character\n    '#counter_maximum': '100'\n  email:\n    '#type': email\n    '#title': Email\n    '#required': true\n    '#required_error': 'You must fill in this field'\nactions:\n  '#type': webform_actions\n  '#title': 'Submit button(s)'\n  '#submit__label': 'Submit enquiry'"
 css: ''
 javascript: ''
 settings:
@@ -62,7 +57,9 @@ settings:
   submission_label: ''
   submission_log: false
   submission_views: {  }
-  submission_views_replace: {  }
+  submission_views_replace:
+    webform_routes: {  }
+    node_routes: {  }
   submission_user_columns: {  }
   submission_user_duplicate: false
   submission_access_denied: default
@@ -79,10 +76,11 @@ settings:
   autofill: false
   autofill_message: ''
   autofill_excluded_elements: {  }
-  wizard_progress_bar: true
+  wizard_progress_bar: false
   wizard_progress_pages: false
   wizard_progress_percentage: false
   wizard_progress_link: false
+  wizard_progress_states: false
   wizard_start_label: ''
   wizard_preview_link: false
   wizard_confirmation: true
@@ -103,13 +101,13 @@ settings:
   draft_loaded_message: ''
   draft_pending_single_message: ''
   draft_pending_multiple_message: ''
-  confirmation_type: url_message
-  confirmation_title: ''
-  confirmation_message: 'Your message has been sent.'
-  confirmation_url: '<front>'
+  confirmation_type: page
+  confirmation_title: 'Thank you'
+  confirmation_message: '<p>We aim to get back to you within 10 to 14 working days with a response or update on your enquiry.</p>'
+  confirmation_url: ''
   confirmation_attributes: {  }
   confirmation_back: true
-  confirmation_back_label: ''
+  confirmation_back_label: 'Submit another query'
   confirmation_back_attributes: {  }
   confirmation_exclude_query: false
   confirmation_exclude_token: false
@@ -179,48 +177,13 @@ access:
     users: {  }
     permissions: {  }
 handlers:
-  email_confirmation:
+  email:
     id: email
-    label: 'Email confirmation'
-    handler_id: email_confirmation
+    label: Email
+    handler_id: email
     status: true
     conditions: {  }
-    weight: 1
-    settings:
-      states:
-        - completed
-      to_mail: '[webform_submission:values:email:raw]'
-      to_options: {  }
-      cc_mail: ''
-      cc_options: {  }
-      bcc_mail: ''
-      bcc_options: {  }
-      from_mail: _default
-      from_options: {  }
-      from_name: _default
-      subject: '[webform_submission:values:subject:raw]'
-      body: '[webform_submission:values:message:value]'
-      excluded_elements: {  }
-      ignore_access: false
-      exclude_empty: true
-      exclude_empty_checkbox: false
-      html: true
-      attachments: false
-      twig: false
-      theme_name: ''
-      debug: false
-      reply_to: ''
-      return_path: ''
-      sender_mail: ''
-      sender_name: ''
-      parameters: {  }
-  email_notification:
-    id: email
-    label: 'Email notification'
-    handler_id: email_notification
-    status: true
-    conditions: {  }
-    weight: 2
+    weight: 0
     settings:
       states:
         - completed
@@ -230,22 +193,22 @@ handlers:
       cc_options: {  }
       bcc_mail: ''
       bcc_options: {  }
-      from_mail: '[webform_submission:values:email:raw]'
+      from_mail: feedback@nidirect.gov.uk
       from_options: {  }
-      from_name: '[webform_submission:values:name:raw]'
-      subject: '[webform_submission:values:subject:raw]'
-      body: '[webform_submission:values:message:value]'
+      from_name: _default
+      subject: 'PRONI Enquiry from nidirect.gov.uk'
+      body: _default
       excluded_elements: {  }
       ignore_access: false
-      exclude_empty: true
+      exclude_empty: false
       exclude_empty_checkbox: false
       html: true
       attachments: false
       twig: false
-      theme_name: ''
       debug: false
       reply_to: ''
       return_path: ''
       sender_mail: ''
       sender_name: ''
+      theme_name: ''
       parameters: {  }
