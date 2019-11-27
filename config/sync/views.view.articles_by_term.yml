@@ -321,7 +321,7 @@ display:
           exposed: false
           expose:
             label: ''
-      title: 'Article by term'
+      title: 'All articles by term embedded'
       header: {  }
       footer: {  }
       empty: {  }
@@ -432,15 +432,14 @@ display:
         - 'user.node_grants:view'
         - user.permissions
       tags: {  }
-  articles_by_term_block:
-    display_plugin: block
-    id: articles_by_term_block
-    display_title: 'Articles by Term'
+  articles_by_term_embed:
+    display_plugin: embed
+    id: articles_by_term_embed
+    display_title: 'All articles by term - embed'
     position: 1
     display_options:
       display_extenders: {  }
       display_description: ''
-      block_description: 'Articles by Term'
     cache_metadata:
       max-age: -1
       contexts:
