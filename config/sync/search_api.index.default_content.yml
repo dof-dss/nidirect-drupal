@@ -10,32 +10,37 @@ dependencies:
   config:
     - field.storage.node.field_address
     - field.storage.node.body
+    - field.storage.node.field_di_areas
+    - field.storage.node.field_di_categories
+    - field.storage.node.field_contact_category
+    - field.storage.node.field_di_adi_no
+    - field.storage.node.field_di_firstname
+    - field.storage.node.field_di_lastname
+    - field.storage.node.field_email_address
     - field.storage.node.field_hc_body_location
     - field.storage.taxonomy_term.field_term_hc_synonyms
     - field.storage.node.field_hc_body_system
-    - field.storage.node.field_contact_category
     - field.storage.node.field_hc_condition_type
-    - field.storage.node.field_ub_contact
-    - field.storage.node.field_recipe_allergens
-    - field.storage.node.field_ub_counties
-    - field.storage.node.field_recipe_course_type
-    - field.storage.node.field_email_address
-    - field.storage.node.field_index_letter
-    - field.storage.node.field_recipe_main_ingredient
     - field.storage.node.field_hc_primary_symptom_1
     - field.storage.node.field_hc_primary_symptom_2
     - field.storage.node.field_hc_primary_symptom_3
     - field.storage.node.field_hc_primary_symptom_4
-    - field.storage.node.field_published_date
-    - field.storage.node.field_recipe_season
     - field.storage.node.field_hc_secondary_symptoms
-    - field.storage.node.field_ub_sector
-    - field.storage.node.field_ub_services
+    - field.storage.node.field_index_letter
+    - field.storage.node.field_published_date
+    - field.storage.node.field_recipe_allergens
+    - field.storage.node.field_recipe_course_type
     - field.storage.node.field_recipe_description
+    - field.storage.node.field_recipe_main_ingredient
+    - field.storage.node.field_recipe_season
     - field.storage.node.field_recipe_special_diet
-    - field.storage.node.field_summary
     - field.storage.node.field_site_themes
     - field.storage.node.field_subtheme
+    - field.storage.node.field_summary
+    - field.storage.node.field_ub_contact
+    - field.storage.node.field_ub_counties
+    - field.storage.node.field_ub_sector
+    - field.storage.node.field_ub_services
     - search_api.server.solr_default
 third_party_settings:
   search_api_solr:
@@ -129,6 +134,28 @@ field_settings:
     dependencies:
       config:
         - field.storage.node.field_address
+  description:
+    label: 'Areas covered » Taxonomy term » Description'
+    datasource_id: 'entity:node'
+    property_path: 'field_di_areas:entity:description'
+    type: text
+    dependencies:
+      config:
+        - field.storage.node.field_di_areas
+      module:
+        - taxonomy
+        - taxonomy
+  description_1:
+    label: 'Categories » Taxonomy term » Description'
+    datasource_id: 'entity:node'
+    property_path: 'field_di_categories:entity:description'
+    type: text
+    dependencies:
+      config:
+        - field.storage.node.field_di_categories
+      module:
+        - taxonomy
+        - taxonomy
   field_contact_category:
     label: Category
     datasource_id: 'entity:node'
@@ -137,6 +164,46 @@ field_settings:
     dependencies:
       config:
         - field.storage.node.field_contact_category
+  field_di_adi_no:
+    label: 'ADI number'
+    datasource_id: 'entity:node'
+    property_path: field_di_adi_no
+    type: string
+    dependencies:
+      config:
+        - field.storage.node.field_di_adi_no
+  field_di_areas:
+    label: 'Areas covered'
+    datasource_id: 'entity:node'
+    property_path: field_di_areas
+    type: integer
+    dependencies:
+      config:
+        - field.storage.node.field_di_areas
+  field_di_categories:
+    label: Categories
+    datasource_id: 'entity:node'
+    property_path: field_di_categories
+    type: integer
+    dependencies:
+      config:
+        - field.storage.node.field_di_categories
+  field_di_firstname:
+    label: 'First name'
+    datasource_id: 'entity:node'
+    property_path: field_di_firstname
+    type: string
+    dependencies:
+      config:
+        - field.storage.node.field_di_firstname
+  field_di_lastname:
+    label: 'Last name'
+    datasource_id: 'entity:node'
+    property_path: field_di_lastname
+    type: string
+    dependencies:
+      config:
+        - field.storage.node.field_di_lastname
   field_email_address:
     label: Email
     datasource_id: 'entity:node'
@@ -433,6 +500,28 @@ field_settings:
       module:
         - taxonomy
         - taxonomy
+  name_1:
+    label: 'Areas covered » Taxonomy term » Name'
+    datasource_id: 'entity:node'
+    property_path: 'field_di_areas:entity:name'
+    type: text
+    dependencies:
+      config:
+        - field.storage.node.field_di_areas
+      module:
+        - taxonomy
+        - taxonomy
+  name_2:
+    label: 'Categories » Taxonomy term » Name'
+    datasource_id: 'entity:node'
+    property_path: 'field_di_categories:entity:name'
+    type: string
+    dependencies:
+      config:
+        - field.storage.node.field_di_categories
+      module:
+        - taxonomy
+        - taxonomy
   postal_code:
     label: 'Address » The postal code.'
     datasource_id: 'entity:node'
@@ -508,6 +597,11 @@ processor_settings:
   add_url: {  }
   aggregated_field: {  }
   entity_status: {  }
+  hierarchy:
+    fields:
+      field_di_categories: taxonomy_term-parent
+    weights:
+      preprocess_index: -45
   highlight:
     highlight: always
     highlight_partial: false
@@ -518,6 +612,7 @@ processor_settings:
     suffix: '</strong>'
     weights:
       postprocess_query: 0
+  language_with_fallback: {  }
   rendered_item: {  }
   solr_date_range:
     weights:
