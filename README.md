@@ -101,6 +101,21 @@ config/
 
 *'sync' rather than 'production' is used as this is the default and helps avoid problems with contrib modules and hosting platforms that assume this is always present.*
 
+### Overriding of taxonomy term view pages
+
+This project uses a very customised approach. 
+
+When clicking on the 'view' page for a taxonomy term ('/information-and-services/motoring' for example) you see any sub terms from the 
+'site themes' vocabulary as usual, but you also see links to any node that has 'Motoring' set as its 'Theme/subtheme' or 'Supplementary subtheme'.
+
+This is achieved by merging the results from the 'Articles by Term' view ('All articles by term - embed' display) and the 'Site subtopics' view 
+('By topic - simple embed' display) which is done in the 'nicsdru_nidirect_theme_preprocess_taxonomy_term' function which may be found in the 
+nicsdru_nidirect_theme.theme file.
+
+In addition to this, taxonomy terms may be overridden by 'campaigns', which are nodes of type 'landing page'. The landing page node will replace the taxonomy term that is
+selected in the 'Theme/subtheme' field. This is achieved by using the 'Articles by Term' view ('Campaign List - embed' display). Again, processing may be found in the
+'nicsdru_nidirect_theme_preprocess_taxonomy_term' function.
+
 #### Some key concepts:
 
 > Config blacklist
