@@ -5,6 +5,7 @@ dependencies:
   config:
     - core.entity_view_mode.paragraph.preview
     - field.field.paragraph.map.field_location
+    - filter.format.basic_html
     - paragraphs.paragraphs_type.map
   module:
     - geolocation
@@ -17,32 +18,69 @@ content:
     weight: 0
     label: hidden
     settings:
-      title: ''
       set_marker: '1'
-      common_map: ''
-      info_text: ''
-      use_overridden_map_settings: 0
-      google_map_settings:
+      title: ''
+      info_text:
+        value: ''
+        format: basic_html
+      centre:
+        fit_bounds:
+          enable: true
+          settings:
+            reset_zoom: true
+          weight: -101
+          map_center_id: fit_bounds
+        client_location:
+          weight: 0
+          enable: false
+          map_center_id: client_location
+        fixed_boundaries:
+          settings:
+            north: ''
+            east: ''
+            south: ''
+            west: ''
+          weight: 0
+          enable: false
+          map_center_id: fixed_boundaries
+        fixed_value:
+          settings:
+            latitude: null
+            longitude: null
+            location_option_id: fixed_value
+          weight: 0
+          enable: false
+          map_center_id: location_plugins
+        ipstack:
+          settings:
+            access_key: ''
+            location_option_id: ipstack
+          weight: 0
+          enable: false
+          map_center_id: location_plugins
+        freeogeoip:
+          weight: 0
+          enable: false
+          map_center_id: location_plugins
+          settings:
+            location_option_id: freeogeoip
+      map_provider_id: google_static_maps
+      map_provider_settings:
+        height: 400
+        width: 400
         type: ROADMAP
-        zoom: '10'
-        minZoom: 0
-        maxZoom: 18
-        rotateControl: 0
-        mapTypeControl: 1
-        streetViewControl: 1
-        zoomControl: 1
-        fullscreenControl: 0
-        scrollwheel: 1
-        disableDoubleClickZoom: 0
-        draggable: 1
-        height: 400px
-        width: 100%
-        info_auto_display: 1
-        marker_icon_path: ''
-        disableAutoPan: 1
-        style: ''
-        preferScrollingToZooming: 0
-        gestureHandling: auto
+        zoom: 10
+        scale: 1
+        format: png
+        map_features:
+          geolocation_marker_scroll_to_id:
+            weight: 0
+            settings:
+              scroll_target_id: ''
+            enabled: false
+      use_overridden_map_settings: 0
+      common_map: '1'
+      data_provider_settings: {  }
     third_party_settings: {  }
     type: geolocation_map
     region: content
