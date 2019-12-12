@@ -8,10 +8,12 @@ dependencies:
     - field.field.node.cold_weather_payment.field_meta_tags
     - node.type.cold_weather_payment
   module:
+    - content_moderation
     - datetime_range
     - metatag
     - nidirect_cold_weather_payments
     - path
+    - scheduler
 id: node.cold_weather_payment.default
 targetEntityType: node
 bundle: cold_weather_payment
@@ -107,6 +109,7 @@ content:
       match_operator: CONTAINS
       size: 60
       placeholder: ''
+      match_limit: 10
     region: content
     third_party_settings: {  }
   unpublish_on:

@@ -25,7 +25,6 @@ dependencies:
     - field.field.node.recipe.field_recipe_special_diet
     - field.field.node.recipe.field_recipe_sugar
     - node.type.recipe
-    - workflows.workflow.nics_editorial_workflow
   module:
     - content_moderation
     - entity_browser
@@ -328,6 +327,7 @@ content:
       match_operator: CONTAINS
       size: 60
       placeholder: ''
+      match_limit: 10
     region: content
     third_party_settings: {  }
   unpublish_on:

@@ -34,7 +34,6 @@ dependencies:
     - field.field.node.health_condition.field_top_level_theme
     - image.style.thumbnail
     - node.type.health_condition
-    - workflows.workflow.nics_editorial_workflow
   module:
     - content_moderation
     - datetime
@@ -45,6 +44,7 @@ dependencies:
     - link
     - metatag
     - path
+    - scheduler
     - shs
     - text
 third_party_settings:
@@ -82,6 +82,7 @@ content:
       rows: 9
       summary_rows: 3
       placeholder: ''
+      show_summary: false
     third_party_settings: {  }
     region: content
   created:
@@ -139,6 +140,7 @@ content:
       match_operator: CONTAINS
       size: 60
       placeholder: ''
+      match_limit: 10
     third_party_settings: {  }
   field_hc_body_system:
     type: entity_reference_autocomplete
@@ -148,6 +150,7 @@ content:
       match_operator: CONTAINS
       size: 60
       placeholder: ''
+      match_limit: 10
     third_party_settings: {  }
   field_hc_condition_type:
     type: entity_reference_autocomplete
@@ -157,6 +160,7 @@ content:
       match_operator: CONTAINS
       size: 60
       placeholder: ''
+      match_limit: 10
     third_party_settings: {  }
   field_hc_info_source:
     type: options_buttons
@@ -172,6 +176,7 @@ content:
       match_operator: CONTAINS
       size: 60
       placeholder: ''
+      match_limit: 10
     third_party_settings: {  }
   field_hc_primary_symptom_2:
     type: entity_reference_autocomplete
@@ -181,6 +186,7 @@ content:
       match_operator: CONTAINS
       size: 60
       placeholder: ''
+      match_limit: 10
     third_party_settings: {  }
   field_hc_primary_symptom_3:
     type: entity_reference_autocomplete
@@ -190,6 +196,7 @@ content:
       match_operator: CONTAINS
       size: 60
       placeholder: ''
+      match_limit: 10
     third_party_settings: {  }
   field_hc_primary_symptom_4:
     type: entity_reference_autocomplete
@@ -199,6 +206,7 @@ content:
       match_operator: CONTAINS
       size: 60
       placeholder: ''
+      match_limit: 10
     third_party_settings: {  }
   field_hc_secondary_symptoms:
     type: entity_reference_autocomplete
@@ -208,6 +216,7 @@ content:
       match_operator: CONTAINS
       size: 60
       placeholder: ''
+      match_limit: 10
     third_party_settings: {  }
   field_last_review_date:
     type: datetime_default
@@ -235,6 +244,7 @@ content:
       match_operator: CONTAINS
       size: 60
       placeholder: ''
+      match_limit: 10
     third_party_settings: {  }
   field_photo:
     type: image_image
@@ -258,6 +268,7 @@ content:
       match_operator: CONTAINS
       size: 60
       placeholder: ''
+      match_limit: 10
     third_party_settings: {  }
   field_related_info:
     type: link_default
@@ -311,6 +322,7 @@ content:
       match_operator: CONTAINS
       size: 60
       placeholder: ''
+      match_limit: 10
     third_party_settings: {  }
   flag:
     weight: 9
@@ -383,6 +395,7 @@ content:
       match_operator: CONTAINS
       size: 60
       placeholder: ''
+      match_limit: 10
     region: content
     third_party_settings: {  }
   unpublish_on:
