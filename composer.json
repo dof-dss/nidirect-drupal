@@ -62,7 +62,6 @@
         "dof-dss/nicsdru_origins_modules": "^0.2.0",
         "dof-dss/nicsdru_origins_theme": "dev-development",
         "dof-dss/nidirect-site-modules": "dev-development",
-        "drupal-composer/drupal-scaffold": "^2.5",
         "drupal/address": "^1.7",
         "drupal/admin_toolbar": "^2.0",
         "drupal/adminimal_theme": "^1.5",
@@ -152,6 +151,7 @@
     "prefer-stable": true,
     "config": {
         "sort-packages": true,
+        "optimize-autoloader": true,
         "preferred-install": {
             "dof-dss/*": "source",
             "*": "dist"
@@ -169,20 +169,6 @@
         "psr-4": {
             "Drupal\\Composer\\": "composer"
         }
-    },
-    "scripts": {
-        "pre-install-cmd": "Drupal\\Composer\\Composer::ensureComposerVersion",
-        "pre-update-cmd": "Drupal\\Composer\\Composer::ensureComposerVersion",
-        "pre-autoload-dump": "Drupal\\Core\\Composer\\Composer::preAutoloadDump",
-        "drupal-phpunit-upgrade-check": "Drupal\\Core\\Composer\\Composer::upgradePHPUnit",
-        "drupal-phpunit-upgrade": "@composer update phpunit/phpunit symfony/phpunit-bridge phpspec/prophecy symfony/yaml --with-dependencies --no-progress",
-        "post-update-cmd": [
-            "Drupal\\Composer\\Composer::generateMetapackages",
-            "Drupal\\Composer\\Composer::ensureBehatDriverVersions"
-        ],
-        "phpcs": "phpcs --standard=core/phpcs.xml.dist --runtime-set installed_paths $($COMPOSER_BINARY config vendor-dir)/drupal/coder/coder_sniffer --",
-        "phpcbf": "phpcbf --standard=core/phpcs.xml.dist --runtime-set installed_paths $($COMPOSER_BINARY config vendor-dir)/drupal/coder/coder_sniffer --"
-
     },
     "extra": {
         "patches": {
@@ -242,7 +228,7 @@
         "drupal-scaffold": {
             "locations": {
                 "web-root": "web/"
-            }
+            },
         },
         "drupal-core-project-message": {
             "include-keys": [
