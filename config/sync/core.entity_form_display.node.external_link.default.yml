@@ -9,8 +9,10 @@ dependencies:
     - field.field.node.external_link.field_top_level_theme
     - node.type.external_link
   module:
+    - content_moderation
     - link
     - path
+    - scheduler
     - shs
 id: node.external_link.default
 targetEntityType: node
@@ -117,6 +119,7 @@ content:
       match_operator: CONTAINS
       size: 60
       placeholder: ''
+      match_limit: 10
     region: content
     third_party_settings: {  }
   unpublish_on:

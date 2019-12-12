@@ -14,10 +14,12 @@ dependencies:
     - field.field.node.publication.field_top_level_theme
     - node.type.publication
   module:
+    - content_moderation
     - datetime
     - file
     - metatag
     - path
+    - scheduler
     - shs
     - text
 id: node.publication.default
@@ -32,6 +34,7 @@ content:
       rows: 9
       summary_rows: 3
       placeholder: ''
+      show_summary: false
     third_party_settings: {  }
     region: content
   created:
@@ -159,6 +162,7 @@ content:
       match_operator: CONTAINS
       size: 60
       placeholder: ''
+      match_limit: 10
     region: content
     third_party_settings: {  }
   unpublish_on:

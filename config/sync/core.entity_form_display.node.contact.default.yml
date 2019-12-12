@@ -20,13 +20,12 @@ dependencies:
     - field.field.node.contact.field_supplementary_contact
     - field.field.node.contact.field_telephone
     - node.type.contact
-    - workflows.workflow.nics_editorial_workflow
   module:
     - address
     - content_moderation
     - datetime
     - field_group
-    - geolocation
+    - geolocation_google_maps
     - link
     - metatag
     - path
@@ -85,6 +84,7 @@ content:
       rows: 9
       summary_rows: 3
       placeholder: ''
+      show_summary: false
     third_party_settings: {  }
     region: content
   created:
@@ -121,6 +121,7 @@ content:
       match_operator: CONTAINS
       size: 60
       placeholder: ''
+      match_limit: 10
     third_party_settings: {  }
   field_contact_hours:
     type: text_textarea
@@ -164,7 +165,7 @@ content:
         height: 400px
         width: 100%
         type: ROADMAP
-        zoom: '10'
+        zoom: 10
         maxZoom: 18
         minZoom: 0
         mapTypeControl: 1
@@ -177,7 +178,7 @@ content:
         info_auto_display: 1
         marker_icon_path: ''
         disableAutoPan: 1
-        rotateControl: 0
+        rotateControl: false
         fullscreenControl: 0
         preferScrollingToZooming: 0
         disableDoubleClickZoom: 0
@@ -303,6 +304,7 @@ content:
       match_operator: CONTAINS
       size: 60
       placeholder: ''
+      match_limit: 10
     region: content
     third_party_settings: {  }
   unpublish_on:

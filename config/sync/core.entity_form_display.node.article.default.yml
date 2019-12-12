@@ -17,13 +17,13 @@ dependencies:
     - field.field.node.article.field_top_level_theme
     - image.style.thumbnail
     - node.type.article
-    - workflows.workflow.nics_editorial_workflow
   module:
     - content_moderation
     - datetime
     - image
     - metatag
     - path
+    - scheduler
     - shs
     - text
 _core:
@@ -41,6 +41,7 @@ content:
       rows: 9
       summary_rows: 3
       placeholder: ''
+      show_summary: false
     third_party_settings: {  }
   created:
     type: datetime_timestamp
@@ -199,6 +200,7 @@ content:
       match_operator: CONTAINS
       size: 60
       placeholder: ''
+      match_limit: 10
     third_party_settings: {  }
   unpublish_on:
     type: datetime_timestamp_no_default
