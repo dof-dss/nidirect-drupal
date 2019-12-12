@@ -15,7 +15,6 @@ dependencies:
     - node.type.publication
   module:
     - datetime
-    - file
     - metatag
     - options
     - text
@@ -43,13 +42,14 @@ content:
     settings: {  }
     third_party_settings: {  }
   field_attachment:
-    type: file_default
-    weight: 5
-    region: content
+    type: entity_reference_entity_view
+    weight: 10
     label: above
     settings:
-      use_description_as_link_text: true
+      view_mode: default
+      link: false
     third_party_settings: {  }
+    region: content
   field_meta_tags:
     weight: 9
     label: above

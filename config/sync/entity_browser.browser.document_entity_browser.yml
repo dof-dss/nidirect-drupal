@@ -5,6 +5,7 @@ dependencies:
   config:
     - views.view.media_entity_browser
   module:
+    - entity_browser_entity_form
     - views
 name: document_entity_browser
 label: 'Document entity browser'
@@ -19,16 +20,6 @@ selection_display_configuration: {  }
 widget_selector: tabs
 widget_selector_configuration: {  }
 widgets:
-  ca374e91-7ed2-4e1f-be45-416d3f5cc1b9:
-    settings:
-      upload_location: 'public://documents'
-      multiple: true
-      submit_text: Upload
-      extensions: 'txt doc xls pdf ppt docx xlsx pptx'
-    uuid: ca374e91-7ed2-4e1f-be45-416d3f5cc1b9
-    weight: 1
-    label: 'Upload documents'
-    id: upload
   d43d74e6-82a0-4e46-ba01-5d347611ede6:
     settings:
       view: media_entity_browser
@@ -39,3 +30,13 @@ widgets:
     weight: 2
     label: 'Browse documents'
     id: view
+  2c4a1501-ed29-40c1-a62e-1fa9c84e4406:
+    settings:
+      entity_type: media
+      bundle: document
+      form_mode: default
+      submit_text: 'Save document'
+    uuid: 2c4a1501-ed29-40c1-a62e-1fa9c84e4406
+    weight: 2
+    label: 'Upload new document'
+    id: entity_form
