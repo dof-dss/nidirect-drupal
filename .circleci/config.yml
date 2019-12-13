@@ -33,9 +33,7 @@ jobs:
       - run:
           name: Fetch dependencies with composer
           command: |
-            composer install --no-interaction --optimize-autoloader
-            composer drupal:scaffold
-            composer run-script post-install-cmd
+            composer install --no-interaction
       - save_cache:
           key: composer-{{ checksum "composer.lock" }}
           paths:
