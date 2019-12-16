@@ -25,6 +25,7 @@ dependencies:
     - field.field.node.recipe.field_recipe_special_diet
     - field.field.node.recipe.field_recipe_sugar
     - node.type.recipe
+    - workflows.workflow.nics_editorial_workflow
   module:
     - content_moderation
     - entity_browser
@@ -165,19 +166,20 @@ content:
       placeholder: ''
     third_party_settings: {  }
   field_recipe_image:
-    type: entity_browser_file
-    weight: 12
-    region: content
+    weight: 26
     settings:
       entity_browser: media_entity_browser
-      field_widget_remove: true
-      field_widget_replace: true
-      selection_mode: selection_append
-      preview_image_style: thumbnail
+      field_widget_display: rendered_entity
+      field_widget_display_settings:
+        view_mode: preview
       field_widget_edit: true
+      field_widget_remove: true
+      selection_mode: selection_append
+      field_widget_replace: false
       open: false
-      view_mode: default
     third_party_settings: {  }
+    type: entity_browser_entity_reference
+    region: content
   field_recipe_ingredients:
     type: text_textarea
     weight: 14

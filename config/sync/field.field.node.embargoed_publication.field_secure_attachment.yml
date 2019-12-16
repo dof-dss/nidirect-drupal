@@ -4,6 +4,7 @@ status: true
 dependencies:
   config:
     - field.storage.node.field_secure_attachment
+    - media.type.document
     - node.type.embargoed_publication
 id: node.embargoed_publication.field_secure_attachment
 field_name: field_secure_attachment
@@ -18,7 +19,8 @@ default_value_callback: ''
 settings:
   handler: 'default:media'
   handler_settings:
-    target_bundles: {  }
+    target_bundles:
+      document: document
     sort:
       field: _none
     auto_create: false

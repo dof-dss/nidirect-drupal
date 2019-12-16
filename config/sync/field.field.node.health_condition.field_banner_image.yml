@@ -1,12 +1,11 @@
-uuid: e72cc673-c7a3-4406-9684-08744fc7fa73
+uuid: 4327d484-2476-472c-9eb9-ea6f7f9602ea
 langcode: en
 status: true
 dependencies:
   config:
     - field.storage.node.field_banner_image
+    - media.type.image
     - node.type.health_condition
-  module:
-    - image
 id: node.health_condition.field_banner_image
 field_name: field_banner_image
 entity_type: node
@@ -14,20 +13,16 @@ bundle: health_condition
 label: 'Banner image'
 description: 'Select an optional thin banner image (1880 x 200) to be displayed on this page. Note this thin banner will replace any thin banner configured in the parent theme/subtheme for this page.'
 required: false
-translatable: false
+translatable: true
 default_value: {  }
 default_value_callback: ''
 settings:
-  alt_field: false
-  default_image: 0
-  file_directory: banners
-  file_extensions: 'png gif jpg jpeg'
-  max_filesize: ''
-  max_resolution: 1800x200
-  min_resolution: 940x100
-  title_field: false
-  alt_field_required: true
-  title_field_required: false
-  handler: 'default:file'
-  handler_settings: {  }
-field_type: image
+  handler: 'default:media'
+  handler_settings:
+    target_bundles:
+      image: image
+    sort:
+      field: _none
+    auto_create: false
+    auto_create_bundle: ''
+field_type: entity_reference

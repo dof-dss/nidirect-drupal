@@ -4,7 +4,11 @@ status: true
 dependencies:
   config:
     - image.style.media_entity_browser_thumbnail
+    - media.type.audio
     - media.type.document
+    - media.type.image
+    - media.type.remote_video
+    - media.type.video
   module:
     - entity_browser
     - image
@@ -389,9 +393,15 @@ display:
           group_type: group
           admin_label: ''
           operator: in
-          value: {  }
+          value:
+            all: all
+            audio: audio
+            document: document
+            image: image
+            remote_video: remote_video
+            video: video
           group: 1
-          exposed: true
+          exposed: false
           expose:
             operator_id: bundle_op
             label: 'Media type'
@@ -543,7 +553,7 @@ display:
   document_entity_browser:
     display_plugin: entity_browser
     id: document_entity_browser
-    display_title: 'Document browser'
+    display_title: 'Document media browser'
     position: 1
     display_options:
       display_extenders: {  }
@@ -700,10 +710,205 @@ display:
   media_browser_all:
     display_plugin: entity_browser
     id: media_browser_all
-    display_title: 'Media browser'
+    display_title: 'Image media browser'
     position: 1
     display_options:
       display_extenders: {  }
+      display_description: ''
+      filters:
+        status:
+          id: status
+          table: media_field_data
+          field: status
+          relationship: none
+          group_type: group
+          admin_label: ''
+          operator: '='
+          value: '0'
+          group: 1
+          exposed: true
+          expose:
+            operator_id: ''
+            label: 'True'
+            description: null
+            use_operator: false
+            operator: status_op
+            identifier: status
+            required: true
+            remember: false
+            multiple: false
+            remember_roles:
+              authenticated: authenticated
+            operator_limit_selection: false
+            operator_list: {  }
+          is_grouped: true
+          group_info:
+            label: 'Publishing status'
+            description: ''
+            identifier: status
+            optional: true
+            widget: select
+            multiple: false
+            remember: false
+            default_group: All
+            default_group_multiple: {  }
+            group_items:
+              1:
+                title: Published
+                operator: '='
+                value: '1'
+              2:
+                title: Unpublished
+                operator: '='
+                value: '0'
+          entity_type: media
+          entity_field: status
+          plugin_id: boolean
+        bundle:
+          id: bundle
+          table: media_field_data
+          field: bundle
+          relationship: none
+          group_type: group
+          admin_label: ''
+          operator: in
+          value:
+            image: image
+          group: 1
+          exposed: false
+          expose:
+            operator_id: bundle_op
+            label: 'Media type'
+            description: ''
+            use_operator: false
+            operator: bundle_op
+            operator_limit_selection: false
+            operator_list: {  }
+            identifier: bundle
+            required: false
+            remember: false
+            multiple: false
+            remember_roles:
+              authenticated: authenticated
+              anonymous: '0'
+              administrator: '0'
+              gp_author_user: '0'
+              author_user: '0'
+              gp_supervisor_user: '0'
+              news_supervisor: '0'
+              supervisor_user: '0'
+              editor_user: '0'
+              admin_user: '0'
+              apps_user: '0'
+              health_condition_author_user: '0'
+              health_condition_supervisor_user: '0'
+              driving_instructor_supervisor_user: '0'
+            reduce: false
+          is_grouped: false
+          group_info:
+            label: ''
+            description: ''
+            identifier: ''
+            optional: true
+            widget: select
+            multiple: false
+            remember: false
+            default_group: All
+            default_group_multiple: {  }
+            group_items: {  }
+          entity_type: media
+          entity_field: bundle
+          plugin_id: bundle
+        name:
+          id: name
+          table: media_field_data
+          field: name
+          relationship: none
+          group_type: group
+          admin_label: ''
+          operator: contains
+          value: ''
+          group: 1
+          exposed: true
+          expose:
+            operator_id: name_op
+            label: 'Media name'
+            description: ''
+            use_operator: false
+            operator: name_op
+            identifier: name
+            required: false
+            remember: false
+            multiple: false
+            remember_roles:
+              authenticated: authenticated
+              anonymous: '0'
+            operator_limit_selection: false
+            operator_list: {  }
+          is_grouped: false
+          group_info:
+            label: ''
+            description: ''
+            identifier: ''
+            optional: true
+            widget: select
+            multiple: false
+            remember: false
+            default_group: All
+            default_group_multiple: {  }
+            group_items: {  }
+          entity_type: media
+          entity_field: name
+          plugin_id: string
+        langcode:
+          id: langcode
+          table: media_field_data
+          field: langcode
+          relationship: none
+          group_type: group
+          admin_label: ''
+          operator: in
+          value: {  }
+          group: 1
+          exposed: true
+          expose:
+            operator_id: langcode_op
+            label: Language
+            description: ''
+            use_operator: false
+            operator: langcode_op
+            identifier: langcode
+            required: false
+            remember: false
+            multiple: false
+            remember_roles:
+              authenticated: authenticated
+              anonymous: '0'
+            reduce: false
+            operator_limit_selection: false
+            operator_list: {  }
+          is_grouped: false
+          group_info:
+            label: ''
+            description: ''
+            identifier: ''
+            optional: true
+            widget: select
+            multiple: false
+            remember: false
+            default_group: All
+            default_group_multiple: {  }
+            group_items: {  }
+          entity_type: media
+          entity_field: langcode
+          plugin_id: language
+      defaults:
+        filters: false
+        filter_groups: false
+      filter_groups:
+        operator: AND
+        groups:
+          1: AND
     cache_metadata:
       max-age: -1
       contexts:
