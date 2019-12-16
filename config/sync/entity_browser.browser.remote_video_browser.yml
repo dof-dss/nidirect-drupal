@@ -1,0 +1,42 @@
+uuid: 3c7ddbeb-c1bd-4df5-b0e5-27044ebce441
+langcode: en
+status: true
+dependencies:
+  config:
+    - views.view.media_entity_browser
+  module:
+    - entity_browser_entity_form
+    - views
+name: remote_video_browser
+label: 'Remote video browser'
+display: iframe
+display_configuration:
+  width: '1070'
+  height: '650'
+  link_text: 'Select videos'
+  auto_open: true
+selection_display: no_display
+selection_display_configuration: {  }
+widget_selector: tabs
+widget_selector_configuration: {  }
+widgets:
+  82017c1d-5ca0-4bb9-ac7c-5041f7165085:
+    settings:
+      entity_type: media
+      bundle: remote_video
+      form_mode: default
+      submit_text: Save
+    uuid: 82017c1d-5ca0-4bb9-ac7c-5041f7165085
+    weight: 1
+    label: 'Add new remote video'
+    id: entity_form
+  4e4e2501-0791-45be-b5d3-cfae403b8e0b:
+    settings:
+      view: media_entity_browser
+      view_display: remote_video_entity_browser
+      submit_text: Select
+      auto_select: false
+    uuid: 4e4e2501-0791-45be-b5d3-cfae403b8e0b
+    weight: 2
+    label: 'Browse remote videos'
+    id: view
