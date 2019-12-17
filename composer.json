@@ -62,7 +62,6 @@
         "dof-dss/nicsdru_origins_modules": "^0.2.0",
         "dof-dss/nicsdru_origins_theme": "dev-development",
         "dof-dss/nidirect-site-modules": "dev-development",
-        "drupal-composer/drupal-scaffold": "^2.5",
         "drupal/address": "^1.7",
         "drupal/admin_toolbar": "^2.0",
         "drupal/adminimal_theme": "^1.5",
@@ -76,6 +75,8 @@
         "drupal/config_update": "^1.6",
         "drupal/console": "^1.0.2",
         "drupal/core": "^8.8",
+        "drupal/core-composer-scaffold": "^8.8",
+        "drupal/core-recommended": "^8.8",
         "drupal/entity_embed": "1.0",
         "drupal/facets": "^1.4",
         "drupal/facets_pretty_paths": "^1.0@beta",
@@ -149,6 +150,7 @@
     "prefer-stable": true,
     "config": {
         "sort-packages": true,
+        "optimize-autoloader": true,
         "preferred-install": {
             "dof-dss/*": "source",
             "*": "dist"
@@ -158,26 +160,17 @@
         }
     },
     "autoload": {
-        "classmap": [
-            "scripts/composer/ScriptHandler.php"
-        ],
+        "psr-4": {
+            "Drupal\\Core\\Composer\\": "core/lib/Drupal/Core/Composer"
+        },
         "files": [
             "load.environment.php"
         ]
     },
-    "scripts": {
-        "pre-install-cmd": [
-            "DrupalProject\\composer\\ScriptHandler::checkComposerVersion"
-        ],
-        "pre-update-cmd": [
-            "DrupalProject\\composer\\ScriptHandler::checkComposerVersion"
-        ],
-        "post-install-cmd": [
-            "DrupalProject\\composer\\ScriptHandler::createRequiredFiles"
-        ],
-        "post-update-cmd": [
-            "DrupalProject\\composer\\ScriptHandler::createRequiredFiles"
-        ]
+    "autoload-dev": {
+        "psr-4": {
+            "Drupal\\Composer\\": "composer"
+        }
     },
     "extra": {
         "patches": {
@@ -235,9 +228,8 @@
             ]
         },
         "drupal-scaffold": {
-            "initial": {
-                ".editorconfig": "../.editorconfig",
-                ".gitattributes": "../.gitattributes"
+            "locations": {
+                "web-root": "web/"
             }
         }
     }
