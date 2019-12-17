@@ -1,9 +1,9 @@
-uuid: 8d87a790-a64b-4036-bc22-fd4a8b5c9715
+uuid: 06602e0f-7520-4bd3-b7bf-de669b331cb2
 langcode: en
-status: false
+status: true
 dependencies:
   config:
-    - core.entity_view_mode.media.preview
+    - core.entity_view_mode.media.embed
     - field.field.media.audio.field_media_audio_file
     - media.type.audio
   module:
@@ -15,10 +15,10 @@ third_party_settings:
     enabled: false
 _core:
   default_config_hash: SWf3MLdbEKvlx4Vs6iPwDHu5pr1aKT0SJmgp8no73-k
-id: media.audio.preview
+id: media.audio.embed
 targetEntityType: media
 bundle: audio
-mode: preview
+mode: embed
 content:
   field_media_audio_file:
     type: file_audio

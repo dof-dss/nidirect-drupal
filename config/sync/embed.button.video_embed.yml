@@ -3,7 +3,7 @@ langcode: en
 status: true
 dependencies:
   config:
-    - core.entity_view_mode.media.preview
+    - core.entity_view_mode.media.embed
     - entity_browser.browser.remote_video_browser
     - media.type.remote_video
   content:
@@ -19,7 +19,7 @@ type_settings:
   bundles:
     - remote_video
   display_plugins:
-    - 'view_mode:media.preview'
+    - 'view_mode:media.embed'
   entity_browser: remote_video_browser
   entity_browser_settings:
     display_review: true
