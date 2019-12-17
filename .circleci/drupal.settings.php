@@ -788,4 +788,4 @@ $databases['default']['default'] = array (
   'driver' => $_SERVER['DB_DRIVER'],
 );
 
-$config_directories[CONFIG_SYNC_DIRECTORY] = $_SERVER['CONFIG_SYNC_DIRECTORY'];
+$settings['config_sync_directory'] = $_SERVER['CONFIG_SYNC_DIRECTORY'];
