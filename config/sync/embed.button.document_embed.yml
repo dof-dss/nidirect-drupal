@@ -1,0 +1,24 @@
+uuid: b68b249b-09b6-424d-ba16-a00884ab0c3e
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.media.embed
+    - entity_browser.browser.document_entity_browser
+    - media.type.document
+  module:
+    - entity_embed
+    - media
+label: 'Document embed'
+id: document_embed
+type_id: entity
+type_settings:
+  entity_type: media
+  bundles:
+    - document
+  display_plugins:
+    - 'view_mode:media.embed'
+  entity_browser: document_entity_browser
+  entity_browser_settings:
+    display_review: true
+icon_uuid: null
