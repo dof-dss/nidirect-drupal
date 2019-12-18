@@ -1,10 +1,11 @@
 uuid: 56566abc-75fb-41da-9152-e5aa3898c3f7
 langcode: en
-status: false
+status: true
 dependencies:
   config:
     - core.entity_view_mode.media.preview
     - field.field.media.image.field_media_image
+    - image.style.media_entity_browser_thumbnail
     - media.type.image
   module:
     - image
@@ -23,8 +24,8 @@ content:
   field_media_image:
     label: visually_hidden
     settings:
-      image_style: ''
-      image_link: file
+      image_style: media_entity_browser_thumbnail
+      image_link: ''
     third_party_settings: {  }
     type: image
     weight: 1
