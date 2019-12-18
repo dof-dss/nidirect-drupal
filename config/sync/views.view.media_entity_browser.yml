@@ -11,6 +11,7 @@ dependencies:
     - media.type.video
   module:
     - entity_browser
+    - file
     - image
     - media
     - user
@@ -486,48 +487,6 @@ display:
           entity_type: media
           entity_field: name
           plugin_id: string
-        langcode:
-          id: langcode
-          table: media_field_data
-          field: langcode
-          relationship: none
-          group_type: group
-          admin_label: ''
-          operator: in
-          value: {  }
-          group: 1
-          exposed: true
-          expose:
-            operator_id: langcode_op
-            label: Language
-            description: ''
-            use_operator: false
-            operator: langcode_op
-            identifier: langcode
-            required: false
-            remember: false
-            multiple: false
-            remember_roles:
-              authenticated: authenticated
-              anonymous: '0'
-            reduce: false
-            operator_limit_selection: false
-            operator_list: {  }
-          is_grouped: false
-          group_info:
-            label: ''
-            description: ''
-            identifier: ''
-            optional: true
-            widget: select
-            multiple: false
-            remember: false
-            default_group: All
-            default_group_multiple: {  }
-            group_items: {  }
-          entity_type: media
-          entity_field: langcode
-          plugin_id: language
       sorts: {  }
       header: {  }
       footer: {  }
@@ -872,6 +831,20 @@ display:
     display_options:
       display_extenders: {  }
       display_description: ''
+      defaults:
+        filters: false
+        filter_groups: false
+        relationships: false
+      relationships:
+        field_media_image_target_id:
+          id: field_media_image_target_id
+          table: media__field_media_image
+          field: field_media_image_target_id
+          relationship: none
+          group_type: group
+          admin_label: 'image from field_media_image'
+          required: false
+          plugin_id: standard
       filters:
         status:
           id: status
@@ -930,7 +903,12 @@ display:
           admin_label: ''
           operator: in
           value:
+            all: all
+            audio: audio
+            document: document
             image: image
+            remote_video: remote_video
+            video: video
           group: 1
           exposed: false
           expose:
@@ -1017,51 +995,6 @@ display:
           entity_type: media
           entity_field: name
           plugin_id: string
-        langcode:
-          id: langcode
-          table: media_field_data
-          field: langcode
-          relationship: none
-          group_type: group
-          admin_label: ''
-          operator: in
-          value: {  }
-          group: 1
-          exposed: true
-          expose:
-            operator_id: langcode_op
-            label: Language
-            description: ''
-            use_operator: false
-            operator: langcode_op
-            identifier: langcode
-            required: false
-            remember: false
-            multiple: false
-            remember_roles:
-              authenticated: authenticated
-              anonymous: '0'
-            reduce: false
-            operator_limit_selection: false
-            operator_list: {  }
-          is_grouped: false
-          group_info:
-            label: ''
-            description: ''
-            identifier: ''
-            optional: true
-            widget: select
-            multiple: false
-            remember: false
-            default_group: All
-            default_group_multiple: {  }
-            group_items: {  }
-          entity_type: media
-          entity_field: langcode
-          plugin_id: language
-      defaults:
-        filters: false
-        filter_groups: false
       filter_groups:
         operator: AND
         groups:
