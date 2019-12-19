@@ -1,23 +1,17 @@
-uuid: 59e65cce-1211-4ac0-9efc-199ef42b01bb
-langcode: und
+uuid: 11d20a22-9b05-4e9c-9155-85f76e91f7f3
+langcode: en
 status: true
 dependencies:
   module:
-    - file
-    - image
+    - media
     - node
 id: node.field_banner_image_overlay
 field_name: field_banner_image_overlay
 entity_type: node
-type: image
+type: entity_reference
 settings:
-  default_image:
-    uuid: ''
-  uri_scheme: public
-  target_type: file
-  display_field: false
-  display_default: false
-module: image
+  target_type: media
+module: core
 locked: false
 cardinality: 1
 translatable: true

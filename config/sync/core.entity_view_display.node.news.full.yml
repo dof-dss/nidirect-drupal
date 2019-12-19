@@ -14,7 +14,6 @@ dependencies:
     - node.type.news
   module:
     - datetime
-    - image
     - layout_builder
     - text
     - user
@@ -34,15 +33,6 @@ content:
     settings: {  }
     third_party_settings: {  }
     region: content
-  field_photo:
-    type: image
-    weight: 2
-    region: content
-    label: hidden
-    settings:
-      image_style: ''
-      image_link: ''
-    third_party_settings: {  }
   field_published_date:
     type: datetime_default
     weight: 0
@@ -63,6 +53,7 @@ hidden:
   content_moderation_control: true
   field_enable_toc: true
   field_meta_tags: true
+  field_photo: true
   field_teaser: true
   langcode: true
   links: true

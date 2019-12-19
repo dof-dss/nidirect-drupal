@@ -1,16 +1,16 @@
-uuid: 2033a21c-cac8-4bc7-a5e7-577648986746
+uuid: 70304a4d-1e0c-43f3-8eb0-5a4a0c49baf7
 langcode: en
 status: true
 dependencies:
   config:
     - core.entity_view_mode.paragraph.preview
-    - entity_browser.browser.paragraphs_entity_browser
+    - entity_browser.browser.location_browser
     - paragraphs.paragraphs_type.map
   module:
     - entity_embed
     - paragraphs
-label: 'Paragraphs entity browser'
-id: paragraphs_entity_browser
+label: Location
+id: location
 type_id: entity
 type_settings:
   entity_type: paragraph
@@ -18,7 +18,8 @@ type_settings:
     - map
   display_plugins:
     - 'view_mode:paragraph.preview'
-  entity_browser: paragraphs_entity_browser
+  entity_browser: location_browser
   entity_browser_settings:
     display_review: true
+icon: {  }
 icon_uuid: null

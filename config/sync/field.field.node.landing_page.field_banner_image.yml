@@ -1,12 +1,11 @@
-uuid: 92e535d4-828e-4310-9444-823f4d963448
+uuid: b0eca438-f53e-4d4f-bb41-5139cd28626e
 langcode: en
 status: true
 dependencies:
   config:
     - field.storage.node.field_banner_image
+    - media.type.image
     - node.type.landing_page
-  module:
-    - image
 id: node.landing_page.field_banner_image
 field_name: field_banner_image
 entity_type: node
@@ -18,16 +17,12 @@ translatable: false
 default_value: {  }
 default_value_callback: ''
 settings:
-  alt_field: false
-  default_image: 0
-  file_directory: banners
-  file_extensions: 'png gif jpg jpeg'
-  max_filesize: ''
-  max_resolution: ''
-  min_resolution: ''
-  title_field: false
-  alt_field_required: true
-  title_field_required: false
-  handler: 'default:file'
-  handler_settings: {  }
-field_type: image
+  handler: 'default:media'
+  handler_settings:
+    target_bundles:
+      image: image
+    sort:
+      field: _none
+    auto_create: false
+    auto_create_bundle: ''
+field_type: entity_reference

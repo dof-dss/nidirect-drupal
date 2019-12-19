@@ -16,7 +16,6 @@ dependencies:
     - node.type.publication
   module:
     - datetime
-    - file
     - layout_builder
     - text
     - user
@@ -36,14 +35,6 @@ content:
     settings: {  }
     third_party_settings: {  }
     region: content
-  field_attachment:
-    type: file_default
-    weight: 3
-    region: content
-    label: above
-    settings:
-      use_description_as_link_text: true
-    third_party_settings: {  }
   field_published_date:
     type: datetime_default
     weight: 0
@@ -63,6 +54,7 @@ content:
 hidden:
   banner_display: true
   content_moderation_control: true
+  field_attachment: true
   field_meta_tags: true
   field_publication_type: true
   field_site_themes: true

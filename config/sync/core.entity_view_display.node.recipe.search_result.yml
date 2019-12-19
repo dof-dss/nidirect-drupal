@@ -24,10 +24,8 @@ dependencies:
     - field.field.node.recipe.field_recipe_serves
     - field.field.node.recipe.field_recipe_special_diet
     - field.field.node.recipe.field_recipe_sugar
-    - image.style.medium
     - node.type.recipe
   module:
-    - image
     - user
 id: node.recipe.search_result
 targetEntityType: node
@@ -41,15 +39,6 @@ content:
     label: hidden
     settings: {  }
     third_party_settings: {  }
-  field_recipe_image:
-    type: image
-    weight: 0
-    region: content
-    label: hidden
-    settings:
-      image_style: medium
-      image_link: ''
-    third_party_settings: {  }
 hidden:
   content_moderation_control: true
   field_meta_tags: true
@@ -58,6 +47,7 @@ hidden:
   field_recipe_course_type: true
   field_recipe_fat_content: true
   field_recipe_food_safety: true
+  field_recipe_image: true
   field_recipe_ingredients: true
   field_recipe_main_ingredient: true
   field_recipe_method: true
