@@ -1,0 +1,550 @@
+uuid: 109ac987-b56b-42a5-bb87-01a62bf422be
+langcode: en
+status: open
+dependencies:
+  module:
+    - nidirect_webforms
+open: null
+close: null
+weight: 0
+uid: 1
+template: false
+archive: false
+id: taxi_driver_theory_practice_1
+title: 'Taxi driver theory test - practice test 1'
+description: ''
+category: 'Taxi driver theory test'
+elements: |
+  question_1_page:
+    '#type': webform_wizard_page
+    '#title': 'Question 1'
+    question_1:
+      '#type': radios
+      '#title': 'Why is it important to keep your vehicle regularly maintained?'
+      '#options':
+        q1_a1: 'Reduce damage to the environment'
+        q1_a2: 'It will prevent brake failure'
+        q1_a3: 'It lowers insurance premiums'
+        q1_a4: 'To reduce vehicle road tax'
+      '#options_randomize': true
+      '#required': true
+  question_2_page:
+    '#type': webform_wizard_page
+    '#title': 'Question 2'
+    question_2:
+      '#type': radios
+      '#title': 'During normal driving, where should you position on the road?'
+      '#options':
+        q2_a1: 'Keep to the left'
+        q2_a2: 'At the crown of the road'
+        q2_a3: 'Close to the kerb'
+        q2_a4: 'Near the centre of the road'
+      '#options_randomize': true
+      '#required': true
+  question_3_page:
+    '#type': webform_wizard_page
+    '#title': 'Question 3'
+    question_3:
+      '#type': radios
+      '#title': 'You arrive at the scene of a motorcycle incident. The rider is injured. When should the helmet be removed?'
+      '#options':
+        q3_a1: 'Only when it is essential'
+        q3_a2: 'Always straight away'
+        q3_a3: 'Only when the motorcyclist asks'
+        q3_a4: 'Always, to check their injuries'
+      '#options_randomize': true
+      '#required': true
+  question_4_page:
+    '#type': webform_wizard_page
+    '#title': 'Question 4'
+    question_4:
+      '#type': radios
+      '#title': 'You should always check the ‘blind spots’ before:'
+      '#options':
+        q4_a1: 'moving off'
+        q4_a2: 'slowing down'
+        q4_a3: 'changing gear'
+        q4_a4: 'giving a signal'
+      '#options_randomize': true
+      '#required': true
+  question_5_page:
+    '#type': webform_wizard_page
+    '#title': 'Question 5'
+    question_5:
+      '#type': radios
+      '#title': 'At night you must not park on the right-hand side of the road except if you are:'
+      '#options':
+        q5_a1: 'in a one-way street'
+        q5_a2: 'more than 10 metres from a junction'
+        q5_a3: 'in a built-up area with street lighting'
+        q5_a4: 'in a two-way street'
+      '#options_randomize': true
+      '#required': true
+  question_6_page:
+    '#type': webform_wizard_page
+    '#title': 'Question 6'
+    question_6:
+      '#type': radios
+      '#title': 'Which of the following will improve fuel consumption?'
+      '#options':
+        q6_a1: 'Planning well ahead '
+        q6_a2: 'Late and harsh braking'
+        q6_a3: 'Short journeys with a cold engine'
+        q6_a4: 'Driving in lower gears'
+      '#options_randomize': true
+      '#required': true
+  question_7_page:
+    '#type': webform_wizard_page
+    '#title': 'Question 7'
+    question_7:
+      '#type': radios
+      '#title': 'What impact do motor vehicles have on the environment?'
+      '#options':
+        q7_a1: 'Damage to atmosphere'
+        q7_a2: 'Reduced traffic noise'
+        q7_a3: 'Less road surface damage'
+        q7_a4: 'Reduction in the use of fossil fuels'
+      '#options_randomize': true
+      '#required': true
+  question_8_page:
+    '#type': webform_wizard_page
+    '#title': 'Question 8'
+    question_8:
+      '#type': radios
+      '#title': 'Effective use of block gear changing while accelerating, will lead to:'
+      '#options':
+        q8_a1: 'lower running costs'
+        q8_a2: 'an increase in fuel use'
+        q8_a3: 'damage to the engine'
+        q8_a4: 'a loss of control'
+      '#options_randomize': true
+      '#required': true
+  question_9_page:
+    '#type': webform_wizard_page
+    '#title': 'Question 9'
+    question_9:
+      '#type': radios
+      '#title': 'As a professional driver you should:'
+      '#options':
+        q9_a1: 'plan your route to avoid busy and congested areas'
+        q9_a2: 'keep to the maximum speed limits at all times'
+        q9_a3: 'assume priority at junctions to make progress'
+        q9_a4: 'use all bus lanes during their time of operation'
+      '#options_randomize': true
+      '#required': true
+  question_10_page:
+    '#type': webform_wizard_page
+    '#title': 'Question 10'
+    question_10:
+      '#type': radios
+      '#title': 'A catalytic converter in good working order will help reduce the:'
+      '#options':
+        q10_a1: 'amount of nitric oxide emissions from your vehicle'
+        q10_a2: 'harmful particulates in the air as it enters your vehicle'
+        q10_a3: 'impurities in the oil as it circulates around your engine'
+        q10_a4: 'power surge in the electrical circuit when you start your engine'
+      '#options_randomize': true
+      '#required': true
+  scenario_page:
+    '#type': webform_wizard_page
+    '#title': Scenario
+    '#next_button_label': Continue
+    scenario:
+      '#type': processed_text
+      '#text': |
+        <p><strong>Please carefully read the following scenario and then answer questions 11 to 15 which follow.</strong></p>
+
+        <p>You drive a taxi licensed to carry four passengers. You are in the middle of a 12 hour shift and you get a call from the office to pick up some passengers from a local night club. On the way, you come across traffic lights that have stopped working. There is a police officer standing facing you controlling the traffic and signalling you to go ahead. When you get to the night club there are five passengers one of whom is in a wheelchair. On the way back to the office via the motorway, you get a call on the taxi radio which does not have a hands free facility. The controller asks if you would consider staying on for an extra couple of hours. You have yet to complete the compulsory module of taxi periodic training.</p>
+
+      '#format': full_html
+  question_11_page:
+    '#type': webform_wizard_page
+    '#title': 'Question 11'
+    scenario_q11:
+      '#type': processed_text
+      '#text': |
+        <p><strong>Please carefully read the following scenario and then answer questions 11 to 15 which follow.</strong></p>
+
+        <p>You drive a taxi licensed to carry four passengers. You are in the middle of a 12 hour shift and you get a call from the office to pick up some passengers from a local night club. On the way, you come across traffic lights that have stopped working. There is a police officer standing facing you controlling the traffic and signalling you to go ahead. When you get to the night club there are five passengers one of whom is in a wheelchair. On the way back to the office via the motorway, you get a call on the taxi radio which does not have a hands free facility. The controller asks if you would consider staying on for an extra couple of hours. You have yet to complete the compulsory module of taxi periodic training.</p>
+
+      '#format': full_html
+    question_11:
+      '#type': radios
+      '#title': 'What action should you take regarding the passengers when you arrive at the night club?'
+      '#options':
+        q11_a1: 'Arrange an additional taxi to pick up the remaining passenger'
+        q11_a2: 'Ask one of the passengers to wait until you return'
+        q11_a3: 'Lift the wheelchair passenger into the front seat'
+        q11_a4: 'Refuse to pick up any of the passengers'
+      '#options_randomize': true
+      '#required': true
+  question_12_page:
+    '#type': webform_wizard_page
+    '#title': 'Question 12'
+    scenario_q12:
+      '#type': processed_text
+      '#text': |
+        <p><strong>Please carefully read the following scenario and then answer questions 11 to 15 which follow.</strong></p>
+
+        <p>You drive a taxi licensed to carry four passengers. You are in the middle of a 12 hour shift and you get a call from the office to pick up some passengers from a local night club. On the way, you come across traffic lights that have stopped working. There is a police officer standing facing you controlling the traffic and signalling you to go ahead. When you get to the night club there are five passengers one of whom is in a wheelchair. On the way back to the office via the motorway, you get a call on the taxi radio which does not have a hands free facility. The controller asks if you would consider staying on for an extra couple of hours. You have yet to complete the compulsory module of taxi periodic training.</p>
+
+      '#format': full_html
+    q12_image:
+      '#type': processed_text
+      '#text': |
+        <p>Please look at the following options:</p>
+
+      '#format': full_html
+    question_12:
+      '#type': radios
+      '#title': 'Which signal would the police officer give?'
+      '#options':
+        q12_a1: 'Option A'
+        q12_a2: 'Option B'
+        q12_a3: 'Option C'
+        q12_a4: 'Option D'
+      '#options_randomize': true
+      '#required': true
+  question_13_page:
+    '#type': webform_wizard_page
+    '#title': 'Question 13'
+    scenario_q13:
+      '#type': processed_text
+      '#text': |
+        <p><strong>Please carefully read the following scenario and then answer questions 11 to 15 which follow.</strong></p>
+
+        <p>You drive a taxi licensed to carry four passengers. You are in the middle of a 12 hour shift and you get a call from the office to pick up some passengers from a local night club. On the way, you come across traffic lights that have stopped working. There is a police officer standing facing you controlling the traffic and signalling you to go ahead. When you get to the night club there are five passengers one of whom is in a wheelchair. On the way back to the office via the motorway, you get a call on the taxi radio which does not have a hands free facility. The controller asks if you would consider staying on for an extra couple of hours. You have yet to complete the compulsory module of taxi periodic training.</p>
+
+      '#format': full_html
+    question_13:
+      '#type': radios
+      '#title': 'What should you do when you get the call from the office controller?'
+      '#options':
+        q13_a1: 'Decline as you need to take at least 11 hours off'
+        q13_a2: 'Agree to stay on immediately after your shift'
+        q13_a3: 'Agree to cover the extra hours but take a 30 minute break'
+        q13_a4: 'Decline until you have had something to eat'
+      '#options_randomize': true
+      '#required': true
+  question_14_page:
+    '#type': webform_wizard_page
+    '#title': 'Question 14'
+    scenario_q14:
+      '#type': processed_text
+      '#text': |
+        <p><strong>Please carefully read the following scenario and then answer questions 11 to 15 which follow.</strong></p>
+
+        <p>You drive a taxi licensed to carry four passengers. You are in the middle of a 12 hour shift and you get a call from the office to pick up some passengers from a local night club. On the way, you come across traffic lights that have stopped working. There is a police officer standing facing you controlling the traffic and signalling you to go ahead. When you get to the night club there are five passengers one of whom is in a wheelchair. On the way back to the office via the motorway, you get a call on the taxi radio which does not have a hands free facility. The controller asks if you would consider staying on for an extra couple of hours. You have yet to complete the compulsory module of taxi periodic training.</p>
+
+      '#format': full_html
+    question_14:
+      '#type': radios
+      '#title': 'What should you do when you get the call on the way back to the office?'
+      '#options':
+        q14_a1: 'Stop in a safe and convenient place'
+        q14_a2: 'Reduce your speed to below 50 mph'
+        q14_a3: 'Move into the left hand lane'
+        q14_a4: 'Pull up on the hard shoulder'
+      '#options_randomize': true
+      '#required': true
+  question_15_page:
+    '#type': webform_wizard_page
+    '#title': 'Question 15'
+    scenario_q15:
+      '#type': processed_text
+      '#text': |
+        <p><strong>Please carefully read the following scenario and then answer questions 11 to 15 which follow.</strong></p>
+
+        <p>You drive a taxi licensed to carry four passengers. You are in the middle of a 12 hour shift and you get a call from the office to pick up some passengers from a local night club. On the way, you come across traffic lights that have stopped working. There is a police officer standing facing you controlling the traffic and signalling you to go ahead. When you get to the night club there are five passengers one of whom is in a wheelchair. On the way back to the office via the motorway, you get a call on the taxi radio which does not have a hands free facility. The controller asks if you would consider staying on for an extra couple of hours. You have yet to complete the compulsory module of taxi periodic training.</p>
+
+      '#format': full_html
+    question_15:
+      '#type': radios
+      '#title': 'What training course have you yet to complete?'
+      '#options':
+        q15_a1: 'Disability Awareness'
+        q15_a2: 'First Aid'
+        q15_a3: 'Customer Care'
+        q15_a4: 'Eco-Safe Driving'
+      '#options_randomize': true
+      '#required': true
+  actions:
+    '#type': webform_actions
+    '#title': 'Submit button(s)'
+    '#submit__label': 'Finish test'
+    '#wizard_prev_hide': true
+    '#wizard_next__label': Next
+css: ''
+javascript: ''
+settings:
+  ajax: true
+  ajax_scroll_top: form
+  ajax_progress_type: throbber
+  ajax_effect: fade
+  ajax_speed: null
+  page: true
+  page_submit_path: ''
+  page_confirm_path: ''
+  page_admin_theme: false
+  form_title: source_entity_webform
+  form_submit_once: false
+  form_exception_message: ''
+  form_open_message: ''
+  form_close_message: ''
+  form_previous_submissions: true
+  form_confidential: false
+  form_confidential_message: ''
+  form_remote_addr: true
+  form_convert_anonymous: false
+  form_prepopulate: false
+  form_prepopulate_source_entity: false
+  form_prepopulate_source_entity_required: false
+  form_prepopulate_source_entity_type: ''
+  form_reset: false
+  form_disable_autocomplete: false
+  form_novalidate: false
+  form_disable_inline_errors: false
+  form_required: false
+  form_unsaved: false
+  form_disable_back: false
+  form_submit_back: false
+  form_autofocus: false
+  form_details_toggle: false
+  form_access_denied: default
+  form_access_denied_title: ''
+  form_access_denied_message: ''
+  form_access_denied_attributes: {  }
+  form_file_limit: ''
+  submission_label: ''
+  submission_log: false
+  submission_views: {  }
+  submission_views_replace: {  }
+  submission_user_columns: {  }
+  submission_user_duplicate: false
+  submission_access_denied: default
+  submission_access_denied_title: ''
+  submission_access_denied_message: ''
+  submission_access_denied_attributes: {  }
+  submission_exception_message: ''
+  submission_locked_message: ''
+  submission_excluded_elements: {  }
+  submission_exclude_empty: false
+  submission_exclude_empty_checkbox: false
+  previous_submission_message: ''
+  previous_submissions_message: ''
+  autofill: false
+  autofill_message: ''
+  autofill_excluded_elements: {  }
+  wizard_progress_bar: false
+  wizard_progress_pages: false
+  wizard_progress_percentage: false
+  wizard_progress_link: false
+  wizard_progress_states: false
+  wizard_start_label: ''
+  wizard_preview_link: false
+  wizard_confirmation: true
+  wizard_confirmation_label: ''
+  wizard_track: ''
+  preview: 0
+  preview_label: ''
+  preview_title: ''
+  preview_message: ''
+  preview_attributes: {  }
+  preview_excluded_elements: {  }
+  preview_exclude_empty: true
+  preview_exclude_empty_checkbox: false
+  draft: none
+  draft_multiple: false
+  draft_auto_save: false
+  draft_saved_message: ''
+  draft_loaded_message: ''
+  draft_pending_single_message: ''
+  draft_pending_multiple_message: ''
+  confirmation_type: page
+  confirmation_title: ''
+  confirmation_message: ''
+  confirmation_url: ''
+  confirmation_attributes: {  }
+  confirmation_back: true
+  confirmation_back_label: ''
+  confirmation_back_attributes: {  }
+  confirmation_exclude_query: false
+  confirmation_exclude_token: false
+  confirmation_update: false
+  limit_total: null
+  limit_total_interval: null
+  limit_total_message: ''
+  limit_total_unique: false
+  limit_user: null
+  limit_user_interval: null
+  limit_user_message: ''
+  limit_user_unique: false
+  entity_limit_total: null
+  entity_limit_total_interval: null
+  entity_limit_user: null
+  entity_limit_user_interval: null
+  purge: none
+  purge_days: null
+  results_disabled: false
+  results_disabled_ignore: false
+  token_update: false
+  token_view: false
+access:
+  create:
+    roles:
+      - anonymous
+      - authenticated
+    users: {  }
+    permissions: {  }
+  view_any:
+    roles: {  }
+    users: {  }
+    permissions: {  }
+  update_any:
+    roles: {  }
+    users: {  }
+    permissions: {  }
+  delete_any:
+    roles: {  }
+    users: {  }
+    permissions: {  }
+  purge_any:
+    roles: {  }
+    users: {  }
+    permissions: {  }
+  view_own:
+    roles: {  }
+    users: {  }
+    permissions: {  }
+  update_own:
+    roles: {  }
+    users: {  }
+    permissions: {  }
+  delete_own:
+    roles: {  }
+    users: {  }
+    permissions: {  }
+  administer:
+    roles: {  }
+    users: {  }
+    permissions: {  }
+  test:
+    roles: {  }
+    users: {  }
+    permissions: {  }
+  configuration:
+    roles: {  }
+    users: {  }
+    permissions: {  }
+handlers:
+  quiz_results:
+    id: nidirect_quiz_results
+    label: 'Quiz Results'
+    handler_id: quiz_results
+    status: true
+    conditions: {  }
+    weight: 0
+    settings:
+      introduction: '<p>You have completed the taxi driver theory practice test 1. Your results are shown below.</p>'
+      pass_text: '<p>You have passed the practice test</p>'
+      fail_text: '<p>You have failed the practice test</p>'
+      pass_score: '3'
+      feedback: ''
+      answers:
+        question_1:
+          correct_answer: q1_a1
+          correct_feedback: '<p>Neglecting the maintenance of vital controls and fluids such as brakes, steering and lubricants is dangerous; they need to be checked regularly. Having your vehicle serviced according to its maintenance schedule helps the engine work more efficiently, thereby saving fuel and reducing the effect on the environment by cutting emissions. Causing excessive smoke is an offence, and also contributes to the possibility of causing an incident or collision. If you notice thick black smoke coming from the exhaust, stop in a safe place and get help.</p>'
+          incorrect_feedback: '<p>no</p>'
+        question_2:
+          correct_answer: q2_a1
+          correct_feedback: |
+            <h4>Road positioning</h4>
+
+            <p>You should normally keep to the left when driving. However, keep clear of parked vehicles, leaving room for:</p>
+
+            <ul>
+            	<li>doors opening</li>
+            	<li>vehicles moving off</li>
+            	<li>children running out</li>
+            </ul>
+
+            <h4>Don’t</h4>
+
+            <ul>
+            	<li>drive too close to the kerb, particularly in streets crowded with pedestrians</li>
+            	<li>weave in and out between parked vehicles. It’s unnecessary and confusing to other drivers.</li>
+            </ul>
+
+            <p>When necessary, ease over to the left to</p>
+
+            <ul>
+            	<li>help the flow of traffic</li>
+            	<li>let a faster vehicle overtake.</li>
+            </ul>
+
+            <h4>The correct position</h4>
+
+            <p>You should always be in the correct position for the route you’re going to take.</p>
+
+            <ul>
+            	<li>Keep to the left if you’re going straight ahead or turning left.</li>
+            	<li>Keep as close to the centre of the road as is safe when you’re turning right.</li>
+            </ul>
+
+            <p>Your position is important not only for safety, but also to allow the free flow of traffic. A badly positioned vehicle can hold up traffic in either direction.</p>
+          incorrect_feedback: ''
+        question_3:
+          correct_answer: q3_a1
+          correct_feedback: '<p>Don’t remove a motorcyclist’s helmet unless it’s essential to do so; for example, if they’re having breathing difficulties.</p>'
+          incorrect_feedback: ''
+        question_4:
+          correct_answer: q4_a4
+          correct_feedback: '<p>ok</p>'
+          incorrect_feedback: '<p>no</p>'
+        question_5:
+          correct_answer: q5_a1
+          correct_feedback: ''
+          incorrect_feedback: ''
+        question_6:
+          correct_answer: q6_a1
+          correct_feedback: ''
+          incorrect_feedback: ''
+        question_7:
+          correct_answer: q7_a1
+          correct_feedback: ''
+          incorrect_feedback: ''
+        question_8:
+          correct_answer: q8_a1
+          correct_feedback: ''
+          incorrect_feedback: ''
+        question_9:
+          correct_answer: q9_a1
+          correct_feedback: ''
+          incorrect_feedback: ''
+        question_10:
+          correct_answer: q10_a1
+          correct_feedback: ''
+          incorrect_feedback: ''
+        question_11:
+          correct_answer: q11_a1
+          correct_feedback: ''
+          incorrect_feedback: ''
+        question_12:
+          correct_answer: q12_a1
+          correct_feedback: ''
+          incorrect_feedback: ''
+        question_13:
+          correct_answer: q13_a1
+          correct_feedback: ''
+          incorrect_feedback: ''
+        question_14:
+          correct_answer: q14_a1
+          correct_feedback: ''
+          incorrect_feedback: ''
+        question_15:
+          correct_answer: q15_a1
+          correct_feedback: ''
+          incorrect_feedback: ''
+      message: ''
+      delete_submissions: 1
+      feedback_introduction: '<p>A summary of the questions and answers you gave is provided below. Please review the summary to see what you answered correctly and what you got wrong. &nbsp;Hints are provided to help you find out where to look for any answers you got wrong.</p>'
