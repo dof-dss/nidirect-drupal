@@ -15,6 +15,7 @@ dependencies:
     - node
     - text
     - user
+    - views_custom_cache_tag
 id: related_content
 label: 'Related content'
 module: views
@@ -34,8 +35,9 @@ display:
         options:
           perm: 'access content'
       cache:
-        type: tag
-        options: {  }
+        type: custom_tag
+        options:
+          custom_tag: 'taxonomy_term_list:{{ arguments.field_subtheme_target_id }}'
       query:
         type: views_query
         options:
