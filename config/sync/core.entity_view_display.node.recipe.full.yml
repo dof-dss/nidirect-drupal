@@ -27,7 +27,6 @@ dependencies:
     - node.type.recipe
   module:
     - hms_field
-    - metatag
     - options
     - text
     - user
@@ -37,94 +36,56 @@ bundle: recipe
 mode: full
 content:
   content_moderation_control:
-    weight: -20
+    weight: 0
+    region: content
     settings: {  }
-    third_party_settings: {  }
-    region: content
-  field_meta_tags:
-    weight: 17
-    label: above
-    settings: {  }
-    third_party_settings: {  }
-    type: metatag_empty_formatter
-    region: content
-  field_recipe_allergens:
-    type: boolean
-    weight: 3
-    region: content
-    label: above
-    settings:
-      format: default
-      format_custom_false: ''
-      format_custom_true: ''
     third_party_settings: {  }
   field_recipe_allergy_advice:
     type: text_default
-    weight: 12
-    region: content
-    label: above
-    settings: {  }
-    third_party_settings: {  }
-  field_recipe_course_type:
-    type: entity_reference_label
     weight: 7
-    region: content
-    label: above
-    settings:
-      link: true
-    third_party_settings: {  }
-  field_recipe_description:
-    type: basic_string
-    weight: 0
     region: content
     label: above
     settings: {  }
     third_party_settings: {  }
   field_recipe_food_safety:
     type: text_default
-    weight: 14
-    region: content
-    label: above
-    settings: {  }
-    third_party_settings: {  }
-  field_recipe_ingredients:
-    type: text_default
-    weight: 11
-    region: content
-    label: above
-    settings: {  }
-    third_party_settings: {  }
-  field_recipe_main_ingredient:
-    type: entity_reference_label
     weight: 6
     region: content
     label: above
+    settings: {  }
+    third_party_settings: {  }
+  field_recipe_image:
+    type: entity_reference_entity_view
+    weight: 1
+    region: content
+    label: hidden
     settings:
       link: true
+      view_mode: default
     third_party_settings: {  }
-  field_recipe_method:
+  field_recipe_ingredients:
     type: text_default
-    weight: 13
+    weight: 4
     region: content
     label: above
     settings: {  }
     third_party_settings: {  }
-  field_recipe_nutrition_info:
+  field_recipe_method:
     type: text_default
     weight: 5
     region: content
     label: above
     settings: {  }
     third_party_settings: {  }
-  field_recipe_other_options:
+  field_recipe_nutrition_info:
     type: text_default
-    weight: 15
+    weight: 8
     region: content
     label: above
     settings: {  }
     third_party_settings: {  }
   field_recipe_preptime:
-    weight: 18
+    weight: 3
     label: above
     settings:
       format: 'h:mm'
@@ -132,13 +93,6 @@ content:
     third_party_settings: {  }
     type: hms_default_formatter
     region: content
-  field_recipe_season:
-    type: list_default
-    weight: 4
-    region: content
-    label: above
-    settings: {  }
-    third_party_settings: {  }
   field_recipe_serves:
     type: list_default
     weight: 2
@@ -146,24 +100,19 @@ content:
     label: above
     settings: {  }
     third_party_settings: {  }
-  field_recipe_special_diet:
-    type: entity_reference_label
-    weight: 8
-    region: content
-    label: above
-    settings:
-      link: true
-    third_party_settings: {  }
-  links:
-    weight: 16
-    region: content
-    settings: {  }
-    third_party_settings: {  }
 hidden:
+  field_meta_tags: true
+  field_recipe_allergens: true
+  field_recipe_course_type: true
+  field_recipe_description: true
   field_recipe_fat_content: true
-  field_recipe_image: true
+  field_recipe_main_ingredient: true
+  field_recipe_other_options: true
   field_recipe_salt: true
   field_recipe_saturates: true
+  field_recipe_season: true
+  field_recipe_special_diet: true
   field_recipe_sugar: true
   langcode: true
+  links: true
   search_api_excerpt: true
