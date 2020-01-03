@@ -1,0 +1,31 @@
+uuid: 3ead10e8-fc4d-4c3f-9393-a0bd1ad61cab
+langcode: en
+status: true
+dependencies:
+  content:
+    - 'block_content:webform:c87361a7-5371-4463-9d5d-fe16d21c6a73'
+  module:
+    - block_content
+    - system
+  theme:
+    - nicsdru_nidirect_theme
+id: yourcomments
+theme: nicsdru_nidirect_theme
+region: bottom_banner
+weight: 0
+provider: null
+plugin: 'block_content:c87361a7-5371-4463-9d5d-fe16d21c6a73'
+settings:
+  id: 'block_content:c87361a7-5371-4463-9d5d-fe16d21c6a73'
+  label: 'Your comments'
+  provider: block_content
+  label_display: visible
+  status: true
+  info: ''
+  view_mode: full
+visibility:
+  request_path:
+    id: request_path
+    pages: forms/contact-make-call-team
+    negate: true
+    context_mapping: {  }
