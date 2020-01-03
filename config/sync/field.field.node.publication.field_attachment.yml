@@ -1,27 +1,28 @@
-uuid: 1a66fef4-2272-418d-8917-536d52c967d1
+uuid: ac81b70f-4743-4196-b352-acd6d3e318ce
 langcode: en
 status: true
 dependencies:
   config:
     - field.storage.node.field_attachment
+    - media.type.document
     - node.type.publication
-  module:
-    - file
 id: node.publication.field_attachment
 field_name: field_attachment
 entity_type: node
 bundle: publication
 label: Attachment
-description: "Choose at least between one and five individual files to attach to this publication revision.<br>\r\n<br>\r\n<strong>An important note about attachments:</strong>\r\n<ul>\r\n<li>Multiple revisions of a publication page can link to the same file attachment.</li>\r\n<li>If you need to make a new version of a file available within a publication revision, attach a new file with a different filename and remove the old file attachment (this will not affect other revisions of the publication - these will still have the old file attached).</li>\r\n</ul>"
-required: true
+description: ''
+required: false
 translatable: false
 default_value: {  }
 default_value_callback: ''
 settings:
-  description_field: false
-  file_directory: publications
-  file_extensions: 'pdf doc docx xls xlsx xlsm ppt pptx odt ods odp dot zip'
-  max_filesize: '30 MB'
-  handler: 'default:file'
-  handler_settings: {  }
-field_type: file
+  handler: 'default:media'
+  handler_settings:
+    target_bundles:
+      document: document
+    sort:
+      field: _none
+    auto_create: false
+    auto_create_bundle: ''
+field_type: entity_reference

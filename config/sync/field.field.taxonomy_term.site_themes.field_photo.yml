@@ -1,33 +1,28 @@
-uuid: 34cc00ae-177c-4131-b488-5fea11a72fbe
+uuid: c205f90d-00fd-4812-842f-3bf301b1fdb8
 langcode: en
 status: true
 dependencies:
   config:
     - field.storage.taxonomy_term.field_photo
+    - media.type.image
     - taxonomy.vocabulary.site_themes
-  module:
-    - image
 id: taxonomy_term.site_themes.field_photo
 field_name: field_photo
 entity_type: taxonomy_term
 bundle: site_themes
 label: Photo
-description: 'If appropriate, you can insert a photo or logo here to be associated to this topic.'
+description: 'If appropriate, you can insert a photo or logo here to be associated with this theme.'
 required: false
 translatable: false
 default_value: {  }
 default_value_callback: ''
 settings:
-  alt_field: false
-  default_image: 0
-  file_directory: topics
-  file_extensions: 'png gif jpg jpeg'
-  max_filesize: ''
-  max_resolution: ''
-  min_resolution: ''
-  title_field: false
-  alt_field_required: true
-  title_field_required: false
-  handler: 'default:file'
-  handler_settings: {  }
-field_type: image
+  handler: 'default:media'
+  handler_settings:
+    target_bundles:
+      image: image
+    sort:
+      field: _none
+    auto_create: false
+    auto_create_bundle: ''
+field_type: entity_reference

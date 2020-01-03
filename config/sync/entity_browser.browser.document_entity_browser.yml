@@ -1,0 +1,42 @@
+uuid: 079d4a45-8ac5-481b-b3ac-431e94789a89
+langcode: en
+status: true
+dependencies:
+  config:
+    - views.view.media_entity_browser
+  module:
+    - entity_browser_entity_form
+    - views
+name: document_entity_browser
+label: 'Document entity browser'
+display: iframe
+display_configuration:
+  width: 100%
+  height: '650'
+  link_text: 'Select documents'
+  auto_open: true
+selection_display: no_display
+selection_display_configuration: {  }
+widget_selector: tabs
+widget_selector_configuration: {  }
+widgets:
+  d43d74e6-82a0-4e46-ba01-5d347611ede6:
+    settings:
+      view: media_entity_browser
+      view_display: document_entity_browser
+      submit_text: Select
+      auto_select: false
+    uuid: d43d74e6-82a0-4e46-ba01-5d347611ede6
+    weight: -10
+    label: 'Browse existing documents'
+    id: view
+  2c4a1501-ed29-40c1-a62e-1fa9c84e4406:
+    settings:
+      entity_type: media
+      bundle: document
+      form_mode: default
+      submit_text: Save
+    uuid: 2c4a1501-ed29-40c1-a62e-1fa9c84e4406
+    weight: -9
+    label: 'New document'
+    id: entity_form
