@@ -3,7 +3,7 @@ langcode: en
 status: true
 dependencies:
   module:
-    - ctools
+    - system
   theme:
     - nicsdru_nidirect_theme
 id: pagetitle
@@ -18,11 +18,8 @@ settings:
   provider: core
   label_display: '0'
 visibility:
-  'entity_bundle:node':
-    id: 'entity_bundle:node'
-    bundles:
-      application: application
-      article: article
+  request_path:
+    id: request_path
+    pages: '/node/*'
     negate: true
-    context_mapping:
-      node: '@node.node_route_context:node'
+    context_mapping: {  }
