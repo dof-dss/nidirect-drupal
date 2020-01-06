@@ -33,9 +33,7 @@ jobs:
       - run:
           name: Fetch dependencies with composer
           command: |
-            composer install --no-interaction --optimize-autoloader
-            composer drupal:scaffold
-            composer run-script post-install-cmd
+            composer install --no-interaction
       - save_cache:
           key: composer-{{ checksum "composer.lock" }}
           paths:
@@ -65,7 +63,6 @@ jobs:
           root: ./
           paths:
             - ./
-
   # Test for coding standards and deprecated code.
   static_analysis:
     docker:
@@ -237,6 +234,45 @@ jobs:
       - run:
             name: UI tests with Nightwatch.js
             command: yarn --cwd=/var/www/html/web/core test:nightwatch --skiptags core
+  # Debug job(s) - useful for working with circleci local which doesn't support caches or workspace persistence.
+  debug:
+    docker:
+      - image: circleci/php:7.2.20-apache-browsers
+    steps:
+      - run:
+          name: Add GitHub access token for composer
+          command: echo 'composer config -g github-oauth.github.com $GITHUB_TOKEN' >> $BASH_ENV
+      # Add SSH user key so we can access related repositories as part of our initial clone + composer install command.
+      - add_ssh_keys:
+          fingerprints:
+            - "89:cc:6e:61:6a:0e:13:ab:47:0b:25:d6:bc:90:d4:d2"
+      # Needed for circle ci local for some odd reason.
+      - run:
+          name: Keyscan Github (HACK)
+          command: mkdir -p ~/.ssh && ssh-keyscan -H github.com >> ~/.ssh/known_hosts
+      - checkout
+      - run:
+          name: Validate composer.json and composer.lock file for consistency
+          command: composer validate --no-check-all --strict
+      - run:
+          name: Add OS and PHP extensions
+          command: |
+            sudo apt-get update
+            sudo apt-get install -y libpng-dev
+            sudo docker-php-ext-install gd
+            composer global require hirak/prestissimo
+      - run:
+          name: Fetch dependencies with composer
+          command: |
+            composer install --no-interaction
+      - run:
+          name: PHPCS static analysis
+          command: /home/circleci/project/phpcs.sh /home/circleci/project "/home/circleci/project/web/modules/origins /home/circleci/project/web/modules/custom /home/circleci/project/web/modules/migrate /home/circleci/project/web/themes/custom"
+      - run:
+          name: Deprecated code check
+          command: |
+            cd /home/circleci/project
+            vendor/bin/drupal-check /home/circleci/project/web/modules/custom /home/circleci/project/web/modules/origins
 
 workflows:
   version: 2

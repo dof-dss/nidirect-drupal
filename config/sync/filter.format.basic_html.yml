@@ -5,6 +5,7 @@ dependencies:
   module:
     - editor
     - entity_embed
+    - media
     - media_browser_responsive_images
     - noreferrer
     - token_filter
@@ -99,3 +100,12 @@ filters:
     settings:
       responsive_style_inline: '1'
       responsive_style_inline_xl_tbc: '1'
+  media_embed:
+    id: media_embed
+    provider: media
+    status: false
+    weight: 100
+    settings:
+      default_view_mode: default
+      allowed_media_types: {  }
+      allowed_view_modes: {  }

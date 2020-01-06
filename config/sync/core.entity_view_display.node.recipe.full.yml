@@ -9,6 +9,7 @@ dependencies:
     - field.field.node.recipe.field_recipe_allergy_advice
     - field.field.node.recipe.field_recipe_course_type
     - field.field.node.recipe.field_recipe_description
+    - field.field.node.recipe.field_recipe_fat_content
     - field.field.node.recipe.field_recipe_food_safety
     - field.field.node.recipe.field_recipe_image
     - field.field.node.recipe.field_recipe_ingredients
@@ -17,14 +18,15 @@ dependencies:
     - field.field.node.recipe.field_recipe_nutrition_info
     - field.field.node.recipe.field_recipe_other_options
     - field.field.node.recipe.field_recipe_preptime
+    - field.field.node.recipe.field_recipe_salt
+    - field.field.node.recipe.field_recipe_saturates
     - field.field.node.recipe.field_recipe_season
     - field.field.node.recipe.field_recipe_serves
     - field.field.node.recipe.field_recipe_special_diet
+    - field.field.node.recipe.field_recipe_sugar
     - node.type.recipe
   module:
     - hms_field
-    - image
-    - link
     - metatag
     - options
     - text
@@ -34,6 +36,11 @@ targetEntityType: node
 bundle: recipe
 mode: full
 content:
+  content_moderation_control:
+    weight: -20
+    settings: {  }
+    third_party_settings: {  }
+    region: content
   field_meta_tags:
     weight: 17
     label: above
@@ -79,15 +86,6 @@ content:
     region: content
     label: above
     settings: {  }
-    third_party_settings: {  }
-  field_recipe_image:
-    type: image
-    weight: 1
-    region: content
-    label: above
-    settings:
-      image_style: ''
-      image_link: ''
     third_party_settings: {  }
   field_recipe_ingredients:
     type: text_default
@@ -163,6 +161,7 @@ content:
     third_party_settings: {  }
 hidden:
   field_recipe_fat_content: true
+  field_recipe_image: true
   field_recipe_salt: true
   field_recipe_saturates: true
   field_recipe_sugar: true

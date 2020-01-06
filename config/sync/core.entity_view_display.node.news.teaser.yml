@@ -11,26 +11,15 @@ dependencies:
     - field.field.node.news.field_published_date
     - field.field.node.news.field_summary
     - field.field.node.news.field_teaser
-    - image.style.medium
     - node.type.news
   module:
     - datetime
-    - image
     - user
 id: node.news.teaser
 targetEntityType: node
 bundle: news
 mode: teaser
 content:
-  field_photo:
-    type: image
-    weight: 2
-    region: content
-    label: hidden
-    settings:
-      image_style: medium
-      image_link: ''
-    third_party_settings: {  }
   field_published_date:
     type: datetime_custom
     weight: 0
@@ -53,6 +42,7 @@ hidden:
   content_moderation_control: true
   field_enable_toc: true
   field_meta_tags: true
+  field_photo: true
   field_summary: true
   langcode: true
   links: true

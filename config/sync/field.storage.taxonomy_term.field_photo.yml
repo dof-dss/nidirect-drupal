@@ -1,23 +1,17 @@
-uuid: 2b7d9471-3204-43fa-a5bd-9c963fda6327
-langcode: und
+uuid: 34dd299c-d795-48d6-864c-b13f6d928830
+langcode: en
 status: true
 dependencies:
   module:
-    - file
-    - image
+    - media
     - taxonomy
 id: taxonomy_term.field_photo
 field_name: field_photo
 entity_type: taxonomy_term
-type: image
+type: entity_reference
 settings:
-  uri_scheme: public
-  default_image:
-    uuid: ''
-  target_type: file
-  display_field: false
-  display_default: false
-module: image
+  target_type: media
+module: core
 locked: false
 cardinality: 1
 translatable: true
