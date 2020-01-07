@@ -1,0 +1,51 @@
+uuid: 5d820b2b-bd79-47e9-8ea0-d241cdaa12e8
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.node.featured
+    - field.field.node.publication.body
+    - field.field.node.publication.field_attachment
+    - field.field.node.publication.field_meta_tags
+    - field.field.node.publication.field_publication_type
+    - field.field.node.publication.field_published_date
+    - field.field.node.publication.field_site_themes
+    - field.field.node.publication.field_subtheme
+    - field.field.node.publication.field_summary
+    - field.field.node.publication.field_top_level_theme
+    - node.type.publication
+  module:
+    - layout_builder
+    - text
+    - user
+third_party_settings:
+  layout_builder:
+    allow_custom: false
+    enabled: false
+id: node.publication.featured
+targetEntityType: node
+bundle: publication
+mode: featured
+content:
+  field_summary:
+    type: text_trimmed
+    weight: 0
+    region: content
+    label: hidden
+    settings:
+      trim_length: 600
+    third_party_settings: {  }
+hidden:
+  banner_display: true
+  body: true
+  content_moderation_control: true
+  field_attachment: true
+  field_meta_tags: true
+  field_publication_type: true
+  field_published_date: true
+  field_site_themes: true
+  field_subtheme: true
+  field_top_level_theme: true
+  langcode: true
+  links: true
+  search_api_excerpt: true
