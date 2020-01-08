@@ -1,0 +1,110 @@
+uuid: 4a581209-a7c6-4a09-ba97-4e13235aedd0
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.node.featured
+    - field.field.node.landing_page.body
+    - field.field.node.landing_page.field_banner_image
+    - field.field.node.landing_page.field_banner_image_overlay
+    - field.field.node.landing_page.field_enable_title
+    - field.field.node.landing_page.field_meta_tags
+    - field.field.node.landing_page.field_subtheme
+    - field.field.node.landing_page.field_summary
+    - field.field.node.landing_page.field_teaser
+    - field.field.node.landing_page.field_top_level_theme
+    - field.field.node.landing_page.layout_builder__layout
+    - image.style.medium
+    - node.type.landing_page
+  module:
+    - layout_builder
+    - layout_builder_restrictions
+    - media
+    - smart_trim
+    - user
+third_party_settings:
+  layout_builder:
+    allow_custom: false
+    enabled: false
+  layout_builder_restrictions:
+    entity_view_mode_restriction:
+      allowed_blocks:
+        'Chaos Tools': {  }
+        Content: {  }
+        'Content fields':
+          - 'field_block:node:landing_page:field_banner_image'
+          - 'field_block:node:landing_page:field_banner_image_overlay'
+          - 'field_block:node:landing_page:body'
+          - 'field_block:node:landing_page:field_summary'
+          - 'field_block:node:landing_page:field_teaser'
+          - 'field_block:node:landing_page:field_subtheme'
+          - 'field_block:node:landing_page:title'
+          - 'field_block:node:landing_page:field_top_level_theme'
+        'Custom block types':
+          - basic
+        Devel: {  }
+        Forms: {  }
+        Help: {  }
+        'Inline blocks':
+          - 'inline_block:basic'
+        'Lists (Views)': {  }
+        Menus: {  }
+        NIDirect:
+          - in_page_navigation_block
+        'NIDirect Contacts':
+          - contact_az_block
+        System:
+          - system_main_block
+        User: {  }
+        'User fields': {  }
+        Webform:
+          - webform_block
+        core:
+          - page_title_block
+      allowed_layouts: {  }
+id: node.landing_page.featured
+targetEntityType: node
+bundle: landing_page
+mode: featured
+content:
+  field_banner_image:
+    type: media_thumbnail
+    weight: 0
+    region: content
+    label: hidden
+    settings:
+      image_style: medium
+      image_link: content
+    third_party_settings: {  }
+  field_teaser:
+    type: smart_trim
+    weight: 1
+    region: content
+    label: hidden
+    settings:
+      trim_length: 15
+      trim_type: words
+      trim_suffix: ...
+      wrap_output: true
+      wrap_class: trimmed
+      more_link: true
+      more_text: more
+      more_class: more-link
+      trim_options:
+        text: true
+        trim_zero: false
+      summary_handler: full
+    third_party_settings: {  }
+hidden:
+  body: true
+  content_moderation_control: true
+  field_banner_image_overlay: true
+  field_enable_title: true
+  field_meta_tags: true
+  field_subtheme: true
+  field_summary: true
+  field_top_level_theme: true
+  langcode: true
+  layout_builder__layout: true
+  links: true
+  search_api_excerpt: true
