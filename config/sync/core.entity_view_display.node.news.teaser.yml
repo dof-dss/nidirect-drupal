@@ -20,9 +20,18 @@ targetEntityType: node
 bundle: news
 mode: teaser
 content:
+  field_photo:
+    type: entity_reference_entity_view
+    weight: 0
+    region: content
+    label: hidden
+    settings:
+      view_mode: embed
+      link: false
+    third_party_settings: {  }
   field_published_date:
     type: datetime_custom
-    weight: 0
+    weight: 1
     region: content
     label: hidden
     settings:
@@ -31,7 +40,7 @@ content:
     third_party_settings: {  }
   field_teaser:
     type: string
-    weight: 1
+    weight: 2
     region: content
     label: hidden
     settings:
@@ -42,7 +51,6 @@ hidden:
   content_moderation_control: true
   field_enable_toc: true
   field_meta_tags: true
-  field_photo: true
   field_summary: true
   langcode: true
   links: true
