@@ -138,6 +138,21 @@ $config['config_split.config_split.pre-production']['status'] = FALSE;
 
 These indicate which config_split configuration is active at any given time. *NB: you can only have one active at a time.* The precise setting of these will, of course, vary on each environment that hosts the site to ensure that configuration imports use the correct values.
 
+> Importing configuration and structure
+
+When developing it is important to keep the site configuration and structure in sync with the exported config contained under the config/sync directory.
+Every time you work on a new feature you should perform the following 2 steps
+
+Step 1: Update vendor packages
+* composer install
+
+Step 2: Update site configuration and structure
+
+* lando imp : Imports configuration and structure (blocks)
+* lando drush cim - Import configuration changes only
+* lando drush ib - Import custom blocks
+* lando drush im - Import custom menu links
+
 > Exporting your work
 
 First, ensure that your active config_split configuration is correct (see above). If you have recently changed it, you will need to run `drush cr` to bring Drupal's service container and caches up to date.
