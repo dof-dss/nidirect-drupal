@@ -171,6 +171,8 @@ This is the default drush message and can be safely disregarded. You should, of 
 
 *NB: config_split used to rely on a specific export command (`drush csex`) but this is no longer required now that drush, config_split and config filter all work in tandem.*
 
+To export custom blocks or menus use /admin/structure/structure-sync/ and more information can be found on the structure_sync module readme.
+
 ## Front-end toolchain
 
 See https://github.com/dof-dss/nicsdru_nidirect_theme/blob/master/README.md for full details.
