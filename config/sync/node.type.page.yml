@@ -5,6 +5,7 @@ dependencies:
   module:
     - menu_ui
     - origins_common
+    - origins_toc
     - scheduler
 third_party_settings:
   menu_ui:
@@ -23,6 +24,12 @@ third_party_settings:
     unpublish_enable: true
     unpublish_required: false
     unpublish_revision: true
+  origins_toc:
+    toc_enable: 1
+    toc_title: 'Table of contents'
+    toc_source_field: body
+    toc_element: h2
+    toc_exclusions: ''
   origins_common:
     lb_search_enable: 1
     lb_search_index_display: default

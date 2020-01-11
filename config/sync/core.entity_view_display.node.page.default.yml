@@ -4,7 +4,7 @@ status: true
 dependencies:
   config:
     - field.field.node.page.body
-    - field.field.node.page.field_enable_toc
+    - field.field.node.page.field_toc_enable
     - field.field.node.page.field_lb_search_content
     - field.field.node.page.field_lb_search_enable
     - field.field.node.page.field_meta_tags
@@ -45,7 +45,7 @@ third_party_settings:
               label_display: '0'
               context_mapping:
                 entity: layout_builder.entity
-              id: 'field_block:node:page:field_enable_toc'
+              id: 'field_block:node:page:field_toc_enable'
               formatter:
                 type: boolean
                 label: above
@@ -147,7 +147,7 @@ content:
     region: content
     settings: {  }
     third_party_settings: {  }
-  field_enable_toc:
+  field_toc_enable:
     type: boolean
     weight: 1
     region: content

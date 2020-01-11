@@ -4,7 +4,7 @@ status: true
 dependencies:
   config:
     - field.field.node.page.body
-    - field.field.node.page.field_enable_toc
+    - field.field.node.page.field_toc_enable
     - field.field.node.page.field_lb_search_content
     - field.field.node.page.field_lb_search_enable
     - field.field.node.page.field_meta_tags
@@ -41,13 +41,6 @@ content:
     region: content
     settings: {  }
     third_party_settings: {  }
-  field_enable_toc:
-    type: boolean_checkbox
-    weight: 1
-    region: content
-    settings:
-      display_label: true
-    third_party_settings: {  }
   field_lb_search_content:
     type: string_textarea
     label: above
@@ -77,6 +70,13 @@ content:
     third_party_settings: {  }
     type: datetime_default
     region: content
+  field_toc_enable:
+    type: boolean_checkbox
+    weight: 1
+    region: content
+    settings:
+      display_label: true
+    third_party_settings: {  }
   langcode:
     type: language_select
     weight: 2

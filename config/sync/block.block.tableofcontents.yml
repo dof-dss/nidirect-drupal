@@ -1,35 +1,33 @@
-uuid: ad201655-9bb5-4f5b-b3ca-83be1d02d3de
+uuid: 9f719ac4-17d4-483c-bfa4-9871cd5e25f1
 langcode: en
 status: true
 dependencies:
   module:
-    - ctools
+    - node
+    - origins_toc
   theme:
     - nicsdru_nidirect_theme
-id: inpagenavigationblock
+id: tableofcontents
 theme: nicsdru_nidirect_theme
 region: sidebar_second
-weight: -16
+weight: -19
 provider: null
-plugin: in_page_navigation_block
+plugin: table_of_contents_block
 settings:
-  id: in_page_navigation_block
+  id: table_of_contents_block
   label: 'On this page'
-  provider: origins_common
+  provider: origins_toc
   label_display: visible
-  machine_name: inpagenavigationblock
-  ipn_source: content
-  ipn_element: h2
-  ipn_exclusions: ''
 visibility:
-  'entity_bundle:node':
-    id: 'entity_bundle:node'
+  node_type:
+    id: node_type
     bundles:
       article: article
       contact: contact
       health_condition: health_condition
-      news: news
       page: page
+      publication: publication
+      recipe: recipe
     negate: false
     context_mapping:
       node: '@node.node_route_context:node'
