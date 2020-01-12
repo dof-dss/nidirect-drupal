@@ -4,10 +4,6 @@ status: true
 dependencies:
   config:
     - search_api.index.default_content
-    - taxonomy.vocabulary.drive_instr_categories
-  content:
-    - 'taxonomy_term:drive_instr_categories:2c32be61-ff84-47a9-8f3b-2be48b06e2c5'
-    - 'taxonomy_term:drive_instr_categories:b720a9aa-4271-4a3a-826b-d883ed40933c'
   module:
     - search_api
     - taxonomy
@@ -176,7 +172,7 @@ display:
           exposed: true
           expose:
             operator_id: search_api_fulltext_op
-            label: ''
+            label: 'Search driving instructors'
             description: ''
             use_operator: false
             operator: search_api_fulltext_op
@@ -259,66 +255,6 @@ display:
             group_items: {  }
           reduce_duplicates: false
           plugin_id: search_api_options
-        field_di_categories:
-          id: field_di_categories
-          table: search_api_index_default_content
-          field: field_di_categories
-          relationship: none
-          group_type: group
-          admin_label: ''
-          operator: or
-          value:
-            1160: 1160
-            1161: 1161
-          group: 1
-          exposed: true
-          expose:
-            operator_id: field_di_categories_op
-            label: 'Find:'
-            description: ''
-            use_operator: false
-            operator: field_di_categories_op
-            operator_limit_selection: false
-            operator_list: {  }
-            identifier: categories
-            required: false
-            remember: false
-            multiple: false
-            remember_roles:
-              authenticated: authenticated
-              anonymous: '0'
-              administrator: '0'
-              gp_author_user: '0'
-              author_user: '0'
-              gp_supervisor_user: '0'
-              news_supervisor: '0'
-              supervisor_user: '0'
-              editor_user: '0'
-              admin_user: '0'
-              apps_user: '0'
-              health_condition_author_user: '0'
-              health_condition_supervisor_user: '0'
-              driving_instructor_supervisor_user: '0'
-            reduce: true
-          is_grouped: false
-          group_info:
-            label: ''
-            description: ''
-            identifier: ''
-            optional: true
-            widget: select
-            multiple: false
-            remember: false
-            default_group: All
-            default_group_multiple: {  }
-            group_items: {  }
-          reduce_duplicates: false
-          type: select
-          limit: true
-          vid: drive_instr_categories
-          hierarchy: false
-          error_message: true
-          plugin_id: search_api_term
       sorts:
         search_api_relevance:
           id: search_api_relevance
@@ -356,20 +292,7 @@ display:
           expose:
             label: 'Last name'
           plugin_id: search_api
-      header:
-        area:
-          id: area
-          table: views
-          field: area
-          relationship: none
-          group_type: group
-          admin_label: ''
-          empty: true
-          tokenize: false
-          content:
-            value: "<ul>\r\n<li>Enter your postcode to find instructors who work in your area</li>\r\n<li>You can also find instructor's by name or ADI/AMI number if you know it</li>\r\n</ul>"
-            format: full_html
-          plugin_id: text
+      header: {  }
       footer: {  }
       empty:
         area:
@@ -399,7 +322,6 @@ display:
           plugin_id: search_api
       arguments: {  }
       display_extenders: {  }
-      title: 'Find an approved driving or motorcycle instructor'
     cache_metadata:
       max-age: 0
       contexts:
@@ -409,7 +331,6 @@ display:
         - url.query_args
         - 'url.query_args:sort_by'
         - 'url.query_args:sort_order'
-        - user
       tags: {  }
   driving_instructor_results:
     display_plugin: page
@@ -420,8 +341,7 @@ display:
       display_extenders: {  }
       path: services/driving-instructors
       cache:
-        type: search_api_tag
-        options: {  }
+        type: none
       defaults:
         cache: false
     cache_metadata:
@@ -433,5 +353,4 @@ display:
         - url.query_args
         - 'url.query_args:sort_by'
         - 'url.query_args:sort_order'
-        - user
       tags: {  }
