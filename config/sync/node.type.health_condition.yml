@@ -4,6 +4,7 @@ status: true
 dependencies:
   module:
     - menu_ui
+    - origins_toc
     - scheduler
 third_party_settings:
   menu_ui:
@@ -22,6 +23,12 @@ third_party_settings:
     unpublish_enable: true
     unpublish_required: false
     unpublish_revision: true
+  origins_toc:
+    toc_enable: 1
+    toc_title: 'Table of contents'
+    toc_source_field: body
+    toc_element: h2
+    toc_exclusions: ''
 name: 'Health condition'
 type: health_condition
 description: 'Use this content type for adding health conditions to the site.'

@@ -9,7 +9,7 @@ dependencies:
     - field.field.node.health_condition.field_alternative_condition
     - field.field.node.health_condition.field_alternative_title
     - field.field.node.health_condition.field_banner_image
-    - field.field.node.health_condition.field_enable_toc
+    - field.field.node.health_condition.field_toc_enable
     - field.field.node.health_condition.field_hc_body_location
     - field.field.node.health_condition.field_hc_body_system
     - field.field.node.health_condition.field_hc_condition_type
@@ -133,13 +133,6 @@ content:
     third_party_settings: {  }
     type: entity_browser_entity_reference
     region: content
-  field_enable_toc:
-    type: boolean_checkbox
-    weight: 12
-    region: content
-    settings:
-      display_label: true
-    third_party_settings: {  }
   field_hc_body_location:
     type: entity_reference_autocomplete
     weight: 20
@@ -328,6 +321,13 @@ content:
     settings:
       size: 60
       placeholder: ''
+    third_party_settings: {  }
+  field_toc_enable:
+    type: boolean_checkbox
+    weight: 12
+    region: content
+    settings:
+      display_label: true
     third_party_settings: {  }
   field_top_level_theme:
     type: entity_reference_autocomplete

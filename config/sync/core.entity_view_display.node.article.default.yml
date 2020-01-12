@@ -6,7 +6,7 @@ dependencies:
     - field.field.node.article.body
     - field.field.node.article.field_additional_info
     - field.field.node.article.field_banner_image
-    - field.field.node.article.field_enable_toc
+    - field.field.node.article.field_toc_enable
     - field.field.node.article.field_meta_tags
     - field.field.node.article.field_next_audit_due
     - field.field.node.article.field_photo
@@ -59,16 +59,6 @@ content:
     third_party_settings: {  }
     type: entity_reference_label
     region: content
-  field_enable_toc:
-    type: boolean
-    weight: 5
-    region: content
-    label: above
-    settings:
-      format: default
-      format_custom_false: ''
-      format_custom_true: ''
-    third_party_settings: {  }
   field_meta_tags:
     weight: 13
     label: above
@@ -115,6 +105,16 @@ content:
     label: above
     settings:
       link_to_entity: false
+    third_party_settings: {  }
+  field_toc_enable:
+    type: boolean
+    weight: 5
+    region: content
+    label: above
+    settings:
+      format: default
+      format_custom_false: ''
+      format_custom_true: ''
     third_party_settings: {  }
   field_top_level_theme:
     type: entity_reference_label
