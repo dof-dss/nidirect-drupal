@@ -22,6 +22,7 @@ dependencies:
   module:
     - address
     - layout_builder
+    - link
     - user
 third_party_settings:
   layout_builder:
@@ -41,8 +42,32 @@ content:
     type: address_default
     weight: 2
     region: content
-    label: above
+    label: hidden
     settings: {  }
+    third_party_settings: {  }
+  field_gp_appointments:
+    type: link
+    weight: 3
+    region: content
+    label: hidden
+    settings:
+      trim_length: 80
+      url_only: false
+      url_plain: false
+      rel: '0'
+      target: '0'
+    third_party_settings: {  }
+  field_gp_prescriptions:
+    type: link
+    weight: 4
+    region: content
+    label: hidden
+    settings:
+      trim_length: 80
+      url_only: false
+      url_plain: false
+      rel: '0'
+      target: '0'
     third_party_settings: {  }
   gp_names:
     weight: 1
@@ -54,7 +79,6 @@ hidden:
   field_contact_address_02: true
   field_contact_postcode: true
   field_contact_town_city: true
-  field_gp_appointments: true
   field_gp_lcg: true
   field_gp_partnership_no: true
   field_gp_practice_lead: true
@@ -62,7 +86,6 @@ hidden:
   field_gp_practice_name: true
   field_gp_practice_no: true
   field_gp_practice_website: true
-  field_gp_prescriptions: true
   field_gp_surgery_name: true
   field_location: true
   field_meta_tags: true
