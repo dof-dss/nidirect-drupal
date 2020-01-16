@@ -1,19 +1,5 @@
 blocks:
   -
-    info: 'Your comments'
-    langcode: en
-    uuid: c87361a7-5371-4463-9d5d-fe16d21c6a73
-    bundle: webform
-    revision_id: null
-    rev_id_current: null
-    fields:
-      field_webform:
-        target_id: your_comments
-        default_data: ''
-        status: open
-        open: ''
-        close: ''
-  -
     info: 'Popular information (Mock)'
     langcode: en
     uuid: c82302e6-b19d-49e6-8e6f-3c54a877e416
@@ -38,6 +24,20 @@ blocks:
         summary: ''
         format: basic_html
   -
+    info: 'Your comments'
+    langcode: en
+    uuid: c87361a7-5371-4463-9d5d-fe16d21c6a73
+    bundle: webform
+    revision_id: null
+    rev_id_current: null
+    fields:
+      field_webform:
+        target_id: your_comments
+        default_data: ''
+        status: open
+        open: ''
+        close: ''
+  -
     info: 'Met Office Weather'
     langcode: en
     uuid: 2ae061ef-9916-4238-bfb4-a0e9d84a6d15
@@ -47,5 +47,17 @@ blocks:
     fields:
       body:
         value: "<p><a class=\"btn btn-primary btn-medium\" href=\"http://www.metoffice.gov.uk/\">Met Office weather</a></p>\r\n"
+        summary: ''
+        format: full_html
+  -
+    info: 'In this section'
+    langcode: en
+    uuid: 5622a22b-7e20-4c34-a332-1b600def9c4c
+    bundle: basic
+    revision_id: null
+    rev_id_current: null
+    fields:
+      body:
+        value: "<ul>\r\n\t<li><a href=\"/contacts\">Contacts A to Z</a></li>\r\n\t<li><a href=\"/contacts/government-departments-in-northern-ireland\">Government departments in Northern Ireland</a></li>\r\n\t<li><a href=\"/contacts/local-councils-in-northern-ireland\">Local councils in Northern Ireland</a></li>\r\n</ul>\r\n"
         summary: ''
         format: full_html
