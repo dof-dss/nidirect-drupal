@@ -1,0 +1,37 @@
+uuid: 08f8a718-7336-43d2-9733-5a63521c514c
+langcode: en
+status: true
+dependencies:
+  module:
+    - node
+    - origins_social_sharing
+  theme:
+    - nicsdru_nidirect_theme
+id: originssocialsharing
+theme: nicsdru_nidirect_theme
+region: content
+weight: 0
+provider: null
+plugin: origins_social_sharing
+settings:
+  id: origins_social_sharing
+  label: 'Origins social sharing'
+  provider: origins_social_sharing
+  label_display: '0'
+visibility:
+  node_type:
+    id: node_type
+    bundles:
+      application: application
+      article: article
+      contact: contact
+      embargoed_publication: embargoed_publication
+      health_condition: health_condition
+      landing_page: landing_page
+      news: news
+      publication: publication
+      recipe: recipe
+      umbrella_body: umbrella_body
+    negate: false
+    context_mapping:
+      node: '@node.node_route_context:node'
