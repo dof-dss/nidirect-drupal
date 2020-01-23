@@ -857,6 +857,7 @@ display:
         filters: false
         filter_groups: false
         fields: false
+        relationships: false
       arguments: {  }
       filters:
         status:
@@ -914,45 +915,6 @@ display:
           entity_type: node
           entity_field: type
           plugin_id: bundle
-        flagged:
-          id: flagged
-          table: flagging
-          field: flagged
-          relationship: flag_relationship
-          group_type: group
-          admin_label: ''
-          operator: '='
-          value: '0'
-          group: 1
-          exposed: false
-          expose:
-            operator_id: ''
-            label: ''
-            description: ''
-            use_operator: false
-            operator: ''
-            identifier: ''
-            required: false
-            remember: false
-            multiple: false
-            remember_roles:
-              authenticated: authenticated
-            operator_limit_selection: false
-            operator_list: {  }
-          is_grouped: false
-          group_info:
-            label: ''
-            description: ''
-            identifier: ''
-            optional: true
-            widget: select
-            multiple: false
-            remember: false
-            default_group: All
-            default_group_multiple: {  }
-            group_items: {  }
-          entity_type: flagging
-          plugin_id: flag_filter
       filter_groups:
         operator: AND
         groups:
@@ -1085,6 +1047,7 @@ display:
           separator: ', '
           field_api_classes: false
           plugin_id: field
+      relationships: {  }
     cache_metadata:
       max-age: -1
       contexts:
