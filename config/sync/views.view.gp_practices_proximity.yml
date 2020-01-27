@@ -28,7 +28,7 @@ display:
         options:
           perm: 'access content'
       cache:
-        type: tag
+        type: none
         options: {  }
       query:
         type: views_query
@@ -158,125 +158,6 @@ display:
           expose:
             operator_limit_selection: false
             operator_list: {  }
-        field_location_proximity:
-          id: field_location_proximity
-          table: node__field_location
-          field: field_location_proximity
-          relationship: none
-          group_type: group
-          admin_label: ''
-          operator: '<='
-          value:
-            min: ''
-            max: ''
-            value: '32.18688'
-            center: ''
-          group: 1
-          exposed: true
-          expose:
-            operator_id: field_location_proximity_op
-            label: Proximity
-            description: ''
-            use_operator: false
-            operator: field_location_proximity_op
-            operator_limit_selection: false
-            operator_list: {  }
-            identifier: field_location_proximity
-            required: false
-            remember: false
-            multiple: false
-            remember_roles:
-              authenticated: authenticated
-              anonymous: '0'
-              administrator: '0'
-              gp_author_user: '0'
-              author_user: '0'
-              gp_supervisor_user: '0'
-              news_supervisor: '0'
-              supervisor_user: '0'
-              editor_user: '0'
-              admin_user: '0'
-              apps_user: '0'
-              health_condition_author_user: '0'
-              health_condition_supervisor_user: '0'
-              driving_instructor_supervisor_user: '0'
-            placeholder: 'Enter a postcode or address'
-            min_placeholder: ''
-            max_placeholder: ''
-          is_grouped: false
-          group_info:
-            label: ''
-            description: ''
-            identifier: ''
-            optional: true
-            widget: select
-            multiple: false
-            remember: false
-            default_group: All
-            default_group_multiple: {  }
-            group_items: {  }
-          location_input:
-            client_location:
-              weight: 0
-              enable: false
-              location_input_id: client_location
-              settings:
-                auto_submit: false
-                hide_form: false
-            coordinates:
-              weight: 0
-              enable: false
-              location_input_id: coordinates
-            geocoder:
-              enable: true
-              settings:
-                plugin_id: google_geocoding_api
-                settings:
-                  label: Location
-                  description: 'Enter a postcode or address'
-                  autocomplete_min_length: 3
-                  component_restrictions:
-                    route: ''
-                    locality: ''
-                    administrative_area: ''
-                    postal_code: ''
-                    country: ''
-                  boundary_restriction:
-                    south: ''
-                    west: ''
-                    north: ''
-                    east: ''
-                hide_form: true
-                auto_submit: false
-              weight: 0
-              location_input_id: geocoder
-            'fixed_value:fixed_value':
-              settings:
-                location_settings:
-                  settings:
-                    latitude: ''
-                    longitude: ''
-                location_plugin_id: fixed_value
-              weight: 0
-              enable: false
-              location_input_id: location_plugins
-            'ipstack:ipstack':
-              settings:
-                location_settings:
-                  settings:
-                    access_key: ''
-                location_plugin_id: ipstack
-              weight: 0
-              enable: false
-              location_input_id: location_plugins
-            'freeogeoip:freeogeoip':
-              weight: 0
-              enable: false
-              location_input_id: location_plugins
-              settings:
-                location_plugin_id: freeogeoip
-          unit: mi
-          plugin_id: geolocation_filter_proximity
       sorts:
         field_location_proximity_form:
           id: field_location_proximity_form
@@ -309,7 +190,40 @@ display:
       footer: {  }
       empty: {  }
       relationships: {  }
-      arguments: {  }
+      arguments:
+        field_location_proximity:
+          id: field_location_proximity
+          table: node__field_location
+          field: field_location_proximity
+          relationship: none
+          group_type: group
+          admin_label: ''
+          default_action: ignore
+          exception:
+            value: all
+            title_enable: false
+            title: All
+          title_enable: false
+          title: ''
+          default_argument_type: fixed
+          default_argument_options:
+            argument: ''
+          default_argument_skip_url: false
+          summary_options:
+            base_path: ''
+            count: true
+            items_per_page: 25
+            override: false
+          summary:
+            sort_order: asc
+            number_of_records: 0
+            format: default_summary
+          specify_validation: false
+          validate:
+            type: none
+            fail: 'not found'
+          validate_options: {  }
+          plugin_id: geolocation_argument_proximity
       display_extenders: {  }
     cache_metadata:
       max-age: -1
