@@ -6,6 +6,7 @@ dependencies:
     - search_api_solr
     - taxonomy
     - node
+    - search_api_location
     - search_api
   config:
     - field.storage.node.field_address
@@ -27,6 +28,7 @@ dependencies:
     - field.storage.node.field_index_letter
     - field.storage.node.field_di_lastname
     - field.storage.node.field_lb_search_content
+    - field.storage.node.field_location
     - field.storage.node.field_recipe_main_ingredient
     - field.storage.node.field_hc_primary_symptom_1
     - field.storage.node.field_hc_primary_symptom_2
@@ -353,6 +355,14 @@ field_settings:
     dependencies:
       config:
         - field.storage.node.field_lb_search_content
+  field_location:
+    label: Location
+    datasource_id: 'entity:node'
+    property_path: field_location
+    type: location
+    dependencies:
+      config:
+        - field.storage.node.field_location
   field_published_date:
     label: 'Published date'
     datasource_id: 'entity:node'

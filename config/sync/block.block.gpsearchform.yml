@@ -1,26 +1,23 @@
-uuid: d2daa92b-61b2-4ce3-8156-9a7b7e975e37
+uuid: cc34ee0b-8fe5-4372-b033-696a75804b8e
 langcode: en
 status: true
 dependencies:
-  config:
-    - views.view.gp_practices
   module:
+    - nidirect_gp
     - system
-    - views
   theme:
     - nicsdru_nidirect_theme
-id: exposedformgp_practicesfind_a_gp
+id: gpsearchform
 theme: nicsdru_nidirect_theme
 region: sidebar_first
-weight: -17
+weight: 0
 provider: null
-plugin: 'views_exposed_filter_block:gp_practices-find_a_gp'
+plugin: gp_search_form
 settings:
-  id: 'views_exposed_filter_block:gp_practices-find_a_gp'
-  label: ''
-  provider: views
+  id: gp_search_form
+  label: 'GP search form'
+  provider: nidirect_gp
   label_display: '0'
-  views_label: ''
 visibility:
   request_path:
     id: request_path
