@@ -1,0 +1,38 @@
+uuid: b554bf51-9c2b-4dda-a0c8-4644f98b55e9
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_article
+    - node.type.application
+    - node.type.article
+    - node.type.external_link
+    - node.type.health_condition
+    - node.type.landing_page
+    - node.type.webform
+    - paragraphs.paragraphs_type.article_teaser
+id: paragraph.article_teaser.field_article
+field_name: field_article
+entity_type: paragraph
+bundle: article_teaser
+label: Article
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:node'
+  handler_settings:
+    target_bundles:
+      application: application
+      article: article
+      external_link: external_link
+      health_condition: health_condition
+      landing_page: landing_page
+      webform: webform
+    sort:
+      field: _none
+    auto_create: false
+    auto_create_bundle: application
+field_type: entity_reference
