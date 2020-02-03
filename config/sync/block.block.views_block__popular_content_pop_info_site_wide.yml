@@ -1,0 +1,30 @@
+uuid: bf5cc4bd-48fd-436b-9b54-591e3776481d
+langcode: en
+status: true
+dependencies:
+  config:
+    - views.view.popular_content
+  module:
+    - system
+    - views
+  theme:
+    - nicsdru_nidirect_theme
+id: views_block__popular_content_pop_info_site_wide
+theme: nicsdru_nidirect_theme
+region: sidebar_second
+weight: -14
+provider: null
+plugin: 'views_block:popular_content-pop_info_site_wide'
+settings:
+  id: 'views_block:popular_content-pop_info_site_wide'
+  label: ''
+  provider: views
+  label_display: visible
+  views_label: ''
+  items_per_page: none
+visibility:
+  request_path:
+    id: request_path
+    pages: '<front>'
+    negate: false
+    context_mapping: {  }
