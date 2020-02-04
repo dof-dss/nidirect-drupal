@@ -3,9 +3,12 @@ langcode: en
 status: true
 dependencies:
   config:
+    - field.storage.node.field_summary
+    - field.storage.node.field_teaser
     - search_api.index.default_content
   module:
     - search_api
+    - text
 id: search
 label: Search
 module: views
@@ -13,7 +16,6 @@ description: ''
 tag: ''
 base_table: search_api_index_default_content
 base_field: search_api_id
-core: 8.x
 display:
   default:
     display_plugin: default
@@ -139,15 +141,15 @@ display:
             multi_type: separator
             multi_separator: ', '
           plugin_id: search_api_field
-        search_api_excerpt:
-          id: search_api_excerpt
-          table: search_api_index_default_content
-          field: search_api_excerpt
+        field_teaser:
+          id: field_teaser
+          table: search_api_datasource_default_content_entity_node
+          field: field_teaser
           relationship: none
           group_type: group
           admin_label: ''
           label: ''
-          exclude: false
+          exclude: true
           alter:
             alter_text: false
             text: ''
@@ -187,11 +189,99 @@ display:
           hide_empty: false
           empty_zero: false
           hide_alter_empty: true
-          link_to_item: false
-          use_highlighting: true
+          click_sort_column: value
+          type: string
+          settings:
+            link_to_entity: false
+          group_column: value
+          group_columns: {  }
+          group_rows: true
+          delta_limit: 0
+          delta_offset: 0
+          delta_reversed: false
+          delta_first_last: false
           multi_type: separator
-          multi_separator: ', '
-          plugin_id: search_api
+          separator: ', '
+          field_api_classes: false
+          field_rendering: true
+          fallback_handler: search_api
+          fallback_options:
+            link_to_item: false
+            use_highlighting: false
+            multi_type: separator
+            multi_separator: ', '
+          entity_type: node
+          plugin_id: search_api_field
+        field_summary:
+          id: field_summary
+          table: search_api_datasource_default_content_entity_node
+          field: field_summary
+          relationship: none
+          group_type: group
+          admin_label: ''
+          label: ''
+          exclude: false
+          alter:
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 192
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: true
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: false
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: false
+          empty: '{{ field_teaser }}'
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          click_sort_column: value
+          type: text_default
+          settings: {  }
+          group_column: value
+          group_columns: {  }
+          group_rows: true
+          delta_limit: 0
+          delta_offset: 0
+          delta_reversed: false
+          delta_first_last: false
+          multi_type: separator
+          separator: ', '
+          field_api_classes: false
+          field_rendering: true
+          fallback_handler: search_api
+          fallback_options:
+            link_to_item: false
+            use_highlighting: false
+            multi_type: separator
+            multi_separator: ', '
+          entity_type: node
+          plugin_id: search_api_field
       filters:
         search_api_fulltext:
           id: search_api_fulltext
@@ -230,6 +320,8 @@ display:
               health_condition_supervisor_user: '0'
               driving_instructor_supervisor_user: '0'
             placeholder: ''
+            operator_limit_selection: false
+            operator_list: {  }
           is_grouped: false
           group_info:
             label: ''
@@ -242,7 +334,7 @@ display:
             default_group: All
             default_group_multiple: {  }
             group_items: {  }
-          parse_mode: terms
+          parse_mode: direct
           min_length: null
           fields: {  }
           plugin_id: search_api_fulltext
@@ -272,7 +364,17 @@ display:
             label: ''
           plugin_id: search_api
       title: Search
-      header: {  }
+      header:
+        result:
+          id: result
+          table: views
+          field: result
+          relationship: none
+          group_type: group
+          admin_label: ''
+          empty: false
+          content: '@total results'
+          plugin_id: result
       footer: {  }
       empty:
         area:
@@ -298,7 +400,9 @@ display:
         - 'languages:language_interface'
         - url
         - url.query_args
-      tags: {  }
+      tags:
+        - 'config:field.storage.node.field_summary'
+        - 'config:field.storage.node.field_teaser'
   page_1:
     display_plugin: page
     id: page_1
@@ -314,7 +418,9 @@ display:
         - 'languages:language_interface'
         - url
         - url.query_args
-      tags: {  }
+      tags:
+        - 'config:field.storage.node.field_summary'
+        - 'config:field.storage.node.field_teaser'
   site_search:
     display_plugin: embed
     id: site_search
@@ -455,6 +561,8 @@ display:
               health_condition_supervisor_user: '0'
               driving_instructor_supervisor_user: '0'
             placeholder: 'Search nidirect'
+            operator_limit_selection: false
+            operator_list: {  }
           is_grouped: false
           group_info:
             label: ''

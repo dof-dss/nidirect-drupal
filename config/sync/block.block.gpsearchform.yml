@@ -1,0 +1,26 @@
+uuid: cc34ee0b-8fe5-4372-b033-696a75804b8e
+langcode: en
+status: true
+dependencies:
+  module:
+    - nidirect_gp
+    - system
+  theme:
+    - nicsdru_nidirect_theme
+id: gpsearchform
+theme: nicsdru_nidirect_theme
+region: sidebar_first
+weight: -4
+provider: null
+plugin: gp_search_form
+settings:
+  id: gp_search_form
+  label: 'GP search form'
+  provider: nidirect_gp
+  label_display: '0'
+visibility:
+  request_path:
+    id: request_path
+    pages: /services/gp-practices
+    negate: false
+    context_mapping: {  }

@@ -15,7 +15,7 @@ dependencies:
     - field.field.node.publication.field_top_level_theme
     - node.type.publication
   module:
-    - file
+    - datetime
     - layout_builder
     - text
     - user
@@ -28,11 +28,6 @@ targetEntityType: node
 bundle: publication
 mode: full
 content:
-  banner_display:
-    weight: 0
-    region: content
-    settings: {  }
-    third_party_settings: {  }
   body:
     label: hidden
     type: text_default
@@ -40,26 +35,28 @@ content:
     settings: {  }
     third_party_settings: {  }
     region: content
-  field_attachment:
-    type: file_default
-    weight: 3
+  field_published_date:
+    type: datetime_default
+    weight: 0
     region: content
-    label: above
+    label: inline
     settings:
-      use_description_as_link_text: true
+      format_type: medium
+      timezone_override: ''
     third_party_settings: {  }
   field_summary:
     weight: 1
-    label: above
+    label: hidden
     settings: {  }
     third_party_settings: {  }
     type: text_default
     region: content
 hidden:
+  banner_display: true
   content_moderation_control: true
+  field_attachment: true
   field_meta_tags: true
   field_publication_type: true
-  field_published_date: true
   field_site_themes: true
   field_subtheme: true
   field_top_level_theme: true

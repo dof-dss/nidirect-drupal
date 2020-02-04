@@ -7,33 +7,31 @@ dependencies:
     - field.field.node.contact.field_address
     - field.field.node.contact.field_contact_additional_info
     - field.field.node.contact.field_contact_category
-    - field.field.node.contact.field_contact_fax
     - field.field.node.contact.field_contact_group
     - field.field.node.contact.field_contact_hours
-    - field.field.node.contact.field_contact_mobile
-    - field.field.node.contact.field_contact_phone
     - field.field.node.contact.field_contact_website
     - field.field.node.contact.field_email_address
-    - field.field.node.contact.field_enable_toc
+    - field.field.node.contact.field_toc_enable
     - field.field.node.contact.field_location
     - field.field.node.contact.field_meta_tags
     - field.field.node.contact.field_next_audit_due
     - field.field.node.contact.field_site_themes
     - field.field.node.contact.field_summary
     - field.field.node.contact.field_supplementary_contact
+    - field.field.node.contact.field_telephone
     - node.type.contact
-    - workflows.workflow.editorial
   module:
     - address
     - content_moderation
     - datetime
     - field_group
-    - geolocation
+    - geolocation_google_maps
     - link
     - metatag
     - path
+    - scheduler
     - shs
-    - telephone
+    - telephone_plus
     - text
 third_party_settings:
   field_group:
@@ -44,7 +42,7 @@ third_party_settings:
         - body
         - field_contact_additional_info
       parent_name: ''
-      weight: 1
+      weight: 8
       format_type: details
       format_settings:
         open: false
@@ -52,6 +50,7 @@ third_party_settings:
         classes: ''
         id: ''
       label: General
+      region: content
     group_detail:
       children:
         - field_contact_category
@@ -59,16 +58,12 @@ third_party_settings:
         - field_location
         - field_address
         - field_email_address
+        - field_telephone
         - field_contact_website
-        - field_contact_phone
-        - field_contact_benefits_no
-        - field_contact_emp_svcs_no
-        - field_contact_fax
-        - field_contact_mobile
         - field_contact_hours
         - field_site_themes
       parent_name: ''
-      weight: 2
+      weight: 9
       format_type: details
       format_settings:
         open: false
@@ -76,6 +71,7 @@ third_party_settings:
         classes: ''
         id: ''
       label: Detail
+      region: content
 id: node.contact.default
 targetEntityType: node
 bundle: contact
@@ -83,28 +79,29 @@ mode: default
 content:
   body:
     type: text_textarea_with_summary
-    weight: 6
+    weight: 5
     settings:
       rows: 9
       summary_rows: 3
       placeholder: ''
+      show_summary: false
     third_party_settings: {  }
     region: content
   created:
     type: datetime_timestamp
-    weight: 5
+    weight: 3
     region: content
     settings: {  }
     third_party_settings: {  }
   field_address:
-    weight: 4
+    weight: 5
     settings: {  }
     third_party_settings: {  }
     type: address_default
     region: content
   field_contact_additional_info:
     type: text_textarea
-    weight: 17
+    weight: 6
     region: content
     settings:
       rows: 5
@@ -116,14 +113,6 @@ content:
     region: content
     settings: {  }
     third_party_settings: {  }
-  field_contact_fax:
-    type: string_textfield
-    weight: 10
-    region: content
-    settings:
-      size: 60
-      placeholder: ''
-    third_party_settings: {  }
   field_contact_group:
     type: entity_reference_autocomplete
     weight: 2
@@ -132,32 +121,19 @@ content:
       match_operator: CONTAINS
       size: 60
       placeholder: ''
+      match_limit: 10
     third_party_settings: {  }
   field_contact_hours:
     type: text_textarea
-    weight: 12
+    weight: 9
     region: content
     settings:
       rows: 5
       placeholder: ''
     third_party_settings: {  }
-  field_contact_mobile:
-    weight: 11
-    settings:
-      placeholder: ''
-    third_party_settings: {  }
-    type: telephone_default
-    region: content
-  field_contact_phone:
-    weight: 7
-    settings:
-      placeholder: ''
-    third_party_settings: {  }
-    type: telephone_default
-    region: content
   field_contact_website:
     type: link_default
-    weight: 6
+    weight: 8
     region: content
     settings:
       placeholder_url: ''
@@ -165,21 +141,14 @@ content:
     third_party_settings: {  }
   field_email_address:
     type: email_default
-    weight: 5
+    weight: 6
     region: content
     settings:
       size: 60
       placeholder: ''
     third_party_settings: {  }
-  field_enable_toc:
-    weight: 13
-    settings:
-      display_label: true
-    third_party_settings: {  }
-    type: boolean_checkbox
-    region: content
   field_location:
-    weight: 3
+    weight: 4
     settings:
       default_longitude: ''
       default_latitude: ''
@@ -189,7 +158,7 @@ content:
         height: 400px
         width: 100%
         type: ROADMAP
-        zoom: '10'
+        zoom: 10
         maxZoom: 18
         minZoom: 0
         mapTypeControl: 1
@@ -202,7 +171,7 @@ content:
         info_auto_display: 1
         marker_icon_path: ''
         disableAutoPan: 1
-        rotateControl: 0
+        rotateControl: false
         fullscreenControl: 0
         preferScrollingToZooming: 0
         disableDoubleClickZoom: 0
@@ -227,7 +196,7 @@ content:
     region: content
   field_site_themes:
     type: options_shs
-    weight: 13
+    weight: 10
     region: content
     settings:
       display_node_count: false
@@ -236,7 +205,7 @@ content:
       force_deepest: false
     third_party_settings: {  }
   field_summary:
-    weight: 5
+    weight: 4
     settings:
       rows: 5
       placeholder: ''
@@ -245,12 +214,25 @@ content:
     region: content
   field_supplementary_contact:
     type: string_textfield
-    weight: 4
+    weight: 3
     region: content
     settings:
       size: 60
       placeholder: ''
     third_party_settings: {  }
+  field_telephone:
+    weight: 7
+    settings: {  }
+    third_party_settings: {  }
+    type: telephone_plus_widget
+    region: content
+  field_toc_enable:
+    weight: 13
+    settings:
+      display_label: true
+    third_party_settings: {  }
+    type: boolean_checkbox
+    region: content
   flag:
     weight: 10
     region: content
@@ -258,7 +240,7 @@ content:
     third_party_settings: {  }
   langcode:
     type: language_select
-    weight: 3
+    weight: 1
     region: content
     settings:
       include_locked: true
@@ -271,7 +253,7 @@ content:
     third_party_settings: {  }
   path:
     type: path
-    weight: 9
+    weight: 6
     region: content
     settings: {  }
     third_party_settings: {  }
@@ -279,21 +261,32 @@ content:
     type: boolean_checkbox
     settings:
       display_label: true
-    weight: 6
+    weight: 4
     region: content
+    third_party_settings: {  }
+  publish_on:
+    type: datetime_timestamp_no_default
+    weight: 18
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  scheduler_settings:
+    weight: 16
+    region: content
+    settings: {  }
     third_party_settings: {  }
   status:
     type: boolean_checkbox
     settings:
       display_label: true
-    weight: 10
+    weight: 7
     region: content
     third_party_settings: {  }
   sticky:
     type: boolean_checkbox
     settings:
       display_label: true
-    weight: 7
+    weight: 5
     region: content
     third_party_settings: {  }
   title:
@@ -306,12 +299,19 @@ content:
     third_party_settings: {  }
   uid:
     type: entity_reference_autocomplete
-    weight: 4
+    weight: 2
     settings:
       match_operator: CONTAINS
       size: 60
       placeholder: ''
+      match_limit: 10
     region: content
+    third_party_settings: {  }
+  unpublish_on:
+    type: datetime_timestamp_no_default
+    weight: 17
+    region: content
+    settings: {  }
     third_party_settings: {  }
   url_redirects:
     weight: 12

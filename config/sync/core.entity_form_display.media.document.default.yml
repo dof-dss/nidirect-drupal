@@ -1,11 +1,9 @@
-uuid: 1f0bcb89-335b-4d22-a945-909db9426eef
+uuid: d3caaee5-9284-420c-8721-b908a1bfd431
 langcode: en
 status: true
 dependencies:
   config:
-    - field.field.media.document.field_media_doc_file_language
-    - field.field.media.document.field_media_doc_file_title
-    - field.field.media.document.field_media_file_1
+    - field.field.media.document.field_media_file
     - media.type.document
   module:
     - file
@@ -17,26 +15,12 @@ mode: default
 content:
   created:
     type: datetime_timestamp
-    weight: 5
+    weight: 10
     region: content
     settings: {  }
     third_party_settings: {  }
-  field_media_doc_file_language:
-    weight: 3
-    settings: {  }
-    third_party_settings: {  }
-    type: options_select
-    region: content
-  field_media_doc_file_title:
-    weight: 2
-    settings:
-      size: 60
-      placeholder: ''
-    third_party_settings: {  }
-    type: string_textfield
-    region: content
-  field_media_file_1:
-    weight: 1
+  field_media_file:
+    weight: 0
     settings:
       progress_indicator: throbber
     third_party_settings: {  }
@@ -51,7 +35,7 @@ content:
     third_party_settings: {  }
   name:
     type: string_textfield
-    weight: 0
+    weight: -5
     region: content
     settings:
       size: 60
@@ -59,7 +43,7 @@ content:
     third_party_settings: {  }
   path:
     type: path
-    weight: 6
+    weight: 30
     region: content
     settings: {  }
     third_party_settings: {  }
@@ -67,16 +51,17 @@ content:
     type: boolean_checkbox
     settings:
       display_label: true
-    weight: 7
+    weight: 100
     region: content
     third_party_settings: {  }
   uid:
     type: entity_reference_autocomplete
-    weight: 4
+    weight: 5
     settings:
       match_operator: CONTAINS
       size: 60
       placeholder: ''
+      match_limit: 10
     region: content
     third_party_settings: {  }
 hidden: {  }

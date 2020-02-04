@@ -1,0 +1,41 @@
+uuid: 79db81c1-90f8-47a0-94a1-e466678fcc1e
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.node.telephone_lookup.field_telephone_lookup_data
+    - field.field.node.telephone_lookup.field_telephone_lookup_nid
+    - node.type.telephone_lookup
+  module:
+    - telephone_plus
+    - user
+id: node.telephone_lookup.default
+targetEntityType: node
+bundle: telephone_lookup
+mode: default
+content:
+  field_telephone_lookup_data:
+    weight: 103
+    label: above
+    settings:
+      vcard: true
+    third_party_settings: {  }
+    type: telephone_plus_link
+    region: content
+  field_telephone_lookup_nid:
+    weight: 102
+    label: above
+    settings:
+      thousand_separator: ''
+      prefix_suffix: true
+    third_party_settings: {  }
+    type: number_integer
+    region: content
+  links:
+    weight: 100
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+hidden:
+  langcode: true
+  search_api_excerpt: true

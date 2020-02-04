@@ -1,0 +1,31 @@
+uuid: 3a7852ae-b8da-4a8b-9ea3-6cfe6c974c9e
+langcode: en
+status: true
+dependencies:
+  config:
+    - views.view.health_conditions
+  module:
+    - ctools
+    - views
+  theme:
+    - nicsdru_nidirect_theme
+id: exposedformhealth_conditionssearch_sidebar_2
+theme: nicsdru_nidirect_theme
+region: sidebar_second
+weight: -19
+provider: null
+plugin: 'views_exposed_filter_block:health_conditions-search_page'
+settings:
+  id: 'views_exposed_filter_block:health_conditions-search_page'
+  label: ''
+  provider: views
+  label_display: visible
+  views_label: ''
+visibility:
+  'entity_bundle:node':
+    id: 'entity_bundle:node'
+    bundles:
+      health_condition: health_condition
+    negate: false
+    context_mapping:
+      node: '@node.node_route_context:node'

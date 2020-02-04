@@ -1,0 +1,29 @@
+uuid: c1d77c4f-5d10-4b04-bcad-f8533341fc42
+langcode: en
+status: true
+dependencies:
+  config:
+    - views.view.publications
+  module:
+    - system
+    - views
+  theme:
+    - nicsdru_nidirect_theme
+id: exposedformpublicationssearch_page
+theme: nicsdru_nidirect_theme
+region: sidebar_first
+weight: -7
+provider: null
+plugin: 'views_exposed_filter_block:publications-search_page'
+settings:
+  id: 'views_exposed_filter_block:publications-search_page'
+  label: ''
+  provider: views
+  label_display: '0'
+  views_label: ''
+visibility:
+  request_path:
+    id: request_path
+    pages: /publications
+    negate: false
+    context_mapping: {  }

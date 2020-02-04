@@ -1,0 +1,33 @@
+uuid: 9f719ac4-17d4-483c-bfa4-9871cd5e25f1
+langcode: en
+status: true
+dependencies:
+  module:
+    - node
+    - origins_toc
+  theme:
+    - nicsdru_nidirect_theme
+id: tableofcontents
+theme: nicsdru_nidirect_theme
+region: sidebar_second
+weight: -21
+provider: null
+plugin: table_of_contents_block
+settings:
+  id: table_of_contents_block
+  label: 'On this page'
+  provider: origins_toc
+  label_display: visible
+visibility:
+  node_type:
+    id: node_type
+    bundles:
+      article: article
+      contact: contact
+      health_condition: health_condition
+      page: page
+      publication: publication
+      recipe: recipe
+    negate: false
+    context_mapping:
+      node: '@node.node_route_context:node'

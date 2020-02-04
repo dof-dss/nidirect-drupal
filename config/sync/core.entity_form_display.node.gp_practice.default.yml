@@ -4,7 +4,6 @@ status: true
 dependencies:
   config:
     - field.field.node.gp_practice.field_address
-    - field.field.node.gp_practice.field_contact_phone
     - field.field.node.gp_practice.field_gp_appointments
     - field.field.node.gp_practice.field_gp_lcg
     - field.field.node.gp_practice.field_gp_partnership_no
@@ -17,17 +16,18 @@ dependencies:
     - field.field.node.gp_practice.field_gp_surgery_name
     - field.field.node.gp_practice.field_location
     - field.field.node.gp_practice.field_meta_tags
+    - field.field.node.gp_practice.field_telephone
     - node.type.gp_practice
-    - workflows.workflow.editorial
   module:
     - address
     - content_moderation
     - field_group
-    - geolocation
+    - geolocation_google_maps
     - link
     - metatag
     - path
-    - telephone
+    - scheduler
+    - telephone_plus
 third_party_settings:
   field_group:
     group_practice_details:
@@ -49,10 +49,11 @@ third_party_settings:
         open: false
         required_fields: true
       label: 'Practice details'
+      region: content
     group_contact_details:
       children:
         - field_gp_practice_website
-        - field_contact_phone
+        - field_telephone
         - field_address
         - field_location
       parent_name: ''
@@ -64,6 +65,7 @@ third_party_settings:
         open: false
         required_fields: true
       label: 'Contact details'
+      region: content
     group_practice_members:
       children:
         - field_gp_practice_lead
@@ -77,11 +79,12 @@ third_party_settings:
         open: false
         required_fields: true
       label: 'Practice members'
+      region: content
     group_other_gps_in_this_practice:
       children:
         - field_gp_practice_member
       parent_name: group_practice_members
-      weight: 4
+      weight: 5
       format_type: details
       format_settings:
         id: group_gp_practice_members_other
@@ -89,6 +92,7 @@ third_party_settings:
         open: false
         required_fields: true
       label: 'Other GPs in this practice'
+      region: content
 id: node.gp_practice.default
 targetEntityType: node
 bundle: gp_practice
@@ -96,7 +100,7 @@ mode: default
 content:
   created:
     type: datetime_timestamp
-    weight: 15
+    weight: 10
     region: content
     settings: {  }
     third_party_settings: {  }
@@ -122,13 +126,6 @@ content:
       size: 60
       placeholder: ''
     third_party_settings: {  }
-  field_contact_phone:
-    weight: 2
-    settings:
-      placeholder: ''
-    third_party_settings: {  }
-    type: telephone_default
-    region: content
   field_contact_postcode:
     type: string_textfield
     weight: 6
@@ -147,7 +144,7 @@ content:
     third_party_settings: {  }
   field_gp_appointments:
     type: link_default
-    weight: 6
+    weight: 11
     region: content
     settings:
       placeholder_url: ''
@@ -155,13 +152,13 @@ content:
     third_party_settings: {  }
   field_gp_lcg:
     type: options_select
-    weight: 5
+    weight: 10
     region: content
     settings: {  }
     third_party_settings: {  }
   field_gp_partnership_no:
     type: string_textfield
-    weight: 4
+    weight: 9
     region: content
     settings:
       size: 60
@@ -175,6 +172,7 @@ content:
       match_operator: CONTAINS
       size: 60
       placeholder: ''
+      match_limit: 10
     third_party_settings: {  }
   field_gp_practice_member:
     type: entity_reference_autocomplete
@@ -184,10 +182,11 @@ content:
       match_operator: CONTAINS
       size: 60
       placeholder: ''
+      match_limit: 10
     third_party_settings: {  }
   field_gp_practice_name:
     type: string_textfield
-    weight: 1
+    weight: 6
     region: content
     settings:
       size: 60
@@ -195,7 +194,7 @@ content:
     third_party_settings: {  }
   field_gp_practice_no:
     type: string_textfield
-    weight: 2
+    weight: 7
     region: content
     settings:
       size: 60
@@ -211,7 +210,7 @@ content:
     third_party_settings: {  }
   field_gp_prescriptions:
     type: link_default
-    weight: 7
+    weight: 12
     region: content
     settings:
       placeholder_url: ''
@@ -219,7 +218,7 @@ content:
     third_party_settings: {  }
   field_gp_surgery_name:
     type: string_textfield
-    weight: 3
+    weight: 8
     region: content
     settings:
       size: 60
@@ -238,7 +237,7 @@ content:
         height: 400px
         width: 100%
         type: ROADMAP
-        zoom: '10'
+        zoom: 10
         maxZoom: 18
         minZoom: 0
         mapTypeControl: 1
@@ -251,7 +250,7 @@ content:
         info_auto_display: 1
         marker_icon_path: ''
         disableAutoPan: 1
-        rotateControl: 0
+        rotateControl: false
         fullscreenControl: 0
         preferScrollingToZooming: 0
         disableDoubleClickZoom: 0
@@ -261,27 +260,33 @@ content:
       allow_override_map_settings: 0
     third_party_settings: {  }
   field_meta_tags:
-    weight: 11
+    weight: 9
     settings: {  }
     third_party_settings: {  }
     type: metatag_firehose
     region: content
+  field_telephone:
+    weight: 2
+    settings: {  }
+    third_party_settings: {  }
+    type: telephone_plus_widget
+    region: content
   langcode:
     type: language_select
-    weight: 2
+    weight: 3
     region: content
     settings:
       include_locked: true
     third_party_settings: {  }
   moderation_state:
     type: moderation_state_default
-    weight: 100
+    weight: 15
     settings: {  }
     region: content
     third_party_settings: {  }
   path:
     type: path
-    weight: 9
+    weight: 7
     region: content
     settings: {  }
     third_party_settings: {  }
@@ -289,26 +294,37 @@ content:
     type: boolean_checkbox
     settings:
       display_label: true
-    weight: 7
+    weight: 5
     region: content
+    third_party_settings: {  }
+  publish_on:
+    type: datetime_timestamp_no_default
+    weight: 13
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  scheduler_settings:
+    weight: 11
+    region: content
+    settings: {  }
     third_party_settings: {  }
   status:
-    type: boolean_checkbox
-    settings:
-      display_label: true
-    weight: 10
-    region: content
-    third_party_settings: {  }
-  sticky:
     type: boolean_checkbox
     settings:
       display_label: true
     weight: 8
     region: content
     third_party_settings: {  }
+  sticky:
+    type: boolean_checkbox
+    settings:
+      display_label: true
+    weight: 6
+    region: content
+    third_party_settings: {  }
   title:
     type: string_textfield
-    weight: 0
+    weight: 5
     region: content
     settings:
       size: 60
@@ -316,15 +332,22 @@ content:
     third_party_settings: {  }
   uid:
     type: entity_reference_autocomplete
-    weight: 5
+    weight: 4
     settings:
       match_operator: CONTAINS
       size: 60
       placeholder: ''
+      match_limit: 10
     region: content
     third_party_settings: {  }
+  unpublish_on:
+    type: datetime_timestamp_no_default
+    weight: 12
+    region: content
+    settings: {  }
+    third_party_settings: {  }
   url_redirects:
-    weight: 50
+    weight: 14
     region: content
     settings: {  }
     third_party_settings: {  }

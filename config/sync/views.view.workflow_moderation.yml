@@ -15,7 +15,7 @@ dependencies:
     - user.role.health_condition_supervisor_user
     - user.role.news_supervisor
     - user.role.supervisor_user
-    - workflows.workflow.editorial
+    - workflows.workflow.nics_editorial_workflow
   module:
     - content_moderation
     - datetime
@@ -29,7 +29,6 @@ description: 'NIDirect custom views to appear under the custom ''My Dashboard'' 
 tag: ''
 base_table: node_field_revision
 base_field: vid
-core: 8.x
 display:
   default:
     display_plugin: default
@@ -209,7 +208,7 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
-          label: 'Moderation State'
+          label: 'Moderation state'
           exclude: false
           alter:
             alter_text: true
@@ -264,7 +263,7 @@ display:
           separator: ', '
           field_api_classes: false
           entity_type: node
-          plugin_id: field
+          plugin_id: moderation_state_field
         nothing:
           id: nothing
           table: views
@@ -276,7 +275,7 @@ display:
           exclude: false
           alter:
             alter_text: true
-            text: "<div><a href='/nicsdru_workflow/change_state/{{ nid }}/draft?destination=/admin/workflow/needs-review'>Change to Draft</a></div>\r\n<div><a href='/nicsdru_workflow/change_state/{{ nid }}/published?destination=/admin/workflow/needs-review'>Change to Published</a></div>"
+            text: "<div><a href='/origins_workflow/change_state/{{ nid }}/draft?destination=/admin/workflow/needs-review'>Change to Draft</a></div>\r\n<div><a href='/origins_workflow/change_state/{{ nid }}/published?destination=/admin/workflow/needs-review'>Change to Published</a></div>"
             make_link: false
             path: ''
             absolute: false
@@ -306,6 +305,55 @@ display:
           element_label_type: ''
           element_label_class: ''
           element_label_colon: false
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: false
+          plugin_id: custom
+        nothing_3:
+          id: nothing_3
+          table: views
+          field: nothing
+          relationship: none
+          group_type: group
+          admin_label: ''
+          label: 'Set moderation state'
+          exclude: false
+          alter:
+            alter_text: true
+            text: "<div><a href='/origins_workflow/change_state/{{ nid }}/draft?destination=/admin/workflow/needs-review'>Change to Draft</a></div>\r\n"
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: true
           element_wrapper_type: ''
           element_wrapper_class: ''
           element_default_classes: true
@@ -576,6 +624,16 @@ display:
           entity_type: node
           entity_field: changed
           plugin_id: field
+        nothing_1:
+          id: nothing_1
+          table: views
+          field: nothing
+          plugin_id: custom
+        nothing_2:
+          id: nothing_2
+          table: views
+          field: nothing
+          plugin_id: custom
       filters:
         moderation_state:
           id: moderation_state
@@ -586,7 +644,7 @@ display:
           admin_label: ''
           operator: in
           value:
-            editorial-needs_review: editorial-needs_review
+            nics_editorial_workflow-needs_review: nics_editorial_workflow-needs_review
           group: 1
           exposed: false
           expose:
@@ -602,6 +660,8 @@ display:
             remember_roles:
               authenticated: authenticated
             reduce: false
+            operator_limit_selection: false
+            operator_list: {  }
           is_grouped: false
           group_info:
             label: ''
@@ -639,6 +699,8 @@ display:
             multiple: false
             remember_roles:
               authenticated: authenticated
+            operator_limit_selection: false
+            operator_list: {  }
           is_grouped: false
           group_info:
             label: ''
@@ -690,6 +752,8 @@ display:
               health_condition_supervisor_user: '0'
               driving_instructor_supervisor_user: '0'
             placeholder: ''
+            operator_limit_selection: false
+            operator_list: {  }
           is_grouped: false
           group_info:
             label: ''
@@ -742,6 +806,8 @@ display:
               health_condition_supervisor_user: '0'
               driving_instructor_supervisor_user: '0'
             reduce: false
+            operator_limit_selection: false
+            operator_list: {  }
           is_grouped: false
           group_info:
             label: ''
@@ -802,18 +868,21 @@ display:
         - user.roles
       tags:
         - 'config:workflow_list'
-  page_1:
+  all_drafts:
     display_plugin: page
-    id: page_1
-    display_title: 'Needs Review'
-    position: 1
+    id: all_drafts
+    display_title: 'All Drafts Page'
+    position: 2
     display_options:
       display_extenders: {  }
-      path: admin/workflow/needs-review
       display_description: ''
+      title: 'All drafts'
       defaults:
+        title: false
         filters: false
         filter_groups: false
+        fields: false
+      path: admin/content/all-drafts
       filters:
         moderation_state:
           id: moderation_state
@@ -822,9 +891,9 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
-          operator: in
+          operator: 'not in'
           value:
-            editorial-needs_review: editorial-needs_review
+            nics_editorial_workflow-published: nics_editorial_workflow-published
           group: 1
           exposed: false
           expose:
@@ -840,6 +909,8 @@ display:
             remember_roles:
               authenticated: authenticated
             reduce: false
+            operator_limit_selection: false
+            operator_list: {  }
           is_grouped: false
           group_info:
             label: ''
@@ -877,6 +948,8 @@ display:
             multiple: false
             remember_roles:
               authenticated: authenticated
+            operator_limit_selection: false
+            operator_list: {  }
           is_grouped: false
           group_info:
             label: ''
@@ -928,6 +1001,8 @@ display:
               health_condition_supervisor_user: '0'
               driving_instructor_supervisor_user: '0'
             placeholder: ''
+            operator_limit_selection: false
+            operator_list: {  }
           is_grouped: false
           group_info:
             label: ''
@@ -942,6 +1017,110 @@ display:
             group_items: {  }
           entity_type: node
           entity_field: title
+          plugin_id: string
+        field_summary_value:
+          id: field_summary_value
+          table: node__field_summary
+          field: field_summary_value
+          relationship: nid
+          group_type: group
+          admin_label: ''
+          operator: contains
+          value: ''
+          group: 1
+          exposed: true
+          expose:
+            operator_id: field_summary_value_op
+            label: Summary
+            description: ''
+            use_operator: false
+            operator: field_summary_value_op
+            identifier: field_summary_value
+            required: false
+            remember: false
+            multiple: false
+            remember_roles:
+              authenticated: authenticated
+              anonymous: '0'
+              administrator: '0'
+              gp_author_user: '0'
+              author_user: '0'
+              gp_supervisor_user: '0'
+              news_supervisor: '0'
+              supervisor_user: '0'
+              editor_user: '0'
+              admin_user: '0'
+              apps_user: '0'
+              health_condition_author_user: '0'
+              health_condition_supervisor_user: '0'
+              driving_instructor_supervisor_user: '0'
+            placeholder: ''
+            operator_limit_selection: false
+            operator_list: {  }
+          is_grouped: false
+          group_info:
+            label: ''
+            description: ''
+            identifier: ''
+            optional: true
+            widget: select
+            multiple: false
+            remember: false
+            default_group: All
+            default_group_multiple: {  }
+            group_items: {  }
+          plugin_id: string
+        body_value:
+          id: body_value
+          table: node__body
+          field: body_value
+          relationship: nid
+          group_type: group
+          admin_label: ''
+          operator: contains
+          value: ''
+          group: 1
+          exposed: true
+          expose:
+            operator_id: body_value_op
+            label: Body
+            description: ''
+            use_operator: false
+            operator: body_value_op
+            identifier: body_value
+            required: false
+            remember: false
+            multiple: false
+            remember_roles:
+              authenticated: authenticated
+              anonymous: '0'
+              administrator: '0'
+              gp_author_user: '0'
+              author_user: '0'
+              gp_supervisor_user: '0'
+              news_supervisor: '0'
+              supervisor_user: '0'
+              editor_user: '0'
+              admin_user: '0'
+              apps_user: '0'
+              health_condition_author_user: '0'
+              health_condition_supervisor_user: '0'
+              driving_instructor_supervisor_user: '0'
+            placeholder: ''
+            operator_limit_selection: false
+            operator_list: {  }
+          is_grouped: false
+          group_info:
+            label: ''
+            description: ''
+            identifier: ''
+            optional: true
+            widget: select
+            multiple: false
+            remember: false
+            default_group: All
+            default_group_multiple: {  }
+            group_items: {  }
           plugin_id: string
         type:
           id: type
@@ -980,6 +1159,8 @@ display:
               health_condition_supervisor_user: '0'
               driving_instructor_supervisor_user: '0'
             reduce: false
+            operator_limit_selection: false
+            operator_list: {  }
           is_grouped: false
           group_info:
             label: ''
@@ -995,6 +1176,119 @@ display:
           entity_type: node
           entity_field: type
           plugin_id: bundle
+        field_subtheme_target_id:
+          id: field_subtheme_target_id
+          table: node__field_subtheme
+          field: field_subtheme_target_id
+          relationship: nid
+          group_type: group
+          admin_label: ''
+          operator: or
+          value: {  }
+          group: 1
+          exposed: true
+          expose:
+            operator_id: field_subtheme_target_id_op
+            label: 'Theme/subtheme (field_subtheme)'
+            description: ''
+            use_operator: false
+            operator: field_subtheme_target_id_op
+            identifier: field_subtheme_target_id
+            required: false
+            remember: false
+            multiple: false
+            remember_roles:
+              authenticated: authenticated
+              anonymous: '0'
+              administrator: '0'
+              gp_author_user: '0'
+              author_user: '0'
+              gp_supervisor_user: '0'
+              news_supervisor: '0'
+              supervisor_user: '0'
+              editor_user: '0'
+              admin_user: '0'
+              apps_user: '0'
+              health_condition_author_user: '0'
+              health_condition_supervisor_user: '0'
+              driving_instructor_supervisor_user: '0'
+            reduce: false
+            operator_limit_selection: false
+            operator_list: {  }
+          is_grouped: false
+          group_info:
+            label: ''
+            description: ''
+            identifier: ''
+            optional: true
+            widget: select
+            multiple: false
+            remember: false
+            default_group: All
+            default_group_multiple: {  }
+            group_items: {  }
+          reduce_duplicates: false
+          type: select
+          limit: true
+          vid: site_themes
+          hierarchy: true
+          error_message: true
+          plugin_id: taxonomy_index_tid
+        moderation_state_1:
+          id: moderation_state_1
+          table: node_field_revision
+          field: moderation_state
+          relationship: none
+          group_type: group
+          admin_label: ''
+          operator: in
+          value:
+            nics_editorial_workflow-draft: nics_editorial_workflow-draft
+            nics_editorial_workflow-needs_review: nics_editorial_workflow-needs_review
+          group: 1
+          exposed: true
+          expose:
+            operator_id: moderation_state_1_op
+            label: 'Moderation state'
+            description: ''
+            use_operator: false
+            operator: moderation_state_1_op
+            identifier: moderation_state_1
+            required: false
+            remember: false
+            multiple: false
+            remember_roles:
+              authenticated: authenticated
+              anonymous: '0'
+              administrator: '0'
+              gp_author_user: '0'
+              author_user: '0'
+              gp_supervisor_user: '0'
+              news_supervisor: '0'
+              supervisor_user: '0'
+              editor_user: '0'
+              admin_user: '0'
+              apps_user: '0'
+              health_condition_author_user: '0'
+              health_condition_supervisor_user: '0'
+              driving_instructor_supervisor_user: '0'
+            reduce: true
+            operator_limit_selection: false
+            operator_list: {  }
+          is_grouped: false
+          group_info:
+            label: ''
+            description: ''
+            identifier: ''
+            optional: true
+            widget: select
+            multiple: false
+            remember: false
+            default_group: All
+            default_group_multiple: {  }
+            group_items: {  }
+          entity_type: node
+          plugin_id: moderation_state_filter
         uid:
           id: uid
           table: users_field_data
@@ -1032,6 +1326,8 @@ display:
               health_condition_supervisor_user: '0'
               driving_instructor_supervisor_user: '0'
             reduce: false
+            operator_limit_selection: false
+            operator_list: {  }
           is_grouped: false
           group_info:
             label: ''
@@ -1051,6 +1347,559 @@ display:
         operator: AND
         groups:
           1: AND
+      fields:
+        nid:
+          id: nid
+          table: node_field_data
+          field: nid
+          relationship: nid
+          group_type: group
+          admin_label: ''
+          label: ''
+          exclude: true
+          alter:
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: false
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          click_sort_column: value
+          type: number_integer
+          settings:
+            thousand_separator: ''
+            prefix_suffix: false
+          group_column: value
+          group_columns: {  }
+          group_rows: true
+          delta_limit: 0
+          delta_offset: 0
+          delta_reversed: false
+          delta_first_last: false
+          multi_type: separator
+          separator: ', '
+          field_api_classes: false
+          entity_type: node
+          entity_field: nid
+          plugin_id: field
+        moderation_state_1:
+          id: moderation_state_1
+          table: node_field_revision
+          field: moderation_state
+          relationship: none
+          group_type: group
+          admin_label: ''
+          label: ''
+          exclude: true
+          alter:
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: false
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          click_sort_column: value
+          type: content_moderation_state
+          settings: {  }
+          group_column: value
+          group_columns: {  }
+          group_rows: true
+          delta_limit: 0
+          delta_offset: 0
+          delta_reversed: false
+          delta_first_last: false
+          multi_type: separator
+          separator: ', '
+          field_api_classes: false
+          entity_type: node
+          plugin_id: field
+        moderation_state:
+          id: moderation_state
+          table: node_field_revision
+          field: moderation_state
+          relationship: none
+          group_type: group
+          admin_label: ''
+          label: 'Moderation state'
+          exclude: false
+          alter:
+            alter_text: true
+            text: '<div>{{ moderation_state }}</div><div><a href=''/node/{{ nid }}/revisions''>View moderation history</a></div>'
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: false
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          click_sort_column: value
+          type: content_moderation_state
+          settings: {  }
+          group_column: value
+          group_columns: {  }
+          group_rows: true
+          delta_limit: 0
+          delta_offset: 0
+          delta_reversed: false
+          delta_first_last: false
+          multi_type: separator
+          separator: ', '
+          field_api_classes: false
+          entity_type: node
+          plugin_id: moderation_state_field
+        nothing:
+          id: nothing
+          table: views
+          field: nothing
+          relationship: none
+          group_type: group
+          admin_label: ''
+          label: 'Set moderation state'
+          exclude: false
+          alter:
+            alter_text: true
+            text: "{% if moderation_state_1 == \"Needs Review\" %}\r\n  <div><a href='/origins_workflow/change_state/{{ nid }}/draft?destination=/admin/workflow/all-drafts'>Change to Draft</a></div>\r\n{% else %}\r\n  <div><a href='/origins_workflow/change_state/{{ nid }}/needs_review?destination=/admin/workflow/all-drafts'>Change to Needs Review</a></div>\r\n{% endif %}\r\n<div><a href='/origins_workflow/change_state/{{ nid }}/published?destination=/admin/workflow/all-drafts'>Change to Published</a></div>"
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: false
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: false
+          plugin_id: custom
+        nothing_1:
+          id: nothing_1
+          table: views
+          field: nothing
+          relationship: none
+          group_type: group
+          admin_label: ''
+          label: 'Set moderation state'
+          exclude: false
+          alter:
+            alter_text: true
+            text: "{% if moderation_state_1 == \"Needs Review\" %}\r\n  <div><a href='/origins_workflow/change_state/{{ nid }}/draft?destination=/admin/workflow/all-drafts'>Change to Draft</a></div>\r\n{% else %}\r\n  <div><a href='/origins_workflow/change_state/{{ nid }}/needs_review?destination=/admin/workflow/all-drafts'>Change to Needs Review</a></div>\r\n{% endif %}"
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: true
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: false
+          plugin_id: custom
+        title:
+          id: title
+          table: node_field_data
+          field: title
+          relationship: nid
+          group_type: group
+          admin_label: ''
+          label: Title
+          exclude: false
+          alter:
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: true
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          click_sort_column: value
+          type: string
+          settings:
+            link_to_entity: true
+          group_column: value
+          group_columns: {  }
+          group_rows: true
+          delta_limit: 0
+          delta_offset: 0
+          delta_reversed: false
+          delta_first_last: false
+          multi_type: separator
+          separator: ', '
+          field_api_classes: false
+          entity_type: node
+          entity_field: title
+          plugin_id: field
+        type:
+          id: type
+          table: node_field_data
+          field: type
+          relationship: nid
+          group_type: group
+          admin_label: ''
+          label: Type
+          exclude: false
+          alter:
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: false
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          click_sort_column: target_id
+          type: entity_reference_label
+          settings:
+            link: false
+          group_column: target_id
+          group_columns: {  }
+          group_rows: true
+          delta_limit: 0
+          delta_offset: 0
+          delta_reversed: false
+          delta_first_last: false
+          multi_type: separator
+          separator: ', '
+          field_api_classes: false
+          entity_type: node
+          entity_field: type
+          plugin_id: field
+        name:
+          id: name
+          table: users_field_data
+          field: name
+          relationship: revision_uid
+          group_type: group
+          admin_label: ''
+          label: 'Revised by'
+          exclude: false
+          alter:
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: false
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          click_sort_column: value
+          type: user_name
+          settings:
+            link_to_entity: true
+          group_column: value
+          group_columns: {  }
+          group_rows: true
+          delta_limit: 0
+          delta_offset: 0
+          delta_reversed: false
+          delta_first_last: false
+          multi_type: separator
+          separator: ', '
+          field_api_classes: false
+          entity_type: user
+          entity_field: name
+          plugin_id: field
+        changed:
+          id: changed
+          table: node_field_revision
+          field: changed
+          relationship: none
+          group_type: group
+          admin_label: ''
+          label: 'Last updated'
+          exclude: false
+          alter:
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: false
+            ellipsis: false
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: true
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          click_sort_column: value
+          type: timestamp
+          settings:
+            date_format: custom
+            custom_date_format: 'd M Y - g:i a'
+            timezone: ''
+          group_column: value
+          group_columns: {  }
+          group_rows: true
+          delta_limit: 0
+          delta_offset: 0
+          delta_reversed: false
+          delta_first_last: false
+          multi_type: separator
+          separator: ', '
+          field_api_classes: false
+          entity_type: node
+          entity_field: changed
+          plugin_id: field
     cache_metadata:
       max-age: -1
       contexts:
@@ -1058,14 +1907,15 @@ display:
         - 'languages:language_interface'
         - url
         - url.query_args
+        - user
         - 'user.node_grants:view'
         - user.roles
       tags:
         - 'config:workflow_list'
-  page_2:
+  my_drafts:
     display_plugin: page
-    id: page_2
-    display_title: 'Drafts Page'
+    id: my_drafts
+    display_title: 'My Drafts Page'
     position: 2
     display_options:
       display_extenders: {  }
@@ -1076,7 +1926,7 @@ display:
         filters: false
         filter_groups: false
         fields: false
-      path: admin/workflow/drafts
+      path: admin/content/drafts
       filters:
         moderation_state:
           id: moderation_state
@@ -1087,7 +1937,7 @@ display:
           admin_label: ''
           operator: 'not in'
           value:
-            editorial-published: editorial-published
+            nics_editorial_workflow-published: nics_editorial_workflow-published
           group: 1
           exposed: false
           expose:
@@ -1103,6 +1953,8 @@ display:
             remember_roles:
               authenticated: authenticated
             reduce: false
+            operator_limit_selection: false
+            operator_list: {  }
           is_grouped: false
           group_info:
             label: ''
@@ -1140,6 +1992,8 @@ display:
             multiple: false
             remember_roles:
               authenticated: authenticated
+            operator_limit_selection: false
+            operator_list: {  }
           is_grouped: false
           group_info:
             label: ''
@@ -1177,6 +2031,8 @@ display:
             multiple: false
             remember_roles:
               authenticated: authenticated
+            operator_limit_selection: false
+            operator_list: {  }
           is_grouped: false
           group_info:
             label: ''
@@ -1228,6 +2084,8 @@ display:
               health_condition_supervisor_user: '0'
               driving_instructor_supervisor_user: '0'
             placeholder: ''
+            operator_limit_selection: false
+            operator_list: {  }
           is_grouped: false
           group_info:
             label: ''
@@ -1280,6 +2138,8 @@ display:
               health_condition_supervisor_user: '0'
               driving_instructor_supervisor_user: '0'
             placeholder: ''
+            operator_limit_selection: false
+            operator_list: {  }
           is_grouped: false
           group_info:
             label: ''
@@ -1330,6 +2190,8 @@ display:
               health_condition_supervisor_user: '0'
               driving_instructor_supervisor_user: '0'
             placeholder: ''
+            operator_limit_selection: false
+            operator_list: {  }
           is_grouped: false
           group_info:
             label: ''
@@ -1380,6 +2242,8 @@ display:
               health_condition_supervisor_user: '0'
               driving_instructor_supervisor_user: '0'
             reduce: false
+            operator_limit_selection: false
+            operator_list: {  }
           is_grouped: false
           group_info:
             label: ''
@@ -1432,6 +2296,8 @@ display:
               health_condition_supervisor_user: '0'
               driving_instructor_supervisor_user: '0'
             reduce: false
+            operator_limit_selection: false
+            operator_list: {  }
           is_grouped: false
           group_info:
             label: ''
@@ -1460,8 +2326,8 @@ display:
           admin_label: ''
           operator: in
           value:
-            editorial-draft: editorial-draft
-            editorial-needs_review: editorial-needs_review
+            nics_editorial_workflow-draft: nics_editorial_workflow-draft
+            nics_editorial_workflow-needs_review: nics_editorial_workflow-needs_review
           group: 1
           exposed: true
           expose:
@@ -1490,6 +2356,8 @@ display:
               health_condition_supervisor_user: '0'
               driving_instructor_supervisor_user: '0'
             reduce: true
+            operator_limit_selection: false
+            operator_list: {  }
           is_grouped: false
           group_info:
             label: ''
@@ -1645,7 +2513,7 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
-          label: 'Moderation State'
+          label: 'Moderation state'
           exclude: false
           alter:
             alter_text: true
@@ -1700,7 +2568,7 @@ display:
           separator: ', '
           field_api_classes: false
           entity_type: node
-          plugin_id: field
+          plugin_id: moderation_state_field
         nothing:
           id: nothing
           table: views
@@ -1712,7 +2580,7 @@ display:
           exclude: false
           alter:
             alter_text: true
-            text: "{% if moderation_state_1 == \"Needs Review\" %}\r\n  <div><a href='/nidirect_workflow/change_state/{{ nid }}/draft?destination=/admin/workflow/drafts'>Change to Draft</a></div>\r\n{% else %}\r\n  <div><a href='/nidirect_workflow/change_state/{{ nid }}/needs_review?destination=/admin/workflow/drafts'>Change to Needs Review</a></div>\r\n{% endif %}\r\n<div><a href='/nidirect_workflow/change_state/{{ nid }}/published?destination=/admin/workflow/drafts'>Change to Published</a></div>"
+            text: "{% if moderation_state_1 == \"Needs Review\" %}\r\n  <div><a href='/origins_workflow/change_state/{{ nid }}/draft?destination=/admin/workflow/drafts'>Change to Draft</a></div>\r\n{% else %}\r\n  <div><a href='/origins_workflow/change_state/{{ nid }}/needs_review?destination=/admin/workflow/drafts'>Change to Needs Review</a></div>\r\n{% endif %}\r\n<div><a href='/origins_workflow/change_state/{{ nid }}/published?destination=/admin/workflow/drafts'>Change to Published</a></div>"
             make_link: false
             path: ''
             absolute: false
@@ -1742,6 +2610,55 @@ display:
           element_label_type: ''
           element_label_class: ''
           element_label_colon: false
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: false
+          plugin_id: custom
+        nothing_1:
+          id: nothing_1
+          table: views
+          field: nothing
+          relationship: none
+          group_type: group
+          admin_label: ''
+          label: 'Set moderation state'
+          exclude: false
+          alter:
+            alter_text: true
+            text: "{% if moderation_state_1 == \"Needs Review\" %}\r\n  <div><a href='/origins_workflow/change_state/{{ nid }}/draft?destination=/admin/workflow/drafts'>Change to Draft</a></div>\r\n{% else %}\r\n  <div><a href='/origins_workflow/change_state/{{ nid }}/needs_review?destination=/admin/workflow/drafts'>Change to Needs Review</a></div>\r\n{% endif %}"
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: true
           element_wrapper_type: ''
           element_wrapper_class: ''
           element_default_classes: true
@@ -2024,991 +2941,14 @@ display:
         - user.roles
       tags:
         - 'config:workflow_list'
-  page_3:
+  needs_audit:
     display_plugin: page
-    id: page_3
-    display_title: 'All Drafts Page'
-    position: 2
-    display_options:
-      display_extenders: {  }
-      display_description: ''
-      title: 'All drafts'
-      defaults:
-        title: false
-        filters: false
-        filter_groups: false
-        fields: false
-      path: admin/workflow/all-drafts
-      filters:
-        moderation_state:
-          id: moderation_state
-          table: node_field_revision
-          field: moderation_state
-          relationship: none
-          group_type: group
-          admin_label: ''
-          operator: 'not in'
-          value:
-            editorial-published: editorial-published
-          group: 1
-          exposed: false
-          expose:
-            operator_id: ''
-            label: ''
-            description: ''
-            use_operator: false
-            operator: ''
-            identifier: ''
-            required: false
-            remember: false
-            multiple: false
-            remember_roles:
-              authenticated: authenticated
-            reduce: false
-          is_grouped: false
-          group_info:
-            label: ''
-            description: ''
-            identifier: ''
-            optional: true
-            widget: select
-            multiple: false
-            remember: false
-            default_group: All
-            default_group_multiple: {  }
-            group_items: {  }
-          entity_type: node
-          plugin_id: moderation_state_filter
-        latest_revision:
-          id: latest_revision
-          table: node_revision
-          field: latest_revision
-          relationship: none
-          group_type: group
-          admin_label: ''
-          operator: '='
-          value: ''
-          group: 1
-          exposed: false
-          expose:
-            operator_id: ''
-            label: ''
-            description: ''
-            use_operator: false
-            operator: ''
-            identifier: ''
-            required: false
-            remember: false
-            multiple: false
-            remember_roles:
-              authenticated: authenticated
-          is_grouped: false
-          group_info:
-            label: ''
-            description: ''
-            identifier: ''
-            optional: true
-            widget: select
-            multiple: false
-            remember: false
-            default_group: All
-            default_group_multiple: {  }
-            group_items: {  }
-          entity_type: node
-          plugin_id: latest_revision
-        title:
-          id: title
-          table: node_field_data
-          field: title
-          relationship: nid
-          group_type: group
-          admin_label: ''
-          operator: contains
-          value: ''
-          group: 1
-          exposed: true
-          expose:
-            operator_id: title_op
-            label: Title
-            description: ''
-            use_operator: false
-            operator: title_op
-            identifier: title
-            required: false
-            remember: false
-            multiple: false
-            remember_roles:
-              authenticated: authenticated
-              anonymous: '0'
-              administrator: '0'
-              gp_author_user: '0'
-              author_user: '0'
-              gp_supervisor_user: '0'
-              news_supervisor: '0'
-              supervisor_user: '0'
-              editor_user: '0'
-              admin_user: '0'
-              apps_user: '0'
-              health_condition_author_user: '0'
-              health_condition_supervisor_user: '0'
-              driving_instructor_supervisor_user: '0'
-            placeholder: ''
-          is_grouped: false
-          group_info:
-            label: ''
-            description: ''
-            identifier: ''
-            optional: true
-            widget: select
-            multiple: false
-            remember: false
-            default_group: All
-            default_group_multiple: {  }
-            group_items: {  }
-          entity_type: node
-          entity_field: title
-          plugin_id: string
-        field_summary_value:
-          id: field_summary_value
-          table: node__field_summary
-          field: field_summary_value
-          relationship: nid
-          group_type: group
-          admin_label: ''
-          operator: contains
-          value: ''
-          group: 1
-          exposed: true
-          expose:
-            operator_id: field_summary_value_op
-            label: Summary
-            description: ''
-            use_operator: false
-            operator: field_summary_value_op
-            identifier: field_summary_value
-            required: false
-            remember: false
-            multiple: false
-            remember_roles:
-              authenticated: authenticated
-              anonymous: '0'
-              administrator: '0'
-              gp_author_user: '0'
-              author_user: '0'
-              gp_supervisor_user: '0'
-              news_supervisor: '0'
-              supervisor_user: '0'
-              editor_user: '0'
-              admin_user: '0'
-              apps_user: '0'
-              health_condition_author_user: '0'
-              health_condition_supervisor_user: '0'
-              driving_instructor_supervisor_user: '0'
-            placeholder: ''
-          is_grouped: false
-          group_info:
-            label: ''
-            description: ''
-            identifier: ''
-            optional: true
-            widget: select
-            multiple: false
-            remember: false
-            default_group: All
-            default_group_multiple: {  }
-            group_items: {  }
-          plugin_id: string
-        body_value:
-          id: body_value
-          table: node__body
-          field: body_value
-          relationship: nid
-          group_type: group
-          admin_label: ''
-          operator: contains
-          value: ''
-          group: 1
-          exposed: true
-          expose:
-            operator_id: body_value_op
-            label: Body
-            description: ''
-            use_operator: false
-            operator: body_value_op
-            identifier: body_value
-            required: false
-            remember: false
-            multiple: false
-            remember_roles:
-              authenticated: authenticated
-              anonymous: '0'
-              administrator: '0'
-              gp_author_user: '0'
-              author_user: '0'
-              gp_supervisor_user: '0'
-              news_supervisor: '0'
-              supervisor_user: '0'
-              editor_user: '0'
-              admin_user: '0'
-              apps_user: '0'
-              health_condition_author_user: '0'
-              health_condition_supervisor_user: '0'
-              driving_instructor_supervisor_user: '0'
-            placeholder: ''
-          is_grouped: false
-          group_info:
-            label: ''
-            description: ''
-            identifier: ''
-            optional: true
-            widget: select
-            multiple: false
-            remember: false
-            default_group: All
-            default_group_multiple: {  }
-            group_items: {  }
-          plugin_id: string
-        type:
-          id: type
-          table: node_field_data
-          field: type
-          relationship: nid
-          group_type: group
-          admin_label: ''
-          operator: in
-          value: {  }
-          group: 1
-          exposed: true
-          expose:
-            operator_id: type_op
-            label: Type
-            description: ''
-            use_operator: false
-            operator: type_op
-            identifier: type
-            required: false
-            remember: false
-            multiple: false
-            remember_roles:
-              authenticated: authenticated
-              anonymous: '0'
-              administrator: '0'
-              gp_author_user: '0'
-              author_user: '0'
-              gp_supervisor_user: '0'
-              news_supervisor: '0'
-              supervisor_user: '0'
-              editor_user: '0'
-              admin_user: '0'
-              apps_user: '0'
-              health_condition_author_user: '0'
-              health_condition_supervisor_user: '0'
-              driving_instructor_supervisor_user: '0'
-            reduce: false
-          is_grouped: false
-          group_info:
-            label: ''
-            description: ''
-            identifier: ''
-            optional: true
-            widget: select
-            multiple: false
-            remember: false
-            default_group: All
-            default_group_multiple: {  }
-            group_items: {  }
-          entity_type: node
-          entity_field: type
-          plugin_id: bundle
-        field_subtheme_target_id:
-          id: field_subtheme_target_id
-          table: node__field_subtheme
-          field: field_subtheme_target_id
-          relationship: nid
-          group_type: group
-          admin_label: ''
-          operator: or
-          value: {  }
-          group: 1
-          exposed: true
-          expose:
-            operator_id: field_subtheme_target_id_op
-            label: 'Theme/subtheme (field_subtheme)'
-            description: ''
-            use_operator: false
-            operator: field_subtheme_target_id_op
-            identifier: field_subtheme_target_id
-            required: false
-            remember: false
-            multiple: false
-            remember_roles:
-              authenticated: authenticated
-              anonymous: '0'
-              administrator: '0'
-              gp_author_user: '0'
-              author_user: '0'
-              gp_supervisor_user: '0'
-              news_supervisor: '0'
-              supervisor_user: '0'
-              editor_user: '0'
-              admin_user: '0'
-              apps_user: '0'
-              health_condition_author_user: '0'
-              health_condition_supervisor_user: '0'
-              driving_instructor_supervisor_user: '0'
-            reduce: false
-          is_grouped: false
-          group_info:
-            label: ''
-            description: ''
-            identifier: ''
-            optional: true
-            widget: select
-            multiple: false
-            remember: false
-            default_group: All
-            default_group_multiple: {  }
-            group_items: {  }
-          reduce_duplicates: false
-          type: select
-          limit: true
-          vid: site_themes
-          hierarchy: true
-          error_message: true
-          plugin_id: taxonomy_index_tid
-        moderation_state_1:
-          id: moderation_state_1
-          table: node_field_revision
-          field: moderation_state
-          relationship: none
-          group_type: group
-          admin_label: ''
-          operator: in
-          value:
-            editorial-draft: editorial-draft
-            editorial-needs_review: editorial-needs_review
-          group: 1
-          exposed: true
-          expose:
-            operator_id: moderation_state_1_op
-            label: State
-            description: ''
-            use_operator: false
-            operator: moderation_state_1_op
-            identifier: moderation_state_1
-            required: false
-            remember: false
-            multiple: false
-            remember_roles:
-              authenticated: authenticated
-              anonymous: '0'
-              administrator: '0'
-              gp_author_user: '0'
-              author_user: '0'
-              gp_supervisor_user: '0'
-              news_supervisor: '0'
-              supervisor_user: '0'
-              editor_user: '0'
-              admin_user: '0'
-              apps_user: '0'
-              health_condition_author_user: '0'
-              health_condition_supervisor_user: '0'
-              driving_instructor_supervisor_user: '0'
-            reduce: true
-          is_grouped: false
-          group_info:
-            label: ''
-            description: ''
-            identifier: ''
-            optional: true
-            widget: select
-            multiple: false
-            remember: false
-            default_group: All
-            default_group_multiple: {  }
-            group_items: {  }
-          entity_type: node
-          plugin_id: moderation_state_filter
-        uid:
-          id: uid
-          table: users_field_data
-          field: uid
-          relationship: revision_uid
-          group_type: group
-          admin_label: ''
-          operator: in
-          value: {  }
-          group: 1
-          exposed: true
-          expose:
-            operator_id: uid_op
-            label: 'Revised by'
-            description: ''
-            use_operator: false
-            operator: uid_op
-            identifier: uid
-            required: false
-            remember: false
-            multiple: false
-            remember_roles:
-              authenticated: authenticated
-              anonymous: '0'
-              administrator: '0'
-              gp_author_user: '0'
-              author_user: '0'
-              gp_supervisor_user: '0'
-              news_supervisor: '0'
-              supervisor_user: '0'
-              editor_user: '0'
-              admin_user: '0'
-              apps_user: '0'
-              health_condition_author_user: '0'
-              health_condition_supervisor_user: '0'
-              driving_instructor_supervisor_user: '0'
-            reduce: false
-          is_grouped: false
-          group_info:
-            label: ''
-            description: ''
-            identifier: ''
-            optional: true
-            widget: select
-            multiple: false
-            remember: false
-            default_group: All
-            default_group_multiple: {  }
-            group_items: {  }
-          entity_type: user
-          entity_field: uid
-          plugin_id: user_name
-      filter_groups:
-        operator: AND
-        groups:
-          1: AND
-      fields:
-        nid:
-          id: nid
-          table: node_field_data
-          field: nid
-          relationship: nid
-          group_type: group
-          admin_label: ''
-          label: ''
-          exclude: true
-          alter:
-            alter_text: false
-            text: ''
-            make_link: false
-            path: ''
-            absolute: false
-            external: false
-            replace_spaces: false
-            path_case: none
-            trim_whitespace: false
-            alt: ''
-            rel: ''
-            link_class: ''
-            prefix: ''
-            suffix: ''
-            target: ''
-            nl2br: false
-            max_length: 0
-            word_boundary: true
-            ellipsis: true
-            more_link: false
-            more_link_text: ''
-            more_link_path: ''
-            strip_tags: false
-            trim: false
-            preserve_tags: ''
-            html: false
-          element_type: ''
-          element_class: ''
-          element_label_type: ''
-          element_label_class: ''
-          element_label_colon: false
-          element_wrapper_type: ''
-          element_wrapper_class: ''
-          element_default_classes: true
-          empty: ''
-          hide_empty: false
-          empty_zero: false
-          hide_alter_empty: true
-          click_sort_column: value
-          type: number_integer
-          settings:
-            thousand_separator: ''
-            prefix_suffix: false
-          group_column: value
-          group_columns: {  }
-          group_rows: true
-          delta_limit: 0
-          delta_offset: 0
-          delta_reversed: false
-          delta_first_last: false
-          multi_type: separator
-          separator: ', '
-          field_api_classes: false
-          entity_type: node
-          entity_field: nid
-          plugin_id: field
-        moderation_state_1:
-          id: moderation_state_1
-          table: node_field_revision
-          field: moderation_state
-          relationship: none
-          group_type: group
-          admin_label: ''
-          label: ''
-          exclude: true
-          alter:
-            alter_text: false
-            text: ''
-            make_link: false
-            path: ''
-            absolute: false
-            external: false
-            replace_spaces: false
-            path_case: none
-            trim_whitespace: false
-            alt: ''
-            rel: ''
-            link_class: ''
-            prefix: ''
-            suffix: ''
-            target: ''
-            nl2br: false
-            max_length: 0
-            word_boundary: true
-            ellipsis: true
-            more_link: false
-            more_link_text: ''
-            more_link_path: ''
-            strip_tags: false
-            trim: false
-            preserve_tags: ''
-            html: false
-          element_type: ''
-          element_class: ''
-          element_label_type: ''
-          element_label_class: ''
-          element_label_colon: false
-          element_wrapper_type: ''
-          element_wrapper_class: ''
-          element_default_classes: true
-          empty: ''
-          hide_empty: false
-          empty_zero: false
-          hide_alter_empty: true
-          click_sort_column: value
-          type: content_moderation_state
-          settings: {  }
-          group_column: value
-          group_columns: {  }
-          group_rows: true
-          delta_limit: 0
-          delta_offset: 0
-          delta_reversed: false
-          delta_first_last: false
-          multi_type: separator
-          separator: ', '
-          field_api_classes: false
-          entity_type: node
-          plugin_id: field
-        moderation_state:
-          id: moderation_state
-          table: node_field_revision
-          field: moderation_state
-          relationship: none
-          group_type: group
-          admin_label: ''
-          label: 'Moderation State'
-          exclude: false
-          alter:
-            alter_text: true
-            text: '<div>{{ moderation_state }}</div><div><a href=''/node/{{ nid }}/revisions''>View moderation history</a></div>'
-            make_link: false
-            path: ''
-            absolute: false
-            external: false
-            replace_spaces: false
-            path_case: none
-            trim_whitespace: false
-            alt: ''
-            rel: ''
-            link_class: ''
-            prefix: ''
-            suffix: ''
-            target: ''
-            nl2br: false
-            max_length: 0
-            word_boundary: true
-            ellipsis: true
-            more_link: false
-            more_link_text: ''
-            more_link_path: ''
-            strip_tags: false
-            trim: false
-            preserve_tags: ''
-            html: false
-          element_type: ''
-          element_class: ''
-          element_label_type: ''
-          element_label_class: ''
-          element_label_colon: false
-          element_wrapper_type: ''
-          element_wrapper_class: ''
-          element_default_classes: true
-          empty: ''
-          hide_empty: false
-          empty_zero: false
-          hide_alter_empty: true
-          click_sort_column: value
-          type: content_moderation_state
-          settings: {  }
-          group_column: value
-          group_columns: {  }
-          group_rows: true
-          delta_limit: 0
-          delta_offset: 0
-          delta_reversed: false
-          delta_first_last: false
-          multi_type: separator
-          separator: ', '
-          field_api_classes: false
-          entity_type: node
-          plugin_id: field
-        nothing:
-          id: nothing
-          table: views
-          field: nothing
-          relationship: none
-          group_type: group
-          admin_label: ''
-          label: 'Set moderation state'
-          exclude: false
-          alter:
-            alter_text: true
-            text: "{% if moderation_state_1 == \"Needs Review\" %}\r\n  <div><a href='/nidirect_workflow/change_state/{{ nid }}/draft?destination=/admin/workflow/all-drafts'>Change to Draft</a></div>\r\n{% else %}\r\n  <div><a href='/nidirect_workflow/change_state/{{ nid }}/needs_review?destination=/admin/workflow/all-drafts'>Change to Needs Review</a></div>\r\n{% endif %}\r\n<div><a href='/nidirect_workflow/change_state/{{ nid }}/published?destination=/admin/workflow/all-drafts'>Change to Published</a></div>"
-            make_link: false
-            path: ''
-            absolute: false
-            external: false
-            replace_spaces: false
-            path_case: none
-            trim_whitespace: false
-            alt: ''
-            rel: ''
-            link_class: ''
-            prefix: ''
-            suffix: ''
-            target: ''
-            nl2br: false
-            max_length: 0
-            word_boundary: true
-            ellipsis: true
-            more_link: false
-            more_link_text: ''
-            more_link_path: ''
-            strip_tags: false
-            trim: false
-            preserve_tags: ''
-            html: false
-          element_type: ''
-          element_class: ''
-          element_label_type: ''
-          element_label_class: ''
-          element_label_colon: false
-          element_wrapper_type: ''
-          element_wrapper_class: ''
-          element_default_classes: true
-          empty: ''
-          hide_empty: false
-          empty_zero: false
-          hide_alter_empty: false
-          plugin_id: custom
-        title:
-          id: title
-          table: node_field_data
-          field: title
-          relationship: nid
-          group_type: group
-          admin_label: ''
-          label: Title
-          exclude: false
-          alter:
-            alter_text: false
-            text: ''
-            make_link: false
-            path: ''
-            absolute: false
-            external: false
-            replace_spaces: false
-            path_case: none
-            trim_whitespace: false
-            alt: ''
-            rel: ''
-            link_class: ''
-            prefix: ''
-            suffix: ''
-            target: ''
-            nl2br: false
-            max_length: 0
-            word_boundary: true
-            ellipsis: true
-            more_link: false
-            more_link_text: ''
-            more_link_path: ''
-            strip_tags: false
-            trim: false
-            preserve_tags: ''
-            html: false
-          element_type: ''
-          element_class: ''
-          element_label_type: ''
-          element_label_class: ''
-          element_label_colon: true
-          element_wrapper_type: ''
-          element_wrapper_class: ''
-          element_default_classes: true
-          empty: ''
-          hide_empty: false
-          empty_zero: false
-          hide_alter_empty: true
-          click_sort_column: value
-          type: string
-          settings:
-            link_to_entity: true
-          group_column: value
-          group_columns: {  }
-          group_rows: true
-          delta_limit: 0
-          delta_offset: 0
-          delta_reversed: false
-          delta_first_last: false
-          multi_type: separator
-          separator: ', '
-          field_api_classes: false
-          entity_type: node
-          entity_field: title
-          plugin_id: field
-        type:
-          id: type
-          table: node_field_data
-          field: type
-          relationship: nid
-          group_type: group
-          admin_label: ''
-          label: Type
-          exclude: false
-          alter:
-            alter_text: false
-            text: ''
-            make_link: false
-            path: ''
-            absolute: false
-            external: false
-            replace_spaces: false
-            path_case: none
-            trim_whitespace: false
-            alt: ''
-            rel: ''
-            link_class: ''
-            prefix: ''
-            suffix: ''
-            target: ''
-            nl2br: false
-            max_length: 0
-            word_boundary: true
-            ellipsis: true
-            more_link: false
-            more_link_text: ''
-            more_link_path: ''
-            strip_tags: false
-            trim: false
-            preserve_tags: ''
-            html: false
-          element_type: ''
-          element_class: ''
-          element_label_type: ''
-          element_label_class: ''
-          element_label_colon: false
-          element_wrapper_type: ''
-          element_wrapper_class: ''
-          element_default_classes: true
-          empty: ''
-          hide_empty: false
-          empty_zero: false
-          hide_alter_empty: true
-          click_sort_column: target_id
-          type: entity_reference_label
-          settings:
-            link: false
-          group_column: target_id
-          group_columns: {  }
-          group_rows: true
-          delta_limit: 0
-          delta_offset: 0
-          delta_reversed: false
-          delta_first_last: false
-          multi_type: separator
-          separator: ', '
-          field_api_classes: false
-          entity_type: node
-          entity_field: type
-          plugin_id: field
-        name:
-          id: name
-          table: users_field_data
-          field: name
-          relationship: revision_uid
-          group_type: group
-          admin_label: ''
-          label: 'Revised by'
-          exclude: false
-          alter:
-            alter_text: false
-            text: ''
-            make_link: false
-            path: ''
-            absolute: false
-            external: false
-            replace_spaces: false
-            path_case: none
-            trim_whitespace: false
-            alt: ''
-            rel: ''
-            link_class: ''
-            prefix: ''
-            suffix: ''
-            target: ''
-            nl2br: false
-            max_length: 0
-            word_boundary: true
-            ellipsis: true
-            more_link: false
-            more_link_text: ''
-            more_link_path: ''
-            strip_tags: false
-            trim: false
-            preserve_tags: ''
-            html: false
-          element_type: ''
-          element_class: ''
-          element_label_type: ''
-          element_label_class: ''
-          element_label_colon: false
-          element_wrapper_type: ''
-          element_wrapper_class: ''
-          element_default_classes: true
-          empty: ''
-          hide_empty: false
-          empty_zero: false
-          hide_alter_empty: true
-          click_sort_column: value
-          type: user_name
-          settings:
-            link_to_entity: true
-          group_column: value
-          group_columns: {  }
-          group_rows: true
-          delta_limit: 0
-          delta_offset: 0
-          delta_reversed: false
-          delta_first_last: false
-          multi_type: separator
-          separator: ', '
-          field_api_classes: false
-          entity_type: user
-          entity_field: name
-          plugin_id: field
-        changed:
-          id: changed
-          table: node_field_revision
-          field: changed
-          relationship: none
-          group_type: group
-          admin_label: ''
-          label: 'Last updated'
-          exclude: false
-          alter:
-            alter_text: false
-            text: ''
-            make_link: false
-            path: ''
-            absolute: false
-            external: false
-            replace_spaces: false
-            path_case: none
-            trim_whitespace: false
-            alt: ''
-            rel: ''
-            link_class: ''
-            prefix: ''
-            suffix: ''
-            target: ''
-            nl2br: false
-            max_length: 0
-            word_boundary: false
-            ellipsis: false
-            more_link: false
-            more_link_text: ''
-            more_link_path: ''
-            strip_tags: false
-            trim: false
-            preserve_tags: ''
-            html: false
-          element_type: ''
-          element_class: ''
-          element_label_type: ''
-          element_label_class: ''
-          element_label_colon: true
-          element_wrapper_type: ''
-          element_wrapper_class: ''
-          element_default_classes: true
-          empty: ''
-          hide_empty: false
-          empty_zero: false
-          hide_alter_empty: true
-          click_sort_column: value
-          type: timestamp
-          settings:
-            date_format: custom
-            custom_date_format: 'd M Y - g:i a'
-            timezone: ''
-          group_column: value
-          group_columns: {  }
-          group_rows: true
-          delta_limit: 0
-          delta_offset: 0
-          delta_reversed: false
-          delta_first_last: false
-          multi_type: separator
-          separator: ', '
-          field_api_classes: false
-          entity_type: node
-          entity_field: changed
-          plugin_id: field
-    cache_metadata:
-      max-age: -1
-      contexts:
-        - 'languages:language_content'
-        - 'languages:language_interface'
-        - url
-        - url.query_args
-        - user
-        - 'user.node_grants:view'
-        - user.roles
-      tags:
-        - 'config:workflow_list'
-  page_4:
-    display_plugin: page
-    id: page_4
+    id: needs_audit
     display_title: 'Needs Audit'
     position: 1
     display_options:
       display_extenders: {  }
-      path: admin/workflow/needs-audit
+      path: admin/content/needs-audit
       display_description: ''
       defaults:
         filters: false
@@ -3028,7 +2968,7 @@ display:
           admin_label: ''
           operator: in
           value:
-            editorial-published: editorial-published
+            nics_editorial_workflow-published: nics_editorial_workflow-published
           group: 1
           exposed: false
           expose:
@@ -3044,6 +2984,8 @@ display:
             remember_roles:
               authenticated: authenticated
             reduce: false
+            operator_limit_selection: false
+            operator_list: {  }
           is_grouped: false
           group_info:
             label: ''
@@ -3081,6 +3023,8 @@ display:
             multiple: false
             remember_roles:
               authenticated: authenticated
+            operator_limit_selection: false
+            operator_list: {  }
           is_grouped: false
           group_info:
             label: ''
@@ -3132,6 +3076,8 @@ display:
               health_condition_supervisor_user: '0'
               driving_instructor_supervisor_user: '0'
             placeholder: ''
+            operator_limit_selection: false
+            operator_list: {  }
           is_grouped: false
           group_info:
             label: ''
@@ -3184,6 +3130,8 @@ display:
               health_condition_supervisor_user: '0'
               driving_instructor_supervisor_user: '0'
             reduce: false
+            operator_limit_selection: false
+            operator_list: {  }
           is_grouped: false
           group_info:
             label: ''
@@ -3236,6 +3184,8 @@ display:
               health_condition_supervisor_user: '0'
               driving_instructor_supervisor_user: '0'
             reduce: false
+            operator_limit_selection: false
+            operator_list: {  }
           is_grouped: false
           group_info:
             label: ''
@@ -3281,6 +3231,8 @@ display:
             placeholder: ''
             min_placeholder: ''
             max_placeholder: ''
+            operator_limit_selection: false
+            operator_list: {  }
           is_grouped: false
           group_info:
             label: ''
@@ -3324,6 +3276,8 @@ display:
             placeholder: ''
             min_placeholder: ''
             max_placeholder: ''
+            operator_limit_selection: false
+            operator_list: {  }
           is_grouped: false
           group_info:
             label: ''
@@ -3471,7 +3425,7 @@ display:
           separator: ', '
           field_api_classes: false
           entity_type: node
-          plugin_id: field
+          plugin_id: moderation_state_field
         title:
           id: title
           table: node_field_data
@@ -3787,5 +3741,275 @@ display:
         - url.query_args
         - 'user.node_grants:view'
         - user.permissions
+      tags:
+        - 'config:workflow_list'
+  needs_review:
+    display_plugin: page
+    id: needs_review
+    display_title: 'Needs Review'
+    position: 1
+    display_options:
+      display_extenders: {  }
+      path: admin/content/needs-review
+      display_description: ''
+      defaults:
+        filters: false
+        filter_groups: false
+      filters:
+        moderation_state:
+          id: moderation_state
+          table: node_field_revision
+          field: moderation_state
+          relationship: none
+          group_type: group
+          admin_label: ''
+          operator: in
+          value:
+            nics_editorial_workflow-needs_review: nics_editorial_workflow-needs_review
+          group: 1
+          exposed: false
+          expose:
+            operator_id: ''
+            label: ''
+            description: ''
+            use_operator: false
+            operator: ''
+            identifier: ''
+            required: false
+            remember: false
+            multiple: false
+            remember_roles:
+              authenticated: authenticated
+            reduce: false
+            operator_limit_selection: false
+            operator_list: {  }
+          is_grouped: false
+          group_info:
+            label: ''
+            description: ''
+            identifier: ''
+            optional: true
+            widget: select
+            multiple: false
+            remember: false
+            default_group: All
+            default_group_multiple: {  }
+            group_items: {  }
+          entity_type: node
+          plugin_id: moderation_state_filter
+        latest_revision:
+          id: latest_revision
+          table: node_revision
+          field: latest_revision
+          relationship: none
+          group_type: group
+          admin_label: ''
+          operator: '='
+          value: ''
+          group: 1
+          exposed: false
+          expose:
+            operator_id: ''
+            label: ''
+            description: ''
+            use_operator: false
+            operator: ''
+            identifier: ''
+            required: false
+            remember: false
+            multiple: false
+            remember_roles:
+              authenticated: authenticated
+            operator_limit_selection: false
+            operator_list: {  }
+          is_grouped: false
+          group_info:
+            label: ''
+            description: ''
+            identifier: ''
+            optional: true
+            widget: select
+            multiple: false
+            remember: false
+            default_group: All
+            default_group_multiple: {  }
+            group_items: {  }
+          entity_type: node
+          plugin_id: latest_revision
+        title:
+          id: title
+          table: node_field_data
+          field: title
+          relationship: nid
+          group_type: group
+          admin_label: ''
+          operator: contains
+          value: ''
+          group: 1
+          exposed: true
+          expose:
+            operator_id: title_op
+            label: Title
+            description: ''
+            use_operator: false
+            operator: title_op
+            identifier: title
+            required: false
+            remember: false
+            multiple: false
+            remember_roles:
+              authenticated: authenticated
+              anonymous: '0'
+              administrator: '0'
+              gp_author_user: '0'
+              author_user: '0'
+              gp_supervisor_user: '0'
+              news_supervisor: '0'
+              supervisor_user: '0'
+              editor_user: '0'
+              admin_user: '0'
+              apps_user: '0'
+              health_condition_author_user: '0'
+              health_condition_supervisor_user: '0'
+              driving_instructor_supervisor_user: '0'
+            placeholder: ''
+            operator_limit_selection: false
+            operator_list: {  }
+          is_grouped: false
+          group_info:
+            label: ''
+            description: ''
+            identifier: ''
+            optional: true
+            widget: select
+            multiple: false
+            remember: false
+            default_group: All
+            default_group_multiple: {  }
+            group_items: {  }
+          entity_type: node
+          entity_field: title
+          plugin_id: string
+        type:
+          id: type
+          table: node_field_data
+          field: type
+          relationship: nid
+          group_type: group
+          admin_label: ''
+          operator: in
+          value: {  }
+          group: 1
+          exposed: true
+          expose:
+            operator_id: type_op
+            label: Type
+            description: ''
+            use_operator: false
+            operator: type_op
+            identifier: type
+            required: false
+            remember: false
+            multiple: false
+            remember_roles:
+              authenticated: authenticated
+              anonymous: '0'
+              administrator: '0'
+              gp_author_user: '0'
+              author_user: '0'
+              gp_supervisor_user: '0'
+              news_supervisor: '0'
+              supervisor_user: '0'
+              editor_user: '0'
+              admin_user: '0'
+              apps_user: '0'
+              health_condition_author_user: '0'
+              health_condition_supervisor_user: '0'
+              driving_instructor_supervisor_user: '0'
+            reduce: false
+            operator_limit_selection: false
+            operator_list: {  }
+          is_grouped: false
+          group_info:
+            label: ''
+            description: ''
+            identifier: ''
+            optional: true
+            widget: select
+            multiple: false
+            remember: false
+            default_group: All
+            default_group_multiple: {  }
+            group_items: {  }
+          entity_type: node
+          entity_field: type
+          plugin_id: bundle
+        uid:
+          id: uid
+          table: users_field_data
+          field: uid
+          relationship: revision_uid
+          group_type: group
+          admin_label: ''
+          operator: in
+          value: {  }
+          group: 1
+          exposed: true
+          expose:
+            operator_id: uid_op
+            label: 'Revised by'
+            description: ''
+            use_operator: false
+            operator: uid_op
+            identifier: uid
+            required: false
+            remember: false
+            multiple: false
+            remember_roles:
+              authenticated: authenticated
+              anonymous: '0'
+              administrator: '0'
+              gp_author_user: '0'
+              author_user: '0'
+              gp_supervisor_user: '0'
+              news_supervisor: '0'
+              supervisor_user: '0'
+              editor_user: '0'
+              admin_user: '0'
+              apps_user: '0'
+              health_condition_author_user: '0'
+              health_condition_supervisor_user: '0'
+              driving_instructor_supervisor_user: '0'
+            reduce: false
+            operator_limit_selection: false
+            operator_list: {  }
+          is_grouped: false
+          group_info:
+            label: ''
+            description: ''
+            identifier: ''
+            optional: true
+            widget: select
+            multiple: false
+            remember: false
+            default_group: All
+            default_group_multiple: {  }
+            group_items: {  }
+          entity_type: user
+          entity_field: uid
+          plugin_id: user_name
+      filter_groups:
+        operator: AND
+        groups:
+          1: AND
+    cache_metadata:
+      max-age: -1
+      contexts:
+        - 'languages:language_content'
+        - 'languages:language_interface'
+        - url
+        - url.query_args
+        - 'user.node_grants:view'
+        - user.roles
       tags:
         - 'config:workflow_list'

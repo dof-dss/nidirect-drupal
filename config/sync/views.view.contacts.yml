@@ -13,7 +13,6 @@ description: ''
 tag: ''
 base_table: search_api_index_default_content
 base_field: search_api_id
-core: 8.x
 display:
   default:
     display_plugin: default
@@ -53,8 +52,8 @@ display:
           id: 0
           total_pages: null
           tags:
-            previous: ‹‹
-            next: ››
+            previous: '‹ Previous'
+            next: 'Next ›'
             first: '« First'
             last: 'Last »'
           expose:
@@ -160,6 +159,8 @@ display:
             description: ''
             use_operator: false
             operator: ''
+            operator_limit_selection: false
+            operator_list: {  }
             identifier: ''
             required: false
             remember: false
@@ -181,26 +182,25 @@ display:
             group_items: {  }
           reduce_duplicates: false
           plugin_id: search_api_options
-        title:
-          id: title
+        search_api_fulltext:
+          id: search_api_fulltext
           table: search_api_index_default_content
-          field: title
+          field: search_api_fulltext
           relationship: none
           group_type: group
           admin_label: ''
-          operator: '='
-          value:
-            min: ''
-            max: ''
-            value: ''
+          operator: and
+          value: ''
           group: 1
           exposed: true
           expose:
-            operator_id: title_op
+            operator_id: search_api_fulltext_op
             label: 'Search by contact name'
             description: ''
             use_operator: false
-            operator: title_op
+            operator: search_api_fulltext_op
+            operator_limit_selection: false
+            operator_list: {  }
             identifier: query_contacts_az
             required: false
             remember: false
@@ -221,8 +221,6 @@ display:
               health_condition_supervisor_user: '0'
               driving_instructor_supervisor_user: '0'
             placeholder: 'Search contacts'
-            min_placeholder: ''
-            max_placeholder: ''
           is_grouped: false
           group_info:
             label: ''
@@ -235,7 +233,10 @@ display:
             default_group: All
             default_group_multiple: {  }
             group_items: {  }
-          plugin_id: search_api_text
+          parse_mode: phrase
+          min_length: 3
+          fields: {  }
+          plugin_id: search_api_fulltext
       sorts:
         search_api_relevance:
           id: search_api_relevance
@@ -271,7 +272,7 @@ display:
           group_type: group
           admin_label: ''
           empty: false
-          content: '@total results'
+          content: '<h2 class="view--count">@total results</h2>'
           plugin_id: result
       footer: {  }
       empty:
@@ -304,10 +305,11 @@ display:
   contact_search:
     display_plugin: embed
     id: contact_search
-    display_title: Embed
+    display_title: 'Embed: Contacts search'
     position: 1
     display_options:
       display_extenders: {  }
+      display_description: 'Solr powered content search'
     cache_metadata:
       max-age: -1
       contexts:

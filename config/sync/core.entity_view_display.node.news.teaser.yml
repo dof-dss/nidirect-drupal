@@ -5,17 +5,15 @@ dependencies:
   config:
     - core.entity_view_mode.node.teaser
     - field.field.node.news.body
-    - field.field.node.news.field_enable_toc
+    - field.field.node.news.field_toc_enable
     - field.field.node.news.field_meta_tags
     - field.field.node.news.field_photo
     - field.field.node.news.field_published_date
     - field.field.node.news.field_summary
     - field.field.node.news.field_teaser
-    - image.style.medium
     - node.type.news
   module:
     - datetime
-    - image
     - user
 id: node.news.teaser
 targetEntityType: node
@@ -23,17 +21,17 @@ bundle: news
 mode: teaser
 content:
   field_photo:
-    type: image
-    weight: 2
+    type: entity_reference_entity_view
+    weight: 0
     region: content
     label: hidden
     settings:
-      image_style: medium
-      image_link: ''
+      view_mode: embed
+      link: false
     third_party_settings: {  }
   field_published_date:
     type: datetime_custom
-    weight: 0
+    weight: 1
     region: content
     label: hidden
     settings:
@@ -42,7 +40,7 @@ content:
     third_party_settings: {  }
   field_teaser:
     type: string
-    weight: 1
+    weight: 2
     region: content
     label: hidden
     settings:
@@ -51,9 +49,9 @@ content:
 hidden:
   body: true
   content_moderation_control: true
-  field_enable_toc: true
   field_meta_tags: true
   field_summary: true
+  field_toc_enable: true
   langcode: true
   links: true
   search_api_excerpt: true

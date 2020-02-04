@@ -1,0 +1,28 @@
+uuid: 4a904fb8-8ee9-4e0c-bb97-296e38a1a916
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_alternative_condition
+    - node.type.health_condition
+    - node.type.health_condition_alternative
+id: node.health_condition.field_alternative_condition
+field_name: field_alternative_condition
+entity_type: node
+bundle: health_condition
+label: 'Alternative condition titles'
+description: "<p>Alternative titles for this condition. These reference a health condition and appear in the A-Z directory with the alternative title value followed by the content of the health condition.</p>\r\n<p>For example, 'coughing' can also appear as 'whooping cough' by using this field.</p>"
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:node'
+  handler_settings:
+    target_bundles:
+      health_condition_alternative: health_condition_alternative
+    sort:
+      field: _none
+    auto_create: true
+    auto_create_bundle: ''
+field_type: entity_reference

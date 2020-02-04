@@ -6,14 +6,14 @@ dependencies:
     - search_api.index.default_content
   module:
     - search_api
+    - user
 id: gp_practices
 label: 'GP practices'
 module: views
-description: ''
+description: 'Searches against a defined Solr index'
 tag: ''
 base_table: search_api_index_default_content
 base_field: search_api_id
-core: 8.x
 display:
   default:
     display_plugin: default
@@ -22,8 +22,9 @@ display:
     position: 0
     display_options:
       access:
-        type: none
-        options: {  }
+        type: perm
+        options:
+          perm: 'access content'
       cache:
         type: tag
         options: {  }
@@ -40,7 +41,7 @@ display:
           reset_button: false
           reset_button_label: Reset
           exposed_sorts_label: 'Sort by'
-          expose_sort_order: true
+          expose_sort_order: false
           sort_asc_label: Asc
           sort_desc_label: Desc
       pager:
@@ -51,8 +52,8 @@ display:
           id: 0
           total_pages: null
           tags:
-            previous: ‹‹
-            next: ››
+            previous: '‹ Previous'
+            next: 'Next ›'
             first: '« First'
             last: 'Last »'
           expose:
@@ -65,12 +66,14 @@ display:
             offset_label: Offset
           quantity: 9
       style:
-        type: default
+        type: html_list
         options:
-          grouping: {  }
           row_class: ''
-          default_row_class: true
+          default_row_class: false
           uses_fields: false
+          type: ul
+          wrapper_class: item-list
+          class: ''
       row:
         type: search_api
         options:
@@ -81,7 +84,8 @@ display:
               contact: default
               driving_instructor: default
               embargoed_publication: default
-              gp_practice: teaser
+              gp_practice: search_result
+              health_condition: default
               landing_page: default
               news: default
               page: default
@@ -170,6 +174,8 @@ display:
             remember_roles:
               authenticated: authenticated
             reduce: false
+            operator_limit_selection: false
+            operator_list: {  }
           is_grouped: false
           group_info:
             label: ''
@@ -197,10 +203,12 @@ display:
           exposed: true
           expose:
             operator_id: search_api_fulltext_op
-            label: 'Fulltext search'
+            label: 'Enter a GP name, practice or town.'
             description: ''
             use_operator: false
             operator: search_api_fulltext_op
+            operator_limit_selection: false
+            operator_list: {  }
             identifier: search_api_views_fulltext
             required: false
             remember: false
@@ -250,28 +258,58 @@ display:
           expose:
             label: ''
           plugin_id: search_api
-      header: {  }
+      header:
+        area:
+          id: area
+          table: views
+          field: area
+          relationship: none
+          group_type: group
+          admin_label: ''
+          empty: false
+          tokenize: false
+          content:
+            value: ''
+            format: basic_html
+          plugin_id: text
       footer: {  }
-      empty: {  }
+      empty:
+        area:
+          id: area
+          table: views
+          field: area
+          relationship: none
+          group_type: group
+          admin_label: ''
+          empty: true
+          tokenize: false
+          content:
+            value: '0 GP practices'
+            format: basic_html
+          plugin_id: text
       relationships: {  }
       arguments: {  }
       display_extenders: {  }
       title: 'Find a GP practice'
+      filter_groups:
+        operator: AND
+        groups:
+          1: AND
     cache_metadata:
       max-age: -1
       contexts:
         - 'languages:language_interface'
         - url
         - url.query_args
+        - user.permissions
       tags: {  }
   find_a_gp:
-    display_plugin: page
+    display_plugin: embed
     id: find_a_gp
-    display_title: Page
+    display_title: Embed
     position: 1
     display_options:
       display_extenders: {  }
-      path: services/gp-practices
       exposed_block: true
     cache_metadata:
       max-age: -1
@@ -279,4 +317,5 @@ display:
         - 'languages:language_interface'
         - url
         - url.query_args
+        - user.permissions
       tags: {  }

@@ -17,7 +17,6 @@ description: ''
 tag: ''
 base_table: node_field_data
 base_field: nid
-core: 8.x
 display:
   default:
     display_plugin: default
@@ -125,6 +124,8 @@ display:
           id: status
           expose:
             operator: ''
+            operator_limit_selection: false
+            operator_list: {  }
           group: 1
         type:
           id: type
@@ -135,6 +136,9 @@ display:
           entity_type: node
           entity_field: type
           plugin_id: bundle
+          expose:
+            operator_limit_selection: false
+            operator_list: {  }
       sorts:
         created:
           id: created
@@ -174,10 +178,45 @@ display:
   latest_news:
     display_plugin: embed
     id: latest_news
-    display_title: Embed
+    display_title: 'Embed: Latest news'
     position: 1
     display_options:
       display_extenders: {  }
+      display_description: ''
+      style:
+        type: html_list
+        options:
+          row_class: ''
+          default_row_class: false
+          uses_fields: false
+          type: ul
+          wrapper_class: item-list
+          class: ''
+      defaults:
+        style: false
+        row: false
+        sorts: false
+        css_class: false
+      row:
+        type: 'entity:node'
+        options:
+          relationship: none
+          view_mode: teaser
+      sorts:
+        field_published_date_value:
+          id: field_published_date_value
+          table: node__field_published_date
+          field: field_published_date_value
+          relationship: none
+          group_type: group
+          admin_label: ''
+          order: DESC
+          exposed: false
+          expose:
+            label: ''
+          granularity: second
+          plugin_id: datetime
+      css_class: latest-news
     cache_metadata:
       max-age: -1
       contexts:
@@ -365,7 +404,7 @@ display:
   older_news:
     display_plugin: embed
     id: older_news
-    display_title: Embed
+    display_title: 'Embed: Older news'
     position: 1
     display_options:
       display_extenders: {  }
@@ -376,6 +415,7 @@ display:
         style: false
         row: false
         fields: false
+        css_class: false
       pager:
         type: full
         options:
@@ -525,6 +565,8 @@ display:
           separator: ', '
           field_api_classes: false
           plugin_id: field
+      display_description: ''
+      css_class: older-news
     cache_metadata:
       max-age: -1
       contexts:

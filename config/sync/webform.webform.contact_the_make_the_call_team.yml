@@ -1,0 +1,248 @@
+uuid: 72288dc6-335a-498f-9708-55cc95309a8d
+langcode: en
+status: open
+dependencies: {  }
+open: null
+close: null
+weight: 0
+uid: 1
+template: false
+archive: false
+id: contact_the_make_the_call_team
+title: 'Contact the Make the Call team'
+description: ''
+category: ''
+elements: "intro:\n  '#type': processed_text\n  '#text': '<p class=\"nodeSummary\">You can check if you’re getting all the money, supports and services you’re entitled to by contacting the Make the Call team.</p><p>You can find out how&nbsp;personal information you submit to the Department for Communities'' Make the Call team when using this service will be handled by viewing its&nbsp;<a href=\"https://www.communities-ni.gov.uk/publications/supplementary-privacy-notices-dfc-business-areas\">privacy notice</a>.</p>'\n  '#format': full_html\nni_only:\n  '#type': fieldset\n  '#title': 'Do you live in Northern Ireland?'\n  do_you_live_in_northern_ireland:\n    '#type': radios\n    '#title': 'Choose one of the following options'\n    '#options': yes_no\n    '#required': true\n  ni_only_notice:\n    '#type': processed_text\n    '#states':\n      visible:\n        ':input[name=\"do_you_live_in_northern_ireland\"]':\n          value: 'No'\n    '#text': |\n      <p class=\"info-notice\">This service is only for people in Northern Ireland. If you live in Great Britain you should visit <a href=\"http://www.gov.uk\">www.gov.uk</a> instead.</p>\n      \n    '#format': full_html\nuse_a_phone:\n  '#type': fieldset\n  '#title': 'Can you use a phone or can someone use a phone on your behalf?'\n  '#states':\n    visible:\n      ':input[name=\"do_you_live_in_northern_ireland\"]':\n        value: 'Yes'\n  can_use_a_phone:\n    '#type': radios\n    '#title': 'Choose one of the following options'\n    '#options': yes_no\n    '#required': true\n  no_phone_details:\n    '#type': processed_text\n    '#states':\n      visible:\n        ':input[name=\"can_use_a_phone\"]':\n          value: 'No'\n    '#text': '<p class=\"nodeSummary\">If you can’t use a phone due to a language, speech or hearing difficulty, complete the sections below .</p>'\n    '#format': full_html\n  phone_details:\n    '#type': processed_text\n    '#states':\n      visible:\n        ':input[name=\"can_use_a_phone\"]':\n          value: 'Yes'\n    '#text': '<p class=\"nodeSummary\">Enter your details below and an advisor will call you back.</p>'\n    '#format': full_html\nyour_details:\n  '#type': fieldset\n  '#title': 'Your details'\n  '#states':\n    visible:\n      - ':input[name=\"can_use_a_phone\"]':\n          value: 'Yes'\n      - or\n      - ':input[name=\"can_use_a_phone\"]':\n          value: 'No'\n  name:\n    '#type': textfield\n    '#title': Name\n    '#maxlength': '100'\n    '#required': true\n  phone_number:\n    '#type': textfield\n    '#title': 'Phone number'\n    '#states':\n      visible:\n        ':input[name=\"can_use_a_phone\"]':\n          value: 'Yes'\n      required:\n        ':input[name=\"can_use_a_phone\"]':\n          value: 'Yes'\n  email_address:\n    '#type': email\n    '#title': 'Email address'\n    '#states':\n      visible:\n        ':input[name=\"can_use_a_phone\"]':\n          value: 'No'\n      required:\n        ':input[name=\"can_use_a_phone\"]':\n          value: 'No'\nyour_address:\n  '#type': fieldset\n  '#title': 'Your address'\n  '#required': true\n  '#states':\n    visible:\n      ':input[name=\"can_use_a_phone\"]':\n        value: 'No'\n  address_line_1:\n    '#type': textfield\n    '#title': 'Address line 1'\n    '#maxlength': '100'\n    '#states':\n      required:\n        ':input[name=\"can_use_a_phone\"]':\n          value: 'No'\n  address_line_2:\n    '#type': textfield\n    '#title': 'Address line 2'\n    '#maxlength': '100'\n    '#states':\n      required:\n        ':input[name=\"can_use_a_phone\"]':\n          value: 'No'\n  address_county:\n    '#type': textfield\n    '#title': County\n    '#maxlength': '50'\n  postcode:\n    '#type': textfield\n    '#title': Postcode\n    '#maxlength': '8'\n    '#size': '8'\n    '#states':\n      required:\n        ':input[name=\"can_use_a_phone\"]':\n          value: 'No'\nexplain_why_you_cannot_phone:\n  '#type': fieldset\n  '#title': 'Explain why you cannot phone'\n  '#required': true\n  '#states':\n    visible:\n      ':input[name=\"can_use_a_phone\"]':\n        value: 'No'\n  explain_why_you_cannot_phone_text:\n    '#type': textarea\n    '#title': 'Briefly explain why you cannot make contact by phone so arrangements to get in touch can be made. Do not include your date of birth or National Insurance number.'\n    '#required': true\nactions:\n  '#type': webform_actions\n  '#title': 'Submit button(s)'\n  '#states':\n    visible:\n      ':input[name=\"do_you_live_in_northern_ireland\"]':\n        value: 'Yes'\n  '#submit__label': Send"
+css: ''
+javascript: ''
+settings:
+  ajax: false
+  ajax_scroll_top: form
+  ajax_progress_type: ''
+  ajax_effect: ''
+  ajax_speed: null
+  page: true
+  page_submit_path: ''
+  page_confirm_path: ''
+  page_admin_theme: false
+  form_title: source_entity_webform
+  form_submit_once: false
+  form_exception_message: ''
+  form_open_message: ''
+  form_close_message: ''
+  form_previous_submissions: true
+  form_confidential: false
+  form_confidential_message: ''
+  form_remote_addr: true
+  form_convert_anonymous: false
+  form_prepopulate: false
+  form_prepopulate_source_entity: false
+  form_prepopulate_source_entity_required: false
+  form_prepopulate_source_entity_type: ''
+  form_reset: false
+  form_disable_autocomplete: false
+  form_novalidate: false
+  form_disable_inline_errors: false
+  form_required: false
+  form_unsaved: false
+  form_disable_back: false
+  form_submit_back: false
+  form_autofocus: false
+  form_details_toggle: false
+  form_access_denied: default
+  form_access_denied_title: ''
+  form_access_denied_message: ''
+  form_access_denied_attributes: {  }
+  form_file_limit: ''
+  submission_label: ''
+  submission_log: false
+  submission_views: {  }
+  submission_views_replace: {  }
+  submission_user_columns: {  }
+  submission_user_duplicate: false
+  submission_access_denied: default
+  submission_access_denied_title: ''
+  submission_access_denied_message: ''
+  submission_access_denied_attributes: {  }
+  submission_exception_message: ''
+  submission_locked_message: ''
+  submission_excluded_elements: {  }
+  submission_exclude_empty: false
+  submission_exclude_empty_checkbox: false
+  previous_submission_message: ''
+  previous_submissions_message: ''
+  autofill: false
+  autofill_message: ''
+  autofill_excluded_elements: {  }
+  wizard_progress_bar: false
+  wizard_progress_pages: false
+  wizard_progress_percentage: false
+  wizard_progress_link: false
+  wizard_progress_states: false
+  wizard_start_label: ''
+  wizard_preview_link: false
+  wizard_confirmation: true
+  wizard_confirmation_label: ''
+  wizard_track: ''
+  preview: 0
+  preview_label: ''
+  preview_title: ''
+  preview_message: ''
+  preview_attributes: {  }
+  preview_excluded_elements: {  }
+  preview_exclude_empty: true
+  preview_exclude_empty_checkbox: false
+  draft: none
+  draft_multiple: false
+  draft_auto_save: false
+  draft_saved_message: ''
+  draft_loaded_message: ''
+  draft_pending_single_message: ''
+  draft_pending_multiple_message: ''
+  confirmation_type: page
+  confirmation_title: ''
+  confirmation_message: '<h2>Thank you for your contact request</h2><p>A Make the Call&nbsp;benefit advisor will be in touch with you shortly.</p>'
+  confirmation_url: ''
+  confirmation_attributes: {  }
+  confirmation_back: true
+  confirmation_back_label: ''
+  confirmation_back_attributes: {  }
+  confirmation_exclude_query: false
+  confirmation_exclude_token: false
+  confirmation_update: false
+  limit_total: null
+  limit_total_interval: null
+  limit_total_message: ''
+  limit_total_unique: false
+  limit_user: null
+  limit_user_interval: null
+  limit_user_message: ''
+  limit_user_unique: false
+  entity_limit_total: null
+  entity_limit_total_interval: null
+  entity_limit_user: null
+  entity_limit_user_interval: null
+  purge: none
+  purge_days: null
+  results_disabled: false
+  results_disabled_ignore: false
+  token_update: false
+access:
+  create:
+    roles:
+      - anonymous
+      - authenticated
+    users: {  }
+    permissions: {  }
+  view_any:
+    roles: {  }
+    users: {  }
+    permissions: {  }
+  update_any:
+    roles: {  }
+    users: {  }
+    permissions: {  }
+  delete_any:
+    roles: {  }
+    users: {  }
+    permissions: {  }
+  purge_any:
+    roles: {  }
+    users: {  }
+    permissions: {  }
+  view_own:
+    roles: {  }
+    users: {  }
+    permissions: {  }
+  update_own:
+    roles: {  }
+    users: {  }
+    permissions: {  }
+  delete_own:
+    roles: {  }
+    users: {  }
+    permissions: {  }
+  administer:
+    roles: {  }
+    users: {  }
+    permissions: {  }
+  test:
+    roles: {  }
+    users: {  }
+    permissions: {  }
+  configuration:
+    roles: {  }
+    users: {  }
+    permissions: {  }
+handlers:
+  email:
+    id: email
+    label: Email
+    handler_id: email
+    status: true
+    conditions: {  }
+    weight: 0
+    settings:
+      states:
+        - completed
+      to_mail: makethecall@dfcni.gov.uk
+      to_options: {  }
+      cc_mail: ''
+      cc_options: {  }
+      bcc_mail: ''
+      bcc_options: {  }
+      from_mail: '[webform_submission:values:email_address:raw]'
+      from_options: {  }
+      from_name: '[webform_submission:values:name:raw]'
+      subject: 'Request a call back from nidirect.gov.uk'
+      body: "<p>Submitted on [webform_submission:created:long]</p>\r\n<p>Submitted values are:</p>\r\n[webform_submission:values]"
+      excluded_elements:
+        do_you_live_in_northern_ireland: do_you_live_in_northern_ireland
+      ignore_access: false
+      exclude_empty: true
+      exclude_empty_checkbox: false
+      html: true
+      attachments: false
+      twig: false
+      debug: false
+      reply_to: ''
+      return_path: ''
+      sender_mail: ''
+      sender_name: ''
+      theme_name: ''
+      parameters: {  }
+  email_1:
+    id: email
+    label: 'Copy for visitor'
+    handler_id: email_1
+    status: true
+    conditions: {  }
+    weight: 0
+    settings:
+      states:
+        - completed
+      to_mail: '[webform_submission:values:email_address:raw]'
+      to_options: {  }
+      cc_mail: ''
+      cc_options: {  }
+      bcc_mail: ''
+      bcc_options: {  }
+      from_mail: noreply@nidirect.gov.uk
+      from_options: {  }
+      from_name: noreply@nidirect.gov.uk
+      subject: 'Make the Call - confirmation of contact request'
+      body: "Dear&nbsp;[webform_submission:values:your_details:name]<br />\r\n&nbsp;<br />\r\nThank you for your call back contact request.&nbsp;<br />\r\n<br />\r\nA Make the Call Advisor will be in touch with you shortly within the next 3 days.<br />\r\n&nbsp;<br />\r\nRegards,<br />\r\nMake the Call Team<br />\r\n&nbsp;<br />\r\nPlease note: This email was been sent from a notification-only email address that can&rsquo;t accept replies. Please do not reply to this message."
+      excluded_elements: {  }
+      ignore_access: false
+      exclude_empty: true
+      exclude_empty_checkbox: false
+      html: true
+      attachments: false
+      twig: false
+      debug: false
+      reply_to: ''
+      return_path: ''
+      sender_mail: ''
+      sender_name: ''
+      theme_name: ''
+      parameters: {  }

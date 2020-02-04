@@ -10,12 +10,12 @@ dependencies:
     - node.type.external_link
     - node.type.health_condition
     - node.type.landing_page
-    - node.type.webform
     - taxonomy.vocabulary.site_themes
   module:
     - node
     - text
     - user
+    - views_custom_cache_tag
 id: related_content
 label: 'Related content'
 module: views
@@ -23,7 +23,6 @@ description: ''
 tag: ''
 base_table: node_field_data
 base_field: nid
-core: 8.x
 display:
   default:
     display_plugin: default
@@ -36,8 +35,9 @@ display:
         options:
           perm: 'access content'
       cache:
-        type: tag
-        options: {  }
+        type: custom_tag
+        options:
+          custom_tag: 'taxonomy_term_list:{{ arguments.field_subtheme_target_id }}'
       query:
         type: views_query
         options:
@@ -62,8 +62,20 @@ display:
           offset: 0
       style:
         type: html_list
+        options:
+          grouping: {  }
+          row_class: nav-item
+          default_row_class: false
+          type: ul
+          wrapper_class: ''
+          class: nav-menu
       row:
         type: fields
+        options:
+          default_field_elements: false
+          inline: {  }
+          separator: ''
+          hide_empty: false
       fields:
         title:
           id: title
@@ -205,6 +217,8 @@ display:
           id: status
           expose:
             operator: ''
+            operator_limit_selection: false
+            operator_list: {  }
           group: 1
         type:
           id: type
@@ -220,7 +234,6 @@ display:
             external_link: external_link
             health_condition: health_condition
             landing_page: landing_page
-            webform: webform
           group: 1
           exposed: false
           expose:
@@ -236,6 +249,8 @@ display:
             remember_roles:
               authenticated: authenticated
             reduce: false
+            operator_limit_selection: false
+            operator_list: {  }
           is_grouped: false
           group_info:
             label: ''

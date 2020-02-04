@@ -1,0 +1,60 @@
+uuid: ec90de89-d748-4b4a-8255-bf419868b4b3
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.node.health_condition_alternative.field_parent_condition
+    - node.type.health_condition_alternative
+  module:
+    - scheduler
+id: node.health_condition_alternative.default
+targetEntityType: node
+bundle: health_condition_alternative
+mode: default
+content:
+  field_parent_condition:
+    weight: 1
+    settings:
+      match_operator: CONTAINS
+      size: 60
+      placeholder: ''
+      match_limit: 10
+    third_party_settings: {  }
+    type: entity_reference_autocomplete
+    region: content
+  publish_on:
+    type: datetime_timestamp_no_default
+    weight: 30
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  status:
+    type: boolean_checkbox
+    weight: 2
+    region: content
+    settings:
+      display_label: true
+    third_party_settings: {  }
+  title:
+    type: string_textfield
+    weight: 0
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+  unpublish_on:
+    type: datetime_timestamp_no_default
+    weight: 30
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+hidden:
+  created: true
+  langcode: true
+  moderation_state: true
+  path: true
+  promote: true
+  sticky: true
+  uid: true
+  url_redirects: true

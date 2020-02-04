@@ -1,20 +1,25 @@
-uuid: 22700564-c1fc-4efd-82bc-1d800ef6ad8c
+uuid: f6e9ea72-a071-4313-9d9c-97fc1d91c9b0
 langcode: en
 status: true
 dependencies:
   config:
     - field.field.node.webform.body
-    - field.field.node.webform.field_meta_tags
     - field.field.node.webform.field_site_themes
     - field.field.node.webform.field_subtheme
     - field.field.node.webform.field_teaser
     - field.field.node.webform.field_top_level_theme
+    - field.field.node.webform.webform
     - node.type.webform
   module:
-    - metatag
+    - chosen_field
+    - content_moderation
     - path
+    - scheduler
     - shs
     - text
+    - webform
+_core:
+  default_config_hash: A3evv2pt6d-bKCPcgjXA5VGTemXWOxG3lSXvWiRWcck
 id: node.webform.default
 targetEntityType: node
 bundle: webform
@@ -22,108 +27,134 @@ mode: default
 content:
   body:
     type: text_textarea_with_summary
-    weight: 4
+    weight: 5
     settings:
       rows: 9
       summary_rows: 3
       placeholder: ''
+      show_summary: false
     third_party_settings: {  }
     region: content
   created:
     type: datetime_timestamp
-    weight: 6
-    region: content
+    weight: 9
     settings: {  }
     third_party_settings: {  }
-  field_meta_tags:
-    weight: 11
-    settings: {  }
-    third_party_settings: {  }
-    type: metatag_firehose
     region: content
   field_site_themes:
-    type: options_shs
-    weight: 2
-    region: content
-    settings:
-      display_node_count: false
-      create_new_items: false
-      create_new_levels: false
-      force_deepest: false
-    third_party_settings: {  }
-  field_subtheme:
-    type: options_shs
-    weight: 1
-    region: content
-    settings:
-      display_node_count: false
-      create_new_items: false
-      create_new_levels: false
-      force_deepest: false
-    third_party_settings: {  }
-  field_teaser:
-    type: string_textfield
     weight: 3
+    settings:
+      display_node_count: false
+      create_new_items: false
+      create_new_levels: false
+      force_deepest: false
+    third_party_settings: {  }
+    type: options_shs
     region: content
+  field_subtheme:
+    weight: 2
+    settings:
+      display_node_count: false
+      create_new_items: false
+      create_new_levels: false
+      force_deepest: false
+    third_party_settings: {  }
+    type: options_shs
+    region: content
+  field_teaser:
+    weight: 4
     settings:
       size: 60
       placeholder: ''
     third_party_settings: {  }
+    type: string_textfield
+    region: content
+  field_top_level_theme:
+    weight: 1
+    settings: {  }
+    third_party_settings: {  }
+    type: chosen_select
+    region: content
   langcode:
     type: language_select
-    weight: 2
+    weight: 7
     region: content
     settings:
       include_locked: true
     third_party_settings: {  }
+  moderation_state:
+    type: moderation_state_default
+    weight: 16
+    settings: {  }
+    region: content
+    third_party_settings: {  }
   path:
     type: path
-    weight: 9
-    region: content
+    weight: 14
     settings: {  }
     third_party_settings: {  }
+    region: content
   promote:
     type: boolean_checkbox
     settings:
       display_label: true
-    weight: 7
+    weight: 10
+    third_party_settings: {  }
     region: content
+  publish_on:
+    type: datetime_timestamp_no_default
+    weight: 13
+    region: content
+    settings: {  }
     third_party_settings: {  }
   status:
     type: boolean_checkbox
     settings:
       display_label: true
-    weight: 10
+    weight: 17
     region: content
     third_party_settings: {  }
   sticky:
     type: boolean_checkbox
     settings:
       display_label: true
-    weight: 8
-    region: content
+    weight: 11
     third_party_settings: {  }
+    region: content
   title:
     type: string_textfield
     weight: 0
-    region: content
     settings:
       size: 60
       placeholder: ''
     third_party_settings: {  }
+    region: content
   uid:
     type: entity_reference_autocomplete
-    weight: 5
+    weight: 8
     settings:
       match_operator: CONTAINS
       size: 60
       placeholder: ''
-    region: content
+      match_limit: 10
     third_party_settings: {  }
-  url_redirects:
+    region: content
+  unpublish_on:
+    type: datetime_timestamp_no_default
     weight: 12
     region: content
     settings: {  }
     third_party_settings: {  }
-hidden:
-  field_top_level_theme: true
+  url_redirects:
+    weight: 15
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  webform:
+    weight: 6
+    settings:
+      default_data: true
+    third_party_settings: {  }
+    type: webform_entity_reference_select
+    region: content
+hidden: {  }

@@ -1,0 +1,52 @@
+uuid: 12f97137-a486-434a-b716-b111f43cbf67
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.node.full
+    - field.field.node.webform.body
+    - field.field.node.webform.field_site_themes
+    - field.field.node.webform.field_subtheme
+    - field.field.node.webform.field_teaser
+    - field.field.node.webform.field_top_level_theme
+    - field.field.node.webform.webform
+    - node.type.webform
+  module:
+    - layout_builder
+    - text
+    - user
+    - webform
+third_party_settings:
+  layout_builder:
+    allow_custom: false
+    enabled: false
+_core:
+  default_config_hash: 3r1i0UMUbeNHhvmiqHDYznoS4G9XR1jq6lQ49r80lDE
+id: node.webform.full
+targetEntityType: node
+bundle: webform
+mode: full
+content:
+  body:
+    label: hidden
+    type: text_default
+    weight: 0
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+  webform:
+    weight: 1
+    label: hidden
+    settings:
+      source_entity: true
+    third_party_settings: {  }
+    type: webform_entity_reference_entity_view
+    region: content
+hidden:
+  field_site_themes: true
+  field_subtheme: true
+  field_teaser: true
+  field_top_level_theme: true
+  langcode: true
+  links: true
+  search_api_excerpt: true
