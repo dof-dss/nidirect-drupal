@@ -126,6 +126,7 @@ settings:
   purge_days: null
   results_disabled: false
   results_disabled_ignore: false
+  token_view: false
   token_update: false
 access:
   create:
@@ -195,11 +196,12 @@ handlers:
       from_options: {  }
       from_name: 'nidirect visitor'
       subject: 'Feedback form submission'
-      body: _default
+      body: "Last page viewed: https://www.nidirect.gov.uk[current-page:query:s]<br />\r\nSubmitted:&nbsp;[webform_submission:completed:long]&nbsp;by user: [webform_submission:user]<br />\r\n<br />\r\n---------------------------------------------------------------------------------------------<br />\r\n[webform_submission:values]<br />\r\n<br />\r\n---------------------------------------------------------------------------------------------"
       excluded_elements: {  }
       ignore_access: false
       exclude_empty: true
       exclude_empty_checkbox: false
+      exclude_attachments: false
       html: true
       attachments: false
       twig: false
@@ -210,3 +212,4 @@ handlers:
       sender_name: ''
       theme_name: ''
       parameters: {  }
+variants: {  }
