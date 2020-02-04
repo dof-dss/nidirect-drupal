@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "17779582bd2da8f1c3229a6987af5ac4",
+    "content-hash": "934a105377e1b900fe1ff61db367860d",
     "packages": [
         {
             "name": "alchemy/zippy",
@@ -4365,6 +4365,55 @@
             "support": {
                 "source": "http://git.drupal.org/project/geolocation.git",
                 "issues": "https://www.drupal.org/project/issues/geolocation"
+            }
+        },
+        {
+            "name": "drupal/google_analytics_counter",
+            "version": "dev-3.x",
+            "source": {
+                "type": "git",
+                "url": "https://git.drupalcode.org/project/google_analytics_counter.git",
+                "reference": "6ef741ed0d16938b8d3864ffe19ca7e0a3a80246"
+            },
+            "require": {
+                "drupal/core": "~8.0"
+            },
+            "type": "drupal-module",
+            "extra": {
+                "branch-alias": {
+                    "dev-3.x": "3.x-dev"
+                },
+                "drupal": {
+                    "version": "8.x-3.0-alpha19+10-dev",
+                    "datestamp": "1556113685",
+                    "security-coverage": {
+                        "status": "not-covered",
+                        "message": "Dev releases are not covered by Drupal security advisories."
+                    }
+                },
+                "patches_applied": {
+                    "Add API query tweak options": "https://gist.githubusercontent.com/omahm/02ac3b7138c4d0518bd954721b74b763/raw/8d7ffa08b21359c7bf11165cdef1fb7e98483774/gac_query_options.patch"
+                }
+            },
+            "notification-url": "https://packages.drupal.org/8/downloads",
+            "license": [
+                "GPL-2.0+"
+            ],
+            "authors": [
+                {
+                    "name": "Tomas Fulopp (Vacilando)",
+                    "homepage": "https://www.drupal.org/u/vacilando"
+                },
+                {
+                    "name": "esod",
+                    "homepage": "https://www.drupal.org/user/752140"
+                }
+            ],
+            "description": "Lightweight page view counter drawing on data collected by Google Analytics.",
+            "homepage": "https://www.drupal.org/project/google_analytics_counter",
+            "support": {
+                "source": "http://git.drupal.org/project/google_analytics_counter.git",
+                "issues": "https://www.drupal.org/project/issues/google_analytics_counter"
             }
         },
         {
@@ -15394,6 +15443,7 @@
         "drupal/entityqueue": 10,
         "drupal/facets_pretty_paths": 10,
         "drupal/flag": 20,
+        "drupal/google_analytics_counter": 20,
         "drupal/hms_field": 10,
         "drupal/inline_entity_form": 5,
         "drupal/layout_builder_modal": 15,
