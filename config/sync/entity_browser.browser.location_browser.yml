@@ -1,0 +1,29 @@
+uuid: 89f41db7-9097-48ac-baa2-36d63b7e4a6e
+langcode: en
+status: true
+dependencies:
+  module:
+    - entity_browser_entity_form
+name: location_browser
+label: 'Location browser'
+display: iframe
+display_configuration:
+  width: 100%
+  height: '650'
+  link_text: Select
+  auto_open: true
+selection_display: no_display
+selection_display_configuration: {  }
+widget_selector: single
+widget_selector_configuration: {  }
+widgets:
+  a36da33a-ac2d-4823-84ab-8646dc58d00c:
+    settings:
+      entity_type: paragraph
+      bundle: map
+      form_mode: default
+      submit_text: Save
+    uuid: a36da33a-ac2d-4823-84ab-8646dc58d00c
+    weight: 1
+    label: 'New location'
+    id: entity_form

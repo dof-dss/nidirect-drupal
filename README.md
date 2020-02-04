@@ -101,6 +101,21 @@ config/
 
 *'sync' rather than 'production' is used as this is the default and helps avoid problems with contrib modules and hosting platforms that assume this is always present.*
 
+### Overriding of taxonomy term view pages
+
+This project uses a very customised approach. 
+
+When clicking on the 'view' page for a taxonomy term ('/information-and-services/motoring' for example) you see any sub terms from the 
+'site themes' vocabulary as usual, but you also see links to any node that has 'Motoring' set as its 'Theme/subtheme' or 'Supplementary subtheme'.
+
+This is achieved by merging the results from the 'Articles by Term' view ('All articles by term - embed' display) and the 'Site subtopics' view 
+('By topic - simple embed' display) which is done in the 'nicsdru_nidirect_theme_preprocess_taxonomy_term' function which may be found in the 
+nicsdru_nidirect_theme.theme file.
+
+In addition to this, taxonomy terms may be overridden by 'campaigns', which are nodes of type 'landing page'. The landing page node will replace the taxonomy term that is
+selected in the 'Theme/subtheme' field. This is achieved by using the 'Articles by Term' view ('Campaign List - embed' display). Again, processing may be found in the
+'nicsdru_nidirect_theme_preprocess_taxonomy_term' function.
+
 #### Some key concepts:
 
 > Config blacklist
@@ -123,6 +138,23 @@ $config['config_split.config_split.pre-production']['status'] = FALSE;
 
 These indicate which config_split configuration is active at any given time. *NB: you can only have one active at a time.* The precise setting of these will, of course, vary on each environment that hosts the site to ensure that configuration imports use the correct values.
 
+> Importing configuration and structure
+
+When developing it is important to keep the site configuration and structure in sync with the exported config contained under the config/sync directory.
+Every time you work on a new feature you should perform the following 2 steps
+
+Step 1: Update vendor packages
+* composer install
+
+Step 2: Update site configuration and structure
+
+* lando imp : Imports configuration and structure (blocks)
+* lando drush cim - Import configuration changes only
+* lando drush ib - Import custom blocks
+* lando drush im - Import custom menu links
+
+NOTE: Custom Menu links only applies to links created from the admin/structure/menu page. Links created via the node edit screen etc will not be exported as a menu structure item.
+
 > Exporting your work
 
 First, ensure that your active config_split configuration is correct (see above). If you have recently changed it, you will need to run `drush cr` to bring Drupal's service container and caches up to date.
@@ -138,6 +170,8 @@ When you create new features, you should take care to ensure that configuration 
 This is the default drush message and can be safely disregarded. You should, of course, always review what the end result looks like and only stage/commit the files that are relevant to your work.
 
 *NB: config_split used to rely on a specific export command (`drush csex`) but this is no longer required now that drush, config_split and config filter all work in tandem.*
+
+To export custom blocks or menus use /admin/structure/structure-sync/ and more information can be found on the structure_sync module readme.
 
 ## Front-end toolchain
 

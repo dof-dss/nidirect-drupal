@@ -5,12 +5,12 @@ dependencies:
   config:
     - field.field.node.umbrella_body.body
     - field.field.node.umbrella_body.field_address
-    - field.field.node.umbrella_body.field_contact_phone
     - field.field.node.umbrella_body.field_contact_website
     - field.field.node.umbrella_body.field_district
     - field.field.node.umbrella_body.field_email_address
     - field.field.node.umbrella_body.field_location
     - field.field.node.umbrella_body.field_meta_tags
+    - field.field.node.umbrella_body.field_telephone
     - field.field.node.umbrella_body.field_ub_all_ni
     - field.field.node.umbrella_body.field_ub_contact
     - field.field.node.umbrella_body.field_ub_counties
@@ -28,6 +28,7 @@ dependencies:
     - link
     - metatag
     - options
+    - telephone_plus
     - text
     - user
 id: node.umbrella_body.default
@@ -53,13 +54,6 @@ content:
     settings: {  }
     third_party_settings: {  }
     type: address_default
-    region: content
-  field_contact_phone:
-    weight: 27
-    label: above
-    settings: {  }
-    third_party_settings: {  }
-    type: basic_string
     region: content
   field_contact_website:
     type: link
@@ -97,12 +91,13 @@ content:
       common_map: ''
       info_text: ''
       use_overridden_map_settings: 0
-      google_map_settings:
+      map_provider_id: google_maps
+      map_provider_settings:
         type: ROADMAP
-        zoom: '10'
+        zoom: 10
         minZoom: 0
         maxZoom: 18
-        rotateControl: 0
+        rotateControl: false
         mapTypeControl: 1
         streetViewControl: 1
         zoomControl: 1
@@ -127,6 +122,14 @@ content:
     settings: {  }
     third_party_settings: {  }
     type: metatag_empty_formatter
+    region: content
+  field_telephone:
+    weight: 27
+    label: above
+    settings:
+      vcard: true
+    third_party_settings: {  }
+    type: telephone_plus_link
     region: content
   field_ub_all_ni:
     type: boolean

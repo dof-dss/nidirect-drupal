@@ -5,6 +5,34 @@ dependencies:
   config:
     - core.entity_view_mode.node.teaser
     - field.field.node.health_condition.body
+    - field.field.node.health_condition.field_additional_info
+    - field.field.node.health_condition.field_alternative_condition
+    - field.field.node.health_condition.field_alternative_title
+    - field.field.node.health_condition.field_banner_image
+    - field.field.node.health_condition.field_toc_enable
+    - field.field.node.health_condition.field_hc_body_location
+    - field.field.node.health_condition.field_hc_body_system
+    - field.field.node.health_condition.field_hc_condition_type
+    - field.field.node.health_condition.field_hc_info_source
+    - field.field.node.health_condition.field_hc_primary_symptom_1
+    - field.field.node.health_condition.field_hc_primary_symptom_2
+    - field.field.node.health_condition.field_hc_primary_symptom_3
+    - field.field.node.health_condition.field_hc_primary_symptom_4
+    - field.field.node.health_condition.field_hc_secondary_symptoms
+    - field.field.node.health_condition.field_index_letter
+    - field.field.node.health_condition.field_last_review_date
+    - field.field.node.health_condition.field_meta_tags
+    - field.field.node.health_condition.field_next_review_date
+    - field.field.node.health_condition.field_parent_condition
+    - field.field.node.health_condition.field_photo
+    - field.field.node.health_condition.field_published_date
+    - field.field.node.health_condition.field_related_conditions
+    - field.field.node.health_condition.field_related_info
+    - field.field.node.health_condition.field_site_themes
+    - field.field.node.health_condition.field_subtheme
+    - field.field.node.health_condition.field_summary
+    - field.field.node.health_condition.field_teaser
+    - field.field.node.health_condition.field_top_level_theme
     - node.type.health_condition
   module:
     - text
@@ -14,12 +42,22 @@ targetEntityType: node
 bundle: health_condition
 mode: teaser
 content:
+  banner_display:
+    weight: 0
+    settings: {  }
+    third_party_settings: {  }
+    region: content
   body:
     label: hidden
     type: text_summary_or_trimmed
     weight: 101
     settings:
       trim_length: 600
+    third_party_settings: {  }
+    region: content
+  content_moderation_control:
+    weight: -20
+    settings: {  }
     third_party_settings: {  }
     region: content
   links:
@@ -29,9 +67,9 @@ content:
     region: content
 hidden:
   field_additional_info: true
+  field_alternative_condition: true
   field_alternative_title: true
   field_banner_image: true
-  field_enable_toc: true
   field_hc_body_location: true
   field_hc_body_system: true
   field_hc_condition_type: true
@@ -54,6 +92,7 @@ hidden:
   field_subtheme: true
   field_summary: true
   field_teaser: true
+  field_toc_enable: true
   field_top_level_theme: true
   langcode: true
   search_api_excerpt: true

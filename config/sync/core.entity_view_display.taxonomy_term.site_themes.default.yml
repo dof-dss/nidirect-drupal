@@ -5,7 +5,7 @@ dependencies:
   config:
     - field.field.taxonomy_term.site_themes.field_additional_info
     - field.field.taxonomy_term.site_themes.field_banner_image
-    - field.field.taxonomy_term.site_themes.field_enable_toc
+    - field.field.taxonomy_term.site_themes.field_toc_enable
     - field.field.taxonomy_term.site_themes.field_meta_tags
     - field.field.taxonomy_term.site_themes.field_photo
     - field.field.taxonomy_term.site_themes.field_supplementary_parents
@@ -46,22 +46,21 @@ content:
       image_style: ''
       image_link: ''
     third_party_settings: {  }
-  field_enable_toc:
-    type: boolean
-    weight: 3
-    region: content
-    label: above
-    settings:
-      format: default
-      format_custom_false: ''
-      format_custom_true: ''
-    third_party_settings: {  }
   field_meta_tags:
     weight: 9
     label: above
     settings: {  }
     third_party_settings: {  }
     type: metatag_empty_formatter
+    region: content
+  field_photo:
+    type: entity_reference_entity_view
+    weight: 10
+    label: above
+    settings:
+      view_mode: default
+      link: false
+    third_party_settings: {  }
     region: content
   field_supplementary_parents:
     label: above
@@ -95,6 +94,16 @@ content:
     third_party_settings: {  }
     type: text_default
     region: content
+  field_toc_enable:
+    type: boolean
+    weight: 3
+    region: content
+    label: above
+    settings:
+      format: default
+      format_custom_false: ''
+      format_custom_true: ''
+    third_party_settings: {  }
   field_top_level_theme:
     label: above
     weight: 7
@@ -104,6 +113,5 @@ content:
     third_party_settings: {  }
     region: content
 hidden:
-  field_photo: true
   langcode: true
   search_api_excerpt: true

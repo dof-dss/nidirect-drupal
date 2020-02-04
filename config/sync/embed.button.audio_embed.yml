@@ -1,0 +1,27 @@
+uuid: 98a0653e-0fc5-4e03-907d-40b79497b371
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.media.embed
+    - entity_browser.browser.audio_entity_browser
+    - media.type.audio
+  content:
+    - 'file:file:47c2b312-fe32-4137-ba0f-543229d9b448'
+  module:
+    - entity_embed
+    - media
+label: 'Audio embed'
+id: audio_embed
+type_id: entity
+type_settings:
+  entity_type: media
+  bundles:
+    - audio
+  display_plugins:
+    - 'view_mode:media.embed'
+  entity_browser: audio_entity_browser
+  entity_browser_settings:
+    display_review: true
+icon: {  }
+icon_uuid: 47c2b312-fe32-4137-ba0f-543229d9b448

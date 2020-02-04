@@ -4,7 +4,7 @@ status: true
 dependencies:
   config:
     - field.field.node.news.body
-    - field.field.node.news.field_enable_toc
+    - field.field.node.news.field_toc_enable
     - field.field.node.news.field_meta_tags
     - field.field.node.news.field_photo
     - field.field.node.news.field_published_date
@@ -27,6 +27,14 @@ content:
     settings: {  }
     third_party_settings: {  }
     region: content
+  field_photo:
+    weight: 3
+    label: above
+    settings:
+      link: true
+    third_party_settings: {  }
+    type: entity_reference_label
+    region: content
   field_published_date:
     type: datetime_default
     weight: 0
@@ -45,10 +53,9 @@ content:
     region: content
 hidden:
   content_moderation_control: true
-  field_enable_toc: true
   field_meta_tags: true
-  field_photo: true
   field_teaser: true
+  field_toc_enable: true
   langcode: true
   links: true
   search_api_excerpt: true

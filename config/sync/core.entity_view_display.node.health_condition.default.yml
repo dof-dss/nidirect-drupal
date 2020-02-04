@@ -5,9 +5,10 @@ dependencies:
   config:
     - field.field.node.health_condition.body
     - field.field.node.health_condition.field_additional_info
+    - field.field.node.health_condition.field_alternative_condition
     - field.field.node.health_condition.field_alternative_title
     - field.field.node.health_condition.field_banner_image
-    - field.field.node.health_condition.field_enable_toc
+    - field.field.node.health_condition.field_toc_enable
     - field.field.node.health_condition.field_hc_body_location
     - field.field.node.health_condition.field_hc_body_system
     - field.field.node.health_condition.field_hc_condition_type
@@ -33,7 +34,6 @@ dependencies:
     - field.field.node.health_condition.field_top_level_theme
     - node.type.health_condition
   module:
-    - image
     - metatag
     - text
     - user
@@ -42,6 +42,11 @@ targetEntityType: node
 bundle: health_condition
 mode: default
 content:
+  banner_display:
+    weight: 0
+    settings: {  }
+    third_party_settings: {  }
+    region: content
   body:
     label: hidden
     type: text_default
@@ -54,6 +59,14 @@ content:
     region: content
     settings: {  }
     third_party_settings: {  }
+  field_alternative_condition:
+    weight: 11
+    label: above
+    settings:
+      link: true
+    third_party_settings: {  }
+    type: entity_reference_label
+    region: content
   field_alternative_title:
     type: string
     weight: 4
@@ -63,14 +76,13 @@ content:
       link_to_entity: false
     third_party_settings: {  }
   field_banner_image:
-    type: image
-    weight: 1
-    region: content
+    weight: 13
     label: above
     settings:
-      image_style: ''
-      image_link: ''
+      link: true
     third_party_settings: {  }
+    type: entity_reference_label
+    region: content
   field_meta_tags:
     weight: 10
     label: above
@@ -87,14 +99,13 @@ content:
       link: true
     third_party_settings: {  }
   field_photo:
-    type: image
-    weight: 7
-    region: content
+    weight: 12
     label: above
     settings:
-      image_style: ''
-      image_link: ''
+      link: true
     third_party_settings: {  }
+    type: entity_reference_label
+    region: content
   field_site_themes:
     type: entity_reference_label
     weight: 2
@@ -125,7 +136,6 @@ content:
     third_party_settings: {  }
 hidden:
   field_additional_info: true
-  field_enable_toc: true
   field_hc_body_location: true
   field_hc_body_system: true
   field_hc_condition_type: true
@@ -142,6 +152,7 @@ hidden:
   field_related_conditions: true
   field_related_info: true
   field_subtheme: true
+  field_toc_enable: true
   field_top_level_theme: true
   langcode: true
   search_api_excerpt: true

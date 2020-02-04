@@ -1,0 +1,29 @@
+uuid: d8e8bb80-637b-4e81-b7b1-f9da2d5a9b7c
+langcode: en
+status: true
+dependencies:
+  config:
+    - views.view.health_conditions
+  module:
+    - system
+    - views
+  theme:
+    - nicsdru_nidirect_theme
+id: exposedformhealth_conditionssearch_page
+theme: nicsdru_nidirect_theme
+region: sidebar_first
+weight: -11
+provider: null
+plugin: 'views_exposed_filter_block:health_conditions-search_page'
+settings:
+  id: 'views_exposed_filter_block:health_conditions-search_page'
+  label: ''
+  provider: views
+  label_display: '0'
+  views_label: ''
+visibility:
+  request_path:
+    id: request_path
+    pages: "/services/health-conditions-a-z\r\n/services/health-conditions-a-z*"
+    negate: false
+    context_mapping: {  }

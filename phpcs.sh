@@ -21,10 +21,8 @@ DRUPAL_PRACTICE_EXCLUDED_SNIFFS=(
   DrupalPractice.Objects.StrictSchemaDisabled
 )
 
-# Ignore some npm or non-PHP related FE toolchain directories.
-# IGNORE="${DRUPAL_DEPLOY_PATH}/web/themes/custom/nidirect/dist"
-# IGNORE="$IGNORE,${DRUPAL_DEPLOY_PATH}/web/themes/custom/nidirect/src"
-# IGNORE="$IGNORE,${DRUPAL_DEPLOY_PATH}/web/themes/custom/nidirect/node_modules"
+# Comma separated list of npm or non-PHP related FE toolchain directories we want to ignore.
+#IGNORE="${DRUPAL_DEPLOY_PATH}/web/themes/custom/THEMENAME/node_modules"
 
 echo "Running coding standard checks in ${PHPCS_CHECK_DIR}"
 

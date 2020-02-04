@@ -1,0 +1,28 @@
+uuid: f5b796fe-c2cf-459a-a07a-fb419009f5db
+langcode: en
+status: true
+dependencies:
+  module:
+    - ctools
+    - nidirect_health_conditions
+  theme:
+    - nicsdru_nidirect_theme
+id: healthconditionsatoz_sidebar_2
+theme: nicsdru_nidirect_theme
+region: sidebar_second
+weight: -18
+provider: null
+plugin: healthconditions_az_block
+settings:
+  id: healthconditions_az_block
+  label: 'Health Conditions A to Z'
+  provider: nidirect_health_conditions
+  label_display: visible
+visibility:
+  'entity_bundle:node':
+    id: 'entity_bundle:node'
+    bundles:
+      health_condition: health_condition
+    negate: false
+    context_mapping:
+      node: '@node.node_route_context:node'

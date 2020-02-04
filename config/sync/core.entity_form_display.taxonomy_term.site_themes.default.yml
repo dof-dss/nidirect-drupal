@@ -3,9 +3,10 @@ langcode: en
 status: true
 dependencies:
   config:
+    - entity_browser.browser.media_entity_browser
     - field.field.taxonomy_term.site_themes.field_additional_info
     - field.field.taxonomy_term.site_themes.field_banner_image
-    - field.field.taxonomy_term.site_themes.field_enable_toc
+    - field.field.taxonomy_term.site_themes.field_toc_enable
     - field.field.taxonomy_term.site_themes.field_meta_tags
     - field.field.taxonomy_term.site_themes.field_photo
     - field.field.taxonomy_term.site_themes.field_supplementary_parents
@@ -16,6 +17,7 @@ dependencies:
     - image.style.thumbnail
     - taxonomy.vocabulary.site_themes
   module:
+    - entity_browser
     - image
     - metatag
     - path
@@ -27,14 +29,14 @@ mode: default
 content:
   description:
     type: text_textarea
-    weight: 2
+    weight: 3
     region: content
     settings:
       placeholder: ''
       rows: 5
     third_party_settings: {  }
   field_additional_info:
-    weight: 9
+    weight: 10
     type: text_textarea
     settings:
       rows: 5
@@ -42,45 +44,46 @@ content:
     third_party_settings: {  }
     region: content
   field_banner_image:
-    weight: 4
+    weight: 5
     type: image_image
     settings:
       progress_indicator: throbber
       preview_image_style: thumbnail
     third_party_settings: {  }
     region: content
-  field_enable_toc:
-    weight: 7
-    type: boolean_checkbox
-    settings:
-      display_label: true
-    third_party_settings: {  }
-    region: content
   field_meta_tags:
-    weight: 8
+    weight: 9
     settings: {  }
     third_party_settings: {  }
     type: metatag_firehose
     region: content
   field_photo:
     weight: 6
-    type: image_image
     settings:
-      progress_indicator: throbber
-      preview_image_style: thumbnail
+      entity_browser: media_entity_browser
+      field_widget_display: rendered_entity
+      field_widget_display_settings:
+        view_mode: preview
+      field_widget_edit: true
+      field_widget_remove: true
+      selection_mode: selection_append
+      field_widget_replace: false
+      open: false
     third_party_settings: {  }
+    type: entity_browser_entity_reference
     region: content
   field_supplementary_parents:
     type: entity_reference_autocomplete
-    weight: 10
+    weight: 11
     region: content
     settings:
       match_operator: CONTAINS
       size: 60
       placeholder: ''
+      match_limit: 10
     third_party_settings: {  }
   field_taxonomy_rank:
-    weight: 12
+    weight: 14
     type: number
     settings:
       placeholder: ''
@@ -95,24 +98,31 @@ content:
     third_party_settings: {  }
     region: content
   field_theme_summary:
-    weight: 3
+    weight: 4
     settings:
       rows: 5
       placeholder: ''
     third_party_settings: {  }
     type: text_textarea
     region: content
+  field_toc_enable:
+    weight: 8
+    type: boolean_checkbox
+    settings:
+      display_label: true
+    third_party_settings: {  }
+    region: content
   field_top_level_theme:
-    weight: 11
+    weight: 13
     type: options_select
     settings: {  }
     third_party_settings: {  }
     region: content
   flag:
-    weight: 10
+    weight: 12
+    region: content
     settings: {  }
     third_party_settings: {  }
-    region: content
   langcode:
     type: language_select
     weight: 2
@@ -130,8 +140,15 @@ content:
     third_party_settings: {  }
   path:
     type: path
-    weight: 5
+    weight: 7
     region: content
     settings: {  }
+    third_party_settings: {  }
+  status:
+    type: boolean_checkbox
+    settings:
+      display_label: true
+    weight: 15
+    region: content
     third_party_settings: {  }
 hidden: {  }

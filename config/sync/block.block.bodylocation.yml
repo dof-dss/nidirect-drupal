@@ -1,0 +1,29 @@
+uuid: 0b7621aa-07fd-4872-bd31-44215c5c14d2
+langcode: en
+status: true
+dependencies:
+  config:
+    - facets.facet.body_location
+  module:
+    - facets
+    - system
+  theme:
+    - nicsdru_nidirect_theme
+id: bodylocation
+theme: nicsdru_nidirect_theme
+region: sidebar_first
+weight: -9
+provider: null
+plugin: 'facet_block:body_location'
+settings:
+  id: 'facet_block:body_location'
+  label: 'Body part'
+  provider: facets
+  label_display: visible
+  block_id: bodylocation
+visibility:
+  request_path:
+    id: request_path
+    pages: "/services/health-conditions-a-z\r\n/services/health-conditions-a-z/*"
+    negate: false
+    context_mapping: {  }

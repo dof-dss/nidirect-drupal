@@ -1,0 +1,231 @@
+uuid: e5772033-2f27-4eed-ae7c-9f84012b48d3
+langcode: en
+status: open
+dependencies:
+  module:
+    - nidirect_webforms
+open: null
+close: null
+weight: 0
+uid: 1
+template: false
+archive: false
+id: year_10_subject_choices_quiz
+title: 'Year 10 subject choices quiz'
+description: ''
+category: ''
+elements: "question_1_page:\n  '#type': webform_wizard_page\n  '#title': 'Question 1'\n  '#next_button_label': Next\n  question_1:\n    '#type': radios\n    '#title': 'When picking your GCSE subjects, you should:'\n    '#description': '(select one answer)'\n    '#description_display': before\n    '#options':\n      q1_a1: 'get accurate and up to date information'\n      q1_a2: 'get reliable advice '\n      q1_a3: 'discuss your options with your subject teachers and family'\n      q1_a4: 'all of the above'\n    '#required': true\nquestion_1_feedback:\n  '#type': webform_wizard_page\n  '#title': 'Question 1 feedback'\n  '#next_button_label': 'Next question'\n  question_1_right:\n    '#type': processed_text\n    '#states':\n      visible:\n        ':input[name=\"question_1\"]':\n          value: q1_a4\n    '#wrapper_attributes':\n      class:\n        - 'messages messages--status'\n    '#text': |\n      <h2>Right!</h2>\n      \n      <p>When choosing your subjects, make sure you've accurate and up to date information. Talk to those who can give you reliable advice, such as a careers teacher or adviser, your subject teachers and family.</p>\n      \n    '#format': full_html\n  question_1_wrong:\n    '#type': processed_text\n    '#states':\n      visible:\n        ':input[name=\"question_1\"]':\n          '!value': q1_a4\n    '#wrapper_attributes':\n      class:\n        - 'messages messages--error'\n    '#text': |\n      <h2>Sorry!</h2>\n      \n      <p>The correct answer is<strong> all of the above.</strong></p>\n      \n      <p style=\"text-align:justify\">When choosing your subjects, make sure you've accurate and up to date information. Talk to those who can give you reliable advice, such as a careers teacher or adviser, your subject teachers and family.</p>\n      \n    '#format': full_html\nquestion_2_page:\n  '#type': webform_wizard_page\n  '#title': 'Question 2'\n  '#next_button_label': Next\n  question_2:\n    '#type': checkboxes\n    '#title': 'When choosing what to study, you should pick subjects:'\n    '#description': '(select all that apply)'\n    '#description_display': before\n    '#options':\n      q2_a1: 'you enjoy'\n      q2_a2: 'your friends are doing'\n      q2_a3: 'that will help with your future career path'\n      q2_a4: 'you think are easy'\n    '#options_randomize': true\n    '#required': true\nquestion_2_feedback:\n  '#type': webform_wizard_page\n  '#title': 'Question 2 feedback'\n  '#next_button_label': 'Next question'\n  question_2_right:\n    '#type': processed_text\n    '#states':\n      visible:\n        ':input[name=\"question_2[q2_a1]\"]':\n          checked: true\n        ':input[name=\"question_2[q2_a3]\"]':\n          checked: true\n        ':input[name=\"question_2[q2_a2]\"]':\n          unchecked: true\n        ':input[name=\"question_2[q2_a4]\"]':\n          unchecked: true\n    '#wrapper_attributes':\n      class:\n        - 'messages messages--status'\n    '#text': |\n      <h2>Right!</h2>\n      \n      <p>You’re more likely to do well in subjects you enjoy and are good at. However, think about what course or career you'd like to do when you leave school. If you pick a new subject, find out as much as you can about it by talking to teachers and students already studying it.</p>\n      \n      <p>&nbsp;</p>\n      \n      <p>Don't choose subjects for the wrong reasons, such as:</p>\n      \n      <ul>\n      \t<li>you like the teacher – the teacher may change</li>\n      \t<li>you think it will be easy – no subject is easy</li>\n      \t<li>there isn’t much homework – this may change</li>\n      \t<li>your friends are taking the subject – it might be right for them, but not for your chosen career path</li>\n      </ul>\n      \n    '#format': full_html\n  question_2_wrong:\n    '#type': processed_text\n    '#states':\n      visible:\n        - ':input[name=\"question_2[q2_a2]\"]':\n            checked: true\n        - or\n        - ':input[name=\"question_2[q2_a4]\"]':\n            checked: true\n        - or\n        - ':input[name=\"question_2[q2_a1]\"]':\n            unchecked: true\n        - or\n        - ':input[name=\"question_2[q2_a3]\"]':\n            unchecked: true\n    '#wrapper_attributes':\n      class:\n        - 'messages messages--error'\n    '#text': |\n      <h2>Sorry!</h2>\n      \n      <p>The correct answers are to pick subjects:</p>\n      \n      <ul>\n      \t<li><strong>you enjoy</strong></li>\n      \t<li><strong>that will help with you future career path</strong></li>\n      </ul>\n      \n      <p>You’re more likely to do well in subjects you enjoy and are good at. However, think about what course or career you'd like to do when you leave school. If you pick a new subject, find out as much as you can about it by talking to teachers and students already studying it.</p>\n      \n      <p>Don't choose subjects for the wrong reasons, such as:</p>\n      \n      <ul>\n      \t<li>you like the teacher – the teacher may change</li>\n      \t<li>you think it will be easy – no subject is easy</li>\n      \t<li>there isn’t much homework – this may change</li>\n      \t<li>your friends are taking the subject – it might be right for them, but not for your chosen career path</li>\n      </ul>\n      \n    '#format': full_html\nquestion_3_page:\n  '#type': webform_wizard_page\n  '#title': 'Question 3'\n  '#next_button_label': Next\n  question_3:\n    '#type': radios\n    '#title': 'Some subjects are only for boys or for girls.'\n    '#options':\n      q3_a1: 'True'\n      q3_a2: 'False'\n    '#options_randomize': true\n    '#required': true\nquestion_3_feedback:\n  '#type': webform_wizard_page\n  '#title': 'Question 3 feedback'\n  '#next_button_label': 'Next question'\n  question_3_right:\n    '#type': processed_text\n    '#states':\n      visible:\n        ':input[name=\"question_3\"]':\n          value: q3_a2\n    '#wrapper_attributes':\n      class:\n        - 'messages messages--status'\n    '#text': |\n      <h2>Right!</h2>\n      \n      <p>You’re more likely to do well in subjects you enjoy and are good at. However, think about what course or career you'd like to do when you leave school. If you pick a new subject, find out as much as you can about it by talking to teachers and students already studying it.</p>\n      \n      <p>&nbsp;</p>\n      \n      <p>Don't choose subjects for the wrong reasons, such as:</p>\n      \n      <ul>\n      \t<li>you like the teacher – the teacher may change</li>\n      \t<li>you think it will be easy – no subject is easy</li>\n      \t<li>there isn’t much homework – this may change</li>\n      \t<li>your friends are taking the subject – it might be right for them, but not for your chosen career path</li>\n      </ul>\n      \n    '#format': full_html\n  question_3_wrong:\n    '#type': processed_text\n    '#states':\n      visible:\n        ':input[name=\"question_3\"]':\n          value: q3_a1\n    '#wrapper_attributes':\n      class:\n        - 'messages messages--error'\n    '#text': |\n      <h2>Sorry!</h2>\n      \n      <p>There’s no such thing as subjects for boys or for girls. Don’t let gender stereotypes get in the way of picking the subjects you want.</p>\n      \n    '#format': full_html\nquestion_4_page:\n  '#type': webform_wizard_page\n  '#title': 'Question 4'\n  '#next_button_label': Next\n  question_4:\n    '#type': checkboxes\n    '#title': 'If you’re undecided about your future career path you should:'\n    '#description': '(select all that apply)'\n    '#description_display': before\n    '#options':\n      q4_a1: 'keep your options open'\n      q4_a2: 'select a range of subjects'\n      q4_a3: 'find out what jobs are in demand now and in the future'\n      q4_a4: 'pick subjects where you like the teacher '\n    '#options_randomize': true\n    '#required': true\nquestion_4_feedback:\n  '#type': webform_wizard_page\n  '#title': 'Question 4 feedback'\n  '#next_button_label': 'Next question'\n  question_4_right:\n    '#type': processed_text\n    '#states':\n      visible:\n        ':input[name=\"question_4[q4_a1]\"]':\n          checked: true\n        ':input[name=\"question_4[q4_a2]\"]':\n          checked: true\n        ':input[name=\"question_4[q4_a3]\"]':\n          checked: true\n        ':input[name=\"question_4[q4_a4]\"]':\n          unchecked: true\n    '#wrapper_attributes':\n      class:\n        - 'messages messages--status'\n    '#text': |\n      <h2>Right!</h2>\n      \n      <p>If you’re not sure which career to follow, keep your options open by making a balanced choice. Selecting a range of subjects will give you a good overview of different topics and different ways of studying and can help you identify what subjects you’re best at.</p>\n      \n    '#format': full_html\n  question_4_wrong:\n    '#type': processed_text\n    '#states':\n      visible:\n        - ':input[name=\"question_4[q4_a1]\"]':\n            unchecked: true\n        - or\n        - ':input[name=\"question_4[q4_a2]\"]':\n            unchecked: true\n        - or\n        - ':input[name=\"question_4[q4_a3]\"]':\n            unchecked: true\n        - or\n        - ':input[name=\"question_4[q4_a4]\"]':\n            checked: true\n    '#wrapper_attributes':\n      class:\n        - 'messages messages--error'\n    '#text': |\n      <h2>Sorry!</h2>\n      \n      <p>The correct answers are:</p>\n      \n      <ul>\n      \t<li><strong>keep you options open</strong></li>\n      \t<li><strong>select a range of subjects</strong></li>\n      \t<li><strong>find out what jobs are in demand now and in the future</strong></li>\n      </ul>\n      \n      <p>If you’re not sure which career to follow, keep your options open by making a balanced choice. Selecting a range of subjects will give you a good overview of different topics and different ways of studying and can help you identify what subjects you’re best at.</p>\n      \n    '#format': full_html\nquestion_5_page:\n  '#type': webform_wizard_page\n  '#title': 'Question 5'\n  '#next_button_label': Next\n  question_5:\n    '#type': radios\n    '#title': 'The Careers Service can help you:'\n    '#description': '(select one answer)'\n    '#description_display': before\n    '#options':\n      q5_a1: 'plan and make decisions for your future '\n      q5_a2: 'identify your strengths and areas for improvement'\n      q5_a3: 'consider opportunities available in education, training and employment'\n      q5_a4: 'all of the above'\n    '#required': true\nquestion_5_feedback:\n  '#type': webform_wizard_page\n  '#title': 'Question 5 feedback'\n  '#next_button_label': 'Next question'\n  question_5_right:\n    '#type': processed_text\n    '#states':\n      visible:\n        ':input[name=\"question_5\"]':\n          value: q5_a4\n    '#wrapper_attributes':\n      class:\n        - 'messages messages--status'\n    '#text': |\n      <h2>Right!</h2>\n      \n      <p>The Careers Service offers impartial careers information, advice and guidance. Professionally qualified careers advisers can help you:</p>\n      \n      <ul>\n      \t<li>plan and make decisions for your future career</li>\n      \t<li>explore your strengths and identify areas for improvement</li>\n      \t<li>consider the opportunities available in education, training and employment</li>\n      </ul>\n      \n    '#format': full_html\n  question_5_wrong:\n    '#type': processed_text\n    '#states':\n      visible:\n        ':input[name=\"question_5\"]':\n          '!value': q5_a4\n    '#wrapper_attributes':\n      class:\n        - 'messages messages--error'\n    '#text': |\n      <h2>Sorry!</h2>\n      \n      <p>The correct answer is <strong>all of the above</strong>.</p>\n      \n      <p>The Careers Service offers impartial careers information, advice and guidance. Professionally qualified careers advisers can help you:</p>\n      \n      <ul>\n      \t<li>plan and make decisions for your future career</li>\n      \t<li>explore your strengths and identify areas for improvement</li>\n      \t<li>consider the opportunities available in education, training and employment</li>\n      </ul>\n      \n    '#format': full_html\nquestion_6_page:\n  '#type': webform_wizard_page\n  '#title': 'Question 6'\n  '#next_button_label': Next\n  question_6:\n    '#type': radios\n    '#title': 'You can contact the Careers Service:'\n    '#description': '(select one answer)'\n    '#description_display': before\n    '#options':\n      q6_a1: 'by telephone'\n      q6_a2: 'face to face in school or at a local careers office'\n      q6_a3: online\n      q6_a4: 'all of the above'\n    '#required': true\nquestion_6_feedback:\n  '#type': webform_wizard_page\n  '#title': 'Question 6 feedback'\n  question_6_right:\n    '#type': processed_text\n    '#states':\n      visible:\n        ':input[name=\"question_6\"]':\n          value: q6_a4\n    '#wrapper_attributes':\n      class:\n        - 'messages messages--status'\n    '#text': |\n      <h2>Right!</h2>\n      \n      <p>Contacting the Careers Service is easy. To speak to a Careers Adviser, you can:</p>\n      \n      <ul>\n      \t<li><a href=\"https://selfservice.nidirect.gov.uk/TransactionalServices/Careers_Service/Tell_Us/Ask_careers/#/11021/Contact/View/Ask careers\" target=\"_blank\">send your query online</a> or chat to an adviser using <a href=\"/node/5169\" target=\"_blank\">Careers Webchat</a></li>\n      \t<li>telephone <strong>0300 200 7820</strong></li>\n      \t<li>speak to an adviser face to face in school</li>\n      \t<li>call in to your local careers office</li>\n      </ul>\n      \n    '#format': full_html\n  question_6_wrong:\n    '#type': processed_text\n    '#states':\n      visible:\n        ':input[name=\"question_6\"]':\n          '!value': q6_a4\n    '#wrapper_attributes':\n      class:\n        - 'messages messages--error'\n    '#text': |\n      <h2>Sorry!</h2>\n      \n      <p>The correct answer is <strong>all of the above</strong>.</p>\n      \n      <p>Contacting the Careers Service is easy. To speak to a Careers Adviser, you can:</p>\n      \n      <ul>\n      \t<li><a href=\"https://selfservice.nidirect.gov.uk/TransactionalServices/Careers_Service/Tell_Us/Ask_careers/#/11021/Contact/View/Ask careers\" target=\"_blank\">send your query online</a> or chat to an adviser using <a href=\"/node/5169\" target=\"_blank\">Careers Webchat</a></li>\n      \t<li>telephone <strong>0300 200 7820</strong></li>\n      \t<li>speak to an adviser face to face in school</li>\n      \t<li>call in to your local careers office</li>\n      </ul>\n      \n    '#format': full_html\nactions:\n  '#type': webform_actions\n  '#title': 'Submit button(s)'\n  '#submit__label': Finish\n  '#wizard_prev_hide': true\n"
+css: ''
+javascript: ''
+settings:
+  ajax: true
+  ajax_scroll_top: form
+  ajax_progress_type: throbber
+  ajax_effect: fade
+  ajax_speed: null
+  page: true
+  page_submit_path: ''
+  page_confirm_path: ''
+  page_admin_theme: false
+  form_title: source_entity_webform
+  form_submit_once: false
+  form_exception_message: ''
+  form_open_message: ''
+  form_close_message: ''
+  form_previous_submissions: true
+  form_confidential: false
+  form_confidential_message: ''
+  form_remote_addr: true
+  form_convert_anonymous: false
+  form_prepopulate: false
+  form_prepopulate_source_entity: false
+  form_prepopulate_source_entity_required: false
+  form_prepopulate_source_entity_type: ''
+  form_reset: false
+  form_disable_autocomplete: false
+  form_novalidate: false
+  form_disable_inline_errors: false
+  form_required: false
+  form_unsaved: false
+  form_disable_back: true
+  form_submit_back: false
+  form_autofocus: false
+  form_details_toggle: false
+  form_access_denied: default
+  form_access_denied_title: ''
+  form_access_denied_message: ''
+  form_access_denied_attributes: {  }
+  form_file_limit: ''
+  submission_label: ''
+  submission_log: false
+  submission_views: {  }
+  submission_views_replace: {  }
+  submission_user_columns: {  }
+  submission_user_duplicate: false
+  submission_access_denied: default
+  submission_access_denied_title: ''
+  submission_access_denied_message: ''
+  submission_access_denied_attributes: {  }
+  submission_exception_message: ''
+  submission_locked_message: ''
+  submission_excluded_elements: {  }
+  submission_exclude_empty: false
+  submission_exclude_empty_checkbox: false
+  previous_submission_message: ''
+  previous_submissions_message: ''
+  autofill: false
+  autofill_message: ''
+  autofill_excluded_elements: {  }
+  wizard_progress_bar: false
+  wizard_progress_pages: false
+  wizard_progress_percentage: false
+  wizard_progress_link: false
+  wizard_progress_states: false
+  wizard_start_label: ''
+  wizard_preview_link: false
+  wizard_confirmation: true
+  wizard_confirmation_label: ''
+  wizard_track: ''
+  preview: 0
+  preview_label: ''
+  preview_title: ''
+  preview_message: ''
+  preview_attributes: {  }
+  preview_excluded_elements: {  }
+  preview_exclude_empty: true
+  preview_exclude_empty_checkbox: false
+  draft: none
+  draft_multiple: false
+  draft_auto_save: false
+  draft_saved_message: ''
+  draft_loaded_message: ''
+  draft_pending_single_message: ''
+  draft_pending_multiple_message: ''
+  confirmation_type: page
+  confirmation_title: ''
+  confirmation_message: ''
+  confirmation_url: ''
+  confirmation_attributes: {  }
+  confirmation_back: false
+  confirmation_back_label: ''
+  confirmation_back_attributes: {  }
+  confirmation_exclude_query: false
+  confirmation_exclude_token: false
+  confirmation_update: false
+  limit_total: null
+  limit_total_interval: null
+  limit_total_message: ''
+  limit_total_unique: false
+  limit_user: null
+  limit_user_interval: null
+  limit_user_message: ''
+  limit_user_unique: false
+  entity_limit_total: null
+  entity_limit_total_interval: null
+  entity_limit_user: null
+  entity_limit_user_interval: null
+  purge: none
+  purge_days: null
+  results_disabled: false
+  results_disabled_ignore: false
+  token_view: false
+  token_update: false
+access:
+  create:
+    roles:
+      - anonymous
+      - authenticated
+    users: {  }
+    permissions: {  }
+  view_any:
+    roles: {  }
+    users: {  }
+    permissions: {  }
+  update_any:
+    roles: {  }
+    users: {  }
+    permissions: {  }
+  delete_any:
+    roles: {  }
+    users: {  }
+    permissions: {  }
+  purge_any:
+    roles: {  }
+    users: {  }
+    permissions: {  }
+  view_own:
+    roles: {  }
+    users: {  }
+    permissions: {  }
+  update_own:
+    roles: {  }
+    users: {  }
+    permissions: {  }
+  delete_own:
+    roles: {  }
+    users: {  }
+    permissions: {  }
+  administer:
+    roles: {  }
+    users: {  }
+    permissions: {  }
+  test:
+    roles: {  }
+    users: {  }
+    permissions: {  }
+  configuration:
+    roles: {  }
+    users: {  }
+    permissions: {  }
+handlers:
+  quiz_results:
+    id: nidirect_quiz_results
+    label: 'Quiz Results'
+    handler_id: quiz_results
+    status: true
+    conditions: {  }
+    weight: 0
+    settings:
+      introduction: '<p>Quiz complete!</p>'
+      pass_text: ''
+      fail_text: ''
+      pass_score: '0'
+      feedback_introduction: ''
+      answers:
+        question_1:
+          correct_answer: q1_a4
+          correct_feedback: ''
+          incorrect_feedback: ''
+        question_2:
+          correct_answer:
+            q2_a1: q2_a1
+            q2_a3: q2_a3
+          match_all_answers: 1
+          match_total: ''
+          correct_feedback: ''
+          incorrect_feedback: ''
+        question_3:
+          correct_answer: q3_a2
+          correct_feedback: ''
+          incorrect_feedback: ''
+        question_4:
+          correct_answer:
+            q4_a1: q4_a1
+            q4_a2: q4_a2
+            q4_a3: q4_a3
+          match_all_answers: 1
+          match_total: ''
+          correct_feedback: ''
+          incorrect_feedback: ''
+        question_5:
+          correct_answer: q5_a4
+          correct_feedback: '<p>ok</p>'
+          incorrect_feedback: ''
+        question_6:
+          correct_answer: q6_a4
+          correct_feedback: ''
+          incorrect_feedback: ''
+      message: ''
+      delete_submissions: 1
+      display_score: 1
+      display_feedback: 0

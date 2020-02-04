@@ -1,0 +1,29 @@
+uuid: 7b1411e9-42fd-436c-92f3-123ad0250cee
+langcode: en
+status: true
+dependencies:
+  config:
+    - facets.facet.driving_instructor_categories
+  module:
+    - facets
+    - system
+  theme:
+    - nicsdru_nidirect_theme
+id: drivinginstructorcategories
+theme: nicsdru_nidirect_theme
+region: sidebar_first
+weight: -5
+provider: null
+plugin: 'facet_block:driving_instructor_categories'
+settings:
+  id: 'facet_block:driving_instructor_categories'
+  label: 'Filter by categories of tuition'
+  provider: facets
+  label_display: visible
+  block_id: drivinginstructorcategories
+visibility:
+  request_path:
+    id: request_path
+    pages: /services/driving-instructors
+    negate: false
+    context_mapping: {  }

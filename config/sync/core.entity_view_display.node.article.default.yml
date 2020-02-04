@@ -6,7 +6,7 @@ dependencies:
     - field.field.node.article.body
     - field.field.node.article.field_additional_info
     - field.field.node.article.field_banner_image
-    - field.field.node.article.field_enable_toc
+    - field.field.node.article.field_toc_enable
     - field.field.node.article.field_meta_tags
     - field.field.node.article.field_next_audit_due
     - field.field.node.article.field_photo
@@ -17,7 +17,6 @@ dependencies:
     - field.field.node.article.field_top_level_theme
     - node.type.article
   module:
-    - image
     - metatag
     - text
     - user
@@ -28,6 +27,11 @@ targetEntityType: node
 bundle: article
 mode: default
 content:
+  banner_display:
+    weight: 0
+    settings: {  }
+    third_party_settings: {  }
+    region: content
   body:
     type: text_default
     weight: 4
@@ -48,24 +52,13 @@ content:
     settings: {  }
     third_party_settings: {  }
   field_banner_image:
-    type: image
-    weight: 9
-    region: content
+    weight: 15
     label: above
     settings:
-      image_style: ''
-      image_link: ''
+      link: true
     third_party_settings: {  }
-  field_enable_toc:
-    type: boolean
-    weight: 5
+    type: entity_reference_label
     region: content
-    label: above
-    settings:
-      format: default
-      format_custom_false: ''
-      format_custom_true: ''
-    third_party_settings: {  }
   field_meta_tags:
     weight: 13
     label: above
@@ -74,14 +67,14 @@ content:
     type: metatag_empty_formatter
     region: content
   field_photo:
-    type: image
-    weight: 3
-    region: content
+    type: entity_reference_entity_view
+    weight: 14
     label: above
     settings:
-      image_style: ''
-      image_link: ''
+      view_mode: default
+      link: false
     third_party_settings: {  }
+    region: content
   field_site_themes:
     type: entity_reference_label
     weight: 1
@@ -112,6 +105,16 @@ content:
     label: above
     settings:
       link_to_entity: false
+    third_party_settings: {  }
+  field_toc_enable:
+    type: boolean
+    weight: 5
+    region: content
+    label: above
+    settings:
+      format: default
+      format_custom_false: ''
+      format_custom_true: ''
     third_party_settings: {  }
   field_top_level_theme:
     type: entity_reference_label

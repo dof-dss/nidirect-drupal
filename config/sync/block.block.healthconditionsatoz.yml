@@ -1,0 +1,26 @@
+uuid: d5b1c6b9-0ccd-4ab7-aaee-47c0cf4004f1
+langcode: en
+status: true
+dependencies:
+  module:
+    - nidirect_health_conditions
+    - system
+  theme:
+    - nicsdru_nidirect_theme
+id: healthconditionsatoz
+theme: nicsdru_nidirect_theme
+region: sidebar_first
+weight: -10
+provider: null
+plugin: healthconditions_az_block
+settings:
+  id: healthconditions_az_block
+  label: 'Health Conditions A to Z'
+  provider: nidirect_health_conditions
+  label_display: '0'
+visibility:
+  request_path:
+    id: request_path
+    pages: "/services/health-conditions-a-z\r\n/services/health-conditions-a-z*"
+    negate: false
+    context_mapping: {  }

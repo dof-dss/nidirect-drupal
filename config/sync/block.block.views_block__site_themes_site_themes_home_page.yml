@@ -1,0 +1,30 @@
+uuid: e0a9e5f0-821e-4c49-a2b3-91f198e702ba
+langcode: en
+status: true
+dependencies:
+  config:
+    - views.view.site_themes
+  module:
+    - system
+    - views
+  theme:
+    - nicsdru_nidirect_theme
+id: views_block__site_themes_site_themes_home_page
+theme: nicsdru_nidirect_theme
+region: content
+weight: -15
+provider: null
+plugin: 'views_block:site_themes-site_themes_home_page'
+settings:
+  id: 'views_block:site_themes-site_themes_home_page'
+  label: ''
+  provider: views
+  label_display: visible
+  views_label: ''
+  items_per_page: none
+visibility:
+  request_path:
+    id: request_path
+    pages: '<front>'
+    negate: false
+    context_mapping: {  }
