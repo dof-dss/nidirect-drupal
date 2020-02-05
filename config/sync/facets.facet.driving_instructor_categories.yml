@@ -1,4 +1,4 @@
-uuid: b3eed953-233d-4d2e-a85f-e0c1eca7610d
+uuid: 526eb1b5-1a19-49b0-825e-774bde8db0ad
 langcode: en
 status: true
 dependencies:
@@ -12,13 +12,13 @@ name: 'Driving instructor categories'
 url_alias: categories
 weight: 0
 min_count: 1
-show_only_one_result: false
+show_only_one_result: true
 field_identifier: field_di_categories
 facet_source_id: 'search_api:views_page__driving_instructors__driving_instructor_results'
 widget:
   type: links
   config:
-    show_numbers: true
+    show_numbers: false
     soft_limit: 0
     soft_limit_settings:
       show_less_label: 'Show less'
@@ -32,7 +32,7 @@ expand_hierarchy: false
 enable_parent_when_child_gets_disabled: true
 hard_limit: 0
 exclude: false
-only_visible_when_facet_source_is_visible: false
+only_visible_when_facet_source_is_visible: true
 processor_configs:
   active_widget_order:
     processor_id: active_widget_order
