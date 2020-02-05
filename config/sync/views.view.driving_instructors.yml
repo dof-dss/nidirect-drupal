@@ -4,6 +4,7 @@ status: true
 dependencies:
   config:
     - search_api.index.default_content
+    - taxonomy.vocabulary.drive_instr_categories
   module:
     - search_api
     - taxonomy
@@ -255,6 +256,64 @@ display:
             group_items: {  }
           reduce_duplicates: false
           plugin_id: search_api_options
+        field_di_categories:
+          id: field_di_categories
+          table: search_api_index_default_content
+          field: field_di_categories
+          relationship: none
+          group_type: group
+          admin_label: ''
+          operator: or
+          value: {  }
+          group: 1
+          exposed: true
+          expose:
+            operator_id: field_di_categories_op
+            label: 'Find:'
+            description: ''
+            use_operator: false
+            operator: field_di_categories_op
+            operator_limit_selection: false
+            operator_list: {  }
+            identifier: categories
+            required: false
+            remember: true
+            multiple: false
+            remember_roles:
+              anonymous: anonymous
+              authenticated: authenticated
+              administrator: '0'
+              gp_author_user: '0'
+              author_user: '0'
+              gp_supervisor_user: '0'
+              news_supervisor: '0'
+              supervisor_user: '0'
+              editor_user: '0'
+              admin_user: '0'
+              apps_user: '0'
+              health_condition_author_user: '0'
+              health_condition_supervisor_user: '0'
+              driving_instructor_supervisor_user: '0'
+            reduce: false
+          is_grouped: false
+          group_info:
+            label: ''
+            description: ''
+            identifier: ''
+            optional: true
+            widget: select
+            multiple: false
+            remember: false
+            default_group: All
+            default_group_multiple: {  }
+            group_items: {  }
+          reduce_duplicates: false
+          type: select
+          limit: true
+          vid: drive_instr_categories
+          hierarchy: false
+          error_message: true
+          plugin_id: search_api_term
       sorts:
         search_api_relevance:
           id: search_api_relevance
@@ -331,6 +390,7 @@ display:
         - url.query_args
         - 'url.query_args:sort_by'
         - 'url.query_args:sort_order'
+        - user
       tags: {  }
   driving_instructor_results:
     display_plugin: page
@@ -353,4 +413,5 @@ display:
         - url.query_args
         - 'url.query_args:sort_by'
         - 'url.query_args:sort_order'
+        - user
       tags: {  }
