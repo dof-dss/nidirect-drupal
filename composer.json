@@ -66,7 +66,7 @@
         "drupal/admin_toolbar": "^2.0",
         "drupal/adminimal_theme": "^1.5",
         "drupal/block_blacklist": "^1.0",
-        "drupal/chosen": "^2.7",
+        "drupal/chosen": "^2.9",
         "drupal/clientside_validation": "^1.2",
         "drupal/config_filter": "^1.4",
         "drupal/config_ignore": "^2.1",
@@ -127,6 +127,7 @@
         "drupal/whatlinkshere": "^1.0",
         "drush/drush": "^9.0.0",
         "harvesthq/chosen": "^1.8",
+        "oomphinc/composer-installers-extender": "^1.1",
         "symfony/event-dispatcher": "4.3.4 as 3.4.35",
         "vlucas/phpdotenv": "^2.4",
         "webflo/drupal-finder": "^1.0.0",
@@ -209,12 +210,14 @@
         "patchLevel": {
             "drupal/core": "-p2"
         },
+        "installer-types": ["library"],
         "installer-paths": {
             "web/core": [
                 "type:drupal-core"
             ],
             "web/libraries/{$name}": [
-                "type:drupal-library"
+                "type:drupal-library",
+                "harvesthq/chosen"
             ],
             "web/modules/custom": [
                 "dof-dss/nidirect-site-modules"
