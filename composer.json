@@ -210,12 +210,14 @@
         "patchLevel": {
             "drupal/core": "-p2"
         },
+        "installer-types": ["library"],
         "installer-paths": {
             "web/core": [
                 "type:drupal-core"
             ],
             "web/libraries/{$name}": [
-                "type:drupal-library"
+                "type:drupal-library",
+                "harvesthq/chosen"
             ],
             "web/modules/custom": [
                 "dof-dss/nidirect-site-modules"
