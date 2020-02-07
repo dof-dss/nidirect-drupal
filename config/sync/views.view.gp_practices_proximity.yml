@@ -315,9 +315,7 @@ display:
           entity_field: title
           plugin_id: standard
       title: 'Find a GP practice'
-      header: {  }
-      footer: {  }
-      empty:
+      header:
         area:
           id: area
           table: views
@@ -328,9 +326,11 @@ display:
           empty: true
           tokenize: false
           content:
-            value: '0 GP practices'
+            value: ''
             format: basic_html
           plugin_id: text
+      footer: {  }
+      empty: {  }
       relationships: {  }
       arguments:
         field_location_proximity:
