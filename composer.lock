@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "17779582bd2da8f1c3229a6987af5ac4",
+    "content-hash": "7a13a75c77b72f846ac4ac91c25ab49b",
     "packages": [
         {
             "name": "alchemy/zippy",
@@ -1870,16 +1870,16 @@
         },
         {
             "name": "dof-dss/nicsdru_origins_modules",
-            "version": "0.2.5",
+            "version": "0.2.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/dof-dss/nicsdru_origins_modules.git",
-                "reference": "d102830f832535d313ca5a6001088f7a2c52d75b"
+                "reference": "c21ba289f5b8dacf6de9fcc96797f14cd3af6c2b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/dof-dss/nicsdru_origins_modules/zipball/d102830f832535d313ca5a6001088f7a2c52d75b",
-                "reference": "d102830f832535d313ca5a6001088f7a2c52d75b",
+                "url": "https://api.github.com/repos/dof-dss/nicsdru_origins_modules/zipball/c21ba289f5b8dacf6de9fcc96797f14cd3af6c2b",
+                "reference": "c21ba289f5b8dacf6de9fcc96797f14cd3af6c2b",
                 "shasum": ""
             },
             "require": {
@@ -1891,7 +1891,7 @@
                 "MIT"
             ],
             "description": "Generic modules for DOF-DSS Drupal sites",
-            "time": "2020-01-29T12:04:00+00:00"
+            "time": "2020-02-03T15:53:58+00:00"
         },
         {
             "name": "dof-dss/nicsdru_origins_theme",
@@ -1930,16 +1930,16 @@
         },
         {
             "name": "dof-dss/nidirect-site-modules",
-            "version": "0.1.1",
+            "version": "0.1.2",
             "source": {
                 "type": "git",
                 "url": "git@github.com:dof-dss/nidirect-site-modules.git",
-                "reference": "f0e982cae983b0983f8d11f78b0403d3f45adf7c"
+                "reference": "6b76e6b5bfe88afbf9190225f4abbb8ddc21fcbe"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/dof-dss/nidirect-site-modules/zipball/f0e982cae983b0983f8d11f78b0403d3f45adf7c",
-                "reference": "f0e982cae983b0983f8d11f78b0403d3f45adf7c",
+                "url": "https://api.github.com/repos/dof-dss/nidirect-site-modules/zipball/6b76e6b5bfe88afbf9190225f4abbb8ddc21fcbe",
+                "reference": "6b76e6b5bfe88afbf9190225f4abbb8ddc21fcbe",
                 "shasum": ""
             },
             "require": {
@@ -1950,7 +1950,7 @@
                 "MIT"
             ],
             "description": "Drupal modules to provide custom code for NI Direct",
-            "time": "2020-01-29T10:50:35+00:00"
+            "time": "2020-02-03T14:23:58+00:00"
         },
         {
             "name": "drupal/address",
@@ -4368,6 +4368,57 @@
             }
         },
         {
+            "name": "drupal/google_analytics_counter",
+            "version": "dev-3.x",
+            "source": {
+                "type": "git",
+                "url": "https://git.drupalcode.org/project/google_analytics_counter.git",
+                "reference": "6ef741ed0d16938b8d3864ffe19ca7e0a3a80246"
+            },
+            "require": {
+                "drupal/core": "~8.0"
+            },
+            "type": "drupal-module",
+            "extra": {
+                "branch-alias": {
+                    "dev-3.x": "3.x-dev"
+                },
+                "drupal": {
+                    "version": "8.x-3.0-alpha19+10-dev",
+                    "datestamp": "1556113685",
+                    "security-coverage": {
+                        "status": "not-covered",
+                        "message": "Dev releases are not covered by Drupal security advisories."
+                    }
+                },
+                "patches_applied": {
+                    "Add API query tweak options": "https://gist.githubusercontent.com/omahm/02ac3b7138c4d0518bd954721b74b763/raw/8d7ffa08b21359c7bf11165cdef1fb7e98483774/gac_query_options.patch",
+                    "Fix missing node_type error on install": "https://www.drupal.org/files/issues/2019-11-12/google_analytics_counter-fix_missing_dependency-3093910-3.patch"
+                }
+            },
+            "notification-url": "https://packages.drupal.org/8/downloads",
+            "license": [
+                "GPL-2.0+"
+            ],
+            "authors": [
+                {
+                    "name": "Tomas Fulopp (Vacilando)",
+                    "homepage": "https://www.drupal.org/u/vacilando"
+                },
+                {
+                    "name": "esod",
+                    "homepage": "https://www.drupal.org/user/752140"
+                }
+            ],
+            "description": "Lightweight page view counter drawing on data collected by Google Analytics.",
+            "homepage": "https://www.drupal.org/project/google_analytics_counter",
+            "support": {
+                "source": "http://git.drupal.org/project/google_analytics_counter.git",
+                "issues": "https://www.drupal.org/project/issues/google_analytics_counter"
+            },
+            "time": "2019-04-24T17:43:49+00:00"
+        },
+        {
             "name": "drupal/handy_cache_tags",
             "version": "1.0.0",
             "source": {
@@ -5245,6 +5296,9 @@
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
                     }
+                },
+                "patches_applied": {
+                    "URL redirects listing only displays operations": "https://www.drupal.org/files/issues/2019-04-05/redirects_list_builder-3031125-9-d8.patch"
                 }
             },
             "notification-url": "https://packages.drupal.org/8/downloads",
@@ -11750,7 +11804,7 @@
         },
         {
             "name": "dof-dss/nidirect-migrations",
-            "version": "0.1.1",
+            "version": "0.1.2",
             "source": {
                 "type": "git",
                 "url": "git@github.com:dof-dss/nidirect-d8-mig-mods.git",
@@ -15394,6 +15448,7 @@
         "drupal/entityqueue": 10,
         "drupal/facets_pretty_paths": 10,
         "drupal/flag": 20,
+        "drupal/google_analytics_counter": 20,
         "drupal/hms_field": 10,
         "drupal/inline_entity_form": 5,
         "drupal/layout_builder_modal": 15,

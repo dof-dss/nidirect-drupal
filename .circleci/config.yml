@@ -7,7 +7,7 @@ jobs:
   # Tests the integrity of the build, stores the results in a workspace for re-use in later jobs.
   build:
     docker:
-      - image: circleci/php:7.2.20-apache-browsers
+      - image: circleci/php:7.3.14-apache-browsers
     steps:
       - run:
           name: Add GitHub access token for composer
@@ -66,7 +66,7 @@ jobs:
   # Test for coding standards and deprecated code.
   static_analysis:
     docker:
-      - image: circleci/php:7.2.20-apache-browsers
+      - image: circleci/php:7.3.14-apache-browsers
     steps:
       # Add SSH user key so we can access related repositories as part of our initial clone + composer install command.
       - add_ssh_keys:
@@ -93,7 +93,7 @@ jobs:
   # Run any unit tests and any kernel tests against a vanilla D8 site + our site config imported over it (no predefined content).
   unit_kernel_tests:
     docker:
-      - image: circleci/php:7.2.20-apache-browsers
+      - image: circleci/php:7.3.14-apache-browsers
       - image: circleci/mysql:5.7.27
     steps:
       # Add SSH user key so we can access related repositories as part of our initial clone + composer install command.
@@ -153,7 +153,7 @@ jobs:
   # Our most expensive, full stack tests. Requires up to date content and services for chromedriver, yarn and database.
   ui_tests:
     docker:
-      - image: circleci/php:7.2.20-apache-node-browsers
+      - image: circleci/php:7.3.14-apache-node-browsers
       - image: circleci/mysql:5.7.27
       - image: drupalci/chromedriver:production
         environment:
@@ -237,7 +237,7 @@ jobs:
   # Debug job(s) - useful for working with circleci local which doesn't support caches or workspace persistence.
   debug:
     docker:
-      - image: circleci/php:7.2.20-apache-browsers
+      - image: circleci/php:7.3.14-apache-browsers
     steps:
       - run:
           name: Add GitHub access token for composer
