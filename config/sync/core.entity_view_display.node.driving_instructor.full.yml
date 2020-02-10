@@ -18,6 +18,7 @@ dependencies:
     - layout_builder
     - link
     - metatag
+    - origins_common
     - telephone_plus
     - user
 third_party_settings:
@@ -51,12 +52,14 @@ content:
       link: true
     third_party_settings: {  }
   field_di_categories:
-    type: entity_reference_label
+    type: html_list_formatter
     weight: 6
     region: content
     label: above
     settings:
-      link: true
+      list_type: ul
+      list_classes: ''
+      display_item_link: false
     third_party_settings: {  }
   field_di_firstname:
     type: string

@@ -1,4 +1,4 @@
-uuid: 554b419e-fd41-4b3f-bc26-f33a254ce0ad
+uuid: d1e55f37-f778-424f-89e7-d4c84f7952db
 langcode: en
 status: true
 dependencies:
@@ -6,10 +6,10 @@ dependencies:
     - system
   theme:
     - nicsdru_nidirect_theme
-id: pagetitle
+id: pagetitle_banner_top
 theme: nicsdru_nidirect_theme
-region: content
-weight: -14
+region: top_banner
+weight: 0
 provider: null
 plugin: page_title_block
 settings:
@@ -20,6 +20,6 @@ settings:
 visibility:
   request_path:
     id: request_path
-    pages: "/node/*\r\n/taxonomy/term/*\r\n/publications*\r\n/services/gp-practices*"
-    negate: true
+    pages: "/publications\r\n/publications/date/*\r\n/publications/topic/*\r\n/services/gp-practices"
+    negate: false
     context_mapping: {  }
