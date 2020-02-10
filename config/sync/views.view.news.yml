@@ -184,19 +184,17 @@ display:
       display_extenders: {  }
       display_description: ''
       style:
-        type: html_list
+        type: default
         options:
-          row_class: ''
+          row_class: 'card card--featured-news'
           default_row_class: false
           uses_fields: false
-          type: ul
-          wrapper_class: item-list
-          class: ''
       defaults:
         style: false
         row: false
         sorts: false
         css_class: false
+        header: false
       row:
         type: 'entity:node'
         options:
@@ -217,6 +215,20 @@ display:
           granularity: second
           plugin_id: datetime
       css_class: latest-news
+      header:
+        area:
+          id: area
+          table: views
+          field: area
+          relationship: none
+          group_type: group
+          admin_label: ''
+          empty: false
+          tokenize: false
+          content:
+            value: '<h2 class="visually-hidden">Featured news.</h2>'
+            format: full_html
+          plugin_id: text
     cache_metadata:
       max-age: -1
       contexts:
@@ -440,11 +452,11 @@ display:
       style:
         type: html_list
         options:
+          grouping: {  }
           row_class: ''
           default_row_class: false
-          uses_fields: false
           type: ul
-          wrapper_class: item-list
+          wrapper_class: ''
           class: ''
       row:
         type: fields
@@ -508,7 +520,7 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
-          label: ''
+          label: Published
           exclude: false
           alter:
             alter_text: false
@@ -539,21 +551,21 @@ display:
             html: false
           element_type: ''
           element_class: ''
-          element_label_type: ''
-          element_label_class: ''
-          element_label_colon: false
-          element_wrapper_type: ''
-          element_wrapper_class: ''
-          element_default_classes: true
+          element_label_type: span
+          element_label_class: visually-hidden
+          element_label_colon: true
+          element_wrapper_type: span
+          element_wrapper_class: card__meta
+          element_default_classes: false
           empty: ''
           hide_empty: false
           empty_zero: false
           hide_alter_empty: true
           click_sort_column: value
-          type: datetime_custom
+          type: datetime_default
           settings:
             timezone_override: ''
-            date_format: 'd F Y'
+            format_type: medium_date
           group_column: value
           group_columns: {  }
           group_rows: true
