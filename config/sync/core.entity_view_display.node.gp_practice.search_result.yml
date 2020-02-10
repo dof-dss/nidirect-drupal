@@ -33,21 +33,16 @@ targetEntityType: node
 bundle: gp_practice
 mode: search_result
 content:
-  content_moderation_control:
-    weight: 0
-    region: content
-    settings: {  }
-    third_party_settings: {  }
   field_address:
     type: address_default
-    weight: 2
+    weight: 1
     region: content
     label: hidden
     settings: {  }
     third_party_settings: {  }
   field_gp_appointments:
     type: link
-    weight: 3
+    weight: 2
     region: content
     label: hidden
     settings:
@@ -59,7 +54,7 @@ content:
     third_party_settings: {  }
   field_gp_prescriptions:
     type: link
-    weight: 4
+    weight: 3
     region: content
     label: hidden
     settings:
@@ -70,11 +65,12 @@ content:
       target: '0'
     third_party_settings: {  }
   gp_names:
-    weight: 1
+    weight: 0
     region: content
     settings: {  }
     third_party_settings: {  }
 hidden:
+  content_moderation_control: true
   field_contact_address_01: true
   field_contact_address_02: true
   field_contact_postcode: true
