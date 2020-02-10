@@ -1,0 +1,25 @@
+uuid: 069aeac8-a348-4adb-b2b7-f8b21a136da8
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.article_teaser.field_article
+    - paragraphs.paragraphs_type.article_teaser
+id: paragraph.article_teaser.default
+targetEntityType: paragraph
+bundle: article_teaser
+mode: default
+content:
+  field_article:
+    weight: 0
+    settings:
+      match_operator: CONTAINS
+      match_limit: 10
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+    type: entity_reference_autocomplete
+    region: content
+hidden:
+  created: true
+  status: true
