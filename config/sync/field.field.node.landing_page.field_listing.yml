@@ -1,0 +1,39 @@
+uuid: 08ae0603-c9dc-4033-8edd-4c1d263fee72
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_listing
+    - node.type.landing_page
+    - paragraphs.paragraphs_type.article_teaser
+    - paragraphs.paragraphs_type.term_teaser
+  module:
+    - entity_reference_revisions
+id: node.landing_page.field_listing
+field_name: field_listing
+entity_type: node
+bundle: landing_page
+label: Listing
+description: "You may change the order of the content and subtopics above and/or remove some of them. This will then affect the listing shown at the bottom of the page.<br\\>\r\nIf you wish to revert to the default listing, then just un-check the 'manually control listing' checkbox."
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:paragraph'
+  handler_settings:
+    negate: 0
+    target_bundles:
+      article_teaser: article_teaser
+      term_teaser: term_teaser
+    target_bundles_drag_drop:
+      article_teaser:
+        enabled: true
+        weight: 4
+      map:
+        weight: 5
+        enabled: false
+      term_teaser:
+        enabled: true
+        weight: 6
+field_type: entity_reference_revisions

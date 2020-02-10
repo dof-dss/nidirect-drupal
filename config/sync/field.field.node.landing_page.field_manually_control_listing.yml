@@ -1,0 +1,23 @@
+uuid: 0f2afc66-1ced-4459-8f16-0a01b49f46d2
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_manually_control_listing
+    - node.type.landing_page
+id: node.landing_page.field_manually_control_listing
+field_name: field_manually_control_listing
+entity_type: node
+bundle: landing_page
+label: 'Manually control listing'
+description: "A list of content and subtopics that match the selected sub-theme will be displayed at the bottom of this page.<br>\r\nIf you wish to take control of the order of these items then check this box<br>\r\n<i>N.B. If you do check this box, any new content or subtopic will not be added to the list automatically</i>"
+required: false
+translatable: false
+default_value:
+  -
+    value: 0
+default_value_callback: ''
+settings:
+  on_label: 'On'
+  off_label: 'Off'
+field_type: boolean
