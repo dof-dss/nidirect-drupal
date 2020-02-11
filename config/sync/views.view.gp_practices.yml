@@ -66,14 +66,11 @@ display:
             offset_label: Offset
           quantity: 9
       style:
-        type: html_list
+        type: default
         options:
-          row_class: ''
+          row_class: card
           default_row_class: false
           uses_fields: false
-          type: ul
-          wrapper_class: item-list
-          class: ''
       row:
         type: search_api
         options:
@@ -266,27 +263,14 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
-          empty: false
+          empty: true
           tokenize: false
           content:
             value: ''
             format: basic_html
           plugin_id: text
       footer: {  }
-      empty:
-        area:
-          id: area
-          table: views
-          field: area
-          relationship: none
-          group_type: group
-          admin_label: ''
-          empty: true
-          tokenize: false
-          content:
-            value: '0 GP practices'
-            format: basic_html
-          plugin_id: text
+      empty: {  }
       relationships: {  }
       arguments: {  }
       display_extenders: {  }

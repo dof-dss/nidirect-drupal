@@ -1,0 +1,29 @@
+uuid: 01fc9541-7895-411e-b97f-de4ae20a5db3
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_term
+    - paragraphs.paragraphs_type.term_teaser
+    - taxonomy.vocabulary.site_themes
+id: paragraph.term_teaser.field_term
+field_name: field_term
+entity_type: paragraph
+bundle: term_teaser
+label: Term
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:taxonomy_term'
+  handler_settings:
+    target_bundles:
+      site_themes: site_themes
+    sort:
+      field: name
+      direction: asc
+    auto_create: false
+    auto_create_bundle: ''
+field_type: entity_reference
