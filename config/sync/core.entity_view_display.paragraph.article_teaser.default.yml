@@ -1,0 +1,21 @@
+uuid: bd2518a0-9ddf-438b-a4c4-c11bfc6c930a
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.article_teaser.field_article
+    - paragraphs.paragraphs_type.article_teaser
+id: paragraph.article_teaser.default
+targetEntityType: paragraph
+bundle: article_teaser
+mode: default
+content:
+  field_article:
+    weight: 0
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
+    type: entity_reference_entity_id
+    region: content
+hidden:
+  search_api_excerpt: true

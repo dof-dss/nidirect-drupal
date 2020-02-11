@@ -1,0 +1,21 @@
+uuid: afe85e30-539f-409a-b45c-9cc789d4f59e
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.term_teaser.field_term
+    - paragraphs.paragraphs_type.term_teaser
+id: paragraph.term_teaser.default
+targetEntityType: paragraph
+bundle: term_teaser
+mode: default
+content:
+  field_term:
+    weight: 0
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
+    type: entity_reference_entity_id
+    region: content
+hidden:
+  search_api_excerpt: true
