@@ -835,6 +835,7 @@ display:
         filters: false
         filter_groups: false
         relationships: false
+        sorts: false
       relationships:
         field_media_image_target_id:
           id: field_media_image_target_id
@@ -994,6 +995,48 @@ display:
         operator: AND
         groups:
           1: AND
+      sorts:
+        created:
+          id: created
+          table: file_managed
+          field: created
+          relationship: field_media_image_target_id
+          group_type: group
+          admin_label: ''
+          order: ASC
+          exposed: true
+          expose:
+            label: 'Uploaded date'
+          granularity: minute
+          entity_type: file
+          entity_field: created
+          plugin_id: date
+        filesize:
+          id: filesize
+          table: file_managed
+          field: filesize
+          relationship: field_media_image_target_id
+          group_type: group
+          admin_label: ''
+          order: ASC
+          exposed: true
+          expose:
+            label: 'File size'
+          entity_type: file
+          entity_field: filesize
+          plugin_id: standard
+        count:
+          id: count
+          table: file_usage
+          field: count
+          relationship: field_media_image_target_id
+          group_type: group
+          admin_label: ''
+          order: ASC
+          exposed: true
+          expose:
+            label: 'Use count'
+          plugin_id: standard
     cache_metadata:
       max-age: -1
       contexts:
@@ -1001,6 +1044,8 @@ display:
         - 'languages:language_interface'
         - url
         - url.query_args
+        - 'url.query_args:sort_by'
+        - 'url.query_args:sort_order'
         - user.permissions
       tags: {  }
   remote_video_entity_browser:
