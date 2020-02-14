@@ -12,6 +12,7 @@ dependencies:
     - search_api.index.default_content
   module:
     - search_api
+    - search_api_spellcheck
     - text
 id: health_conditions
 label: 'Health conditions'
@@ -895,6 +896,8 @@ display:
             description: ''
             use_operator: false
             operator: search_api_fulltext_op
+            operator_limit_selection: false
+            operator_list: {  }
             identifier: query_health_az
             required: false
             remember: false
@@ -915,8 +918,6 @@ display:
               health_condition_supervisor_user: '0'
               driving_instructor_supervisor_user: '0'
             placeholder: 'eg asthma, or cough, wheeze'
-            operator_limit_selection: false
-            operator_list: {  }
           is_grouped: false
           group_info:
             label: ''
@@ -929,7 +930,7 @@ display:
             default_group: All
             default_group_multiple: {  }
             group_items: {  }
-          parse_mode: direct
+          parse_mode: phrase
           min_length: 2
           fields: {  }
           plugin_id: search_api_fulltext
@@ -974,7 +975,32 @@ display:
             format: basic_html
           plugin_id: text
       footer: {  }
-      empty: {  }
+      empty:
+        search_api_spellcheck_did_you_mean:
+          id: search_api_spellcheck_did_you_mean
+          table: views
+          field: search_api_spellcheck_did_you_mean
+          relationship: none
+          group_type: group
+          admin_label: ''
+          empty: true
+          search_api_spellcheck_count: 1
+          search_api_spellcheck_hide_on_result: 1
+          search_api_spellcheck_collate: true
+          plugin_id: search_api_spellcheck_did_you_mean
+        area:
+          id: area
+          table: views
+          field: area
+          relationship: none
+          group_type: group
+          admin_label: ''
+          empty: true
+          tokenize: false
+          content:
+            value: 'There were no results found.'
+            format: basic_html
+          plugin_id: text
       relationships: {  }
       arguments: {  }
       display_extenders: {  }
@@ -1001,7 +1027,8 @@ display:
       display_extenders: {  }
       path: services/health-conditions-a-z
       cache:
-        type: none
+        type: tag
+        options: {  }
       defaults:
         cache: false
       exposed_block: true

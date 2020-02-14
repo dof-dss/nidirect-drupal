@@ -388,6 +388,18 @@ display:
           plugin_id: search_api_spellcheck_suggestions
       footer: {  }
       empty:
+        search_api_spellcheck_did_you_mean:
+          id: search_api_spellcheck_did_you_mean
+          table: views
+          field: search_api_spellcheck_did_you_mean
+          relationship: none
+          group_type: group
+          admin_label: ''
+          empty: true
+          search_api_spellcheck_count: 1
+          search_api_spellcheck_hide_on_result: 1
+          search_api_spellcheck_collate: true
+          plugin_id: search_api_spellcheck_did_you_mean
         area:
           id: area
           table: views
@@ -433,18 +445,6 @@ display:
           empty: false
           content: '@total results'
           plugin_id: result
-        search_api_spellcheck_did_you_mean:
-          id: search_api_spellcheck_did_you_mean
-          table: views
-          field: search_api_spellcheck_did_you_mean
-          relationship: none
-          group_type: group
-          admin_label: ''
-          empty: false
-          search_api_spellcheck_count: 1
-          search_api_spellcheck_hide_on_result: 1
-          search_api_spellcheck_collate: true
-          plugin_id: search_api_spellcheck_did_you_mean
       defaults:
         header: false
         footer: false
