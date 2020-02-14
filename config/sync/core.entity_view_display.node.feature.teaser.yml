@@ -16,14 +16,9 @@ targetEntityType: node
 bundle: feature
 mode: teaser
 content:
-  content_moderation_control:
-    weight: 0
-    region: content
-    settings: {  }
-    third_party_settings: {  }
   field_link_url:
     type: link
-    weight: 3
+    weight: 2
     region: content
     label: hidden
     settings:
@@ -35,7 +30,7 @@ content:
     third_party_settings: {  }
   field_photo:
     type: entity_reference_entity_view
-    weight: 1
+    weight: 0
     region: content
     label: hidden
     settings:
@@ -44,13 +39,14 @@ content:
     third_party_settings: {  }
   field_teaser:
     type: string
-    weight: 2
+    weight: 1
     region: content
     label: hidden
     settings:
       link_to_entity: false
     third_party_settings: {  }
 hidden:
+  content_moderation_control: true
   langcode: true
   links: true
   search_api_excerpt: true
