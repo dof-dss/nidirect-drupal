@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "bd665b278453cd66cf2c8a8c7d0aa2fe",
+    "content-hash": "5629ef872f9150f563fb1721c8b8ce00",
     "packages": [
         {
             "name": "alchemy/zippy",
@@ -5764,63 +5764,6 @@
                 "source": "http://git.drupal.org/project/search_api_solr.git",
                 "issues": "https://www.drupal.org/project/issues/search_api_solr",
                 "irc": "https://drupalchat.me/channel/search"
-            }
-        },
-        {
-            "name": "drupal/search_api_spellcheck",
-            "version": "3.0.0-alpha1",
-            "source": {
-                "type": "git",
-                "url": "https://git.drupalcode.org/project/search_api_spellcheck.git",
-                "reference": "8.x-3.0-alpha1"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/search_api_spellcheck-8.x-3.0-alpha1.zip",
-                "reference": "8.x-3.0-alpha1",
-                "shasum": "fc81fdf1717cfde8fc092138ee1df70d05241553"
-            },
-            "require": {
-                "drupal/core": "*",
-                "drupal/search_api_solr": "~3.0-beta3"
-            },
-            "type": "drupal-module",
-            "extra": {
-                "branch-alias": {
-                    "dev-3.x": "3.x-dev"
-                },
-                "drupal": {
-                    "version": "8.x-3.0-alpha1",
-                    "datestamp": "1572450486",
-                    "security-coverage": {
-                        "status": "not-covered",
-                        "message": "Alpha releases are not covered by Drupal security advisories."
-                    }
-                }
-            },
-            "notification-url": "https://packages.drupal.org/8/downloads",
-            "license": [
-                "GPL-2.0"
-            ],
-            "authors": [
-                {
-                    "name": "Nuvole",
-                    "homepage": "http://nuvole.org/"
-                },
-                {
-                    "name": "mkalkbrenner",
-                    "homepage": "https://www.drupal.org/user/124705"
-                },
-                {
-                    "name": "welly",
-                    "homepage": "https://www.drupal.org/user/354705"
-                }
-            ],
-            "description": "Allows you to display search spellcheck suggestions in views.",
-            "homepage": "https://www.drupal.org/project/search_api_spellcheck",
-            "support": {
-                "source": "https://git.drupalcode.org/project/search_api_spellcheck",
-                "issues": "http://drupal.org/"
             }
         },
         {
@@ -12463,6 +12406,66 @@
             }
         },
         {
+            "name": "drupal/search_api_spellcheck",
+            "version": "3.0.0-alpha1",
+            "source": {
+                "type": "git",
+                "url": "https://git.drupalcode.org/project/search_api_spellcheck.git",
+                "reference": "8.x-3.0-alpha1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://ftp.drupal.org/files/projects/search_api_spellcheck-8.x-3.0-alpha1.zip",
+                "reference": "8.x-3.0-alpha1",
+                "shasum": "fc81fdf1717cfde8fc092138ee1df70d05241553"
+            },
+            "require": {
+                "drupal/core": "*",
+                "drupal/search_api_solr": "~3.0-beta3"
+            },
+            "type": "drupal-module",
+            "extra": {
+                "branch-alias": {
+                    "dev-3.x": "3.x-dev"
+                },
+                "drupal": {
+                    "version": "8.x-3.0-alpha1",
+                    "datestamp": "1572450486",
+                    "security-coverage": {
+                        "status": "not-covered",
+                        "message": "Alpha releases are not covered by Drupal security advisories."
+                    }
+                },
+                "patches_applied": {
+                    "Suggestions Spellcheck views area plugin always hidden": "https://www.drupal.org/files/issues/2020-01-29/suggestions-spellcheck-always-hidden-1.patch"
+                }
+            },
+            "notification-url": "https://packages.drupal.org/8/downloads",
+            "license": [
+                "GPL-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "Nuvole",
+                    "homepage": "http://nuvole.org/"
+                },
+                {
+                    "name": "mkalkbrenner",
+                    "homepage": "https://www.drupal.org/user/124705"
+                },
+                {
+                    "name": "welly",
+                    "homepage": "https://www.drupal.org/user/354705"
+                }
+            ],
+            "description": "Allows you to display search spellcheck suggestions in views.",
+            "homepage": "https://www.drupal.org/project/search_api_spellcheck",
+            "support": {
+                "source": "https://git.drupalcode.org/project/search_api_spellcheck",
+                "issues": "http://drupal.org/"
+            }
+        },
+        {
             "name": "drupal/stage_file_proxy",
             "version": "1.0.0",
             "source": {
@@ -15561,7 +15564,6 @@
         "drupal/layout_builder_modal": 15,
         "drupal/media_browser_responsive_images": 20,
         "drupal/search_api_location": 15,
-        "drupal/search_api_spellcheck": 15,
         "drupal/shs": 15,
         "drupal/taxonomy_manager": 15,
         "drupal/telephone_plus": 20,
