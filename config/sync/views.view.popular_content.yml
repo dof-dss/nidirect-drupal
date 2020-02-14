@@ -63,18 +63,18 @@ display:
         type: html_list
         options:
           grouping: {  }
-          row_class: item
+          row_class: nav-item
           default_row_class: false
           type: ul
           wrapper_class: ''
-          class: ''
+          class: nav-menu
       row:
         type: fields
         options:
+          default_field_elements: false
           inline: {  }
           separator: ''
           hide_empty: false
-          default_field_elements: true
       fields:
         title:
           id: title
@@ -112,14 +112,14 @@ display:
             trim: false
             preserve_tags: ''
             html: false
-          element_type: ''
+          element_type: '0'
           element_class: ''
-          element_label_type: ''
+          element_label_type: '0'
           element_label_class: ''
           element_label_colon: false
-          element_wrapper_type: ''
+          element_wrapper_type: '0'
           element_wrapper_class: ''
-          element_default_classes: true
+          element_default_classes: false
           empty: ''
           hide_empty: false
           empty_zero: false
@@ -910,6 +910,9 @@ display:
     display_options:
       display_extenders: {  }
       display_description: ''
+      css_class: sub-menu
+      defaults:
+        css_class: false
     cache_metadata:
       max-age: -1
       contexts:
@@ -929,6 +932,7 @@ display:
         title: false
         filters: false
         filter_groups: false
+        css_class: false
       filters:
         pageview_total:
           id: pageview_total
@@ -1150,6 +1154,7 @@ display:
         groups:
           1: AND
           2: OR
+      css_class: sub-menu
     cache_metadata:
       max-age: -1
       contexts:
