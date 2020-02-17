@@ -8,6 +8,7 @@ dependencies:
     - search_api.index.default_content
   module:
     - search_api
+    - search_api_spellcheck
     - text
 id: search
 label: Search
@@ -68,10 +69,6 @@ display:
           quantity: 9
       style:
         type: default
-        options:
-          grouping: {  }
-          row_class: card
-          default_row_class: false
       row:
         type: fields
       fields:
@@ -304,6 +301,8 @@ display:
             description: ''
             use_operator: false
             operator: search_api_fulltext_op
+            operator_limit_selection: false
+            operator_list: {  }
             identifier: query
             required: true
             remember: false
@@ -324,8 +323,6 @@ display:
               health_condition_supervisor_user: '0'
               driving_instructor_supervisor_user: '0'
             placeholder: ''
-            operator_limit_selection: false
-            operator_list: {  }
           is_grouped: false
           group_info:
             label: ''
@@ -338,7 +335,7 @@ display:
             default_group: All
             default_group_multiple: {  }
             group_items: {  }
-          parse_mode: direct
+          parse_mode: terms
           min_length: null
           fields: {  }
           plugin_id: search_api_fulltext
@@ -377,10 +374,32 @@ display:
           group_type: group
           admin_label: ''
           empty: false
-          content: '<h2 class="view--count">@total results</h2>'
+          content: '@total results'
           plugin_id: result
+        search_api_spellcheck_did_you_mean:
+          id: search_api_spellcheck_did_you_mean
+          table: views
+          field: search_api_spellcheck_did_you_mean
+          plugin_id: search_api_spellcheck_did_you_mean
+        search_api_spellcheck_suggetions:
+          id: search_api_spellcheck_suggetions
+          table: views
+          field: search_api_spellcheck_suggetions
+          plugin_id: search_api_spellcheck_suggestions
       footer: {  }
       empty:
+        search_api_spellcheck_did_you_mean:
+          id: search_api_spellcheck_did_you_mean
+          table: views
+          field: search_api_spellcheck_did_you_mean
+          relationship: none
+          group_type: group
+          admin_label: ''
+          empty: true
+          search_api_spellcheck_count: 1
+          search_api_spellcheck_hide_on_result: 1
+          search_api_spellcheck_collate: true
+          plugin_id: search_api_spellcheck_did_you_mean
         area:
           id: area
           table: views
@@ -407,14 +426,29 @@ display:
       tags:
         - 'config:field.storage.node.field_summary'
         - 'config:field.storage.node.field_teaser'
-  page_1:
+  search_page:
     display_plugin: page
-    id: page_1
+    id: search_page
     display_title: Page
     position: 1
     display_options:
       display_extenders: {  }
       path: search
+      header:
+        result:
+          id: result
+          table: views
+          field: result
+          relationship: none
+          group_type: group
+          admin_label: ''
+          empty: false
+          content: '@total results'
+          plugin_id: result
+      defaults:
+        header: false
+        footer: false
+      footer: {  }
     cache_metadata:
       max-age: -1
       contexts:
