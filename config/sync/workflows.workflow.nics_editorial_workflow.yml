@@ -26,6 +26,11 @@ label: 'NICS Editorial Workflow'
 type: content_moderation
 type_settings:
   states:
+    archived:
+      published: false
+      default_revision: true
+      label: Archived
+      weight: 3
     draft:
       label: Draft
       published: false
@@ -42,6 +47,12 @@ type_settings:
       default_revision: true
       weight: 1
   transitions:
+    archive:
+      label: Archive
+      from:
+        - published
+      to: archived
+      weight: 3
     create_new_draft:
       label: 'Create New Draft'
       to: draft
@@ -66,6 +77,18 @@ type_settings:
         - needs_review
       to: draft
       weight: 0
+    restore:
+      label: Restore
+      from:
+        - archived
+      to: published
+      weight: 5
+    restore_to_draft:
+      label: 'Restore to Draft'
+      from:
+        - archived
+      to: draft
+      weight: 4
     submit_for_review:
       label: 'Submit for Review'
       from:
