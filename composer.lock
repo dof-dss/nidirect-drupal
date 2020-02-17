@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "fb0b695b8178caabd61cc84350659a15",
+    "content-hash": "413b031588512c2ee7af16ca099b1a29",
     "packages": [
         {
             "name": "alchemy/zippy",
@@ -1986,16 +1986,16 @@
         },
         {
             "name": "dof-dss/nidirect-site-modules",
-            "version": "0.1.3",
+            "version": "0.1.4",
             "source": {
                 "type": "git",
                 "url": "git@github.com:dof-dss/nidirect-site-modules.git",
-                "reference": "d62b4bbe10cb8857c026c12d861afa996ae2a1bb"
+                "reference": "53837e1fcc0849e9c4f15c28696f4ba2aa6e5616"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/dof-dss/nidirect-site-modules/zipball/d62b4bbe10cb8857c026c12d861afa996ae2a1bb",
-                "reference": "d62b4bbe10cb8857c026c12d861afa996ae2a1bb",
+                "url": "https://api.github.com/repos/dof-dss/nidirect-site-modules/zipball/53837e1fcc0849e9c4f15c28696f4ba2aa6e5616",
+                "reference": "53837e1fcc0849e9c4f15c28696f4ba2aa6e5616",
                 "shasum": ""
             },
             "require": {
@@ -2006,7 +2006,7 @@
                 "MIT"
             ],
             "description": "Drupal modules to provide custom code for NI Direct",
-            "time": "2020-02-10T12:10:36+00:00"
+            "time": "2020-02-17T13:45:37+00:00"
         },
         {
             "name": "drupal/address",
@@ -2099,7 +2099,7 @@
                 },
                 "drupal": {
                     "version": "8.x-2.0",
-                    "datestamp": "1573751237",
+                    "datestamp": "1572370984",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -3861,7 +3861,7 @@
                 },
                 "drupal": {
                     "version": "8.x-1.0",
-                    "datestamp": "1562161679",
+                    "datestamp": "1561765981",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -3892,10 +3892,6 @@
                 {
                     "name": "cs_shadow",
                     "homepage": "https://www.drupal.org/user/2828287"
-                },
-                {
-                    "name": "oknate",
-                    "homepage": "https://www.drupal.org/user/471638"
                 },
                 {
                     "name": "phenaproxima",
@@ -5883,31 +5879,32 @@
         },
         {
             "name": "drupal/search_api_solr",
-            "version": "3.9.0",
+            "version": "3.8.0",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/search_api_solr.git",
-                "reference": "8.x-3.9"
+                "reference": "8.x-3.8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/search_api_solr-8.x-3.9.zip",
-                "reference": "8.x-3.9",
-                "shasum": "185913ab3a7c3daf44babb7e7d13f43d56b22ef5"
+                "url": "https://ftp.drupal.org/files/projects/search_api_solr-8.x-3.8.zip",
+                "reference": "8.x-3.8",
+                "shasum": "5c47090d817410ae06a6e096f2aabf3f99e43520"
             },
             "require": {
                 "consolidation/annotated-command": "^2.12",
-                "drupal/core": "^8.7.7 || ^9",
-                "drupal/search_api": "~1.15",
+                "drupal/core": "^8.7",
+                "drupal/search_api": "~1.14",
                 "ext-dom": "*",
                 "ext-json": "*",
                 "ext-simplexml": "*",
                 "maennchen/zipstream-php": "^1.2.0",
                 "php": "^7.1.3",
-                "solarium/solarium": "~5.0.3|~5.1.5",
+                "solarium/solarium": "~5.0.3|~5.1.4",
                 "zendframework/zend-stdlib": "^3.0.1"
             },
             "conflict": {
+                "drupal/core": "<8.7",
                 "drupal/search_api_solr_multilingual": "<3.0.0"
             },
             "require-dev": {
@@ -5932,8 +5929,8 @@
                     "dev-3.x": "3.x-dev"
                 },
                 "drupal": {
-                    "version": "8.x-3.9",
-                    "datestamp": "1581700341",
+                    "version": "8.x-3.8",
+                    "datestamp": "1577980383",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -5984,6 +5981,66 @@
             }
         },
         {
+            "name": "drupal/search_api_spellcheck",
+            "version": "3.0.0-alpha1",
+            "source": {
+                "type": "git",
+                "url": "https://git.drupalcode.org/project/search_api_spellcheck.git",
+                "reference": "8.x-3.0-alpha1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://ftp.drupal.org/files/projects/search_api_spellcheck-8.x-3.0-alpha1.zip",
+                "reference": "8.x-3.0-alpha1",
+                "shasum": "fc81fdf1717cfde8fc092138ee1df70d05241553"
+            },
+            "require": {
+                "drupal/core": "*",
+                "drupal/search_api_solr": "~3.0-beta3"
+            },
+            "type": "drupal-module",
+            "extra": {
+                "branch-alias": {
+                    "dev-3.x": "3.x-dev"
+                },
+                "drupal": {
+                    "version": "8.x-3.0-alpha1",
+                    "datestamp": "1572450486",
+                    "security-coverage": {
+                        "status": "not-covered",
+                        "message": "Alpha releases are not covered by Drupal security advisories."
+                    }
+                },
+                "patches_applied": {
+                    "Suggestions Spellcheck views area plugin always hidden": "https://www.drupal.org/files/issues/2020-01-29/suggestions-spellcheck-always-hidden-1.patch"
+                }
+            },
+            "notification-url": "https://packages.drupal.org/8/downloads",
+            "license": [
+                "GPL-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "Nuvole",
+                    "homepage": "http://nuvole.org/"
+                },
+                {
+                    "name": "mkalkbrenner",
+                    "homepage": "https://www.drupal.org/user/124705"
+                },
+                {
+                    "name": "welly",
+                    "homepage": "https://www.drupal.org/user/354705"
+                }
+            ],
+            "description": "Allows you to display search spellcheck suggestions in views.",
+            "homepage": "https://www.drupal.org/project/search_api_spellcheck",
+            "support": {
+                "source": "https://git.drupalcode.org/project/search_api_spellcheck",
+                "issues": "http://drupal.org/"
+            }
+        },
+        {
             "name": "drupal/shs",
             "version": "1.0.0-alpha4",
             "source": {
@@ -6022,10 +6079,6 @@
                 "GPL-2.0-or-later"
             ],
             "authors": [
-                {
-                    "name": "jhedstrom",
-                    "homepage": "https://www.drupal.org/user/208732"
-                },
                 {
                     "name": "stBorchert",
                     "homepage": "https://www.drupal.org/user/36942"
@@ -7459,16 +7512,16 @@
         },
         {
             "name": "giggsey/libphonenumber-for-php",
-            "version": "8.11.4",
+            "version": "8.11.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/giggsey/libphonenumber-for-php.git",
-                "reference": "d429c468fdc8d7b68aefc6f5a2cb7fee0cc26ee9"
+                "reference": "0329cf6a6ede750a78e7165b61fcc83cd72e9768"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/giggsey/libphonenumber-for-php/zipball/d429c468fdc8d7b68aefc6f5a2cb7fee0cc26ee9",
-                "reference": "d429c468fdc8d7b68aefc6f5a2cb7fee0cc26ee9",
+                "url": "https://api.github.com/repos/giggsey/libphonenumber-for-php/zipball/0329cf6a6ede750a78e7165b61fcc83cd72e9768",
+                "reference": "0329cf6a6ede750a78e7165b61fcc83cd72e9768",
                 "shasum": ""
             },
             "require": {
@@ -7523,7 +7576,7 @@
                 "phonenumber",
                 "validation"
             ],
-            "time": "2020-02-12T11:21:37+00:00"
+            "time": "2020-01-28T11:48:03+00:00"
         },
         {
             "name": "giggsey/locale",
@@ -8314,16 +8367,16 @@
         },
         {
             "name": "myclabs/php-enum",
-            "version": "1.7.6",
+            "version": "1.7.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/myclabs/php-enum.git",
-                "reference": "5f36467c7a87e20fbdc51e524fd8f9d1de80187c"
+                "reference": "c3f3b36602748871098069f4f2f8224ca34df899"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/myclabs/php-enum/zipball/5f36467c7a87e20fbdc51e524fd8f9d1de80187c",
-                "reference": "5f36467c7a87e20fbdc51e524fd8f9d1de80187c",
+                "url": "https://api.github.com/repos/myclabs/php-enum/zipball/c3f3b36602748871098069f4f2f8224ca34df899",
+                "reference": "c3f3b36602748871098069f4f2f8224ca34df899",
                 "shasum": ""
             },
             "require": {
@@ -8356,7 +8409,7 @@
             "keywords": [
                 "enum"
             ],
-            "time": "2020-02-14T08:15:52+00:00"
+            "time": "2020-02-07T08:35:07+00:00"
         },
         {
             "name": "nikic/php-parser",
@@ -9007,16 +9060,16 @@
         },
         {
             "name": "solarium/solarium",
-            "version": "5.1.6",
+            "version": "5.1.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/solariumphp/solarium.git",
-                "reference": "9e073cc32c0144fc23215fe205cd0cb44e68b6ad"
+                "reference": "3abd884313a52c47cefb44a6daa27f1d6eb253f6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/solariumphp/solarium/zipball/9e073cc32c0144fc23215fe205cd0cb44e68b6ad",
-                "reference": "9e073cc32c0144fc23215fe205cd0cb44e68b6ad",
+                "url": "https://api.github.com/repos/solariumphp/solarium/zipball/3abd884313a52c47cefb44a6daa27f1d6eb253f6",
+                "reference": "3abd884313a52c47cefb44a6daa27f1d6eb253f6",
                 "shasum": ""
             },
             "require": {
@@ -9025,7 +9078,6 @@
                 "symfony/event-dispatcher": "^4.3 || ^5.0"
             },
             "require-dev": {
-                "friendsofphp/php-cs-fixer": "^2.16",
                 "guzzlehttp/guzzle": "^3.8 || ^6.2",
                 "php-coveralls/php-coveralls": "^2.1",
                 "phpunit/phpunit": "^8.0",
@@ -9058,7 +9110,7 @@
                 "search",
                 "solr"
             ],
-            "time": "2020-02-14T15:18:59+00:00"
+            "time": "2019-12-06T23:24:54+00:00"
         },
         {
             "name": "stack/builder",
@@ -10306,16 +10358,16 @@
         },
         {
             "name": "symfony/polyfill-php72",
-            "version": "v1.14.0",
+            "version": "v1.13.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-php72.git",
-                "reference": "46ecacf4751dd0dc81e4f6bf01dbf9da1dc1dadf"
+                "reference": "66fea50f6cb37a35eea048d75a7d99a45b586038"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/polyfill-php72/zipball/46ecacf4751dd0dc81e4f6bf01dbf9da1dc1dadf",
-                "reference": "46ecacf4751dd0dc81e4f6bf01dbf9da1dc1dadf",
+                "url": "https://api.github.com/repos/symfony/polyfill-php72/zipball/66fea50f6cb37a35eea048d75a7d99a45b586038",
+                "reference": "66fea50f6cb37a35eea048d75a7d99a45b586038",
                 "shasum": ""
             },
             "require": {
@@ -10324,7 +10376,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.14-dev"
+                    "dev-master": "1.13-dev"
                 }
             },
             "autoload": {
@@ -10357,7 +10409,7 @@
                 "portable",
                 "shim"
             ],
-            "time": "2020-01-13T11:15:53+00:00"
+            "time": "2019-11-27T13:56:44+00:00"
         },
         {
             "name": "symfony/polyfill-util",
@@ -11233,16 +11285,16 @@
         },
         {
             "name": "webmozart/assert",
-            "version": "1.7.0",
+            "version": "1.6.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/webmozart/assert.git",
-                "reference": "aed98a490f9a8f78468232db345ab9cf606cf598"
+                "reference": "573381c0a64f155a0d9a23f4b0c797194805b925"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/webmozart/assert/zipball/aed98a490f9a8f78468232db345ab9cf606cf598",
-                "reference": "aed98a490f9a8f78468232db345ab9cf606cf598",
+                "url": "https://api.github.com/repos/webmozart/assert/zipball/573381c0a64f155a0d9a23f4b0c797194805b925",
+                "reference": "573381c0a64f155a0d9a23f4b0c797194805b925",
                 "shasum": ""
             },
             "require": {
@@ -11277,7 +11329,7 @@
                 "check",
                 "validate"
             ],
-            "time": "2020-02-14T12:15:55+00:00"
+            "time": "2019-11-24T13:36:37+00:00"
         },
         {
             "name": "webmozart/path-util",
@@ -12019,16 +12071,16 @@
         },
         {
             "name": "composer/spdx-licenses",
-            "version": "1.5.3",
+            "version": "1.5.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/composer/spdx-licenses.git",
-                "reference": "0c3e51e1880ca149682332770e25977c70cf9dae"
+                "reference": "7ac1e6aec371357df067f8a688c3d6974df68fa5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/composer/spdx-licenses/zipball/0c3e51e1880ca149682332770e25977c70cf9dae",
-                "reference": "0c3e51e1880ca149682332770e25977c70cf9dae",
+                "url": "https://api.github.com/repos/composer/spdx-licenses/zipball/7ac1e6aec371357df067f8a688c3d6974df68fa5",
+                "reference": "7ac1e6aec371357df067f8a688c3d6974df68fa5",
                 "shasum": ""
             },
             "require": {
@@ -12075,7 +12127,7 @@
                 "spdx",
                 "validator"
             ],
-            "time": "2020-02-14T07:44:31+00:00"
+            "time": "2019-07-29T10:31:59+00:00"
         },
         {
             "name": "composer/xdebug-handler",
@@ -12379,10 +12431,6 @@
                     "homepage": "https://www.drupal.org/node/3236/committers"
                 },
                 {
-                    "name": "pcambra",
-                    "homepage": "https://www.drupal.org/user/122101"
-                },
-                {
                     "name": "salvis",
                     "homepage": "https://www.drupal.org/user/82964"
                 },
@@ -12401,17 +12449,17 @@
         },
         {
             "name": "drupal/easy_install",
-            "version": "10.2.0",
+            "version": "10.1.0",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/easy_install.git",
-                "reference": "8.x-10.2"
+                "reference": "8.x-10.1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/easy_install-8.x-10.2.zip",
-                "reference": "8.x-10.2",
-                "shasum": "76653dc0e9615ef264684d264b1ee5faea6670dd"
+                "url": "https://ftp.drupal.org/files/projects/easy_install-8.x-10.1.zip",
+                "reference": "8.x-10.1",
+                "shasum": "d16866909011bca62de29a8f7ef8e4da467fcfde"
             },
             "require": {
                 "drupal/core": "~8.0"
@@ -12422,8 +12470,8 @@
                     "dev-10.x": "10.x-dev"
                 },
                 "drupal": {
-                    "version": "8.x-10.2",
-                    "datestamp": "1581598051",
+                    "version": "8.x-10.1",
+                    "datestamp": "1526027584",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -12438,10 +12486,6 @@
                 "GPL-2.0-or-later"
             ],
             "authors": [
-                {
-                    "name": "btobac",
-                    "homepage": "https://www.drupal.org/user/3630142"
-                },
                 {
                     "name": "karthikeyan-manivasagam",
                     "homepage": "https://www.drupal.org/user/1494424"
@@ -13670,16 +13714,16 @@
         },
         {
             "name": "nette/neon",
-            "version": "v3.1.1",
+            "version": "v3.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nette/neon.git",
-                "reference": "bf658bafcf56e36cfa0922f4866869927672cf2c"
+                "reference": "0a18fc88801a14d66587932de133eeca01f7ce8e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nette/neon/zipball/bf658bafcf56e36cfa0922f4866869927672cf2c",
-                "reference": "bf658bafcf56e36cfa0922f4866869927672cf2c",
+                "url": "https://api.github.com/repos/nette/neon/zipball/0a18fc88801a14d66587932de133eeca01f7ce8e",
+                "reference": "0a18fc88801a14d66587932de133eeca01f7ce8e",
                 "shasum": ""
             },
             "require": {
@@ -13706,8 +13750,8 @@
             "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "BSD-3-Clause",
-                "GPL-2.0-only",
-                "GPL-3.0-only"
+                "GPL-2.0",
+                "GPL-3.0"
             ],
             "authors": [
                 {
@@ -13720,7 +13764,7 @@
                 }
             ],
             "description": "🍸 Nette NEON: encodes and decodes NEON file format.",
-            "homepage": "https://ne-on.org",
+            "homepage": "http://ne-on.org",
             "keywords": [
                 "export",
                 "import",
@@ -13728,7 +13772,7 @@
                 "nette",
                 "yaml"
             ],
-            "time": "2020-02-12T11:15:48+00:00"
+            "time": "2019-12-27T04:00:04+00:00"
         },
         {
             "name": "nette/php-generator",
@@ -15526,16 +15570,16 @@
         },
         {
             "name": "seld/phar-utils",
-            "version": "1.1.0",
+            "version": "1.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Seldaek/phar-utils.git",
-                "reference": "8800503d56b9867d43d9c303b9cbcc26016e82f0"
+                "reference": "84715761c35808076b00908a20317a3a8a67d17e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Seldaek/phar-utils/zipball/8800503d56b9867d43d9c303b9cbcc26016e82f0",
-                "reference": "8800503d56b9867d43d9c303b9cbcc26016e82f0",
+                "url": "https://api.github.com/repos/Seldaek/phar-utils/zipball/84715761c35808076b00908a20317a3a8a67d17e",
+                "reference": "84715761c35808076b00908a20317a3a8a67d17e",
                 "shasum": ""
             },
             "require": {
@@ -15564,9 +15608,9 @@
             ],
             "description": "PHAR file format utilities, for when PHP phars you up",
             "keywords": [
-                "phar"
+                "phra"
             ],
-            "time": "2020-02-14T15:25:33+00:00"
+            "time": "2020-01-13T10:41:09+00:00"
         },
         {
             "name": "squizlabs/php_codesniffer",
@@ -15864,6 +15908,7 @@
         "drupal/layout_builder_modal": 15,
         "drupal/media_browser_responsive_images": 20,
         "drupal/search_api_location": 15,
+        "drupal/search_api_spellcheck": 15,
         "drupal/shs": 15,
         "drupal/taxonomy_manager": 15,
         "drupal/telephone_plus": 20,
