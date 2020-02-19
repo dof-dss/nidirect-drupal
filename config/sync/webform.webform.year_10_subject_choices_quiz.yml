@@ -59,7 +59,9 @@ settings:
   submission_label: ''
   submission_log: false
   submission_views: {  }
-  submission_views_replace: {  }
+  submission_views_replace:
+    webform_routes: {  }
+    node_routes: {  }
   submission_user_columns: {  }
   submission_user_duplicate: false
   submission_access_denied: default
@@ -124,8 +126,8 @@ settings:
   entity_limit_total_interval: null
   entity_limit_user: null
   entity_limit_user_interval: null
-  purge: none
-  purge_days: null
+  purge: all
+  purge_days: 1
   results_disabled: false
   results_disabled_ignore: false
   token_view: false
@@ -219,13 +221,14 @@ handlers:
           incorrect_feedback: ''
         question_5:
           correct_answer: q5_a4
-          correct_feedback: '<p>ok</p>'
+          correct_feedback: ''
           incorrect_feedback: ''
         question_6:
           correct_answer: q6_a4
           correct_feedback: ''
           incorrect_feedback: ''
       message: ''
-      delete_submissions: 1
+      delete_submissions: 0
       display_score: 1
       display_feedback: 0
+variants: {  }
