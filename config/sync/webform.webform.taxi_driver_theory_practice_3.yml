@@ -59,7 +59,9 @@ settings:
   submission_label: ''
   submission_log: false
   submission_views: {  }
-  submission_views_replace: {  }
+  submission_views_replace:
+    webform_routes: {  }
+    node_routes: {  }
   submission_user_columns: {  }
   submission_user_duplicate: false
   submission_access_denied: default
@@ -124,8 +126,8 @@ settings:
   entity_limit_total_interval: null
   entity_limit_user: null
   entity_limit_user_interval: null
-  purge: none
-  purge_days: null
+  purge: all
+  purge_days: 1
   results_disabled: false
   results_disabled_ignore: false
   token_view: false
@@ -206,15 +208,15 @@ handlers:
           incorrect_feedback: '<p>Please read "The Highway Code for NI". Rule 96.</p>'
         question_4:
           correct_answer: q4_a1
-          correct_feedback: '<p>Proteins are essential components of diet but are not needed in vast quantities by adults, although their presence makes for slow digestion and prolonged satisfaction after eating. However, care is needed to ensure that you do not eat excessive amounts of foods such as eggs and cheese.</p><p>Protein-based foods should be included as part of a healthy eating plan. However, eating them in large quantities can add extra unnecessary fat or salt to your diet, which can contribute to an increase in cholesterol levels. Recommended protein portion sizes vary according to sources, but a general approximation of a single portion would be any one of the following:</p><ul><li>4 oz (100 g) meat, fish or poultry;</li><li>approximately 1 oz (30 g) of hard cheese or nuts; and</li><li>two whole eggs.</li></ul><p>Many traditional ways of serving proteins, such as frying, battering and cooking in pies and puddings can add unnecessary calories. Any fats added should be unsaturated ones, such as sunflower and olive oils or products such as spreads manufactured from them.</p>'
+          correct_feedback: "<p>Proteins are essential components of diet but are not needed in vast quantities by adults, although their presence makes for slow digestion and prolonged satisfaction after eating. However, care is needed to ensure that you do not eat excessive amounts of foods such as eggs and cheese.</p>\r\n\r\n<p>Protein-based foods should be included as part of a healthy eating plan. However, eating them in large quantities can add extra unnecessary fat or salt to your diet, which can contribute to an increase in cholesterol levels. Recommended protein portion sizes vary according to sources, but a general approximation of a single portion would be any one of the following:</p>\r\n\r\n<ul>\r\n\t<li>4 oz (100 g) meat, fish or poultry;</li>\r\n\t<li>approximately 1 oz (30 g) of hard cheese or nuts; and</li>\r\n\t<li>two whole eggs.</li>\r\n</ul>\r\n\r\n<p>Many traditional ways of serving proteins, such as frying, battering and cooking in pies and puddings can add unnecessary calories. Any fats added should be unsaturated ones, such as sunflower and olive oils or products such as spreads manufactured from them.</p>"
           incorrect_feedback: '<p>Please read "All you need to know to become a Taxi Driver". Section 1. Getting started.</p>'
         question_5:
           correct_answer: q5_a1
-          correct_feedback: '<h4>Fire extinguishers</h4><p>All taxis MUST carry at least one fire extinguisher. It MUST be serviceable and carried in an easy accessible location on the vehicle.<br>Regulations specify the type and size of fire extinguisher that MUST be carried on your vehicle. You should be able to recognise the various types of fire extinguisher and know which fires they are intended to tackle. For example, it is dangerous to tackle a fuel fire (flammable liquid) with a water or carbon dioxide fire extinguisher, since this may only spread the fire further. Each extinguisher will have a coloured label or badge relevant to its content.</p>'
+          correct_feedback: "<h4>Fire extinguishers</h4>\r\n\r\n<p>All taxis MUST carry at least one fire extinguisher. It MUST be serviceable and carried in an easy accessible location on the vehicle.<br />\r\nRegulations specify the type and size of fire extinguisher that MUST be carried on your vehicle. You should be able to recognise the various types of fire extinguisher and know which fires they are intended to tackle. For example, it is dangerous to tackle a fuel fire (flammable liquid) with a water or carbon dioxide fire extinguisher, since this may only spread the fire further. Each extinguisher will have a coloured label or badge relevant to its content.</p>"
           incorrect_feedback: '<p>Please read "All you need to know to become a Taxi Driver". Section 4. Driving skills.</p>'
         question_6:
           correct_answer: q6_a1
-          correct_feedback: '<p>There are two types of operator’s licence:</p><ul><li>small operator – a maximum of two taxi vehicles available for use at any one time</li><li>large operator – no restrictions on the number of taxi vehicles available for use at any one time</li></ul>'
+          correct_feedback: "<p>There are two types of operator’s licence:</p>\r\n\r\n<ul>\r\n\t<li>small operator – a maximum of two taxi vehicles available for use at any one time</li>\r\n\t<li>large operator – no restrictions on the number of taxi vehicles available for use at any one time</li>\r\n</ul>"
           incorrect_feedback: '<p>Please read "All you need to know to become a Taxi Driver". Section 1. Getting started.</p>'
         question_7:
           correct_answer: q7_a1
@@ -222,37 +224,38 @@ handlers:
           incorrect_feedback: '<p>Please read "The Highway Code for NI". Rule 286.</p>'
         question_8:
           correct_answer: q8_a1
-          correct_feedback: '<p>Carrying a heavy load may have an effect on the handling of your car, so</p><ul><li>you need to allow a greater stopping distance when carrying a heavy load</li><li>you may need to adjust your headlights and inflate your tyres more to take account of the load</li><li>you should ensure that you distribute the weight evenly as any change to the centre of gravity will affect the braking and steering.</li></ul>'
+          correct_feedback: "<p>Carrying a heavy load may have an effect on the handling of your car, so</p>\r\n\r\n<ul>\r\n\t<li>you need to allow a greater stopping distance when carrying a heavy load</li>\r\n\t<li>you may need to adjust your headlights and inflate your tyres more to take account of the load</li>\r\n\t<li>you should ensure that you distribute the weight evenly as any change to the centre of gravity will affect the braking and steering.</li>\r\n</ul>"
           incorrect_feedback: '<p>Please read "The Official DVSA Guide to DRIVING the essential skills". Section 2, The driver and the law.</p>'
         question_9:
           correct_answer: q9_a1
-          correct_feedback: '<p>Carrying a heavy load may have an effect on the handling of your car, so</p><ul><li>you need to allow a greater stopping distance when carrying a heavy load</li><li>you may need to adjust your headlights and inflate your tyres more to take account of the load</li><li>you should ensure that you distribute the weight evenly as any change to the centre of gravity will affect the braking and steering.</li></ul>'
+          correct_feedback: "<p>Carrying a heavy load may have an effect on the handling of your car, so</p>\r\n\r\n<ul>\r\n\t<li>you need to allow a greater stopping distance when carrying a heavy load</li>\r\n\t<li>you may need to adjust your headlights and inflate your tyres more to take account of the load</li>\r\n\t<li>you should ensure that you distribute the weight evenly as any change to the centre of gravity will affect the braking and steering.</li>\r\n</ul>"
           incorrect_feedback: '<p>Please read "The Official DVSA Guide to DRIVING the essential skills". Section 2, The driver and the law.</p>'
         question_10:
           correct_answer: q10_a1
-          correct_feedback: '<h4>Tyre pressure</h4><p>You can’t guess pressures just by looking at a tyre, except when it’s obviously flat. Check your tyres regularly – at least once a week. Use a reliable gauge and follow the vehicle handbook for the correct tyre pressure. Check your tyres and adjust the pressure when they’re cold. Don’t forget the spare tyre and remember to refit the valve caps. The handbook will also tell you if you need different pressures for different conditions. Generally, the pressure should be higher for a heavily loaded vehicle or if you’re intending to drive at high speed for a long distance, e.g. motorway journeys.</p>'
+          correct_feedback: "<h4>Tyre pressure</h4>\r\n\r\n<p>You can’t guess pressures just by looking at a tyre, except when it’s obviously flat. Check your tyres regularly – at least once a week. Use a reliable gauge and follow the vehicle handbook for the correct tyre pressure. Check your tyres and adjust the pressure when they’re cold. Don’t forget the spare tyre and remember to refit the valve caps. The handbook will also tell you if you need different pressures for different conditions. Generally, the pressure should be higher for a heavily loaded vehicle or if you’re intending to drive at high speed for a long distance, e.g. motorway journeys.</p>"
           incorrect_feedback: '<p>Please read "The Official DVSA Guide to DRIVING the essential skills". Section 14, Basic maintainance.</p>'
         question_11:
           correct_answer: q11_a1
-          correct_feedback: '<h4>Driving time and rest periods</h4><p>The manual, “ALL YOU NEED TO KNOW TO BE A TAXI DRIVER”, offers recommendations as to working hours and the required duration of breaks for taxi drivers. Taxi drivers should not work for more than an average of ten hours per day. The usual break should be 30 minutes for a shift of between six and nine hours. For shifts lasting more than nine hours, breaks should be at least 45 minutes. For shifts lasting twelve hours, a minimum of two breaks of 60 minutes each are recommended. Drivers should take at least 11 hours off in between shifts.</p>'
+          correct_feedback: "<h4>Driving time and rest periods</h4>\r\n\r\n<p>The manual, “ALL YOU NEED TO KNOW TO BE A TAXI DRIVER”, offers recommendations as to working hours and the required duration of breaks for taxi drivers. Taxi drivers should not work for more than an average of ten hours per day. The usual break should be 30 minutes for a shift of between six and nine hours. For shifts lasting more than nine hours, breaks should be at least 45 minutes. For shifts lasting twelve hours, a minimum of two breaks of 60 minutes each are recommended. Drivers should take at least 11 hours off in between shifts.</p>"
           incorrect_feedback: '<p>Please read "All you need to know to become a Taxi Driver". Section 3. Limits and Regulations.</p>'
         question_12:
           correct_answer: q12_a1
-          correct_feedback: '<p>On the motorway<br>If you see serious congestion ahead, you<br>can use your hazard warning lights briefly<br>to alert drivers behind you. This can reduce<br>the risk of rear-end collisions, especially in<br>bad weather.</p>'
+          correct_feedback: "<p>On the motorway<br />\r\nIf you see serious congestion ahead, you<br />\r\ncan use your hazard warning lights briefly<br />\r\nto alert drivers behind you. This can reduce<br />\r\nthe risk of rear-end collisions, especially in<br />\r\nbad weather.</p>"
           incorrect_feedback: '<p>Please read "The Official DVSA Guide to DRIVING the essential skills". Section 3, The Controls. The Highway Code for NI Rule 116.</p>'
         question_13:
           correct_answer: q13_a1
-          correct_feedback: '<h4>Tyres/steering</h4><p>If your Steering becomes ‘heavy’ or erratic you may have a puncture.</p>'
+          correct_feedback: "<h4>Tyres/steering</h4>\r\n\r\n<p>If your Steering becomes ‘heavy’ or erratic you may have a puncture.</p>"
           incorrect_feedback: '<p>Please read "The Official DVSA Guide to DRIVING the essential skills". Section 14, Basic Maintainance.</p>'
         question_14:
           correct_answer: q14_a1
-          correct_feedback: '<p>The training MUST be delivered by an approved training provider and the course MUST have been approved by DVA before it can be uploaded against each taxi driver’s record.</p><p>If after five years, you have not completed the minimum 35 hours training your taxi licence will not be renewed.</p><p>These courses have a MINIMUM legal duration of 3 hours 30 minutes. Any course which does not comply with the legislation cannot be attributed to periodic training and uploaded against a driver’s record.</p><p>In addition, if a course exceeds the minimum period but falls short of the next acceptable time period of 7 hours, (i.e. any time between 3 hours 30 minutes and 7 hours) the extra time cannot be attributed towards an individual’s periodic training record. Full details of the requirements for periodic training can be found via the Agency’s website at www.nidirect.gov.uk/Periodic training</p>'
+          correct_feedback: "<p>The training MUST be delivered by an approved training provider and the course MUST have been approved by DVA before it can be uploaded against each taxi driver’s record.</p>\r\n\r\n<p>If after five years, you have not completed the minimum 35 hours training your taxi licence will not be renewed.</p>\r\n\r\n<p>These courses have a MINIMUM legal duration of 3 hours 30 minutes. Any course which does not comply with the legislation cannot be attributed to periodic training and uploaded against a driver’s record.</p>\r\n\r\n<p>In addition, if a course exceeds the minimum period but falls short of the next acceptable time period of 7 hours, (i.e. any time between 3 hours 30 minutes and 7 hours) the extra time cannot be attributed towards an individual’s periodic training record. Full details of the requirements for periodic training can be found via the Agency’s website at www.nidirect.gov.uk/Periodic training</p>"
           incorrect_feedback: '<p>Please read "All you need to know to become a Taxi Driver". Section 1. Getting Started.</p>'
         question_15:
           correct_answer: q15_a1
-          correct_feedback: '<p>Make sure that any objects or animals you carry are secured safely.</p><p>Dogs should be strapped in with a special car harness or travel behind a grille. Other animals should be carried in cages or special carry-boxes which should be secured with the seat belt. The only exception to this is assistance dogs which can travel with their owner on the floor of your vehicle (when possible).</p><p>Make sure packages are securely stored, preferably in the boot of the vehicle where they should be strapped down or wedged in to stop them moving around.</p>'
+          correct_feedback: "<p>Make sure that any objects or animals you carry are secured safely.</p>\r\n\r\n<p>Dogs should be strapped in with a special car harness or travel behind a grille. Other animals should be carried in cages or special carry-boxes which should be secured with the seat belt. The only exception to this is assistance dogs which can travel with their owner on the floor of your vehicle (when possible).</p>\r\n\r\n<p>Make sure packages are securely stored, preferably in the boot of the vehicle where they should be strapped down or wedged in to stop them moving around.</p>"
           incorrect_feedback: '<p>Please read "The Official DVSA Guide to DRIVING the essential skills". Section 2, The Driver and the Law.</p>'
       message: ''
-      delete_submissions: 1
-      display_score: true
-      display_feedback: true
+      delete_submissions: 0
+      display_score: 1
+      display_feedback: 1
+variants: {  }
