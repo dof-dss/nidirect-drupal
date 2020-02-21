@@ -34,10 +34,6 @@ dependencies:
     - field.storage.node.field_site_themes
     - field.storage.node.field_subtheme
     - field.storage.node.field_summary
-    - field.storage.node.field_ub_contact
-    - field.storage.node.field_ub_counties
-    - field.storage.node.field_ub_sector
-    - field.storage.node.field_ub_services
     - search_api.server.solr_default
 third_party_settings:
   search_api_solr:
@@ -405,38 +401,6 @@ field_settings:
     dependencies:
       config:
         - field.storage.node.field_summary
-  field_ub_contact:
-    label: 'Contact name'
-    datasource_id: 'entity:node'
-    property_path: field_ub_contact
-    type: text
-    dependencies:
-      config:
-        - field.storage.node.field_ub_contact
-  field_ub_counties:
-    label: Counties
-    datasource_id: 'entity:node'
-    property_path: field_ub_counties
-    type: string
-    dependencies:
-      config:
-        - field.storage.node.field_ub_counties
-  field_ub_sector:
-    label: 'Sectors covered'
-    datasource_id: 'entity:node'
-    property_path: field_ub_sector
-    type: integer
-    dependencies:
-      config:
-        - field.storage.node.field_ub_sector
-  field_ub_services:
-    label: 'Services provided'
-    datasource_id: 'entity:node'
-    property_path: field_ub_services
-    type: integer
-    dependencies:
-      config:
-        - field.storage.node.field_ub_services
   langcode:
     label: Language
     datasource_id: 'entity:node'
@@ -553,8 +517,6 @@ datasource_settings:
         - news
         - page
         - publication
-        - recipe
-        - umbrella_body
     languages:
       default: true
       selected: {  }
