@@ -4,46 +4,36 @@ status: true
 dependencies:
   module:
     - search_api_solr
-    - taxonomy
     - node
+    - taxonomy
     - search_api_location
     - search_api
   config:
     - field.storage.node.field_address
-    - field.storage.node.field_di_adi_no
-    - field.storage.node.field_di_areas
     - field.storage.node.body
+    - field.storage.node.field_di_areas
+    - field.storage.node.field_di_categories
+    - field.storage.node.field_contact_category
+    - field.storage.node.field_di_adi_no
+    - field.storage.node.field_di_firstname
+    - field.storage.node.field_di_lastname
+    - field.storage.node.field_email_address
     - field.storage.node.field_hc_body_location
     - field.storage.taxonomy_term.field_term_hc_synonyms
     - field.storage.node.field_hc_body_system
-    - field.storage.node.field_di_categories
-    - field.storage.node.field_contact_category
     - field.storage.node.field_hc_condition_type
-    - field.storage.node.field_ub_contact
-    - field.storage.node.field_recipe_allergens
-    - field.storage.node.field_ub_counties
-    - field.storage.node.field_recipe_course_type
-    - field.storage.node.field_email_address
-    - field.storage.node.field_di_firstname
-    - field.storage.node.field_index_letter
-    - field.storage.node.field_di_lastname
-    - field.storage.node.field_lb_search_content
-    - field.storage.node.field_location
-    - field.storage.node.field_recipe_main_ingredient
     - field.storage.node.field_hc_primary_symptom_1
     - field.storage.node.field_hc_primary_symptom_2
     - field.storage.node.field_hc_primary_symptom_3
     - field.storage.node.field_hc_primary_symptom_4
-    - field.storage.node.field_published_date
-    - field.storage.node.field_recipe_season
     - field.storage.node.field_hc_secondary_symptoms
-    - field.storage.node.field_ub_sector
-    - field.storage.node.field_ub_services
-    - field.storage.node.field_recipe_description
-    - field.storage.node.field_recipe_special_diet
-    - field.storage.node.field_summary
+    - field.storage.node.field_index_letter
+    - field.storage.node.field_lb_search_content
+    - field.storage.node.field_location
+    - field.storage.node.field_published_date
     - field.storage.node.field_site_themes
     - field.storage.node.field_subtheme
+    - field.storage.node.field_summary
     - search_api.server.solr_default
 third_party_settings:
   search_api_solr:
@@ -371,54 +361,6 @@ field_settings:
     dependencies:
       config:
         - field.storage.node.field_published_date
-  field_recipe_allergens:
-    label: 'Contains allergens'
-    datasource_id: 'entity:node'
-    property_path: field_recipe_allergens
-    type: boolean
-    dependencies:
-      config:
-        - field.storage.node.field_recipe_allergens
-  field_recipe_course_type:
-    label: 'Course type'
-    datasource_id: 'entity:node'
-    property_path: field_recipe_course_type
-    type: integer
-    dependencies:
-      config:
-        - field.storage.node.field_recipe_course_type
-  field_recipe_description:
-    label: 'Short description'
-    datasource_id: 'entity:node'
-    property_path: field_recipe_description
-    type: text
-    dependencies:
-      config:
-        - field.storage.node.field_recipe_description
-  field_recipe_main_ingredient:
-    label: 'Main ingredient'
-    datasource_id: 'entity:node'
-    property_path: field_recipe_main_ingredient
-    type: integer
-    dependencies:
-      config:
-        - field.storage.node.field_recipe_main_ingredient
-  field_recipe_season:
-    label: Season
-    datasource_id: 'entity:node'
-    property_path: field_recipe_season
-    type: string
-    dependencies:
-      config:
-        - field.storage.node.field_recipe_season
-  field_recipe_special_diet:
-    label: 'Special diet'
-    datasource_id: 'entity:node'
-    property_path: field_recipe_special_diet
-    type: integer
-    dependencies:
-      config:
-        - field.storage.node.field_recipe_special_diet
   field_site_themes:
     label: 'Supplementary subthemes'
     datasource_id: 'entity:node'
@@ -459,38 +401,6 @@ field_settings:
     dependencies:
       config:
         - field.storage.node.field_summary
-  field_ub_contact:
-    label: 'Contact name'
-    datasource_id: 'entity:node'
-    property_path: field_ub_contact
-    type: text
-    dependencies:
-      config:
-        - field.storage.node.field_ub_contact
-  field_ub_counties:
-    label: Counties
-    datasource_id: 'entity:node'
-    property_path: field_ub_counties
-    type: string
-    dependencies:
-      config:
-        - field.storage.node.field_ub_counties
-  field_ub_sector:
-    label: 'Sectors covered'
-    datasource_id: 'entity:node'
-    property_path: field_ub_sector
-    type: integer
-    dependencies:
-      config:
-        - field.storage.node.field_ub_sector
-  field_ub_services:
-    label: 'Services provided'
-    datasource_id: 'entity:node'
-    property_path: field_ub_services
-    type: integer
-    dependencies:
-      config:
-        - field.storage.node.field_ub_services
   langcode:
     label: Language
     datasource_id: 'entity:node'
@@ -607,8 +517,6 @@ datasource_settings:
         - news
         - page
         - publication
-        - recipe
-        - umbrella_body
     languages:
       default: true
       selected: {  }

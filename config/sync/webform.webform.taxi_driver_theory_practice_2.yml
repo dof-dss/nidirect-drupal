@@ -59,7 +59,9 @@ settings:
   submission_label: ''
   submission_log: false
   submission_views: {  }
-  submission_views_replace: {  }
+  submission_views_replace:
+    webform_routes: {  }
+    node_routes: {  }
   submission_user_columns: {  }
   submission_user_duplicate: false
   submission_access_denied: default
@@ -124,8 +126,8 @@ settings:
   entity_limit_total_interval: null
   entity_limit_user: null
   entity_limit_user_interval: null
-  purge: none
-  purge_days: null
+  purge: all
+  purge_days: 1
   results_disabled: false
   results_disabled_ignore: false
   token_view: false
@@ -198,7 +200,7 @@ handlers:
           incorrect_feedback: '<p>Please read "The Official DVSA Guide to DRIVING the essential skills". Section 6, Traffic Signs.</p>'
         question_2:
           correct_answer: q2_a1
-          correct_feedback: '<h4>Defensive driving</h4><p>Take extra care if your path crosses or joins the path of other road users.</p><p>Check your mirrors, particularly for cyclists and motorcyclists, when turning at junctions. They can approach very quickly from behind and are less easy to see than a larger vehicle.</p>'
+          correct_feedback: "<h4>Defensive driving</h4>\r\n\r\n<p>Take extra care if your path crosses or joins the path of other road users.</p>\r\n\r\n<p>Check your mirrors, particularly for cyclists and motorcyclists, when turning at junctions. They can approach very quickly from behind and are less easy to see than a larger vehicle.</p>"
           incorrect_feedback: '<p>Please read "The Official DVSA Guide to DRIVING the essential skills". Section 8, Junctions.</p>'
         question_3:
           correct_answer: q3_a
@@ -210,15 +212,15 @@ handlers:
           incorrect_feedback: '<p>Please read "The Official DVSA Guide to DRIVING the essential skills". Section 6, Traffic Signs.</p>'
         question_5:
           correct_answer: q5_a1
-          correct_feedback: '<h4>Pelican crossings</h4><p>These are light-controlled crossings where the pedestrian uses push-button controls to control the traffic. They have no red and<br>amber phase before the green. Instead they have a flashing amber light, which means you must give way to pedestrians on the crossing but if it’s clear you can go on. The crossing area is shown by studs and a ‘stop’ line marks the place for drivers to stop when it’s necessary.</p>'
+          correct_feedback: "<h4>Pelican crossings</h4>\r\n\r\n<p>These are light-controlled crossings where the pedestrian uses push-button controls to control the traffic. They have no red and<br />\r\namber phase before the green. Instead they have a flashing amber light, which means you must give way to pedestrians on the crossing but if it’s clear you can go on. The crossing area is shown by studs and a ‘stop’ line marks the place for drivers to stop when it’s necessary.</p>"
           incorrect_feedback: '<p>Please read "The Highway Code for NI". Rule 196.</p>'
         question_6:
           correct_answer: q6_a1
-          correct_feedback: '<h4>Pedestrians and cyclists</h4><p>You should:</p><ul><li>give way to pedestrians already crossing when you turn – they have priority</li><li>keep a special lookout for cyclists coming up on your left</li><li>take special care when crossing a cycle track, bus or cycle lane</li><li>hold back and allow a cyclist to clear the junction before you turn, don’t overtake and then cut in on them.</li></ul>'
+          correct_feedback: "<h4>Pedestrians and cyclists</h4>\r\n\r\n<p>You should:</p>\r\n\r\n<ul>\r\n\t<li>give way to pedestrians already crossing when you turn – they have priority</li>\r\n\t<li>keep a special lookout for cyclists coming up on your left</li>\r\n\t<li>take special care when crossing a cycle track, bus or cycle lane</li>\r\n\t<li>hold back and allow a cyclist to clear the junction before you turn, don’t overtake and then cut in on them.</li>\r\n</ul>"
           incorrect_feedback: '<p>Please read "The Official DVSA Guide to DRIVING the essential skills". Section 8, Junctions.</p>'
         question_7:
           correct_answer: q7_a1
-          correct_feedback: '<h4>Overheating</h4><p>The probable causes of overheating could be any of the following:</p><ul><li>Fan belt snapped</li><li>Hose leaking</li><li>Fuse blown on electric</li><li>Cooling fan</li></ul>'
+          correct_feedback: "<h4>Overheating</h4>\r\n\r\n<p>The probable causes of overheating could be any of the following:</p>\r\n\r\n<ul>\r\n\t<li>Fan belt snapped</li>\r\n\t<li>Hose leaking</li>\r\n\t<li>Fuse blown on electric</li>\r\n\t<li>Cooling fan</li>\r\n</ul>"
           incorrect_feedback: '<p>Please read "The Official DVSA Guide to DRIVING the essential skills". Section 14, Basic maintainance.</p>'
         question_8:
           correct_answer: q8_a1
@@ -226,7 +228,7 @@ handlers:
           incorrect_feedback: '<p>Please read "The Highway Code for NI".</p>'
         question_9:
           correct_answer: q9_a1
-          correct_feedback: '<p>Some warning lights if they remain on must be checked out immediately – Oil, Seatbelt, and Airbag etc. If possible you should stop somewhere safe and convenient and try to find the cause. You should also check your vehicle’s handbook for further information.</p><p>Others such as the Particulate Filter warning light advise that action is required, but not necessarily immediately. If this light is illuminated it means that the particulate filer is upwards of 45% blocked with the soot residue from the burnt fuel from the engine.</p><p>Depending on the make and model of your vehicle there are a number of actions you can take to extinguish this light. One such example is to drive your vehicle for a short time on higher than normal speed roads, such as a motorway, where the exhaust temperature can be raised sufficiently to burn off the residue which should extinguish the light. You should however consult your vehicle’s handbook for the appropriate action for your type of vehicle.</p>'
+          correct_feedback: "<p>Some warning lights if they remain on must be checked out immediately – Oil, Seatbelt, and Airbag etc. If possible you should stop somewhere safe and convenient and try to find the cause. You should also check your vehicle’s handbook for further information.</p>\r\n\r\n<p>Others such as the Particulate Filter warning light advise that action is required, but not necessarily immediately. If this light is illuminated it means that the particulate filer is upwards of 45% blocked with the soot residue from the burnt fuel from the engine.</p>\r\n\r\n<p>Depending on the make and model of your vehicle there are a number of actions you can take to extinguish this light. One such example is to drive your vehicle for a short time on higher than normal speed roads, such as a motorway, where the exhaust temperature can be raised sufficiently to burn off the residue which should extinguish the light. You should however consult your vehicle’s handbook for the appropriate action for your type of vehicle.</p>"
           incorrect_feedback: '<p>Please read "All you need to know to become a Taxi Driver". Section 2. Your vehicle.</p>'
         question_10:
           correct_answer: q10_a1
@@ -234,25 +236,26 @@ handlers:
           incorrect_feedback: '<p>Please read "The Highway Code for NI". Rule 196 - 198.</p>'
         question_11:
           correct_answer: q11_a1
-          correct_feedback: '<p>Ensuring that daily walk-round checks are carried out will enable you to find any defects that could become a problem and cause the vehicle to break down or be driven while illegal.</p><p>The time taken to complete a thorough check will be less than that required to organise repair or replacement while out on the road. Checks need to be made before you start up the vehicle or begin a journey. The consequences are too great to risk driving a vehicle with defective parts.</p>'
+          correct_feedback: "<p>Ensuring that daily walk-round checks are carried out will enable you to find any defects that could become a problem and cause the vehicle to break down or be driven while illegal.</p>\r\n\r\n<p>The time taken to complete a thorough check will be less than that required to organise repair or replacement while out on the road. Checks need to be made before you start up the vehicle or begin a journey. The consequences are too great to risk driving a vehicle with defective parts.</p>"
           incorrect_feedback: '<p>Please read "All you need to know to become a Taxi Driver". Section 2. Your Vehicle.</p>'
         question_12:
           correct_answer: q12_a1
-          correct_feedback: '<p>The driver MUST ensure that all children under 14 years of age in cars, vans and other goods vehicles wear seat belts or sit in an approved child restraint where required (see table below). If a child is under 1.35 metres (approx 4 feet 5 inches) tall, a baby seat, child seat, booster seat or booster cushion suitable for the child’s weight and fitted to the manufacturer’s instructions MUST be used.</p><div class="x-scroll"><h3>Seat belt requirements</h3><p>This table summarises the main legal requirements for wearing seatbelts in cars, vans and other goods vehicles.</p><table><thead><tr><th scope="row">&nbsp;</th><th scope="col">Front seat</th><th scope="col">Rear seat</th><th scope="col">Who is responsible?</th></tr></thead><tbody><tr><th scope="row">Driver</th><td>Seat belt <strong>MUST </strong>be worn if fitted</td><td>&nbsp;</td><td><strong>Driver</strong></td></tr><tr><th scope="row">Child under 3 years of age</th><td>Seat belt <strong>MUST </strong>be worn if fitted</td><td>Correct child restraint <strong>MUST</strong> be used. If one is not available in a taxi the child may travel unrestrained.</td><td><strong>Driver</strong></td></tr><tr><th scope="row">Child from 3rd birthday up to 1.35 metres (approx 4 feet 5 inches) in height (or 12th birthday, whichever comes first)</th><td>Correct child restraint <strong>MUST </strong>be used</td><td>Correct child restraint <strong>MUST</strong> be used where seat belts fitted. <strong>MUST </strong>use adult belt if correct child restraint is not available in a licensed taxi or private hire vehicle, of for reasons of unexpected necessity over a short distance, or if two occupied restraints prevent fitment of a third.</td><td><strong>Driver</strong></td></tr><tr><th scope="row">Child over 1.35 metres in height or 12 or 13 years old</th><td>Correct child restraint <strong>MUST</strong> be used</td><td>Seat belt <strong>MUST</strong> be worn if available.</td><td><strong>Driver</strong></td></tr><tr><th scope="row">Adult passengers and children aged 14 and over</th><td>Seat belt <strong>MUST</strong> be worn if available</td><td>Seat belt <strong>MUST</strong> be worn if available.</td><td><strong>Passenger</strong></td></tr></tbody></table></div><p>&nbsp;</p>'
+          correct_feedback: "<p>The driver MUST ensure that all children under 14 years of age in cars, vans and other goods vehicles wear seat belts or sit in an approved child restraint where required (see table below). If a child is under 1.35 metres (approx 4 feet 5 inches) tall, a baby seat, child seat, booster seat or booster cushion suitable for the child’s weight and fitted to the manufacturer’s instructions MUST be used.</p>\r\n\r\n<div class=\"x-scroll\">\r\n<h3>Seat belt requirements</h3>\r\n\r\n<p>This table summarises the main legal requirements for wearing seatbelts in cars, vans and other goods vehicles.</p>\r\n\r\n<table>\r\n\t<thead>\r\n\t\t<tr>\r\n\t\t\t<th scope=\"row\">&nbsp;</th>\r\n\t\t\t<th scope=\"col\">Front seat</th>\r\n\t\t\t<th scope=\"col\">Rear seat</th>\r\n\t\t\t<th scope=\"col\">Who is responsible?</th>\r\n\t\t</tr>\r\n\t</thead>\r\n\t<tbody>\r\n\t\t<tr>\r\n\t\t\t<th scope=\"row\">Driver</th>\r\n\t\t\t<td>Seat belt <strong>MUST </strong>be worn if fitted</td>\r\n\t\t\t<td>&nbsp;</td>\r\n\t\t\t<td><strong>Driver</strong></td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<th scope=\"row\">Child under 3 years of age</th>\r\n\t\t\t<td>Seat belt <strong>MUST </strong>be worn if fitted</td>\r\n\t\t\t<td>Correct child restraint <strong>MUST</strong> be used. If one is not available in a taxi the child may travel unrestrained.</td>\r\n\t\t\t<td><strong>Driver</strong></td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<th scope=\"row\">Child from 3rd birthday up to 1.35 metres (approx 4 feet 5 inches) in height (or 12th birthday, whichever comes first)</th>\r\n\t\t\t<td>Correct child restraint <strong>MUST </strong>be used</td>\r\n\t\t\t<td>Correct child restraint <strong>MUST</strong> be used where seat belts fitted. <strong>MUST </strong>use adult belt if correct child restraint is not available in a licensed taxi or private hire vehicle, of for reasons of unexpected necessity over a short distance, or if two occupied restraints prevent fitment of a third.</td>\r\n\t\t\t<td><strong>Driver</strong></td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<th scope=\"row\">Child over 1.35 metres in height or 12 or 13 years old</th>\r\n\t\t\t<td>Correct child restraint <strong>MUST</strong> be used</td>\r\n\t\t\t<td>Seat belt <strong>MUST</strong> be worn if available.</td>\r\n\t\t\t<td><strong>Driver</strong></td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<th scope=\"row\">Adult passengers and children aged 14 and over</th>\r\n\t\t\t<td>Seat belt <strong>MUST</strong> be worn if available</td>\r\n\t\t\t<td>Seat belt <strong>MUST</strong> be worn if available.</td>\r\n\t\t\t<td><strong>Passenger</strong></td>\r\n\t\t</tr>\r\n\t</tbody>\r\n</table>\r\n</div>\r\n\r\n<p>&nbsp;</p>"
           incorrect_feedback: '<p>Please read "The Highway Code for NI".</p>'
         question_13:
           correct_answer: q13_a1
-          correct_feedback: '<p>Recycling</p><p>If you do your own maintenance, make sure that you send oil, old batteries and used tyres to a garage or local authority site for<br>recycling or safe disposal.</p><p>Don’t pour oil down the drain; it’s</p><ul><li>illegal and could lead to prosecution</li><li>harmful to the environment.</li></ul>'
-          incorrect_feedback: ''
+          correct_feedback: "<p>Recycling</p>\r\n\r\n<p>If you do your own maintenance, make sure that you send oil, old batteries and used tyres to a garage or local authority site for<br />\r\nrecycling or safe disposal.</p>\r\n\r\n<p>Don’t pour oil down the drain; it’s</p>\r\n\r\n<ul>\r\n\t<li>illegal and could lead to prosecution</li>\r\n\t<li>harmful to the environment.</li>\r\n</ul>"
+          incorrect_feedback: '<p>Please read "The Official DVSA Guide to DRIVING the essential skills". Section 17, Ecosafe Driving and the Environment.</p>'
         question_14:
           correct_answer: q14_a1
           correct_feedback: '<p>Please read "The Official DVSA Guide to DRIVING the essential skills". Section 17, Ecosafe Driving and the Environment.</p>'
           incorrect_feedback: '<p>Please read "The Highway Code for NI". Rule 239.</p>'
         question_15:
           correct_answer: q15_a1
-          correct_feedback: '<p>The training MUST be delivered by an approved training provider and the course MUST have been approved by DVA before it can be uploaded against each taxi driver’s record.</p><p>If after five years, you have not completed the minimum 35 hours training your taxi licence will not be renewed.</p><p>These courses have a MINIMUM legal duration of 3 hours 30 minutes. Any course which does not comply with the legislation cannot be attributed to periodic training and uploaded against a driver’s record.</p><p>In addition, if a course exceeds the minimum period but falls short of the next acceptable time period of 7 hours, (i.e. any time between 3 hours 30 minutes and 7 hours) the extra time cannot be attributed towards an individual’s periodic training record. Full details of the requirements for periodic training can be found via the Agency’s website at www.nidirect.gov.uk/Periodic training</p>'
+          correct_feedback: "<p>The training MUST be delivered by an approved training provider and the course MUST have been approved by DVA before it can be uploaded against each taxi driver’s record.</p>\r\n\r\n<p>If after five years, you have not completed the minimum 35 hours training your taxi licence will not be renewed.</p>\r\n\r\n<p>These courses have a MINIMUM legal duration of 3 hours 30 minutes. Any course which does not comply with the legislation cannot be attributed to periodic training and uploaded against a driver’s record.</p>\r\n\r\n<p>In addition, if a course exceeds the minimum period but falls short of the next acceptable time period of 7 hours, (i.e. any time between 3 hours 30 minutes and 7 hours) the extra time cannot be attributed towards an individual’s periodic training record. Full details of the requirements for periodic training can be found via the Agency’s website at www.nidirect.gov.uk/Periodic training</p>"
           incorrect_feedback: '<p>Please read "All you need to know to become a Taxi Driver". Section 1. Getting Started.</p>'
       message: ''
-      delete_submissions: 1
-      display_score: true
-      display_feedback: true
+      delete_submissions: 0
+      display_score: 1
+      display_feedback: 1
+variants: {  }
