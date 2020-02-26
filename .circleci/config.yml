@@ -41,21 +41,27 @@ commands:
           command: |
             composer install --no-interaction --optimize-autoloader
 
+  install_php_os_extensions:
+    description: "Install a standard group of extensions and packages"
+    steps:
+      - run:
+          name: Add OS and PHP extensions
+          command: |
+            sudo cp /home/circleci/project/.circleci/docker-php-circleci.ini /usr/local/etc/php/conf.d/
+            sudo apt-get update
+            sudo apt-get install -y libpng-dev
+            sudo docker-php-ext-install gd
+            composer global require hirak/prestissimo
+            composer self-update
 jobs:
   # Tests the integrity of the build, stores the results in a workspace for re-use in later jobs.
   build:
     docker:
       - image: circleci/php:7.3.14-apache-browsers
     steps:
-      - run:
-          name: Add OS and PHP extensions
-          command: |
-            sudo apt-get update
-            sudo apt-get install -y libpng-dev
-            sudo docker-php-ext-install gd
-            composer global require hirak/prestissimo
       - checkout_code
-      - composer_tasks__no_cache
+      - install_php_os_extensions
+      - composer_tasks
       - persist_to_workspace:
           root: ./
           paths:
@@ -65,19 +71,8 @@ jobs:
     docker:
       - image: circleci/php:7.3.14-apache-browsers
     steps:
-      # Add SSH user key so we can access related repositories as part of our initial clone + composer install command.
-      - add_ssh_keys:
-          fingerprints:
-            - "89:cc:6e:61:6a:0e:13:ab:47:0b:25:d6:bc:90:d4:d2"
       - attach_workspace:
           at: ./
-      - run:
-          name: Add OS and PHP extensions
-          command: |
-            sudo apt-get update
-            sudo apt-get install -y libpng-dev
-            sudo docker-php-ext-install gd
-            composer global require hirak/prestissimo
       - run:
           name: PHPCS static analysis
           command: /home/circleci/project/phpcs.sh /home/circleci/project "/home/circleci/project/web/modules/origins /home/circleci/project/web/modules/custom /home/circleci/project/web/modules/migrate /home/circleci/project/web/themes/custom"
@@ -93,20 +88,13 @@ jobs:
       - image: circleci/php:7.3.14-apache-browsers
       - image: circleci/mysql:5.7.27
     steps:
-      # Add SSH user key so we can access related repositories as part of our initial clone + composer install command.
-      - add_ssh_keys:
-          fingerprints:
-            - "89:cc:6e:61:6a:0e:13:ab:47:0b:25:d6:bc:90:d4:d2"
       - attach_workspace:
           at: ./
       - run:
-            name: Add OS and PHP extensions/config
+            name: Add extra OS and PHP extensions/config
             command: |
-              sudo cp /home/circleci/project/.circleci/docker-php-circleci.ini /usr/local/etc/php/conf.d/
-              sudo apt-get update
               sudo apt-get install -y libpng-dev mariadb-client rsync
               sudo docker-php-ext-install gd pdo_mysql
-              composer global require hirak/prestissimo
       - run:
             name: Copy vhost into place
             command: |
@@ -157,24 +145,16 @@ jobs:
           CHROMEDRIVER_WHITELISTED_IPS: ""
           CHROMEDRIVER_URL_BASE: "/wd/hub"
     steps:
-      # Add SSH user key so we can access related repositories as part of our initial clone + composer install command.
-      - add_ssh_keys:
-          fingerprints:
-            - "89:cc:6e:61:6a:0e:13:ab:47:0b:25:d6:bc:90:d4:d2"
       - attach_workspace:
           at: ./
       - run:
             name: Add OS and PHP extensions/config
             command: |
-              sudo cp /home/circleci/project/.circleci/docker-php-circleci.ini /usr/local/etc/php/conf.d/
               # Add yarn deb repo.
               curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
               sudo echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
-
-              sudo apt-get update
               sudo apt-get install -y libpng-dev mariadb-client rsync gnupg apt-transport-https yarn
               sudo docker-php-ext-install gd pdo_mysql
-
               composer global require hirak/prestissimo
       - run:
             name: Copy vhost into place
@@ -236,32 +216,13 @@ jobs:
     docker:
       - image: circleci/php:7.3.14-apache-browsers
     steps:
-      - run:
-          name: Add GitHub access token for composer
-          command: echo 'composer config -g github-oauth.github.com $GITHUB_TOKEN' >> $BASH_ENV
-      # Add SSH user key so we can access related repositories as part of our initial clone + composer install command.
-      - add_ssh_keys:
-          fingerprints:
-            - "89:cc:6e:61:6a:0e:13:ab:47:0b:25:d6:bc:90:d4:d2"
       # Needed for circle ci local for some odd reason.
       - run:
           name: Keyscan Github (HACK)
           command: mkdir -p ~/.ssh && ssh-keyscan -H github.com >> ~/.ssh/known_hosts
-      - checkout
-      - run:
-          name: Validate composer.json and composer.lock file for consistency
-          command: composer validate --no-check-all --strict
-      - run:
-          name: Add OS and PHP extensions
-          command: |
-            sudo apt-get update
-            sudo apt-get install -y libpng-dev
-            sudo docker-php-ext-install gd
-            composer global require hirak/prestissimo
-      - run:
-          name: Fetch dependencies with composer
-          command: |
-            composer install --no-interaction
+      - checkout_code
+      - install_php_os_extensions
+      - composer_tasks__no_cache
       - run:
           name: PHPCS static analysis
           command: /home/circleci/project/phpcs.sh /home/circleci/project "/home/circleci/project/web/modules/origins /home/circleci/project/web/modules/custom /home/circleci/project/web/modules/migrate /home/circleci/project/web/themes/custom"
@@ -275,6 +236,7 @@ workflows:
   version: 2
   build-test-deploy:
     jobs:
+      - debug
       - build
       - static_analysis:
           requires:
