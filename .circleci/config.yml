@@ -244,3 +244,17 @@ workflows:
       - unit_kernel_tests:
           requires:
             - build
+  nightly:
+    triggers:
+      - schedule:
+          # At 00:00 on every day-of-week from Monday through Friday
+          cron: "0 0 * * 1-5"
+          filters:
+            branches:
+              only:
+                - development
+    jobs:
+      - build
+      - unit_kernel_tests:
+          requires:
+            - build
