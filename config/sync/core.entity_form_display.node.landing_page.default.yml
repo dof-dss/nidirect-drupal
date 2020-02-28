@@ -27,6 +27,7 @@ dependencies:
     - paragraphs
     - path
     - scheduler
+    - scheduler_content_moderation_integration
     - shs
     - text
 id: node.landing_page.default
@@ -93,7 +94,7 @@ content:
     settings:
       rows: 5
       placeholder: ''
-    weight: 23
+    weight: 34
     third_party_settings: {  }
     region: content
   field_lb_search_enable:
@@ -101,7 +102,7 @@ content:
     label: above
     settings:
       display_label: true
-    weight: 22
+    weight: 33
     third_party_settings: {  }
     region: content
   field_listing:
@@ -192,6 +193,12 @@ content:
     region: content
     settings: {  }
     third_party_settings: {  }
+  publish_state:
+    type: scheduler_moderation
+    weight: 30
+    region: content
+    settings: {  }
+    third_party_settings: {  }
   scheduler_settings:
     weight: 18
     region: content
@@ -232,6 +239,12 @@ content:
   unpublish_on:
     type: datetime_timestamp_no_default
     weight: 20
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  unpublish_state:
+    type: scheduler_moderation
+    weight: 30
     region: content
     settings: {  }
     third_party_settings: {  }
