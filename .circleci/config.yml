@@ -217,6 +217,8 @@ jobs:
             # Install from our existing config files.
             cd /var/www/html/web
             ../vendor/bin/drush site-install -y --existing-config
+            ../vendor/bin/drush user:create ${TEST_USER} --mail="${TEST_USER}@example.com" --password="${TEST_PASS}"
+            ../vendor/bin/drush user:role:add "administrator" ${TEST_USER}
           no_output_timeout: 30m
       - run:
           name: Run functional tests with Nightwatch.js
