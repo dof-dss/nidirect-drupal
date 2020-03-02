@@ -220,7 +220,7 @@ jobs:
           no_output_timeout: 30m
       - run:
           name: Run functional tests with Nightwatch.js
-          command: yarn --cwd=/var/www/html/web/core test:nightwatch --tag nidirect_common
+          command: yarn --cwd=/var/www/html/web/core test:nightwatch ../modules/custom/nidirect_common/tests/src/Nightwatch/Tests/contentTypeValidation.js
 
   # Our most expensive, full stack tests. Requires up to date content and services for chromedriver, yarn and database.
   ui_tests:
