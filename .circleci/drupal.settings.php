@@ -768,23 +768,9 @@ $databases['default']['default'] = [
   'prefix'    => getenv('DB_PREFIX'),
   'host'      => getenv('DB_HOST'),
   'port'      => getenv('DB_PORT'),
-  'namespace' => getenv('DB_NAMESPACE'),
+  'namespace' => 'Drupal\Core\Database\Driver\mysql',
   'driver'    => getenv('DB_DRIVER'),
 ];
-
-//$databases['drupal7db']['default'] = array (
-//  'database' => getenv('MIGRATE_SOURCE_DB_NAME'),
-//  'username' => getenv('MIGRATE_SOURCE_DB_USER'),
-//  'password' => getenv('MIGRATE_SOURCE_DB_PASS'),
-//  'prefix' => getenv('MIGRATE_SOURCE_DB_PREFIX'),
-//  'host' => getenv('MIGRATE_SOURCE_DB_HOST'),
-//  'port' => getenv('MIGRATE_SOURCE_DB_PORT'),
-//  'namespace' => getenv('MIGRATE_SOURCE_DB_NAMESPACE'),
-//  'driver' => getenv('MIGRATE_SOURCE_DB_DRIVER'),
-//);
-//
-//// Prevent SqlBase from moaning.
-//$databases['migrate']['default'] = $databases['drupal7db']['default'];
 
 // Custom configuration sync directory under web root.
 $settings['config_sync_directory'] = getenv('CONFIG_SYNC_DIRECTORY');
