@@ -179,7 +179,7 @@ jobs:
             sudo echo export DB_DRIVER=${DB_DRIVER} >> /etc/apache2/envvars
             sudo echo export DB_HOST=${DB_HOST} >> /etc/apache2/envvars
             sudo echo export DB_NAME=${DB_NAME} >> /etc/apache2/envvars
-            sudo echo export DB_NAMESPACE='${DB_NAMESPACE}' >> /etc/apache2/envvars
+            sudo echo export DB_NAMESPACE="${DB_NAMESPACE}" >> /etc/apache2/envvars
             sudo echo export DB_PASS=${DB_PASS} >> /etc/apache2/envvars
             sudo echo export DB_PORT=${DB_PORT} >> /etc/apache2/envvars
             sudo echo export DB_PREFIX=${DB_PREFIX} >> /etc/apache2/envvars
