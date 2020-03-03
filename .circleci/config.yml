@@ -174,7 +174,7 @@ jobs:
             sudo cp .circleci/drupal.vhost /etc/apache2/sites-available/drupal.conf
       - run:
           name: Transfer OS environment variables to Apache envvars file.
-          commands: |
+          command: |
             echo export DB_DRIVER={$DB_DRIVER} >> /etc/apache2/envvars
             echo export DB_HOST={$DB_HOST} >> /etc/apache2/envvars
             echo export DB_NAME={$DB_NAME} >> /etc/apache2/envvars
