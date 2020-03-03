@@ -229,29 +229,15 @@ $databases = [];
 /**
  * Location of the site configuration files.
  *
- * The $config_directories array specifies the location of file system
- * directories used for configuration data. On install, the "sync" directory is
- * created. This is used for configuration imports. The "active" directory is
- * not created by default since the default storage for active configuration is
- * the database rather than the file system. (This can be changed. See "Active
- * configuration settings" below).
+ * The $settings['config_sync_directory'] specifies the location of file system
+ * directory used for syncing configuration data. On install, the directory is
+ * created. This is used for configuration imports.
  *
- * The default location for the "sync" directory is inside a randomly-named
- * directory in the public files path. The setting below allows you to override
- * the "sync" location.
- *
- * If you use files for the "active" configuration, you can tell the
- * Configuration system where this directory is located by adding an entry with
- * array key CONFIG_ACTIVE_DIRECTORY.
- *
- * Example:
- * @code
- *   $config_directories = [
- *     CONFIG_SYNC_DIRECTORY => '/directory/outside/webroot',
- *   ];
- * @endcode
+ * The default location for this directory is inside a randomly-named
+ * directory in the public files path. The setting below allows you to set
+ * its location.
  */
-$config_directories = [];
+# $settings['config_sync_directory'] = '/directory/outside/webroot';
 
 /**
  * Settings:
@@ -280,7 +266,7 @@ $config_directories = [];
  *   $settings['hash_salt'] = file_get_contents('/home/example/salt.txt');
  * @endcode
  */
-$settings['hash_salt'] = '53yESVaEEq8xOVPTBTrSNDpvQcfD-75wL4oHRMHsWherh7kZhoAHyMC3kgcpJa5_8YXU2JE8xw';
+$settings['hash_salt'] = '';
 
 /**
  * Deployment identifier.
@@ -496,8 +482,8 @@ if ($settings['hash_salt']) {
  *
  * Value should be in PHP Octal Notation, with leading zero.
  */
-$settings['file_chmod_directory'] = 02775;
-$settings['file_chmod_file'] = 0664;
+# $settings['file_chmod_directory'] = 0775;
+# $settings['file_chmod_file'] = 0664;
 
 /**
  * Public file base URL:
@@ -535,6 +521,19 @@ $settings['file_chmod_file'] = 0664;
  * about securing private files.
  */
 # $settings['file_private_path'] = '';
+
+/**
+ * Temporary file path:
+ *
+ * A local file system path where temporary files will be stored. This directory
+ * must be absolute, outside of the Drupal installation directory and not
+ * accessible over the web.
+ *
+ * If this is not set, the default for the operating system will be used.
+ *
+ * @see \Drupal\Component\FileSystem\FileSystem::getOsTemporaryDirectory()
+ */
+# $settings['file_temp_path'] = '/tmp';
 
 /**
  * Session write interval:
@@ -597,25 +596,6 @@ $settings['file_chmod_file'] = 0664;
 # ini_set('pcre.recursion_limit', 200000);
 
 /**
- * Active configuration settings.
- *
- * By default, the active configuration is stored in the database in the
- * {config} table. To use a different storage mechanism for the active
- * configuration, do the following prior to installing:
- * - Create an "active" directory and declare its path in $config_directories
- *   as explained under the 'Location of the site configuration files' section
- *   above in this file. To enhance security, you can declare a path that is
- *   outside your document root.
- * - Override the 'bootstrap_config_storage' setting here. It must be set to a
- *   callable that returns an object that implements
- *   \Drupal\Core\Config\StorageInterface.
- * - Override the service definition 'config.storage.active'. Put this
- *   override in a services.yml file in the same directory as settings.php
- *   (definitions in this file will override service definition defaults).
- */
-# $settings['bootstrap_config_storage'] = ['Drupal\Core\Config\BootstrapConfigStorageFactory', 'getFileStorage'];
-
-/**
  * Configuration overrides.
  *
  * To globally override specific configuration values for this site,
@@ -637,9 +617,7 @@ $settings['file_chmod_file'] = 0664;
  * configuration values in settings.php will not fire any of the configuration
  * change events.
  */
-# $config['system.file']['path']['temporary'] = '/tmp';
 # $config['system.site']['name'] = 'My Drupal site';
-# $config['system.theme']['default'] = 'stark';
 # $config['user.settings']['anonymous'] = 'Visitor';
 
 /**
@@ -731,7 +709,7 @@ $settings['container_yamls'][] = $app_root . '/' . $site_path . '/services.yml';
 $settings['trusted_host_patterns'] = [
   '^localhost$',
   '^127.0.0.1$',
- ];
+];
 
 /**
  * The default list of directories that will be ignored by Drupal's file API.
@@ -740,7 +718,7 @@ $settings['trusted_host_patterns'] = [
  * with common frontend tools and recursive scanning of directories looking for
  * extensions.
  *
- * @see file_scan_directory()
+ * @see \Drupal\Core\File\FileSystemInterface::scanDirectory()
  * @see \Drupal\Core\Extension\ExtensionDiscovery::scanDirectory()
  */
 $settings['file_scan_ignore_directories'] = [
@@ -767,15 +745,76 @@ $settings['entity_update_batch_size'] = 50;
  */
 $settings['entity_update_backup'] = TRUE;
 
-$databases['default']['default'] = array (
-  'database' => $_SERVER['DB_NAME'],
-  'username' => $_SERVER['DB_USER'],
-  'password' => $_SERVER['DB_PASS'],
-  'prefix' => $_SERVER['DB_PREFIX'],
-  'host' => $_SERVER['DB_HOST'],
-  'port' => $_SERVER['DB_PORT'],
-  'namespace' => $_SERVER['DB_NAMESPACE'],
-  'driver' => $_SERVER['DB_DRIVER'],
-);
+/**
+ * Load local development override configuration, if available.
+ *
+ * Use settings.local.php to override variables on secondary (staging,
+ * development, etc) installations of this site. Typically used to disable
+ * caching, JavaScript/CSS compression, re-routing of outgoing emails, and
+ * other things that should not happen on development and testing sites.
+ *
+ * Keep this code block at the end of this file to take full effect.
+ */
+#
+# if (file_exists($app_root . '/' . $site_path . '/settings.local.php')) {
+#   include $app_root . '/' . $site_path . '/settings.local.php';
+# }
+$settings['file_private_path'] = getenv('FILE_PRIVATE_PATH');
 
-$settings['config_sync_directory'] = $_SERVER['CONFIG_SYNC_DIRECTORY'];
+$databases['default']['default'] = [
+  'database'  => getenv('DB_NAME'),
+  'username'  => getenv('DB_USER'),
+  'password'  => getenv('DB_PASS'),
+  'prefix'    => getenv('DB_PREFIX'),
+  'host'      => getenv('DB_HOST'),
+  'port'      => getenv('DB_PORT'),
+  'namespace' => getenv('DB_NAMESPACE'),
+  'driver'    => getenv('DB_DRIVER'),
+];
+
+//$databases['drupal7db']['default'] = array (
+//  'database' => getenv('MIGRATE_SOURCE_DB_NAME'),
+//  'username' => getenv('MIGRATE_SOURCE_DB_USER'),
+//  'password' => getenv('MIGRATE_SOURCE_DB_PASS'),
+//  'prefix' => getenv('MIGRATE_SOURCE_DB_PREFIX'),
+//  'host' => getenv('MIGRATE_SOURCE_DB_HOST'),
+//  'port' => getenv('MIGRATE_SOURCE_DB_PORT'),
+//  'namespace' => getenv('MIGRATE_SOURCE_DB_NAMESPACE'),
+//  'driver' => getenv('MIGRATE_SOURCE_DB_DRIVER'),
+//);
+//
+//// Prevent SqlBase from moaning.
+//$databases['migrate']['default'] = $databases['drupal7db']['default'];
+
+// Custom configuration sync directory under web root.
+$settings['config_sync_directory'] = getenv('CONFIG_SYNC_DIRECTORY');
+
+// Memcache - uncomment when required.
+//$settings['cache']['default'] = 'cache.backend.memcache';
+//$settings['memcache']['servers'] = [sprintf('%s:%s', getenv('MEMCACHE_HOSTNAME'), getenv('MEMCACHE_PORT')) => 'default'];
+
+// Set config split environment.
+$config['config_split.config_split.local']['status'] = TRUE;
+$config['config_split.config_split.production']['status'] = FALSE;
+
+// Site hash salt.
+$settings['hash_salt'] = getenv('HASH_SALT');
+
+// Config readonly settings.
+$settings['config_readonly'] = getenv('CONFIG_READONLY');
+
+if (PHP_SAPI === 'cli') {
+  // Override for drupal console/drush client.
+  $settings['config_readonly'] = FALSE;
+}
+
+// Configuration that is allowed to be changed in readonly environments.
+$settings['config_readonly_whitelist_patterns'] = [
+  'system.site',
+];
+
+// Environment indicator config.
+$settings['simple_environment_indicator'] = sprintf('%s %s', getenv('SIMPLEI_ENV_COLOUR'), getenv('SIMPLEI_ENV_NAME'));
+
+// Geocoder API key.
+$config['geolocation.settings']['google_map_api_key'] = getenv('GOOGLE_MAP_API_KEY');
