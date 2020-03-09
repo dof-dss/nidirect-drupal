@@ -51,6 +51,7 @@ build:
 hooks:
   # Copy settings related files into sites/default.
   build: |
+    set -e
     cd web
     cp ../.settings.platformsh.php ./sites/default/settings.platform.php
     cp ../.settings.php ./sites/default/settings.php
