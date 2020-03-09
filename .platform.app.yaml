@@ -51,8 +51,9 @@ build:
 hooks:
   # Copy settings related files into sites/default.
   build: |
-    cp .settings.platformsh.php ./sites/default/settings.platform.php
-    cp .settings.php ./sites/default/settings.php
+    cd web
+    cp ../.settings.platformsh.php ./sites/default/settings.platform.php
+    cp ../.settings.php ./sites/default/settings.php
   # The deploy hook runs after your application has been deployed and started.
   deploy: |
     set -e
