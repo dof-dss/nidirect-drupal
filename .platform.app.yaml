@@ -55,8 +55,8 @@ hooks:
     php ./drush/platformsh_generate_drush_yml.php
     cd web
     # Copy settings related files into sites/default.
-    cp ../.platform/settings.platformsh.php ./sites/default/
-    cp ../.platform/settings.php ./sites/default/
+    cp ../.settings.platformsh.php ./sites/default/settings.platform.php
+    cp ../.settings.php ./sites/default/settings.php
     # Rebuild caches, run db-updates and import config.
     drush -y cache-rebuild
     drush -y updatedb
