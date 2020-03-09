@@ -741,76 +741,17 @@ $settings['entity_update_batch_size'] = 50;
  */
 $settings['entity_update_backup'] = TRUE;
 
-/**
- * Load local development override configuration, if available.
- *
- * Use settings.local.php to override variables on secondary (staging,
- * development, etc) installations of this site. Typically used to disable
- * caching, JavaScript/CSS compression, re-routing of outgoing emails, and
- * other things that should not happen on development and testing sites.
- *
- * Keep this code block at the end of this file to take full effect.
- */
-#
-# if (file_exists($app_root . '/' . $site_path . '/settings.local.php')) {
-#   include $app_root . '/' . $site_path . '/settings.local.php';
-# }
-$settings['file_private_path'] = getenv('FILE_PRIVATE_PATH');
+// Site hash salt.
+$settings['hash_salt'] = getenv('HASH_SALT');
 
-$databases['default']['default'] = [
-  'database'  => getenv('DB_NAME'),
-  'username'  => getenv('DB_USER'),
-  'password'  => getenv('DB_PASS'),
-  'prefix'    => getenv('DB_PREFIX'),
-  'host'      => getenv('DB_HOST'),
-  'port'      => getenv('DB_PORT'),
-  'namespace' => getenv('DB_NAMESPACE'),
-  'driver'    => getenv('DB_DRIVER'),
-];
-
-$databases['drupal7db']['default'] = array (
-  'database' => getenv('MIGRATE_SOURCE_DB_NAME'),
-  'username' => getenv('MIGRATE_SOURCE_DB_USER'),
-  'password' => getenv('MIGRATE_SOURCE_DB_PASS'),
-  'prefix' => getenv('MIGRATE_SOURCE_DB_PREFIX'),
-  'host' => getenv('MIGRATE_SOURCE_DB_HOST'),
-  'port' => getenv('MIGRATE_SOURCE_DB_PORT'),
-  'namespace' => getenv('MIGRATE_SOURCE_DB_NAMESPACE'),
-  'driver' => getenv('MIGRATE_SOURCE_DB_DRIVER'),
-);
-
-// Prevent SqlBase from moaning.
-$databases['migrate']['default'] = $databases['drupal7db']['default'];
-
-// Custom configuration sync directory under web root.
 $settings['config_sync_directory'] = getenv('CONFIG_SYNC_DIRECTORY');
-
-// Redis cache settings
-// Workaround for https://www.drupal.org/project/redis/issues/2876132
-// Only enable the redis cache backend if we know the site has been
-// installed and the Redis module is enabled.
-if (!\Drupal\Core\Installer\InstallerKernel::installationAttempted() && extension_loaded('redis')){
-  $settings['redis.connection']['interface'] = 'PhpRedis';
-  $settings['redis.connection']['host'] = getenv('REDIS_HOSTNAME');
-  $settings['redis.connection']['port'] = getenv('REDIS_PORT');
-  $settings['cache']['default'] = 'cache.backend.redis';
-  $settings['container_yamls'][] = $app_root . '/' . $site_path . '/redis.services.yml';
-}
 
 // Set config split environment.
 $config['config_split.config_split.local']['status'] = TRUE;
 $config['config_split.config_split.production']['status'] = FALSE;
 
-// Site hash salt.
-$settings['hash_salt'] = getenv('HASH_SALT');
-
 // Config readonly settings.
 $settings['config_readonly'] = getenv('CONFIG_READONLY');
-
-if (PHP_SAPI === 'cli') {
-  // Override for drupal console/drush client.
-  $settings['config_readonly'] = FALSE;
-}
 
 // Configuration that is allowed to be changed in readonly environments.
 $settings['config_readonly_whitelist_patterns'] = [
@@ -823,17 +764,7 @@ $settings['simple_environment_indicator'] = sprintf('%s %s', getenv('SIMPLEI_ENV
 // Geocoder API key.
 $config['geolocation.settings']['google_map_api_key'] = getenv('GOOGLE_MAP_API_KEY');
 
-// Remove unused files after the window of time set at /admin/config/media/file-system.
-$config['file_settings']['make_unused_managed_files_temporary'] = TRUE;
-// Force a very low threshold for this (mins).
-$config['system.file']['temporary_maximum_age'] = '1';
-
 // Automatic Platform.sh settings.
 if (file_exists($app_root . '/' . $site_path . '/settings.platformsh.php')) {
   include $app_root . '/' . $site_path . '/settings.platformsh.php';
-}
-
-// Add local settings include if present.
-if (file_exists($app_root . '/' . $site_path . '/settings.local.php')) {
-  include $app_root . '/' . $site_path . '/settings.local.php';
 }
