@@ -53,8 +53,8 @@ hooks:
   build: |
     set -e
     cd web
-    cp ../settings.platformsh.php ./sites/default/settings.platformsh.php
-    cp ../settings.php ./sites/default/settings.php
+    cp ../.platform/settings.platformsh.php ./sites/default/settings.platformsh.php
+    cp ../.platform/settings.php ./sites/default/settings.php
   # The deploy hook runs after your application has been deployed and started.
   deploy: |
     set -e
