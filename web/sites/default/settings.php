@@ -1,8 +1,4 @@
 <?php
-/**
- * @file
- * Platform.sh example settings.php file for Drupal 8.
- */
 
 // Default Drupal 8 settings.
 //
@@ -19,18 +15,28 @@ $settings['file_scan_ignore_directories'] = [
   'bower_components',
 ];
 
-// The hash_salt should be a unique random value for each application.
-// If left unset, the settings.platformsh.php file will attempt to provide one.
-// You can also provide a specific value here if you prefer and it will be used
-// instead. In most cases it's best to leave this blank on Platform.sh. You
-// can configure a separate hash_salt in your settings.local.php file for
-// local development.
-// $settings['hash_salt'] = 'change_me';
+// Site hash salt.
+$settings['hash_salt'] = getenv('HASH_SALT');
 
-// Set up a config sync directory.
-//
-// This is defined inside the read-only "config" directory, deployed via Git.
-$config_directories[CONFIG_SYNC_DIRECTORY] = '../config/sync';
+$settings['config_sync_directory'] = '../config/sync';
+
+// Set config split environment.
+$config['config_split.config_split.local']['status'] = TRUE;
+$config['config_split.config_split.production']['status'] = FALSE;
+
+// Config readonly settings.
+$settings['config_readonly'] = getenv('CONFIG_READONLY');
+
+// Configuration that is allowed to be changed in readonly environments.
+$settings['config_readonly_whitelist_patterns'] = [
+  'system.site',
+];
+
+// Environment indicator config.
+$settings['simple_environment_indicator'] = sprintf('%s %s', getenv('SIMPLEI_ENV_COLOUR'), getenv('SIMPLEI_ENV_NAME'));
+
+// Geocoder API key.
+$config['geolocation.settings']['google_map_api_key'] = getenv('GOOGLE_MAP_API_KEY');
 
 // Automatic Platform.sh settings.
 if (file_exists($app_root . '/' . $site_path . '/settings.platformsh.php')) {
