@@ -18,7 +18,7 @@ $settings['file_scan_ignore_directories'] = [
 // Site hash salt.
 $settings['hash_salt'] = getenv('HASH_SALT');
 
-$settings['config_sync_directory'] = '../config/sync';
+$settings['config_sync_directory'] = getenv('CONFIG_SYNC_DIRECTORY');
 
 // Set config split environment.
 $config['config_split.config_split.local']['status'] = TRUE;
