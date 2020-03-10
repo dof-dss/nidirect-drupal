@@ -140,19 +140,21 @@ display:
             operator_limit_selection: false
             operator_list: {  }
       sorts:
-        field_published_date_value:
-          id: field_published_date_value
-          table: node__field_published_date
-          field: field_published_date_value
+        created:
+          id: created
+          table: node_field_data
+          field: created
+          order: DESC
+          entity_type: node
+          entity_field: created
+          plugin_id: date
           relationship: none
           group_type: group
           admin_label: ''
-          order: DESC
           exposed: false
           expose:
             label: ''
           granularity: second
-          plugin_id: datetime
       header: {  }
       footer: {  }
       empty: {  }
