@@ -345,9 +345,6 @@ workflows:
       - unit_kernel_tests:
           requires:
             - build
-      - functional_js_tests__config_only:
-          requires:
-            - build
   nightly:
     triggers:
       - schedule:
@@ -360,8 +357,5 @@ workflows:
     jobs:
       - build
       - unit_kernel_tests:
-          requires:
-            - build
-      - functional_js_tests__config_only:
           requires:
             - build
