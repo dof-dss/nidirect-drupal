@@ -17,7 +17,8 @@ type: 'php:7.3'
 relationships:
   solrsearch: 'searchsolr:solr'
   memcachedcache: 'cachemc:memcached'
-  database: 'db:mariadb'
+  #  For MariaDB, the endpoint does not change whether you used the mysql or mariadb service type.
+  database: 'db:mysql'
 
 # The size of the persistent disk of the application (in MB).
 disk: 2048
