@@ -53,6 +53,12 @@ commands:
             sudo docker-php-ext-install gd
             composer global require hirak/prestissimo
             composer self-update
+  github_hosts_workaround:
+    description: "Adds github.com to known hosts in container; for working locally."
+    steps:
+      - run:
+          name: Keyscan Github (HACK)
+          command: mkdir -p ~/.ssh && ssh-keyscan -H github.com >> ~/.ssh/known_hosts
 jobs:
   # Tests the integrity of the build, stores the results in a workspace for re-use in later jobs.
   build:
@@ -136,6 +142,103 @@ jobs:
               cd /var/www/html/web/core
               ../../vendor/bin/phpunit -c /var/www/html/web/core/phpunit.circleci.xml --testsuite kernel --group nidirect
 
+
+  # Functional tests with a JS browser; no content, only config.
+  functional_js_tests__config_only:
+    docker:
+      - image: circleci/php:7.3.14-apache-node-browsers
+      - image: circleci/mysql:5.7.27
+      - image: drupalci/chromedriver:production
+        environment:
+          CHROMEDRIVER_WHITELISTED_IPS: ""
+          CHROMEDRIVER_URL_BASE: "/wd/hub"
+    steps:
+      - attach_workspace:
+          at: ./
+      - run:
+          name: Add extra OS and PHP extensions/config
+          command: |
+            sudo cp /home/circleci/project/.circleci/docker-php-circleci.ini /usr/local/etc/php/conf.d/
+            # Add yarn deb repo.
+            sudo apt-get update
+            sudo apt-get install -y gnupg apt-transport-https libpng-dev mariadb-client rsync
+            curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
+            sudo echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
+            sudo apt-get update
+            sudo apt-get install -y yarn
+            sudo docker-php-ext-install gd pdo_mysql
+            composer global require hirak/prestissimo
+      - run:
+          name: Copy vhost into place
+          command: |
+            sudo cp .circleci/drupal.vhost /etc/apache2/sites-available/drupal.conf
+      - run:
+          name: Transfer OS environment variables to Apache envvars file.
+          command: |
+            sudo chmod 766 /etc/apache2/envvars
+            sudo echo export DB_DRIVER=${DB_DRIVER} >> /etc/apache2/envvars
+            sudo echo export DB_HOST=${DB_HOST} >> /etc/apache2/envvars
+            sudo echo export DB_NAME=${DB_NAME} >> /etc/apache2/envvars
+            sudo echo export DB_NAMESPACE="${DB_NAMESPACE}" >> /etc/apache2/envvars
+            sudo echo export DB_PASS=${DB_PASS} >> /etc/apache2/envvars
+            sudo echo export DB_PORT=${DB_PORT} >> /etc/apache2/envvars
+            sudo echo export DB_PREFIX=${DB_PREFIX} >> /etc/apache2/envvars
+            sudo echo export DB_USER=${DB_USER} >> /etc/apache2/envvars
+            sudo echo export HASH_SALT=${HASH_SALT} >> /etc/apache2/envvars
+            sudo chmod 644 /etc/apache2/envvars
+      - run:
+          name: Enable web server and vhosts
+          command: |
+            sudo a2enmod rewrite
+            sudo a2dissite 000-default
+            sudo a2ensite drupal
+            sudo service apache2 start
+      - run:
+          name: Configure settings and files
+          command: |
+            # Should be scaffolded by now.
+            cd /home/circleci/project/web
+            cp sites/default/default.settings.php sites/default/settings.php
+            cp sites/default/default.services.yml sites/default/services.yml
+            # Copy in our environment specific settings to the settings.php file.
+            cp /home/circleci/project/.circleci/drupal.settings.php sites/default/settings.php
+            # Copy PHPUnit config into core folder.
+            cp /home/circleci/project/.circleci/phpunit.circleci.xml core/
+            # Copy Nightwatch conf files into place.
+            cat core/.env.example | sed -e "s|\(^DRUPAL_TEST_BASE_URL\)\(.\+\)|\1=http:\/\/localhost|g" > core/.env
+            sed -i -e "s|\(#\)\(DRUPAL_NIGHTWATCH_SEARCH_DIRECTORY\)=|\2=../|g" core/.env
+            sed -i -e "s|sqlite:\/\/localhost\/sites\/default\/files/db.sqlite|mysql://root:@127.0.0.1/circle_test|g" core/.env
+            sed -i -e "s|\(^DRUPAL_TEST_WEBDRIVER_HOSTNAME\)=localhost|\1=127.0.0.1|g" core/.env
+            sed -i -e "s|^DRUPAL_TEST_CHROMEDRIVER_AUTOSTART=true|DRUPAL_TEST_CHROMEDRIVER_AUTOSTART=false|g" core/.env
+            sed -i -e "s|\(#\)\(DRUPAL_TEST_WEBDRIVER_CHROME_ARGS\)=|\2=\"--disable-gpu --headless --no-sandbox\"|g" core/.env
+            sed -i -e "s|\(^DRUPAL_NIGHTWATCH_OUTPUT\)=reports/nightwatch|\1=/home/circleci/nightwatch-reports|g" core/.env
+            mkdir -p /home/circleci/nightwatch-reports
+            cat core/.env
+            # Install npm packages for the projects/repos we know need them.
+            cd /home/circleci/project/web/core
+            yarn install
+            cd /home/circleci/project/web/modules/custom
+            yarn install
+            cd /home/circleci/project/web/modules/migrate/nidirect-migrations/migrate_nidirect_node
+            yarn install
+      - run:
+          name: Copy files into webroot
+          command: |
+            # Copy our build into position (./ suffix ensures hidden files are copied too).
+            sudo rsync -avq /home/circleci/project/. /var/www/html
+      - run:
+          name: Install Drupal
+          command: |
+            # Install from our existing config files.
+            cd /var/www/html/web
+            ../vendor/bin/drush site-install -y --existing-config
+            ../vendor/bin/drush user:create ${TEST_USER} --mail="${TEST_USER}@example.com" --password="${TEST_PASS}"
+            ../vendor/bin/drush user:role:add "administrator" ${TEST_USER}
+          no_output_timeout: 30m
+      - run:
+          name: Run functional tests with Nightwatch.js
+          command: yarn --cwd=/var/www/html/web/core test:nightwatch ../modules/custom/nidirect_common/tests/src/Nightwatch/Tests/contentTypeValidation.js
+
   # Our most expensive, full stack tests. Requires up to date content and services for chromedriver, yarn and database.
   ui_tests:
     docker:
@@ -218,9 +321,7 @@ jobs:
       - image: circleci/php:7.3.14-apache-browsers
     steps:
       # Needed for circle ci local for some odd reason.
-      - run:
-          name: Keyscan Github (HACK)
-          command: mkdir -p ~/.ssh && ssh-keyscan -H github.com >> ~/.ssh/known_hosts
+      - github_hosts_workaround
       - checkout_code
       - install_php_os_extensions
       - composer_tasks__no_cache
