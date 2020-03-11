@@ -35,14 +35,23 @@ content:
     settings: {  }
     third_party_settings: {  }
     region: content
+  field_attachment:
+    type: entity_reference_entity_view
+    weight: 3
+    region: content
+    label: inline
+    settings:
+      view_mode: embed
+      link: false
+    third_party_settings: {  }
   field_published_date:
     type: datetime_default
     weight: 0
     region: content
     label: inline
     settings:
-      format_type: medium
       timezone_override: ''
+      format_type: medium_date
     third_party_settings: {  }
   field_summary:
     weight: 1
@@ -54,7 +63,6 @@ content:
 hidden:
   banner_display: true
   content_moderation_control: true
-  field_attachment: true
   field_meta_tags: true
   field_publication_type: true
   field_site_themes: true
