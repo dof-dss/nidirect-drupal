@@ -8,6 +8,16 @@ db:
   type: mariadb:10.4
   # The disk attribute is the size of the persistent disk (in MB) allocated to the service.
   disk: 2048
+  configuration:
+    schemas:
+      - main
+      - legacy
+    endpoints:
+      admin:
+        default_schema: main
+        privileges:
+          main: admin
+          legacy: admin
 
 drupal7db:
   type: mariadb:10.4
