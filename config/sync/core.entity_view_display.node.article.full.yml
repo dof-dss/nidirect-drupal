@@ -7,7 +7,6 @@ dependencies:
     - field.field.node.article.body
     - field.field.node.article.field_additional_info
     - field.field.node.article.field_banner_image
-    - field.field.node.article.field_toc_enable
     - field.field.node.article.field_meta_tags
     - field.field.node.article.field_next_audit_due
     - field.field.node.article.field_photo
@@ -15,6 +14,7 @@ dependencies:
     - field.field.node.article.field_subtheme
     - field.field.node.article.field_summary
     - field.field.node.article.field_teaser
+    - field.field.node.article.field_toc_enable
     - field.field.node.article.field_top_level_theme
     - node.type.article
   module:
@@ -34,18 +34,32 @@ mode: full
 content:
   body:
     type: text_default
-    weight: 2
+    weight: 3
     region: content
     settings: {  }
     third_party_settings: {  }
     label: hidden
+  field_photo:
+    type: entity_reference_entity_view
+    weight: 2
+    region: content
+    label: hidden
+    settings:
+      view_mode: embed
+      link: false
+    third_party_settings: {  }
   field_summary:
-    weight: 0
+    weight: 1
     label: hidden
     settings: {  }
     third_party_settings: {  }
     type: text_default
     region: content
+  toc_display:
+    weight: 0
+    region: content
+    settings: {  }
+    third_party_settings: {  }
 hidden:
   banner_display: true
   content_moderation_control: true
@@ -53,7 +67,6 @@ hidden:
   field_banner_image: true
   field_meta_tags: true
   field_next_audit_due: true
-  field_photo: true
   field_site_themes: true
   field_subtheme: true
   field_teaser: true
