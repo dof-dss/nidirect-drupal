@@ -241,7 +241,7 @@ jobs:
   # Deploy task.
   deploy:
     docker:
-      - image: cimg/base:2020.01
+      - image: circleci/php:7.3.14-apache-node-browsers
     steps:
       - checkout_code
       - run:
@@ -356,16 +356,19 @@ workflows:
   build-test-deploy:
     jobs:
       - build
-      - static_analysis:
-          requires:
-            - build
-      - unit_kernel_tests:
-          requires:
-            - build
       - deploy:
           requires:
-            - static_analysis
-            - unit_kernel_tests
+            - build
+#      - static_analysis:
+#          requires:
+#            - build
+#      - unit_kernel_tests:
+#          requires:
+#            - build
+#      - deploy:
+#          requires:
+#            - static_analysis
+#            - unit_kernel_tests
   nightly:
     triggers:
       - schedule:
