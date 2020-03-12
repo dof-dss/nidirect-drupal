@@ -238,6 +238,19 @@ jobs:
       - run:
           name: Run functional tests with Nightwatch.js
           command: yarn --cwd=/var/www/html/web/core test:nightwatch ../modules/custom/nidirect_common/tests/src/Nightwatch/Tests/contentTypeValidation.js
+  # Deploy task.
+  deploy:
+    docker: cimg/base:2020.01
+    steps:
+      - checkout_code
+      - run:
+          name: Relay to platform.sh
+          command: |
+            # Code is checked out under /home/circleci/project
+            cd /home/circleci/project
+            # TODO: replace environment id, app id and project name with ENV VARS
+            git remote add platform q4iovrblhesbg@git.uk-1.platform.sh:q4iovrblhesbg.git
+            git push -f platform $CIRCLE_BRANCH
 
   # Our most expensive, full stack tests. Requires up to date content and services for chromedriver, yarn and database.
   ui_tests:
@@ -345,6 +358,10 @@ workflows:
       - unit_kernel_tests:
           requires:
             - build
+      - deploy:
+          requires:
+            - static_analysis
+            - unit_kernel_tests
   nightly:
     triggers:
       - schedule:
