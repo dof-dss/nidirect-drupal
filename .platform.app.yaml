@@ -24,6 +24,10 @@ relationships:
 # The size of the persistent disk of the application (in MB).
 disk: 2048
 
+runtime:
+  extensions:
+    - memcached
+
 # The 'mounts' describe writable, persistent filesystem mounts in the application.
 mounts:
   '/web/sites/default/files':
