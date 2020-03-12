@@ -6,7 +6,6 @@ dependencies:
     - field.field.node.article.body
     - field.field.node.article.field_additional_info
     - field.field.node.article.field_banner_image
-    - field.field.node.article.field_toc_enable
     - field.field.node.article.field_meta_tags
     - field.field.node.article.field_next_audit_due
     - field.field.node.article.field_photo
@@ -14,12 +13,39 @@ dependencies:
     - field.field.node.article.field_subtheme
     - field.field.node.article.field_summary
     - field.field.node.article.field_teaser
+    - field.field.node.article.field_toc_enable
     - field.field.node.article.field_top_level_theme
     - node.type.article
   module:
+    - field_group
+    - media
     - metatag
     - text
     - user
+third_party_settings:
+  field_group:
+    group_additional_content_details:
+      children:
+        - field_subtheme
+        - field_site_themes
+        - field_teaser
+        - field_toc_enable
+        - field_meta_tags
+      parent_name: ''
+      weight: 7
+      format_type: html_element
+      region: content
+      format_settings:
+        id: ''
+        classes: field-collection
+        element: div
+        show_label: false
+        label_element: h3
+        label_element_classes: ''
+        attributes: ''
+        effect: none
+        speed: fast
+      label: 'Additional content details'
 _core:
   default_config_hash: ChmU3AVqDKU32A_fyChG0W9dTRKmVBR58B6OClCLvZI
 id: node.article.default
@@ -28,108 +54,93 @@ bundle: article
 mode: default
 content:
   banner_display:
-    weight: 0
+    weight: 1
+    region: content
     settings: {  }
     third_party_settings: {  }
-    region: content
   body:
     type: text_default
-    weight: 4
+    weight: 5
     region: content
     settings: {  }
     third_party_settings: {  }
-    label: above
+    label: hidden
   content_moderation_control:
-    weight: 0
+    weight: 2
     region: content
     settings: {  }
     third_party_settings: {  }
-  field_additional_info:
-    type: text_default
-    weight: 10
-    region: content
-    label: above
-    settings: {  }
-    third_party_settings: {  }
-  field_banner_image:
-    weight: 15
-    label: above
-    settings:
-      link: true
-    third_party_settings: {  }
-    type: entity_reference_label
-    region: content
   field_meta_tags:
-    weight: 13
+    type: metatag_empty_formatter
+    weight: 12
+    region: content
     label: above
     settings: {  }
     third_party_settings: {  }
-    type: metatag_empty_formatter
-    region: content
   field_photo:
-    type: entity_reference_entity_view
-    weight: 14
-    label: above
+    type: media_thumbnail
+    weight: 4
+    label: hidden
     settings:
-      view_mode: default
-      link: false
+      image_style: ''
+      image_link: ''
     third_party_settings: {  }
     region: content
   field_site_themes:
     type: entity_reference_label
-    weight: 1
+    weight: 9
     region: content
-    label: above
+    label: inline
     settings:
       link: true
     third_party_settings: {  }
   field_subtheme:
     type: entity_reference_label
-    weight: 6
+    weight: 8
     region: content
-    label: above
+    label: inline
     settings:
       link: true
     third_party_settings: {  }
   field_summary:
-    weight: 2
-    label: above
+    weight: 3
+    label: hidden
     settings: {  }
     third_party_settings: {  }
     type: text_default
     region: content
   field_teaser:
     type: string
-    weight: 7
+    weight: 10
     region: content
-    label: above
+    label: inline
     settings:
       link_to_entity: false
     third_party_settings: {  }
   field_toc_enable:
     type: boolean
-    weight: 5
+    weight: 11
     region: content
-    label: above
+    label: inline
     settings:
       format: default
       format_custom_false: ''
       format_custom_true: ''
     third_party_settings: {  }
-  field_top_level_theme:
-    type: entity_reference_label
-    weight: 8
-    region: content
-    label: above
-    settings:
-      link: true
-    third_party_settings: {  }
   links:
-    weight: 11
+    weight: 6
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  toc_display:
+    weight: 0
     region: content
     settings: {  }
     third_party_settings: {  }
 hidden:
+  field_additional_info: true
+  field_banner_image: true
   field_next_audit_due: true
+  field_top_level_theme: true
   langcode: true
   search_api_excerpt: true

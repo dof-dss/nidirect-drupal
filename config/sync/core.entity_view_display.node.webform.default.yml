@@ -11,9 +11,32 @@ dependencies:
     - field.field.node.webform.webform
     - node.type.webform
   module:
+    - field_group
     - text
     - user
     - webform
+third_party_settings:
+  field_group:
+    group_additional_content_details:
+      children:
+        - field_subtheme
+        - field_site_themes
+        - field_teaser
+      parent_name: ''
+      weight: 2
+      format_type: html_element
+      region: content
+      format_settings:
+        id: ''
+        classes: field-collection
+        element: div
+        show_label: false
+        label_element: h3
+        label_element_classes: ''
+        attributes: ''
+        effect: none
+        speed: fast
+      label: 'Additional content details'
 _core:
   default_config_hash: 3r1i0UMUbeNHhvmiqHDYznoS4G9XR1jq6lQ49r80lDE
 id: node.webform.default
@@ -30,7 +53,7 @@ content:
     region: content
   field_site_themes:
     weight: 4
-    label: above
+    label: inline
     settings:
       link: true
     third_party_settings: {  }
@@ -38,7 +61,7 @@ content:
     region: content
   field_subtheme:
     weight: 3
-    label: above
+    label: inline
     settings:
       link: true
     third_party_settings: {  }
@@ -46,22 +69,14 @@ content:
     region: content
   field_teaser:
     weight: 5
-    label: above
+    label: inline
     settings:
       link_to_entity: false
     third_party_settings: {  }
     type: string
     region: content
-  field_top_level_theme:
-    weight: 1
-    label: above
-    settings:
-      link: true
-    third_party_settings: {  }
-    type: entity_reference_label
-    region: content
   webform:
-    weight: 2
+    weight: 1
     label: hidden
     settings:
       source_entity: true
@@ -69,6 +84,7 @@ content:
     type: webform_entity_reference_entity_view
     region: content
 hidden:
+  field_top_level_theme: true
   langcode: true
   links: true
   search_api_excerpt: true

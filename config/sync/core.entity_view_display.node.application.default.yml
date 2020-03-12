@@ -14,44 +14,68 @@ dependencies:
     - field.field.node.application.field_top_level_theme
     - node.type.application
   module:
+    - field_group
     - link
     - metatag
     - text
     - user
+third_party_settings:
+  field_group:
+    group_additional_content_details:
+      children:
+        - field_subtheme
+        - field_site_themes
+        - field_teaser
+        - field_meta_tags
+      parent_name: ''
+      weight: 6
+      format_type: html_element
+      region: content
+      format_settings:
+        id: ''
+        classes: field-collection
+        element: div
+        show_label: false
+        label_element: h3
+        label_element_classes: ''
+        attributes: ''
+        effect: none
+        speed: fast
+      label: 'Additional content details'
 id: node.application.default
 targetEntityType: node
 bundle: application
 mode: default
 content:
   banner_display:
-    weight: 0
+    weight: 1
+    region: content
     settings: {  }
     third_party_settings: {  }
-    region: content
   body:
-    label: hidden
+    label: above
     type: text_default
-    weight: 2
+    weight: 3
     settings: {  }
     third_party_settings: {  }
     region: content
   content_moderation_control:
-    weight: -20
+    weight: 0
+    region: content
     settings: {  }
     third_party_settings: {  }
-    region: content
   field_additional_info:
     type: text_default
-    weight: 4
+    weight: 5
     region: content
     label: above
     settings: {  }
     third_party_settings: {  }
   field_link:
     type: link
-    weight: 3
+    weight: 4
     region: content
-    label: above
+    label: hidden
     settings:
       trim_length: 80
       url_only: false
@@ -60,15 +84,15 @@ content:
       target: ''
     third_party_settings: {  }
   field_meta_tags:
-    weight: 9
+    type: metatag_empty_formatter
+    weight: 10
+    region: content
     label: above
     settings: {  }
     third_party_settings: {  }
-    type: metatag_empty_formatter
-    region: content
   field_site_themes:
     type: entity_reference_label
-    weight: 0
+    weight: 8
     region: content
     label: above
     settings:
@@ -76,40 +100,29 @@ content:
     third_party_settings: {  }
   field_subtheme:
     type: entity_reference_label
-    weight: 5
+    weight: 7
     region: content
-    label: above
+    label: inline
     settings:
       link: true
     third_party_settings: {  }
   field_summary:
-    weight: 1
-    label: above
+    weight: 2
+    label: hidden
     settings: {  }
     third_party_settings: {  }
     type: text_default
     region: content
   field_teaser:
     type: string
-    weight: 6
+    weight: 9
     region: content
-    label: above
+    label: inline
     settings:
       link_to_entity: false
     third_party_settings: {  }
-  field_top_level_theme:
-    type: entity_reference_label
-    weight: 7
-    region: content
-    label: above
-    settings:
-      link: true
-    third_party_settings: {  }
-  links:
-    weight: 8
-    region: content
-    settings: {  }
-    third_party_settings: {  }
 hidden:
+  field_top_level_theme: true
   langcode: true
+  links: true
   search_api_excerpt: true

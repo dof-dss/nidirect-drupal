@@ -20,35 +20,101 @@ dependencies:
     - node.type.gp_practice
   module:
     - address
+    - field_group
     - geolocation
+    - link
+    - metatag
+    - options
     - telephone_plus
     - user
+third_party_settings:
+  field_group:
+    group_address:
+      children:
+        - field_address
+        - field_telephone
+        - field_gp_practice_website
+      parent_name: ''
+      weight: 4
+      format_type: html_element
+      region: content
+      format_settings:
+        id: ''
+        classes: vcard
+        element: address
+        show_label: false
+        label_element: h3
+        label_element_classes: ''
+        attributes: ''
+        effect: none
+        speed: fast
+      label: address
+    group_additional_content_details:
+      children:
+        - field_gp_lcg
+        - field_gp_partnership_no
+        - field_gp_practice_no
+        - field_meta_tags
+      parent_name: ''
+      weight: 8
+      format_type: html_element
+      region: content
+      format_settings:
+        id: ''
+        classes: field-collection
+        element: div
+        show_label: false
+        label_element: h3
+        label_element_classes: ''
+        attributes: ''
+        effect: none
+        speed: fast
+      label: 'Additional content details'
 id: node.gp_practice.default
 targetEntityType: node
 bundle: gp_practice
 mode: default
 content:
   content_moderation_control:
-    weight: -20
+    weight: 0
     region: content
     settings: {  }
     third_party_settings: {  }
   field_address:
     type: address_default
-    weight: 2
-    region: content
-    label: above
-    settings: {  }
-    third_party_settings: {  }
-  field_gp_practice_lead:
-    type: entity_reference_label
-    weight: 0
+    weight: 5
     region: content
     label: hidden
-    settings:
-      link: false
+    settings: {  }
     third_party_settings: {  }
-  field_gp_practice_member:
+  field_gp_appointments:
+    type: link
+    weight: 5
+    region: content
+    label: visually_hidden
+    settings:
+      trim_length: 80
+      url_only: false
+      url_plain: false
+      rel: ''
+      target: ''
+    third_party_settings: {  }
+  field_gp_lcg:
+    type: list_default
+    weight: 9
+    region: content
+    label: inline
+    settings: {  }
+    third_party_settings: {  }
+  field_gp_partnership_no:
+    type: string
+    weight: 10
+    region: content
+    label: inline
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+  field_gp_practice_lead:
     type: entity_reference_label
     weight: 1
     region: content
@@ -56,11 +122,51 @@ content:
     settings:
       link: false
     third_party_settings: {  }
-  field_location:
-    type: geolocation_map
-    weight: 4
+  field_gp_practice_member:
+    type: entity_reference_label
+    weight: 3
     region: content
     label: hidden
+    settings:
+      link: false
+    third_party_settings: {  }
+  field_gp_practice_no:
+    type: string
+    weight: 12
+    region: content
+    label: inline
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+  field_gp_practice_website:
+    type: link
+    weight: 7
+    region: content
+    label: inline
+    settings:
+      trim_length: 80
+      url_only: false
+      url_plain: false
+      rel: ''
+      target: ''
+    third_party_settings: {  }
+  field_gp_prescriptions:
+    type: link
+    weight: 6
+    region: content
+    label: visually_hidden
+    settings:
+      trim_length: 80
+      url_only: false
+      url_plain: false
+      rel: ''
+      target: ''
+    third_party_settings: {  }
+  field_location:
+    type: geolocation_map
+    weight: 7
+    region: content
+    label: above
     settings:
       title: ''
       set_marker: '1'
@@ -89,17 +195,32 @@ content:
         style: ''
         preferScrollingToZooming: 0
         gestureHandling: auto
+      data_provider_settings: {  }
+      centre:
+        fit_bounds:
+          enable: true
+          weight: -101
+          map_center_id: fit_bounds
+          settings:
+            reset_zoom: true
+    third_party_settings: {  }
+  field_meta_tags:
+    type: metatag_empty_formatter
+    weight: 14
+    region: content
+    label: above
+    settings: {  }
     third_party_settings: {  }
   field_telephone:
-    weight: 5
-    label: above
+    weight: 6
+    label: hidden
     settings:
       vcard: true
     third_party_settings: {  }
     type: telephone_plus_link
     region: content
   gp_names:
-    weight: 0
+    weight: 2
     region: content
     settings: {  }
     third_party_settings: {  }
@@ -108,15 +229,8 @@ hidden:
   field_contact_address_02: true
   field_contact_postcode: true
   field_contact_town_city: true
-  field_gp_appointments: true
-  field_gp_lcg: true
-  field_gp_partnership_no: true
   field_gp_practice_name: true
-  field_gp_practice_no: true
-  field_gp_practice_website: true
-  field_gp_prescriptions: true
   field_gp_surgery_name: true
-  field_meta_tags: true
   langcode: true
   links: true
   search_api_excerpt: true

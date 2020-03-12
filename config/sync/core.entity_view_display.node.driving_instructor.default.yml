@@ -14,11 +14,71 @@ dependencies:
     - field.field.node.driving_instructor.field_telephone
     - node.type.driving_instructor
   module:
+    - field_group
     - link
     - metatag
-    - origins_common
     - telephone_plus
     - user
+third_party_settings:
+  field_group:
+    group_name:
+      children:
+        - field_di_firstname
+        - field_di_lastname
+      parent_name: ''
+      weight: 1
+      format_type: html_element
+      region: content
+      format_settings:
+        id: ''
+        classes: ''
+        element: div
+        show_label: false
+        label_element: h3
+        label_element_classes: ''
+        attributes: ''
+        effect: none
+        speed: fast
+      label: Name
+    group_contact_info:
+      children:
+        - field_telephone
+        - field_email_address
+        - field_link_url
+      parent_name: ''
+      weight: 4
+      format_type: html_element
+      region: content
+      format_settings:
+        id: ''
+        classes: ''
+        element: div
+        show_label: false
+        label_element: h3
+        label_element_classes: ''
+        attributes: ''
+        effect: none
+        speed: fast
+      label: 'Contact info'
+    group_additional_content_details:
+      children:
+        - field_di_areas
+        - field_meta_tags
+      parent_name: ''
+      weight: 5
+      format_type: html_element
+      region: content
+      format_settings:
+        element: div
+        show_label: false
+        label_element: h3
+        label_element_classes: ''
+        attributes: ''
+        effect: none
+        speed: fast
+        id: ''
+        classes: field-collection
+      label: 'Additional content details'
 id: node.driving_instructor.default
 targetEntityType: node
 bundle: driving_instructor
@@ -31,43 +91,41 @@ content:
     third_party_settings: {  }
   field_di_adi_no:
     type: string
-    weight: 8
+    weight: 2
     region: content
-    label: above
+    label: inline
     settings:
       link_to_entity: false
     third_party_settings: {  }
   field_di_areas:
     type: entity_reference_label
-    weight: 7
+    weight: 6
     region: content
-    label: above
+    label: inline
     settings:
       link: true
     third_party_settings: {  }
   field_di_categories:
-    type: html_list_formatter
-    weight: 6
+    type: entity_reference_label
+    weight: 3
     region: content
-    label: above
+    label: inline
     settings:
-      list_type: ul
-      list_classes: ''
-      display_item_link: false
+      link: true
     third_party_settings: {  }
   field_di_firstname:
     type: string
-    weight: 1
+    weight: 2
     region: content
-    label: above
+    label: inline
     settings:
       link_to_entity: false
     third_party_settings: {  }
   field_di_lastname:
     type: string
-    weight: 2
+    weight: 3
     region: content
-    label: above
+    label: inline
     settings:
       link_to_entity: false
     third_party_settings: {  }
@@ -75,14 +133,14 @@ content:
     type: basic_string
     weight: 4
     region: content
-    label: above
+    label: inline
     settings: {  }
     third_party_settings: {  }
   field_link_url:
     type: link
     weight: 5
     region: content
-    label: above
+    label: inline
     settings:
       trim_length: 80
       url_only: false
@@ -91,25 +149,21 @@ content:
       target: ''
     third_party_settings: {  }
   field_meta_tags:
-    weight: 10
+    type: metatag_empty_formatter
+    weight: 7
+    region: content
     label: above
     settings: {  }
     third_party_settings: {  }
-    type: metatag_empty_formatter
-    region: content
   field_telephone:
     weight: 3
-    label: above
+    label: inline
     settings:
       vcard: true
     third_party_settings: {  }
     type: telephone_plus_link
     region: content
-  links:
-    weight: 9
-    region: content
-    settings: {  }
-    third_party_settings: {  }
 hidden:
   langcode: true
+  links: true
   search_api_excerpt: true
