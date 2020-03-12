@@ -245,6 +245,9 @@ jobs:
     steps:
       - checkout_code
       - run:
+          name: Add platform hosts to SSH known hosts.
+          command: mkdir -p ~/.ssh && ssh-keyscan -H git.uk-1.platform.sh >> ~/.ssh/known_hosts
+      - run:
           name: Relay to platform.sh
           command: |
             # Code is checked out under /home/circleci/project
