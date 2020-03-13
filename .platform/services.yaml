@@ -31,6 +31,13 @@ searchsolr:
   type: solr:7.7
   # The disk attribute is the size of the persistent disk (in MB) allocated to the service.
   disk: 256
+  configuration:
+    cores:
+      maincore:
+        conf_dir: !archive "solr_7.x_config/"
+      endpoints:
+        main:
+          core: maincore
 
 # The name given to the Memcached service (lowercase alphanumeric only).
 cachemc:
