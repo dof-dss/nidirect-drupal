@@ -22,6 +22,26 @@ $databases['default']['default'] = [
   'pdo' => [PDO::MYSQL_ATTR_COMPRESS => !empty($creds['query']['compression'])]
 ];
 
+// Solr configuration.
+$platformsh->registerFormatter('drupal-solr', function($solr) {
+  // Default the solr core name to `collection1` for pre-Solr-6.x instances.
+  return [
+    'core' => substr($solr['path'], 5) ? : 'collection1',
+    'path' => '',
+    'host' => $solr['host'],
+    'port' => $solr['port'],
+  ];
+});
+
+// Update these values to the relationship name (from .platform.app.yaml)
+// and the machine name of the server from your Drupal configuration.
+$relationship_name = 'searchsolr';
+$solr_server_name = 'default_solr_server';
+if ($platformsh->hasRelationship($relationship_name)) {
+  // Set the connector configuration to the appropriate value, as defined by the formatter above.
+  $config['search_api.server.' . $solr_server_name]['backend_config']['connector_config'] = $platformsh->formattedCredentials($relationship_name, 'drupal-solr');
+}
+
 // Enable Redis caching.
 if ($platformsh->hasRelationship('redis') && !drupal_installation_attempted() && extension_loaded('redis') && class_exists('Drupal\redis\ClientFactory')) {
   $redis = $platformsh->credentials('redis');
