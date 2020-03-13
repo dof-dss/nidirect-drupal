@@ -11,9 +11,9 @@ commands:
       # Add SSH user key so we can access related repositories as part of our initial clone + composer install command.
       - add_ssh_keys:
           fingerprints:
-#            - "89:cc:6e:61:6a:0e:13:ab:47:0b:25:d6:bc:90:d4:d2"
-            - "03:f9:ff:4a:28:2f:63:6e:d0:0d:10:13:2a:06:0c:dc"
-            - "ed:e9:03:7d:b2:e6:bc:92:f9:dc:78:62:00:cf:6e:e1"
+            - "89:cc:6e:61:6a:0e:13:ab:47:0b:25:d6:bc:90:d4:d2"
+#            - "03:f9:ff:4a:28:2f:63:6e:d0:0d:10:13:2a:06:0c:dc"
+#            - "ed:e9:03:7d:b2:e6:bc:92:f9:dc:78:62:00:cf:6e:e1"
       - checkout
   composer_tasks:
     description: "Validate and install dependencies using composer"
@@ -254,7 +254,7 @@ jobs:
             # Code is checked out under /home/circleci/project
             cd /home/circleci/project
             # TODO: replace environment id, app id and project name with ENV VARS
-            git remote add platform q4iovrblhesbg@git.uk-1.platform.sh:q4iovrblhesbg.git
+            git remote add platform ${PLATFORM_REPO_URL}
             git push -f platform $CIRCLE_BRANCH
 
   # Our most expensive, full stack tests. Requires up to date content and services for chromedriver, yarn and database.
@@ -357,15 +357,12 @@ workflows:
   build-test-deploy:
     jobs:
       - build
-      - deploy:
+      - static_analysis:
           requires:
             - build
-#      - static_analysis:
-#          requires:
-#            - build
-#      - unit_kernel_tests:
-#          requires:
-#            - build
+      - unit_kernel_tests:
+          requires:
+            - build
 #      - deploy:
 #          requires:
 #            - static_analysis
