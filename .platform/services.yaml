@@ -7,7 +7,7 @@ db:
   # the CLI will return an error.
   type: mariadb:10.4
   # The disk attribute is the size of the persistent disk (in MB) allocated to the service.
-  disk: 2048
+  disk: 4096
   configuration:
     schemas:
       - main
@@ -19,7 +19,7 @@ db:
 
 drupal7db:
   type: mariadb:10.4
-  disk: 512
+  disk: 2048
 
 # The name given to the Solr service (lowercase alphanumeric only).
 searchsolr:
@@ -30,7 +30,7 @@ searchsolr:
   # the CLI will return an error.
   type: solr:7.7
   # The disk attribute is the size of the persistent disk (in MB) allocated to the service.
-  disk: 256
+  disk: 1024
   configuration:
     cores:
       maincore:
