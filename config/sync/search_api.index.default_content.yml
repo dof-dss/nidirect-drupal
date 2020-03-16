@@ -4,36 +4,36 @@ status: true
 dependencies:
   module:
     - search_api_solr
-    - node
     - taxonomy
+    - node
     - search_api_location
     - search_api
   config:
     - field.storage.node.field_address
-    - field.storage.node.body
-    - field.storage.node.field_di_areas
-    - field.storage.node.field_di_categories
-    - field.storage.node.field_contact_category
     - field.storage.node.field_di_adi_no
-    - field.storage.node.field_di_firstname
-    - field.storage.node.field_di_lastname
-    - field.storage.node.field_email_address
+    - field.storage.node.field_di_areas
+    - field.storage.node.body
     - field.storage.node.field_hc_body_location
     - field.storage.taxonomy_term.field_term_hc_synonyms
     - field.storage.node.field_hc_body_system
+    - field.storage.node.field_di_categories
+    - field.storage.node.field_contact_category
     - field.storage.node.field_hc_condition_type
+    - field.storage.node.field_email_address
+    - field.storage.node.field_di_firstname
+    - field.storage.node.field_index_letter
+    - field.storage.node.field_di_lastname
+    - field.storage.node.field_lb_search_content
+    - field.storage.node.field_location
     - field.storage.node.field_hc_primary_symptom_1
     - field.storage.node.field_hc_primary_symptom_2
     - field.storage.node.field_hc_primary_symptom_3
     - field.storage.node.field_hc_primary_symptom_4
-    - field.storage.node.field_hc_secondary_symptoms
-    - field.storage.node.field_index_letter
-    - field.storage.node.field_lb_search_content
-    - field.storage.node.field_location
     - field.storage.node.field_published_date
+    - field.storage.node.field_hc_secondary_symptoms
+    - field.storage.node.field_summary
     - field.storage.node.field_site_themes
     - field.storage.node.field_subtheme
-    - field.storage.node.field_summary
     - search_api.server.solr_default
 third_party_settings:
   search_api_solr:
@@ -480,7 +480,7 @@ field_settings:
     label: Title
     datasource_id: 'entity:node'
     property_path: title
-    type: string
+    type: text
     boost: !!float 21
     dependencies:
       module:
