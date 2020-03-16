@@ -9,7 +9,7 @@
 $databases = [];
 $config_directories = [];
 $settings['update_free_access'] = FALSE;
-$settings['container_yamls'][] = $app_root . '/' . $site_path . '/services.yml';
+$settings['container_yamls'][] = $app_root . '/' . $site_path . '/development.services.yml';
 $settings['file_scan_ignore_directories'] = [
   'node_modules',
   'bower_components',
@@ -20,9 +20,9 @@ $settings['hash_salt'] = getenv('HASH_SALT');
 
 $settings['config_sync_directory'] = getenv('CONFIG_SYNC_DIRECTORY');
 
-// Set config split environment; environment specific values is set near the end of this file.
+// Set config split environment.
 $config['config_split.config_split.local']['status'] = FALSE;
-$config['config_split.config_split.development']['status'] = FALSE;
+$config['config_split.config_split.development']['status'] = TRUE;
 $config['config_split.config_split.production']['status'] = FALSE;
 
 // Config readonly settings.
@@ -42,15 +42,6 @@ $config['geolocation.settings']['google_map_api_key'] = getenv('GOOGLE_MAP_API_K
 // Automatic Platform.sh settings.
 if (file_exists($app_root . '/' . $site_path . '/settings.platformsh.php')) {
   include $app_root . '/' . $site_path . '/settings.platformsh.php';
-}
-
-// Environment specific settings and services.
-switch (getenv('PLATFORM_BRANCH')) {
-  case 'development':
-    $config['config_split.config_split.development']['status'] = TRUE;
-
-  default:
-    $config['config_split.config_split.production']['status'] = TRUE;
 }
 
 // Local settings. These come last so that they can override anything.
