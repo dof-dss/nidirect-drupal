@@ -15,11 +15,11 @@ type: 'php:7.3'
 # to the application in the PLATFORM_RELATIONSHIPS variable. The right-hand
 # side is in the form `:`.
 relationships:
-  solrsearch: 'searchsolr:main'
-  memcachedcache: 'cachemc:memcached'
+  solr: 'solr:solr_default'
+  memcached: 'cachemc:memcached'
   #  For MariaDB, the endpoint does not change whether you used the mysql or mariadb service type.
   database: 'db:admin'
-  drupal7database: 'drupal7db:mysql'
+  drupal7db: 'drupal7db:mysql'
 
 # The size of the persistent disk of the application (in MB).
 disk: 20480
