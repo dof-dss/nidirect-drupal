@@ -363,9 +363,9 @@ workflows:
       - unit_kernel_tests:
           requires:
             - build
-      - functional_js_tests__config_only:
-          requires:
-            - build
+#      - functional_js_tests__config_only:
+#          requires:
+#            - build
       - deploy:
           requires:
             - static_analysis
