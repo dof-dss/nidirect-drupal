@@ -36,7 +36,7 @@ $platformsh->registerFormatter('drupal-solr', function($solr) {
 // Update these values to the relationship name (from .platform.app.yaml)
 // and the machine name of the server from your Drupal configuration.
 $relationship_name = 'solr';
-$solr_server_name = 'solr_default';
+$solr_server_name = 'maincore';
 if ($platformsh->hasRelationship($relationship_name)) {
   // Set the connector configuration to the appropriate value, as defined by the formatter above.
   $config['search_api.server.' . $solr_server_name]['backend_config']['connector_config'] = $platformsh->formattedCredentials($relationship_name, 'drupal-solr');
