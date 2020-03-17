@@ -357,22 +357,19 @@ workflows:
   build-test-deploy:
     jobs:
       - build
-      - deploy:
+      - static_analysis:
           requires:
             - build
-#      - static_analysis:
-#          requires:
-#            - build
-#      - unit_kernel_tests:
-#          requires:
-#            - build
-#      - functional_js_tests__config_only:
-#          requires:
-#            - build
-#      - deploy:
-#          requires:
-#            - static_analysis
-#            - unit_kernel_tests
+      - unit_kernel_tests:
+          requires:
+            - build
+      - functional_js_tests__config_only:
+          requires:
+            - build
+      - deploy:
+          requires:
+            - static_analysis
+            - unit_kernel_tests
   nightly:
     triggers:
       - schedule:
