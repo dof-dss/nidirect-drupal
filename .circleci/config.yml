@@ -255,7 +255,7 @@ jobs:
             # Code is checked out under /home/circleci/project
             cd /home/circleci/project
             git remote add platform ${PLATFORM_REPO_URL}
-            git push -f platform $CIRCLE_BRANCH
+            git push -f platform ${CIRCLE_BRANCH}
 
   # Our most expensive, full stack tests. Requires up to date content and services for chromedriver, yarn and database.
   ui_tests:
@@ -357,19 +357,22 @@ workflows:
   build-test-deploy:
     jobs:
       - build
-      - static_analysis:
-          requires:
-            - build
-      - unit_kernel_tests:
-          requires:
-            - build
-      - functional_js_tests__config_only:
-          requires:
-            - build
       - deploy:
           requires:
-            - static_analysis
-            - unit_kernel_tests
+            - build
+#      - static_analysis:
+#          requires:
+#            - build
+#      - unit_kernel_tests:
+#          requires:
+#            - build
+#      - functional_js_tests__config_only:
+#          requires:
+#            - build
+#      - deploy:
+#          requires:
+#            - static_analysis
+#            - unit_kernel_tests
   nightly:
     triggers:
       - schedule:
