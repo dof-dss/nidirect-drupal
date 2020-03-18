@@ -21,17 +21,16 @@ drupal7db:
   type: mariadb:10.4
   disk: 2048
 
-solr:
+solr_default:
   type: solr:7.7
   disk: 1024
   configuration:
     cores:
-      maincore:
-#        conf_dir: {}
-        conf_dir: !archive "solr_config"
+      default:
+        conf_dir: {}
     endpoints:
-      main:
-        core: maincore
+      solr:
+        core: default
 
 # The name given to the Memcached service (lowercase alphanumeric only).
 memcached:
