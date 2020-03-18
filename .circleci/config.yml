@@ -366,10 +366,10 @@ workflows:
 #      - functional_js_tests__config_only:
 #          requires:
 #            - build
-      - deploy:
-          requires:
-            - static_analysis
-#            - unit_kernel_tests
+#      - deploy:
+#          requires:
+#            - static_analysis
+##            - unit_kernel_tests
   nightly:
     triggers:
       - schedule:
