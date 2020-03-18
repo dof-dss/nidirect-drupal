@@ -16,7 +16,7 @@ type: 'php:7.3'
 # side is in the form `:`.
 relationships:
   solr: 'solr:solr'
-  memcached: 'memcached:memcached'
+  redis: 'redis:redis'
   #  For MariaDB, the endpoint does not change whether you used the mysql or mariadb service type.
   database: 'db:admin'
   drupal7db: 'drupal7db:mysql'
@@ -55,6 +55,9 @@ build:
 
 # The hooks executed at various points in the lifecycle of the application.
 hooks:
+  build: |
+    set -e
+    bash install-redis.sh 5.1.1
   # The deploy hook runs after your application has been deployed and started.
   deploy: |
     set -e
