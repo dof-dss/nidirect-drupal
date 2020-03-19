@@ -1,0 +1,36 @@
+# The name given to the MariaDB service (lowercase alphanumeric only).
+db:
+  # The type of your service (mariadb), which uses the format
+  # 'type:version'. Be sure to consult the MariaDB documentation
+  # (https://docs.platform.sh/configuration/services/mysql.html#supported-versions)
+  # when choosing a version. If you specify a version number which is not available,
+  # the CLI will return an error.
+  type: mariadb:10.4
+  # The disk attribute is the size of the persistent disk (in MB) allocated to the service.
+  disk: 4096
+  configuration:
+    schemas:
+      - main
+    endpoints:
+      admin:
+        default_schema: main
+        privileges:
+          main: admin
+
+drupal7db:
+  type: mariadb:10.4
+  disk: 2048
+
+solr:
+  type: solr:7.7
+  disk: 1024
+  configuration:
+    cores:
+      default:
+        conf_dir: !archive "solr_config/"
+    endpoints:
+      solr:
+        core: default
+
+redis:
+  type: redis:5.0
