@@ -54,6 +54,13 @@ if (!empty(getenv('PLATFORM_BRANCH'))) {
     case 'master':
       // De-facto production settings.
       $config['config_split.config_split.production']['status'] = TRUE;
+      $settings['container_yamls'][] = $app_root . '/' . $site_path . '/services.yml';
+      break;
+
+    case (preg_match('/D8NID-qa/', getenv('PLATFORM_BRANCH'))):
+      // QA environment config adjustments.
+      $settings['simple_environment_indicator'] = '#e56716 QA';
+      break;
 
     default:
       // Default to use development settings/services for general platform.sh environments.
