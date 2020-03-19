@@ -9,9 +9,12 @@ commands:
           name: Add GitHub access token for composer
           command: echo 'composer config -g github-oauth.github.com $GITHUB_TOKEN' >> $BASH_ENV
       # Add SSH user key so we can access related repositories as part of our initial clone + composer install command.
+      # 89:cc >> GitHub user key fingerprint
+      # ed:e9 >> private fingerprint to talk to platform.sh
       - add_ssh_keys:
           fingerprints:
             - "89:cc:6e:61:6a:0e:13:ab:47:0b:25:d6:bc:90:d4:d2"
+            - "ed:e9:03:7d:b2:e6:bc:92:f9:dc:78:62:00:cf:6e:e1"
       - checkout
   composer_tasks:
     description: "Validate and install dependencies using composer"
@@ -237,6 +240,22 @@ jobs:
       - run:
           name: Run functional tests with Nightwatch.js
           command: yarn --cwd=/var/www/html/web/core test:nightwatch ../modules/custom/nidirect_common/tests/src/Nightwatch/Tests/contentTypeValidation.js
+  # Deploy task.
+  deploy:
+    docker:
+      - image: circleci/php:7.3.14-apache-node-browsers
+    steps:
+      - checkout_code
+      - run:
+          name: Add platform.sh hosts to SSH known hosts
+          command: mkdir -p ~/.ssh && ssh-keyscan -H git.uk-1.platform.sh >> ~/.ssh/known_hosts
+      - run:
+          name: Relay to platform.sh
+          command: |
+            # Code is checked out under /home/circleci/project
+            cd /home/circleci/project
+            git remote add platform ${PLATFORM_REPO_URL}
+            git push -f platform ${CIRCLE_BRANCH}
 
   # Our most expensive, full stack tests. Requires up to date content and services for chromedriver, yarn and database.
   ui_tests:
@@ -344,6 +363,13 @@ workflows:
       - unit_kernel_tests:
           requires:
             - build
+#      - functional_js_tests__config_only:
+#          requires:
+#            - build
+#      - deploy:
+#          requires:
+#            - static_analysis
+##            - unit_kernel_tests
   nightly:
     triggers:
       - schedule:
@@ -355,6 +381,6 @@ workflows:
                 - development
     jobs:
       - build
-      - unit_kernel_tests:
+      - functional_js_tests__config_only:
           requires:
             - build
