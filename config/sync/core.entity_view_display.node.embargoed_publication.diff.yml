@@ -1,0 +1,131 @@
+uuid: 7ccca746-6453-4cba-bdd6-fa1f5cdf91ba
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.node.diff
+    - field.field.node.embargoed_publication.body
+    - field.field.node.embargoed_publication.field_meta_tags
+    - field.field.node.embargoed_publication.field_publication_type
+    - field.field.node.embargoed_publication.field_published_date
+    - field.field.node.embargoed_publication.field_secure_attachment
+    - field.field.node.embargoed_publication.field_site_themes
+    - field.field.node.embargoed_publication.field_subtheme
+    - field.field.node.embargoed_publication.field_summary
+    - field.field.node.embargoed_publication.field_top_level_theme
+    - node.type.embargoed_publication
+  module:
+    - datetime
+    - field_group
+    - layout_builder
+    - metatag
+    - options
+    - text
+    - user
+third_party_settings:
+  layout_builder:
+    allow_custom: false
+    enabled: false
+  field_group:
+    group_additional_content_details:
+      children:
+        - field_subtheme
+        - field_site_themes
+        - field_publication_type
+        - field_meta_tags
+      parent_name: ''
+      weight: 6
+      format_type: html_element
+      region: content
+      format_settings:
+        id: ''
+        classes: field-collection
+        element: div
+        show_label: false
+        label_element: h3
+        label_element_classes: ''
+        attributes: ''
+        effect: none
+        speed: fast
+      label: 'Additional content details'
+id: node.embargoed_publication.diff
+targetEntityType: node
+bundle: embargoed_publication
+mode: diff
+content:
+  body:
+    label: hidden
+    type: text_default
+    weight: 3
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+  content_moderation_control:
+    weight: 0
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_meta_tags:
+    weight: 10
+    label: inline
+    settings: {  }
+    third_party_settings: {  }
+    type: metatag_empty_formatter
+    region: content
+  field_publication_type:
+    type: list_default
+    weight: 9
+    region: content
+    label: inline
+    settings: {  }
+    third_party_settings: {  }
+  field_published_date:
+    type: datetime_default
+    weight: 1
+    region: content
+    label: inline
+    settings:
+      format_type: medium
+      timezone_override: ''
+    third_party_settings: {  }
+  field_secure_attachment:
+    type: entity_reference_entity_view
+    weight: 4
+    label: inline
+    settings:
+      view_mode: default
+      link: false
+    third_party_settings: {  }
+    region: content
+  field_site_themes:
+    type: entity_reference_label
+    weight: 8
+    region: content
+    label: inline
+    settings:
+      link: true
+    third_party_settings: {  }
+  field_subtheme:
+    type: entity_reference_label
+    weight: 7
+    region: content
+    label: inline
+    settings:
+      link: true
+    third_party_settings: {  }
+  field_summary:
+    weight: 2
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
+    type: text_default
+    region: content
+  links:
+    weight: 5
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+hidden:
+  field_top_level_theme: true
+  langcode: true
+  search_api_excerpt: true
