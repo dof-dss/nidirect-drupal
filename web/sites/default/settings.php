@@ -43,18 +43,24 @@ $settings['simple_environment_indicator'] = sprintf('%s %s', getenv('SIMPLEI_ENV
 // Geocoder API key.
 $config['geolocation.settings']['google_map_api_key'] = getenv('GOOGLE_MAP_API_KEY');
 
-// Automatic Platform.sh settings.
-if (file_exists($app_root . '/' . $site_path . '/settings.platformsh.php')) {
-  include $app_root . '/' . $site_path . '/settings.platformsh.php';
-}
+// If we're running on platform.sh, check for and load relevant settings.
+if (!empty(getenv('PLATFORM_BRANCH'))) {
+  if (file_exists($app_root . '/' . $site_path . '/settings.platformsh.php')) {
+    include $app_root . '/' . $site_path . '/settings.platformsh.php';
+  }
 
-// Environment specific settings and services.
-switch (getenv('PLATFORM_BRANCH')) {
-  case 'development':
-    $config['config_split.config_split.development']['status'] = TRUE;
+  // Environment specific settings and services.
+  switch (getenv('PLATFORM_BRANCH')) {
+    case 'master':
+      // De-facto production settings.
+      $config['config_split.config_split.production']['status'] = TRUE;
 
-  default:
-    $config['config_split.config_split.production']['status'] = TRUE;
+    default:
+      // Default to use development settings/services for general platform.sh environments.
+      $config['config_split.config_split.development']['status'] = TRUE;
+      $settings['container_yamls'][] = $app_root . '/' . $site_path . '/services.development.yml';
+      include $app_root . '/' . $site_path . '/settings.development.php';
+  }
 }
 
 // Local settings. These come last so that they can override anything.
