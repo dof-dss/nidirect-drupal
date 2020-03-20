@@ -148,11 +148,7 @@ Step 1: Update vendor packages
 * `composer install`
 
 Step 2: Update site configuration and structure
-
 * `lando imp` : Imports configuration and structure (blocks)
-* `lando drush cim` - Import configuration changes only
-* `lando drush ib` - Import custom blocks
-* `lando drush im` - Import custom menu links
 
 NOTE: Custom Menu links only applies to links created from the `admin/structure/menu` page. Links created via the node edit screen etc will not be exported as a menu structure item.
 
