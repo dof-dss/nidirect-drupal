@@ -1,0 +1,298 @@
+uuid: 9c596af2-6d2b-437f-809e-db59746fd013
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.node.diff
+    - field.field.node.health_condition.body
+    - field.field.node.health_condition.field_additional_info
+    - field.field.node.health_condition.field_alternative_condition
+    - field.field.node.health_condition.field_alternative_title
+    - field.field.node.health_condition.field_banner_image
+    - field.field.node.health_condition.field_hc_body_location
+    - field.field.node.health_condition.field_hc_body_system
+    - field.field.node.health_condition.field_hc_condition_type
+    - field.field.node.health_condition.field_hc_info_source
+    - field.field.node.health_condition.field_hc_primary_symptom_1
+    - field.field.node.health_condition.field_hc_primary_symptom_2
+    - field.field.node.health_condition.field_hc_primary_symptom_3
+    - field.field.node.health_condition.field_hc_primary_symptom_4
+    - field.field.node.health_condition.field_hc_secondary_symptoms
+    - field.field.node.health_condition.field_index_letter
+    - field.field.node.health_condition.field_last_review_date
+    - field.field.node.health_condition.field_meta_tags
+    - field.field.node.health_condition.field_next_review_date
+    - field.field.node.health_condition.field_parent_condition
+    - field.field.node.health_condition.field_photo
+    - field.field.node.health_condition.field_published_date
+    - field.field.node.health_condition.field_related_conditions
+    - field.field.node.health_condition.field_related_info
+    - field.field.node.health_condition.field_site_themes
+    - field.field.node.health_condition.field_subtheme
+    - field.field.node.health_condition.field_summary
+    - field.field.node.health_condition.field_teaser
+    - field.field.node.health_condition.field_toc_enable
+    - field.field.node.health_condition.field_top_level_theme
+    - node.type.health_condition
+  module:
+    - datetime
+    - field_group
+    - layout_builder
+    - link
+    - media
+    - metatag
+    - text
+    - user
+third_party_settings:
+  layout_builder:
+    allow_custom: false
+    enabled: false
+  field_group:
+    group_additional_content_details:
+      children:
+        - field_site_themes
+        - field_alternative_title
+        - field_alternative_condition
+        - field_teaser
+        - field_toc_enable
+        - field_parent_condition
+        - field_related_conditions
+        - field_hc_condition_type
+        - field_hc_body_system
+        - field_hc_body_location
+        - field_hc_primary_symptom_1
+        - field_hc_primary_symptom_2
+        - field_hc_primary_symptom_3
+        - field_hc_primary_symptom_4
+        - field_hc_secondary_symptoms
+        - field_last_review_date
+        - field_next_review_date
+        - field_meta_tags
+      parent_name: ''
+      weight: 6
+      format_type: html_element
+      region: content
+      format_settings:
+        id: ''
+        classes: field-collection
+        element: div
+        show_label: false
+        label_element: h3
+        label_element_classes: ''
+        attributes: ''
+        effect: none
+        speed: fast
+      label: 'Additional content details'
+id: node.health_condition.diff
+targetEntityType: node
+bundle: health_condition
+mode: diff
+content:
+  body:
+    label: hidden
+    type: text_default
+    weight: 3
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+  content_moderation_control:
+    weight: 0
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_alternative_condition:
+    weight: 11
+    label: inline
+    settings:
+      link: true
+    third_party_settings: {  }
+    type: entity_reference_label
+    region: content
+  field_alternative_title:
+    type: string
+    weight: 10
+    region: content
+    label: inline
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+  field_hc_body_location:
+    type: entity_reference_label
+    weight: 18
+    region: content
+    label: inline
+    settings:
+      link: true
+    third_party_settings: {  }
+  field_hc_body_system:
+    type: entity_reference_label
+    weight: 17
+    region: content
+    label: inline
+    settings:
+      link: true
+    third_party_settings: {  }
+  field_hc_condition_type:
+    type: entity_reference_label
+    weight: 16
+    region: content
+    label: inline
+    settings:
+      link: true
+    third_party_settings: {  }
+  field_hc_info_source:
+    type: entity_reference_entity_view
+    weight: 5
+    region: content
+    label: hidden
+    settings:
+      link: true
+      view_mode: default
+    third_party_settings: {  }
+  field_hc_primary_symptom_1:
+    type: entity_reference_label
+    weight: 19
+    region: content
+    label: inline
+    settings:
+      link: true
+    third_party_settings: {  }
+  field_hc_primary_symptom_2:
+    type: entity_reference_label
+    weight: 20
+    region: content
+    label: inline
+    settings:
+      link: true
+    third_party_settings: {  }
+  field_hc_primary_symptom_3:
+    type: entity_reference_label
+    weight: 21
+    region: content
+    label: inline
+    settings:
+      link: true
+    third_party_settings: {  }
+  field_hc_primary_symptom_4:
+    type: entity_reference_label
+    weight: 22
+    region: content
+    label: inline
+    settings:
+      link: true
+    third_party_settings: {  }
+  field_hc_secondary_symptoms:
+    type: entity_reference_label
+    weight: 23
+    region: content
+    label: inline
+    settings:
+      link: true
+    third_party_settings: {  }
+  field_last_review_date:
+    type: datetime_default
+    weight: 25
+    region: content
+    label: inline
+    settings:
+      format_type: medium
+      timezone_override: ''
+    third_party_settings: {  }
+  field_meta_tags:
+    weight: 27
+    label: inline
+    settings: {  }
+    third_party_settings: {  }
+    type: metatag_empty_formatter
+    region: content
+  field_next_review_date:
+    type: datetime_default
+    weight: 26
+    region: content
+    label: inline
+    settings:
+      format_type: medium
+      timezone_override: ''
+    third_party_settings: {  }
+  field_parent_condition:
+    type: entity_reference_label
+    weight: 14
+    region: content
+    label: inline
+    settings:
+      link: true
+    third_party_settings: {  }
+  field_photo:
+    weight: 2
+    label: hidden
+    settings:
+      image_style: ''
+      image_link: ''
+    third_party_settings: {  }
+    type: media_thumbnail
+    region: content
+  field_related_conditions:
+    type: entity_reference_label
+    weight: 15
+    region: content
+    label: inline
+    settings:
+      link: true
+    third_party_settings: {  }
+  field_related_info:
+    type: link
+    weight: 4
+    region: content
+    label: above
+    settings:
+      trim_length: 80
+      url_only: false
+      url_plain: false
+      rel: ''
+      target: ''
+    third_party_settings: {  }
+  field_site_themes:
+    type: entity_reference_label
+    weight: 9
+    region: content
+    label: inline
+    settings:
+      link: true
+    third_party_settings: {  }
+  field_summary:
+    weight: 1
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
+    type: text_default
+    region: content
+  field_teaser:
+    type: string
+    weight: 12
+    region: content
+    label: inline
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+  field_toc_enable:
+    type: boolean
+    weight: 13
+    region: content
+    label: inline
+    settings:
+      format: default
+      format_custom_false: ''
+      format_custom_true: ''
+    third_party_settings: {  }
+hidden:
+  banner_display: true
+  field_additional_info: true
+  field_banner_image: true
+  field_index_letter: true
+  field_published_date: true
+  field_subtheme: true
+  field_top_level_theme: true
+  langcode: true
+  links: true
+  search_api_excerpt: true
+  toc_display: true
