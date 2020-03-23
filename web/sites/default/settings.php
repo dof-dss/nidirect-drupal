@@ -37,9 +37,6 @@ $settings['config_readonly_whitelist_patterns'] = [
   'system.site',
 ];
 
-// Environment indicator config.
-$settings['simple_environment_indicator'] = sprintf('%s %s', getenv('SIMPLEI_ENV_COLOUR'), getenv('SIMPLEI_ENV_NAME'));
-
 // Geocoder API key.
 $config['geolocation.settings']['google_map_api_key'] = getenv('GOOGLE_MAP_API_KEY');
 
@@ -49,6 +46,9 @@ if (!empty(getenv('PLATFORM_BRANCH'))) {
     include $app_root . '/' . $site_path . '/settings.platformsh.php';
   }
 
+  // Baseline environment indicator settings, can be overridden below.
+  $settings['simple_environment_indicator'] = sprintf('%s %s', getenv('SIMPLEI_ENV_COLOUR'), getenv('SIMPLEI_ENV_NAME'));
+
   // Environment specific settings and services.
   switch (getenv('PLATFORM_BRANCH')) {
     case 'master':
@@ -57,15 +57,16 @@ if (!empty(getenv('PLATFORM_BRANCH'))) {
       $settings['container_yamls'][] = $app_root . '/' . $site_path . '/services.yml';
       break;
 
-    case (preg_match('/D8NID-qa/', getenv('PLATFORM_BRANCH'))):
+    case (preg_match('/^D8NID-qa/i', getenv('PLATFORM_BRANCH'))):
       // QA environment config adjustments.
-      $settings['simple_environment_indicator'] = '#e56716 QA';
+      $settings['simple_environment_indicator'] = '#e56716 ' . getenv('PLATFORM_BRANCH');
       break;
 
     default:
       // Default to use development settings/services for general platform.sh environments.
       $config['config_split.config_split.development']['status'] = TRUE;
       $settings['container_yamls'][] = $app_root . '/' . $site_path . '/services.development.yml';
+      $settings['simple_environment_indicator'] = '#000000 ' . getenv('PLATFORM_BRANCH');
       include $app_root . '/' . $site_path . '/settings.development.php';
   }
 }
