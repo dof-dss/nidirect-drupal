@@ -40,14 +40,15 @@ $settings['config_readonly_whitelist_patterns'] = [
 // Geocoder API key.
 $config['geolocation.settings']['google_map_api_key'] = getenv('GOOGLE_MAP_API_KEY');
 
+// Environment indicator defaults.
+$env_colour = '#000000';
+$env_name = getenv('SIMPLEI_ENV_NAME') ?? getenv('PLATFORM_BRANCH');
+
 // If we're running on platform.sh, check for and load relevant settings.
 if (!empty(getenv('PLATFORM_BRANCH'))) {
   if (file_exists($app_root . '/' . $site_path . '/settings.platformsh.php')) {
     include $app_root . '/' . $site_path . '/settings.platformsh.php';
   }
-
-  // Baseline environment indicator settings, can be overridden below.
-  $settings['simple_environment_indicator'] = sprintf('%s %s', getenv('SIMPLEI_ENV_COLOUR'), getenv('SIMPLEI_ENV_NAME'));
 
   // Environment specific settings and services.
   switch (getenv('PLATFORM_BRANCH')) {
@@ -59,16 +60,17 @@ if (!empty(getenv('PLATFORM_BRANCH'))) {
 
     case (stripos(getenv('PLATFORM_BRANCH'), 'D8NID-qa') !== FALSE):
       // QA environment config adjustments.
-      $settings['simple_environment_indicator'] = '#e56716 ' . getenv('PLATFORM_BRANCH');
+      $env_colour = '#e56716';
       break;
 
     default:
       // Default to use development settings/services for general platform.sh environments.
       $config['config_split.config_split.development']['status'] = TRUE;
       $settings['container_yamls'][] = $app_root . '/' . $site_path . '/services.development.yml';
-      $settings['simple_environment_indicator'] = '#000000 ' . getenv('PLATFORM_BRANCH');
       include $app_root . '/' . $site_path . '/settings.development.php';
   }
+
+  $settings['simple_environment_indicator'] = sprintf('%s %s', $env_colour, $env_name);
 }
 
 // Local settings. These come last so that they can override anything.
