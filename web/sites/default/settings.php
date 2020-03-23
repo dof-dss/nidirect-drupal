@@ -57,7 +57,7 @@ if (!empty(getenv('PLATFORM_BRANCH'))) {
       $settings['container_yamls'][] = $app_root . '/' . $site_path . '/services.yml';
       break;
 
-    case (preg_match('/^D8NID-qa/i', getenv('PLATFORM_BRANCH'))):
+    case (stripos(getenv('PLATFORM_BRANCH'), 'D8NID-qa') !== FALSE):
       // QA environment config adjustments.
       $settings['simple_environment_indicator'] = '#e56716 ' . getenv('PLATFORM_BRANCH');
       break;
