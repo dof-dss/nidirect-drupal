@@ -42,7 +42,7 @@ $config['geolocation.settings']['google_map_api_key'] = getenv('GOOGLE_MAP_API_K
 
 // Environment indicator defaults.
 $env_colour = '#000000';
-$env_name = getenv('SIMPLEI_ENV_NAME') ?? getenv('PLATFORM_BRANCH');
+$env_name = !empty(getenv('SIMPLEI_ENV_NAME')) ? getenv('SIMPLEI_ENV_NAME') : getenv('PLATFORM_BRANCH');
 
 // If we're running on platform.sh, check for and load relevant settings.
 if (!empty(getenv('PLATFORM_BRANCH'))) {
