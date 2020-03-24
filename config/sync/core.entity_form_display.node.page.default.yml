@@ -11,6 +11,7 @@ dependencies:
     - field.field.node.page.field_toc_enable
     - field.field.node.page.layout_builder__layout
     - node.type.page
+    - workflows.workflow.nics_editorial_workflow
   module:
     - content_moderation
     - datetime
@@ -42,6 +43,23 @@ content:
     region: content
     settings: {  }
     third_party_settings: {  }
+  field_lb_search_content:
+    type: string_textarea
+    label: above
+    settings:
+      rows: 5
+      placeholder: ''
+    weight: 103
+    third_party_settings: {  }
+    region: content
+  field_lb_search_enable:
+    type: boolean_checkbox
+    label: above
+    settings:
+      display_label: true
+    weight: 102
+    third_party_settings: {  }
+    region: content
   field_meta_tags:
     weight: 7
     settings: {  }
@@ -154,6 +172,4 @@ content:
     third_party_settings: {  }
     region: content
 hidden:
-  field_lb_search_content: true
-  field_lb_search_enable: true
   layout_builder__layout: true
