@@ -337,6 +337,22 @@ workflows:
   build-test-deploy:
     jobs:
       - build
+      - static_analysis:
+          requires:
+            - build
+      - unit_kernel_tests:
+          requires:
+            - build
+          filters:
+            branches:
+              only:
+                - master
+                - development
+      - deploy_gate:
+          type: approval
+          requires:
+            - static_analysis
+            - unit_kernel_tests
       - deploy:
           requires:
             - build
