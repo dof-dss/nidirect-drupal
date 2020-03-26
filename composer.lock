@@ -1923,16 +1923,16 @@
         },
         {
             "name": "dof-dss/nicsdru_origins_modules",
-            "version": "0.3.2",
+            "version": "0.3.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/dof-dss/nicsdru_origins_modules.git",
-                "reference": "cf82005be030d512c02cf3f795aa5fef596d352d"
+                "reference": "210e48f5a4c315959609e76d49fadf50245c47e4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/dof-dss/nicsdru_origins_modules/zipball/cf82005be030d512c02cf3f795aa5fef596d352d",
-                "reference": "cf82005be030d512c02cf3f795aa5fef596d352d",
+                "url": "https://api.github.com/repos/dof-dss/nicsdru_origins_modules/zipball/210e48f5a4c315959609e76d49fadf50245c47e4",
+                "reference": "210e48f5a4c315959609e76d49fadf50245c47e4",
                 "shasum": ""
             },
             "require": {
@@ -1944,7 +1944,7 @@
                 "MIT"
             ],
             "description": "Generic modules for DOF-DSS Drupal sites",
-            "time": "2020-03-16T10:11:07+00:00"
+            "time": "2020-03-24T15:58:13+00:00"
         },
         {
             "name": "dof-dss/nicsdru_origins_theme",
@@ -3274,6 +3274,9 @@
                         "[web-root]/profiles/README.txt": "assets/scaffold/files/profiles.README.txt",
                         "[web-root]/themes/README.txt": "assets/scaffold/files/themes.README.txt"
                     }
+                },
+                "patches_applied": {
+                    "Drupal 8.8.1+ and 9 can fail to install in the web browser due to cache pollution": "https://www.drupal.org/files/issues/2020-03-16/3103529-9.0.x-115.patch"
                 }
             },
             "autoload": {
@@ -5624,6 +5627,73 @@
             "homepage": "https://www.drupal.org/project/paragraphs",
             "support": {
                 "source": "https://git.drupalcode.org/project/paragraphs"
+            }
+        },
+        {
+            "name": "drupal/password_policy",
+            "version": "3.0.0-alpha5",
+            "source": {
+                "type": "git",
+                "url": "https://git.drupalcode.org/project/password_policy.git",
+                "reference": "8.x-3.0-alpha5"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://ftp.drupal.org/files/projects/password_policy-8.x-3.0-alpha5.zip",
+                "reference": "8.x-3.0-alpha5",
+                "shasum": "74f170caa739e886d2de0df27a479f94014e273f"
+            },
+            "require": {
+                "drupal/core": "^8.5.0",
+                "drupal/ctools": "^3.1"
+            },
+            "type": "drupal-module",
+            "extra": {
+                "branch-alias": {
+                    "dev-3.x": "3.x-dev"
+                },
+                "drupal": {
+                    "version": "8.x-3.0-alpha5",
+                    "datestamp": "1559916365",
+                    "security-coverage": {
+                        "status": "not-covered",
+                        "message": "Alpha releases are not covered by Drupal security advisories."
+                    }
+                },
+                "patches_applied": {
+                    "field_last_password_reset is unknown while importing configuration on site without password_policy activated": "https://www.drupal.org/files/issues/2019-08-15/2771129-100_0.patch"
+                }
+            },
+            "notification-url": "https://packages.drupal.org/8/downloads",
+            "license": [
+                "GPL-2.0-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "AohRveTPV",
+                    "homepage": "https://www.drupal.org/user/2760115"
+                },
+                {
+                    "name": "deekayen",
+                    "homepage": "https://www.drupal.org/user/972"
+                },
+                {
+                    "name": "miglius",
+                    "homepage": "https://www.drupal.org/user/18741"
+                },
+                {
+                    "name": "nerdstein",
+                    "homepage": "https://www.drupal.org/user/1557710"
+                },
+                {
+                    "name": "shrop",
+                    "homepage": "https://www.drupal.org/user/14767"
+                }
+            ],
+            "description": "Sets up constraints and expiration of passwords.",
+            "homepage": "https://www.drupal.org/project/password_policy",
+            "support": {
+                "source": "https://git.drupalcode.org/project/password_policy"
             }
         },
         {
@@ -16446,6 +16516,7 @@
         "drupal/inline_entity_form": 5,
         "drupal/layout_builder_modal": 15,
         "drupal/media_browser_responsive_images": 20,
+        "drupal/password_policy": 15,
         "drupal/search_api_location": 15,
         "drupal/search_api_spellcheck": 15,
         "drupal/shs": 15,
