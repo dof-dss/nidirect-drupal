@@ -353,6 +353,11 @@ workflows:
           requires:
             - static_analysis
             - unit_kernel_tests
+          filters:
+            branches:
+              only:
+                - master
+                - development
       - deploy:
           requires:
             - deploy_gate
