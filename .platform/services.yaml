@@ -7,7 +7,7 @@ db:
   # the CLI will return an error.
   type: mariadb:10.4
   # The disk attribute is the size of the persistent disk (in MB) allocated to the service.
-  disk: 4096
+  disk: 2048
   configuration:
     schemas:
       - main
@@ -19,7 +19,7 @@ db:
 
 solr:
   type: solr:7.7
-  disk: 1024
+  disk: 256
   configuration:
     cores:
       default:
