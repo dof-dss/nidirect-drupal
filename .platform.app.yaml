@@ -60,8 +60,12 @@ hooks:
     cd web
     # Rebuild caches, run db-updates and import config.
     drush -y cache-rebuild
+    # Temporarily unset config_readonly lock.
+    drush -y cset config_readonly 0
     drush -y updatedb
     drush -y config-import
+    # Reset config_readonly lock.
+    drush -y cset config_readonly 1
 
 # The configuration of app when it is exposed to the web.
 web:

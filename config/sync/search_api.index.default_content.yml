@@ -35,6 +35,7 @@ dependencies:
     - field.storage.node.field_site_themes
     - field.storage.node.field_subtheme
     - search_api.server.solr_default
+    - core.entity_view_mode.node.full
 third_party_settings:
   search_api_solr:
     finalize: false
@@ -459,6 +460,26 @@ field_settings:
     dependencies:
       config:
         - field.storage.node.field_address
+  rendered_item:
+    label: 'Rendered HTML output'
+    property_path: rendered_item
+    type: text
+    configuration:
+      roles:
+        anonymous: anonymous
+      view_mode:
+        'entity:node':
+          application: ''
+          article: ''
+          contact: ''
+          driving_instructor: ''
+          embargoed_publication: ''
+          gp_practice: ''
+          health_condition: ''
+          landing_page: full
+          news: ''
+          page: full
+          publication: ''
   spellcheck_en:
     label: 'Spellchecker text'
     property_path: aggregated_field
