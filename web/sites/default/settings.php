@@ -37,11 +37,12 @@ $settings['config_readonly_whitelist_patterns'] = [
   'system.site',
 ];
 
-// Environment indicator config.
-$settings['simple_environment_indicator'] = sprintf('%s %s', getenv('SIMPLEI_ENV_COLOUR'), getenv('SIMPLEI_ENV_NAME'));
-
 // Geocoder API key.
 $config['geolocation.settings']['google_map_api_key'] = getenv('GOOGLE_MAP_API_KEY');
+
+// Environment indicator defaults.
+$env_colour = '#000000';
+$env_name = !empty(getenv('SIMPLEI_ENV_NAME')) ? getenv('SIMPLEI_ENV_NAME') : getenv('PLATFORM_BRANCH');
 
 // If we're running on platform.sh, check for and load relevant settings.
 if (!empty(getenv('PLATFORM_BRANCH'))) {
@@ -57,9 +58,9 @@ if (!empty(getenv('PLATFORM_BRANCH'))) {
       $settings['container_yamls'][] = $app_root . '/' . $site_path . '/services.yml';
       break;
 
-    case (preg_match('/D8NID-qa/', getenv('PLATFORM_BRANCH'))):
+    case (stripos(getenv('PLATFORM_BRANCH'), 'D8NID-qa') !== FALSE):
       // QA environment config adjustments.
-      $settings['simple_environment_indicator'] = '#e56716 QA';
+      $env_colour = '#e56716';
       break;
 
     default:
@@ -68,6 +69,8 @@ if (!empty(getenv('PLATFORM_BRANCH'))) {
       $settings['container_yamls'][] = $app_root . '/' . $site_path . '/services.development.yml';
       include $app_root . '/' . $site_path . '/settings.development.php';
   }
+
+  $settings['simple_environment_indicator'] = sprintf('%s %s', $env_colour, $env_name);
 }
 
 // Local settings. These come last so that they can override anything.
