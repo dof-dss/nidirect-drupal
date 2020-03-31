@@ -1,14 +1,13 @@
 {
-    "name": "nics/nidirect",
-    "description": "NI Direct Drupal 8 - Based on drupal-composer/drupal-project",
+    "name": "drupal/recommended-project",
+    "description": "Project template for Drupal 8 projects with a relocated document root",
     "type": "project",
     "license": "GPL-2.0-or-later",
-    "authors": [
-        {
-            "name": "",
-            "role": ""
-        }
-    ],
+    "homepage": "https://www.drupal.org/project/drupal",
+    "support": {
+        "docs": "https://www.drupal.org/docs/user_guide/en/index.html",
+        "chat": "https://www.drupal.org/node/314178"
+    },
     "repositories": [
         {
             "type": "composer",
@@ -28,39 +27,14 @@
                     "composer/installers": "^1.2.0"
                 }
             }
-        },
-        {
-            "type": "github",
-            "url": "git@github.com:dof-dss/nidirect-d8-mig-mods.git",
-            "no-api": true
-        },
-        {
-            "type": "github",
-            "url": "git@github.com:dof-dss/nidirect-site-modules.git",
-            "no-api": true
-        },
-        {
-            "type": "github",
-            "url": "git@github.com:dof-dss/nidirect-d8-test-install-profile.git",
-            "no-api": true
-        },
-        {
-            "type": "github",
-            "url": "git@github.com:dof-dss/nicsdru_origins_theme.git",
-            "no-api": true
-        },
-        {
-            "type": "github",
-            "url": "git@github.com:dof-dss/nicsdru_nidirect_theme.git",
-            "no-api": true
         }
     ],
     "require": {
         "composer/installers": "^1.2",
         "cweagans/composer-patches": "^1.6.5",
-        "dof-dss/nicsdru_nidirect_theme": "^0.1.0",
-        "dof-dss/nicsdru_origins_modules": "^0.2",
-        "dof-dss/nicsdru_origins_theme": "^0.1.3",
+        "dof-dss/nicsdru_nidirect_theme": "^0.2.0",
+        "dof-dss/nicsdru_origins_modules": "^0.3",
+        "dof-dss/nicsdru_origins_theme": "^0.2.0",
         "dof-dss/nidirect-site-modules": "^0.1.0",
         "drupal/address": "^1.7",
         "drupal/admin_toolbar": "^2.0",
@@ -73,14 +47,17 @@
         "drupal/config_readonly": "^1.0@beta",
         "drupal/config_split": "^1.4",
         "drupal/config_update": "^1.6",
-        "drupal/console": "^1.0.2",
-        "drupal/core": "^8.8",
+        "drupal/console": "^1.9",
         "drupal/core-composer-scaffold": "^8.8",
+        "drupal/core-project-message": "^8.8",
         "drupal/core-recommended": "^8.8",
+        "drupal/diff": "^1.0",
         "drupal/entity_embed": "1.0",
         "drupal/entityqueue": "^1.0@beta",
+        "drupal/eu_cookie_compliance": "^1.8",
         "drupal/facets": "^1.4",
         "drupal/facets_pretty_paths": "^1.0@beta",
+        "drupal/fastly": "^3.9",
         "drupal/field_group": "^3.0",
         "drupal/flag": "4.x-dev",
         "drupal/geocoder": "^2.5",
@@ -101,6 +78,7 @@
         "drupal/paragraphs": "^1.8",
         "drupal/pathauto": "^1.4",
         "drupal/redirect": "^1.3",
+        "drupal/redis": "^1.4",
         "drupal/scheduler": "^1.1",
         "drupal/scheduler_content_moderation_integration": "^1.1",
         "drupal/schema_metatag": "^1.4",
@@ -108,6 +86,7 @@
         "drupal/search_api_autocomplete": "^1.2",
         "drupal/search_api_location": "^1.0@alpha",
         "drupal/search_api_solr": "^3.2",
+        "drupal/search_api_spellcheck": "^3.0@alpha",
         "drupal/shs": "^1.0@alpha",
         "drupal/simplei": "^1.1",
         "drupal/smart_trim": "^1.2",
@@ -117,7 +96,6 @@
         "drupal/telephone_plus": "1.x-dev",
         "drupal/token": "^1.5",
         "drupal/token_filter": "^1.1",
-        "drupal/traffic_light_rating": "^1.0",
         "drupal/twig_extensions": "^2.0",
         "drupal/twig_field_value": "^1.2",
         "drupal/twig_tweak": "^2.4",
@@ -126,13 +104,12 @@
         "drupal/views_custom_cache_tag": "^1.1",
         "drupal/webform": "^5.4",
         "drupal/whatlinkshere": "^1.0",
-        "drush/drush": "^9.0.0",
+        "drush/drush": "^10.1",
         "harvesthq/chosen": "^1.8",
         "oomphinc/composer-installers-extender": "^1.1",
-        "symfony/event-dispatcher": "4.3.4 as 3.4.35",
+        "platformsh/config-reader": "^2.3",
+        "symfony/event-dispatcher": "4.3.11 as 3.4.35",
         "vlucas/phpdotenv": "^2.4",
-        "webflo/drupal-finder": "^1.0.0",
-        "webmozart/path-util": "^2.3",
         "zaporylie/composer-drupal-optimizations": "^1.0"
     },
     "require-dev": {
@@ -158,28 +135,13 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "config": {
-        "sort-packages": true,
-        "optimize-autoloader": true,
-        "preferred-install": {
-            "dof-dss/*": "source",
-            "*": "dist"
-        },
-        "platform": {
-            "php": "7.1.19"
-        }
-    },
-    "autoload": {
-        "psr-4": {
-            "Drupal\\Core\\Composer\\": "core/lib/Drupal/Core/Composer"
-        }
-    },
-    "autoload-dev": {
-        "psr-4": {
-            "Drupal\\Composer\\": "composer"
-        }
+        "sort-packages": true
     },
     "extra": {
         "patches": {
+            "drupal/core": {
+                "Drupal 8.8.1+ and 9 can fail to install in the web browser due to cache pollution": "https://www.drupal.org/files/issues/2020-03-16/3103529-9.0.x-115.patch"
+            },
             "drupal/config_split": {
                 "General typo issues": "https://www.drupal.org/files/issues/2018-10-02/general_typo_issues-3003865-4.patch",
                 "Capitalize the name of the module in .info.yml file": "https://www.drupal.org/files/issues/2018-10-05/config_split-info-3004751-2.patch",
@@ -206,59 +168,60 @@
             "drupal/redirect": {
                 "URL redirects listing only displays operations": "https://www.drupal.org/files/issues/2019-04-05/redirects_list_builder-3031125-9-d8.patch"
             },
-            "drupal/webform": {
-                "Required radios data-msg-required does not match data-webform-required-error when radios are conditionally visible": "https://www.drupal.org/files/issues/2020-01-27/webform.element.radios.data-msg-required.patch",
-                "Provide support for complete list of autocomplete attribute values defined in HTML 5.2 spec": "https://www.drupal.org/files/issues/2020-02-12/webform-autocomplete-attribute-extended-options.patch"
+            "drupal/search_api_spellcheck": {
+                "Suggestions Spellcheck views area plugin always hidden": "https://www.drupal.org/files/issues/2020-01-29/suggestions-spellcheck-always-hidden-1.patch"
             },
             "drupal/clientside_validation": {
                 "Cientside validation errors revert to being output as a label in webform wizard pages with ajax enabled": "https://www.drupal.org/files/issues/2020-02-03/cvjquery-ajax-webform-wizard.patch"
+            },
+            "drupal/password_policy": {
+                "field_last_password_reset is unknown while importing configuration on site without password_policy activated": "https://www.drupal.org/files/issues/2020-01-17/password_policy-n2771129-109.patch"
             }
         },
         "composer-exit-on-patch-failure": true,
         "patchLevel": {
             "drupal/core": "-p2"
         },
-        "installer-types": ["library"],
-        "installer-paths": {
-            "web/core": [
-                "type:drupal-core"
-            ],
-            "web/libraries/{$name}": [
-                "type:drupal-library",
-                "harvesthq/chosen"
-            ],
-            "web/modules/custom": [
-                "dof-dss/nidirect-site-modules"
-            ],
-            "web/modules/origins": [
-                "dof-dss/nicsdru_origins_modules"
-            ],
-            "web/modules/migrate/{$name}": [
-                "dof-dss/nidirect-migrations"
-            ],
-            "web/profiles/custom": [
-                "dof-dss/nidirect-d8-test-install-profile"
-            ],
-            "web/modules/contrib/{$name}": [
-                "type:drupal-module"
-            ],
-            "web/profiles/contrib/{$name}": [
-                "type:drupal-profile"
-            ],
-            "web/themes/contrib/{$name}": [
-                "type:drupal-theme"
-            ],
-            "web/themes/custom/{$name}": [
-                "type:drupal-custom-theme"
-            ],
-            "drush/Commands/{$name}": [
-                "type:drupal-drush"
-            ]
-        },
         "drupal-scaffold": {
             "locations": {
                 "web-root": "web/"
             }
+        },
+        "installer-paths": {
+            "web/core": ["type:drupal-core"],
+            "web/libraries/{$name}": [
+                "type:drupal-library",
+                "harvesthq/chosen"
+            ],
+            "web/modules/custom": ["dof-dss/nidirect-site-modules"],
+            "web/modules/origins": ["dof-dss/nicsdru_origins_modules"],
+            "web/modules/migrate/{$name}": ["dof-dss/nidirect-migrations"],
+            "web/modules/contrib/{$name}": ["type:drupal-module"],
+            "web/modules/custom/{$name}": ["type:drupal-custom-module"],
+            "web/themes/custom/{$name}": ["type:drupal-custom-theme"],
+            "web/themes/contrib/{$name}": ["type:drupal-theme"],
+            "web/profiles/contrib/{$name}": ["type:drupal-profile"],
+            "web/profiles/custom": ["dof-dss/nidirect-d8-test-install-profile"],
+            "drush/Commands/contrib/{$name}": ["type:drupal-drush"]
+        },
+        "drupal-core-project-message": {
+            "include-keys": ["homepage", "support"],
+            "post-create-project-cmd-message": [
+                "<bg=blue;fg=white>                                                         </>",
+                "<bg=blue;fg=white>  Congratulations, you’ve installed the Drupal codebase  </>",
+                "<bg=blue;fg=white>  from the drupal/recommended-project template!          </>",
+                "<bg=blue;fg=white>                                                         </>",
+                "",
+                "<bg=yellow;fg=black>Next steps</>:",
+
+                "  * Install the site: https://www.drupal.org/docs/8/install",
+                "  * Read the user guide: https://www.drupal.org/docs/user_guide/en/index.html",
+                "  * Get support: https://www.drupal.org/support",
+                "  * Get involved with the Drupal community:",
+                "      https://www.drupal.org/getting-involved",
+                "  * Remove the plugin that prints this message:",
+                "      composer remove drupal/core-project-message"
+            ]
         }
     }
 }

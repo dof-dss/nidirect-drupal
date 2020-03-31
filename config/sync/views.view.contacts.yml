@@ -6,6 +6,7 @@ dependencies:
     - search_api.index.default_content
   module:
     - search_api
+    - search_api_spellcheck
 id: contacts
 label: Contacts
 module: views
@@ -235,7 +236,8 @@ display:
             group_items: {  }
           parse_mode: phrase
           min_length: 3
-          fields: {  }
+          fields:
+            - title
           plugin_id: search_api_fulltext
       sorts:
         search_api_relevance:
@@ -276,6 +278,18 @@ display:
           plugin_id: result
       footer: {  }
       empty:
+        search_api_spellcheck_did_you_mean:
+          id: search_api_spellcheck_did_you_mean
+          table: views
+          field: search_api_spellcheck_did_you_mean
+          relationship: none
+          group_type: group
+          admin_label: ''
+          empty: true
+          search_api_spellcheck_count: 1
+          search_api_spellcheck_hide_on_result: 1
+          search_api_spellcheck_collate: true
+          plugin_id: search_api_spellcheck_did_you_mean
         area:
           id: area
           table: views

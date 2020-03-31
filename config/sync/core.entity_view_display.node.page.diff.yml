@@ -1,0 +1,104 @@
+uuid: 3e4394d4-a769-42d7-86eb-84bdadc79cdd
+langcode: en
+status: false
+dependencies:
+  config:
+    - core.entity_view_mode.node.diff
+    - field.field.node.page.body
+    - field.field.node.page.field_meta_tags
+    - field.field.node.page.field_next_audit_due
+    - field.field.node.page.field_toc_enable
+    - field.field.node.page.layout_builder__layout
+    - node.type.page
+  module:
+    - layout_builder
+    - layout_builder_restrictions
+    - metatag
+    - text
+    - user
+third_party_settings:
+  layout_builder:
+    allow_custom: false
+    enabled: false
+  layout_builder_restrictions:
+    entity_view_mode_restriction:
+      allowed_blocks:
+        'Chaos Tools': {  }
+        Content: {  }
+        'Content fields':
+          - 'field_block:node:page:body'
+          - 'field_block:node:page:title'
+        'Custom block types':
+          - basic
+        Devel: {  }
+        Forms: {  }
+        Help: {  }
+        'Inline blocks':
+          - 'inline_block:basic'
+        'Lists (Views)': {  }
+        Menus: {  }
+        'NI Direct': {  }
+        NIDirect:
+          - in_page_navigation_block
+        'NIDirect Contacts':
+          - contact_az_block
+        System:
+          - system_main_block
+        User: {  }
+        'User fields': {  }
+        Webform:
+          - webform_block
+        core:
+          - page_title_block
+      allowed_layouts: {  }
+_core:
+  default_config_hash: g1S3_GLaxq4l3I9RIca5Mlz02MxI2KmOquZpHw59akM
+id: node.page.diff
+targetEntityType: node
+bundle: page
+mode: diff
+content:
+  body:
+    label: hidden
+    type: text_default
+    weight: 2
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  content_moderation_control:
+    weight: 0
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_meta_tags:
+    weight: 4
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    type: metatag_empty_formatter
+    region: content
+  field_toc_enable:
+    type: boolean
+    weight: 1
+    region: content
+    label: above
+    settings:
+      format: default
+      format_custom_false: ''
+      format_custom_true: ''
+    third_party_settings: {  }
+  links:
+    weight: 3
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  toc_display:
+    weight: -10
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+hidden:
+  field_next_audit_due: true
+  langcode: true
+  layout_builder__layout: true
+  search_api_excerpt: true
