@@ -29,8 +29,13 @@ $config['config_split.config_split.local']['status'] = FALSE;
 $config['config_split.config_split.development']['status'] = FALSE;
 $config['config_split.config_split.production']['status'] = FALSE;
 
-// Config readonly settings.
-$settings['config_readonly'] = getenv('CONFIG_READONLY');
+// Config readonly settings; default to active if not specified.
+$settings['config_readonly'] = !empty(getenv('CONFIG_READONLY')) ? getenv('CONFIG_READONLY') : 1;
+
+// Permit changes via command line.
+if (PHP_SAPI === 'cli') {
+  $settings['config_readonly'] = 0;
+}
 
 // Configuration that is allowed to be changed in readonly environments.
 $settings['config_readonly_whitelist_patterns'] = [
@@ -41,7 +46,7 @@ $settings['config_readonly_whitelist_patterns'] = [
 $config['geolocation.settings']['google_map_api_key'] = getenv('GOOGLE_MAP_API_KEY');
 
 // Environment indicator defaults.
-$env_colour = '#000000';
+$env_colour = !empty(getenv('SIMPLEI_ENV_COLOR')) ? getenv('SIMPLEI_ENV_COLOR') : '#000000';;
 $env_name = !empty(getenv('SIMPLEI_ENV_NAME')) ? getenv('SIMPLEI_ENV_NAME') : getenv('PLATFORM_BRANCH');
 
 // If we're running on platform.sh, check for and load relevant settings.
@@ -69,9 +74,9 @@ if (!empty(getenv('PLATFORM_BRANCH'))) {
       $settings['container_yamls'][] = $app_root . '/' . $site_path . '/services.development.yml';
       include $app_root . '/' . $site_path . '/settings.development.php';
   }
-
-  $settings['simple_environment_indicator'] = sprintf('%s %s', $env_colour, $env_name);
 }
+
+$settings['simple_environment_indicator'] = sprintf('%s %s', $env_colour, $env_name);
 
 // Local settings. These come last so that they can override anything.
 if (file_exists($app_root . '/' . $site_path . '/settings.local.php')) {

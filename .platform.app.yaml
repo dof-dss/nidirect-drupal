@@ -54,7 +54,6 @@ hooks:
     set -e
     bash install-redis.sh 5.1.1
     curl -sS https://platform.sh/cli/installer | php
-    platform variable:set env:CONFIG_READONLY 0 -p $PLATFORM_PROJECT -e $PLATFORM_BRANCH -y
   # The deploy hook runs after your application has been deployed and started.
   deploy: |
     set -e
@@ -64,9 +63,6 @@ hooks:
     drush -y cache-rebuild
     drush -y updatedb
     drush -y config-import
-  post_deploy: |
-    set -e
-    platform variable:set env:CONFIG_READONLY 1 -p $PLATFORM_PROJECT -e $PLATFORM_BRANCH -y
 # The configuration of app when it is exposed to the web.
 web:
   # Specific parameters for different URL prefixes.
