@@ -1,27 +1,23 @@
-uuid: c1cb669f-88c0-4d6e-9dab-a68a2ea70ce1
+uuid: 52363a5e-401c-4107-99d1-454125821310
 langcode: en
 status: true
 dependencies:
-  config:
-    - views.view.featured
   module:
+    - nidirect_homepage
     - system
-    - views
   theme:
     - nicsdru_nidirect_theme
-id: views_block__featured_homepage_featured
+id: featuredcontent
 theme: nicsdru_nidirect_theme
 region: bottom_banner
 weight: 0
 provider: null
-plugin: 'views_block:featured-homepage_featured'
+plugin: featured_content
 settings:
-  id: 'views_block:featured-homepage_featured'
-  label: ''
-  provider: views
+  id: featured_content
+  label: Featured
+  provider: nidirect_homepage
   label_display: visible
-  views_label: ''
-  items_per_page: none
 visibility:
   request_path:
     id: request_path
