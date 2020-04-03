@@ -11,7 +11,6 @@ dependencies:
     - field.field.node.contact.field_contact_hours
     - field.field.node.contact.field_contact_website
     - field.field.node.contact.field_email_address
-    - field.field.node.contact.field_toc_enable
     - field.field.node.contact.field_location
     - field.field.node.contact.field_meta_tags
     - field.field.node.contact.field_next_audit_due
@@ -107,21 +106,16 @@ content:
     third_party_settings: {  }
     type: telephone_plus_link
     region: content
-  field_toc_enable:
-    weight: 8
-    label: above
-    settings:
-      format: default
-      format_custom_false: ''
-      format_custom_true: ''
-    third_party_settings: {  }
-    type: boolean
-    region: content
   links:
     weight: 1
     region: content
     settings: {  }
     third_party_settings: {  }
+  toc_display:
+    weight: -10
+    settings: {  }
+    third_party_settings: {  }
+    region: content
 hidden:
   field_contact_additional_info: true
   field_contact_category: true
