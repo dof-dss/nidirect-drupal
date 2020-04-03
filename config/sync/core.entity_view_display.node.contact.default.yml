@@ -23,6 +23,7 @@ dependencies:
     - address
     - geolocation
     - metatag
+    - smart_trim
     - telephone_plus
     - text
     - user
@@ -81,6 +82,14 @@ content:
         style: ''
         preferScrollingToZooming: 0
         gestureHandling: auto
+      data_provider_settings: {  }
+      centre:
+        fit_bounds:
+          enable: true
+          weight: -101
+          map_center_id: fit_bounds
+          settings:
+            reset_zoom: true
     third_party_settings: {  }
     type: geolocation_map
     region: content
@@ -94,9 +103,19 @@ content:
   field_summary:
     weight: 4
     label: above
-    settings: {  }
+    settings:
+      trim_length: 600
+      trim_type: chars
+      trim_suffix: ''
+      wrap_output: false
+      wrap_class: trimmed
+      more_link: false
+      more_class: more-link
+      more_text: More
+      summary_handler: full
+      trim_options: {  }
     third_party_settings: {  }
-    type: text_default
+    type: smart_trim
     region: content
   field_telephone:
     weight: 5
@@ -111,11 +130,6 @@ content:
     region: content
     settings: {  }
     third_party_settings: {  }
-  toc_display:
-    weight: -10
-    settings: {  }
-    third_party_settings: {  }
-    region: content
 hidden:
   field_contact_additional_info: true
   field_contact_category: true
@@ -128,3 +142,4 @@ hidden:
   field_supplementary_contact: true
   langcode: true
   search_api_excerpt: true
+  toc_display: true
