@@ -17,7 +17,8 @@ db:
         privileges:
           main: admin
 
-solr:
+# Fudging the service name forces a full rebuild with any new config.
+solr_rebuild:
   type: solr:7.7
   disk: 1024
   configuration:
