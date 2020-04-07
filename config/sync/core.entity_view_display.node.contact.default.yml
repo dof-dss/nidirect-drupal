@@ -11,7 +11,6 @@ dependencies:
     - field.field.node.contact.field_contact_hours
     - field.field.node.contact.field_contact_website
     - field.field.node.contact.field_email_address
-    - field.field.node.contact.field_toc_enable
     - field.field.node.contact.field_location
     - field.field.node.contact.field_meta_tags
     - field.field.node.contact.field_next_audit_due
@@ -24,6 +23,7 @@ dependencies:
     - address
     - geolocation
     - metatag
+    - smart_trim
     - telephone_plus
     - text
     - user
@@ -82,6 +82,14 @@ content:
         style: ''
         preferScrollingToZooming: 0
         gestureHandling: auto
+      data_provider_settings: {  }
+      centre:
+        fit_bounds:
+          enable: true
+          weight: -101
+          map_center_id: fit_bounds
+          settings:
+            reset_zoom: true
     third_party_settings: {  }
     type: geolocation_map
     region: content
@@ -95,9 +103,19 @@ content:
   field_summary:
     weight: 4
     label: above
-    settings: {  }
+    settings:
+      trim_length: 600
+      trim_type: chars
+      trim_suffix: ''
+      wrap_output: false
+      wrap_class: trimmed
+      more_link: false
+      more_class: more-link
+      more_text: More
+      summary_handler: full
+      trim_options: {  }
     third_party_settings: {  }
-    type: text_default
+    type: smart_trim
     region: content
   field_telephone:
     weight: 5
@@ -106,16 +124,6 @@ content:
       vcard: true
     third_party_settings: {  }
     type: telephone_plus_link
-    region: content
-  field_toc_enable:
-    weight: 8
-    label: above
-    settings:
-      format: default
-      format_custom_false: ''
-      format_custom_true: ''
-    third_party_settings: {  }
-    type: boolean
     region: content
   links:
     weight: 1
@@ -134,3 +142,4 @@ hidden:
   field_supplementary_contact: true
   langcode: true
   search_api_excerpt: true
+  toc_display: true
