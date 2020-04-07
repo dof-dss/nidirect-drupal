@@ -628,7 +628,7 @@ display:
             more_link: false
             more_link_text: ''
             more_link_path: ''
-            strip_tags: false
+            strip_tags: true
             trim: true
             preserve_tags: ''
             html: false
@@ -657,7 +657,7 @@ display:
           multi_type: separator
           separator: ', '
           field_api_classes: false
-          field_rendering: false
+          field_rendering: true
           fallback_handler: search_api
           fallback_options:
             link_to_item: false
@@ -666,6 +666,8 @@ display:
             multi_separator: ', '
           entity_type: node
           plugin_id: search_api_field
+      defaults:
+        fields: false
     cache_metadata:
       max-age: -1
       contexts:
