@@ -1,0 +1,41 @@
+uuid: ff97e9ba-c989-49f8-893c-a192a4079981
+langcode: en
+status: true
+dependencies:
+  config:
+    - views.view.contact_children
+  module:
+    - ctools
+    - node
+    - views
+  theme:
+    - nicsdru_nidirect_theme
+id: views_block__contact_children_block_1
+theme: nicsdru_nidirect_theme
+region: content
+weight: -18
+provider: null
+plugin: 'views_block:contact_children-block_1'
+settings:
+  id: 'views_block:contact_children-block_1'
+  label: ''
+  provider: views
+  label_display: '0'
+  views_label: ''
+  items_per_page: none
+  context_mapping: {  }
+visibility:
+  'entity_bundle:node':
+    id: 'entity_bundle:node'
+    bundles:
+      contact: contact
+    negate: false
+    context_mapping:
+      node: '@node.node_route_context:node'
+  node_type:
+    id: node_type
+    bundles:
+      contact: contact
+    negate: false
+    context_mapping:
+      node: '@node.node_route_context:node'
