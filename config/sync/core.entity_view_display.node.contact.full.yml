@@ -15,6 +15,7 @@ dependencies:
     - field.field.node.contact.field_location
     - field.field.node.contact.field_meta_tags
     - field.field.node.contact.field_next_audit_due
+    - field.field.node.contact.field_related_info
     - field.field.node.contact.field_site_themes
     - field.field.node.contact.field_summary
     - field.field.node.contact.field_supplementary_contact
@@ -113,7 +114,7 @@ content:
     settings: {  }
     third_party_settings: {  }
   field_location:
-    weight: 6
+    weight: 7
     label: above
     settings:
       title: ''
@@ -154,6 +155,18 @@ content:
     third_party_settings: {  }
     type: geolocation_map
     region: content
+  field_related_info:
+    type: link
+    weight: 6
+    region: content
+    label: above
+    settings:
+      trim_length: 80
+      url_only: false
+      url_plain: false
+      rel: ''
+      target: ''
+    third_party_settings: {  }
   field_telephone:
     weight: 5
     label: hidden
