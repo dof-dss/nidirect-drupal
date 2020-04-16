@@ -29,7 +29,8 @@ $config['config_split.config_split.local']['status'] = FALSE;
 $config['config_split.config_split.development']['status'] = FALSE;
 $config['config_split.config_split.production']['status'] = FALSE;
 
-// Config readonly settings; default to active if not specified.
+// Config readonly settings; should be set to 1 or 0 due to type juggling in PHP unable to correctly interpret strings
+// such as 'true' or 'false' from envvars.
 $settings['config_readonly'] = (bool) getenv('CONFIG_READONLY');
 
 // Permit changes via command line.
