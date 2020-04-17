@@ -6,7 +6,25 @@ dependencies:
     - field.storage.node.field_location
     - node.type.contact
   module:
+    - geocoder_field
     - geolocation
+third_party_settings:
+  geocoder_field:
+    method: source
+    weight: 0
+    geocode_field: field_address
+    reverse_geocode_field: ''
+    skip_not_empty_value: 0
+    disabled: false
+    hidden: false
+    plugins:
+      - googlemaps
+    dumper: geolocation_geocoder_v3
+    delta_handling: default
+    failure:
+      handling: preserve
+      status_message: true
+      log: true
 id: node.contact.field_location
 field_name: field_location
 entity_type: node
