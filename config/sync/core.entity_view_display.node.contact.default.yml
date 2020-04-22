@@ -22,9 +22,9 @@ dependencies:
     - node.type.contact
   module:
     - address
-    - geolocation
     - link
     - metatag
+    - nidirect_contacts
     - smart_trim
     - telephone_plus
     - text
@@ -57,43 +57,14 @@ content:
     weight: 7
     label: above
     settings:
-      title: ''
-      set_marker: '1'
-      common_map: ''
-      info_text: ''
-      use_overridden_map_settings: 0
-      map_provider_id: google_maps
-      map_provider_settings:
-        type: ROADMAP
-        zoom: 10
-        minZoom: 0
-        maxZoom: 18
-        rotateControl: false
-        mapTypeControl: 1
-        streetViewControl: 1
-        zoomControl: 1
-        fullscreenControl: 0
-        scrollwheel: 1
-        disableDoubleClickZoom: 0
-        draggable: 1
-        height: 400px
-        width: 100%
-        info_auto_display: 1
-        marker_icon_path: ''
-        disableAutoPan: 1
-        style: ''
-        preferScrollingToZooming: 0
-        gestureHandling: auto
-      data_provider_settings: {  }
-      centre:
-        fit_bounds:
-          enable: true
-          weight: -101
-          map_center_id: fit_bounds
-          settings:
-            reset_zoom: true
+      map_type: roadmap
+      zoom: '15'
+      placeholder: empty
+      link_text: ''
+      map_width: '300'
+      map_height: '300'
     third_party_settings: {  }
-    type: geolocation_map
+    type: gmaps_lazy_load_formatter
     region: content
   field_meta_tags:
     weight: 3
