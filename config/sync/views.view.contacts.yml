@@ -25,7 +25,7 @@ display:
         type: none
         options: {  }
       cache:
-        type: tag
+        type: search_api_tag
         options: {  }
       query:
         type: views_query
@@ -240,18 +240,6 @@ display:
             - title
           plugin_id: search_api_fulltext
       sorts:
-        search_api_relevance:
-          id: search_api_relevance
-          table: search_api_index_default_content
-          field: search_api_relevance
-          relationship: none
-          group_type: group
-          admin_label: ''
-          order: DESC
-          exposed: true
-          expose:
-            label: Relevance
-          plugin_id: search_api
         title:
           id: title
           table: search_api_index_default_content
