@@ -41,6 +41,7 @@ if (PHP_SAPI === 'cli') {
 // Configuration that is allowed to be changed in readonly environments.
 $settings['config_readonly_whitelist_patterns'] = [
   'system.site',
+  'search_api.index.default_content',
 ];
 
 // Geocoder API key.
