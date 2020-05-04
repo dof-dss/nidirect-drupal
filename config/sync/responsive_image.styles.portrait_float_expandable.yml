@@ -1,36 +1,36 @@
-uuid: ff07677f-4f9c-4677-964d-f7dc4450a285
+uuid: 47481c66-c6a8-450f-af1b-f6e2cbb9e707
 langcode: en
 status: true
 dependencies:
   config:
-    - image.style.inline
-    - image.style.inline_x2
-    - image.style.nigov_landscape_450x300_x1
-    - image.style.nigov_landscape_900x600_x2
+    - image.style.nigov_portrait_med_450_x1
+    - image.style.nigov_portrait_med_900_x2
+    - image.style.nigov_portrait_xl_1240_x2
+    - image.style.nigov_portrait_xl_620_x1
   theme:
     - nicsdru_origins_theme
-id: inline
-label: 'Landscape float'
+id: portrait_float_expandable
+label: 'Portrait float expandable'
 image_style_mappings:
   -
     breakpoint_id: nicsdru_origins_theme.mob
     multiplier: 1x
     image_mapping_type: image_style
-    image_mapping: inline
+    image_mapping: nigov_portrait_xl_620_x1
   -
     breakpoint_id: nicsdru_origins_theme.mob
     multiplier: 2x
     image_mapping_type: image_style
-    image_mapping: inline_x2
+    image_mapping: nigov_portrait_xl_1240_x2
   -
     breakpoint_id: nicsdru_origins_theme.min
     multiplier: 1x
     image_mapping_type: image_style
-    image_mapping: nigov_landscape_450x300_x1
+    image_mapping: nigov_portrait_med_450_x1
   -
     breakpoint_id: nicsdru_origins_theme.min
     multiplier: 2x
     image_mapping_type: image_style
-    image_mapping: nigov_landscape_900x600_x2
+    image_mapping: nigov_portrait_med_900_x2
 breakpoint_group: nicsdru_origins_theme
-fallback_image_style: inline
+fallback_image_style: nigov_portrait_xl_620_x1
