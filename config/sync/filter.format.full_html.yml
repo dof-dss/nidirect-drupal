@@ -5,8 +5,6 @@ dependencies:
   module:
     - editor
     - entity_embed
-    - media
-    - media_browser_responsive_images
     - noreferrer
     - token_filter
 _core:
@@ -42,7 +40,7 @@ filters:
   entity_embed:
     id: entity_embed
     provider: entity_embed
-    status: true
+    status: false
     weight: -45
     settings: {  }
   filter_autop:
@@ -92,20 +90,3 @@ filters:
     weight: -46
     settings:
       replace_empty: '1'
-  filter_media_responsive_image_style:
-    id: filter_media_responsive_image_style
-    provider: media_browser_responsive_images
-    status: true
-    weight: -44
-    settings:
-      responsive_style_inline: '1'
-      responsive_style_inline_xl_tbc: '1'
-  media_embed:
-    id: media_embed
-    provider: media
-    status: false
-    weight: 100
-    settings:
-      default_view_mode: default
-      allowed_media_types: {  }
-      allowed_view_modes: {  }
