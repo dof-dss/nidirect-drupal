@@ -2,9 +2,12 @@ uuid: d1446a83-099f-4509-9f18-e9bd7c7c20bf
 langcode: en
 status: true
 dependencies:
+  config:
+    - core.entity_view_mode.media.embed
   module:
     - editor
     - entity_embed
+    - media
     - noreferrer
     - token_filter
 _core:
@@ -40,7 +43,7 @@ filters:
   entity_embed:
     id: entity_embed
     provider: entity_embed
-    status: false
+    status: true
     weight: -45
     settings: {  }
   filter_autop:
@@ -90,3 +93,13 @@ filters:
     weight: -46
     settings:
       replace_empty: '1'
+  media_embed:
+    id: media_embed
+    provider: media
+    status: true
+    weight: 100
+    settings:
+      default_view_mode: embed
+      allowed_media_types: {  }
+      allowed_view_modes:
+        embed: embed

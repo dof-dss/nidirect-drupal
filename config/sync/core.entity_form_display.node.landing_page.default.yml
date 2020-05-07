@@ -3,7 +3,6 @@ langcode: en
 status: true
 dependencies:
   config:
-    - entity_browser.browser.media_entity_browser
     - field.field.node.landing_page.body
     - field.field.node.landing_page.field_banner_image
     - field.field.node.landing_page.field_banner_image_overlay
@@ -22,7 +21,6 @@ dependencies:
     - workflows.workflow.nics_editorial_workflow
   module:
     - content_moderation
-    - entity_browser
     - metatag
     - paragraphs
     - path
@@ -51,36 +49,6 @@ content:
     region: content
     settings: {  }
     third_party_settings: {  }
-  field_banner_image:
-    weight: 4
-    settings:
-      entity_browser: media_entity_browser
-      field_widget_display: rendered_entity
-      field_widget_display_settings:
-        view_mode: preview
-      field_widget_edit: true
-      field_widget_remove: true
-      selection_mode: selection_append
-      field_widget_replace: false
-      open: false
-    third_party_settings: {  }
-    type: entity_browser_entity_reference
-    region: content
-  field_banner_image_overlay:
-    weight: 5
-    settings:
-      entity_browser: media_entity_browser
-      field_widget_display: rendered_entity
-      field_widget_display_settings:
-        view_mode: preview
-      field_widget_edit: true
-      field_widget_remove: true
-      selection_mode: selection_append
-      field_widget_replace: false
-      open: false
-    third_party_settings: {  }
-    type: entity_browser_entity_reference
-    region: content
   field_enable_title:
     type: boolean_checkbox
     weight: 1
@@ -126,7 +94,8 @@ content:
     third_party_settings: {  }
   field_meta_tags:
     weight: 16
-    settings: {  }
+    settings:
+      sidebar: true
     third_party_settings: {  }
     type: metatag_firehose
     region: content
@@ -146,7 +115,7 @@ content:
       rows: 5
       placeholder: ''
     third_party_settings: {  }
-    type: text_textarea
+    type: string_textarea
     region: content
   field_teaser:
     type: string_textfield
@@ -254,5 +223,7 @@ content:
     settings: {  }
     third_party_settings: {  }
 hidden:
+  field_banner_image: true
+  field_banner_image_overlay: true
   field_top_level_theme: true
   layout_builder__layout: true

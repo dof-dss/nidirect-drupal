@@ -3,7 +3,6 @@ langcode: en
 status: true
 dependencies:
   config:
-    - entity_browser.browser.document_entity_browser
     - field.field.node.embargoed_publication.body
     - field.field.node.embargoed_publication.field_meta_tags
     - field.field.node.embargoed_publication.field_publication_type
@@ -18,10 +17,10 @@ dependencies:
   module:
     - content_moderation
     - datetime
-    - entity_browser
     - metatag
     - path
     - scheduler
+    - scheduler_content_moderation_integration
     - shs
     - text
 id: node.embargoed_publication.default
@@ -47,7 +46,8 @@ content:
     third_party_settings: {  }
   field_meta_tags:
     weight: 14
-    settings: {  }
+    settings:
+      sidebar: true
     third_party_settings: {  }
     type: metatag_firehose
     region: content
@@ -63,21 +63,6 @@ content:
     region: content
     settings: {  }
     third_party_settings: {  }
-  field_secure_attachment:
-    weight: 26
-    settings:
-      entity_browser: document_entity_browser
-      field_widget_display: rendered_entity
-      field_widget_display_settings:
-        view_mode: preview
-      field_widget_edit: true
-      field_widget_remove: true
-      selection_mode: selection_append
-      field_widget_replace: false
-      open: false
-    third_party_settings: {  }
-    type: entity_browser_entity_reference
-    region: content
   field_site_themes:
     type: options_shs
     weight: 2
@@ -104,7 +89,7 @@ content:
       rows: 5
       placeholder: ''
     third_party_settings: {  }
-    type: text_textarea
+    type: string_textarea
     region: content
   langcode:
     type: language_select
@@ -199,4 +184,5 @@ content:
     settings: {  }
     third_party_settings: {  }
 hidden:
+  field_secure_attachment: true
   field_top_level_theme: true

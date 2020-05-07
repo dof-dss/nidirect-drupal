@@ -2,9 +2,13 @@ uuid: e9a359c9-5d4a-4e9e-a1cc-61d09645136e
 langcode: en
 status: true
 dependencies:
+  config:
+    - core.entity_view_mode.media.embed
   module:
     - editor
     - entity_embed
+    - google_analytics_counter
+    - media
     - noreferrer
     - token_filter
 _core:
@@ -19,7 +23,7 @@ filters:
     status: true
     weight: -50
     settings:
-      allowed_html: '<a class href hreflang> <em> <strong> <cite> <blockquote cite> <code> <ul class type> <ol class start type> <li> <dl> <dt> <dd> <h2 id> <h3 id> <h4 id> <div class> <p class translate> <br> <img src alt height width data-* typeof> <sup> <table class> <caption> <tbody> <thead> <tfoot> <th scope> <td> <tr> <drupal-entity data-* data-entity-type data-entity-uuid data-entity-embed-display data-entity-embed-display-settings data-align data-caption data-embed-button alt title class> <picture data-* alt title class> <source srcset media type> <address>'
+      allowed_html: '<a class href hreflang> <em> <strong> <cite> <blockquote cite> <code> <ul class type> <ol class start type> <li> <dl> <dt> <dd> <h2 id> <h3 id> <h4 id> <div class> <p class translate> <br> <img src alt height width data-* typeof> <sup> <table class> <caption> <tbody> <thead> <tfoot> <th scope> <td> <tr> <drupal-entity data-* data-entity-type data-entity-uuid data-entity-embed-display data-entity-embed-display-settings data-align data-caption data-embed-button alt title class> <picture data-* alt title class> <source srcset media type> <address> <drupal-media data-entity-type, data-entity-uuid, data-entity-embed-display, data-entity-embed-display-settings, data-align, data-caption, data-embed-button alt title class>'
       filter_html_help: false
       filter_html_nofollow: false
   filter_align:
@@ -43,8 +47,8 @@ filters:
   entity_embed:
     id: entity_embed
     provider: entity_embed
-    status: false
-    weight: -48
+    status: true
+    weight: -47
     settings: {  }
   filter_autop:
     id: filter_autop
@@ -90,3 +94,23 @@ filters:
     weight: -38
     settings:
       replace_empty: '0'
+  media_embed:
+    id: media_embed
+    provider: media
+    status: true
+    weight: -48
+    settings:
+      default_view_mode: embed
+      allowed_media_types:
+        audio: audio
+        image: image
+        remote_video: remote_video
+        video: video
+      allowed_view_modes:
+        embed: embed
+  google_analytics_counter_filter:
+    id: google_analytics_counter_filter
+    provider: google_analytics_counter
+    status: false
+    weight: -37
+    settings: {  }
