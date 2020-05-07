@@ -15,13 +15,8 @@ targetEntityType: node
 bundle: feature
 mode: default
 content:
-  content_moderation_control:
-    weight: -20
-    region: content
-    settings: {  }
-    third_party_settings: {  }
   field_link_url:
-    weight: 103
+    weight: 2
     label: hidden
     settings:
       trim_length: 80
@@ -30,29 +25,27 @@ content:
       rel: ''
       target: ''
     third_party_settings: {  }
-    type: link
+    type: link_separate
     region: content
   field_photo:
-    weight: 101
+    weight: 0
     label: hidden
     settings:
-      link: true
+      view_mode: feature_card
+      link: false
     third_party_settings: {  }
-    type: entity_reference_label
+    type: entity_reference_entity_view
     region: content
   field_teaser:
-    weight: 102
+    weight: 1
     label: hidden
     settings:
       link_to_entity: false
     third_party_settings: {  }
     type: string
     region: content
-  links:
-    weight: 100
-    region: content
-    settings: {  }
-    third_party_settings: {  }
 hidden:
+  content_moderation_control: true
   langcode: true
+  links: true
   search_api_excerpt: true
