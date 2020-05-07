@@ -1,0 +1,24 @@
+uuid: abfdc4ba-0cbf-4f3d-b131-31cedee921a0
+langcode: en
+status: true
+dependencies:
+  config:
+    - image.style.nigov_landscape_thumbnail_150x100_x1
+    - image.style.nigov_landscape_thumbnail_300x200_x2
+  theme:
+    - nicsdru_origins_theme
+id: news_thumbnail
+label: 'News thumbnail'
+image_style_mappings:
+  -
+    breakpoint_id: nicsdru_origins_theme.min
+    multiplier: 1x
+    image_mapping_type: image_style
+    image_mapping: nigov_landscape_thumbnail_150x100_x1
+  -
+    breakpoint_id: nicsdru_origins_theme.min
+    multiplier: 2x
+    image_mapping_type: image_style
+    image_mapping: nigov_landscape_thumbnail_300x200_x2
+breakpoint_group: nicsdru_origins_theme
+fallback_image_style: nigov_landscape_thumbnail_150x100_x1
