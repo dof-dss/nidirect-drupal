@@ -1,0 +1,24 @@
+uuid: 274980a2-f688-4070-b58c-31af3074b96a
+langcode: en
+status: true
+dependencies:
+  config:
+    - image.style.nigov_card_small_300x150_x1
+    - image.style.nigov_card_small_600x300_x2
+  theme:
+    - nicsdru_origins_theme
+id: feature_card
+label: 'Feature card'
+image_style_mappings:
+  -
+    breakpoint_id: nicsdru_origins_theme.min
+    multiplier: 1x
+    image_mapping_type: image_style
+    image_mapping: nigov_card_small_300x150_x1
+  -
+    breakpoint_id: nicsdru_origins_theme.min
+    multiplier: 2x
+    image_mapping_type: image_style
+    image_mapping: nigov_card_small_600x300_x2
+breakpoint_group: nicsdru_origins_theme
+fallback_image_style: nigov_card_small_300x150_x1
