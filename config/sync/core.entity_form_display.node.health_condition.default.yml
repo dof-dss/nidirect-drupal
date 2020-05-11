@@ -41,6 +41,7 @@ dependencies:
     - field_group
     - inline_entity_form
     - link
+    - media_library
     - metatag
     - path
     - scheduler
@@ -118,6 +119,13 @@ content:
         entity_browser_id: _none
     type: inline_entity_form_complex
     region: content
+  field_banner_image:
+    type: media_library_widget
+    weight: 6
+    region: content
+    settings:
+      media_types: {  }
+    third_party_settings: {  }
   field_hc_body_location:
     type: entity_reference_autocomplete
     weight: 20
@@ -166,7 +174,7 @@ content:
     third_party_settings: {  }
   field_hc_primary_symptom_2:
     type: entity_reference_autocomplete
-    weight: 24
+    weight: 25
     region: content
     settings:
       match_operator: CONTAINS
@@ -176,7 +184,7 @@ content:
     third_party_settings: {  }
   field_hc_primary_symptom_3:
     type: entity_reference_autocomplete
-    weight: 25
+    weight: 26
     region: content
     settings:
       match_operator: CONTAINS
@@ -186,7 +194,7 @@ content:
     third_party_settings: {  }
   field_hc_primary_symptom_4:
     type: entity_reference_autocomplete
-    weight: 26
+    weight: 27
     region: content
     settings:
       match_operator: CONTAINS
@@ -196,7 +204,7 @@ content:
     third_party_settings: {  }
   field_hc_secondary_symptoms:
     type: entity_reference_autocomplete
-    weight: 27
+    weight: 29
     region: content
     settings:
       match_operator: CONTAINS
@@ -232,6 +240,13 @@ content:
       size: 60
       placeholder: ''
       match_limit: 10
+    third_party_settings: {  }
+  field_photo:
+    type: media_library_widget
+    weight: 7
+    region: content
+    settings:
+      media_types: {  }
     third_party_settings: {  }
   field_published_date:
     type: datetime_default
@@ -302,7 +317,7 @@ content:
     third_party_settings: {  }
   field_top_level_theme:
     type: entity_reference_autocomplete
-    weight: 23
+    weight: 24
     region: content
     settings:
       match_operator: CONTAINS
@@ -317,7 +332,7 @@ content:
     third_party_settings: {  }
   langcode:
     type: language_select
-    weight: 30
+    weight: 32
     region: content
     settings:
       include_locked: true
@@ -343,13 +358,13 @@ content:
     third_party_settings: {  }
   publish_on:
     type: datetime_timestamp_no_default
-    weight: 32
+    weight: 34
     region: content
     settings: {  }
     third_party_settings: {  }
   publish_state:
     type: scheduler_moderation
-    weight: 30
+    weight: 31
     region: content
     settings: {  }
     third_party_settings: {  }
@@ -392,7 +407,7 @@ content:
     third_party_settings: {  }
   unpublish_on:
     type: datetime_timestamp_no_default
-    weight: 31
+    weight: 33
     region: content
     settings: {  }
     third_party_settings: {  }
@@ -409,6 +424,4 @@ content:
     third_party_settings: {  }
 hidden:
   field_alternative_title: true
-  field_banner_image: true
   field_index_letter: true
-  field_photo: true
