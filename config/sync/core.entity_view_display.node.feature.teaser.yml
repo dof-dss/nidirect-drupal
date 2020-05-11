@@ -1,6 +1,6 @@
 uuid: b15580b0-65b6-4e27-a092-26c806d9444f
 langcode: en
-status: true
+status: false
 dependencies:
   config:
     - core.entity_view_mode.node.teaser
@@ -17,7 +17,7 @@ bundle: feature
 mode: teaser
 content:
   field_link_url:
-    type: link
+    type: link_separate
     weight: 2
     region: content
     label: hidden
@@ -34,7 +34,7 @@ content:
     region: content
     label: hidden
     settings:
-      view_mode: embed
+      view_mode: feature_card
       link: false
     third_party_settings: {  }
   field_teaser:
