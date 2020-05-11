@@ -9,6 +9,7 @@ dependencies:
     - entity_embed
     - google_analytics_counter
     - media
+    - media_browser_responsive_images
     - noreferrer
     - token_filter
 _core:
@@ -94,6 +95,20 @@ filters:
     weight: -38
     settings:
       replace_empty: '0'
+  filter_media_responsive_image_style:
+    id: filter_media_responsive_image_style
+    provider: media_browser_responsive_images
+    status: true
+    weight: -47
+    settings:
+      responsive_style_inline: '1'
+      responsive_style_inline_expandable: '1'
+      responsive_style_inline_xl: '1'
+      responsive_style_inline_xl_expandable: '1'
+      responsive_style_news_thumbnail: '0'
+      responsive_style_portrait_float: '1'
+      responsive_style_portrait_float_expandable: '1'
+      responsive_style_portrait_full_width: '1'
   media_embed:
     id: media_embed
     provider: media
