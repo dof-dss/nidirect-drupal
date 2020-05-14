@@ -3,7 +3,6 @@ langcode: en
 status: true
 dependencies:
   config:
-    - entity_browser.browser.media_entity_browser
     - field.field.node.news.body
     - field.field.node.news.field_meta_tags
     - field.field.node.news.field_photo
@@ -17,8 +16,8 @@ dependencies:
   module:
     - content_moderation
     - datetime
-    - entity_browser
     - link
+    - media_library
     - metatag
     - path
     - scheduler
@@ -47,25 +46,18 @@ content:
     third_party_settings: {  }
   field_meta_tags:
     weight: 15
-    settings: {  }
+    settings:
+      sidebar: true
     third_party_settings: {  }
     type: metatag_firehose
     region: content
   field_photo:
+    type: media_library_widget
     weight: 6
-    settings:
-      entity_browser: media_entity_browser
-      field_widget_display: rendered_entity
-      field_widget_display_settings:
-        view_mode: preview
-      field_widget_edit: true
-      field_widget_remove: true
-      selection_mode: selection_append
-      field_widget_replace: false
-      open: false
-    third_party_settings: {  }
-    type: entity_browser_entity_reference
     region: content
+    settings:
+      media_types: {  }
+    third_party_settings: {  }
   field_published_date:
     type: datetime_default
     weight: 1
@@ -73,7 +65,7 @@ content:
     settings: {  }
     third_party_settings: {  }
   field_related_info:
-    weight: 31
+    weight: 23
     settings:
       placeholder_url: ''
       placeholder_title: ''
@@ -142,7 +134,7 @@ content:
     third_party_settings: {  }
   publish_state:
     type: scheduler_moderation
-    weight: 30
+    weight: 22
     region: content
     settings: {  }
     third_party_settings: {  }
@@ -191,7 +183,7 @@ content:
     third_party_settings: {  }
   unpublish_state:
     type: scheduler_moderation
-    weight: 30
+    weight: 21
     region: content
     settings: {  }
     third_party_settings: {  }

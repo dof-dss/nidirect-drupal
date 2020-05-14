@@ -3,13 +3,11 @@ langcode: en
 status: true
 dependencies:
   config:
-    - entity_browser.browser.media_entity_browser
     - field.field.node.health_condition.body
     - field.field.node.health_condition.field_additional_info
     - field.field.node.health_condition.field_alternative_condition
     - field.field.node.health_condition.field_alternative_title
     - field.field.node.health_condition.field_banner_image
-    - field.field.node.health_condition.field_toc_enable
     - field.field.node.health_condition.field_hc_body_location
     - field.field.node.health_condition.field_hc_body_system
     - field.field.node.health_condition.field_hc_condition_type
@@ -32,20 +30,22 @@ dependencies:
     - field.field.node.health_condition.field_subtheme
     - field.field.node.health_condition.field_summary
     - field.field.node.health_condition.field_teaser
+    - field.field.node.health_condition.field_toc_enable
     - field.field.node.health_condition.field_top_level_theme
     - node.type.health_condition
     - workflows.workflow.nics_editorial_workflow
   module:
     - content_moderation
     - datetime
-    - entity_browser
     - entity_browser_entity_form
     - field_group
     - inline_entity_form
     - link
+    - media_library
     - metatag
     - path
     - scheduler
+    - scheduler_content_moderation_integration
     - shs
     - text
 third_party_settings:
@@ -113,26 +113,19 @@ content:
       override_labels: false
       collapsed: false
       allow_duplicate: false
+      revision: false
     third_party_settings:
       entity_browser_entity_form:
         entity_browser_id: _none
     type: inline_entity_form_complex
     region: content
   field_banner_image:
+    type: media_library_widget
     weight: 6
-    settings:
-      entity_browser: media_entity_browser
-      field_widget_display: rendered_entity
-      field_widget_display_settings:
-        view_mode: preview
-      field_widget_edit: true
-      field_widget_remove: true
-      selection_mode: selection_append
-      field_widget_replace: false
-      open: false
-    third_party_settings: {  }
-    type: entity_browser_entity_reference
     region: content
+    settings:
+      media_types: {  }
+    third_party_settings: {  }
   field_hc_body_location:
     type: entity_reference_autocomplete
     weight: 20
@@ -181,7 +174,7 @@ content:
     third_party_settings: {  }
   field_hc_primary_symptom_2:
     type: entity_reference_autocomplete
-    weight: 24
+    weight: 25
     region: content
     settings:
       match_operator: CONTAINS
@@ -191,7 +184,7 @@ content:
     third_party_settings: {  }
   field_hc_primary_symptom_3:
     type: entity_reference_autocomplete
-    weight: 25
+    weight: 26
     region: content
     settings:
       match_operator: CONTAINS
@@ -201,7 +194,7 @@ content:
     third_party_settings: {  }
   field_hc_primary_symptom_4:
     type: entity_reference_autocomplete
-    weight: 26
+    weight: 27
     region: content
     settings:
       match_operator: CONTAINS
@@ -211,7 +204,7 @@ content:
     third_party_settings: {  }
   field_hc_secondary_symptoms:
     type: entity_reference_autocomplete
-    weight: 27
+    weight: 29
     region: content
     settings:
       match_operator: CONTAINS
@@ -227,7 +220,8 @@ content:
     third_party_settings: {  }
   field_meta_tags:
     weight: 27
-    settings: {  }
+    settings:
+      sidebar: true
     third_party_settings: {  }
     type: metatag_firehose
     region: content
@@ -248,20 +242,12 @@ content:
       match_limit: 10
     third_party_settings: {  }
   field_photo:
+    type: media_library_widget
     weight: 7
-    settings:
-      entity_browser: media_entity_browser
-      field_widget_display: rendered_entity
-      field_widget_display_settings:
-        view_mode: preview
-      field_widget_edit: true
-      field_widget_remove: true
-      selection_mode: selection_append
-      field_widget_replace: false
-      open: false
-    third_party_settings: {  }
-    type: entity_browser_entity_reference
     region: content
+    settings:
+      media_types: {  }
+    third_party_settings: {  }
   field_published_date:
     type: datetime_default
     weight: 17
@@ -312,7 +298,7 @@ content:
       rows: 5
       placeholder: ''
     third_party_settings: {  }
-    type: text_textarea
+    type: string_textarea
     region: content
   field_teaser:
     type: string_textfield
@@ -331,7 +317,7 @@ content:
     third_party_settings: {  }
   field_top_level_theme:
     type: entity_reference_autocomplete
-    weight: 23
+    weight: 24
     region: content
     settings:
       match_operator: CONTAINS
@@ -346,7 +332,7 @@ content:
     third_party_settings: {  }
   langcode:
     type: language_select
-    weight: 30
+    weight: 32
     region: content
     settings:
       include_locked: true
@@ -372,13 +358,13 @@ content:
     third_party_settings: {  }
   publish_on:
     type: datetime_timestamp_no_default
-    weight: 32
+    weight: 34
     region: content
     settings: {  }
     third_party_settings: {  }
   publish_state:
     type: scheduler_moderation
-    weight: 30
+    weight: 31
     region: content
     settings: {  }
     third_party_settings: {  }
@@ -421,7 +407,7 @@ content:
     third_party_settings: {  }
   unpublish_on:
     type: datetime_timestamp_no_default
-    weight: 31
+    weight: 33
     region: content
     settings: {  }
     third_party_settings: {  }
