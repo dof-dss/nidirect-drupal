@@ -2,11 +2,26 @@ uuid: d1446a83-099f-4509-9f18-e9bd7c7c20bf
 langcode: en
 status: true
 dependencies:
+  config:
+    - core.entity_view_mode.media.banner_deep
+    - core.entity_view_mode.media.banner_thin
+    - core.entity_view_mode.media.card_large
+    - core.entity_view_mode.media.card_small
+    - core.entity_view_mode.media.embed
+    - core.entity_view_mode.media.feature_card
+    - core.entity_view_mode.media.landscape_float
+    - core.entity_view_mode.media.landscape_float_xp
+    - core.entity_view_mode.media.landscape_full
+    - core.entity_view_mode.media.landscape_full_xp
+    - core.entity_view_mode.media.news_thumbnail
+    - core.entity_view_mode.media.portrait_float
+    - core.entity_view_mode.media.portrait_float_xp
+    - core.entity_view_mode.media.portrait_full
   module:
     - editor
     - entity_embed
+    - google_analytics_counter
     - media
-    - media_browser_responsive_images
     - noreferrer
     - token_filter
 _core:
@@ -19,43 +34,43 @@ filters:
     id: filter_align
     provider: filter
     status: false
-    weight: -43
+    weight: -42
     settings: {  }
   filter_caption:
     id: filter_caption
     provider: filter
     status: false
-    weight: -42
+    weight: -41
     settings: {  }
   filter_htmlcorrector:
     id: filter_htmlcorrector
     provider: filter
     status: false
-    weight: -49
+    weight: -44
     settings: {  }
   editor_file_reference:
     id: editor_file_reference
     provider: editor
     status: false
-    weight: -41
+    weight: -40
     settings: {  }
   entity_embed:
     id: entity_embed
     provider: entity_embed
     status: true
-    weight: -45
+    weight: -46
     settings: {  }
   filter_autop:
     id: filter_autop
     provider: filter
     status: false
-    weight: -48
+    weight: -43
     settings: {  }
   filter_html_escape:
     id: filter_html_escape
     provider: filter
     status: false
-    weight: -39
+    weight: -38
     settings: {  }
   filter_url:
     id: filter_url
@@ -68,13 +83,13 @@ filters:
     id: filter_html_image_secure
     provider: filter
     status: false
-    weight: -38
+    weight: -37
     settings: {  }
   filter_html:
     id: filter_html
     provider: filter
     status: false
-    weight: -40
+    weight: -39
     settings:
       allowed_html: '<em> <strong> <cite> <blockquote cite> <code> <ul type> <ol start type> <li> <dl> <dt> <dd> <h2 id> <h3 id> <h4 id> <h5 id> <h6 id> <s> <p> <h1> <pre> <drupal-entity data-entity-type data-entity-uuid data-entity-embed-display data-entity-embed-display-settings data-align data-caption data-embed-button> <sup> <a href hreflang !href accesskey id rel target title> <table> <caption> <tbody> <thead> <tfoot> <th> <td> <tr>'
       filter_html_help: true
@@ -83,35 +98,45 @@ filters:
     id: noreferrer
     provider: noreferrer
     status: true
-    weight: -47
+    weight: -49
     settings: {  }
   token_filter:
     id: token_filter
     provider: token_filter
     status: true
-    weight: -46
+    weight: -48
     settings:
       replace_empty: '1'
-  filter_media_responsive_image_style:
-    id: filter_media_responsive_image_style
-    provider: media_browser_responsive_images
-    status: true
-    weight: -44
-    settings:
-      responsive_style_inline: '1'
-      responsive_style_inline_expandable: '1'
-      responsive_style_inline_xl: '1'
-      responsive_style_inline_xl_expandable: '1'
-      responsive_style_news_thumbnail: '0'
-      responsive_style_portrait_float: '1'
-      responsive_style_portrait_float_expandable: '1'
-      responsive_style_portrait_full_width: '1'
   media_embed:
     id: media_embed
     provider: media
-    status: false
-    weight: 100
+    status: true
+    weight: -47
     settings:
-      default_view_mode: default
-      allowed_media_types: {  }
-      allowed_view_modes: {  }
+      default_view_mode: embed
+      allowed_view_modes:
+        banner_deep: banner_deep
+        banner_thin: banner_thin
+        card_large: card_large
+        card_small: card_small
+        embed: embed
+        feature_card: feature_card
+        landscape_float: landscape_float
+        landscape_float_xp: landscape_float_xp
+        landscape_full: landscape_full
+        landscape_full_xp: landscape_full_xp
+        news_thumbnail: news_thumbnail
+        portrait_float: portrait_float
+        portrait_float_xp: portrait_float_xp
+        portrait_full: portrait_full
+      allowed_media_types:
+        audio: audio
+        image: image
+        remote_video: remote_video
+        video: video
+  google_analytics_counter_filter:
+    id: google_analytics_counter_filter
+    provider: google_analytics_counter
+    status: false
+    weight: -36
+    settings: {  }
