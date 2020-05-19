@@ -3,7 +3,6 @@ langcode: en
 status: true
 dependencies:
   config:
-    - entity_browser.browser.media_entity_browser
     - field.field.node.article.body
     - field.field.node.article.field_additional_info
     - field.field.node.article.field_banner_image
@@ -22,8 +21,8 @@ dependencies:
   module:
     - content_moderation
     - datetime
-    - entity_browser
     - link
+    - media_library
     - metatag
     - path
     - scheduler
@@ -64,21 +63,14 @@ content:
   field_banner_image:
     weight: 4
     settings:
-      entity_browser: media_entity_browser
-      field_widget_display: rendered_entity
-      field_widget_display_settings:
-        view_mode: preview
-      field_widget_edit: true
-      field_widget_remove: true
-      selection_mode: selection_append
-      field_widget_replace: false
-      open: false
+      media_types: {  }
     third_party_settings: {  }
-    type: entity_browser_entity_reference
+    type: media_library_widget
     region: content
   field_meta_tags:
     weight: 19
-    settings: {  }
+    settings:
+      sidebar: true
     third_party_settings: {  }
     type: metatag_firehose
     region: content
@@ -91,17 +83,9 @@ content:
   field_photo:
     weight: 5
     settings:
-      entity_browser: media_entity_browser
-      field_widget_display: rendered_entity
-      field_widget_display_settings:
-        view_mode: preview
-      field_widget_edit: true
-      field_widget_remove: true
-      selection_mode: selection_append
-      field_widget_replace: false
-      open: false
+      media_types: {  }
     third_party_settings: {  }
-    type: entity_browser_entity_reference
+    type: media_library_widget
     region: content
   field_related_info:
     weight: 31
@@ -137,7 +121,7 @@ content:
       rows: 5
       placeholder: ''
     third_party_settings: {  }
-    type: text_textarea
+    type: string_textarea
     region: content
   field_teaser:
     type: string_textfield
