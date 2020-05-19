@@ -29,32 +29,30 @@ bundle: article
 mode: teaser
 content:
   banner_display:
-    weight: 0
+    weight: 2
+    region: content
     settings: {  }
     third_party_settings: {  }
-    region: content
   body:
     type: text_summary_or_trimmed
-    weight: 0
+    weight: 1
     region: content
     settings:
       trim_length: 600
     third_party_settings: {  }
     label: hidden
-  content_moderation_control:
-    weight: -20
-    settings: {  }
-    third_party_settings: {  }
-    region: content
   links:
-    weight: 100
+    weight: 3
     region: content
-  toc_display:
-    weight: -10
     settings: {  }
     third_party_settings: {  }
+  toc_display:
+    weight: 0
     region: content
+    settings: {  }
+    third_party_settings: {  }
 hidden:
+  content_moderation_control: true
   field_additional_info: true
   field_banner_image: true
   field_meta_tags: true

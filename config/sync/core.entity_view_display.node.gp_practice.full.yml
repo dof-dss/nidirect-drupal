@@ -38,7 +38,7 @@ third_party_settings:
         - field_telephone
         - field_gp_practice_website
       parent_name: ''
-      weight: 3
+      weight: 2
       format_type: html_element
       format_settings:
         id: ''
@@ -57,11 +57,6 @@ targetEntityType: node
 bundle: gp_practice
 mode: full
 content:
-  content_moderation_control:
-    weight: 0
-    region: content
-    settings: {  }
-    third_party_settings: {  }
   field_address:
     type: address_default
     weight: 4
@@ -71,7 +66,7 @@ content:
     third_party_settings: {  }
   field_gp_appointments:
     type: link
-    weight: 7
+    weight: 3
     region: content
     label: visually_hidden
     settings:
@@ -83,7 +78,7 @@ content:
     third_party_settings: {  }
   field_gp_practice_lead:
     type: entity_reference_label
-    weight: 1
+    weight: 0
     region: content
     label: hidden
     settings:
@@ -91,7 +86,7 @@ content:
     third_party_settings: {  }
   field_gp_practice_member:
     type: entity_reference_label
-    weight: 2
+    weight: 1
     region: content
     label: hidden
     settings:
@@ -111,7 +106,7 @@ content:
     third_party_settings: {  }
   field_gp_prescriptions:
     type: link
-    weight: 8
+    weight: 4
     region: content
     label: visually_hidden
     settings:
@@ -123,7 +118,7 @@ content:
     third_party_settings: {  }
   field_location:
     type: geolocation_map
-    weight: 9
+    weight: 5
     region: content
     label: above
     settings:
@@ -154,6 +149,14 @@ content:
         style: ''
         preferScrollingToZooming: 0
         gestureHandling: auto
+      data_provider_settings: {  }
+      centre:
+        fit_bounds:
+          enable: true
+          weight: -101
+          map_center_id: fit_bounds
+          settings:
+            reset_zoom: true
     third_party_settings: {  }
   field_telephone:
     weight: 5
@@ -164,6 +167,7 @@ content:
     type: telephone_plus_link
     region: content
 hidden:
+  content_moderation_control: true
   field_contact_address_01: true
   field_contact_address_02: true
   field_contact_postcode: true
