@@ -37,24 +37,19 @@ content:
   body:
     label: hidden
     type: text_default
-    weight: 2
+    weight: 1
     settings: {  }
     third_party_settings: {  }
     region: content
-  content_moderation_control:
-    weight: 0
-    region: content
-    settings: {  }
-    third_party_settings: {  }
   field_address:
-    weight: 6
+    weight: 5
     label: above
     settings: {  }
     third_party_settings: {  }
     type: address_default
     region: content
   field_location:
-    weight: 7
+    weight: 6
     label: above
     settings:
       map_type: roadmap
@@ -67,14 +62,14 @@ content:
     type: gmaps_lazy_load_formatter
     region: content
   field_meta_tags:
-    weight: 3
+    weight: 2
     label: above
     settings: {  }
     third_party_settings: {  }
     type: metatag_empty_formatter
     region: content
   field_related_info:
-    weight: 8
+    weight: 7
     label: above
     settings:
       trim_length: 80
@@ -86,7 +81,7 @@ content:
     type: link
     region: content
   field_summary:
-    weight: 4
+    weight: 3
     label: above
     settings:
       trim_length: 600
@@ -103,7 +98,7 @@ content:
     type: smart_trim
     region: content
   field_telephone:
-    weight: 5
+    weight: 4
     label: above
     settings:
       vcard: true
@@ -111,11 +106,12 @@ content:
     type: telephone_plus_link
     region: content
   links:
-    weight: 1
+    weight: 0
     region: content
     settings: {  }
     third_party_settings: {  }
 hidden:
+  content_moderation_control: true
   field_contact_additional_info: true
   field_contact_category: true
   field_contact_group: true
