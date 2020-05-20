@@ -42,7 +42,7 @@ third_party_settings:
         - field_email_address
         - field_contact_website
       parent_name: ''
-      weight: 3
+      weight: 2
       format_type: html_element
       format_settings:
         id: ''
@@ -64,15 +64,10 @@ content:
   body:
     label: hidden
     type: text_default
-    weight: 2
+    weight: 1
     settings: {  }
     third_party_settings: {  }
     region: content
-  content_moderation_control:
-    weight: 0
-    region: content
-    settings: {  }
-    third_party_settings: {  }
   field_address:
     weight: 4
     label: hidden
@@ -82,14 +77,14 @@ content:
     region: content
   field_contact_additional_info:
     type: text_default
-    weight: 5
+    weight: 4
     region: content
     label: above
     settings: {  }
     third_party_settings: {  }
   field_contact_hours:
     type: text_default
-    weight: 4
+    weight: 3
     region: content
     label: above
     settings: {  }
@@ -114,7 +109,7 @@ content:
     settings: {  }
     third_party_settings: {  }
   field_location:
-    weight: 7
+    weight: 6
     label: above
     settings:
       map_type: roadmap
@@ -128,7 +123,7 @@ content:
     region: content
   field_related_info:
     type: link
-    weight: 6
+    weight: 5
     region: content
     label: above
     settings:
@@ -147,11 +142,12 @@ content:
     type: telephone_plus_link
     region: content
   links:
-    weight: 1
+    weight: 0
     region: content
     settings: {  }
     third_party_settings: {  }
 hidden:
+  content_moderation_control: true
   field_contact_category: true
   field_contact_group: true
   field_meta_tags: true
