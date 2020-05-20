@@ -28,14 +28,9 @@ targetEntityType: node
 bundle: gp_practice
 mode: default
 content:
-  content_moderation_control:
-    weight: -20
-    region: content
-    settings: {  }
-    third_party_settings: {  }
   field_address:
     type: address_default
-    weight: 2
+    weight: 3
     region: content
     label: above
     settings: {  }
@@ -50,7 +45,7 @@ content:
     third_party_settings: {  }
   field_gp_practice_member:
     type: entity_reference_label
-    weight: 1
+    weight: 2
     region: content
     label: hidden
     settings:
@@ -89,6 +84,14 @@ content:
         style: ''
         preferScrollingToZooming: 0
         gestureHandling: auto
+      data_provider_settings: {  }
+      centre:
+        fit_bounds:
+          enable: true
+          weight: -101
+          map_center_id: fit_bounds
+          settings:
+            reset_zoom: true
     third_party_settings: {  }
   field_telephone:
     weight: 5
@@ -99,11 +102,12 @@ content:
     type: telephone_plus_link
     region: content
   gp_names:
-    weight: 0
+    weight: 1
     region: content
     settings: {  }
     third_party_settings: {  }
 hidden:
+  content_moderation_control: true
   field_contact_address_01: true
   field_contact_address_02: true
   field_contact_postcode: true

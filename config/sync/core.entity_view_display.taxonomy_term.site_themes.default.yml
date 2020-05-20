@@ -5,13 +5,13 @@ dependencies:
   config:
     - field.field.taxonomy_term.site_themes.field_additional_info
     - field.field.taxonomy_term.site_themes.field_banner_image
-    - field.field.taxonomy_term.site_themes.field_toc_enable
     - field.field.taxonomy_term.site_themes.field_meta_tags
     - field.field.taxonomy_term.site_themes.field_photo
     - field.field.taxonomy_term.site_themes.field_supplementary_parents
     - field.field.taxonomy_term.site_themes.field_taxonomy_rank
     - field.field.taxonomy_term.site_themes.field_teaser
     - field.field.taxonomy_term.site_themes.field_theme_summary
+    - field.field.taxonomy_term.site_themes.field_toc_enable
     - field.field.taxonomy_term.site_themes.field_top_level_theme
     - taxonomy.vocabulary.site_themes
   module:
@@ -31,7 +31,7 @@ content:
     settings: {  }
     third_party_settings: {  }
   field_additional_info:
-    label: above
+    label: hidden
     weight: 5
     type: text_default
     settings: {  }
@@ -41,7 +41,7 @@ content:
     type: image
     weight: 0
     region: content
-    label: above
+    label: hidden
     settings:
       image_style: ''
       image_link: ''
