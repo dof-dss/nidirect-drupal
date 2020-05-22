@@ -116,6 +116,15 @@ In addition to this, taxonomy terms may be overridden by 'campaigns', which are 
 selected in the 'Theme/subtheme' field. This is achieved by using the 'Articles by Term' view ('Campaign List - embed' display). Again, processing may be found in the
 `nicsdru_nidirect_theme_preprocess_taxonomy_term` function.
 
+### Display of teasers on Landing Pages
+
+Selecting a theme/subtheme on a landing page node will result in teasers automatically being displayed for articles or taxonomy terms that match that theme/subtheme. 
+This is achieved by using the nidirect_article_teasers_by_topic custom block from the nidirect_custom_blocks module, so please ensure that this block remians visible 
+in at least the 'full content' view of the landing page.
+
+Checking the 'manually control listing' checkbox on a landing page will cause the articles and taxonomy terms to be displayed in the 'Listing' field on the node edit
+form so that the editor may change the order of the teasers and/or delete some.
+
 #### Some key concepts:
 
 > Config blacklist
