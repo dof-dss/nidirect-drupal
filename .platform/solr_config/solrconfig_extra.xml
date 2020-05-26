@@ -1,6 +1,4 @@
 <searchComponent name="spellcheck" class="solr.SpellCheckComponent">
-    <str name="queryAnalyzerFieldType">text_spell_und</str>
-
 <!-- Ref: https://lucene.apache.org/solr/guide/7_7/spell-checking.html -->
     <lst name="spellchecker">
       <str name="name">und</str>
@@ -13,7 +11,7 @@
       <str name="maxInspections">5</str>
       <str name="minQueryLength">2</str>
       <str name="maxQueryFrequency">0.01</str>
-      <!--Changed from default of .01-->
+<!--Changed from default of .01-->
       <str name="thresholdTokenFrequency">1</str>
       <str name="onlyMorePopular">true</str>
     </lst>
@@ -40,7 +38,7 @@
       <str name="buildOnCommit">true</str>
       <str name="buildOnStartup">false</str>
     </lst>
-
+  
     <lst name="suggester">
       <str name="name">und</str>
       <str name="lookupImpl">AnalyzingInfixLookupFactory</str>
