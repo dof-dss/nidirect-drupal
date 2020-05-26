@@ -17,6 +17,7 @@ dependencies:
     - datetime
     - metatag
     - options
+    - smart_trim
     - text
     - user
 id: node.publication.default
@@ -25,22 +26,17 @@ bundle: publication
 mode: default
 content:
   banner_display:
-    weight: 0
+    weight: 1
     region: content
     settings: {  }
     third_party_settings: {  }
   body:
     label: hidden
     type: text_default
-    weight: 4
+    weight: 5
     settings: {  }
     third_party_settings: {  }
     region: content
-  content_moderation_control:
-    weight: -20
-    region: content
-    settings: {  }
-    third_party_settings: {  }
   field_attachment:
     type: entity_reference_entity_view
     weight: 10
@@ -59,14 +55,14 @@ content:
     region: content
   field_publication_type:
     type: list_default
-    weight: 1
+    weight: 2
     region: content
     label: above
     settings: {  }
     third_party_settings: {  }
   field_published_date:
     type: datetime_default
-    weight: 2
+    weight: 3
     region: content
     label: above
     settings:
@@ -90,11 +86,21 @@ content:
       link: true
     third_party_settings: {  }
   field_summary:
-    weight: 3
+    weight: 4
     label: above
-    settings: {  }
+    settings:
+      trim_length: 600
+      trim_type: chars
+      trim_suffix: ''
+      wrap_output: false
+      wrap_class: trimmed
+      more_link: false
+      more_class: more-link
+      more_text: More
+      summary_handler: full
+      trim_options: {  }
     third_party_settings: {  }
-    type: text_default
+    type: smart_trim
     region: content
   field_top_level_theme:
     type: entity_reference_label
@@ -110,5 +116,6 @@ content:
     settings: {  }
     third_party_settings: {  }
 hidden:
+  content_moderation_control: true
   langcode: true
   search_api_excerpt: true

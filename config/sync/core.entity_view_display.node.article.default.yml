@@ -20,6 +20,7 @@ dependencies:
   module:
     - link
     - metatag
+    - smart_trim
     - text
     - user
 _core:
@@ -31,9 +32,9 @@ mode: default
 content:
   banner_display:
     weight: 0
+    region: content
     settings: {  }
     third_party_settings: {  }
-    region: content
   body:
     type: text_default
     weight: 4
@@ -41,16 +42,11 @@ content:
     settings: {  }
     third_party_settings: {  }
     label: above
-  content_moderation_control:
-    weight: 0
-    region: content
-    settings: {  }
-    third_party_settings: {  }
   field_additional_info:
     type: text_default
     weight: 10
     region: content
-    label: above
+    label: hidden
     settings: {  }
     third_party_settings: {  }
   field_banner_image:
@@ -108,9 +104,19 @@ content:
   field_summary:
     weight: 2
     label: above
-    settings: {  }
+    settings:
+      trim_length: 600
+      trim_type: chars
+      trim_suffix: ''
+      wrap_output: false
+      wrap_class: trimmed
+      more_link: false
+      more_class: more-link
+      more_text: More
+      summary_handler: full
+      trim_options: {  }
     third_party_settings: {  }
-    type: text_default
+    type: smart_trim
     region: content
   field_teaser:
     type: string
@@ -145,10 +151,11 @@ content:
     third_party_settings: {  }
   toc_display:
     weight: -10
+    region: content
     settings: {  }
     third_party_settings: {  }
-    region: content
 hidden:
+  content_moderation_control: true
   field_next_audit_due: true
   langcode: true
   search_api_excerpt: true

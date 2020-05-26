@@ -8,7 +8,6 @@ dependencies:
     - field.field.node.health_condition.field_alternative_condition
     - field.field.node.health_condition.field_alternative_title
     - field.field.node.health_condition.field_banner_image
-    - field.field.node.health_condition.field_toc_enable
     - field.field.node.health_condition.field_hc_body_location
     - field.field.node.health_condition.field_hc_body_system
     - field.field.node.health_condition.field_hc_condition_type
@@ -31,10 +30,12 @@ dependencies:
     - field.field.node.health_condition.field_subtheme
     - field.field.node.health_condition.field_summary
     - field.field.node.health_condition.field_teaser
+    - field.field.node.health_condition.field_toc_enable
     - field.field.node.health_condition.field_top_level_theme
     - node.type.health_condition
   module:
     - metatag
+    - smart_trim
     - text
     - user
 id: node.health_condition.default
@@ -43,24 +44,19 @@ bundle: health_condition
 mode: default
 content:
   banner_display:
-    weight: 0
+    weight: 1
+    region: content
     settings: {  }
     third_party_settings: {  }
-    region: content
   body:
     label: hidden
     type: text_default
-    weight: 8
+    weight: 7
     settings: {  }
     third_party_settings: {  }
     region: content
-  content_moderation_control:
-    weight: 0
-    region: content
-    settings: {  }
-    third_party_settings: {  }
   field_alternative_condition:
-    weight: 11
+    weight: 10
     label: above
     settings:
       link: true
@@ -76,7 +72,7 @@ content:
       link_to_entity: false
     third_party_settings: {  }
   field_banner_image:
-    weight: 13
+    weight: 12
     label: above
     settings:
       link: true
@@ -84,7 +80,7 @@ content:
     type: entity_reference_label
     region: content
   field_meta_tags:
-    weight: 10
+    weight: 9
     label: above
     settings: {  }
     third_party_settings: {  }
@@ -99,7 +95,7 @@ content:
       link: true
     third_party_settings: {  }
   field_photo:
-    weight: 12
+    weight: 11
     label: above
     settings:
       link: true
@@ -117,9 +113,19 @@ content:
   field_summary:
     weight: 6
     label: above
-    settings: {  }
+    settings:
+      trim_length: 600
+      trim_type: chars
+      trim_suffix: ''
+      wrap_output: false
+      wrap_class: trimmed
+      more_link: false
+      more_class: more-link
+      more_text: More
+      summary_handler: full
+      trim_options: {  }
     third_party_settings: {  }
-    type: text_default
+    type: smart_trim
     region: content
   field_teaser:
     type: string
@@ -130,11 +136,17 @@ content:
       link_to_entity: false
     third_party_settings: {  }
   links:
-    weight: 9
+    weight: 8
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  toc_display:
+    weight: 0
     region: content
     settings: {  }
     third_party_settings: {  }
 hidden:
+  content_moderation_control: true
   field_additional_info: true
   field_hc_body_location: true
   field_hc_body_system: true
