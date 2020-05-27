@@ -1,0 +1,322 @@
+uuid: 8f94a5c6-392f-4b8a-aee8-e225e121daf7
+langcode: en
+status: true
+dependencies:
+  module:
+    - search_api_solr
+    - taxonomy
+    - node
+    - search_api
+  config:
+    - field.storage.node.body
+    - field.storage.node.field_hc_body_location
+    - field.storage.taxonomy_term.field_term_hc_synonyms
+    - field.storage.node.field_hc_body_system
+    - field.storage.node.field_hc_condition_type
+    - field.storage.node.field_hc_primary_symptom_1
+    - field.storage.node.field_hc_primary_symptom_2
+    - field.storage.node.field_hc_primary_symptom_3
+    - field.storage.node.field_hc_primary_symptom_4
+    - field.storage.node.field_hc_secondary_symptoms
+    - field.storage.node.field_summary
+    - field.storage.node.field_teaser
+    - search_api.server.solr_default
+third_party_settings:
+  search_api_solr:
+    finalize: false
+    commit_before_finalize: false
+    commit_after_finalize: false
+    multilingual:
+      limit_to_content_language: false
+      include_language_independent: true
+    highlighter:
+      maxAnalyzedChars: 51200
+      fragmenter: gap
+      regex:
+        slop: 0.5
+        pattern: blank
+        maxAnalyzedChars: 10000
+      usePhraseHighlighter: true
+      highlightMultiTerm: true
+      preserveMulti: false
+      highlight:
+        mergeContiguous: false
+        requireFieldMatch: false
+        snippets: 3
+        fragsize: 0
+    mlt:
+      mintf: 1
+      mindf: 1
+      maxdf: 0
+      maxdfpct: 0
+      minwl: 0
+      maxwl: 0
+      maxqt: 100
+      maxntp: 2000
+      boost: false
+      interestingTerms: none
+    advanced:
+      index_prefix: ''
+      collection: ''
+      timezone: ''
+id: health_conditions
+name: 'Health conditions'
+description: ''
+read_only: false
+field_settings:
+  body:
+    label: Body
+    datasource_id: 'entity:node'
+    property_path: body
+    type: text
+    dependencies:
+      config:
+        - field.storage.node.body
+  field_hc_body_location:
+    label: 'Body location'
+    datasource_id: 'entity:node'
+    property_path: field_hc_body_location
+    type: integer
+    dependencies:
+      config:
+        - field.storage.node.field_hc_body_location
+  field_hc_condition_type:
+    label: 'Condition type / disease process'
+    datasource_id: 'entity:node'
+    property_path: field_hc_condition_type
+    type: integer
+    dependencies:
+      config:
+        - field.storage.node.field_hc_condition_type
+  field_summary:
+    label: Summary
+    datasource_id: 'entity:node'
+    property_path: field_summary
+    type: text
+    dependencies:
+      config:
+        - field.storage.node.field_summary
+  field_teaser:
+    label: Teaser
+    datasource_id: 'entity:node'
+    property_path: field_teaser
+    type: text
+    boost: !!float 5
+    dependencies:
+      config:
+        - field.storage.node.field_teaser
+  field_term_hc_synonyms:
+    label: 'Body location » Taxonomy term » Synonyms'
+    datasource_id: 'entity:node'
+    property_path: 'field_hc_body_location:entity:field_term_hc_synonyms'
+    type: text
+    dependencies:
+      config:
+        - field.storage.node.field_hc_body_location
+        - field.storage.taxonomy_term.field_term_hc_synonyms
+      module:
+        - taxonomy
+  field_term_hc_synonyms_1:
+    label: 'Body system » Taxonomy term » Synonyms'
+    datasource_id: 'entity:node'
+    property_path: 'field_hc_body_system:entity:field_term_hc_synonyms'
+    type: text
+    dependencies:
+      config:
+        - field.storage.node.field_hc_body_system
+        - field.storage.taxonomy_term.field_term_hc_synonyms
+      module:
+        - taxonomy
+  field_term_hc_synonyms_2:
+    label: 'Condition type / disease process » Taxonomy term » Synonyms'
+    datasource_id: 'entity:node'
+    property_path: 'field_hc_condition_type:entity:field_term_hc_synonyms'
+    type: text
+    dependencies:
+      config:
+        - field.storage.node.field_hc_condition_type
+        - field.storage.taxonomy_term.field_term_hc_synonyms
+      module:
+        - taxonomy
+  field_term_hc_synonyms_3:
+    label: 'Primary symptom 1 » Taxonomy term » Synonyms'
+    datasource_id: 'entity:node'
+    property_path: 'field_hc_primary_symptom_1:entity:field_term_hc_synonyms'
+    type: text
+    dependencies:
+      config:
+        - field.storage.node.field_hc_primary_symptom_1
+        - field.storage.taxonomy_term.field_term_hc_synonyms
+      module:
+        - taxonomy
+  field_term_hc_synonyms_4:
+    label: 'Primary symptom 2 » Taxonomy term » Synonyms'
+    datasource_id: 'entity:node'
+    property_path: 'field_hc_primary_symptom_2:entity:field_term_hc_synonyms'
+    type: text
+    dependencies:
+      config:
+        - field.storage.node.field_hc_primary_symptom_2
+        - field.storage.taxonomy_term.field_term_hc_synonyms
+      module:
+        - taxonomy
+  field_term_hc_synonyms_5:
+    label: 'Primary symptom 3 » Taxonomy term » Synonyms'
+    datasource_id: 'entity:node'
+    property_path: 'field_hc_primary_symptom_3:entity:field_term_hc_synonyms'
+    type: text
+    dependencies:
+      config:
+        - field.storage.node.field_hc_primary_symptom_3
+        - field.storage.taxonomy_term.field_term_hc_synonyms
+      module:
+        - taxonomy
+  field_term_hc_synonyms_6:
+    label: 'Primary symptom 4 » Taxonomy term » Synonyms'
+    datasource_id: 'entity:node'
+    property_path: 'field_hc_primary_symptom_4:entity:field_term_hc_synonyms'
+    type: text
+    dependencies:
+      config:
+        - field.storage.node.field_hc_primary_symptom_4
+        - field.storage.taxonomy_term.field_term_hc_synonyms
+      module:
+        - taxonomy
+  field_term_hc_synonyms_7:
+    label: 'Secondary symptoms » Taxonomy term » Synonyms'
+    datasource_id: 'entity:node'
+    property_path: 'field_hc_secondary_symptoms:entity:field_term_hc_synonyms'
+    type: text
+    dependencies:
+      config:
+        - field.storage.node.field_hc_secondary_symptoms
+        - field.storage.taxonomy_term.field_term_hc_synonyms
+      module:
+        - taxonomy
+  name:
+    label: 'Body location » Taxonomy term » Name'
+    datasource_id: 'entity:node'
+    property_path: 'field_hc_body_location:entity:name'
+    type: string
+    dependencies:
+      config:
+        - field.storage.node.field_hc_body_location
+      module:
+        - taxonomy
+        - taxonomy
+  name_1:
+    label: 'Body system » Taxonomy term » Name'
+    datasource_id: 'entity:node'
+    property_path: 'field_hc_body_system:entity:name'
+    type: text
+    dependencies:
+      config:
+        - field.storage.node.field_hc_body_system
+      module:
+        - taxonomy
+        - taxonomy
+  name_2:
+    label: 'Condition type / disease process » Taxonomy term » Name'
+    datasource_id: 'entity:node'
+    property_path: 'field_hc_condition_type:entity:name'
+    type: text
+    dependencies:
+      config:
+        - field.storage.node.field_hc_condition_type
+      module:
+        - taxonomy
+        - taxonomy
+  name_3:
+    label: 'Primary symptom 1 » Taxonomy term » Name'
+    datasource_id: 'entity:node'
+    property_path: 'field_hc_primary_symptom_1:entity:name'
+    type: text
+    dependencies:
+      config:
+        - field.storage.node.field_hc_primary_symptom_1
+      module:
+        - taxonomy
+        - taxonomy
+  name_4:
+    label: 'Primary symptom 2 » Taxonomy term » Name'
+    datasource_id: 'entity:node'
+    property_path: 'field_hc_primary_symptom_2:entity:name'
+    type: text
+    dependencies:
+      config:
+        - field.storage.node.field_hc_primary_symptom_2
+      module:
+        - taxonomy
+        - taxonomy
+  name_5:
+    label: 'Primary symptom 3 » Taxonomy term » Name'
+    datasource_id: 'entity:node'
+    property_path: 'field_hc_primary_symptom_3:entity:name'
+    type: text
+    dependencies:
+      config:
+        - field.storage.node.field_hc_primary_symptom_3
+      module:
+        - taxonomy
+        - taxonomy
+  name_6:
+    label: 'Primary symptom 4 » Taxonomy term » Name'
+    datasource_id: 'entity:node'
+    property_path: 'field_hc_primary_symptom_4:entity:name'
+    type: text
+    dependencies:
+      config:
+        - field.storage.node.field_hc_primary_symptom_4
+      module:
+        - taxonomy
+        - taxonomy
+  name_7:
+    label: 'Secondary symptoms » Taxonomy term » Name'
+    datasource_id: 'entity:node'
+    property_path: 'field_hc_secondary_symptoms:entity:name'
+    type: text
+    dependencies:
+      config:
+        - field.storage.node.field_hc_secondary_symptoms
+      module:
+        - taxonomy
+        - taxonomy
+  spellcheck_und:
+    label: 'Spellchecker text'
+    property_path: aggregated_field
+    type: solr_text_spellcheck
+    configuration:
+      type: union
+      fields:
+        - 'entity:node/field_summary'
+        - 'entity:node/title'
+  title:
+    label: Title
+    datasource_id: 'entity:node'
+    property_path: title
+    type: string
+    dependencies:
+      module:
+        - node
+datasource_settings:
+  'entity:node':
+    bundles:
+      default: false
+      selected:
+        - health_condition
+    languages:
+      default: true
+      selected: {  }
+processor_settings:
+  add_url: {  }
+  aggregated_field: {  }
+  language_with_fallback: {  }
+  rendered_item: {  }
+  solr_date_range: {  }
+tracker_settings:
+  default:
+    indexing_order: fifo
+options:
+  index_directly: true
+  cron_limit: 50
+server: solr_default
