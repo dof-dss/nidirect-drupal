@@ -3,14 +3,10 @@ langcode: en
 status: true
 dependencies:
   config:
-    - field.storage.node.field_address
-    - field.storage.node.field_gp_appointments
-    - field.storage.node.field_gp_prescriptions
+    - core.entity_view_mode.node.search_result
     - node.type.gp_practice
   module:
-    - address
     - geolocation
-    - link
     - node
     - user
 id: gp_practices_proximity
@@ -82,81 +78,11 @@ display:
           default_row_class: false
           uses_fields: true
       row:
-        type: fields
+        type: 'entity:node'
         options:
-          default_field_elements: true
-          inline:
-            title: title
-            field_location_proximity: field_location_proximity
-            field_address: field_address
-          separator: ''
-          hide_empty: false
-      fields:
-        title:
-          id: title
-          table: node_field_data
-          field: title
           relationship: none
-          group_type: group
-          admin_label: ''
-          label: ''
-          exclude: true
-          alter:
-            alter_text: false
-            text: ''
-            make_link: false
-            path: ''
-            absolute: false
-            external: false
-            replace_spaces: false
-            path_case: none
-            trim_whitespace: false
-            alt: ''
-            rel: ''
-            link_class: ''
-            prefix: ''
-            suffix: ''
-            target: ''
-            nl2br: false
-            max_length: 0
-            word_boundary: true
-            ellipsis: true
-            more_link: false
-            more_link_text: ''
-            more_link_path: ''
-            strip_tags: false
-            trim: false
-            preserve_tags: ''
-            html: false
-          element_type: '0'
-          element_class: ''
-          element_label_type: ''
-          element_label_class: ''
-          element_label_colon: false
-          element_wrapper_type: ''
-          element_wrapper_class: ''
-          element_default_classes: true
-          empty: ''
-          hide_empty: false
-          empty_zero: false
-          hide_alter_empty: true
-          click_sort_column: value
-          type: string
-          settings:
-            link_to_entity: true
-          group_column: value
-          group_columns: {  }
-          group_rows: true
-          delta_limit: 0
-          delta_offset: 0
-          delta_reversed: false
-          delta_first_last: false
-          multi_type: separator
-          separator: ', '
-          field_api_classes: false
-          entity_type: node
-          entity_field: title
-          plugin_id: field
+          view_mode: search_result
+      fields:
         field_location_proximity:
           id: field_location_proximity
           table: node__field_location
@@ -165,7 +91,7 @@ display:
           group_type: group
           admin_label: ''
           label: ''
-          exclude: true
+          exclude: false
           alter:
             alter_text: false
             text: ''
@@ -205,12 +131,12 @@ display:
           hide_empty: false
           empty_zero: false
           hide_alter_empty: true
-          set_precision: true
-          precision: 1
+          set_precision: false
+          precision: 0
           decimal: .
           separator: ','
-          format_plural: true
-          format_plural_string: !!binary MSBtaWxlA0Bjb3VudCBtaWxlcw==
+          format_plural: false
+          format_plural_string: !!binary MQNAY291bnQ=
           prefix: ''
           suffix: ''
           center:
@@ -237,251 +163,6 @@ display:
               location_plugin_id: freeogeoip
           display_unit: mi
           plugin_id: geolocation_field_proximity
-        nothing:
-          id: nothing
-          table: views
-          field: nothing
-          relationship: none
-          group_type: group
-          admin_label: 'Title and distance'
-          label: ''
-          exclude: false
-          alter:
-            alter_text: true
-            text: '{{ title }} <small>{{ field_location_proximity }}</small>'
-            make_link: false
-            path: ''
-            absolute: false
-            external: false
-            replace_spaces: false
-            path_case: none
-            trim_whitespace: false
-            alt: ''
-            rel: ''
-            link_class: ''
-            prefix: ''
-            suffix: ''
-            target: ''
-            nl2br: false
-            max_length: 0
-            word_boundary: true
-            ellipsis: true
-            more_link: false
-            more_link_text: ''
-            more_link_path: ''
-            strip_tags: false
-            trim: false
-            preserve_tags: ''
-            html: false
-          element_type: h3
-          element_class: ''
-          element_label_type: ''
-          element_label_class: ''
-          element_label_colon: false
-          element_wrapper_type: ''
-          element_wrapper_class: ''
-          element_default_classes: true
-          empty: ''
-          hide_empty: false
-          empty_zero: false
-          hide_alter_empty: false
-          plugin_id: custom
-        field_address:
-          id: field_address
-          table: node__field_address
-          field: field_address
-          relationship: none
-          group_type: group
-          admin_label: ''
-          label: ''
-          exclude: false
-          alter:
-            alter_text: false
-            text: ''
-            make_link: false
-            path: ''
-            absolute: false
-            external: false
-            replace_spaces: false
-            path_case: none
-            trim_whitespace: false
-            alt: ''
-            rel: ''
-            link_class: ''
-            prefix: ''
-            suffix: ''
-            target: ''
-            nl2br: false
-            max_length: 0
-            word_boundary: true
-            ellipsis: true
-            more_link: false
-            more_link_text: ''
-            more_link_path: ''
-            strip_tags: false
-            trim: false
-            preserve_tags: ''
-            html: false
-          element_type: ''
-          element_class: ''
-          element_label_type: ''
-          element_label_class: ''
-          element_label_colon: false
-          element_wrapper_type: '0'
-          element_wrapper_class: ''
-          element_default_classes: true
-          empty: ''
-          hide_empty: false
-          empty_zero: false
-          hide_alter_empty: true
-          click_sort_column: langcode
-          type: address_plain
-          settings: {  }
-          group_column: ''
-          group_columns: {  }
-          group_rows: true
-          delta_limit: 0
-          delta_offset: 0
-          delta_reversed: false
-          delta_first_last: false
-          multi_type: separator
-          separator: ', '
-          field_api_classes: false
-          plugin_id: field
-        field_gp_appointments:
-          id: field_gp_appointments
-          table: node__field_gp_appointments
-          field: field_gp_appointments
-          relationship: none
-          group_type: group
-          admin_label: ''
-          label: ''
-          exclude: false
-          alter:
-            alter_text: false
-            text: ''
-            make_link: false
-            path: ''
-            absolute: false
-            external: false
-            replace_spaces: false
-            path_case: none
-            trim_whitespace: false
-            alt: ''
-            rel: ''
-            link_class: ''
-            prefix: ''
-            suffix: ''
-            target: ''
-            nl2br: false
-            max_length: 0
-            word_boundary: true
-            ellipsis: true
-            more_link: false
-            more_link_text: ''
-            more_link_path: ''
-            strip_tags: false
-            trim: false
-            preserve_tags: ''
-            html: false
-          element_type: ''
-          element_class: ''
-          element_label_type: ''
-          element_label_class: ''
-          element_label_colon: false
-          element_wrapper_type: ''
-          element_wrapper_class: ''
-          element_default_classes: true
-          empty: ''
-          hide_empty: false
-          empty_zero: false
-          hide_alter_empty: true
-          click_sort_column: uri
-          type: link
-          settings:
-            trim_length: 80
-            url_only: false
-            url_plain: false
-            rel: '0'
-            target: '0'
-          group_column: ''
-          group_columns: {  }
-          group_rows: true
-          delta_limit: 0
-          delta_offset: 0
-          delta_reversed: false
-          delta_first_last: false
-          multi_type: separator
-          separator: ', '
-          field_api_classes: false
-          plugin_id: field
-        field_gp_prescriptions:
-          id: field_gp_prescriptions
-          table: node__field_gp_prescriptions
-          field: field_gp_prescriptions
-          relationship: none
-          group_type: group
-          admin_label: ''
-          label: ''
-          exclude: false
-          alter:
-            alter_text: false
-            text: ''
-            make_link: false
-            path: ''
-            absolute: false
-            external: false
-            replace_spaces: false
-            path_case: none
-            trim_whitespace: false
-            alt: ''
-            rel: ''
-            link_class: ''
-            prefix: ''
-            suffix: ''
-            target: ''
-            nl2br: false
-            max_length: 0
-            word_boundary: true
-            ellipsis: true
-            more_link: false
-            more_link_text: ''
-            more_link_path: ''
-            strip_tags: false
-            trim: false
-            preserve_tags: ''
-            html: false
-          element_type: ''
-          element_class: ''
-          element_label_type: ''
-          element_label_class: ''
-          element_label_colon: false
-          element_wrapper_type: ''
-          element_wrapper_class: ''
-          element_default_classes: true
-          empty: ''
-          hide_empty: false
-          empty_zero: false
-          hide_alter_empty: true
-          click_sort_column: uri
-          type: link
-          settings:
-            trim_length: 80
-            url_only: false
-            url_plain: false
-            rel: '0'
-            target: '0'
-          group_column: ''
-          group_columns: {  }
-          group_rows: true
-          delta_limit: 0
-          delta_offset: 0
-          delta_reversed: false
-          delta_first_last: false
-          multi_type: separator
-          separator: ', '
-          field_api_classes: false
-          plugin_id: field
       filters:
         status:
           value: '1'
@@ -591,16 +272,12 @@ display:
     cache_metadata:
       max-age: -1
       contexts:
-        - 'languages:language_content'
         - 'languages:language_interface'
         - url
         - url.query_args
         - 'user.node_grants:view'
         - user.permissions
-      tags:
-        - 'config:field.storage.node.field_address'
-        - 'config:field.storage.node.field_gp_appointments'
-        - 'config:field.storage.node.field_gp_prescriptions'
+      tags: {  }
   gps_by_proximity:
     display_plugin: embed
     id: gps_by_proximity
@@ -612,13 +289,9 @@ display:
     cache_metadata:
       max-age: -1
       contexts:
-        - 'languages:language_content'
         - 'languages:language_interface'
         - url
         - url.query_args
         - 'user.node_grants:view'
         - user.permissions
-      tags:
-        - 'config:field.storage.node.field_address'
-        - 'config:field.storage.node.field_gp_appointments'
-        - 'config:field.storage.node.field_gp_prescriptions'
+      tags: {  }
