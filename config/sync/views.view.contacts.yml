@@ -33,7 +33,6 @@ display:
           bypass_access: false
           skip_access: false
           preserve_facet_query_args: false
-          contextual_filters_or: false
       exposed_form:
         type: input_required
         options:
@@ -54,8 +53,8 @@ display:
           id: 0
           total_pages: null
           tags:
-            previous: ‹‹
-            next: ››
+            previous: '‹ Previous'
+            next: 'Next ›'
             first: '« First'
             last: 'Last »'
           expose:
@@ -69,20 +68,8 @@ display:
           quantity: 9
       style:
         type: html_list
-        options:
-          grouping: {  }
-          row_class: ''
-          default_row_class: false
-          type: ul
-          wrapper_class: item-list
-          class: ''
       row:
         type: fields
-        options:
-          inline: {  }
-          separator: ''
-          hide_empty: false
-          default_field_elements: true
       fields:
         title:
           id: title
@@ -224,6 +211,7 @@ display:
           expose:
             label: Title
           plugin_id: search_api
+      title: Contacts
       header:
         result:
           id: result
@@ -283,7 +271,7 @@ display:
     position: 1
     display_options:
       display_extenders: {  }
-      display_description: ''
+      display_description: 'Solr powered content search'
     cache_metadata:
       max-age: -1
       contexts:
