@@ -20,6 +20,7 @@ dependencies:
   module:
     - editor
     - entity_embed
+    - google_analytics_counter
     - media
     - noreferrer
     - token_filter
@@ -133,3 +134,9 @@ filters:
         image: image
         remote_video: remote_video
         video: video
+  google_analytics_counter_filter:
+    id: google_analytics_counter_filter
+    provider: google_analytics_counter
+    status: false
+    weight: -36
+    settings: {  }
