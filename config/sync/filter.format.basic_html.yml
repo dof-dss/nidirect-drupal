@@ -14,7 +14,6 @@ dependencies:
   module:
     - editor
     - entity_embed
-    - google_analytics_counter
     - media
     - noreferrer
     - token_filter
@@ -101,12 +100,6 @@ filters:
     weight: -38
     settings:
       replace_empty: '0'
-  google_analytics_counter_filter:
-    id: google_analytics_counter_filter
-    provider: google_analytics_counter
-    status: false
-    weight: -37
-    settings: {  }
   media_embed:
     id: media_embed
     provider: media
@@ -114,11 +107,6 @@ filters:
     weight: -48
     settings:
       default_view_mode: embed
-      allowed_media_types:
-        audio: audio
-        image: image
-        remote_video: remote_video
-        video: video
       allowed_view_modes:
         landscape_float: landscape_float
         landscape_float_xp: landscape_float_xp
@@ -127,3 +115,8 @@ filters:
         portrait_float: portrait_float
         portrait_float_xp: portrait_float_xp
         portrait_full: portrait_full
+      allowed_media_types:
+        audio: audio
+        image: image
+        remote_video: remote_video
+        video: video
