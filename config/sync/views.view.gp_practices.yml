@@ -35,7 +35,7 @@ display:
           skip_access: false
           preserve_facet_query_args: false
       exposed_form:
-        type: basic
+        type: input_required
         options:
           submit_button: Go
           reset_button: false
@@ -44,6 +44,8 @@ display:
           expose_sort_order: false
           sort_asc_label: Asc
           sort_desc_label: Desc
+          text_input_required: ''
+          text_input_required_format: basic_html
       pager:
         type: full
         options:
@@ -200,14 +202,14 @@ display:
           exposed: true
           expose:
             operator_id: search_api_fulltext_op
-            label: 'Enter a GP name, practice or town.'
+            label: 'Enter a GP name, practice, town or postcode'
             description: ''
             use_operator: false
             operator: search_api_fulltext_op
             operator_limit_selection: false
             operator_list: {  }
             identifier: search_api_views_fulltext
-            required: false
+            required: true
             remember: false
             multiple: false
             remember_roles:
@@ -263,14 +265,27 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
-          empty: true
+          empty: false
           tokenize: false
           content:
             value: ''
-            format: basic_html
+            format: full_html
           plugin_id: text
       footer: {  }
-      empty: {  }
+      empty:
+        area:
+          id: area
+          table: views
+          field: area
+          relationship: none
+          group_type: group
+          admin_label: ''
+          empty: true
+          tokenize: false
+          content:
+            value: "<h2>0 GP practices</h2>\r\n\r\n<p>Your search did not match any GP practices.</p>\r\n\r\n<h3>Suggestions</h3>\r\n<ul>\r\n<li>Check the names of towns, GPs or GP practices are spelled correctly</li>\r\n<li>If you entered a postcode, check it is a valid postcode</li>\r\n</ul>"
+            format: basic_html
+          plugin_id: text
       relationships: {  }
       arguments: {  }
       display_extenders: {  }
@@ -279,6 +294,7 @@ display:
         operator: AND
         groups:
           1: AND
+      css_class: ''
     cache_metadata:
       max-age: -1
       contexts:
