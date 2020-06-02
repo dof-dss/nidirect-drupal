@@ -4,39 +4,31 @@ status: true
 dependencies:
   module:
     - search_api_solr
-    - taxonomy
     - node
-    - nidirect_gp
+    - taxonomy
     - search_api_location
     - search_api
   config:
     - field.storage.node.field_address
-    - field.storage.node.field_di_adi_no
-    - field.storage.node.field_di_areas
     - field.storage.node.body
+    - field.storage.node.field_contact_category
+    - field.storage.node.field_email_address
     - field.storage.node.field_hc_body_location
     - field.storage.taxonomy_term.field_term_hc_synonyms
     - field.storage.node.field_hc_body_system
-    - field.storage.node.field_di_categories
-    - field.storage.node.field_contact_category
     - field.storage.node.field_hc_condition_type
-    - field.storage.node.field_email_address
-    - field.storage.node.field_di_firstname
-    - field.storage.node.field_gp_practice_member
-    - field.storage.node.field_index_letter
-    - field.storage.node.field_di_lastname
-    - field.storage.node.field_lb_search_content
-    - field.storage.node.field_gp_practice_lead
-    - field.storage.node.field_location
     - field.storage.node.field_hc_primary_symptom_1
     - field.storage.node.field_hc_primary_symptom_2
     - field.storage.node.field_hc_primary_symptom_3
     - field.storage.node.field_hc_primary_symptom_4
-    - field.storage.node.field_published_date
     - field.storage.node.field_hc_secondary_symptoms
-    - field.storage.node.field_summary
+    - field.storage.node.field_index_letter
+    - field.storage.node.field_lb_search_content
+    - field.storage.node.field_location
+    - field.storage.node.field_published_date
     - field.storage.node.field_site_themes
     - field.storage.node.field_subtheme
+    - field.storage.node.field_summary
     - search_api.server.solr_default
     - core.entity_view_mode.node.full
 third_party_settings:
@@ -131,28 +123,6 @@ field_settings:
     dependencies:
       config:
         - field.storage.node.field_address
-  description:
-    label: 'Areas covered » Taxonomy term » Description'
-    datasource_id: 'entity:node'
-    property_path: 'field_di_areas:entity:description'
-    type: text
-    dependencies:
-      config:
-        - field.storage.node.field_di_areas
-      module:
-        - taxonomy
-        - taxonomy
-  description_1:
-    label: 'Categories » Taxonomy term » Description'
-    datasource_id: 'entity:node'
-    property_path: 'field_di_categories:entity:description'
-    type: text
-    dependencies:
-      config:
-        - field.storage.node.field_di_categories
-      module:
-        - taxonomy
-        - taxonomy
   field_contact_category:
     label: Category
     datasource_id: 'entity:node'
@@ -161,46 +131,6 @@ field_settings:
     dependencies:
       config:
         - field.storage.node.field_contact_category
-  field_di_adi_no:
-    label: 'ADI number'
-    datasource_id: 'entity:node'
-    property_path: field_di_adi_no
-    type: string
-    dependencies:
-      config:
-        - field.storage.node.field_di_adi_no
-  field_di_areas:
-    label: 'Areas covered'
-    datasource_id: 'entity:node'
-    property_path: field_di_areas
-    type: integer
-    dependencies:
-      config:
-        - field.storage.node.field_di_areas
-  field_di_categories:
-    label: Categories
-    datasource_id: 'entity:node'
-    property_path: field_di_categories
-    type: integer
-    dependencies:
-      config:
-        - field.storage.node.field_di_categories
-  field_di_firstname:
-    label: 'First name'
-    datasource_id: 'entity:node'
-    property_path: field_di_firstname
-    type: string
-    dependencies:
-      config:
-        - field.storage.node.field_di_firstname
-  field_di_lastname:
-    label: 'Last name'
-    datasource_id: 'entity:node'
-    property_path: field_di_lastname
-    type: string
-    dependencies:
-      config:
-        - field.storage.node.field_di_lastname
   field_email_address:
     label: Email
     datasource_id: 'entity:node'
@@ -405,28 +335,6 @@ field_settings:
     dependencies:
       config:
         - field.storage.node.field_summary
-  first_name:
-    label: 'GP name » GP » First name'
-    datasource_id: 'entity:node'
-    property_path: 'field_gp_practice_member:entity:first_name'
-    type: text
-    dependencies:
-      config:
-        - field.storage.node.field_gp_practice_member
-      module:
-        - nidirect_gp
-        - nidirect_gp
-  first_name_1:
-    label: 'Lead GP » GP » First name'
-    datasource_id: 'entity:node'
-    property_path: 'field_gp_practice_lead:entity:first_name'
-    type: text
-    dependencies:
-      config:
-        - field.storage.node.field_gp_practice_lead
-      module:
-        - nidirect_gp
-        - nidirect_gp
   langcode:
     label: Language
     datasource_id: 'entity:node'
@@ -435,28 +343,6 @@ field_settings:
     dependencies:
       module:
         - node
-  last_name:
-    label: 'GP name » GP » Last name'
-    datasource_id: 'entity:node'
-    property_path: 'field_gp_practice_member:entity:last_name'
-    type: text
-    dependencies:
-      config:
-        - field.storage.node.field_gp_practice_member
-      module:
-        - nidirect_gp
-        - nidirect_gp
-  last_name_1:
-    label: 'Lead GP » GP » Last name'
-    datasource_id: 'entity:node'
-    property_path: 'field_gp_practice_lead:entity:last_name'
-    type: text
-    dependencies:
-      config:
-        - field.storage.node.field_gp_practice_lead
-      module:
-        - nidirect_gp
-        - nidirect_gp
   locality:
     label: 'Address » The locality (i.e. city).'
     datasource_id: 'entity:node'
@@ -474,28 +360,6 @@ field_settings:
     dependencies:
       config:
         - field.storage.node.field_hc_body_location
-      module:
-        - taxonomy
-        - taxonomy
-  name_1:
-    label: 'Areas covered » Taxonomy term » Name'
-    datasource_id: 'entity:node'
-    property_path: 'field_di_areas:entity:name'
-    type: text
-    dependencies:
-      config:
-        - field.storage.node.field_di_areas
-      module:
-        - taxonomy
-        - taxonomy
-  name_2:
-    label: 'Categories » Taxonomy term » Name'
-    datasource_id: 'entity:node'
-    property_path: 'field_di_categories:entity:name'
-    type: string
-    dependencies:
-      config:
-        - field.storage.node.field_di_categories
       module:
         - taxonomy
         - taxonomy
@@ -577,9 +441,7 @@ datasource_settings:
         - application
         - article
         - contact
-        - driving_instructor
         - embargoed_publication
-        - gp_practice
         - health_condition
         - landing_page
         - news
