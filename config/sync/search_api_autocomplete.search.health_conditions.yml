@@ -1,28 +1,28 @@
-uuid: 38f61b53-e38e-461e-a2d6-f786bb9bb7de
+uuid: cc4d83d6-2a3a-494d-94d6-dc5662b5421f
 langcode: en
 status: true
 dependencies:
   config:
-    - search_api.index.contacts
-    - views.view.contacts
+    - search_api.index.health_conditions
+    - views.view.health_conditions
   module:
     - views
     - search_api_autocomplete
-id: contacts
-label: Contacts
-index_id: contacts
+id: health_conditions
+label: 'Health conditions'
+index_id: health_conditions
 suggester_settings:
   live_results:
     fields: {  }
     view_modes:
       'entity:node':
-        contact: ''
+        health_condition: ''
 suggester_weights:
   live_results: 0
 suggester_limits:
   live_results: 5
 search_settings:
-  'views:contacts':
+  'views:health_conditions':
     displays:
       default: true
       selected:
