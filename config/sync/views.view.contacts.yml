@@ -1,9 +1,9 @@
-uuid: 1e5c8dc6-0f82-4584-8dbd-274748acda3f
+uuid: 43f143ba-bc27-4173-9ebd-adf26e4837a3
 langcode: en
 status: true
 dependencies:
   config:
-    - search_api.index.contacts
+    - search_api.index.default_content
   module:
     - search_api
     - search_api_spellcheck
@@ -12,7 +12,7 @@ label: Contacts
 module: views
 description: ''
 tag: ''
-base_table: search_api_index_contacts
+base_table: search_api_index_default_content
 base_field: search_api_id
 display:
   default:
@@ -73,7 +73,7 @@ display:
       fields:
         title:
           id: title
-          table: search_api_index_contacts
+          table: search_api_index_default_content
           field: title
           relationship: none
           group_type: group
@@ -142,9 +142,50 @@ display:
             multi_separator: ', '
           plugin_id: search_api_field
       filters:
+        type:
+          id: type
+          table: search_api_index_default_content
+          field: type
+          relationship: none
+          group_type: group
+          admin_label: ''
+          operator: or
+          value:
+            contact: contact
+          group: 1
+          exposed: false
+          expose:
+            operator_id: ''
+            label: ''
+            description: ''
+            use_operator: false
+            operator: ''
+            operator_limit_selection: false
+            operator_list: {  }
+            identifier: ''
+            required: false
+            remember: false
+            multiple: false
+            remember_roles:
+              authenticated: authenticated
+            reduce: false
+          is_grouped: false
+          group_info:
+            label: ''
+            description: ''
+            identifier: ''
+            optional: true
+            widget: select
+            multiple: false
+            remember: false
+            default_group: All
+            default_group_multiple: {  }
+            group_items: {  }
+          reduce_duplicates: false
+          plugin_id: search_api_options
         search_api_fulltext:
           id: search_api_fulltext
-          table: search_api_index_contacts
+          table: search_api_index_default_content
           field: search_api_fulltext
           relationship: none
           group_type: group
@@ -196,12 +237,12 @@ display:
           parse_mode: phrase
           min_length: 3
           fields:
-            - title_fulltext
+            - title
           plugin_id: search_api_fulltext
       sorts:
         title:
           id: title
-          table: search_api_index_contacts
+          table: search_api_index_default_content
           field: title
           relationship: none
           group_type: group
