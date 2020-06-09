@@ -1,0 +1,30 @@
+uuid: 9ffa948f-ef2f-49b8-8bf7-1f13ef3bede7
+langcode: en
+status: true
+dependencies:
+  module:
+    - node
+    - options
+id: node.field_assurance_level
+field_name: field_assurance_level
+entity_type: node
+type: list_string
+settings:
+  allowed_values:
+    -
+      value: '0'
+      label: 'Anonymous access'
+    -
+      value: '1'
+      label: 'Unverified NIDA user account'
+    -
+      value: '2'
+      label: 'Verified NIDA user account'
+  allowed_values_function: ''
+module: options
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

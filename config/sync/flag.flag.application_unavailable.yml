@@ -1,0 +1,30 @@
+uuid: a4b2b080-909d-4c5b-8025-7e1596dc2c98
+langcode: en
+status: true
+dependencies:
+  module:
+    - node
+id: application_unavailable
+label: 'Application unavailable'
+bundles:
+  - application
+entity_type: node
+global: false
+weight: 0
+flag_short: 'Application / service unavailable'
+flag_long: 'Check this box to indicate that the service or application is not currently available'
+flag_message: ''
+unflag_short: 'Application / service available'
+unflag_long: 'Uncheck this box to indicate that the service or application is currently available'
+unflag_message: ''
+unflag_denied_text: ''
+flag_type: 'entity:node'
+link_type: ajax_link
+flagTypeConfig:
+  show_in_links: {  }
+  show_as_field: false
+  show_on_form: true
+  show_contextual_link: false
+  extra_permissions:
+    owner: '0'
+linkTypeConfig: {  }
