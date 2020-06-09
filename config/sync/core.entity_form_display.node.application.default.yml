@@ -5,6 +5,7 @@ dependencies:
   config:
     - field.field.node.application.body
     - field.field.node.application.field_additional_info
+    - field.field.node.application.field_assurance_level
     - field.field.node.application.field_link
     - field.field.node.application.field_meta_tags
     - field.field.node.application.field_related_info
@@ -53,6 +54,12 @@ content:
       rows: 5
       placeholder: ''
     third_party_settings: {  }
+  field_assurance_level:
+    weight: 102
+    settings: {  }
+    third_party_settings: {  }
+    type: options_buttons
+    region: content
   field_link:
     type: link_default
     weight: 6
@@ -63,7 +70,8 @@ content:
     third_party_settings: {  }
   field_meta_tags:
     weight: 14
-    settings: {  }
+    settings:
+      sidebar: true
     third_party_settings: {  }
     type: metatag_firehose
     region: content
@@ -101,7 +109,7 @@ content:
       rows: 5
       placeholder: ''
     third_party_settings: {  }
-    type: text_textarea
+    type: string_textarea
     region: content
   field_teaser:
     type: string_textfield
@@ -113,9 +121,9 @@ content:
     third_party_settings: {  }
   flag:
     weight: 10
+    region: content
     settings: {  }
     third_party_settings: {  }
-    region: content
   langcode:
     type: language_select
     weight: 2
@@ -156,9 +164,9 @@ content:
     third_party_settings: {  }
   scheduler_settings:
     weight: 20
+    region: content
     settings: {  }
     third_party_settings: {  }
-    region: content
   status:
     type: boolean_checkbox
     settings:
