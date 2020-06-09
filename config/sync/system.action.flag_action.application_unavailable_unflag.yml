@@ -1,0 +1,15 @@
+uuid: f0320fbc-9f79-43af-967a-2e580e274c85
+langcode: en
+status: true
+dependencies:
+  config:
+    - flag.flag.application_unavailable
+  module:
+    - flag
+id: flag_action.application_unavailable_unflag
+label: 'Application / service available'
+type: node
+plugin: 'flag_action:application_unavailable_unflag'
+configuration:
+  flag_id: application_unavailable
+  flag_action: unflag
