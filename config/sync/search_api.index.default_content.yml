@@ -455,21 +455,49 @@ processor_settings:
   add_url: {  }
   aggregated_field: {  }
   entity_status: {  }
-  hierarchy:
+  html_filter:
+    all_fields: true
     fields:
-      field_di_categories: taxonomy_term-parent
+      - address_line1
+      - address_line2
+      - administrative_area
+      - body
+      - country_code
+      - field_email_address
+      - field_hc_body_location_synonyms
+      - field_hc_body_system_synonyms
+      - field_hc_condition_type_name
+      - field_hc_condition_type_synonyms
+      - field_hc_primary_symptom_1_synonyms
+      - field_hc_primary_symptom_2_synonyms
+      - field_hc_primary_symptom_3_synonyms
+      - field_hc_primary_symptom_4_synonyms
+      - field_hc_secondary_symptoms_synonyms
+      - field_index_letter
+      - field_lb_search_content
+      - field_location
+      - field_summary
+      - langcode
+      - locality
+      - name
+      - postal_code
+      - rendered_item
+      - spellcheck_und
+      - title
+      - type
+    title: false
+    alt: true
+    tags:
+      b: 2
+      em: 1
+      h1: 5
+      h2: 3
+      h3: 2
+      strong: 2
+      u: 1
     weights:
-      preprocess_index: -45
-  highlight:
-    highlight: always
-    highlight_partial: false
-    excerpt: true
-    excerpt_length: 256
-    exclude_fields: {  }
-    prefix: '<strong>'
-    suffix: '</strong>'
-    weights:
-      postprocess_query: 0
+      preprocess_index: -15
+      preprocess_query: -15
   language_with_fallback: {  }
   rendered_item: {  }
   solr_date_range:
