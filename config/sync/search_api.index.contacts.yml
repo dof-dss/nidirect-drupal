@@ -182,15 +182,6 @@ field_settings:
     dependencies:
       config:
         - field.storage.node.field_address
-  spellcheck_und:
-    label: 'Spellchecker text'
-    property_path: aggregated_field
-    type: solr_text_spellcheck
-    configuration:
-      type: union
-      fields:
-        - 'entity:node/field_summary'
-        - 'entity:node/title'
   title:
     label: Title
     datasource_id: 'entity:node'
@@ -220,6 +211,7 @@ datasource_settings:
 processor_settings:
   add_url: {  }
   aggregated_field: {  }
+  entity_status: {  }
   html_filter:
     all_fields: true
     fields:
@@ -239,19 +231,16 @@ processor_settings:
       - organization
       - postal_code
       - sorting_code
-      - spellcheck_und
       - title
       - title_fulltext
     title: true
     alt: true
     tags:
       b: 2
-      em: 1
       h1: 5
       h2: 3
       h3: 2
       strong: 2
-      u: 1
     weights:
       preprocess_index: -15
       preprocess_query: -15
