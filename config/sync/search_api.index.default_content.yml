@@ -11,24 +11,24 @@ dependencies:
   config:
     - field.storage.node.field_address
     - field.storage.node.body
-    - field.storage.node.field_contact_category
-    - field.storage.node.field_email_address
     - field.storage.node.field_hc_body_location
     - field.storage.taxonomy_term.field_term_hc_synonyms
     - field.storage.node.field_hc_body_system
+    - field.storage.node.field_contact_category
     - field.storage.node.field_hc_condition_type
+    - field.storage.node.field_email_address
+    - field.storage.node.field_index_letter
+    - field.storage.node.field_lb_search_content
+    - field.storage.node.field_location
     - field.storage.node.field_hc_primary_symptom_1
     - field.storage.node.field_hc_primary_symptom_2
     - field.storage.node.field_hc_primary_symptom_3
     - field.storage.node.field_hc_primary_symptom_4
-    - field.storage.node.field_hc_secondary_symptoms
-    - field.storage.node.field_index_letter
-    - field.storage.node.field_lb_search_content
-    - field.storage.node.field_location
     - field.storage.node.field_published_date
+    - field.storage.node.field_hc_secondary_symptoms
+    - field.storage.node.field_summary
     - field.storage.node.field_site_themes
     - field.storage.node.field_subtheme
-    - field.storage.node.field_summary
     - search_api.server.solr_default
     - core.entity_view_mode.node.full
 third_party_settings:
@@ -391,15 +391,6 @@ field_settings:
           news: ''
           page: full
           publication: ''
-  spellcheck_und:
-    label: 'Spellchecker text'
-    property_path: aggregated_field
-    type: solr_text_spellcheck
-    configuration:
-      type: union
-      fields:
-        - 'entity:node/field_summary'
-        - 'entity:node/title'
   status:
     label: Published
     datasource_id: 'entity:node'
@@ -482,7 +473,6 @@ processor_settings:
       - name
       - postal_code
       - rendered_item
-      - spellcheck_und
       - title
       - type
     title: false
