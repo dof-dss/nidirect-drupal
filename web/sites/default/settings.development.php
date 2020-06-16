@@ -25,9 +25,6 @@ $config['config_split.config_split.local']['status'] = FALSE;
 $config['config_split.config_split.development']['status'] = TRUE;
 $config['config_split.config_split.production']['status'] = FALSE;
 
-// Config readonly settings.
-$settings['config_readonly'] = getenv('CONFIG_READONLY');
-
 // Configuration that is allowed to be changed in readonly environments.
 $settings['config_readonly_whitelist_patterns'] = [
   'system.site',
