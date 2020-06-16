@@ -35,6 +35,7 @@ dependencies:
     - field.field.node.health_condition.field_top_level_theme
     - node.type.health_condition
   module:
+    - datetime
     - layout_builder
     - link
     - smart_trim
@@ -65,6 +66,24 @@ content:
       link: true
       view_mode: default
     third_party_settings: {  }
+  field_last_review_date:
+    type: datetime_custom
+    weight: 11
+    region: content
+    label: hidden
+    settings:
+      timezone_override: ''
+      date_format: 'F Y'
+    third_party_settings: {  }
+  field_next_review_date:
+    type: datetime_custom
+    weight: 6
+    region: content
+    label: hidden
+    settings:
+      timezone_override: ''
+      date_format: 'F Y'
+    third_party_settings: {  }
   field_photo:
     type: entity_reference_entity_view
     weight: 2
@@ -73,6 +92,15 @@ content:
     settings:
       view_mode: embed
       link: false
+    third_party_settings: {  }
+  field_published_date:
+    type: datetime_custom
+    weight: 12
+    region: content
+    label: hidden
+    settings:
+      timezone_override: ''
+      date_format: 'F Y'
     third_party_settings: {  }
   field_related_info:
     type: link
@@ -124,11 +152,8 @@ hidden:
   field_hc_primary_symptom_4: true
   field_hc_secondary_symptoms: true
   field_index_letter: true
-  field_last_review_date: true
   field_meta_tags: true
-  field_next_review_date: true
   field_parent_condition: true
-  field_published_date: true
   field_related_conditions: true
   field_site_themes: true
   field_subtheme: true
