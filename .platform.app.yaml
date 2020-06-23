@@ -132,8 +132,8 @@ variables:
 
 # The configuration of scheduled execution.
 crons:
+  # https://docs.platform.sh/configuration/app/timezone.html#setting-the-system-timezone-for-cron-tasks
+  timezone: 'Europe/London'
   drupal:
-    # https://docs.platform.sh/configuration/app/timezone.html#setting-the-system-timezone-for-cron-tasks
-    timezone: 'Europe/London'
     spec: '*/5 * * * *'
     cmd: 'cd web ; drush core-cron'
