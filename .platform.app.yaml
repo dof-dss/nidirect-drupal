@@ -125,15 +125,8 @@ web:
         '^/sites/default/files/(css|js)':
           expires: 2w
 
-# https://docs.platform.sh/languages/php/ini.html
-variables:
-  php:
-    "date.timezone": "Europe/London"
-
 # The configuration of scheduled execution.
 crons:
-  # https://docs.platform.sh/configuration/app/timezone.html#setting-the-system-timezone-for-cron-tasks
-  timezone: 'Europe/London'
   drupal:
     spec: '*/5 * * * *'
     cmd: 'cd web ; drush core-cron'
