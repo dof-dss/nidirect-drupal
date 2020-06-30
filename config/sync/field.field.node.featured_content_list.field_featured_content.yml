@@ -6,6 +6,7 @@ dependencies:
     - field.storage.node.field_featured_content
     - node.type.feature
     - node.type.featured_content_list
+    - node.type.news
 id: node.featured_content_list.field_featured_content
 field_name: field_featured_content
 entity_type: node
@@ -21,8 +22,10 @@ settings:
   handler_settings:
     target_bundles:
       feature: feature
+      news: news
     sort:
-      field: _none
+      field: type
+      direction: ASC
     auto_create: false
-    auto_create_bundle: ''
+    auto_create_bundle: feature
 field_type: entity_reference
