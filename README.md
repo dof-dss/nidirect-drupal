@@ -88,6 +88,7 @@ This project employs a suite of modules to control how site configuration is imp
 - [config_split](https://www.drupal.org/project/config_split): Allows configuration to be defined per environment. Ie: development modules will be enabled for local work, and remain off/absent from others.
 - [config_readonly](https://www.drupal.org/project/config_readonly): Ensures that active configuration cannot be changed by site admins, but blocking certain system forms from saving. A whitelist is available for 'admin content' that is not necessarily tracked in code or is needed to be changed regularly by site admins.
 - [config_ignore](https://www.drupal.org/project/config_ignore): Ensures that some site configuration is not overwritten during configuration import during deployments.
+- [multiline_config](https://www.drupal.org/project/multiline_config): Exports text strings as multiline making it easier to read, review and edit configurations such as those exported by the Webforms module.
 
 > TL;DR: Site admins are restricted to make changes to active configuration via the site UI, because it can be lost when syncing with the config kept in code.
 
@@ -118,8 +119,8 @@ selected in the 'Theme/subtheme' field. This is achieved by using the 'Articles 
 
 ### Display of teasers on Landing Pages
 
-Selecting a theme/subtheme on a landing page node will result in teasers automatically being displayed for articles or taxonomy terms that match that theme/subtheme. 
-This is achieved by using the nidirect_article_teasers_by_topic custom block from the nidirect_custom_blocks module, so please ensure that this block remians visible 
+Selecting a theme/subtheme on a landing page node will result in teasers automatically being displayed for articles or taxonomy terms that match that theme/subtheme.
+This is achieved by using the nidirect_article_teasers_by_topic custom block from the nidirect_custom_blocks module, so please ensure that this block remians visible
 in at least the 'full content' view of the landing page.
 
 Checking the 'manually control listing' checkbox on a landing page will cause the articles and taxonomy terms to be displayed in the 'Listing' field on the node edit
