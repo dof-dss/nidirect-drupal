@@ -5,6 +5,8 @@ dependencies:
   config:
     - core.entity_view_mode.node.full
     - field.field.node.featured_content_list.field_featured_content
+    - field.field.node.featured_content_list.field_subtheme
+    - field.field.node.featured_content_list.field_tags
     - node.type.featured_content_list
   module:
     - layout_builder
@@ -29,6 +31,8 @@ content:
     region: content
 hidden:
   content_moderation_control: true
+  field_subtheme: true
+  field_tags: true
   langcode: true
   links: true
   search_api_excerpt: true
