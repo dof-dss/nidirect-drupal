@@ -35,7 +35,7 @@ redis:
 proxy:
   type: varnish:6.0
   relationships:
-    application: 'app:http'
+    application: 'nidirect:http'
   configuration:
     vcl: !include
       type: string
