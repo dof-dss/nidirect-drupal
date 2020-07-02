@@ -31,3 +31,12 @@ solr:
 
 redis:
   type: redis:5.0
+
+proxy:
+  type: varnish:6.0
+  relationships:
+    application: 'app:http'
+  configuration:
+    vcl: !include
+      type: string
+      path: config.vcl
