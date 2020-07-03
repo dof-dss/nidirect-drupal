@@ -170,3 +170,7 @@ $settings['deployment_identifier'] = $settings['deployment_identifier'] ?? $plat
 // Determine the PSH host URI.
 $psh_host = "https://" . getenv('PLATFORM_ENVIRONMENT') . "-" . getenv("PLATFORM_PROJECT") . ".uk-1.platformsh.site";
 
+// Google Analytics API config.
+$config['google_analytics_counter.settings']['general_settings']['client_id'] = getenv('GA_CLIENT_ID');
+$config['google_analytics_counter.settings']['general_settings']['client_secret'] = getenv('GA_CLIENT_SECRET');
+$config['google_analytics_counter.settings']['general_settings']['redirect_uri'] = $psh_host . "/admin/config/system/google-analytics-counter/authentication";
