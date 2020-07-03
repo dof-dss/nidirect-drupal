@@ -166,3 +166,7 @@ $settings['hash_salt'] = $settings['hash_salt'] ?? $platformsh->projectEntropy;
 
 // Set the deployment identifier, which is used by some Drupal cache systems.
 $settings['deployment_identifier'] = $settings['deployment_identifier'] ?? $platformsh->treeId;
+
+// Determine the PSH host URI.
+$psh_host = "https://" . getenv('PLATFORM_ENVIRONMENT') . "-" . getenv("PLATFORM_PROJECT") . ".uk-1.platformsh.site";
+
