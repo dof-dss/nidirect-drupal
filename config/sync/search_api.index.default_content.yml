@@ -4,6 +4,7 @@ status: true
 dependencies:
   module:
     - search_api_solr
+    - nidirect_gp
     - node
     - taxonomy
     - search_api_location
@@ -17,8 +18,10 @@ dependencies:
     - field.storage.node.field_contact_category
     - field.storage.node.field_hc_condition_type
     - field.storage.node.field_email_address
+    - field.storage.node.field_gp_practice_member
     - field.storage.node.field_index_letter
     - field.storage.node.field_lb_search_content
+    - field.storage.node.field_gp_practice_lead
     - field.storage.node.field_location
     - field.storage.node.field_hc_primary_symptom_1
     - field.storage.node.field_hc_primary_symptom_2
@@ -190,7 +193,6 @@ field_settings:
         - field.storage.node.field_hc_condition_type
       module:
         - taxonomy
-        - taxonomy
   field_hc_condition_type_synonyms:
     label: 'Condition type / disease process » Taxonomy term » Synonyms'
     datasource_id: 'entity:node'
@@ -335,6 +337,34 @@ field_settings:
     dependencies:
       config:
         - field.storage.node.field_summary
+  first_name:
+    label: 'First name'
+    datasource_id: 'entity:gp'
+    property_path: first_name
+    type: string
+    dependencies:
+      module:
+        - nidirect_gp
+  first_name_1:
+    label: 'GP name » GP » First name'
+    datasource_id: 'entity:node'
+    property_path: 'field_gp_practice_member:entity:first_name'
+    type: text
+    dependencies:
+      config:
+        - field.storage.node.field_gp_practice_member
+      module:
+        - nidirect_gp
+  first_name_2:
+    label: 'Lead GP » GP » First name'
+    datasource_id: 'entity:node'
+    property_path: 'field_gp_practice_lead:entity:first_name'
+    type: text
+    dependencies:
+      config:
+        - field.storage.node.field_gp_practice_lead
+      module:
+        - nidirect_gp
   langcode:
     label: Language
     datasource_id: 'entity:node'
@@ -343,6 +373,34 @@ field_settings:
     dependencies:
       module:
         - node
+  last_name:
+    label: 'Last name'
+    datasource_id: 'entity:gp'
+    property_path: last_name
+    type: string
+    dependencies:
+      module:
+        - nidirect_gp
+  last_name_1:
+    label: 'GP name » GP » Last name'
+    datasource_id: 'entity:node'
+    property_path: 'field_gp_practice_member:entity:last_name'
+    type: text
+    dependencies:
+      config:
+        - field.storage.node.field_gp_practice_member
+      module:
+        - nidirect_gp
+  last_name_2:
+    label: 'Lead GP » GP » Last name'
+    datasource_id: 'entity:node'
+    property_path: 'field_gp_practice_lead:entity:last_name'
+    type: text
+    dependencies:
+      config:
+        - field.storage.node.field_gp_practice_lead
+      module:
+        - nidirect_gp
   locality:
     label: 'Address » The locality (i.e. city).'
     datasource_id: 'entity:node'
@@ -361,7 +419,6 @@ field_settings:
       config:
         - field.storage.node.field_hc_body_location
       module:
-        - taxonomy
         - taxonomy
   postal_code:
     label: 'Address » The postal code.'
@@ -425,6 +482,10 @@ field_settings:
       module:
         - node
 datasource_settings:
+  'entity:gp':
+    languages:
+      default: true
+      selected: {  }
   'entity:node':
     bundles:
       default: false
@@ -468,7 +529,13 @@ processor_settings:
       - field_lb_search_content
       - field_location
       - field_summary
+      - first_name
+      - first_name_1
+      - first_name_2
       - langcode
+      - last_name
+      - last_name_1
+      - last_name_2
       - locality
       - name
       - postal_code
