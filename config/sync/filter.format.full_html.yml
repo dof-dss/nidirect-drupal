@@ -3,12 +3,14 @@ langcode: en
 status: true
 dependencies:
   config:
+    - core.entity_view_mode.media.article_full
     - core.entity_view_mode.media.banner_deep
     - core.entity_view_mode.media.banner_thin
     - core.entity_view_mode.media.card_large
     - core.entity_view_mode.media.card_small
     - core.entity_view_mode.media.embed
     - core.entity_view_mode.media.feature_card
+    - core.entity_view_mode.media.landing_full
     - core.entity_view_mode.media.landscape_float
     - core.entity_view_mode.media.landscape_float_xp
     - core.entity_view_mode.media.landscape_full
@@ -113,14 +115,21 @@ filters:
     status: true
     weight: -47
     settings:
-      default_view_mode: embed
+      default_view_mode: article_full
+      allowed_media_types:
+        audio: audio
+        image: image
+        remote_video: remote_video
+        video: video
       allowed_view_modes:
+        article_full: article_full
         banner_deep: banner_deep
         banner_thin: banner_thin
         card_large: card_large
         card_small: card_small
         embed: embed
         feature_card: feature_card
+        landing_full: landing_full
         landscape_float: landscape_float
         landscape_float_xp: landscape_float_xp
         landscape_full: landscape_full
@@ -129,11 +138,6 @@ filters:
         portrait_float: portrait_float
         portrait_float_xp: portrait_float_xp
         portrait_full: portrait_full
-      allowed_media_types:
-        audio: audio
-        image: image
-        remote_video: remote_video
-        video: video
   google_analytics_counter_filter:
     id: google_analytics_counter_filter
     provider: google_analytics_counter
