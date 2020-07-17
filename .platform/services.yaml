@@ -17,6 +17,18 @@ db:
         privileges:
           main: admin
 
+db_legacy:
+  type: mariadb:10.4
+  disk: 1024
+  configuration:
+    schemas:
+      - main
+    endpoints:
+      admin:
+        default_schema: main
+        privileges:
+          main: admin
+
 # Fudging the service name forces a full rebuild with any new config.
 solr:
   type: solr:7.7
