@@ -22,6 +22,18 @@ $databases['default']['default'] = [
   'pdo' => [PDO::MYSQL_ATTR_COMPRESS => !empty($creds['query']['compression'])]
 ];
 
+// Migration legacy db config.
+$creds = $platformsh->credentials('database_legacy');
+$databases['migrate']['default'] = [
+  'driver' => $creds['scheme'],
+  'database' => $creds['path'],
+  'username' => $creds['username'],
+  'password' => $creds['password'],
+  'host' => $creds['host'],
+  'port' => $creds['port'],
+  'pdo' => [PDO::MYSQL_ATTR_COMPRESS => !empty($creds['query']['compression'])]
+];
+
 // Solr configuration.
 $platformsh->registerFormatter('drupal-solr', function($solr) {
   // Default the solr core name to `collection1` for pre-Solr-6.x instances.
