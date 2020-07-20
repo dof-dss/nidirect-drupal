@@ -22,7 +22,7 @@ relationships:
   drupal7db: 'drupal7db:admin'
 
 # The size of the persistent disk of the application (in MB).
-disk: 20480
+disk: 30720
 
 # The 'mounts' describe writable, persistent filesystem mounts in the application.
 mounts:
@@ -35,6 +35,9 @@ mounts:
   '/private':
     source: local
     source_path: 'private'
+  '/imports':
+    source: local
+    source_path: 'imports'
   '/.drush':
     source: local
     source_path: 'drush'
