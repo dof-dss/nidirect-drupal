@@ -23,8 +23,8 @@ $databases['default']['default'] = [
 ];
 
 // Migration legacy db config.
-$creds = $platformsh->credentials('database_legacy');
-$databases['migrate']['default'] = [
+$creds = $platformsh->credentials('drupal7db');
+$databases['drupal7db']['default'] = [
   'driver' => $creds['scheme'],
   'database' => $creds['path'],
   'username' => $creds['username'],
@@ -33,6 +33,7 @@ $databases['migrate']['default'] = [
   'port' => $creds['port'],
   'pdo' => [PDO::MYSQL_ATTR_COMPRESS => !empty($creds['query']['compression'])]
 ];
+$databases['migrate']['default'] = $databases['drupal7db']['default'];
 
 // Solr configuration.
 $platformsh->registerFormatter('drupal-solr', function($solr) {
