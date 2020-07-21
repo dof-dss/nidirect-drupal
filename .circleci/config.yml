@@ -302,10 +302,13 @@ jobs:
             # Always force push to a fixed branch on platform.sh.
             git push -f psh $DEV_BUILD_BRANCH
       - run:
-          name: Re-sync data from master environment
+          name: Re-sync data from master environment / activate if not found.
           command: |
-            /home/circleci/.platformsh/bin/platform sync data -p $PLATFORM_PROJECT_ID -e $DEV_BUILD_BRANCH -y
-
+            if /home/circleci/.platformsh/bin/platform environment:list -p $PLATFORM_PROJECT_ID -I --no-header --pipe | grep -q $DEV_BUILD_BRANCH; then
+              echo "Found existing active environment for $DEV_BUILD_BRANCH"
+            else
+              /home/circleci/.platformsh/bin/platform environment:activate -p $PLATFORM_PROJECT_ID -e $DEV_BUILD_BRANCH -y
+            fi
 
 workflows:
   version: 2
