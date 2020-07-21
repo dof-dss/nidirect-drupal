@@ -9,12 +9,12 @@ commands:
           name: Add GitHub access token for composer
           command: echo 'composer config -g github-oauth.github.com $GITHUB_TOKEN' >> $BASH_ENV
       # Add SSH user key so we can access related repositories as part of our initial clone + composer install command.
-      # 89:cc >> GitHub user key fingerprint
-      # ed:e9 >> private fingerprint to talk to platform.sh
+      # 89:cc >> GitHub user key fingerprint.
+      # f8:f0 >> private fingerprint to allow Circle CI to talk to platform.sh.
       - add_ssh_keys:
           fingerprints:
             - "89:cc:6e:61:6a:0e:13:ab:47:0b:25:d6:bc:90:d4:d2"
-            - "ed:e9:03:7d:b2:e6:bc:92:f9:dc:78:62:00:cf:6e:e1"
+            - "f8:f0:34:a1:0e:51:56:44:2b:9c:db:b7:2f:26:3b:48"
       - checkout
   composer_tasks:
     description: "Validate and install dependencies using composer"
@@ -52,15 +52,16 @@ commands:
           command: |
             sudo cp /home/circleci/project/.circleci/docker-php-circleci.ini /usr/local/etc/php/conf.d/
             sudo apt-get update
-            sudo apt-get install -y libpng-dev
-            sudo docker-php-ext-install gd
+            sudo apt-get install -y libpng-dev mariadb-client rsync
+            sudo docker-php-ext-install gd pdo_mysql pcntl posix
             composer global require hirak/prestissimo
   github_hosts_workaround:
     description: "Adds github.com to known hosts in container; for working locally."
     steps:
       - run:
-          name: Keyscan Github (HACK)
+          name: Keyscan GitHub hostname
           command: mkdir -p ~/.ssh && ssh-keyscan -H github.com >> ~/.ssh/known_hosts
+
 jobs:
   # Tests the integrity of the build, stores the results in a workspace for re-use in later jobs.
   build:
@@ -74,6 +75,7 @@ jobs:
           root: ./
           paths:
             - ./
+
   # Test for coding standards and deprecated code.
   static_analysis:
     docker:
@@ -85,8 +87,8 @@ jobs:
           name: PHPCS static analysis
           command: /home/circleci/project/phpcs.sh /home/circleci/project "/home/circleci/project/web/modules/origins /home/circleci/project/web/modules/custom /home/circleci/project/web/modules/migrate /home/circleci/project/web/themes/custom"
       - run:
-         name: Deprecated code check
-         command: |
+          name: Deprecated code check
+          command: |
             cd /home/circleci/project
             vendor/bin/drupal-check /home/circleci/project/web/modules/custom /home/circleci/project/web/modules/origins
 
@@ -99,51 +101,48 @@ jobs:
       - attach_workspace:
           at: ./
       - run:
-            name: Add extra OS and PHP extensions/config
-            command: |
-              sudo cp /home/circleci/project/.circleci/docker-php-circleci.ini /usr/local/etc/php/conf.d/
-              sudo apt-get install -y libpng-dev mariadb-client rsync
-              sudo docker-php-ext-install gd pdo_mysql
+          name: Add extra OS and PHP extensions/config
+          command: |
+            sudo cp /home/circleci/project/.circleci/docker-php-circleci.ini /usr/local/etc/php/conf.d/
       - run:
-            name: Copy vhost into place
-            command: |
-              sudo cp .circleci/drupal.vhost /etc/apache2/sites-available/drupal.conf
+          name: Copy vhost into place
+          command: |
+            sudo cp .circleci/drupal.vhost /etc/apache2/sites-available/drupal.conf
       - run:
-            name: Enable web server and vhosts
-            command: |
-              sudo a2enmod rewrite
-              sudo a2dissite 000-default
-              sudo a2ensite drupal
-              sudo service apache2 start
+          name: Enable web server and vhosts
+          command: |
+            sudo a2enmod rewrite
+            sudo a2dissite 000-default
+            sudo a2ensite drupal
+            sudo service apache2 start
       - run:
-            name: Install Drupal and configure settings
-            command: |
-              # Should be scaffolded by now.
-              cd /home/circleci/project/web
-              cp sites/default/default.settings.php sites/default/settings.php
-              cp sites/default/default.services.yml sites/default/services.yml
-              # Copy in our environment specific settings to the settings.php file.
-              cp /home/circleci/project/.circleci/drupal.settings.php sites/default/settings.php
-              # Copy PHPUnit config into core folder.
-              cp /home/circleci/project/.circleci/phpunit.circleci.xml core/
-              # Install Drupal (or restore from DB dump at this point).
-              ../vendor/bin/drush site-install -y --existing-config
+          name: Install Drupal and configure settings
+          command: |
+            # Should be scaffolded by now.
+            cd /home/circleci/project/web
+            cp sites/default/default.settings.php sites/default/settings.php
+            cp sites/default/default.services.yml sites/default/services.yml
+            # Copy in our environment specific settings to the settings.php file.
+            cp /home/circleci/project/.circleci/drupal.settings.php sites/default/settings.php
+            # Copy PHPUnit config into core folder.
+            cp /home/circleci/project/.circleci/phpunit.circleci.xml core/
+            # Install Drupal (or restore from DB dump at this point).
+            ../vendor/bin/drush site-install -y --existing-config
       - run:
-            name: Copy files into webroot
-            command: |
-              # Copy our build into position (./ suffix ensures hidden files are copied too).
-              sudo rsync -avq /home/circleci/project/. /var/www/html
+          name: Copy files into webroot
+          command: |
+            # Copy our build into position (./ suffix ensures hidden files are copied too).
+            sudo rsync -avq /home/circleci/project/. /var/www/html
       - run:
-            name: PHPUnit tests (unit)
-            command: |
-              cd /var/www/html/web/core
-              ../../vendor/bin/phpunit -c /var/www/html/web/core/phpunit.circleci.xml --testsuite unit --group nidirect
+          name: PHPUnit tests (unit)
+          command: |
+            cd /var/www/html/web/core
+            ../../vendor/bin/phpunit -c /var/www/html/web/core/phpunit.circleci.xml --testsuite unit --group nidirect
       - run:
-            name: PHPUnit tests (kernel)
-            command: |
-              cd /var/www/html/web/core
-              ../../vendor/bin/phpunit -c /var/www/html/web/core/phpunit.circleci.xml --testsuite kernel --group nidirect
-
+          name: PHPUnit tests (kernel)
+          command: |
+            cd /var/www/html/web/core
+            ../../vendor/bin/phpunit -c /var/www/html/web/core/phpunit.circleci.xml --testsuite kernel --group nidirect
 
   # Functional tests with a JS browser; no content, only config.
   functional_js_tests__config_only:
@@ -168,8 +167,6 @@ jobs:
             sudo echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
             sudo apt-get update
             sudo apt-get install -y yarn
-            sudo docker-php-ext-install gd pdo_mysql
-            composer global require hirak/prestissimo
       - run:
           name: Copy vhost into place
           command: |
@@ -240,136 +237,87 @@ jobs:
       - run:
           name: Run functional tests with Nightwatch.js
           command: yarn --cwd=/var/www/html/web/core test:nightwatch ../modules/custom/nidirect_common/tests/src/Nightwatch/Tests/contentTypeValidation.js
-  # Deploy task.
-  deploy:
-    docker:
-      - image: circleci/php:7.3.14-apache-node-browsers
-    steps:
-      - checkout_code
-      - run:
-          name: Add platform.sh hosts to SSH known hosts
-          command: mkdir -p ~/.ssh && ssh-keyscan -H git.uk-1.platform.sh >> ~/.ssh/known_hosts
-      - run:
-          name: Relay to platform.sh
-          command: |
-            # Code is checked out under /home/circleci/project
-            cd /home/circleci/project
-            git remote add platform ${PLATFORM_REPO_URL}
-            git push -f platform ${CIRCLE_BRANCH}
 
-  # Our most expensive, full stack tests. Requires up to date content and services for chromedriver, yarn and database.
-  ui_tests:
+  # Deploy task.
+#  deploy:
+#    docker:
+#      - image: circleci/php:7.3.14-apache-node-browsers
+#    steps:
+#      - checkout_code
+#      - run:
+#          name: Add platform.sh hosts to SSH known hosts
+#          command: |
+#            mkdir -p ~/.ssh
+#            ssh-keyscan -H git.$PLATFORM_REGION >> ~/.ssh/known_hosts
+#      - run:
+#          name: Relay to platform.sh
+#          command: |
+#            # Code is checked out under /home/circleci/project
+#            cd /home/circleci/project
+#            git remote add psh $PLATFORM_PROJECT_ID@git.$PLATFORM_REGION:$PLATFORM_PROJECT_ID.git
+#            git push -f psh ${CIRCLE_BRANCH}
+
+  # Development build: all dof-dss packages use HEAD on development branch, pushes to platform.sh repo.
+  dev_build:
     docker:
       - image: circleci/php:7.3.14-apache-node-browsers
-      - image: circleci/mysql:5.7.27
-      - image: drupalci/chromedriver:production
         environment:
-          CHROMEDRIVER_WHITELISTED_IPS: ""
-          CHROMEDRIVER_URL_BASE: "/wd/hub"
+          # git variables to avoid empty committer identity errors
+          EMAIL: "circleci@localhost"
+          GIT_COMMITTER_NAME: "Circle CI"
+          GIT_AUTHOR_NAME: "Circle CI"
     steps:
       - attach_workspace:
           at: ./
       - run:
-            name: Add OS and PHP extensions/config
-            command: |
-              # Add yarn deb repo.
-              curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
-              sudo echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
-              sudo apt-get install -y libpng-dev mariadb-client rsync gnupg apt-transport-https yarn
-              sudo docker-php-ext-install gd pdo_mysql
-              composer global require hirak/prestissimo
-      - run:
-            name: Copy vhost into place
-            command: |
-              sudo cp .circleci/drupal.vhost /etc/apache2/sites-available/drupal.conf
-      - run:
-            name: Enable web server and vhosts
-            command: |
-              sudo a2enmod rewrite
-              sudo a2dissite 000-default
-              sudo a2ensite drupal
-              sudo service apache2 start
-      - run:
-            name: Set up Drupal and configure settings
-            command: |
-              # Should be scaffolded by now.
-              cd /home/circleci/project/web
-              cp sites/default/default.settings.php sites/default/settings.php
-              cp sites/default/default.services.yml sites/default/services.yml
-              # Copy in our environment specific settings to the settings.php file.
-              cp /home/circleci/project/.circleci/drupal.settings.php sites/default/settings.php
-              # Copy PHPUnit config into core folder.
-              cp /home/circleci/project/.circleci/phpunit.circleci.xml core/
-              # Copy Nightwatch conf files into place.
-              cat core/.env.example | sed -e "s|\(^DRUPAL_TEST_BASE_URL\)\(.\+\)|\1=http:\/\/localhost|g" > core/.env
-              sed -i -e "s|\(#\)\(DRUPAL_NIGHTWATCH_SEARCH_DIRECTORY\)=|\2=../|g" core/.env
-              sed -i -e "s|sqlite:\/\/localhost\/sites\/default\/files/db.sqlite|mysql://root:@127.0.0.1/circle_test|g" core/.env
-              sed -i -e "s|^DRUPAL_TEST_CHROMEDRIVER_AUTOSTART=true|DRUPAL_TEST_CHROMEDRIVER_AUTOSTART=false|g" core/.env
-              sed -i -e "s|\(#\)\(DRUPAL_TEST_WEBDRIVER_CHROME_ARGS\)=|\2=\"--disable-gpu --headless --no-sandbox\"|g" core/.env
-              sed -i -e "s|\(^DRUPAL_NIGHTWATCH_OUTPUT\)=reports/nightwatch|\1=/home/circleci/nightwatch-reports|g" core/.env
-              mkdir -p /home/circleci/nightwatch-reports
-              # Install npm packages
-              cd /home/circleci/project/web/core
-              yarn install
-              cd /home/circleci/project/web/modules/custom
-              yarn install
-              cd /home/circleci/project/web/modules/migrate/nidirect-migrations/migrate_nidirect_node
-              yarn install
-
-              # Fetch database from our defined endpoint
-              git clone --depth=1 ${DB_SOURCE_URL} /home/circleci/dbs
-              # Restore to db service
-              cd /home/circleci/project/web
-              gzip -dc /home/circleci/dbs/nidirect--ui-test-sanitised.sql.gz | ../vendor/bin/drush sqlc
-              # Remove downloaded db file.
-              sudo rm -rf /home/circleci/dbs
-              # Clear caches/container rebuild for this environment.
-              ../vendor/bin/drush cr
-      - run:
-            name: Copy files into webroot
-            command: |
-              # Copy our build into position (./ suffix ensures hidden files are copied too).
-              sudo rsync -avq /home/circleci/project/. /var/www/html
-      - run:
-            name: UI tests with Nightwatch.js
-            command: yarn --cwd=/var/www/html/web/core test:nightwatch --skiptags core
-  # Debug job(s) - useful for working with circleci local which doesn't support caches or workspace persistence.
-  debug:
-    docker:
-      - image: circleci/php:7.3.14-apache-browsers
-    steps:
-      # Needed for circle ci local for some odd reason.
-      - github_hosts_workaround
-      - checkout_code
-      - install_php_os_extensions
-      - composer_tasks__no_cache
-      - run:
-          name: PHPCS static analysis
-          command: /home/circleci/project/phpcs.sh /home/circleci/project "/home/circleci/project/web/modules/origins /home/circleci/project/web/modules/custom /home/circleci/project/web/modules/migrate /home/circleci/project/web/themes/custom"
-      - run:
-          name: Deprecated code check
+          name: Keyscan Platform.sh region hostnames for password-less access
           command: |
-            cd /home/circleci/project
-            vendor/bin/drupal-check /home/circleci/project/web/modules/custom /home/circleci/project/web/modules/origins
+            mkdir -p ~/.ssh
+            ssh-keyscan -H ssh.$PLATFORM_REGION >> ~/.ssh/known_hosts
+            ssh-keyscan -H git.$PLATFORM_REGION >> ~/.ssh/known_hosts
+      - run:
+          name: Install the Platform.sh CLI tool
+          command: |
+            curl -sS https://platform.sh/cli/installer | php
+      - run:
+          name: Re-point dof-dss packages to use latest development code and push across to Platform.sh
+          command: |
+            cd ~/project
+            composer require dof-dss/nidirect-site-modules:dev-development dof-dss/nidirect-migrations:dev-development \
+              dof-dss/nidirect-d8-test-install-profile:dev-development dof-dss/nicsdru_origins_theme:dev-development \
+              dof-dss/nicsdru_origins_modules:dev-development dof-dss/nicsdru_nidirect_theme:dev-development
+
+            git add composer.*
+            git commit -m "Set dof-dss packages to HEAD development for build"
+            # Circle CI pushes direct into platform.sh repository. Any later commits via GitHub webhook
+            # integration will overwrite these changes. This approach means we can decouple our
+            # 'bleeding edge' package preferences here from our underlying codebase which will
+            # usually use tagged version of packages.
+            git remote add psh $PLATFORM_PROJECT_ID@git.$PLATFORM_REGION:$PLATFORM_PROJECT_ID.git
+            # Always force push to a fixed branch on platform.sh.
+            git push -f psh $DEV_BUILD_BRANCH
+
 
 workflows:
   version: 2
   build-test-deploy:
     jobs:
       - build
-      - static_analysis:
-          requires:
-            - build
-      - unit_kernel_tests:
-          requires:
-            - build
-#      - functional_js_tests__config_only:
+#      - static_analysis:
 #          requires:
 #            - build
+#      - unit_kernel_tests:
+#          requires:
+#            - build
+      - dev_build:
+          requires:
+            - build
 #      - deploy:
 #          requires:
 #            - static_analysis
-##            - unit_kernel_tests
+#            - unit_kernel_tests
+#            - functional_tests
+
   nightly:
     triggers:
       - schedule:
@@ -381,6 +329,6 @@ workflows:
                 - development
     jobs:
       - build
-      - functional_js_tests__config_only:
+      -  dev_build:
           requires:
             - build
