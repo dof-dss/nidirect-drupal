@@ -9,12 +9,12 @@ commands:
           name: Add GitHub access token for composer
           command: echo 'composer config -g github-oauth.github.com $GITHUB_TOKEN' >> $BASH_ENV
       # Add SSH user key so we can access related repositories as part of our initial clone + composer install command.
-      # 89:cc >> GitHub user key fingerprint.
       # f8:f0 >> private fingerprint to allow Circle CI to talk to platform.sh.
+      # 89:cc >> GitHub user key fingerprint.
       - add_ssh_keys:
           fingerprints:
-            - "89:cc:6e:61:6a:0e:13:ab:47:0b:25:d6:bc:90:d4:d2"
             - "f8:f0:34:a1:0e:51:56:44:2b:9c:db:b7:2f:26:3b:48"
+            - "89:cc:6e:61:6a:0e:13:ab:47:0b:25:d6:bc:90:d4:d2"
       - checkout
   composer_tasks:
     description: "Validate and install dependencies using composer"
