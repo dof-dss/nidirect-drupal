@@ -238,25 +238,6 @@ jobs:
           name: Run functional tests with Nightwatch.js
           command: yarn --cwd=/var/www/html/web/core test:nightwatch ../modules/custom/nidirect_common/tests/src/Nightwatch/Tests/contentTypeValidation.js
 
-  # Deploy task.
-#  deploy:
-#    docker:
-#      - image: circleci/php:7.3.14-apache-node-browsers
-#    steps:
-#      - checkout_code
-#      - run:
-#          name: Add platform.sh hosts to SSH known hosts
-#          command: |
-#            mkdir -p ~/.ssh
-#            ssh-keyscan -H git.$PLATFORM_REGION >> ~/.ssh/known_hosts
-#      - run:
-#          name: Relay to platform.sh
-#          command: |
-#            # Code is checked out under /home/circleci/project
-#            cd /home/circleci/project
-#            git remote add psh $PLATFORM_PROJECT_ID@git.$PLATFORM_REGION:$PLATFORM_PROJECT_ID.git
-#            git push -f psh ${CIRCLE_BRANCH}
-
   # Development build: all dof-dss packages use HEAD on development branch, pushes to fixed non-integrating branch.
   dev_build:
     docker:
@@ -315,20 +296,17 @@ workflows:
   build-test-deploy:
     jobs:
       - build
-#      - static_analysis:
-#          requires:
-#            - build
-#      - unit_kernel_tests:
-#          requires:
-#            - build
+      - static_analysis:
+          requires:
+            - build
+      - unit_kernel_tests:
+          requires:
+            - build
       - dev_build:
           requires:
             - build
-#      - deploy:
-#          requires:
-#            - static_analysis
-#            - unit_kernel_tests
-#            - functional_tests
+            - static_analysis
+            - unit_kernel_tests
 
   nightly:
     triggers:
@@ -341,6 +319,14 @@ workflows:
                 - development
     jobs:
       - build
-      -  dev_build:
+      - static_analysis:
           requires:
             - build
+      - unit_kernel_tests:
+          requires:
+            - build
+      - dev_build:
+          requires:
+            - build
+            - static_analysis
+            - unit_kernel_tests
