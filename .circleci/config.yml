@@ -286,6 +286,11 @@ jobs:
             cd ~/project
             git checkout -b $DEV_BUILD_BRANCH
 
+            # Activate SSH keys on Platform.sh with initial forced deployment.
+            # https://docs.platform.sh/development/ssh.html#still-having-trouble
+            git commit --allow-empty -m 'force redeploy'
+            git push origin $DEV_BUILD_BRANCH
+
             # Circle CI pushes direct into platform.sh repository. Any later commits via GitHub webhook
             # integration will overwrite these changes. This approach means we can decouple our
             # 'bleeding edge' package preferences here from our underlying codebase which will
