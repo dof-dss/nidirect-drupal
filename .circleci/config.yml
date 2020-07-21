@@ -284,17 +284,21 @@ jobs:
           name: Re-point dof-dss packages to use latest development code and push across to Platform.sh
           command: |
             cd ~/project
+            git checkout -b $DEV_BUILD_BRANCH
+            
+            # Circle CI pushes direct into platform.sh repository. Any later commits via GitHub webhook
+            # integration will overwrite these changes. This approach means we can decouple our
+            # 'bleeding edge' package preferences here from our underlying codebase which will
+            # usually use tagged version of packages.
+            git remote add psh $PLATFORM_PROJECT_ID@git.$PLATFORM_REGION:$PLATFORM_PROJECT_ID.git
+
             composer require dof-dss/nidirect-site-modules:dev-development dof-dss/nidirect-migrations:dev-development \
               dof-dss/nidirect-d8-test-install-profile:dev-development dof-dss/nicsdru_origins_theme:dev-development \
               dof-dss/nicsdru_origins_modules:dev-development dof-dss/nicsdru_nidirect_theme:dev-development
 
             git add composer.*
             git commit -m "Set dof-dss packages to HEAD development for build"
-            # Circle CI pushes direct into platform.sh repository. Any later commits via GitHub webhook
-            # integration will overwrite these changes. This approach means we can decouple our
-            # 'bleeding edge' package preferences here from our underlying codebase which will
-            # usually use tagged version of packages.
-            git remote add psh $PLATFORM_PROJECT_ID@git.$PLATFORM_REGION:$PLATFORM_PROJECT_ID.git
+
             # Always force push to a fixed branch on platform.sh.
             git push -f psh $DEV_BUILD_BRANCH
       - run:
