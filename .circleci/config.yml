@@ -322,22 +322,20 @@ jobs:
 
 workflows:
   version: 2
+  # Our default pipeline that tests the integrity of our build + any tests.
+  # TODO: integrate a deploy job so that Circle CI can relay changes across to platform.sh
+  # rather than rely on the present webhook integration between GitHub and platform.sh repos.
   build-test-deploy:
     jobs:
-#      - build
-#      - static_analysis:
-#          requires:
-#            - build
-#      - unit_kernel_tests:
-#          requires:
-#            - build
-#      - dev_build:
-#          requires:
-#            - build
-#            - static_analysis
-#            - unit_kernel_tests
-      - sync_data
+      - build
+      - static_analysis:
+          requires:
+            - build
+      - unit_kernel_tests:
+          requires:
+            - build
 
+  # A nightly build of the project, using all dof-dss packages at HEAD from development branch.
   nightly-edge-build:
     triggers:
       - schedule:
@@ -360,6 +358,9 @@ workflows:
             - static_analysis
             - unit_kernel_tests
 
+  # A separate scheduled workflow to sync the data after the nightly build completes.
+  # This is separate to avoid using build time/compute units with arbitrary sleep commands;
+  # platform.sh deploy hooks can take a few minutes to execute after commits are relayed to it.
   nightly-content-sync:
     triggers:
       - schedule:
