@@ -285,7 +285,7 @@ jobs:
           command: |
             cd ~/project
             git checkout -b $DEV_BUILD_BRANCH
-            
+
             # Circle CI pushes direct into platform.sh repository. Any later commits via GitHub webhook
             # integration will overwrite these changes. This approach means we can decouple our
             # 'bleeding edge' package preferences here from our underlying codebase which will
@@ -304,7 +304,7 @@ jobs:
       - run:
           name: Re-sync data from master environment
           command: |
-            /home/circleci/.platformsh/bin/platform environment:activate -p $PLATFORM_PROJECT_ID -e $CIRCLE_BRANCH -y
+            /home/circleci/.platformsh/bin/platform sync data -p $PLATFORM_PROJECT_ID -e $DEV_BUILD_BRANCH -y
 
 
 workflows:
