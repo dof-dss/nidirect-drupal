@@ -284,38 +284,64 @@ jobs:
             # Push to fixed, non-integrating build branch. GitHub webhook integration will propagate this
             # to platform.sh for later steps to use.
             git push -f origin $DEV_BUILD_BRANCH
+
+            # Pause for webhook to propagate the change from GH to PSH.
+            sleep 10s
       - run:
-          name: Pause for webhook activity
-          command: sleep 10s
-      - run:
-          name: Re-sync data from master environment / activate if not found.
+          name: Activate the environment if not found.
           command: |
-            if /home/circleci/.platformsh/bin/platform environment:list -p $PLATFORM_PROJECT_ID -I --no-header --pipe | grep -q $DEV_BUILD_BRANCH; then
-              echo "Sync data from master environment to $DEV_BUILD_BRANCH"
-              /home/circleci/.platformsh/bin/platform sync data -p $PLATFORM_PROJECT_ID -e $DEV_BUILD_BRANCH -y
-            else
+            if ! /home/circleci/.platformsh/bin/platform environment:list -p $PLATFORM_PROJECT_ID -I --no-header --pipe | grep -q $DEV_BUILD_BRANCH; then
               echo "No active environment for $DEV_BUILD_BRANCH found, attempt to activate one."
               /home/circleci/.platformsh/bin/platform environment:activate -p $PLATFORM_PROJECT_ID -e $DEV_BUILD_BRANCH -y
             fi
+
+  # Separate task to allow us to sync data on PSH environments, without pauses in other jobs.
+  sync_data:
+    docker:
+      - image: circleci/php:7.3.14-apache-browsers
+    steps:
+      - attach_workspace:
+          at: ./
+      - install_php_os_extensions
+      - run:
+          name: Add extra OS and PHP extensions/config
+          command: |
+            sudo docker-php-ext-install pcntl posix
+      - run:
+          name: Keyscan Platform.sh region hostnames for password-less access
+          command: |
+            mkdir -p ~/.ssh
+            ssh-keyscan -H ssh.$PLATFORM_REGION >> ~/.ssh/known_hosts
+      - run:
+          name: Install the Platform.sh CLI tool
+          command: |
+            curl -sS https://platform.sh/cli/installer | php
+      - run:
+          name: Trigger a data sync from master environment to nightly edge build.
+          command: |
+            /home/circleci/.platformsh/bin/platform sync data -p $PLATFORM_PROJECT_ID -e $DEV_BUILD_BRANCH -y
 
 workflows:
   version: 2
   build-test-deploy:
     jobs:
       - build
-      - static_analysis:
-          requires:
-            - build
-      - unit_kernel_tests:
-          requires:
-            - build
+#      - static_analysis:
+#          requires:
+#            - build
+#      - unit_kernel_tests:
+#          requires:
+#            - build
       - dev_build:
           requires:
             - build
-            - static_analysis
-            - unit_kernel_tests
+#            - static_analysis
+#            - unit_kernel_tests
+#      - sync_data:
+#          requires:
+#            - build
 
-  nightly:
+  nightly-edge-build:
     triggers:
       - schedule:
           # At 00:00 on every day-of-week from Monday through Friday
@@ -334,6 +360,17 @@ workflows:
             - build
       - dev_build:
           requires:
-            - build
             - static_analysis
             - unit_kernel_tests
+
+  nightly-content-sync:
+    triggers:
+      - schedule:
+          # At 00:10 on every day-of-week from Monday through Friday
+          cron: "10 0 * * 1-5"
+          filters:
+            branches:
+              only:
+                - development
+    jobs:
+      - sync_data
