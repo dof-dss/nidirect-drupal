@@ -65,8 +65,8 @@ commands:
 jobs:
   # Tests the integrity of the build, stores the results in a workspace for re-use in later jobs.
   build:
-    machine:
-      image: ubuntu-1604:202007-01
+    docker:
+      - image: circleci/php:7.3.14-apache-browsers
     steps:
       - checkout_code
       - install_php_os_extensions
@@ -259,8 +259,8 @@ jobs:
 
   # Development build: all dof-dss packages use HEAD on development branch, pushes to platform.sh repo.
   dev_build:
-    machine:
-      image: ubuntu-1604:202007-01
+    docker:
+      - image: circleci/php:7.3.14-apache-browsers
     environment:
       # git variables to avoid empty committer identity errors
       EMAIL: "circleci@localhost"
