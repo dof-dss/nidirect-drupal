@@ -300,8 +300,6 @@ jobs:
     docker:
       - image: circleci/php:7.3.14-apache-browsers
     steps:
-      - attach_workspace:
-          at: ./
       - install_php_os_extensions
       - run:
           name: Add extra OS and PHP extensions/config
@@ -332,14 +330,12 @@ workflows:
 #      - unit_kernel_tests:
 #          requires:
 #            - build
-      - dev_build:
-          requires:
-            - build
-#            - static_analysis
-#            - unit_kernel_tests
-#      - sync_data:
+#      - dev_build:
 #          requires:
 #            - build
+#            - static_analysis
+#            - unit_kernel_tests
+      - sync_data
 
   nightly-edge-build:
     triggers:
