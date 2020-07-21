@@ -65,8 +65,8 @@ commands:
 jobs:
   # Tests the integrity of the build, stores the results in a workspace for re-use in later jobs.
   build:
-    docker:
-      - image: circleci/php:7.3.14-apache-browsers
+    machine:
+      image: ubuntu-1604:202007-01
     steps:
       - checkout_code
       - install_php_os_extensions
@@ -259,16 +259,17 @@ jobs:
 
   # Development build: all dof-dss packages use HEAD on development branch, pushes to platform.sh repo.
   dev_build:
-    docker:
-      - image: circleci/php:7.3.14-apache-node-browsers
-        environment:
-          # git variables to avoid empty committer identity errors
-          EMAIL: "circleci@localhost"
-          GIT_COMMITTER_NAME: "Circle CI"
-          GIT_AUTHOR_NAME: "Circle CI"
+    machine:
+      image: ubuntu-1604:202007-01
+    environment:
+      # git variables to avoid empty committer identity errors
+      EMAIL: "circleci@localhost"
+      GIT_COMMITTER_NAME: "Circle CI"
+      GIT_AUTHOR_NAME: "Circle CI"
     steps:
       - attach_workspace:
           at: ./
+      - install_php_os_extensions
       - run:
           name: Keyscan Platform.sh region hostnames for password-less access
           command: |
@@ -296,6 +297,10 @@ jobs:
             git remote add psh $PLATFORM_PROJECT_ID@git.$PLATFORM_REGION:$PLATFORM_PROJECT_ID.git
             # Always force push to a fixed branch on platform.sh.
             git push -f psh $DEV_BUILD_BRANCH
+      - run:
+          name: Re-sync data from master environment
+          command: |
+            /home/circleci/.platformsh/bin/platform environment:activate -p $PLATFORM_PROJECT_ID -e $CIRCLE_BRANCH -y
 
 
 workflows:
