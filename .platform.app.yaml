@@ -19,9 +19,10 @@ relationships:
   redis: 'redis:redis'
   #  For MariaDB, the endpoint does not change whether you used the mysql or mariadb service type.
   database: 'db:admin'
+  drupal7db: 'drupal7db:admin'
 
 # The size of the persistent disk of the application (in MB).
-disk: 20480
+disk: 30720
 
 # The 'mounts' describe writable, persistent filesystem mounts in the application.
 mounts:
@@ -34,6 +35,9 @@ mounts:
   '/private':
     source: local
     source_path: 'private'
+  '/imports':
+    source: local
+    source_path: 'imports'
   '/.drush':
     source: local
     source_path: 'drush'
@@ -130,3 +134,11 @@ crons:
   drupal:
     spec: '*/5 * * * *'
     cmd: 'cd web ; drush core-cron'
+  migrate-fetch:
+    # Every saturday morning, fetch the migrate db and files
+    spec: '0 9 * * 6'
+    cmd: '/app/migrate-fetch.sh'
+  migrate-unpack:
+    # Every saturday morning, unpack the db and files to top up our migrate source content.
+    spec: '0 10 * * 6'
+    cmd: '/app/migrate-unpack.sh'
