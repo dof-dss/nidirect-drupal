@@ -257,7 +257,7 @@ jobs:
 #            git remote add psh $PLATFORM_PROJECT_ID@git.$PLATFORM_REGION:$PLATFORM_PROJECT_ID.git
 #            git push -f psh ${CIRCLE_BRANCH}
 
-  # Development build: all dof-dss packages use HEAD on development branch, pushes to platform.sh repo.
+  # Development build: all dof-dss packages use HEAD on development branch, pushes to fixed non-integrating branch.
   dev_build:
     docker:
       - image: circleci/php:7.3.14-apache-browsers
@@ -271,31 +271,20 @@ jobs:
           at: ./
       - install_php_os_extensions
       - run:
-          name: Keyscan Platform.sh region hostnames for password-less access
+          name: Keyscan Platform.sh region hostnames + GitHub for password-less access
           command: |
             mkdir -p ~/.ssh
             ssh-keyscan -H ssh.$PLATFORM_REGION >> ~/.ssh/known_hosts
-            ssh-keyscan -H git.$PLATFORM_REGION >> ~/.ssh/known_hosts
+            ssh-keyscan -H github.com >> ~/.ssh/known_hosts
       - run:
           name: Install the Platform.sh CLI tool
           command: |
             curl -sS https://platform.sh/cli/installer | php
       - run:
-          name: Re-point dof-dss packages to use latest development code and push across to Platform.sh
+          name: Re-point dof-dss packages to use latest development code and push.
           command: |
             cd ~/project
-            # Circle CI pushes direct into platform.sh repository. Any later commits via GitHub webhook
-            # integration will overwrite these changes. This approach means we can decouple our
-            # 'bleeding edge' package preferences here from our underlying codebase which will
-            # usually use tagged version of packages.
-            git remote add psh $PLATFORM_PROJECT_ID@git.$PLATFORM_REGION:$PLATFORM_PROJECT_ID.git
-
             git checkout -b $DEV_BUILD_BRANCH
-
-            # Activate SSH keys on Platform.sh with initial forced deployment.
-            # https://docs.platform.sh/development/ssh.html#still-having-trouble
-            git commit --allow-empty -m 'force redeploy'
-            git push psh $DEV_BUILD_BRANCH
 
             composer require dof-dss/nidirect-site-modules:dev-development dof-dss/nidirect-migrations:dev-development \
               dof-dss/nidirect-d8-test-install-profile:dev-development dof-dss/nicsdru_origins_theme:dev-development \
@@ -304,14 +293,20 @@ jobs:
             git add composer.*
             git commit -m "Set dof-dss packages to HEAD development for build"
 
-            # Always force push to a fixed branch on platform.sh.
-            git push -f psh $DEV_BUILD_BRANCH
+            # Push to fixed, non-integrating build branch. GitHub webhook integration will propagate this
+            # to platform.sh for later steps to use.
+            git push -f origin $DEV_BUILD_BRANCH
+      - run:
+          name: Pause for webhook activity
+          command: sleep 10s
       - run:
           name: Re-sync data from master environment / activate if not found.
           command: |
             if /home/circleci/.platformsh/bin/platform environment:list -p $PLATFORM_PROJECT_ID -I --no-header --pipe | grep -q $DEV_BUILD_BRANCH; then
-              echo "Found existing active environment for $DEV_BUILD_BRANCH"
+              echo "Sync data from master environment to $DEV_BUILD_BRANCH"
+              /home/circleci/.platformsh/bin/platform sync data -p $PLATFORM_PROJECT_ID -e $DEV_BUILD_BRANCH -y
             else
+              echo "No active environment for $DEV_BUILD_BRANCH found, attempt to activate one."
               /home/circleci/.platformsh/bin/platform environment:activate -p $PLATFORM_PROJECT_ID -e $DEV_BUILD_BRANCH -y
             fi
 
