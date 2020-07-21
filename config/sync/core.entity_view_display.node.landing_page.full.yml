@@ -22,7 +22,9 @@ dependencies:
   module:
     - layout_builder
     - layout_builder_restrictions
+    - layout_discovery
     - metatag
+    - nidirect_custom_blocks
     - text
     - user
 third_party_settings:
@@ -31,10 +33,21 @@ third_party_settings:
     enabled: true
     sections:
       -
-        layout_id: layout_builder_blank
+        layout_id: layout_onecol
         layout_settings:
           label: ''
-        components: {  }
+        components:
+          7064019e-f067-4ea8-b2ce-4870c660455c:
+            uuid: 7064019e-f067-4ea8-b2ce-4870c660455c
+            region: content
+            configuration:
+              id: nidirect_article_teasers_by_topic
+              label: 'NIDirect Article Teasers by Topic'
+              provider: nidirect_custom_blocks
+              label_display: visible
+              context_mapping: {  }
+            additional: {  }
+            weight: 0
         third_party_settings: {  }
   layout_builder_restrictions:
     entity_view_mode_restriction:
@@ -68,7 +81,50 @@ third_party_settings:
           - webform_block
         core:
           - page_title_block
-      allowed_layouts: {  }
+      allowed_layouts:
+        - layout_onecol
+        - teasers_x3
+        - teasers_x2
+      whitelisted_blocks:
+        Block: {  }
+        'Chaos Tools': {  }
+        'Content fields':
+          - 'field_block:node:landing_page:field_teaser'
+        'Custom block types':
+          - accordion_menu
+          - banner_deep
+          - card_standard
+          - card_wide
+        'Custom blocks': {  }
+        Devel: {  }
+        Facets: {  }
+        Forms: {  }
+        Geolocation: {  }
+        Help: {  }
+        'Inline blocks':
+          - 'inline_block:accordion_menu'
+          - 'inline_block:banner_deep'
+          - 'inline_block:card_standard'
+          - 'inline_block:card_wide'
+        'Lists (Views)': {  }
+        Menus: {  }
+        'NI Direct': {  }
+        'NIDirect Common': {  }
+        'NIDirect Contacts': {  }
+        'NIDirect Custom Blocks':
+          - nidirect_article_teasers_by_topic
+        'NIDirect Health Conditions': {  }
+        'NIDirect Homepage': {  }
+        'Origins: Social Sharing': {  }
+        'Site Themes (Views)': {  }
+        System: {  }
+        User: {  }
+        Views: {  }
+        Webform: {  }
+        'Webform access': {  }
+        core: {  }
+      blacklisted_blocks: {  }
+    allowed_block_categories: {  }
 id: node.landing_page.full
 targetEntityType: node
 bundle: landing_page
