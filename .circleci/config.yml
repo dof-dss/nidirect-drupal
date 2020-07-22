@@ -340,23 +340,16 @@ workflows:
     triggers:
       - schedule:
           # At 00:00 on every day-of-week from Monday through Friday
-          cron: "30 11 * * 1-5"
+          cron: "0 12 * * 1-5"
           filters:
             branches:
               only:
                 - D8NID-800-nightly-build
     jobs:
       - build
-      - static_analysis:
-          requires:
-            - build
-      - unit_kernel_tests:
-          requires:
-            - build
       - dev_build:
           requires:
-            - static_analysis
-            - unit_kernel_tests
+            - build
 
   # A separate scheduled workflow to sync the data after the nightly build completes.
   # This is separate to avoid using build time/compute units with arbitrary sleep commands;
@@ -365,7 +358,7 @@ workflows:
     triggers:
       - schedule:
           # At 00:10 on every day-of-week from Monday through Friday
-          cron: "35 11 * * 1-5"
+          cron: "5 12 * * 1-5"
           filters:
             branches:
               only:
