@@ -340,11 +340,11 @@ workflows:
     triggers:
       - schedule:
           # At 00:00 on every day-of-week from Monday through Friday
-          cron: "0 12 * * 1-5"
+          cron: "0 0 * * 1-5"
           filters:
             branches:
               only:
-                - D8NID-800-nightly-build
+                - development
     jobs:
       - build
       - dev_build:
@@ -357,11 +357,11 @@ workflows:
   nightly-content-sync:
     triggers:
       - schedule:
-          # At 00:10 on every day-of-week from Monday through Friday
-          cron: "5 12 * * 1-5"
+          # At 00:30 on every day-of-week from Monday through Friday
+          cron: "30 0 * * 1-5"
           filters:
             branches:
               only:
-                - D8NID-800-nightly-build
+                - development
     jobs:
       - sync_data
