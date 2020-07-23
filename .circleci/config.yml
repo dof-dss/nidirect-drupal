@@ -241,8 +241,8 @@ jobs:
           name: Run functional tests with Nightwatch.js
           command: yarn --cwd=/var/www/html/web/core test:nightwatch ../modules/custom/nidirect_common/tests/src/Nightwatch/Tests/contentTypeValidation.js
 
-  # Development build: all dof-dss packages use HEAD on development branch, pushes to fixed non-integrating branch.
-  dev_build:
+  # Edge build: all dof-dss packages use HEAD on development branch, pushes to fixed non-integrating branch.
+  edge_build:
     docker:
       - image: circleci/php:7.3.14-apache-browsers
     environment:
@@ -272,7 +272,7 @@ jobs:
           name: Re-point dof-dss packages to use latest development code and push.
           command: |
             cd ~/project
-            git checkout -b $DEV_BUILD_BRANCH
+            git checkout -b $EDGE_BUILD_BRANCH
 
             composer require dof-dss/nidirect-site-modules:dev-development dof-dss/nidirect-migrations:dev-development \
               dof-dss/nidirect-d8-test-install-profile:dev-development dof-dss/nicsdru_origins_theme:dev-development \
@@ -283,16 +283,16 @@ jobs:
 
             # Push to fixed, non-integrating build branch. GitHub webhook integration will propagate this
             # to platform.sh for later steps to use.
-            git push -f origin $DEV_BUILD_BRANCH
+            git push -f origin $EDGE_BUILD_BRANCH
 
             # Pause for webhook to propagate the change from GH to PSH.
             sleep 10s
       - run:
           name: Activate the environment if not found.
           command: |
-            if ! /home/circleci/.platformsh/bin/platform environment:list -p $PLATFORM_PROJECT_ID -I --no-header --pipe | grep -q $DEV_BUILD_BRANCH; then
-              echo "No active environment for $DEV_BUILD_BRANCH found, attempt to activate one."
-              /home/circleci/.platformsh/bin/platform environment:activate -p $PLATFORM_PROJECT_ID -e $DEV_BUILD_BRANCH -y
+            if ! /home/circleci/.platformsh/bin/platform environment:list -p $PLATFORM_PROJECT_ID -I --no-header --pipe | grep -q $EDGE_BUILD_BRANCH; then
+              echo "No active environment for $EDGE_BUILD_BRANCH found, attempt to activate one."
+              /home/circleci/.platformsh/bin/platform environment:activate -p $PLATFORM_PROJECT_ID -e $EDGE_BUILD_BRANCH -y
             fi
 
   # Separate task to allow us to sync data on PSH environments, without pauses in other jobs.
@@ -318,7 +318,7 @@ jobs:
       - run:
           name: Trigger a data sync from master environment to nightly edge build.
           command: |
-            /home/circleci/.platformsh/bin/platform sync data -p $PLATFORM_PROJECT_ID -e $DEV_BUILD_BRANCH -y
+            /home/circleci/.platformsh/bin/platform sync data -p $PLATFORM_PROJECT_ID -e $EDGE_BUILD_BRANCH -y
 
 workflows:
   version: 2
@@ -347,7 +347,7 @@ workflows:
                 - development
     jobs:
       - build
-      - dev_build:
+      - edge_build:
           requires:
             - build
 
