@@ -1,0 +1,35 @@
+uuid: 99136b5a-8bc9-4b71-afd6-c19a34b96f21
+langcode: en
+status: true
+dependencies:
+  config:
+    - block_content.type.accordion_menu
+    - field.field.block_content.accordion_menu.field_accordion_sections
+  module:
+    - paragraphs
+id: block_content.accordion_menu.default
+targetEntityType: block_content
+bundle: accordion_menu
+mode: default
+content:
+  field_accordion_sections:
+    type: entity_reference_paragraphs
+    weight: 1
+    settings:
+      title: Paragraph
+      title_plural: Paragraphs
+      edit_mode: closed
+      add_mode: button
+      form_display_mode: default
+      default_paragraph_type: accordion_section
+    third_party_settings: {  }
+    region: content
+  langcode:
+    type: language_select
+    weight: 2
+    region: content
+    settings:
+      include_locked: true
+    third_party_settings: {  }
+hidden:
+  info: true
