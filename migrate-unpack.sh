@@ -1,4 +1,4 @@
-#!/usr/bin/bash
+#!/bin/bash
 if [ ! $MIGRATE_ENABLED == 1 ]; then
   exit 0
 fi
