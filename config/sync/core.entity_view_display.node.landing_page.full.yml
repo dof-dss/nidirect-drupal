@@ -22,9 +22,7 @@ dependencies:
   module:
     - layout_builder
     - layout_builder_restrictions
-    - layout_discovery
     - metatag
-    - nidirect_custom_blocks
     - text
     - user
 third_party_settings:
@@ -33,58 +31,14 @@ third_party_settings:
     enabled: true
     sections:
       -
-        layout_id: layout_onecol
+        layout_id: layout_builder_blank
         layout_settings:
           label: ''
-        components:
-          7064019e-f067-4ea8-b2ce-4870c660455c:
-            uuid: 7064019e-f067-4ea8-b2ce-4870c660455c
-            region: content
-            configuration:
-              id: nidirect_article_teasers_by_topic
-              label: 'NIDirect Article Teasers by Topic'
-              provider: nidirect_custom_blocks
-              label_display: visible
-              context_mapping: {  }
-            additional: {  }
-            weight: 0
+        components: {  }
         third_party_settings: {  }
   layout_builder_restrictions:
+    allowed_block_categories: {  }
     entity_view_mode_restriction:
-      allowed_blocks:
-        'Chaos Tools': {  }
-        'Content fields':
-          - 'field_block:node:landing_page:field_banner_image'
-          - 'field_block:node:landing_page:field_banner_image_overlay'
-          - 'field_block:node:landing_page:body'
-          - 'field_block:node:landing_page:field_summary'
-          - 'field_block:node:landing_page:field_teaser'
-          - 'field_block:node:landing_page:field_subtheme'
-          - 'field_block:node:landing_page:title'
-          - 'field_block:node:landing_page:field_top_level_theme'
-        'Custom block types':
-          - basic
-        Devel: {  }
-        Forms: {  }
-        Help: {  }
-        'Inline blocks':
-          - 'inline_block:basic'
-        'Lists (Views)': {  }
-        Menus: {  }
-        'NIDirect Contacts':
-          - contact_az_block
-        System:
-          - system_main_block
-        User: {  }
-        'User fields': {  }
-        Webform:
-          - webform_block
-        core:
-          - page_title_block
-      allowed_layouts:
-        - layout_onecol
-        - teasers_x3
-        - teasers_x2
       whitelisted_blocks:
         Block: {  }
         'Chaos Tools': {  }
@@ -95,6 +49,7 @@ third_party_settings:
           - banner_deep
           - card_standard
           - card_wide
+          - video_and_caption
         'Custom blocks': {  }
         Devel: {  }
         Facets: {  }
@@ -106,6 +61,7 @@ third_party_settings:
           - 'inline_block:banner_deep'
           - 'inline_block:card_standard'
           - 'inline_block:card_wide'
+          - 'inline_block:video_and_caption'
         'Lists (Views)': {  }
         Menus: {  }
         'NI Direct': {  }
@@ -124,7 +80,207 @@ third_party_settings:
         'Webform access': {  }
         core: {  }
       blacklisted_blocks: {  }
-    allowed_block_categories: {  }
+      allowed_layouts:
+        - layout_onecol
+        - teasers_x3
+        - teasers_x2
+    entity_view_mode_restriction_by_region:
+      allowed_layouts:
+        - layout_onecol
+        - teasers_x3
+        - teasers_x2
+      whitelisted_blocks:
+        teasers_x3:
+          one:
+            Block: {  }
+            'Chaos Tools': {  }
+            'Content fields': {  }
+            'Custom block types':
+              - card_standard
+            'Custom blocks': {  }
+            Devel: {  }
+            Facets: {  }
+            Forms: {  }
+            Geolocation: {  }
+            Help: {  }
+            'Inline blocks':
+              - 'inline_block:card_standard'
+            'Lists (Views)': {  }
+            Menus: {  }
+            'NI Direct': {  }
+            'NIDirect Common': {  }
+            'NIDirect Contacts': {  }
+            'NIDirect Custom Blocks': {  }
+            'NIDirect Health Conditions': {  }
+            'NIDirect Homepage': {  }
+            'Origins: Social Sharing': {  }
+            'Site Themes (Views)': {  }
+            System: {  }
+            User: {  }
+            Views: {  }
+            Webform: {  }
+            'Webform access': {  }
+            core: {  }
+          two:
+            Block: {  }
+            'Chaos Tools': {  }
+            'Content fields': {  }
+            'Custom block types':
+              - card_standard
+            'Custom blocks': {  }
+            Devel: {  }
+            Facets: {  }
+            Forms: {  }
+            Geolocation: {  }
+            Help: {  }
+            'Inline blocks':
+              - 'inline_block:card_standard'
+            'Lists (Views)': {  }
+            Menus: {  }
+            'NI Direct': {  }
+            'NIDirect Common': {  }
+            'NIDirect Contacts': {  }
+            'NIDirect Custom Blocks': {  }
+            'NIDirect Health Conditions': {  }
+            'NIDirect Homepage': {  }
+            'Origins: Social Sharing': {  }
+            'Site Themes (Views)': {  }
+            System: {  }
+            User: {  }
+            Views: {  }
+            Webform: {  }
+            'Webform access': {  }
+            core: {  }
+          three:
+            Block: {  }
+            'Chaos Tools': {  }
+            'Content fields': {  }
+            'Custom block types':
+              - card_standard
+            'Custom blocks': {  }
+            Devel: {  }
+            Facets: {  }
+            Forms: {  }
+            Geolocation: {  }
+            Help: {  }
+            'Inline blocks':
+              - 'inline_block:card_standard'
+            'Lists (Views)': {  }
+            Menus: {  }
+            'NI Direct': {  }
+            'NIDirect Common': {  }
+            'NIDirect Contacts': {  }
+            'NIDirect Custom Blocks': {  }
+            'NIDirect Health Conditions': {  }
+            'NIDirect Homepage': {  }
+            'Origins: Social Sharing': {  }
+            'Site Themes (Views)': {  }
+            System: {  }
+            User: {  }
+            Views: {  }
+            Webform: {  }
+            'Webform access': {  }
+            core: {  }
+        teasers_x2:
+          one:
+            Block: {  }
+            'Chaos Tools': {  }
+            'Content fields': {  }
+            'Custom block types':
+              - card_wide
+            'Custom blocks': {  }
+            Devel: {  }
+            Facets: {  }
+            Forms: {  }
+            Geolocation: {  }
+            Help: {  }
+            'Inline blocks':
+              - 'inline_block:card_wide'
+            'Lists (Views)': {  }
+            Menus: {  }
+            'NI Direct': {  }
+            'NIDirect Common': {  }
+            'NIDirect Contacts': {  }
+            'NIDirect Custom Blocks': {  }
+            'NIDirect Health Conditions': {  }
+            'NIDirect Homepage': {  }
+            'Origins: Social Sharing': {  }
+            'Site Themes (Views)': {  }
+            System: {  }
+            User: {  }
+            Views: {  }
+            Webform: {  }
+            'Webform access': {  }
+            core: {  }
+          two:
+            Block: {  }
+            'Chaos Tools': {  }
+            'Content fields': {  }
+            'Custom block types':
+              - card_wide
+            'Custom blocks': {  }
+            Devel: {  }
+            Facets: {  }
+            Forms: {  }
+            Geolocation: {  }
+            Help: {  }
+            'Inline blocks':
+              - 'inline_block:card_wide'
+            'Lists (Views)': {  }
+            Menus: {  }
+            'NI Direct': {  }
+            'NIDirect Common': {  }
+            'NIDirect Contacts': {  }
+            'NIDirect Custom Blocks': {  }
+            'NIDirect Health Conditions': {  }
+            'NIDirect Homepage': {  }
+            'Origins: Social Sharing': {  }
+            'Site Themes (Views)': {  }
+            System: {  }
+            User: {  }
+            Views: {  }
+            Webform: {  }
+            'Webform access': {  }
+            core: {  }
+        layout_onecol:
+          content:
+            Block: {  }
+            'Chaos Tools': {  }
+            'Content fields':
+              - 'field_block:node:landing_page:field_teaser'
+            'Custom block types':
+              - accordion_menu
+              - banner_deep
+              - basic
+              - video_and_caption
+            'Custom blocks': {  }
+            Devel: {  }
+            Facets: {  }
+            Forms: {  }
+            Geolocation: {  }
+            Help: {  }
+            'Inline blocks':
+              - 'inline_block:accordion_menu'
+              - 'inline_block:banner_deep'
+              - 'inline_block:basic'
+              - 'inline_block:video_and_caption'
+            'Lists (Views)': {  }
+            Menus: {  }
+            'NI Direct': {  }
+            'NIDirect Common': {  }
+            'NIDirect Contacts': {  }
+            'NIDirect Custom Blocks':
+              - nidirect_article_teasers_by_topic
+            'NIDirect Health Conditions': {  }
+            'NIDirect Homepage': {  }
+            'Origins: Social Sharing': {  }
+            'Site Themes (Views)': {  }
+            System: {  }
+            User: {  }
+            Views: {  }
+            Webform: {  }
+            'Webform access': {  }
+            core: {  }
 id: node.landing_page.full
 targetEntityType: node
 bundle: landing_page
