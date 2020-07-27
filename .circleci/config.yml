@@ -208,17 +208,8 @@ jobs:
               yarn install
             done
       - run:
-          name: Create a Circle CI test user and assign role
-          command: |
-            /home/circleci/.platformsh/bin/platform environment:drush -p $PLATFORM_PROJECT_ID -e $CIRCLE_BRANCH "user:create $TEST_USER --mail $TEST_USER@localhost --password $TEST_PASS"
-            /home/circleci/.platformsh/bin/platform environment:drush -p $PLATFORM_PROJECT_ID -e $CIRCLE_BRANCH "user:role:add administrator $TEST_USER"
-      - run:
           name: Run tests with Nightwatch.js
           command: yarn --cwd=/home/circleci/project/web/core test:nightwatch $(for tag in ${TEST_TAGS}; do echo --tag $tag; done)
-      - run:
-          name: Remove test accounts when done
-          command: |
-            /home/circleci/.platformsh/bin/platform environment:drush -p $PLATFORM_PROJECT_ID -e $CIRCLE_BRANCH "user:cancel --delete-content $TEST_USER"
 
   # Functional tests with a JS browser; no content, only config.
   functional_js_tests__config_only:
