@@ -1,0 +1,42 @@
+uuid: 0271437d-107c-44f5-a674-59b0ffa0ed50
+langcode: en
+status: true
+dependencies:
+  config:
+    - block_content.type.video_and_caption
+    - field.field.block_content.video_and_caption.body
+    - field.field.block_content.video_and_caption.field_caption
+    - field.field.block_content.video_and_caption.field_video
+    - field.field.block_content.video_and_caption.field_video_caption_display
+  module:
+    - media_library
+id: block_content.video_and_caption.default
+targetEntityType: block_content
+bundle: video_and_caption
+mode: default
+content:
+  field_caption:
+    weight: 1
+    settings:
+      rows: 3
+      placeholder: ''
+    third_party_settings: {  }
+    type: string_textarea
+    region: content
+  field_video:
+    type: media_library_widget
+    weight: 0
+    settings:
+      media_types: {  }
+    third_party_settings: {  }
+    region: content
+  field_video_caption_display:
+    weight: 26
+    settings: {  }
+    third_party_settings: {  }
+    type: options_select
+    region: content
+hidden:
+  body: true
+  info: true
+  langcode: true
