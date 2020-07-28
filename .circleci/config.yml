@@ -146,12 +146,13 @@ jobs:
             cd /var/www/html/web/core
             ../../vendor/bin/phpunit -c /var/www/html/web/core/phpunit.circleci.xml --testsuite kernel --group nidirect
 
-  # Functional tests with headless browser; run against insolated environment.
+  # Functional tests with headless browser; run against our edge environment.
   functional_tests:
     docker:
       - image: circleci/php:7.3.14-apache-node-browsers
         environment:
-          TEST_TAGS: "search"
+          TEST_TAGS: "search origins_workflow"
+          ENVIRONMENT_ID: "d8nid-edge"
       - image: drupalci/chromedriver:production
         environment:
           CHROMEDRIVER_WHITELISTED_IPS: ""
@@ -160,7 +161,7 @@ jobs:
       - attach_workspace:
           at: ./
       - run:
-          name: Keyscan Platform.sh region hostnames for access with our SSH keys
+          name: Keyscan Platform.sh region hostnames
           command: |
             mkdir -p ~/.ssh
             ssh-keyscan -H ssh.$PLATFORM_REGION >> ~/.ssh/known_hosts
@@ -176,7 +177,7 @@ jobs:
             sudo apt-get install -y yarn
             sudo docker-php-ext-install pcntl posix gd
       - run:
-          name: TEMPORARY switch to dev branch of nidirect-site-modules
+          name: TEMPORARY switch to dev branch of nidirect-site-modules; remove when ready to merge!
           command: |
             cd ~/project
             composer clearcache
@@ -188,10 +189,12 @@ jobs:
       - run:
           name: Get our environment URL and store as a local shell variable
           command: |
-            echo 'export PLATFORM_ENV_URL=$(/home/circleci/.platformsh/bin/platform url -p $PLATFORM_PROJECT_ID -e $CIRCLE_BRANCH --pipe | sed -e "s|\/$||" | grep -e "^http://[^www]")' >> $BASH_ENV
+            # Chromedriver won't use https so we dibble around with sed/grep to find the http url we want.
+            echo 'export PLATFORM_ENV_URL=$(/home/circleci/.platformsh/bin/platform url -p $PLATFORM_PROJECT_ID -e $ENVIRONMENT_ID --pipe | sed -e "s|\/$||" | grep -e "^http://[^www]")' >> $BASH_ENV
       - run:
           name: Configure nightwatch settings and files
           command: |
+            # Create a folder to store our nightwatch reports and screenshots
             mkdir -p /home/circleci/nightwatch-reports
 
             # Copy PHPUnit config into core folder.
