@@ -212,6 +212,8 @@ jobs:
       - run:
           name: Run tests with Nightwatch.js
           command: yarn --cwd=/home/circleci/project/web/core test:nightwatch $(for tag in $TEST_TAGS; do echo --tag $tag; done)
+      - store_artifacts:
+          path: /home/circleci/nightwatch-reports
 
   # Functional tests with a JS browser; no content, only config.
   functional_js_tests__config_only:
