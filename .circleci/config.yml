@@ -190,7 +190,7 @@ jobs:
           name: Get our environment URL and store as a local shell variable
           command: |
             # Chromedriver won't use https so we dibble around with sed/grep to find the http url we want.
-            echo 'export PLATFORM_ENV_URL=$(/home/circleci/.platformsh/bin/platform url -p $PLATFORM_PROJECT_ID -e $ENVIRONMENT_ID --pipe | sed -e "s|\/$||" | grep -e "^http://[^www]")' >> $BASH_ENV
+            echo 'export PLATFORM_ENV_URL=$(/home/circleci/.platformsh/bin/platform url -p $PLATFORM_PROJECT_ID -e $EDGE_BUILD_BRANCH --pipe | sed -e "s|\/$||" | grep -e "^http://[^www]")' >> $BASH_ENV
       - run:
           name: Configure nightwatch settings and files
           command: |
