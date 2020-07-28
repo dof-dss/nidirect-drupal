@@ -1,0 +1,37 @@
+uuid: ef13e070-b03f-4669-93e4-16224bf62240
+langcode: en
+status: true
+dependencies:
+  config:
+    - block_content.type.card_deck_plain
+    - field.field.block_content.card_deck_plain.body
+    - field.field.block_content.card_deck_plain.field_card_layout
+    - field.field.block_content.card_deck_plain.field_plain_cards
+  module:
+    - entity_reference_revisions
+    - options
+id: block_content.card_deck_plain.default
+targetEntityType: block_content
+bundle: card_deck_plain
+mode: default
+content:
+  field_card_layout:
+    weight: 1
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
+    type: list_key
+    region: content
+  field_plain_cards:
+    weight: 0
+    label: hidden
+    settings:
+      view_mode: default
+      link: ''
+    third_party_settings: {  }
+    type: entity_reference_revisions_entity_view
+    region: content
+hidden:
+  body: true
+  langcode: true
+  search_api_excerpt: true
