@@ -179,6 +179,7 @@ jobs:
           name: TEMPORARY switch to dev branch of nidirect-site-modules
           command: |
             cd ~/project
+            composer clearcache
             composer require dof-dss/nidirect-site-modules:dev-D8NID-809-headless-testing
       - run:
           name: Install the Platform.sh CLI tool
@@ -210,7 +211,7 @@ jobs:
             done
       - run:
           name: Run tests with Nightwatch.js
-          command: yarn --cwd=/home/circleci/project/web/core test:nightwatch $(for tag in ${TEST_TAGS}; do echo --tag $tag; done)
+          command: yarn --cwd=/home/circleci/project/web/core test:nightwatch $(for tag in $TEST_TAGS; do echo --tag $tag; done)
 
   # Functional tests with a JS browser; no content, only config.
   functional_js_tests__config_only:
