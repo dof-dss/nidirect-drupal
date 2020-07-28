@@ -150,11 +150,12 @@ jobs:
   functional_tests:
     docker:
       - image: circleci/php:7.3.14-apache-node-browsers
+        environment:
+          TEST_TAGS: "search"
       - image: drupalci/chromedriver:production
         environment:
           CHROMEDRIVER_WHITELISTED_IPS: ""
           CHROMEDRIVER_URL_BASE: "/wd/hub"
-          TEST_TAGS: "search"
     steps:
       - attach_workspace:
           at: ./
