@@ -151,8 +151,7 @@ jobs:
     docker:
       - image: circleci/php:7.3.14-apache-node-browsers
         environment:
-          TEST_TAGS: "search content-type-validation origins_workflow"
-          ENVIRONMENT_ID: "d8nid-edge"
+          TEST_TAGS: "search content-type-validation origins_workflow regression"
       - image: drupalci/chromedriver:production
         environment:
           CHROMEDRIVER_WHITELISTED_IPS: ""
@@ -311,9 +310,6 @@ workflows:
       - unit_kernel_tests:
           requires:
             - build
-      - functional_tests:
-          requires:
-            - build
 
   # A nightly build of the project, using all dof-dss packages at HEAD from development branch.
   nightly-edge-build:
@@ -327,6 +323,15 @@ workflows:
                 - development
     jobs:
       - build
+      - static_analysis:
+          requires:
+            - build
+      - unit_kernel_tests:
+          requires:
+            - build
+      - functional_tests:
+          requires:
+            - build
       - edge_build:
           requires:
             - build
