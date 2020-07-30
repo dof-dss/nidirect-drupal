@@ -176,12 +176,6 @@ jobs:
             sudo apt-get install -y yarn
             sudo docker-php-ext-install pcntl posix gd
       - run:
-          name: TEMPORARY switch to dev branch of nidirect-site-modules; remove when ready to merge!
-          command: |
-            cd ~/project
-            composer clearcache
-            composer require dof-dss/nidirect-site-modules:dev-D8NID-809-headless-testing
-      - run:
           name: Install the Platform.sh CLI tool
           command: |
             curl -sS https://platform.sh/cli/installer | php
