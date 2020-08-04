@@ -340,7 +340,9 @@ workflows:
               only:
                 - development
     jobs:
+      - build
       - sync_data
       - functional_tests:
           requires:
+            - build
             - sync_data
