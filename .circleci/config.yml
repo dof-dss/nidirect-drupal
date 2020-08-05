@@ -323,9 +323,6 @@ workflows:
       - unit_kernel_tests:
           requires:
             - build
-      - functional_tests:
-          requires:
-            - build
       - edge_build:
           requires:
             - build
@@ -343,4 +340,9 @@ workflows:
               only:
                 - development
     jobs:
+      - build
       - sync_data
+      - functional_tests:
+          requires:
+            - build
+            - sync_data
