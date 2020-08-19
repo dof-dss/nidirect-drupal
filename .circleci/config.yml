@@ -104,6 +104,7 @@ jobs:
           name: Add extra OS and PHP extensions/config
           command: |
             sudo cp /home/circleci/project/.circleci/docker-php-circleci.ini /usr/local/etc/php/conf.d/
+            sudo apt-get --allow-releaseinfo-change update
             sudo apt-get install -y libpng-dev mariadb-client rsync
             sudo docker-php-ext-install gd pdo_mysql
       - run:
