@@ -272,6 +272,11 @@ jobs:
       - image: circleci/php:7.3.14-apache-browsers
     steps:
       - checkout_code
+      - run:
+          name: Checkout edge branch
+          command: |
+            cd ~/project
+            git checkout -b $EDGE_BUILD_BRANCH
       - install_php_os_extensions
       - run:
           name: Add extra OS and PHP extensions/config
