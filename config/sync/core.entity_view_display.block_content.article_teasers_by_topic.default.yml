@@ -5,6 +5,7 @@ dependencies:
   config:
     - block_content.type.article_teasers_by_topic
     - field.field.block_content.article_teasers_by_topic.field_article_teasers
+    - field.field.block_content.article_teasers_by_topic.field_manually_control_listing
   module:
     - entity_reference_revisions
 id: block_content.article_teasers_by_topic.default
@@ -20,6 +21,16 @@ content:
       view_mode: default
       link: ''
     third_party_settings: {  }
+    region: content
+  field_manually_control_listing:
+    weight: 2
+    label: above
+    settings:
+      format: default
+      format_custom_false: ''
+      format_custom_true: ''
+    third_party_settings: {  }
+    type: boolean
     region: content
 hidden:
   langcode: true
