@@ -75,6 +75,27 @@ jobs:
           root: ./
           paths:
             - ./
+  build_edge_branch:
+    docker:
+      - image: circleci/php:7.3.14-apache-browsers
+    steps:
+      - checkout_code
+      - install_php_os_extensions
+      - run:
+          name: Switch to edge build branch
+          command: |
+            cd ~/project
+            git checkout -b $EDGE_BUILD_BRANCH
+      - run:
+          name: Install dev versions of dof-dss packages with composer.
+          command: |
+            composer require dof-dss/nidirect-site-modules:dev-development dof-dss/nidirect-migrations:dev-development \
+              dof-dss/nidirect-d8-test-install-profile:dev-development dof-dss/nicsdru_origins_theme:dev-development \
+              dof-dss/nicsdru_origins_modules:dev-development dof-dss/nicsdru_nidirect_theme:dev-development
+      - persist_to_workspace:
+          root: ./
+          paths:
+            - ./
 
   # Test for coding standards and deprecated code.
   static_analysis:
@@ -272,6 +293,11 @@ jobs:
       - image: circleci/php:7.3.14-apache-browsers
     steps:
       - checkout_code
+      - run:
+          name: Checkout edge branch
+          command: |
+            cd ~/project
+            git checkout -b $EDGE_BUILD_BRANCH
       - install_php_os_extensions
       - run:
           name: Add extra OS and PHP extensions/config
@@ -341,9 +367,10 @@ workflows:
               only:
                 - development
     jobs:
-      - build
-      - sync_data
+      - build_edge_branch
+      - sync_data:
+          requires:
+            - build_edge_branch
       - functional_tests:
           requires:
-            - build
             - sync_data
