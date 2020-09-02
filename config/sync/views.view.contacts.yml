@@ -194,7 +194,7 @@ display:
             default_group_multiple: {  }
             group_items: {  }
           parse_mode: phrase
-          min_length: 3
+          min_length: 2
           fields:
             - title_fulltext
           plugin_id: search_api_fulltext
@@ -253,7 +253,6 @@ display:
       relationships: {  }
       arguments: {  }
       display_extenders: {  }
-      title: Contacts
     cache_metadata:
       max-age: -1
       contexts:
@@ -263,7 +262,9 @@ display:
         - url.query_args
         - 'url.query_args:sort_by'
         - 'url.query_args:sort_order'
-      tags: {  }
+        - 'user.node_grants:view'
+      tags:
+        - 'config:search_api.index.contacts'
   contact_search:
     display_plugin: embed
     id: contact_search
@@ -281,4 +282,6 @@ display:
         - url.query_args
         - 'url.query_args:sort_by'
         - 'url.query_args:sort_order'
-      tags: {  }
+        - 'user.node_grants:view'
+      tags:
+        - 'config:search_api.index.contacts'
