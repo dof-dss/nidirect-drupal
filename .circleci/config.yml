@@ -316,6 +316,13 @@ jobs:
           name: Trigger a data sync from master environment to nightly edge build.
           command: |
             /home/circleci/.platformsh/bin/platform sync data -p $PLATFORM_PROJECT_ID -e $EDGE_BUILD_BRANCH -y
+      - run:
+          name: Force purge of Solr index and rebuild.
+          command: |
+            /home/circleci/.platformsh/bin/platform ssh "curl http://${PLATFORM_SOLR_HOST}/solr/default/update --data '<delete><query>*:*</query></delete>' -H 'Content-type:text/xml; charset=utf-8' && curl http://${PLATFORM_SOLR_HOST}/solr/default/update --data '<commit/>' -H 'Content-type:text/xml; charset=utf-8'"
+            /home/circleci/.platformsh/bin/platform environment:drush sapi-c
+            /home/circleci/.platformsh/bin/platform environment:drush sapi-r
+            /home/circleci/.platformsh/bin/platform environment:drush sapi-i
 
 workflows:
   version: 2
