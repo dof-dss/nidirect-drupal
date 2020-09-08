@@ -134,11 +134,3 @@ crons:
   drupal:
     spec: '*/5 * * * *'
     cmd: 'cd web ; drush core-cron'
-  migrate-fetch:
-    # Every saturday morning, fetch the migrate db and files
-    spec: '0 9 * * 6'
-    cmd: '/app/migrate-fetch.sh'
-  migrate-unpack:
-    # Every saturday morning, unpack the db and files to top up our migrate source content.
-    spec: '0 10 * * 6'
-    cmd: '/app/migrate-unpack.sh'
