@@ -352,7 +352,7 @@ jobs:
             fi
 
             /home/circleci/.platformsh/bin/platform db:dump -p $PLATFORM_LEGACY_PROJECT_ID -e $PLATFORM_LEGACY_BRANCH --gzip -f /app/imports/nidirectd7.sql.gz
-            /home/circleci/.platformsh/bin/platform mount:download $PLATFORM_LEGACY_PROJECT_ID -e $PLATFORM_LEGACY_BRANCH -m "/public_html/sites/default/files" --exclude="*.css,*.js,status_check*" --target /app/imports/files/sites/default/files/ -y
+            /home/circleci/.platformsh/bin/platform mount:download $PLATFORM_LEGACY_PROJECT_ID -e $PLATFORM_LEGACY_BRANCH -m "/public_html/sites/default/files" --exclude "*.css" --exclude "*.js" --exclude="status_check*" --target /app/imports/files/sites/default/files/ -y
       - run:
           name: Unpack database to legacy database service
           command: |
