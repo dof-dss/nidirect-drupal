@@ -326,6 +326,38 @@ jobs:
             /home/circleci/.platformsh/bin/platform environment:drush sapi-r -p $PLATFORM_PROJECT_ID -e $EDGE_BUILD_BRANCH
             /home/circleci/.platformsh/bin/platform environment:drush sapi-i -p $PLATFORM_PROJECT_ID -e $EDGE_BUILD_BRANCH
 
+
+  # Fetches migration assets from NIDirect D7. Platform.sh API token injected as environment variable.
+  migrate_update_assets:
+    docker:
+      - image: cimg/php:7.3
+    steps:
+      - checkout_code
+      - install_php_os_extensions
+      - run:
+          name: Add extra OS and PHP extensions/config
+          command: |
+            sudo docker-php-ext-install pcntl posix
+      - run:
+          name: Keyscan Platform.sh region hostnames for password-less access
+          command: |
+            mkdir -p ~/.ssh
+            ssh-keyscan -H ssh.$PLATFORM_REGION >> ~/.ssh/known_hosts
+      - run:
+          name: Fetch database and managed files from NIDirect D7
+          command: |
+            if [ ! $MIGRATE_ENABLED == 1 ]; then
+              echo "Environment was not enabled for migration refresh"
+              exit 0
+            fi
+
+            /home/circleci/.platformsh/bin/platform db:dump -p $PLATFORM_LEGACY_PROJECT_ID -e $PLATFORM_LEGACY_BRANCH --gzip -f /app/imports/nidirectd7.sql.gz
+            /home/circleci/.platformsh/bin/platform mount:download $PLATFORM_LEGACY_PROJECT_ID -e $PLATFORM_LEGACY_BRANCH -m "/public_html/sites/default/files" --exclude="*.css,*.js,status_check*" --target /app/imports/files/sites/default/files/ -y
+      - run:
+          name: Unpack database to legacy database service
+          command: |
+            gzip -dc /app/imports/nidirectd7.sql.gz | /home/circleci/.platformsh/bin/platform environment:drush sqlc --database=drupal7db -p $PLATFORM_LEGACY_PROJECT_ID -e $PLATFORM_LEGACY_BRANCH
+
 workflows:
   version: 2
   # Our default pipeline that tests the integrity of our build + any tests.
@@ -383,3 +415,15 @@ workflows:
       - functional_tests:
           requires:
             - sync_data
+
+  weekly-migration-data-sync:
+    triggers:
+      - schedule:
+          # At 02:30 every Saturday
+          cron: "30 2 * * 6"
+          filters:
+            branches:
+              only:
+                - master
+    jobs:
+      - migrate_update_assets
