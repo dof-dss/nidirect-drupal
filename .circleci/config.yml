@@ -317,9 +317,11 @@ jobs:
           command: |
             /home/circleci/.platformsh/bin/platform sync data -p $PLATFORM_PROJECT_ID -e $EDGE_BUILD_BRANCH -y
       - run:
-          name: Force purge of Solr index and rebuild.
+          name: Force purge of Solr index
+          command: /home/circleci/.platformsh/bin/platform ssh "curl http://${PLATFORM_SOLR_HOST}/solr/default/update --data '<delete><query>*:*</query></delete>' -H 'Content-type:text/xml; charset=utf-8' && curl http://${PLATFORM_SOLR_HOST}/solr/default/update --data '<commit/>' -H 'Content-type:text/xml; charset=utf-8'"
+      - run:
+          name: Rebuild the Solr index
           command: |
-            /home/circleci/.platformsh/bin/platform ssh "curl http://${PLATFORM_SOLR_HOST}/solr/default/update --data '<delete><query>*:*</query></delete>' -H 'Content-type:text/xml; charset=utf-8' && curl http://${PLATFORM_SOLR_HOST}/solr/default/update --data '<commit/>' -H 'Content-type:text/xml; charset=utf-8'"
             /home/circleci/.platformsh/bin/platform environment:drush sapi-c -p $PLATFORM_PROJECT_ID -e $EDGE_BUILD_BRANCH
             /home/circleci/.platformsh/bin/platform environment:drush sapi-r -p $PLATFORM_PROJECT_ID -e $EDGE_BUILD_BRANCH
             /home/circleci/.platformsh/bin/platform environment:drush sapi-i -p $PLATFORM_PROJECT_ID -e $EDGE_BUILD_BRANCH
