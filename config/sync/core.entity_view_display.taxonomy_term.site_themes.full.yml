@@ -1,8 +1,9 @@
-uuid: b8d306b8-f36c-44b8-8a1c-75b1223fd952
+uuid: f5611ff8-b82e-47ce-b045-6ff4868a51ae
 langcode: en
 status: true
 dependencies:
   config:
+    - core.entity_view_mode.taxonomy_term.full
     - field.field.taxonomy_term.site_themes.field_additional_info
     - field.field.taxonomy_term.site_themes.field_banner_image
     - field.field.taxonomy_term.site_themes.field_meta_tags
@@ -15,17 +16,29 @@ dependencies:
     - field.field.taxonomy_term.site_themes.field_top_level_theme
     - taxonomy.vocabulary.site_themes
   module:
+    - layout_builder
     - text
-id: taxonomy_term.site_themes.default
+third_party_settings:
+  layout_builder:
+    allow_custom: false
+    enabled: false
+id: taxonomy_term.site_themes.full
 targetEntityType: taxonomy_term
 bundle: site_themes
-mode: default
+mode: full
 content:
   description:
     label: hidden
     type: text_default
     weight: 1
     region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_additional_info:
+    type: text_default
+    weight: 2
+    region: content
+    label: hidden
     settings: {  }
     third_party_settings: {  }
   field_theme_summary:
@@ -36,7 +49,6 @@ content:
     type: basic_string
     region: content
 hidden:
-  field_additional_info: true
   field_banner_image: true
   field_meta_tags: true
   field_photo: true
