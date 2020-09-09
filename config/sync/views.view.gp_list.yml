@@ -75,6 +75,8 @@ display:
           columns:
             cypher: cypher
             last_name: last_name
+            first_name: first_name
+            edit_gp: edit_gp
           info:
             cypher:
               sortable: false
@@ -84,6 +86,20 @@ display:
               empty_column: false
               responsive: ''
             last_name:
+              sortable: true
+              default_sort_order: asc
+              align: ''
+              separator: ''
+              empty_column: false
+              responsive: ''
+            first_name:
+              sortable: false
+              default_sort_order: asc
+              align: ''
+              separator: ''
+              empty_column: false
+              responsive: ''
+            edit_gp:
               sortable: false
               default_sort_order: asc
               align: ''
@@ -576,7 +592,23 @@ display:
           entity_field: first_name
           plugin_id: standard
       title: 'GP List'
-      header: {  }
+      header:
+        area:
+          id: area
+          table: views
+          field: area
+          relationship: none
+          group_type: group
+          admin_label: ''
+          empty: true
+          tokenize: false
+          content:
+            value: |
+              This page shows all the GPs listed on Nidirect.
+              <br><br>
+              This page was created by the web development team to assist with QA and verification of the GP list. It is not intended for other uses, or as a replacement for the master spreadsheet available from other sources.
+            format: basic_html
+          plugin_id: text
       footer: {  }
       empty: {  }
       relationships: {  }
