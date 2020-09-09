@@ -1,0 +1,45 @@
+uuid: 3ec02749-8bc1-4005-9542-f180cbf4d61f
+langcode: en
+status: true
+dependencies:
+  config:
+    - block_content.type.article_teasers_by_topic
+    - field.storage.block_content.field_article_teasers
+    - paragraphs.paragraphs_type.article_teaser
+    - paragraphs.paragraphs_type.term_teaser
+  module:
+    - entity_reference_revisions
+id: block_content.article_teasers_by_topic.field_article_teasers
+field_name: field_article_teasers
+entity_type: block_content
+bundle: article_teasers_by_topic
+label: 'Article Teasers'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:paragraph'
+  handler_settings:
+    negate: 0
+    target_bundles:
+      article_teaser: article_teaser
+      term_teaser: term_teaser
+    target_bundles_drag_drop:
+      accordion_section:
+        weight: 6
+        enabled: false
+      article_teaser:
+        enabled: true
+        weight: 7
+      card_plain:
+        weight: 8
+        enabled: false
+      map:
+        weight: 9
+        enabled: false
+      term_teaser:
+        enabled: true
+        weight: 10
+field_type: entity_reference_revisions

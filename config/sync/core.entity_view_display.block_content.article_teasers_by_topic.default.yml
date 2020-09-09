@@ -1,0 +1,37 @@
+uuid: b8cddf58-2e2e-4108-b225-e68526bf85ea
+langcode: en
+status: true
+dependencies:
+  config:
+    - block_content.type.article_teasers_by_topic
+    - field.field.block_content.article_teasers_by_topic.field_article_teasers
+    - field.field.block_content.article_teasers_by_topic.field_manually_control_listing
+  module:
+    - entity_reference_revisions
+id: block_content.article_teasers_by_topic.default
+targetEntityType: block_content
+bundle: article_teasers_by_topic
+mode: default
+content:
+  field_article_teasers:
+    type: entity_reference_revisions_entity_view
+    weight: 1
+    label: hidden
+    settings:
+      view_mode: default
+      link: ''
+    third_party_settings: {  }
+    region: content
+  field_manually_control_listing:
+    weight: 2
+    label: above
+    settings:
+      format: default
+      format_custom_false: ''
+      format_custom_true: ''
+    third_party_settings: {  }
+    type: boolean
+    region: content
+hidden:
+  langcode: true
+  search_api_excerpt: true
