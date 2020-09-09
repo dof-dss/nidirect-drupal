@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d908f8a5c4e4b5d3e28ff9bb734d4738",
+    "content-hash": "0e6492dd5719bec0743866ee7cea6903",
     "packages": [
         {
             "name": "alchemy/zippy",
@@ -1891,16 +1891,16 @@
         },
         {
             "name": "dof-dss/nicsdru_nidirect_theme",
-            "version": "0.10.2",
+            "version": "0.11.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/dof-dss/nicsdru_nidirect_theme.git",
-                "reference": "b0ea7b753c4ba70238be996a004e99313f4d1f68"
+                "reference": "c586652cda2c632955cd0f003ef2ba86f6e70fb3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/dof-dss/nicsdru_nidirect_theme/zipball/b0ea7b753c4ba70238be996a004e99313f4d1f68",
-                "reference": "b0ea7b753c4ba70238be996a004e99313f4d1f68",
+                "url": "https://api.github.com/repos/dof-dss/nicsdru_nidirect_theme/zipball/c586652cda2c632955cd0f003ef2ba86f6e70fb3",
+                "reference": "c586652cda2c632955cd0f003ef2ba86f6e70fb3",
                 "shasum": ""
             },
             "require": {
@@ -1923,7 +1923,7 @@
                 "drupal",
                 "theme"
             ],
-            "time": "2020-08-26T13:23:10+00:00"
+            "time": "2020-09-09T14:03:48+00:00"
         },
         {
             "name": "dof-dss/nicsdru_origins_modules",
@@ -2041,16 +2041,16 @@
         },
         {
             "name": "dof-dss/nidirect-site-modules",
-            "version": "0.10.3",
+            "version": "0.11.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/dof-dss/nidirect-site-modules.git",
-                "reference": "a2747312c2031723139fee5469acd157fd3281c7"
+                "reference": "84a45c2578a7479e2c003175b0fb2e2f4653bca2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/dof-dss/nidirect-site-modules/zipball/a2747312c2031723139fee5469acd157fd3281c7",
-                "reference": "a2747312c2031723139fee5469acd157fd3281c7",
+                "url": "https://api.github.com/repos/dof-dss/nidirect-site-modules/zipball/84a45c2578a7479e2c003175b0fb2e2f4653bca2",
+                "reference": "84a45c2578a7479e2c003175b0fb2e2f4653bca2",
                 "shasum": ""
             },
             "require": {
@@ -2063,7 +2063,7 @@
                 "MIT"
             ],
             "description": "Drupal modules to provide custom code for NI Direct",
-            "time": "2020-09-02T13:00:31+00:00"
+            "time": "2020-09-04T20:20:45+00:00"
         },
         {
             "name": "drupal/address",
@@ -3413,6 +3413,7 @@
                 "patches_applied": {
                     "Prevent leftover fields from causing errors like 'Call to a member function getLabel() after enabling layout_builder'": "https://www.drupal.org/files/issues/2020-01-20/2985882-53.patch",
                     "When embedding media, don't let authors choose view modes that are not enabled for that media type": "https://www.drupal.org/files/issues/2020-01-31/3097416-ckeditor-view-modes-8.9-combined.patch",
+                    "Prevent error when saving unpublished content for users without manage book privileges": "https://www.drupal.org/files/issues/2918537-36.patch",
                     "[PP-1] Provide options to sanitize filenames (transliterate, lowercase, replace whitespace, etc)": "https://www.drupal.org/files/issues/2019-12-06/2492171-294.patch"
                 }
             },
@@ -6401,16 +6402,13 @@
                 "shasum": "7c10a4ed872620ee05dbd082cc66021fc3ee3036"
             },
             "require": {
-                "drupal/core": "*"
+                "drupal/core": "^8"
             },
             "require-dev": {
                 "drupal/chosen": "*"
             },
             "type": "drupal-module",
             "extra": {
-                "branch-alias": {
-                    "dev-1.x": "1.x-dev"
-                },
                 "drupal": {
                     "version": "8.x-1.0-alpha4",
                     "datestamp": "1536746285",
@@ -6428,6 +6426,10 @@
                 "GPL-2.0-or-later"
             ],
             "authors": [
+                {
+                    "name": "jhedstrom",
+                    "homepage": "https://www.drupal.org/user/208732"
+                },
                 {
                     "name": "stBorchert",
                     "homepage": "https://www.drupal.org/user/36942"

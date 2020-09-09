@@ -1,0 +1,50 @@
+uuid: c3e876e5-fa9e-473f-ab39-b4da45b7af8a
+langcode: en
+status: true
+dependencies:
+  config:
+    - block_content.type.article_teasers_by_topic
+    - field.field.block_content.article_teasers_by_topic.field_article_teasers
+    - field.field.block_content.article_teasers_by_topic.field_manually_control_listing
+  module:
+    - paragraphs
+id: block_content.article_teasers_by_topic.default
+targetEntityType: block_content
+bundle: article_teasers_by_topic
+mode: default
+content:
+  field_article_teasers:
+    type: entity_reference_paragraphs
+    weight: 3
+    settings:
+      title: Paragraph
+      title_plural: Paragraphs
+      edit_mode: open
+      add_mode: dropdown
+      form_display_mode: default
+      default_paragraph_type: ''
+    third_party_settings: {  }
+    region: content
+  field_manually_control_listing:
+    weight: 2
+    settings:
+      display_label: true
+    third_party_settings: {  }
+    type: boolean_checkbox
+    region: content
+  info:
+    type: string_textfield
+    weight: 0
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+  langcode:
+    type: language_select
+    weight: 1
+    region: content
+    settings:
+      include_locked: true
+    third_party_settings: {  }
+hidden: {  }
