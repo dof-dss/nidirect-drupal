@@ -3,5 +3,8 @@ if [ ! $MIGRATE_ENABLED == 1 ]; then
   exit 0
 fi
 
-curl -u ${AZURE_HTTP_USER}:${AZURE_HTTP_PASS} -X GET -o /app/imports/nidirectd7.sql.gz "${AZURE_HOST}/files/nidirect.sql.gz"
-curl -u ${AZURE_HTTP_USER}:${AZURE_HTTP_PASS} -X GET -o /app/imports/nidirect_files.tar "${AZURE_HOST}/files/nidirect_files_change.tar"
+PLATFORM_LEGACY_PROJECT_ID=$1
+PLATFORM_LEGACY_BRANCH=$2
+
+platform db:dump -p $PLATFORM_LEGACY_PROJECT_ID -e $PLATFORM_LEGACY_BRANCH --gzip -f /app/imports/nidirectd7.sql.gz
+platform mount:download $PLATFORM_LEGACY_PROJECT_ID -e $PLATFORM_LEGACY_BRANCH -m "/public_html/sites/default/files" --exclude "*.css" --exclude "*.js" --exclude="status_check*" --target /app/imports/files/sites/default/files/ -y
