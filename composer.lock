@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d908f8a5c4e4b5d3e28ff9bb734d4738",
+    "content-hash": "f42679169d6c4dc3d848594a9e0c370a",
     "packages": [
         {
             "name": "alchemy/zippy",
@@ -2430,14 +2430,17 @@
             },
             "require": {
                 "drupal/chosen_lib": "*",
-                "drupal/core": "^8 || ^9",
+                "drupal/core": "~8.0",
                 "harvesthq/chosen": "^1.8.7"
             },
             "type": "drupal-module",
             "extra": {
+                "branch-alias": {
+                    "dev-2.x": "2.x-dev"
+                },
                 "drupal": {
                     "version": "8.x-2.9",
-                    "datestamp": "1576963005",
+                    "datestamp": "1576594384",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -2502,14 +2505,17 @@
             "version": "2.9.0",
             "require": {
                 "drupal/chosen": "self.version",
-                "drupal/core": "^8 || ^9",
+                "drupal/core": "~8.0",
                 "php": ">=5.6.0"
             },
             "type": "metapackage",
             "extra": {
+                "branch-alias": {
+                    "dev-2.x": "2.x-dev"
+                },
                 "drupal": {
                     "version": "8.x-2.9",
-                    "datestamp": "1576963005",
+                    "datestamp": "1576594384",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -2646,13 +2652,16 @@
                 "shasum": "81210684c378dab856b3c2bce5eeaa58992d2efc"
             },
             "require": {
-                "drupal/core": "^8 || ^9"
+                "drupal/core": "~8.0"
             },
             "suggest": {
                 "drupal/config_split": "Split site configuration for different environments."
             },
             "type": "drupal-module",
             "extra": {
+                "branch-alias": {
+                    "dev-1.x": "1.x-dev"
+                },
                 "drupal": {
                     "version": "8.x-1.5",
                     "datestamp": "1572542288",
@@ -2777,6 +2786,9 @@
             },
             "type": "drupal-module",
             "extra": {
+                "branch-alias": {
+                    "dev-1.x": "1.x-dev"
+                },
                 "drupal": {
                     "version": "8.x-1.0-beta3",
                     "datestamp": "1519398184",
@@ -3413,6 +3425,7 @@
                 "patches_applied": {
                     "Prevent leftover fields from causing errors like 'Call to a member function getLabel() after enabling layout_builder'": "https://www.drupal.org/files/issues/2020-01-20/2985882-53.patch",
                     "When embedding media, don't let authors choose view modes that are not enabled for that media type": "https://www.drupal.org/files/issues/2020-01-31/3097416-ckeditor-view-modes-8.9-combined.patch",
+                    "Prevent error when saving unpublished content for users without manage book privileges": "https://www.drupal.org/files/issues/2918537-36.patch",
                     "[PP-1] Provide options to sanitize filenames (transliterate, lowercase, replace whitespace, etc)": "https://www.drupal.org/files/issues/2019-12-06/2492171-294.patch"
                 }
             },
@@ -5326,7 +5339,7 @@
             "extra": {
                 "drupal": {
                     "version": "8.x-1.13",
-                    "datestamp": "1587550202",
+                    "datestamp": "1587478404",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -5390,6 +5403,9 @@
             },
             "type": "drupal-module",
             "extra": {
+                "branch-alias": {
+                    "dev-4.x": "4.x-dev"
+                },
                 "drupal": {
                     "version": "8.x-4.2",
                     "datestamp": "1555683487",
@@ -6401,16 +6417,13 @@
                 "shasum": "7c10a4ed872620ee05dbd082cc66021fc3ee3036"
             },
             "require": {
-                "drupal/core": "*"
+                "drupal/core": "^8"
             },
             "require-dev": {
                 "drupal/chosen": "*"
             },
             "type": "drupal-module",
             "extra": {
-                "branch-alias": {
-                    "dev-1.x": "1.x-dev"
-                },
                 "drupal": {
                     "version": "8.x-1.0-alpha4",
                     "datestamp": "1536746285",
@@ -6428,6 +6441,10 @@
                 "GPL-2.0-or-later"
             ],
             "authors": [
+                {
+                    "name": "jhedstrom",
+                    "homepage": "https://www.drupal.org/user/208732"
+                },
                 {
                     "name": "stBorchert",
                     "homepage": "https://www.drupal.org/user/36942"
