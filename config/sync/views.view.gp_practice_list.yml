@@ -18,8 +18,12 @@ dependencies:
     - link
     - node
     - options
+    - rest
+    - serialization
     - telephone_plus
     - user
+    - views_data_export
+    - xls_serialization
 id: gp_practice_list
 label: 'GP practice list'
 module: views
@@ -992,6 +996,55 @@ display:
         - 'config:field.storage.node.field_gp_practice_no'
         - 'config:field.storage.node.field_gp_prescriptions'
         - 'config:field.storage.node.field_telephone'
+  data_export_1:
+    display_plugin: data_export
+    id: data_export_1
+    display_title: 'Data export'
+    position: 2
+    display_options:
+      display_extenders: {  }
+      path: admin/config/nidirect/nidirect-gp-list.xlsx
+      filename: ''
+      automatic_download: false
+      store_in_public_file_directory: false
+      redirect_to_display: none
+      custom_redirect_path: false
+      include_query_params: false
+      style:
+        type: excel_export
+        options:
+          formats:
+            xlsx: xlsx
+          xls_settings:
+            xls_format: Excel2007
+            metadata:
+              creator: ''
+              last_modified_by: ''
+              title: ''
+              description: ''
+              subject: ''
+              keywords: ''
+              category: ''
+              manager: ''
+              company: ''
+    cache_metadata:
+      max-age: -1
+      contexts:
+        - 'languages:language_content'
+        - 'languages:language_interface'
+        - request_format
+        - url
+        - 'user.node_grants:view'
+        - user.permissions
+      tags:
+        - 'config:field.storage.node.field_address'
+        - 'config:field.storage.node.field_gp_appointments'
+        - 'config:field.storage.node.field_gp_lcg'
+        - 'config:field.storage.node.field_gp_practice_lead'
+        - 'config:field.storage.node.field_gp_practice_member'
+        - 'config:field.storage.node.field_gp_practice_no'
+        - 'config:field.storage.node.field_gp_prescriptions'
+        - 'config:field.storage.node.field_telephone'
   page_1:
     display_plugin: page
     id: page_1
@@ -1000,6 +1053,25 @@ display:
     display_options:
       display_extenders: {  }
       path: admin/config/nidirect/gp-practice-list
+      header:
+        area:
+          id: area
+          table: views
+          field: area
+          relationship: none
+          group_type: group
+          admin_label: ''
+          empty: true
+          tokenize: false
+          content:
+            value: |
+              This page shows all the GP practices listed on Nidirect. <a href="/admin/config/nidirect/nidirect-gp-list.xlsx">Download an Excel version.</a>
+              <br><br>
+              This page was created by the web development team to assist with QA and verification of the GP practice list. It is not intended for other uses, or as a replacement for the master spreadsheet available from other sources.
+            format: basic_html
+          plugin_id: text
+      defaults:
+        header: false
     cache_metadata:
       max-age: -1
       contexts:
