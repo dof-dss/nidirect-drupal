@@ -410,14 +410,16 @@ workflows:
           requires:
             - sync_data
 
+  # TODO: replace with weekly cron timing once confirmed running.
   weekly-migration-data-sync:
     triggers:
       - schedule:
           # At 02:30 every Saturday
-          cron: "30 2 * * 6"
+          # cron: "30 2 * * 6"
+          cron: "30 2 * * *"
           filters:
             branches:
               only:
-                - master
+                - development
     jobs:
       - migrate_update_assets
