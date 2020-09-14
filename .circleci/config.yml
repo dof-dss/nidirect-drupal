@@ -316,6 +316,41 @@ jobs:
           name: Trigger a data sync from master environment to nightly edge build.
           command: |
             /home/circleci/.platformsh/bin/platform sync data -p $PLATFORM_PROJECT_ID -e $EDGE_BUILD_BRANCH -y
+      - run:
+          name: Force purge of Solr index
+          command: /home/circleci/.platformsh/bin/platform ssh -p $PLATFORM_PROJECT_ID -e $EDGE_BUILD_BRANCH "curl http://${PLATFORM_SOLR_HOST}/solr/default/update --data '<delete><query>*:*</query></delete>' -H 'Content-type:text/xml; charset=utf-8' && curl http://${PLATFORM_SOLR_HOST}/solr/default/update --data '<commit/>' -H 'Content-type:text/xml; charset=utf-8'"
+      - run:
+          name: Rebuild the Solr index
+          command: |
+            /home/circleci/.platformsh/bin/platform environment:drush sapi-c -p $PLATFORM_PROJECT_ID -e $EDGE_BUILD_BRANCH
+            /home/circleci/.platformsh/bin/platform environment:drush sapi-r -p $PLATFORM_PROJECT_ID -e $EDGE_BUILD_BRANCH
+            /home/circleci/.platformsh/bin/platform environment:drush sapi-i -p $PLATFORM_PROJECT_ID -e $EDGE_BUILD_BRANCH
+
+
+  # Fetches migration assets from NIDirect D7. Platform.sh API token injected as environment variable.
+  migrate_update_assets:
+    docker:
+      - image: cimg/php:7.3
+    steps:
+      - checkout_code
+      - install_php_os_extensions
+      - run:
+          name: Add extra OS and PHP extensions/config
+          command: |
+            sudo docker-php-ext-install pcntl posix
+      - run:
+          name: Keyscan Platform.sh region hostnames for password-less access
+          command: |
+            mkdir -p ~/.ssh
+            ssh-keyscan -H ssh.$PLATFORM_REGION >> ~/.ssh/known_hosts
+      - run:
+          name: Fetch database and managed files from NIDirect D7
+          command: |
+            /home/circleci/.platformsh/bin/platform ssh -p $PLATFORM_PROJECT_ID -e master /app/migrate-fetch.sh $PLATFORM_LEGACY_PROJECT_ID $PLATFORM_LEGACY_BRANCH
+      - run:
+          name: Unpack database to legacy database service
+          command: |
+            /home/circleci/.platformsh/bin/platform ssh -p $PLATFORM_PROJECT_ID -e master /app/migrate-unpack.sh
 
 workflows:
   version: 2
@@ -374,3 +409,17 @@ workflows:
       - functional_tests:
           requires:
             - sync_data
+
+  # TODO: replace with weekly cron timing once confirmed running.
+  weekly-migration-data-sync:
+    triggers:
+      - schedule:
+          # At 02:30 every Saturday
+          # cron: "30 2 * * 6"
+          cron: "30 2 * * *"
+          filters:
+            branches:
+              only:
+                - development
+    jobs:
+      - migrate_update_assets

@@ -10,12 +10,19 @@ field_name: field_supplementary_parents
 entity_type: taxonomy_term
 bundle: site_themes
 label: 'Supplementary parents'
-description: ''
+description: 'Optional supplementary theme/subthemes where a link to this theme should appear. Does not change the theme''s breadcrumb trail.'
 required: false
 translatable: false
 default_value: {  }
 default_value_callback: ''
 settings:
   handler: 'default:taxonomy_term'
-  handler_settings: {  }
+  handler_settings:
+    target_bundles:
+      site_themes: site_themes
+    sort:
+      field: name
+      direction: asc
+    auto_create: false
+    auto_create_bundle: ''
 field_type: entity_reference
