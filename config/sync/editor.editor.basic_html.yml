@@ -30,7 +30,7 @@ settings:
         -
           name: Linking
           items:
-            - Linkit
+            - DrupalLink
             - DrupalUnlink
         -
           name: Lists
@@ -58,11 +58,17 @@ settings:
             - Maximize
   plugins:
     stylescombo:
-      styles: "p.info-notice|Information notice\r\nul.split-list|Split bulleted list\r\nol.split-list|Split numbered list\r\ntable.table-fixed-width|Equal table columns\r\na.call-to-action|Big green button"
+      styles: |
+        p.info-notice|Information notice
+        ul.split-list|Split bulleted list
+        ol.split-list|Split numbered list
+        table.table-fixed-width|Equal table columns
+        a.call-to-action|Big green button
+    drupallink:
+      linkit_enabled: false
+      linkit_profile: ''
     language:
       language_list: un
-    linkit:
-      linkit_profile: default
     tokenbrowser:
       token_types: {  }
 image_upload:
