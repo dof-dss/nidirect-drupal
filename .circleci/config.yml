@@ -330,7 +330,7 @@ jobs:
   # Fetches migration assets from NIDirect D7. Platform.sh API token injected as environment variable.
   migrate_update_assets:
     docker:
-      - image: cimg/php:7.3
+      - image: circleci/php:7.3.14-apache-browsers
     steps:
       - checkout_code
       - install_php_os_extensions
@@ -344,13 +344,23 @@ jobs:
             mkdir -p ~/.ssh
             ssh-keyscan -H ssh.$PLATFORM_REGION >> ~/.ssh/known_hosts
       - run:
+          name: Install the Platform.sh CLI tool
+          command: |
+            curl -sS https://platform.sh/cli/installer | php
+      - run:
+          name: Test CLI token
+          command: |
+            /home/circleci/.platformsh/bin/platform projects
+      - run:
           name: Fetch database and managed files from NIDirect D7
           command: |
             /home/circleci/.platformsh/bin/platform ssh -p $PLATFORM_PROJECT_ID -e master /app/migrate-fetch.sh $PLATFORM_LEGACY_PROJECT_ID $PLATFORM_LEGACY_BRANCH
+          no_output_timeout: 30m
       - run:
           name: Unpack database to legacy database service
           command: |
             /home/circleci/.platformsh/bin/platform ssh -p $PLATFORM_PROJECT_ID -e master /app/migrate-unpack.sh
+          no_output_timeout: 30m
 
 workflows:
   version: 2
