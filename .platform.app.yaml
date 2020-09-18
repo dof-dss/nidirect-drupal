@@ -62,6 +62,8 @@ hooks:
     rm -rf web/core/assets/vendor/ckeditor
     mv ckeditor4-fix-widget-dnd/build/ckeditor web/core/assets/vendor/ckeditor
     rm -rf ckeditor4-fix-widget-dnd
+    echo "Install Platform CLI tool"
+    curl -sS https://platform.sh/cli/installer | php
   # The deploy hook runs after your application has been deployed and started.
   deploy: |
     set -e
@@ -134,11 +136,3 @@ crons:
   drupal:
     spec: '*/5 * * * *'
     cmd: 'cd web ; drush core-cron'
-  migrate-fetch:
-    # Every saturday morning, fetch the migrate db and files
-    spec: '0 9 * * 6'
-    cmd: '/app/migrate-fetch.sh'
-  migrate-unpack:
-    # Every saturday morning, unpack the db and files to top up our migrate source content.
-    spec: '0 10 * * 6'
-    cmd: '/app/migrate-unpack.sh'
