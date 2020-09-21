@@ -1,0 +1,28 @@
+uuid: d1c089eb-ef02-420b-b455-82b63395d47a
+langcode: en
+status: false
+dependencies:
+  config:
+    - facets_summary.facets_summary.health_conditions_facet_summary
+  module:
+    - facets_summary
+    - system
+  theme:
+    - nicsdru_nidirect_theme
+id: healthconditionsfacetsummary
+theme: nicsdru_nidirect_theme
+region: content
+weight: -15
+provider: null
+plugin: 'facets_summary_block:health_conditions_facet_summary'
+settings:
+  id: 'facets_summary_block:health_conditions_facet_summary'
+  label: 'Health conditions facet summary'
+  provider: facets_summary
+  label_display: visible
+visibility:
+  request_path:
+    id: request_path
+    pages: '/services/health-conditions-a-z*'
+    negate: false
+    context_mapping: {  }
