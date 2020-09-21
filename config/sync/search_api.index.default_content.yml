@@ -20,7 +20,6 @@ dependencies:
     - field.storage.node.field_email_address
     - field.storage.node.field_gp_practice_member
     - field.storage.node.field_index_letter
-    - field.storage.node.field_lb_search_content
     - field.storage.node.field_gp_practice_lead
     - field.storage.node.field_location
     - field.storage.node.field_hc_primary_symptom_1
@@ -273,14 +272,6 @@ field_settings:
     dependencies:
       config:
         - field.storage.node.field_index_letter
-  field_lb_search_content:
-    label: 'LB Search content'
-    datasource_id: 'entity:node'
-    property_path: field_lb_search_content
-    type: text
-    dependencies:
-      config:
-        - field.storage.node.field_lb_search_content
   field_location:
     label: Location
     datasource_id: 'entity:node'
@@ -529,7 +520,6 @@ processor_settings:
       - field_hc_primary_symptom_4_synonyms
       - field_hc_secondary_symptoms_synonyms
       - field_index_letter
-      - field_lb_search_content
       - field_location
       - field_summary
       - first_name
