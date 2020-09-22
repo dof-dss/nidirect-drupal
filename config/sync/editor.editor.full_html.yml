@@ -31,8 +31,8 @@ settings:
         -
           name: Linking
           items:
-            - Linkit
             - DrupalUnlink
+            - DrupalLink
         -
           name: Lists
           items:
@@ -60,11 +60,19 @@ settings:
             - Source
   plugins:
     stylescombo:
-      styles: "p.info-notice|Information notice\r\np.info-notice--success|Success notice\r\np.info-notice--warning|Warning notice\r\np.info-notice--error|Error notice\r\nul.split-list|Split bulleted list\r\nol.split-list|Split numbered list\r\ntable.table-fixed-width|Equal table columns"
+      styles: |
+        p.info-notice|Information notice
+        p.info-notice--success|Success notice
+        p.info-notice--warning|Warning notice
+        p.info-notice--error|Error notice
+        ul.split-list|Split bulleted list
+        ol.split-list|Split numbered list
+        table.table-fixed-width|Equal table columns
+    drupallink:
+      linkit_enabled: true
+      linkit_profile: 'default'
     language:
       language_list: un
-    linkit:
-      linkit_profile: default
     tokenbrowser:
       token_types: {  }
 image_upload:
