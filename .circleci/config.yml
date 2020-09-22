@@ -348,10 +348,6 @@ jobs:
           command: |
             curl -sS https://platform.sh/cli/installer | php
       - run:
-          name: Test CLI token
-          command: |
-            /home/circleci/.platformsh/bin/platform projects
-      - run:
           name: Fetch database and managed files from NIDirect D7
           command: |
             /home/circleci/.platformsh/bin/platform ssh -p $PLATFORM_PROJECT_ID -e master /app/migrate-fetch.sh $PLATFORM_LEGACY_PROJECT_ID $PLATFORM_LEGACY_BRANCH
@@ -425,8 +421,7 @@ workflows:
     triggers:
       - schedule:
           # At 02:30 every Saturday
-          # cron: "30 2 * * 6"
-          cron: "30 2 * * *"
+           cron: "30 2 * * 6"
           filters:
             branches:
               only:
