@@ -104,6 +104,7 @@ jobs:
     steps:
       - attach_workspace:
           at: ./
+      - run: sudo cp /home/circleci/project/.circleci/docker-php-circleci.ini /usr/local/etc/php/conf.d/
       - run:
           name: PHPCS static analysis
           command: /home/circleci/project/phpcs.sh /home/circleci/project "/home/circleci/project/web/modules/origins /home/circleci/project/web/modules/custom /home/circleci/project/web/modules/migrate /home/circleci/project/web/themes/custom"
@@ -111,7 +112,7 @@ jobs:
           name: Deprecated code check
           command: |
             cd /home/circleci/project
-            vendor/bin/drupal-check /home/circleci/project/web/modules/custom /home/circleci/project/web/modules/origins
+            vendor/bin/drupal-check /home/circleci/project/web/modules/custom /home/circleci/project/web/modules/origins -e "*/tests/src/*"
 
   # Run any unit tests and any kernel tests against a vanilla D8 site + our site config imported over it (no predefined content).
   unit_kernel_tests:
@@ -330,7 +331,7 @@ jobs:
   # Fetches migration assets from NIDirect D7. Platform.sh API token injected as environment variable.
   migrate_update_assets:
     docker:
-      - image: cimg/php:7.3
+      - image: circleci/php:7.3.14-apache-browsers
     steps:
       - checkout_code
       - install_php_os_extensions
@@ -344,13 +345,19 @@ jobs:
             mkdir -p ~/.ssh
             ssh-keyscan -H ssh.$PLATFORM_REGION >> ~/.ssh/known_hosts
       - run:
+          name: Install the Platform.sh CLI tool
+          command: |
+            curl -sS https://platform.sh/cli/installer | php
+      - run:
           name: Fetch database and managed files from NIDirect D7
           command: |
             /home/circleci/.platformsh/bin/platform ssh -p $PLATFORM_PROJECT_ID -e master /app/migrate-fetch.sh $PLATFORM_LEGACY_PROJECT_ID $PLATFORM_LEGACY_BRANCH
+          no_output_timeout: 30m
       - run:
           name: Unpack database to legacy database service
           command: |
             /home/circleci/.platformsh/bin/platform ssh -p $PLATFORM_PROJECT_ID -e master /app/migrate-unpack.sh
+          no_output_timeout: 30m
 
 workflows:
   version: 2
@@ -415,8 +422,7 @@ workflows:
     triggers:
       - schedule:
           # At 02:30 every Saturday
-          # cron: "30 2 * * 6"
-          cron: "30 2 * * *"
+          cron: "30 2 * * 6"
           filters:
             branches:
               only:
