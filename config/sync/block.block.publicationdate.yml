@@ -12,7 +12,7 @@ dependencies:
 id: publicationdate
 theme: nicsdru_nidirect_theme
 region: sidebar_first
-weight: -6
+weight: -11
 provider: null
 plugin: 'facet_block:publication_date'
 settings:
@@ -24,6 +24,9 @@ settings:
 visibility:
   request_path:
     id: request_path
-    pages: "/publications\r\n/publications/date/*\r\n/publications/topic/*"
+    pages: |
+      /publications
+      /publications/date/*
+      /publications/topic/*
     negate: false
     context_mapping: {  }
