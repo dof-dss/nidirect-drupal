@@ -269,7 +269,9 @@ display:
           empty: true
           tokenize: false
           content:
-            value: 'There were no results found.'
+            value: |
+              <h2 class="view-count">0 results</h2>
+              <p>Try searching again using different words.</p>
             format: basic_html
           plugin_id: text
       relationships: {  }
@@ -295,6 +297,10 @@ display:
       display_extenders: {  }
       path: services/health-conditions-a-z
       exposed_block: true
+      cache:
+        type: none
+      defaults:
+        cache: false
     cache_metadata:
       max-age: -1
       contexts:
