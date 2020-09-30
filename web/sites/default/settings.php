@@ -44,9 +44,11 @@ $settings['config_readonly_whitelist_patterns'] = [
   'search_api.index.default_content',
 ];
 
-// Geocoder API key.
+// Geolocation module API key.
 $config['geolocation_google_maps.settings']['google_map_api_key'] = getenv('GOOGLE_MAP_API_KEY');
 $config['geolocation_google_maps.settings']['google_map_api_server_key'] = getenv('GOOGLE_MAP_API_SERVER_KEY');
+// Geocoder module API key.
+$config['geocoder.settings']['plugins_options']['googlemaps']['apikey'] = getenv('GOOGLE_MAP_API_SERVER_KEY');
 
 // Environment indicator defaults.
 $env_colour = !empty(getenv('SIMPLEI_ENV_COLOR')) ? getenv('SIMPLEI_ENV_COLOR') : '#000000';;
