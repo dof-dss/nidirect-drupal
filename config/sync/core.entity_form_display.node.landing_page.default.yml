@@ -4,8 +4,6 @@ status: true
 dependencies:
   config:
     - field.field.node.landing_page.body
-    - field.field.node.landing_page.field_banner_image
-    - field.field.node.landing_page.field_banner_image_overlay
     - field.field.node.landing_page.field_enable_title
     - field.field.node.landing_page.field_listing
     - field.field.node.landing_page.field_manually_control_listing
@@ -19,7 +17,6 @@ dependencies:
     - workflows.workflow.nics_editorial_workflow
   module:
     - content_moderation
-    - media_library
     - metatag
     - paragraphs
     - path
@@ -47,20 +44,6 @@ content:
     weight: 10
     region: content
     settings: {  }
-    third_party_settings: {  }
-  field_banner_image:
-    type: media_library_widget
-    weight: 4
-    region: content
-    settings:
-      media_types: {  }
-    third_party_settings: {  }
-  field_banner_image_overlay:
-    type: media_library_widget
-    weight: 5
-    region: content
-    settings:
-      media_types: {  }
     third_party_settings: {  }
   field_enable_title:
     type: boolean_checkbox
