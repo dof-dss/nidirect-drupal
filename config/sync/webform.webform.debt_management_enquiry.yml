@@ -12,7 +12,110 @@ id: debt_management_enquiry
 title: 'Debt Management enquiry'
 description: ''
 category: ''
-elements: "your_details:\n  '#type': fieldset\n  '#title': 'Your details'\n  full_name:\n    '#type': textfield\n    '#title': 'Full name'\n    '#maxlength': '100'\n    '#required': true\n  are_you_the_customer_:\n    '#type': radios\n    '#title': 'Are you the customer?'\n    '#options':\n      'yes': 'Yes'\n      'no': 'No'\n    '#options_display': side_by_side\n    '#required': true\n    '#required_error': 'You must choose an option.'\n  what_is_the_customer_s_full_name_:\n    '#type': textfield\n    '#title': 'What is the customer''s full name?'\n    '#maxlength': '100'\n    '#states':\n      visible:\n        ':input[name=\"are_you_the_customer_\"]':\n          value: 'no'\n    '#required': true\n  what_is_your_relationship_to_the_customer_:\n    '#type': textfield\n    '#title': 'What is your relationship to the customer?'\n    '#description': 'Please note, Debt Management will only respond to your query if we hold the respective customer consent for you to act on their behalf or if you are a Next of Kin dealing with deceased affairs.'\n    '#description_display': before\n    '#states':\n      visible:\n        ':input[name=\"are_you_the_customer_\"]':\n          value: 'no'\n    '#required': true\n  debt_reference_number:\n    '#type': textfield\n    '#title': 'Debt reference number'\n    '#description': 'This may be found on a letter from Debt Management'\n    '#description_display': before\n    '#maxlength': '10'\ncontact_details:\n  '#type': fieldset\n  '#title': 'Contact details'\n  address:\n    '#type': textarea\n    '#title': Address\n    '#maxlength': '500'\n    '#required': true\n  postcode:\n    '#type': textfield\n    '#title': Postcode\n    '#maxlength': '8'\n    '#pattern': '([Gg][Ii][Rr] 0[Aa]{2})|((([A-Za-z][0-9]{1,2})|(([A-Za-z][A-Ha-hJ-Yj-y][0-9]{1,2})|(([A-Za-z][0-9][A-Za-z])|([A-Za-z][A-Ha-hJ-Yj-y][0-9][A-Za-z]?))))\\s?[0-9][A-Za-z]{2})'\n    '#pattern_error': 'Please enter a valid UK postcode'\n  contact_telephone_number:\n    '#type': textfield\n    '#title': 'Contact telephone number'\n    '#maxlength': '20'\n    '#required': true\n  mobile_number:\n    '#type': textfield\n    '#title': 'Mobile number (if different)'\n    '#maxlength': '1'\n  email_address:\n    '#type': email\n    '#title': 'Email address'\n    '#maxlength': '255'\n    '#required': true\nenquiry_details:\n  '#type': fieldset\n  '#title': 'Enquiry details'\n  what_is_you_query_about_:\n    '#type': webform_select_other\n    '#title': 'What is you query about?'\n    '#options':\n      overpayment_recovery: 'Overpayment recovery'\n      recovery_from_estates: 'Recovery from estates'\n      civil_proceedings: 'Civil proceedings'\n      making_a_payment: 'Making a payment'\n      third_party_deductions: 'Third party deductions'\n      complaint: Complaint\n      compensation_recovery_scheme: 'Compensation recovery scheme'\n      discretionary_support_social_fund: 'Discretionary support social fund'\n      welfare_supplementary_payment: 'Welfare supplementary payment'\n    '#empty_option': '- Please select - '\n    '#other__option_label': 'Other (please specify)'\n    '#other__title': 'Please briefly specify the subject of your query'\n    '#other__placeholder': ''\n    '#required': true\n    '#wrapper_type': form_element\n  please_tell_us_your_query:\n    '#type': textarea\n    '#title': 'Please tell us your query'\n    '#description': 'Please give us as much information as you can as this will help us to get back to to you as soon as possible. DO NOT include personal or financial information such as date of birth, National Insurance number, or bank and credit card details.'\n    '#description_display': before\n    '#maxlength': '3000'\n    '#required': true\nactions:\n  '#type': webform_actions\n  '#title': 'Submit button(s)'\n  '#submit__label': 'Submit enquiry'"
+elements: |
+  your_details:
+    '#type': fieldset
+    '#title': 'Your details'
+    full_name:
+      '#type': textfield
+      '#title': 'Full name'
+      '#maxlength': '100'
+      '#required': true
+    are_you_the_customer_:
+      '#type': radios
+      '#title': 'Are you the customer?'
+      '#options':
+        'yes': 'Yes'
+        'no': 'No'
+      '#options_display': side_by_side
+      '#required': true
+      '#required_error': 'You must choose an option.'
+    what_is_the_customer_s_full_name_:
+      '#type': textfield
+      '#title': 'What is the customer''s full name?'
+      '#maxlength': '100'
+      '#states':
+        visible:
+          ':input[name="are_you_the_customer_"]':
+            value: 'no'
+      '#required': true
+    what_is_your_relationship_to_the_customer_:
+      '#type': textfield
+      '#title': 'What is your relationship to the customer?'
+      '#description': 'Please note, Debt Management will only respond to your query if we hold the respective customer consent for you to act on their behalf or if you are a Next of Kin dealing with deceased affairs.'
+      '#description_display': before
+      '#states':
+        visible:
+          ':input[name="are_you_the_customer_"]':
+            value: 'no'
+      '#required': true
+    debt_reference_number:
+      '#type': textfield
+      '#title': 'Debt reference number'
+      '#description': 'This may be found on a letter from Debt Management'
+      '#description_display': before
+      '#maxlength': '10'
+  contact_details:
+    '#type': fieldset
+    '#title': 'Contact details'
+    address:
+      '#type': textarea
+      '#title': Address
+      '#maxlength': '500'
+      '#required': true
+    postcode:
+      '#type': textfield
+      '#title': Postcode
+      '#maxlength': '8'
+      '#pattern': '([Gg][Ii][Rr] 0[Aa]{2})|((([A-Za-z][0-9]{1,2})|(([A-Za-z][A-Ha-hJ-Yj-y][0-9]{1,2})|(([A-Za-z][0-9][A-Za-z])|([A-Za-z][A-Ha-hJ-Yj-y][0-9][A-Za-z]?))))\s?[0-9][A-Za-z]{2})'
+      '#pattern_error': 'Please enter a valid UK postcode'
+    contact_telephone_number:
+      '#type': textfield
+      '#title': 'Contact telephone number'
+      '#maxlength': '20'
+      '#required': true
+    mobile_number:
+      '#type': textfield
+      '#title': 'Mobile number (if different)'
+      '#maxlength': '1'
+    email_address:
+      '#type': email
+      '#title': 'Email address'
+      '#maxlength': '255'
+      '#required': true
+  enquiry_details:
+    '#type': fieldset
+    '#title': 'Enquiry details'
+    what_is_you_query_about_:
+      '#type': webform_select_other
+      '#title': 'What is you query about?'
+      '#options':
+        overpayment_recovery: 'Overpayment recovery'
+        recovery_from_estates: 'Recovery from estates'
+        civil_proceedings: 'Civil proceedings'
+        making_a_payment: 'Making a payment'
+        third_party_deductions: 'Third party deductions'
+        complaint: Complaint
+        compensation_recovery_scheme: 'Compensation recovery scheme'
+        discretionary_support_social_fund: 'Discretionary support social fund'
+        welfare_supplementary_payment: 'Welfare supplementary payment'
+      '#empty_option': '- Please select - '
+      '#other__option_label': 'Other (please specify)'
+      '#other__title': 'Please briefly specify the subject of your query'
+      '#other__placeholder': ''
+      '#required': true
+      '#wrapper_type': form_element
+    please_tell_us_your_query:
+      '#type': textarea
+      '#title': 'Please tell us your query'
+      '#description': 'Please give us as much information as you can as this will help us to get back to to you as soon as possible. DO NOT include personal or financial information such as date of birth, National Insurance number, or bank and credit card details.'
+      '#description_display': before
+      '#maxlength': '3000'
+      '#required': true
+  actions:
+    '#type': webform_actions
+    '#title': 'Submit button(s)'
+    '#submit__label': 'Submit enquiry'
 css: ''
 javascript: ''
 settings:
@@ -195,7 +298,10 @@ handlers:
       from_options: {  }
       from_name: nidirect
       subject: 'Debt Management Enquiry from nidirect.gov.uk'
-      body: "&lt;p&gt;Submitted on [current-date:long]&lt;/p&gt;<br />\r\n&lt;p&gt;Submitted values are:&lt;/p&gt;<br />\r\n[webform_submission:values]"
+      body: |
+        &lt;p&gt;Submitted on [current-date:long]&lt;/p&gt;<br />
+        &lt;p&gt;Submitted values are:&lt;/p&gt;<br />
+        [webform_submission:values]
       excluded_elements: {  }
       ignore_access: false
       exclude_empty: true

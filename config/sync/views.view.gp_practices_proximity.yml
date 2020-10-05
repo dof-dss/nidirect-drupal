@@ -670,7 +670,11 @@ display:
           exclude: false
           alter:
             alter_text: true
-            text: "<ul class=\"list--no-bullet list--inline list--gp-online-services\">\r\n  {{ field_gp_appointments }}\r\n  {{ field_gp_prescriptions }}\r\n</ul>"
+            text: |
+              <ul class="list--no-bullet list--inline list--gp-online-services">
+                {{ field_gp_appointments }}
+                {{ field_gp_prescriptions }}
+              </ul>
             make_link: false
             path: ''
             absolute: false

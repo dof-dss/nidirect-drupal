@@ -12,7 +12,33 @@ id: state_pension_online_feedback
 title: 'State Pension online feedback'
 description: ''
 category: ''
-elements: "your_details:\n  '#type': fieldset\n  '#title': 'Your details'\n  name:\n    '#type': textfield\n    '#title': Name\n    '#maxlength': '75'\n  phone_number:\n    '#type': textfield\n    '#title': 'Phone number'\n    '#maxlength': '15'\n  email:\n    '#type': email\n    '#title': Email\nyour_feedback:\n  '#type': fieldset\n  '#title': 'Your feedback'\n  state_pension_your_feedback:\n    '#type': textarea\n    '#title': 'Please provide your feedback or comments'\n    '#description_display': before\n    '#placeholder': 'Plain text only, 750 characters maximum.'\n    '#required': true\n    '#required_error': 'Please fill in this field'\n    '#counter_type': character\n    '#counter_maximum': '750'"
+elements: |
+  your_details:
+    '#type': fieldset
+    '#title': 'Your details'
+    name:
+      '#type': textfield
+      '#title': Name
+      '#maxlength': '75'
+    phone_number:
+      '#type': textfield
+      '#title': 'Phone number'
+      '#maxlength': '15'
+    email:
+      '#type': email
+      '#title': Email
+  your_feedback:
+    '#type': fieldset
+    '#title': 'Your feedback'
+    state_pension_your_feedback:
+      '#type': textarea
+      '#title': 'Please provide your feedback or comments'
+      '#description_display': before
+      '#placeholder': 'Plain text only, 750 characters maximum.'
+      '#required': true
+      '#required_error': 'Please fill in this field'
+      '#counter_type': character
+      '#counter_maximum': '750'
 css: ''
 javascript: ''
 settings:
@@ -101,7 +127,12 @@ settings:
   draft_pending_multiple_message: ''
   confirmation_type: page
   confirmation_title: ''
-  confirmation_message: "<p>Thank you for your feedback.</p>\r\n\r\n<p>If you have requested a reply, we aim to get back to you within 10 working days. All responses will be issued Monday to Friday, 9.00am to 5.00pm (excluding public and bank holidays).</p>\r\n\r\n<p>If you did not request a reply, we will give your comments careful consideration.</p>"
+  confirmation_message: |
+    <p>Thank you for your feedback.</p>
+    
+    <p>If you have requested a reply, we aim to get back to you within 10 working days. All responses will be issued Monday to Friday, 9.00am to 5.00pm (excluding public and bank holidays).</p>
+    
+    <p>If you did not request a reply, we will give your comments careful consideration.</p>
   confirmation_url: ''
   confirmation_attributes: {  }
   confirmation_back: false
@@ -195,7 +226,9 @@ handlers:
       from_options: {  }
       from_name: _default
       subject: 'SPOL service feedback'
-      body: "&lt;p&gt;Submitted on [current-date:long]&lt;/p&gt;<br />\r\n[webform_submission:values]"
+      body: |
+        &lt;p&gt;Submitted on [current-date:long]&lt;/p&gt;<br />
+        [webform_submission:values]
       excluded_elements: {  }
       ignore_access: false
       exclude_empty: true
