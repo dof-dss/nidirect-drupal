@@ -24,6 +24,7 @@ elements: |
       question_other: 'ask a question'
     '#options_display': side_by_side
     '#required': true
+    '#required_error': 'You must choose what you want to do'
   what_is_your_question_about:
     '#type': fieldset
     '#title': 'What is your question about?'
@@ -35,29 +36,32 @@ elements: |
       '#type': select
       '#title': 'Choose a topic for your question:'
       '#options':
-        angling: Angling
-        benefits: Benefits
-        groni_birth: 'Birth certificates'
-        blue_badge: 'Blue Badge'
-        careers: Careers
-        claiming_compensation_roads: 'Compensation due to a road problem'
-        child_maintenance: 'Child Maintenance'
-        groni_civil_partnerships: 'Civil partnership certificates'
-        criminal_record_checks: 'Criminal record checks (AccessNI)'
-        groni_death: 'Death certificates'
-        educational_maintenance_allowance: 'Educational Maintenance Allowance'
-        employment_rights: 'Employment rights'
-        groni_marriage: 'Marriage certificates'
-        motoring: Motoring
-        passports: Passports
-        PCNs: 'Penalty Charge Notices'
-        pensions: Pensions
-        proni: 'PRONI - historical records'
-        rates: 'Rates or property valuation'
-        report_a_fault: 'Problems with roads and streets'
-        smartpass: Smartpass
-        other: Other
+        'I have a question about ...':
+          angling: Angling
+          benefits: Benefits
+          groni_birth: 'Birth certificates'
+          blue_badge: 'Blue Badge'
+          careers: Careers
+          claiming_compensation_roads: 'Compensation due to a road problem'
+          child_maintenance: 'Child Maintenance'
+          groni_civil_partnerships: 'Civil partnership certificates'
+          criminal_record_checks: 'Criminal record checks (AccessNI)'
+          groni_death: 'Death certificates'
+          educational_maintenance_allowance: 'Educational Maintenance Allowance'
+          employment_rights: 'Employment rights'
+          groni_marriage: 'Marriage certificates'
+          motoring: Motoring
+          passports: Passports
+          PCNs: 'Penalty Charge Notices'
+          pensions: Pensions
+          proni: 'PRONI - historical records'
+          rates: 'Rates or property valuation'
+          report_a_fault: 'Problems with roads and streets'
+          smartpass: Smartpass
+        nidirect:
+          about_nidirect: 'Ask a question about the site'
       '#required': true
+      '#required_error': 'You must tell us what your question is about'
   do_you_want_a_reply_options:
     '#type': radios
     '#title': 'Do you want a reply?'
@@ -66,6 +70,7 @@ elements: |
       'No': 'No'
     '#options_display': side_by_side
     '#required': true
+    '#required_error': 'You must tell us whether you want a reply'
     '#states':
       visible:
         ':input[name="is_your_feedback_about"]':
@@ -73,10 +78,12 @@ elements: |
   enter_a_valid_email_address:
     '#type': email
     '#title': 'Enter a valid email address'
+    '#required': true
+    '#required_error': 'You must enter a valid email address'
     '#states':
       visible:
         - ':input[name="feedback_about"]':
-            value: other
+            value: about_nidirect
         - or
         - ':input[name="do_you_want_a_reply_options"]':
             value: 'Yes'
@@ -89,7 +96,7 @@ elements: |
             checked: true
         - or
         - ':input[name="feedback_about"]':
-            value: other
+            value: about_nidirect
     info_notice_noreply:
       '#type': processed_text
       '#states':
@@ -104,8 +111,11 @@ elements: |
       '#type': processed_text
       '#states':
         visible:
-          ':input[name="do_you_want_a_reply_options"]':
-            value: 'Yes'
+          - ':input[name="do_you_want_a_reply_options"]':
+              value: 'Yes'
+          - or
+          - ':input[name="feedback_about"]':
+              value: about_nidirect
       '#text': '<p>This feedback form is for issues with the nidirect website only.</p><p>You can use it to report a problem or suggest an improvement to a webpage.</p><p>If you have a question about a government service or policy, you should <a href="/contacts">contact the relevant government organisation directly</a> as we don’t have access to information about you held by government departments.</p><p>You must be aged 13 years or older - if you’re younger, ask someone with parental responsibility to send the feedback for you.</p><p>The nidirect <a href="/node/11439">privacy notice</a> applies to any information you send on this feedback form.</p>'
       '#format': full_html
     page_url:
@@ -131,27 +141,25 @@ elements: |
       '#description': 'Plain text only, 750 characters maximum.'
       '#title_display': invisible
       '#description_display': before
+      '#help_display': element_before
       '#required': true
       '#required_error': 'Please provide your feedback'
-      '#pattern': '^((?!(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)).)+$'
-      '#pattern_error': 'Your feedback contains something that might be a web address - please remove all web addresses from your feedback'
       '#counter_type': character
       '#counter_minimum': 1
       '#counter_maximum': 750
       '#states':
-        invisible:
-          ':input[name="feedback_about"]':
-            value: other
+        visible:
+          ':input[name="is_your_feedback_about"]':
+            value: feedback
     question_details:
       '#type': textarea
       '#title': 'Enter your question'
       '#description': 'Plain text only, 750 characters maximum.'
       '#title_display': invisible
       '#description_display': before
+      '#help_display': element_before
       '#required': true
       '#required_error': 'Please enter your question'
-      '#pattern': '^((?!(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)).)+$'
-      '#pattern_error': 'Your feedback contains something that might be a web address - please remove all web addresses from your feedback'
       '#counter_type': character
       '#counter_minimum': 1
       '#counter_maximum': 750
@@ -165,6 +173,8 @@ elements: |
       visible:
         ':input[name="feedback_about"]':
           value: angling
+    '#wrapper_attributes':
+      role: alert
     '#text': |
       <div class="no-submit">
       <h2>What to do next</h2>
@@ -179,6 +189,8 @@ elements: |
       visible:
         ':input[name="feedback_about"]':
           value: benefits
+    '#wrapper_attributes':
+      role: alert
     '#text': |
       <div class="no-submit">
       <h2>What to do next</h2>
@@ -222,6 +234,8 @@ elements: |
       visible:
         ':input[name="feedback_about"]':
           value: blue_badge
+    '#wrapper_attributes':
+      role: alert
     '#text': |
       <div class="no-submit">
       <h2>What to do next</h2>
@@ -236,6 +250,8 @@ elements: |
       visible:
         ':input[name="feedback_about"]':
           value: careers
+    '#wrapper_attributes':
+      role: alert
     '#text': '<div class="no-submit"><h2>What to do next</h2><p>For queries or advice about careers, contact the <a href="/node/800">Careers Service</a>.</p></div>'
     '#format': full_html
   child_maintenance:
@@ -244,6 +260,8 @@ elements: |
       visible:
         ':input[name="feedback_about"]':
           value: child_maintenance
+    '#wrapper_attributes':
+      role: alert
     '#text': '<div class="no-submit"><h2>What to do next</h2><p>For queries or advice about Child Maintenance, contact the <a href="/node/4185">Child Maintenance Service</a>.</p></div>'
     '#format': full_html
   claiming_compensation_road_problem:
@@ -252,6 +270,8 @@ elements: |
       visible:
         ':input[name="feedback_about"]':
           value: claiming_compensation_roads
+    '#wrapper_attributes':
+      role: alert
     '#text': |
       <div class="no-submit">
       <h2>What to do next</h2>
@@ -266,6 +286,8 @@ elements: |
       visible:
         ':input[name="feedback_about"]':
           value: criminal_record_checks
+    '#wrapper_attributes':
+      role: alert
     '#text': '<div class="no-submit"><h2>What to do next</h2><p>For queries or advice about criminal record checks, email <a href="mailto:ani@accessni.gov.uk">ani@accessni.gov.uk</a></p></div>'
     '#format': full_html
   educational_maintenance_allowance:
@@ -274,6 +296,8 @@ elements: |
       visible:
         ':input[name="feedback_about"]':
           value: educational_maintenance_allowance
+    '#wrapper_attributes':
+      role: alert
     '#text': '<div class="no-submit"><h2>What to do next</h2><p>Application and payment queries can be emailed to&nbsp;<a href="mailto:ema_ni@slc.co.uk">ema_ni@slc.co.uk</a></p></div>'
     '#format': full_html
   employment_rights:
@@ -282,6 +306,8 @@ elements: |
       visible:
         ':input[name="feedback_about"]':
           value: employment_rights
+    '#wrapper_attributes':
+      role: alert
     '#text': |
       <div class="no-submit">
       <h2>What to do next</h2>
@@ -305,6 +331,8 @@ elements: |
         - or
         - ':input[name="feedback_about"]':
             value: groni_marriage
+    '#wrapper_attributes':
+      role: alert
     '#text': '<div class="no-submit"><h2>What to do next</h2><p>For queries or advice about birth, death, marriage and civil partnership certificates and research, contact the General Register Office Northern Ireland (GRONI) by email&nbsp;<a href="mailto:gro_nisra@finance-ni.gov.uk">gro_nisra@finance-ni.gov.uk</a></p></div>'
     '#format': full_html
   motoring:
@@ -313,6 +341,8 @@ elements: |
       visible:
         ':input[name="feedback_about"]':
           value: motoring
+    '#wrapper_attributes':
+      role: alert
     '#text': '<div class="no-submit"><h2>What to do next</h2><p>For queries about:</p><ul><li>Car tax, vehicle registration and SORN<br>contact the <a href="https://www.gov.uk/contact-the-dvla">Driver and Vehicle Licensing Agency (DVLA), Swansea</a><br>&nbsp;</li><li>Driver licensing and tests, MOT and vehicle testing<br>contact the <a href="/node/4236">Driver &amp; Vehicle Agency (DVA), Northern Ireland</a></li></ul><p>If your query is about another topic, select ‘Other’ from the drop-down menu above.</p></div>'
     '#format': full_html
   passports:
@@ -321,6 +351,8 @@ elements: |
       visible:
         ':input[name="feedback_about"]':
           value: passports
+    '#wrapper_attributes':
+      role: alert
     '#text': '<div class="no-submit"><h2>What to do next</h2><p>For queries or advice about passports, contact&nbsp;<a href="https://www.nidirect.gov.uk/contacts/contacts-az/her-majestys-passport-office-northern-ireland-regional-office">HM Passport Office</a>.</p></div>'
     '#format': full_html
   penalty_charge_notices:
@@ -329,6 +361,8 @@ elements: |
       visible:
         ':input[name="feedback_about"]':
           value: PCNs
+    '#wrapper_attributes':
+      role: alert
     '#text': '<div class="no-submit"><h2>What to do next</h2><p>For queries or advice about Penalty Charge Notices (PCNs), including parking tickets and bus lane PCNs, email&nbsp;<a href="mailto:dcu@infrastructure-ni.gov.uk">dcu@infrastructure-ni.gov.uk</a></p></div>'
     '#format': full_html
   pensions:
@@ -337,6 +371,8 @@ elements: |
       visible:
         ':input[name="feedback_about"]':
           value: pensions
+    '#wrapper_attributes':
+      role: alert
     '#text': '<div class="no-submit"><h2>What to do next</h2><p>For queries or advice about pensions, contact the&nbsp;<a href="/node/10799">Northern Ireland Pension Centre</a>.</p></div>'
     '#format': full_html
   problems_roads:
@@ -345,6 +381,8 @@ elements: |
       visible:
         ':input[name="feedback_about"]':
           value: report_a_fault
+    '#wrapper_attributes':
+      role: alert
     '#text': '<div class="no-submit"><h2>What to do next</h2><p>If you wish to report a problem with a road or street you can do so online <a href="/taxonomy/term/235">in this section</a>.</p><p>If you wish to check on a problem or fault you have already reported, contact <a href="/node/3710">DfI Roads</a>.</p></div>'
     '#format': full_html
   proni:
@@ -353,6 +391,8 @@ elements: |
       visible:
         ':input[name="feedback_about"]':
           value: proni
+    '#wrapper_attributes':
+      role: alert
     '#text': '<div class="no-submit"><h2>What to do next</h2><p>For queries or advice about historical, social or cultural records relating to Northern Ireland, use the <a href="/node/4683">Public Record Office of Northern Ireland (PRONI) enquiry service</a>.</p></div>'
     '#format': full_html
   rates:
@@ -361,6 +401,8 @@ elements: |
       visible:
         ':input[name="feedback_about"]':
           value: rates
+    '#wrapper_attributes':
+      role: alert
     '#text': '<div class="no-submit"><h2>What to do next</h2><p>For queries or advice about rates, email <a href="mailto:LPSCustomerTeam@lpsni.gov.uk">LPSCustomerTeam@lpsni.gov.uk</a></p></div>'
     '#format': full_html
   smartpass:
@@ -369,19 +411,17 @@ elements: |
       visible:
         ':input[name="feedback_about"]':
           value: smartpass
+    '#wrapper_attributes':
+      role: alert
     '#text': '<div class="no-submit"><h2>What to do next</h2><p>For queries or advice about &nbsp;60+ and Senior Citizen SmartPasses (which can be used to get concessionary travel on public transport), contact&nbsp;<a href="/node/623">Smartpass - Translink</a>.</p></div>'
     '#format': full_html
-  what_to_do_next_visible:
-    '#type': hidden
-    '#title': what_to_do_next_visible
-    '#default_value': 'false'
   actions:
     '#type': webform_actions
     '#title': 'Submit button(s)'
     '#states':
       visible:
         - ':input[name="feedback_about"]':
-            value: other
+            value: about_nidirect
         - or
         - ':input[name="do_you_want_a_reply_options"]':
             checked: true
