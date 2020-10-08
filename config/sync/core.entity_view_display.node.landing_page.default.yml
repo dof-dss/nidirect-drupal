@@ -3,6 +3,7 @@ langcode: en
 status: true
 dependencies:
   config:
+    - field.field.node.landing_page.body
     - field.field.node.landing_page.field_enable_title
     - field.field.node.landing_page.field_listing
     - field.field.node.landing_page.field_manually_control_listing
@@ -77,6 +78,21 @@ third_party_settings:
                 type: text_default
             additional: {  }
             weight: 4
+          dea16823-200e-4afe-8388-08a0c6ba74cf:
+            uuid: dea16823-200e-4afe-8388-08a0c6ba74cf
+            region: content
+            configuration:
+              label_display: '0'
+              context_mapping:
+                entity: layout_builder.entity
+              id: 'field_block:node:landing_page:body'
+              formatter:
+                label: hidden
+                type: text_default
+                settings: {  }
+                third_party_settings: {  }
+            additional: {  }
+            weight: 5
           e3cdbdca-1338-46fe-a315-41647a5c8ffd:
             uuid: e3cdbdca-1338-46fe-a315-41647a5c8ffd
             region: content
@@ -178,6 +194,13 @@ targetEntityType: node
 bundle: landing_page
 mode: default
 content:
+  body:
+    label: hidden
+    type: text_default
+    weight: 4
+    settings: {  }
+    third_party_settings: {  }
+    region: content
   content_moderation_control:
     weight: -20
     settings: {  }

@@ -12,164 +12,7 @@ id: contact_the_make_the_call_team
 title: 'Contact the Make the Call team'
 description: ''
 category: ''
-elements: |
-  intro:
-    '#type': processed_text
-    '#text': '<p class="nodeSummary">You can check if you’re getting all the money, supports and services you’re entitled to by contacting the Make the Call team.</p><p>You can find out how&nbsp;personal information you submit to the Department for Communities'' Make the Call team when using this service will be handled by viewing its&nbsp;<a href="https://www.communities-ni.gov.uk/publications/supplementary-privacy-notices-dfc-business-areas">privacy notice</a>.</p>'
-    '#format': full_html
-  do_you_live_in_northern_ireland:
-    '#type': radios
-    '#title': 'Do you live in Northern Ireland?'
-    '#options': yes_no
-    '#options_display': side_by_side
-    '#required': true
-    '#required_error': 'You must choose one of these options'
-  ni_only_notice:
-    '#type': processed_text
-    '#states':
-      visible:
-        ':input[name="do_you_live_in_northern_ireland"]':
-          value: 'No'
-    '#text': |
-      <p class="info-notice">This service is only for people in Northern Ireland. If you live in Great Britain you should visit <a href="http://www.gov.uk">www.gov.uk</a> instead.</p>
-      
-    '#format': full_html
-  can_use_a_phone:
-    '#type': radios
-    '#title': 'Can you use a phone or can someone use a phone on your behalf?'
-    '#options': yes_no
-    '#options_display': side_by_side
-    '#required': true
-    '#required_error': 'You must choose one of these options'
-    '#states':
-      visible:
-        ':input[name="do_you_live_in_northern_ireland"]':
-          value: 'Yes'
-  no_phone_details:
-    '#type': processed_text
-    '#states':
-      visible:
-        ':input[name="can_use_a_phone"]':
-          value: 'No'
-    '#text': '<p class="nodeSummary">If you can’t use a phone due to a language, speech or hearing difficulty, complete the sections below .</p>'
-    '#format': full_html
-  phone_details:
-    '#type': processed_text
-    '#states':
-      visible:
-        ':input[name="can_use_a_phone"]':
-          value: 'Yes'
-    '#text': '<p class="nodeSummary">Enter your details below and an advisor will call you back.</p>'
-    '#format': full_html
-  your_details:
-    '#type': fieldset
-    '#title': 'Your details'
-    '#states':
-      visible:
-        - ':input[name="can_use_a_phone"]':
-            value: 'Yes'
-        - or
-        - ':input[name="can_use_a_phone"]':
-            value: 'No'
-    name:
-      '#type': textfield
-      '#title': Name
-      '#maxlength': '100'
-      '#required': true
-    phone_number:
-      '#type': textfield
-      '#title': 'Phone number'
-      '#states':
-        visible:
-          ':input[name="can_use_a_phone"]':
-            value: 'Yes'
-        required:
-          ':input[name="can_use_a_phone"]':
-            value: 'Yes'
-    email_address:
-      '#type': email
-      '#title': 'Email address'
-      '#states':
-        visible:
-          ':input[name="can_use_a_phone"]':
-            value: 'No'
-        required:
-          ':input[name="can_use_a_phone"]':
-            value: 'No'
-  your_address:
-    '#type': fieldset
-    '#title': 'Your address'
-    '#required': true
-    '#states':
-      visible:
-        ':input[name="can_use_a_phone"]':
-          value: 'No'
-    address_line_1:
-      '#type': textfield
-      '#title': 'Address line 1'
-      '#maxlength': '100'
-      '#placeholder': 'Address line 1'
-      '#states':
-        required:
-          ':input[name="can_use_a_phone"]':
-            value: 'No'
-    address_line_2:
-      '#type': textfield
-      '#title': 'Address line 2'
-      '#title_display': invisible
-      '#maxlength': '100'
-      '#placeholder': 'Address line 2'
-      '#states':
-        required:
-          ':input[name="can_use_a_phone"]':
-            value: 'No'
-    address_county:
-      '#type': textfield
-      '#title': County
-      '#title_display': invisible
-      '#maxlength': '50'
-      '#size': '20'
-      '#placeholder': County
-    postcode:
-      '#type': textfield
-      '#title': Postcode
-      '#title_display': invisible
-      '#maxlength': '8'
-      '#size': '8'
-      '#placeholder': Postcode
-      '#states':
-        required:
-          ':input[name="can_use_a_phone"]':
-            value: 'No'
-  explain_why_you_cannot_phone:
-    '#type': fieldset
-    '#title': 'Explain why you cannot phone'
-    '#required': true
-    '#states':
-      visible:
-        ':input[name="can_use_a_phone"]':
-          value: 'No'
-    explain_why_you_cannot_phone_text:
-      '#type': textarea
-      '#title': 'Briefly explain why you cannot make contact by phone so arrangements to get in touch can be made'
-      '#description': 'Do not include your date of birth or National Insurance number.'
-      '#title_display': before
-      '#description_display': before
-      '#required': true
-      '#required_error': 'You must explain why you cannot make contact by phone'
-      '#counter_type': character
-      '#counter_minimum': '2'
-      '#counter_maximum': '750'
-  actions:
-    '#type': webform_actions
-    '#title': 'Submit button(s)'
-    '#states':
-      visible:
-        ':input[name="do_you_live_in_northern_ireland"]':
-          value: 'Yes'
-        ':input[name="can_use_a_phone"]':
-          checked: true
-    '#submit__label': Send
+elements: "intro:\n  '#type': processed_text\n  '#text': '<p class=\"nodeSummary\">You can check if you’re getting all the money, supports and services you’re entitled to by contacting the Make the Call team.</p><p>You can find out how&nbsp;personal information you submit to the Department for Communities'' Make the Call team when using this service will be handled by viewing its&nbsp;<a href=\"https://www.communities-ni.gov.uk/publications/supplementary-privacy-notices-dfc-business-areas\">privacy notice</a>.</p>'\n  '#format': full_html\ndo_you_live_in_northern_ireland:\n  '#type': radios\n  '#title': 'Do you live in Northern Ireland?'\n  '#options': yes_no\n  '#options_display': side_by_side\n  '#required': true\n  '#required_error': 'You must choose one of these options'\nni_only_notice:\n  '#type': processed_text\n  '#states':\n    visible:\n      ':input[name=\"do_you_live_in_northern_ireland\"]':\n        value: 'No'\n  '#text': |\n    <p class=\"info-notice\">This service is only for people in Northern Ireland. If you live in Great Britain you should visit <a href=\"http://www.gov.uk\">www.gov.uk</a> instead.</p>\n    \n  '#format': full_html\ncan_use_a_phone:\n  '#type': radios\n  '#title': 'Can you use a phone or can someone use a phone on your behalf?'\n  '#options': yes_no\n  '#options_display': side_by_side\n  '#required': true\n  '#required_error': 'You must choose one of these options'\n  '#states':\n    visible:\n      ':input[name=\"do_you_live_in_northern_ireland\"]':\n        value: 'Yes'\nno_phone_details:\n  '#type': processed_text\n  '#states':\n    visible:\n      ':input[name=\"can_use_a_phone\"]':\n        value: 'No'\n  '#text': '<p class=\"nodeSummary\">If you can’t use a phone due to a language, speech or hearing difficulty, complete the sections below .</p>'\n  '#format': full_html\nphone_details:\n  '#type': processed_text\n  '#states':\n    visible:\n      ':input[name=\"can_use_a_phone\"]':\n        value: 'Yes'\n  '#text': '<p class=\"nodeSummary\">Enter your details below and an advisor will call you back.</p>'\n  '#format': full_html\nyour_details:\n  '#type': fieldset\n  '#title': 'Your details'\n  '#states':\n    visible:\n      - ':input[name=\"can_use_a_phone\"]':\n          value: 'Yes'\n      - or\n      - ':input[name=\"can_use_a_phone\"]':\n          value: 'No'\n  name:\n    '#type': textfield\n    '#title': Name\n    '#maxlength': '100'\n    '#required': true\n  phone_number:\n    '#type': textfield\n    '#title': 'Phone number'\n    '#states':\n      visible:\n        ':input[name=\"can_use_a_phone\"]':\n          value: 'Yes'\n      required:\n        ':input[name=\"can_use_a_phone\"]':\n          value: 'Yes'\n  email_address:\n    '#type': email\n    '#title': 'Email address'\n    '#states':\n      visible:\n        ':input[name=\"can_use_a_phone\"]':\n          value: 'No'\n      required:\n        ':input[name=\"can_use_a_phone\"]':\n          value: 'No'\nyour_address:\n  '#type': fieldset\n  '#title': 'Your address'\n  '#required': true\n  '#states':\n    visible:\n      ':input[name=\"can_use_a_phone\"]':\n        value: 'No'\n  address_line_1:\n    '#type': textfield\n    '#title': 'Address line 1'\n    '#maxlength': '100'\n    '#placeholder': 'Address line 1'\n    '#states':\n      required:\n        ':input[name=\"can_use_a_phone\"]':\n          value: 'No'\n  address_line_2:\n    '#type': textfield\n    '#title': 'Address line 2'\n    '#title_display': invisible\n    '#maxlength': '100'\n    '#placeholder': 'Address line 2'\n    '#states':\n      required:\n        ':input[name=\"can_use_a_phone\"]':\n          value: 'No'\n  address_county:\n    '#type': textfield\n    '#title': County\n    '#title_display': invisible\n    '#maxlength': '50'\n    '#size': '20'\n    '#placeholder': County\n  postcode:\n    '#type': textfield\n    '#title': Postcode\n    '#title_display': invisible\n    '#maxlength': '8'\n    '#size': '8'\n    '#placeholder': Postcode\n    '#states':\n      required:\n        ':input[name=\"can_use_a_phone\"]':\n          value: 'No'\nexplain_why_you_cannot_phone:\n  '#type': fieldset\n  '#title': 'Explain why you cannot phone'\n  '#required': true\n  '#states':\n    visible:\n      ':input[name=\"can_use_a_phone\"]':\n        value: 'No'\n  explain_why_you_cannot_phone_text:\n    '#type': textarea\n    '#title': 'Briefly explain why you cannot make contact by phone so arrangements to get in touch can be made'\n    '#description': 'Do not include your date of birth or National Insurance number.'\n    '#title_display': before\n    '#description_display': before\n    '#required': true\n    '#required_error': 'You must explain why you cannot make contact by phone'\n    '#counter_type': character\n    '#counter_minimum': '2'\n    '#counter_maximum': '750'\nactions:\n  '#type': webform_actions\n  '#title': 'Submit button(s)'\n  '#states':\n    visible:\n      ':input[name=\"do_you_live_in_northern_ireland\"]':\n        value: 'Yes'\n      ':input[name=\"can_use_a_phone\"]':\n        checked: true\n  '#submit__label': Send"
 css: ''
 javascript: ''
 settings:
@@ -352,10 +195,7 @@ handlers:
       from_options: {  }
       from_name: '[webform_submission:values:name:raw]'
       subject: 'Request a call back from nidirect.gov.uk'
-      body: |
-        <p>Submitted on [webform_submission:created:long]</p>
-        <p>Submitted values are:</p>
-        [webform_submission:values]
+      body: "<p>Submitted on [webform_submission:created:long]</p>\r\n<p>Submitted values are:</p>\r\n[webform_submission:values]"
       excluded_elements:
         do_you_live_in_northern_ireland: do_you_live_in_northern_ireland
       ignore_access: false
@@ -392,17 +232,7 @@ handlers:
       from_options: {  }
       from_name: noreply@nidirect.gov.uk
       subject: 'Make the Call - confirmation of contact request'
-      body: |
-        Dear&nbsp;[webform_submission:values:your_details:name]<br />
-        &nbsp;<br />
-        Thank you for your call back contact request.&nbsp;<br />
-        <br />
-        A Make the Call Advisor will be in touch with you shortly within the next 3 days.<br />
-        &nbsp;<br />
-        Regards,<br />
-        Make the Call Team<br />
-        &nbsp;<br />
-        Please note: This email was been sent from a notification-only email address that can&rsquo;t accept replies. Please do not reply to this message.
+      body: "Dear&nbsp;[webform_submission:values:your_details:name]<br />\r\n&nbsp;<br />\r\nThank you for your call back contact request.&nbsp;<br />\r\n<br />\r\nA Make the Call Advisor will be in touch with you shortly within the next 3 days.<br />\r\n&nbsp;<br />\r\nRegards,<br />\r\nMake the Call Team<br />\r\n&nbsp;<br />\r\nPlease note: This email was been sent from a notification-only email address that can&rsquo;t accept replies. Please do not reply to this message."
       excluded_elements: {  }
       ignore_access: false
       exclude_empty: true
