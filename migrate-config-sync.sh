@@ -18,7 +18,7 @@ echo "Refreshing database migrate config for files..."
 drush config-import --source=$DRUPAL_ROOT/modules/migrate/nidirect-migrations/migrate_nidirect_file/config/install --partial -y
 
 # For each, one perform a partial import task to sync the module's config with our active db config.
-for module in `$DRUSH_CMD pml | grep Enabled | grep -oE "(migrate_nidirect_node_\w+)"`; do
+for module in `drush pml | grep Enabled | grep -oE "(migrate_nidirect_node_\w+)"`; do
   echo "Refreshing database migrate config for $module..."
   drush config-import --source=$DRUPAL_ROOT/modules/migrate/nidirect-migrations/migrate_nidirect_node/$module/config/install --partial -y
 done
