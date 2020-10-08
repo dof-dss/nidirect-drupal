@@ -32,7 +32,7 @@ drush migrate:rollback --group=migrate_drupal_7_link
 drush migrate:rollback nidirect_book
 
 # Rollback all node migrations.
-for type in driving_instructor application article external_link gp_practice health_condition landing_page news nidirect_contact contact page publication; do
+for type in driving_instructor application article external_link gp_practice health_condition landing_page news nidirect_contact contact page publication webform; do
   drush migrate:rollback --group=migrate_nidirect_node_$type
 done
 
@@ -63,7 +63,7 @@ drush migrate:import --group=migrate_drupal_7_file
 drush migrate:import --group=migrate_nidirect_entity_gp
 
 # Import all node migrations.
-for type in driving_instructor application article external_link gp_practice health_condition landing_page news nidirect_contact contact page publication; do
+for type in driving_instructor application article external_link gp_practice health_condition landing_page news nidirect_contact contact page publication webform; do
   drush migrate:import --group=migrate_nidirect_node_$type --execute-dependencies
 done
 
@@ -77,3 +77,7 @@ drush migrate:import --group=migrate_drupal_7_link
 cd $DRUPAL_ROOT
 drupal nidirect:migrate:post
 drupal nidirect:migrate:post:feature_nodes
+
+# Clear caches and re-index Solr.
+drush cr
+drush sapi-c && drush sapi-r && drush sapi-i
