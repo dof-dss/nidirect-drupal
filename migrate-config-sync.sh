@@ -1,5 +1,5 @@
 #!/bin/bash
-if [ $LANDO="ON" ]; then
+if [ $LANDO ]; then
   DRUPAL_ROOT=/app/drupal8/web
 else
   DRUPAL_ROOT=/app/web
