@@ -1,5 +1,9 @@
 #!/bin/bash
-DRUPAL_ROOT=/app/web
+if [ $LANDO="ON" ]; then
+  DRUPAL_ROOT=/app/drupal8/web
+else
+  DRUPAL_ROOT=/app/web
+fi
 
 echo "Refreshing database migrate config for global upgrade migrations..."
 drush config-import --source=$DRUPAL_ROOT/modules/migrate/nidirect-migrations/migrate_nidirect_global/config/install --partial -y
