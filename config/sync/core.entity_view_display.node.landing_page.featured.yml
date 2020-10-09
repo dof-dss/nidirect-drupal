@@ -4,9 +4,6 @@ status: true
 dependencies:
   config:
     - core.entity_view_mode.node.featured
-    - field.field.node.landing_page.body
-    - field.field.node.landing_page.field_banner_image
-    - field.field.node.landing_page.field_banner_image_overlay
     - field.field.node.landing_page.field_enable_title
     - field.field.node.landing_page.field_listing
     - field.field.node.landing_page.field_manually_control_listing
@@ -16,12 +13,10 @@ dependencies:
     - field.field.node.landing_page.field_teaser
     - field.field.node.landing_page.field_top_level_theme
     - field.field.node.landing_page.layout_builder__layout
-    - image.style.medium
     - node.type.landing_page
   module:
     - layout_builder
     - layout_builder_restrictions
-    - media
     - smart_trim
     - user
 third_party_settings:
@@ -69,15 +64,6 @@ targetEntityType: node
 bundle: landing_page
 mode: featured
 content:
-  field_banner_image:
-    type: media_thumbnail
-    weight: 0
-    region: content
-    label: hidden
-    settings:
-      image_style: medium
-      image_link: content
-    third_party_settings: {  }
   field_teaser:
     type: smart_trim
     weight: 1
@@ -98,9 +84,7 @@ content:
       summary_handler: full
     third_party_settings: {  }
 hidden:
-  body: true
   content_moderation_control: true
-  field_banner_image_overlay: true
   field_enable_title: true
   field_listing: true
   field_manually_control_listing: true
