@@ -4,9 +4,6 @@ status: true
 dependencies:
   config:
     - core.entity_view_mode.node.teaser
-    - field.field.node.landing_page.body
-    - field.field.node.landing_page.field_banner_image
-    - field.field.node.landing_page.field_banner_image_overlay
     - field.field.node.landing_page.field_enable_title
     - field.field.node.landing_page.field_listing
     - field.field.node.landing_page.field_manually_control_listing
@@ -18,21 +15,12 @@ dependencies:
     - field.field.node.landing_page.layout_builder__layout
     - node.type.landing_page
   module:
-    - text
     - user
 id: node.landing_page.teaser
 targetEntityType: node
 bundle: landing_page
 mode: teaser
 content:
-  body:
-    label: hidden
-    type: text_summary_or_trimmed
-    weight: 1
-    settings:
-      trim_length: 600
-    third_party_settings: {  }
-    region: content
   links:
     weight: 0
     region: content
@@ -40,8 +28,6 @@ content:
     third_party_settings: {  }
 hidden:
   content_moderation_control: true
-  field_banner_image: true
-  field_banner_image_overlay: true
   field_enable_title: true
   field_listing: true
   field_manually_control_listing: true
