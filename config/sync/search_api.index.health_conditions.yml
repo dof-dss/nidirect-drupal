@@ -10,16 +10,16 @@ dependencies:
   config:
     - field.storage.node.body
     - field.storage.node.field_hc_body_location
-    - field.storage.node.field_hc_condition_type
-    - field.storage.node.field_summary
-    - field.storage.node.field_teaser
     - field.storage.taxonomy_term.field_term_hc_synonyms
     - field.storage.node.field_hc_body_system
+    - field.storage.node.field_hc_condition_type
     - field.storage.node.field_hc_primary_symptom_1
     - field.storage.node.field_hc_primary_symptom_2
     - field.storage.node.field_hc_primary_symptom_3
     - field.storage.node.field_hc_primary_symptom_4
     - field.storage.node.field_hc_secondary_symptoms
+    - field.storage.node.field_summary
+    - field.storage.node.field_teaser
     - search_api.server.solr_default
 third_party_settings:
   search_api_solr:
@@ -69,6 +69,7 @@ field_settings:
     datasource_id: 'entity:node'
     property_path: body
     type: text
+    boost: 0.1
     dependencies:
       config:
         - field.storage.node.body
@@ -92,7 +93,8 @@ field_settings:
     label: Summary
     datasource_id: 'entity:node'
     property_path: field_summary
-    type: text
+    type: 'solr_text_custom:edge'
+    boost: !!float 8
     dependencies:
       config:
         - field.storage.node.field_summary
@@ -100,7 +102,7 @@ field_settings:
     label: Teaser
     datasource_id: 'entity:node'
     property_path: field_teaser
-    type: text
+    type: 'solr_text_custom:edge'
     boost: !!float 5
     dependencies:
       config:
@@ -109,7 +111,8 @@ field_settings:
     label: 'Body location » Taxonomy term » Synonyms'
     datasource_id: 'entity:node'
     property_path: 'field_hc_body_location:entity:field_term_hc_synonyms'
-    type: text
+    type: 'solr_text_custom:edgestring'
+    boost: !!float 21
     dependencies:
       config:
         - field.storage.node.field_hc_body_location
@@ -120,7 +123,8 @@ field_settings:
     label: 'Body system » Taxonomy term » Synonyms'
     datasource_id: 'entity:node'
     property_path: 'field_hc_body_system:entity:field_term_hc_synonyms'
-    type: text
+    type: 'solr_text_custom:edgestring'
+    boost: !!float 21
     dependencies:
       config:
         - field.storage.node.field_hc_body_system
@@ -131,7 +135,8 @@ field_settings:
     label: 'Condition type / disease process » Taxonomy term » Synonyms'
     datasource_id: 'entity:node'
     property_path: 'field_hc_condition_type:entity:field_term_hc_synonyms'
-    type: text
+    type: 'solr_text_custom:edgestring'
+    boost: !!float 21
     dependencies:
       config:
         - field.storage.node.field_hc_condition_type
@@ -142,7 +147,8 @@ field_settings:
     label: 'Primary symptom 1 » Taxonomy term » Synonyms'
     datasource_id: 'entity:node'
     property_path: 'field_hc_primary_symptom_1:entity:field_term_hc_synonyms'
-    type: text
+    type: 'solr_text_custom:edgestring'
+    boost: !!float 21
     dependencies:
       config:
         - field.storage.node.field_hc_primary_symptom_1
@@ -153,7 +159,8 @@ field_settings:
     label: 'Primary symptom 2 » Taxonomy term » Synonyms'
     datasource_id: 'entity:node'
     property_path: 'field_hc_primary_symptom_2:entity:field_term_hc_synonyms'
-    type: text
+    type: 'solr_text_custom:edgestring'
+    boost: !!float 21
     dependencies:
       config:
         - field.storage.node.field_hc_primary_symptom_2
@@ -164,7 +171,8 @@ field_settings:
     label: 'Primary symptom 3 » Taxonomy term » Synonyms'
     datasource_id: 'entity:node'
     property_path: 'field_hc_primary_symptom_3:entity:field_term_hc_synonyms'
-    type: text
+    type: 'solr_text_custom:edgestring'
+    boost: !!float 21
     dependencies:
       config:
         - field.storage.node.field_hc_primary_symptom_3
@@ -175,7 +183,8 @@ field_settings:
     label: 'Primary symptom 4 » Taxonomy term » Synonyms'
     datasource_id: 'entity:node'
     property_path: 'field_hc_primary_symptom_4:entity:field_term_hc_synonyms'
-    type: text
+    type: 'solr_text_custom:edgestring'
+    boost: !!float 21
     dependencies:
       config:
         - field.storage.node.field_hc_primary_symptom_4
@@ -186,7 +195,8 @@ field_settings:
     label: 'Secondary symptoms » Taxonomy term » Synonyms'
     datasource_id: 'entity:node'
     property_path: 'field_hc_secondary_symptoms:entity:field_term_hc_synonyms'
-    type: text
+    type: 'solr_text_custom:edgestring'
+    boost: !!float 8
     dependencies:
       config:
         - field.storage.node.field_hc_secondary_symptoms
@@ -197,95 +207,96 @@ field_settings:
     label: 'Body location » Taxonomy term » Name'
     datasource_id: 'entity:node'
     property_path: 'field_hc_body_location:entity:name'
-    type: string
+    type: 'solr_text_custom:edgestring'
+    boost: !!float 21
     dependencies:
       config:
         - field.storage.node.field_hc_body_location
       module:
         - taxonomy
-        - taxonomy
   name_1:
     label: 'Body system » Taxonomy term » Name'
     datasource_id: 'entity:node'
     property_path: 'field_hc_body_system:entity:name'
-    type: text
+    type: 'solr_text_custom:edgestring'
+    boost: !!float 21
     dependencies:
       config:
         - field.storage.node.field_hc_body_system
       module:
         - taxonomy
-        - taxonomy
   name_2:
     label: 'Condition type / disease process » Taxonomy term » Name'
     datasource_id: 'entity:node'
     property_path: 'field_hc_condition_type:entity:name'
-    type: text
+    type: 'solr_text_custom:edgestring'
+    boost: !!float 21
     dependencies:
       config:
         - field.storage.node.field_hc_condition_type
       module:
         - taxonomy
-        - taxonomy
   name_3:
     label: 'Primary symptom 1 » Taxonomy term » Name'
     datasource_id: 'entity:node'
     property_path: 'field_hc_primary_symptom_1:entity:name'
-    type: text
+    type: 'solr_text_custom:edgestring'
+    boost: !!float 21
     dependencies:
       config:
         - field.storage.node.field_hc_primary_symptom_1
       module:
         - taxonomy
-        - taxonomy
   name_4:
     label: 'Primary symptom 2 » Taxonomy term » Name'
     datasource_id: 'entity:node'
     property_path: 'field_hc_primary_symptom_2:entity:name'
-    type: text
+    type: 'solr_text_custom:edgestring'
+    boost: !!float 21
     dependencies:
       config:
         - field.storage.node.field_hc_primary_symptom_2
       module:
         - taxonomy
-        - taxonomy
   name_5:
     label: 'Primary symptom 3 » Taxonomy term » Name'
     datasource_id: 'entity:node'
     property_path: 'field_hc_primary_symptom_3:entity:name'
-    type: text
+    type: 'solr_text_custom:edgestring'
+    boost: !!float 21
     dependencies:
       config:
         - field.storage.node.field_hc_primary_symptom_3
       module:
         - taxonomy
-        - taxonomy
   name_6:
     label: 'Primary symptom 4 » Taxonomy term » Name'
     datasource_id: 'entity:node'
     property_path: 'field_hc_primary_symptom_4:entity:name'
-    type: text
+    type: 'solr_text_custom:edgestring'
+    boost: !!float 21
     dependencies:
       config:
         - field.storage.node.field_hc_primary_symptom_4
       module:
         - taxonomy
-        - taxonomy
   name_7:
     label: 'Secondary symptoms » Taxonomy term » Name'
     datasource_id: 'entity:node'
     property_path: 'field_hc_secondary_symptoms:entity:name'
-    type: text
+    type: 'solr_text_custom:edgestring'
+    boost: !!float 8
     dependencies:
       config:
         - field.storage.node.field_hc_secondary_symptoms
       module:
         - taxonomy
-        - taxonomy
   title:
     label: Title
     datasource_id: 'entity:node'
     property_path: title
-    type: string
+    type: 'solr_text_custom:edge'
+    boost: !!float 21
     dependencies:
       module:
         - node
@@ -327,14 +338,7 @@ processor_settings:
       - title
     title: false
     alt: true
-    tags:
-      b: 2
-      em: 1
-      h1: 5
-      h2: 3
-      h3: 2
-      strong: 2
-      u: 1
+    tags: {  }
     weights:
       preprocess_index: -15
       preprocess_query: -15
