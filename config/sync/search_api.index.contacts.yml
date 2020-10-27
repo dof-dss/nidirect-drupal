@@ -9,7 +9,6 @@ dependencies:
   config:
     - field.storage.node.field_address
     - field.storage.node.body
-    - field.storage.node.field_summary
     - search_api.server.solr_default
 third_party_settings:
   search_api_solr:
@@ -118,14 +117,6 @@ field_settings:
     dependencies:
       config:
         - field.storage.node.field_address
-  field_summary:
-    label: Summary
-    datasource_id: 'entity:node'
-    property_path: field_summary
-    type: text
-    dependencies:
-      config:
-        - field.storage.node.field_summary
   given_name:
     label: 'Address » The given name.'
     datasource_id: 'entity:node'
@@ -193,8 +184,8 @@ field_settings:
   title_fulltext:
     label: 'Title fulltext'
     property_path: aggregated_field
-    type: 'solr_text_custom:edge'
-    boost: !!float 21
+    type: text
+    boost: !!float 13
     configuration:
       type: concat
       fields:
@@ -223,7 +214,6 @@ processor_settings:
       - country_code
       - dependent_locality
       - family_name
-      - field_summary
       - given_name
       - langcode
       - langcode_1
