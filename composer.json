@@ -37,15 +37,16 @@
         "dof-dss/nicsdru_origins_theme": "^0.3.3",
         "dof-dss/nidirect-d8-test-install-profile": "^0.2.2",
         "dof-dss/nidirect-migrations": "^0.11.0",
-        "dof-dss/nidirect-site-modules": "^0.11.0",
+        "dof-dss/nidirect-site-modules": "^0.11.7",
         "drupal/address": "^1.7",
         "drupal/admin_toolbar": "^2.0",
         "drupal/adminimal_theme": "^1.5",
         "drupal/better_field_descriptions": "^1.5",
         "drupal/block_blacklist": "^1.0",
         "drupal/block_content_permissions": "^1.10",
-        "drupal/chosen": "^2.9",
-        "drupal/clientside_validation": "^1.2",
+        "drupal/chosen": "^3.0",
+        "drupal/chosen_lib": "^3.0",
+        "drupal/clientside_validation": "^2.0",
         "drupal/config_filter": "^1.4",
         "drupal/config_ignore": "^2.1",
         "drupal/config_readonly": "^1.0@beta",
@@ -86,16 +87,17 @@
         "drupal/redis": "^1.4",
         "drupal/scheduler": "^1.1",
         "drupal/scheduler_content_moderation_integration": "^1.1",
+        "drupal/schema_metatag": "^2.1",
         "drupal/search_api": "^1.14",
         "drupal/search_api_autocomplete": "^1.2",
         "drupal/search_api_location": "^1.0@alpha",
-        "drupal/search_api_solr": "^3.2",
+        "drupal/search_api_solr": "^4.1",
         "drupal/search_api_spellcheck": "^3.0@alpha",
         "drupal/shs": "^1.0@alpha",
         "drupal/simplei": "^1.1",
         "drupal/sitewide_alert": "^1.3",
         "drupal/smart_trim": "^1.2",
-        "drupal/structure_sync": "^1.16",
+        "drupal/structure_sync": "^2.0",
         "drupal/taxonomy_access_fix": "^2.6",
         "drupal/telephone_plus": "1.x-dev",
         "drupal/token": "^1.5",
@@ -114,6 +116,7 @@
         "harvesthq/chosen": "^1.8",
         "oomphinc/composer-installers-extender": "^1.1",
         "platformsh/config-reader": "^2.3",
+        "solarium/solarium": "6",
         "symfony/event-dispatcher": "4.3.11 as 3.4.35",
         "vlucas/phpdotenv": "^2.4",
         "zaporylie/composer-drupal-optimizations": "^1.0"
@@ -148,11 +151,6 @@
                 "Prevent error when saving unpublished content for users without manage book privileges": "https://www.drupal.org/files/issues/2918537-36.patch",
                 "[PP-1] Provide options to sanitize filenames (transliterate, lowercase, replace whitespace, etc)": "https://www.drupal.org/files/issues/2019-12-06/2492171-294.patch"
             },
-            "drupal/config_split": {
-                "General typo issues": "https://www.drupal.org/files/issues/2018-10-02/general_typo_issues-3003865-4.patch",
-                "Capitalize the name of the module in .info.yml file": "https://www.drupal.org/files/issues/2018-10-05/config_split-info-3004751-2.patch",
-                "Config export fails on Drush 9 with config_translation": "https://www.drupal.org/files/issues/2018-11-05/config_export_fails_on-3011363-2.patch"
-            },
             "drupal/easy_install": {
                 "Handle missing core version": "https://www.drupal.org/files/issues/2019-12-19/easy_install_core_version-3101883-0.patch"
             },
@@ -177,6 +175,9 @@
             },
             "drupal/shs": {
                 "SHS select is empty on views": "https://www.drupal.org/files/issues/2018-12-10/shs-blank-select-fix-3019378-3.patch"
+            },
+            "drupal/schema_metatag": {
+                "Add @id as a tag to all schemas": "https://www.drupal.org/files/issues/2019-09-01/3078582-02.patch"
             }
         },
         "composer-exit-on-patch-failure": true,

@@ -1,27 +1,23 @@
-uuid: 9779be3b-346b-4473-93ff-0b0b324e9c8f
+uuid: 4c86046b-fc7d-4eee-af02-444bb322ca88
 langcode: en
 status: true
 dependencies:
-  config:
-    - views.view.news
   module:
+    - nidirect_news
     - node
-    - views
   theme:
     - nicsdru_nidirect_theme
-id: views_block__news_latest_news_block
+id: featurednews
 theme: nicsdru_nidirect_theme
 region: sidebar_second
-weight: -12
+weight: -13
 provider: null
-plugin: 'views_block:news-latest_news_block'
+plugin: featured_news_block
 settings:
-  id: 'views_block:news-latest_news_block'
-  label: ''
-  provider: views
+  id: featured_news_block
+  label: 'Featured news'
+  provider: nidirect_news
   label_display: visible
-  views_label: ''
-  items_per_page: none
 visibility:
   node_type:
     id: node_type
