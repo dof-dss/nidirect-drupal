@@ -149,7 +149,7 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
-          operator: and
+          operator: or
           value: ''
           group: 1
           exposed: true
@@ -193,9 +193,10 @@ display:
             default_group: All
             default_group_multiple: {  }
             group_items: {  }
-          parse_mode: phrase
-          min_length: 1
+          parse_mode: edismax
+          min_length: null
           fields:
+            - body
             - title_fulltext
           plugin_id: search_api_fulltext
       sorts:
