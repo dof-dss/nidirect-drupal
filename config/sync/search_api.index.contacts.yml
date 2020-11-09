@@ -4,11 +4,17 @@ status: true
 dependencies:
   module:
     - search_api_solr
+    - taxonomy
     - node
     - search_api
   config:
     - field.storage.node.field_address
+    - field.storage.node.field_di_adi_no
+    - field.storage.node.field_di_areas
     - field.storage.node.body
+    - field.storage.node.field_di_categories
+    - field.storage.node.field_di_firstname
+    - field.storage.node.field_di_lastname
     - search_api.server.solr_default
 third_party_settings:
   search_api_solr:
@@ -117,6 +123,46 @@ field_settings:
     dependencies:
       config:
         - field.storage.node.field_address
+  field_di_adi_no:
+    label: 'ADI number'
+    datasource_id: 'entity:node'
+    property_path: field_di_adi_no
+    type: string
+    dependencies:
+      config:
+        - field.storage.node.field_di_adi_no
+  field_di_areas:
+    label: 'Areas covered'
+    datasource_id: 'entity:node'
+    property_path: field_di_areas
+    type: integer
+    dependencies:
+      config:
+        - field.storage.node.field_di_areas
+  field_di_categories:
+    label: Categories
+    datasource_id: 'entity:node'
+    property_path: field_di_categories
+    type: integer
+    dependencies:
+      config:
+        - field.storage.node.field_di_categories
+  field_di_firstname:
+    label: 'First name'
+    datasource_id: 'entity:node'
+    property_path: field_di_firstname
+    type: string
+    dependencies:
+      config:
+        - field.storage.node.field_di_firstname
+  field_di_lastname:
+    label: 'Last name'
+    datasource_id: 'entity:node'
+    property_path: field_di_lastname
+    type: string
+    dependencies:
+      config:
+        - field.storage.node.field_di_lastname
   given_name:
     label: 'Address » The given name.'
     datasource_id: 'entity:node'
@@ -149,6 +195,16 @@ field_settings:
     dependencies:
       config:
         - field.storage.node.field_address
+  name:
+    label: 'Areas covered » Taxonomy term » Name'
+    datasource_id: 'entity:node'
+    property_path: 'field_di_areas:entity:name'
+    type: text
+    dependencies:
+      config:
+        - field.storage.node.field_di_areas
+      module:
+        - taxonomy
   organization:
     label: 'Address » The organization'
     datasource_id: 'entity:node'
@@ -190,12 +246,21 @@ field_settings:
       type: concat
       fields:
         - 'entity:node/title'
+  type:
+    label: 'Content type'
+    datasource_id: 'entity:node'
+    property_path: type
+    type: string
+    dependencies:
+      module:
+        - node
 datasource_settings:
   'entity:node':
     bundles:
       default: false
       selected:
         - contact
+        - driving_instructor
     languages:
       default: true
       selected: {  }
@@ -203,6 +268,11 @@ processor_settings:
   add_url: {  }
   aggregated_field: {  }
   entity_status: {  }
+  hierarchy:
+    fields:
+      field_di_categories: taxonomy_term-parent
+    weights:
+      preprocess_index: -45
   html_filter:
     all_fields: true
     fields:
@@ -214,15 +284,20 @@ processor_settings:
       - country_code
       - dependent_locality
       - family_name
+      - field_di_adi_no
+      - field_di_firstname
+      - field_di_lastname
       - given_name
       - langcode
       - langcode_1
       - locality
+      - name
       - organization
       - postal_code
       - sorting_code
       - title
       - title_fulltext
+      - type
     title: true
     alt: true
     tags:
