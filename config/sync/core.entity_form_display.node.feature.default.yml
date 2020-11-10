@@ -12,6 +12,7 @@ dependencies:
     - content_moderation
     - link
     - media_library
+    - media_library_edit
     - path
     - scheduler
     - scheduler_content_moderation_integration
@@ -40,7 +41,9 @@ content:
     region: content
     settings:
       media_types: {  }
-    third_party_settings: {  }
+    third_party_settings:
+      media_library_edit:
+        show_edit: '1'
   field_teaser:
     weight: 16
     settings:

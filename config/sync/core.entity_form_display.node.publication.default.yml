@@ -18,6 +18,7 @@ dependencies:
     - content_moderation
     - datetime
     - media_library
+    - media_library_edit
     - metatag
     - path
     - scheduler
@@ -51,7 +52,9 @@ content:
     region: content
     settings:
       media_types: {  }
-    third_party_settings: {  }
+    third_party_settings:
+      media_library_edit:
+        show_edit: '1'
   field_meta_tags:
     weight: 1
     settings:
