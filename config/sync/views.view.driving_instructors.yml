@@ -3,7 +3,7 @@ langcode: en
 status: true
 dependencies:
   config:
-    - search_api.index.default_content
+    - search_api.index.contacts
     - taxonomy.vocabulary.drive_instr_categories
   module:
     - search_api
@@ -13,7 +13,7 @@ label: 'Driving instructors'
 module: views
 description: 'Search results for driving instructors'
 tag: ''
-base_table: search_api_index_default_content
+base_table: search_api_index_contacts
 base_field: search_api_id
 display:
   default:
@@ -90,7 +90,7 @@ display:
       fields:
         title:
           id: title
-          table: search_api_datasource_default_content_entity_node
+          table: search_api_datasource_contacts_entity_node
           field: title
           relationship: none
           group_type: group
@@ -162,7 +162,7 @@ display:
       filters:
         search_api_fulltext:
           id: search_api_fulltext
-          table: search_api_index_default_content
+          table: search_api_index_contacts
           field: search_api_fulltext
           relationship: none
           group_type: group
@@ -217,7 +217,7 @@ display:
           plugin_id: search_api_fulltext
         type:
           id: type
-          table: search_api_index_default_content
+          table: search_api_index_contacts
           field: type
           relationship: none
           group_type: group
@@ -258,7 +258,7 @@ display:
           plugin_id: search_api_options
         field_di_categories:
           id: field_di_categories
-          table: search_api_index_default_content
+          table: search_api_index_contacts
           field: field_di_categories
           relationship: none
           group_type: group
@@ -317,7 +317,7 @@ display:
       sorts:
         search_api_relevance:
           id: search_api_relevance
-          table: search_api_index_default_content
+          table: search_api_index_contacts
           field: search_api_relevance
           relationship: none
           group_type: group
@@ -341,7 +341,7 @@ display:
           plugin_id: random
         field_di_lastname:
           id: field_di_lastname
-          table: search_api_index_default_content
+          table: search_api_index_contacts
           field: field_di_lastname
           relationship: none
           group_type: group
@@ -370,7 +370,7 @@ display:
       relationships:
         field_di_categories:
           id: field_di_categories
-          table: search_api_datasource_default_content_entity_node
+          table: search_api_datasource_contacts_entity_node
           field: field_di_categories
           relationship: none
           group_type: group
