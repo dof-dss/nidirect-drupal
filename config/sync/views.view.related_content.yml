@@ -6,6 +6,7 @@ dependencies:
     - field.storage.node.field_summary
     - field.storage.node.field_teaser
     - flag.flag.display_on_landing_pages
+    - flag.flag.hide_content
     - node.type.application
     - node.type.article
     - node.type.external_link
@@ -269,6 +270,45 @@ display:
             operator_limit_selection: false
             operator_list: {  }
           group: 1
+        flagged_1:
+          id: flagged_1
+          table: flagging
+          field: flagged
+          relationship: flag_relationship_1
+          group_type: group
+          admin_label: ''
+          operator: '='
+          value: '0'
+          group: 1
+          exposed: false
+          expose:
+            operator_id: ''
+            label: ''
+            description: ''
+            use_operator: false
+            operator: ''
+            operator_limit_selection: false
+            operator_list: {  }
+            identifier: ''
+            required: false
+            remember: false
+            multiple: false
+            remember_roles:
+              authenticated: authenticated
+          is_grouped: false
+          group_info:
+            label: ''
+            description: ''
+            identifier: ''
+            optional: true
+            widget: select
+            multiple: false
+            remember: false
+            default_group: All
+            default_group_multiple: {  }
+            group_items: {  }
+          entity_type: flagging
+          plugin_id: flag_filter
         type_1:
           id: type_1
           table: node_field_data
@@ -320,6 +360,45 @@ display:
           admin_label: ''
           operator: '='
           value: '1'
+          group: 2
+          exposed: false
+          expose:
+            operator_id: ''
+            label: ''
+            description: ''
+            use_operator: false
+            operator: ''
+            operator_limit_selection: false
+            operator_list: {  }
+            identifier: ''
+            required: false
+            remember: false
+            multiple: false
+            remember_roles:
+              authenticated: authenticated
+          is_grouped: false
+          group_info:
+            label: ''
+            description: ''
+            identifier: ''
+            optional: true
+            widget: select
+            multiple: false
+            remember: false
+            default_group: All
+            default_group_multiple: {  }
+            group_items: {  }
+          entity_type: flagging
+          plugin_id: flag_filter
+        flagged_2:
+          id: flagged_2
+          table: flagging
+          field: flagged
+          relationship: flag_relationship_1
+          group_type: group
+          admin_label: ''
+          operator: '='
+          value: '0'
           group: 2
           exposed: false
           expose:
@@ -419,6 +498,18 @@ display:
           admin_label: 'Flags: Display on landing pages'
           required: false
           flag: display_on_landing_pages
+          user_scope: any
+          entity_type: node
+          plugin_id: flag_relationship
+        flag_relationship_1:
+          id: flag_relationship_1
+          table: node_field_data
+          field: flag_relationship
+          relationship: none
+          group_type: group
+          admin_label: 'Flags: Hide content'
+          required: false
+          flag: hide_content
           user_scope: any
           entity_type: node
           plugin_id: flag_relationship
