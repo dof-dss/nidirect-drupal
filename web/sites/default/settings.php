@@ -54,6 +54,9 @@ $config['geocoder.settings']['plugins_options']['googlemaps']['apikey'] = getenv
 $env_colour = !empty(getenv('SIMPLEI_ENV_COLOR')) ? getenv('SIMPLEI_ENV_COLOR') : '#000000';;
 $env_name = !empty(getenv('SIMPLEI_ENV_NAME')) ? getenv('SIMPLEI_ENV_NAME') : getenv('PLATFORM_BRANCH');
 
+// Prevents legacy Symfony ApcClassLoader from being used instead of Composer's.
+$settings['class_loader_auto_detect'] = FALSE;
+
 // If we're running on platform.sh, check for and load relevant settings.
 if (!empty(getenv('PLATFORM_BRANCH'))) {
   if (file_exists($app_root . '/' . $site_path . '/settings.platformsh.php')) {
