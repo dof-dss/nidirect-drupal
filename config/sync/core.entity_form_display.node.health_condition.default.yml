@@ -42,6 +42,7 @@ dependencies:
     - inline_entity_form
     - link
     - media_library
+    - media_library_edit
     - metatag
     - path
     - scheduler
@@ -125,7 +126,9 @@ content:
     region: content
     settings:
       media_types: {  }
-    third_party_settings: {  }
+    third_party_settings:
+      media_library_edit:
+        show_edit: '1'
   field_hc_body_location:
     type: entity_reference_autocomplete
     weight: 20
@@ -247,7 +250,9 @@ content:
     region: content
     settings:
       media_types: {  }
-    third_party_settings: {  }
+    third_party_settings:
+      media_library_edit:
+        show_edit: '1'
   field_published_date:
     type: datetime_default
     weight: 17
@@ -425,3 +430,4 @@ content:
 hidden:
   field_alternative_title: true
   field_index_letter: true
+  field_next_audit_due: true
