@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "3de8e808a8ff2d5a1384dc3b9ebf949e",
+    "content-hash": "fc5e52b83ac0b208999c5948fd18009c",
     "packages": [
         {
             "name": "alchemy/zippy",
@@ -3440,7 +3440,8 @@
                     "Prevent leftover fields from causing errors like 'Call to a member function getLabel() after enabling layout_builder'": "https://www.drupal.org/files/issues/2020-01-20/2985882-53.patch",
                     "When embedding media, don't let authors choose view modes that are not enabled for that media type": "https://www.drupal.org/files/issues/2020-01-31/3097416-ckeditor-view-modes-8.9-combined.patch",
                     "Prevent error when saving unpublished content for users without manage book privileges": "https://www.drupal.org/files/issues/2918537-36.patch",
-                    "[IGNORE] Composer-friendly patches for filename sanitation while #2492171 awaits #3032390": "https://www.drupal.org/files/issues/2020-11-18/3094052-composer-patch-filename-sanitation-7.patch"
+                    "[IGNORE] Composer-friendly patches for filename sanitation while #2492171 awaits #3032390": "https://www.drupal.org/files/issues/2020-11-18/3094052-composer-patch-filename-sanitation-7.patch",
+                    "[meta] Themes improperly check renderable arrays when determining visibility": "https://www.drupal.org/files/issues/2019-02-19/themes_improperly_check_renderable_arrays_when_determining_visibility-953034-313.patch"
                 }
             },
             "autoload": {
@@ -8601,16 +8602,16 @@
         },
         {
             "name": "laminas/laminas-stdlib",
-            "version": "3.3.0",
+            "version": "3.3.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laminas/laminas-stdlib.git",
-                "reference": "b9d84eaa39fde733356ea948cdef36c631f202b6"
+                "reference": "d81c7ffe602ed0e6ecb18691019111c0f4bf1efe"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laminas/laminas-stdlib/zipball/b9d84eaa39fde733356ea948cdef36c631f202b6",
-                "reference": "b9d84eaa39fde733356ea948cdef36c631f202b6",
+                "url": "https://api.github.com/repos/laminas/laminas-stdlib/zipball/d81c7ffe602ed0e6ecb18691019111c0f4bf1efe",
+                "reference": "d81c7ffe602ed0e6ecb18691019111c0f4bf1efe",
                 "shasum": ""
             },
             "require": {
@@ -8623,15 +8624,9 @@
             "require-dev": {
                 "laminas/laminas-coding-standard": "~1.0.0",
                 "phpbench/phpbench": "^0.17.1",
-                "phpunit/phpunit": "^9.3.7"
+                "phpunit/phpunit": "~9.3.7"
             },
             "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "3.3.x-dev",
-                    "dev-develop": "3.4.x-dev"
-                }
-            },
             "autoload": {
                 "psr-4": {
                     "Laminas\\Stdlib\\": "src/"
@@ -8653,7 +8648,7 @@
                     "type": "community_bridge"
                 }
             ],
-            "time": "2020-08-25T09:08:16+00:00"
+            "time": "2020-11-19T20:18:59+00:00"
         },
         {
             "name": "laminas/laminas-zendframework-bridge",
