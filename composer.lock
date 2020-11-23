@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d6afcdd250130c3bcfee8f20ff6fb562",
+    "content-hash": "8aa653978f4f37bb6eb4d57d5e9f72ad",
     "packages": [
         {
             "name": "alchemy/zippy",
@@ -5276,17 +5276,17 @@
         },
         {
             "name": "drupal/linkit",
-            "version": "5.0.0-beta11",
+            "version": "6.0.0-beta1",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/linkit.git",
-                "reference": "8.x-5.0-beta11"
+                "reference": "6.0.0-beta1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/linkit-8.x-5.0-beta11.zip",
-                "reference": "8.x-5.0-beta11",
-                "shasum": "9133a3e61deafdd6a9d5a8b31a1f42e16051ee97"
+                "url": "https://ftp.drupal.org/files/projects/linkit-6.0.0-beta1.zip",
+                "reference": "6.0.0-beta1",
+                "shasum": "1842f07ccacbf1d697b66b2503217eeb5dc0f813"
             },
             "require": {
                 "drupal/core": "^8.7.7 || ^9"
@@ -5297,12 +5297,15 @@
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "8.x-5.0-beta11",
-                    "datestamp": "1591971693",
+                    "version": "6.0.0-beta1",
+                    "datestamp": "1591971462",
                     "security-coverage": {
                         "status": "not-covered",
                         "message": "Beta releases are not covered by Drupal security advisories."
                     }
+                },
+                "patches_applied": {
+                    "Link shown after the autocomplete selection is the bare node/xxx link, not the alias": "https://www.drupal.org/files/issues/2020-11-03/show_alias_in_autocomplete_selection-2877535-16.patch"
                 }
             },
             "notification-url": "https://packages.drupal.org/8/downloads",
@@ -8602,16 +8605,16 @@
         },
         {
             "name": "laminas/laminas-stdlib",
-            "version": "3.3.0",
+            "version": "3.3.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laminas/laminas-stdlib.git",
-                "reference": "b9d84eaa39fde733356ea948cdef36c631f202b6"
+                "reference": "d81c7ffe602ed0e6ecb18691019111c0f4bf1efe"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laminas/laminas-stdlib/zipball/b9d84eaa39fde733356ea948cdef36c631f202b6",
-                "reference": "b9d84eaa39fde733356ea948cdef36c631f202b6",
+                "url": "https://api.github.com/repos/laminas/laminas-stdlib/zipball/d81c7ffe602ed0e6ecb18691019111c0f4bf1efe",
+                "reference": "d81c7ffe602ed0e6ecb18691019111c0f4bf1efe",
                 "shasum": ""
             },
             "require": {
@@ -8624,15 +8627,9 @@
             "require-dev": {
                 "laminas/laminas-coding-standard": "~1.0.0",
                 "phpbench/phpbench": "^0.17.1",
-                "phpunit/phpunit": "^9.3.7"
+                "phpunit/phpunit": "~9.3.7"
             },
             "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "3.3.x-dev",
-                    "dev-develop": "3.4.x-dev"
-                }
-            },
             "autoload": {
                 "psr-4": {
                     "Laminas\\Stdlib\\": "src/"
@@ -8654,7 +8651,7 @@
                     "type": "community_bridge"
                 }
             ],
-            "time": "2020-08-25T09:08:16+00:00"
+            "time": "2020-11-19T20:18:59+00:00"
         },
         {
             "name": "laminas/laminas-zendframework-bridge",
