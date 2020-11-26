@@ -1,0 +1,22 @@
+uuid: 37b9b7a4-425c-4e82-8a5d-e99985c980f6
+langcode: en
+status: true
+dependencies:
+  module:
+    - node
+id: telephone_lookup
+label: 'Telephone lookup'
+type: 'canonical_entities:node'
+pattern: 'tellookup/[node:title]'
+selection_criteria:
+  dffc5d14-05f0-43d5-b8ef-24b30ea0b9c9:
+    id: node_type
+    bundles:
+      telephone_lookup: telephone_lookup
+    negate: false
+    context_mapping:
+      node: node
+    uuid: dffc5d14-05f0-43d5-b8ef-24b30ea0b9c9
+selection_logic: and
+weight: -5
+relationships: {  }
