@@ -14,6 +14,7 @@ dependencies:
     - field.field.node.news.field_toc_enable
     - node.type.news
   module:
+    - datetime
     - user
 id: node.news.teaser
 targetEntityType: node
@@ -29,6 +30,15 @@ content:
       view_mode: news_thumbnail
       link: false
     third_party_settings: {  }
+  field_published_date:
+    type: datetime_default
+    weight: 2
+    region: content
+    label: visually_hidden
+    settings:
+      timezone_override: ''
+      format_type: medium_date
+    third_party_settings: {  }
   field_teaser:
     type: string
     weight: 0
@@ -41,7 +51,6 @@ hidden:
   body: true
   content_moderation_control: true
   field_meta_tags: true
-  field_published_date: true
   field_related_info: true
   field_summary: true
   field_toc_enable: true
