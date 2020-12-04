@@ -50,7 +50,7 @@
         "drupal/config_filter": "^1.4",
         "drupal/config_ignore": "^2.1",
         "drupal/config_readonly": "^1.0@beta",
-        "drupal/config_split": "^1.4",
+        "drupal/config_split": "^2.0.0",
         "drupal/config_update": "^1.6",
         "drupal/console": "^1.9",
         "drupal/core-composer-scaffold": "^8.8",
@@ -76,9 +76,10 @@
         "drupal/inline_entity_form": "^1.0@RC",
         "drupal/layout_builder_modal": "^1.0@alpha",
         "drupal/layout_builder_restrictions": "^2.2",
-        "drupal/linkit": "^5.0",
+        "drupal/linkit": "^6.0.0",
         "drupal/media_library_edit": "^1.0@alpha",
         "drupal/metatag": "^1.8",
+        "drupal/migrate_absolute_links": "1.x-dev",
         "drupal/migrate_upgrade": "^3.2",
         "drupal/moderation_sidebar": "^1.3",
         "drupal/noreferrer": "^1.7",
@@ -91,10 +92,10 @@
         "drupal/scheduler_content_moderation_integration": "^1.1",
         "drupal/schema_metatag": "^2.1",
         "drupal/search_api": "^1.14",
-        "drupal/search_api_autocomplete": "^1.2",
+        "drupal/search_api_autocomplete": "^1.4",
         "drupal/search_api_location": "^1.0@alpha",
         "drupal/search_api_solr": "^4.1",
-        "drupal/search_api_spellcheck": "^3.0@alpha",
+        "drupal/search_api_spellcheck": "^3.0@beta",
         "drupal/shs": "^1.0@alpha",
         "drupal/simplei": "^1.1",
         "drupal/sitewide_alert": "^1.3",
@@ -111,7 +112,7 @@
         "drupal/views_contextual_filters_or": "^1.1",
         "drupal/views_custom_cache_tag": "^1.1",
         "drupal/views_data_export": "^1.0",
-        "drupal/webform": "^5.4",
+        "drupal/webform": "^5.23-beta1",
         "drupal/whatlinkshere": "^1.5",
         "drupal/xls_serialization": "^1.2",
         "drush/drush": "^10.1",
@@ -143,7 +144,8 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "config": {
-        "sort-packages": true
+        "sort-packages": true,
+        "apcu-autoloader": true
     },
     "extra": {
         "patches": {
@@ -151,7 +153,8 @@
                 "Prevent leftover fields from causing errors like 'Call to a member function getLabel() after enabling layout_builder'": "https://www.drupal.org/files/issues/2020-01-20/2985882-53.patch",
                 "When embedding media, don't let authors choose view modes that are not enabled for that media type": "https://www.drupal.org/files/issues/2020-01-31/3097416-ckeditor-view-modes-8.9-combined.patch",
                 "Prevent error when saving unpublished content for users without manage book privileges": "https://www.drupal.org/files/issues/2918537-36.patch",
-                "[PP-1] Provide options to sanitize filenames (transliterate, lowercase, replace whitespace, etc)": "https://www.drupal.org/files/issues/2019-12-06/2492171-294.patch"
+                "[IGNORE] Composer-friendly patches for filename sanitation while #2492171 awaits #3032390": "https://www.drupal.org/files/issues/2020-11-18/3094052-composer-patch-filename-sanitation-7.patch",
+                "[meta] Themes improperly check renderable arrays when determining visibility": "https://www.drupal.org/files/issues/2019-02-19/themes_improperly_check_renderable_arrays_when_determining_visibility-953034-313.patch"
             },
             "drupal/media_library_edit": {
                 "Open in modal": "https://www.drupal.org/files/issues/2020-11-03/open-in-modal-3034205-48.patch"
@@ -164,9 +167,6 @@
             },
             "drupal/redirect": {
                 "URL redirects listing only displays operations": "https://www.drupal.org/files/issues/2019-04-05/redirects_list_builder-3031125-9-d8.patch"
-            },
-            "drupal/search_api_spellcheck": {
-                "Suggestions Spellcheck views area plugin always hidden": "https://www.drupal.org/files/issues/2020-01-29/suggestions-spellcheck-always-hidden-1.patch"
             },
             "drupal/clientside_validation": {
                 "Clientside validation errors revert to being output as a label in webform wizard pages with ajax enabled": "https://www.drupal.org/files/issues/2020-02-03/cvjquery-ajax-webform-wizard.patch",
@@ -183,6 +183,12 @@
             },
             "drupal/schema_metatag": {
                 "Add @id as a tag to all schemas": "https://www.drupal.org/files/issues/2019-09-01/3078582-02.patch"
+            },
+            "drupal/linkit": {
+                "Link shown after the autocomplete selection is the bare node/xxx link, not the alias": "https://www.drupal.org/files/issues/2020-11-03/show_alias_in_autocomplete_selection-2877535-16.patch"
+            },
+            "drupal/telephone_plus": {
+                "Add telephone extension into the link text": "https://www.drupal.org/files/issues/2020-12-03/3186246-1.patch"
             }
         },
         "composer-exit-on-patch-failure": true,
