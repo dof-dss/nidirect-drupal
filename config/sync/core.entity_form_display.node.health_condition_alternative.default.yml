@@ -5,8 +5,6 @@ dependencies:
   config:
     - field.field.node.health_condition_alternative.field_parent_condition
     - node.type.health_condition_alternative
-  module:
-    - scheduler
 id: node.health_condition_alternative.default
 targetEntityType: node
 bundle: health_condition_alternative
@@ -22,18 +20,6 @@ content:
     third_party_settings: {  }
     type: entity_reference_autocomplete
     region: content
-  publish_on:
-    type: datetime_timestamp_no_default
-    weight: 30
-    region: content
-    settings: {  }
-    third_party_settings: {  }
-  publish_state:
-    type: scheduler_moderation
-    weight: 30
-    region: content
-    settings: {  }
-    third_party_settings: {  }
   status:
     type: boolean_checkbox
     weight: 2
@@ -49,24 +35,16 @@ content:
       size: 60
       placeholder: ''
     third_party_settings: {  }
-  unpublish_on:
-    type: datetime_timestamp_no_default
-    weight: 30
-    region: content
-    settings: {  }
-    third_party_settings: {  }
-  unpublish_state:
-    type: scheduler_moderation
-    weight: 30
-    region: content
-    settings: {  }
-    third_party_settings: {  }
 hidden:
   created: true
   langcode: true
   moderation_state: true
   path: true
   promote: true
+  publish_on: true
+  publish_state: true
   sticky: true
   uid: true
+  unpublish_on: true
+  unpublish_state: true
   url_redirects: true

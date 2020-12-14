@@ -20,6 +20,7 @@ dependencies:
     - field.field.node.health_condition.field_index_letter
     - field.field.node.health_condition.field_last_review_date
     - field.field.node.health_condition.field_meta_tags
+    - field.field.node.health_condition.field_next_audit_due
     - field.field.node.health_condition.field_next_review_date
     - field.field.node.health_condition.field_parent_condition
     - field.field.node.health_condition.field_photo
@@ -110,12 +111,12 @@ content:
       label_plural: 'Alternative condition titles'
       collapsible: true
       allow_new: true
-      allow_existing: true
       match_operator: STARTS_WITH
-      override_labels: false
-      collapsed: false
-      allow_duplicate: false
+      removed_reference: delete
       revision: false
+      collapsed: false
+      allow_existing: false
+      allow_duplicate: false
     third_party_settings:
       entity_browser_entity_form:
         entity_browser_id: _none
