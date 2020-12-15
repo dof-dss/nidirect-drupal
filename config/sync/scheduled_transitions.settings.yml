@@ -1,0 +1,51 @@
+mirror_operations:
+  'view scheduled transition': update
+  'add scheduled transition': update
+  'reschedule scheduled transitions': update
+automation:
+  cron_create_queue_items: true
+message_transition_latest: 'Scheduled transition: transitioning latest revision from [scheduled-transitions:from-state] to [scheduled-transitions:to-state]'
+message_transition_historical: 'Scheduled transition: copied revision #[scheduled-transitions:from-revision-id] and changed from [scheduled-transitions:from-state] to [scheduled-transitions:to-state]'
+message_transition_copy_latest_draft: 'Scheduled transition: reverted [scheduled-transitions:latest-state] revision #[scheduled-transitions:latest-revision-id] back to top'
+_core:
+  default_config_hash: 7JXPlBBlcxgQvxxcOS0MVnoAtJ8Goeu6OrR7OjxR4ik
+bundles:
+  -
+    entity_type: node
+    bundle: application
+  -
+    entity_type: node
+    bundle: article
+  -
+    entity_type: node
+    bundle: contact
+  -
+    entity_type: node
+    bundle: driving_instructor
+  -
+    entity_type: node
+    bundle: embargoed_publication
+  -
+    entity_type: node
+    bundle: feature
+  -
+    entity_type: node
+    bundle: featured_content_list
+  -
+    entity_type: node
+    bundle: gp_practice
+  -
+    entity_type: node
+    bundle: health_condition
+  -
+    entity_type: node
+    bundle: landing_page
+  -
+    entity_type: node
+    bundle: news
+  -
+    entity_type: node
+    bundle: page
+  -
+    entity_type: node
+    bundle: publication
