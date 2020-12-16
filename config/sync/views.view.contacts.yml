@@ -196,9 +196,22 @@ display:
           parse_mode: edismax
           min_length: null
           fields:
+            - field_supplementary_contact
             - title_fulltext
           plugin_id: search_api_fulltext
       sorts:
+        search_api_relevance:
+          id: search_api_relevance
+          table: search_api_index_contacts
+          field: search_api_relevance
+          relationship: none
+          group_type: group
+          admin_label: ''
+          order: DESC
+          exposed: true
+          expose:
+            label: Relevance
+          plugin_id: search_api
         title:
           id: title
           table: search_api_index_contacts
