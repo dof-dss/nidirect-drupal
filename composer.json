@@ -17,14 +17,11 @@
             "type": "package",
             "package": {
                 "name": "harvesthq/chosen",
-                "version": "1.8.2",
+                "version": "1.8.7",
                 "type": "drupal-library",
                 "dist": {
-                    "url": "https://github.com/harvesthq/chosen/releases/download/v1.8.2/chosen_v1.8.2.zip",
+                    "url": "https://github.com/harvesthq/chosen/releases/download/v1.8.7/chosen_v1.8.7.zip",
                     "type": "zip"
-                },
-                "require": {
-                    "composer/installers": "^1.2.0"
                 }
             }
         }
@@ -120,7 +117,7 @@
         "drupal/xls_serialization": "^1.2",
         "drush/drush": "^10.1",
         "harvesthq/chosen": "^1.8",
-        "oomphinc/composer-installers-extender": "^1.1",
+        "oomphinc/composer-installers-extender": "^2.0",
         "platformsh/config-reader": "^2.3",
         "solarium/solarium": "6",
         "symfony/event-dispatcher": "4.3.11 as 3.4.35",
@@ -211,15 +208,9 @@
                 "[web-root]/example.gitignore": false
             }
         },
-        "installer-types": [
-            "library"
-        ],
         "installer-paths": {
             "web/core": ["type:drupal-core"],
-            "web/libraries/{$name}": [
-                "type:drupal-library",
-                "harvesthq/chosen"
-            ],
+            "web/libraries/{$name}": ["type:drupal-library"],
             "web/modules/custom": ["dof-dss/nidirect-site-modules"],
             "web/modules/origins": ["dof-dss/nicsdru_origins_modules"],
             "web/modules/migrate/{$name}": ["dof-dss/nidirect-migrations"],
