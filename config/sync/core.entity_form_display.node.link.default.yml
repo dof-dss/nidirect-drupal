@@ -9,10 +9,11 @@ dependencies:
     - node.type.link
   module:
     - content_moderation
-    - link
+    - linkit
     - metatag
     - path
     - scheduler
+    - scheduler_content_moderation_integration
 id: node.link.default
 targetEntityType: node
 bundle: link
@@ -31,16 +32,18 @@ content:
     settings: {  }
     third_party_settings: {  }
   field_link_url:
-    type: link_default
+    type: linkit
     weight: 1
     region: content
     settings:
       placeholder_url: ''
       placeholder_title: ''
+      linkit_profile: default
     third_party_settings: {  }
   field_meta_tags:
     weight: 3
-    settings: {  }
+    settings:
+      sidebar: true
     third_party_settings: {  }
     type: metatag_firehose
     region: content
@@ -84,9 +87,9 @@ content:
     third_party_settings: {  }
   scheduler_settings:
     weight: 20
+    region: content
     settings: {  }
     third_party_settings: {  }
-    region: content
   status:
     type: boolean_checkbox
     settings:
@@ -133,7 +136,7 @@ content:
     third_party_settings: {  }
   url_redirects:
     weight: 50
+    region: content
     settings: {  }
     third_party_settings: {  }
-    region: content
 hidden: {  }

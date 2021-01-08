@@ -18,7 +18,7 @@ dependencies:
     - workflows.workflow.nics_editorial_workflow
   module:
     - content_moderation
-    - link
+    - linkit
     - metatag
     - path
     - scheduler
@@ -61,12 +61,13 @@ content:
     type: options_buttons
     region: content
   field_link:
-    type: link_default
+    type: linkit
     weight: 6
     region: content
     settings:
       placeholder_url: ''
       placeholder_title: ''
+      linkit_profile: default
     third_party_settings: {  }
   field_meta_tags:
     weight: 14
@@ -80,8 +81,9 @@ content:
     settings:
       placeholder_url: ''
       placeholder_title: ''
+      linkit_profile: default
     third_party_settings: {  }
-    type: link_default
+    type: linkit
     region: content
   field_site_themes:
     type: options_shs
