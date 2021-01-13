@@ -45,7 +45,7 @@ display:
           sort_asc_label: Asc
           sort_desc_label: Desc
       pager:
-        type: mini
+        type: full
         options:
           items_per_page: 21
           offset: 0
@@ -54,6 +54,8 @@ display:
           tags:
             previous: '‹ previous'
             next: 'next ›'
+            first: '« First'
+            last: 'Last »'
           expose:
             items_per_page: false
             items_per_page_label: 'Items per page'
@@ -62,6 +64,7 @@ display:
             items_per_page_options_all_label: '- All -'
             offset: false
             offset_label: Offset
+          quantity: 9
       style:
         type: default
         options:
@@ -392,7 +395,9 @@ display:
         - 'url.query_args:sort_by'
         - 'url.query_args:sort_order'
         - user
-      tags: {  }
+        - 'user.node_grants:view'
+      tags:
+        - 'config:search_api.index.contacts'
   driving_instructor_results:
     display_plugin: page
     id: driving_instructor_results
@@ -415,4 +420,6 @@ display:
         - 'url.query_args:sort_by'
         - 'url.query_args:sort_order'
         - user
-      tags: {  }
+        - 'user.node_grants:view'
+      tags:
+        - 'config:search_api.index.contacts'
