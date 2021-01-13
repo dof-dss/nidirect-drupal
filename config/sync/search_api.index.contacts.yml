@@ -140,6 +140,28 @@ field_settings:
     dependencies:
       config:
         - field.storage.node.field_di_areas
+  field_di_areas_description:
+    label: 'Areas covered » Taxonomy term » Description'
+    datasource_id: 'entity:node'
+    property_path: 'field_di_areas:entity:description'
+    type: text
+    boost: !!float 13
+    dependencies:
+      config:
+        - field.storage.node.field_di_areas
+      module:
+        - taxonomy
+  field_di_areas_name:
+    label: 'Areas covered » Taxonomy term » Name'
+    datasource_id: 'entity:node'
+    property_path: 'field_di_areas:entity:name'
+    type: text
+    boost: !!float 21
+    dependencies:
+      config:
+        - field.storage.node.field_di_areas
+      module:
+        - taxonomy
   field_di_categories:
     label: Categories
     datasource_id: 'entity:node'
@@ -205,16 +227,6 @@ field_settings:
     dependencies:
       config:
         - field.storage.node.field_address
-  name:
-    label: 'Areas covered » Taxonomy term » Name'
-    datasource_id: 'entity:node'
-    property_path: 'field_di_areas:entity:name'
-    type: text
-    dependencies:
-      config:
-        - field.storage.node.field_di_areas
-      module:
-        - taxonomy
   organization:
     label: 'Address » The organization'
     datasource_id: 'entity:node'
@@ -295,6 +307,8 @@ processor_settings:
       - dependent_locality
       - family_name
       - field_di_adi_no
+      - field_di_areas_description
+      - field_di_areas_name
       - field_di_firstname
       - field_di_lastname
       - field_supplementary_contact
@@ -302,7 +316,6 @@ processor_settings:
       - langcode
       - langcode_1
       - locality
-      - name
       - organization
       - postal_code
       - sorting_code

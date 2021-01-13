@@ -1,0 +1,29 @@
+uuid: 5bcda46c-a603-4865-8188-4b6d9bfea041
+langcode: en
+status: true
+dependencies:
+  module:
+    - ctools
+    - nidirect_related_content
+  theme:
+    - nicsdru_nidirect_theme
+id: relatedcontentblock
+theme: nicsdru_nidirect_theme
+region: sidebar_second
+weight: -17
+provider: null
+plugin: nidirect_related_content_block
+settings:
+  id: nidirect_related_content_block
+  label: 'Related content'
+  provider: nidirect_related_content
+  label_display: visible
+visibility:
+  'entity_bundle:node':
+    id: 'entity_bundle:node'
+    bundles:
+      application: application
+      article: article
+    negate: false
+    context_mapping:
+      node: '@node.node_route_context:node'

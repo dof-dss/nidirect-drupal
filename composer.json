@@ -17,14 +17,11 @@
             "type": "package",
             "package": {
                 "name": "harvesthq/chosen",
-                "version": "1.8.2",
+                "version": "1.8.7",
                 "type": "drupal-library",
                 "dist": {
-                    "url": "https://github.com/harvesthq/chosen/releases/download/v1.8.2/chosen_v1.8.2.zip",
+                    "url": "https://github.com/harvesthq/chosen/releases/download/v1.8.7/chosen_v1.8.7.zip",
                     "type": "zip"
-                },
-                "require": {
-                    "composer/installers": "^1.2.0"
                 }
             }
         }
@@ -32,12 +29,12 @@
     "require": {
         "composer/installers": "^1.2",
         "cweagans/composer-patches": "^1.6.5",
-        "dof-dss/nicsdru_nidirect_theme": "^0.11.14",
-        "dof-dss/nicsdru_origins_modules": "^0.9.9",
+        "dof-dss/nicsdru_nidirect_theme": "^0.11.15",
+        "dof-dss/nicsdru_origins_modules": "^0.9.10",
         "dof-dss/nicsdru_origins_theme": "^0.3.3",
         "dof-dss/nidirect-d8-test-install-profile": "^0.2.2",
         "dof-dss/nidirect-migrations": "^0.11.14",
-        "dof-dss/nidirect-site-modules": "^0.11.14",
+        "dof-dss/nidirect-site-modules": "^0.11.15",
         "drupal/address": "^1.7",
         "drupal/admin_toolbar": "^2.0",
         "drupal/adminimal_theme": "^1.5",
@@ -119,7 +116,7 @@
         "drupal/xls_serialization": "^1.2",
         "drush/drush": "^10.1",
         "harvesthq/chosen": "^1.8",
-        "oomphinc/composer-installers-extender": "^1.1",
+        "oomphinc/composer-installers-extender": "^2.0",
         "platformsh/config-reader": "^2.3",
         "solarium/solarium": "6",
         "symfony/event-dispatcher": "4.3.11 as 3.4.35",
@@ -184,7 +181,8 @@
                 "Add @id as a tag to all schemas": "https://www.drupal.org/files/issues/2019-09-01/3078582-02.patch"
             },
             "drupal/linkit": {
-                "Link shown after the autocomplete selection is the bare node/xxx link, not the alias": "https://www.drupal.org/files/issues/2020-11-03/show_alias_in_autocomplete_selection-2877535-16.patch"
+                "Link shown after the autocomplete selection is the bare node/xxx link, not the alias": "https://www.drupal.org/files/issues/2020-11-03/show_alias_in_autocomplete_selection-2877535-16.patch",
+                "Linkit for Link field": "https://www.drupal.org/files/issues/2020-09-23/linkit-for-link-field-2712951-190.patch"
             },
             "drupal/telephone_plus": {
                 "Add telephone extension into the link text": "https://www.drupal.org/files/issues/2020-12-03/3186246-1.patch"
@@ -210,15 +208,9 @@
                 "[web-root]/example.gitignore": false
             }
         },
-        "installer-types": [
-            "library"
-        ],
         "installer-paths": {
             "web/core": ["type:drupal-core"],
-            "web/libraries/{$name}": [
-                "type:drupal-library",
-                "harvesthq/chosen"
-            ],
+            "web/libraries/{$name}": ["type:drupal-library"],
             "web/modules/custom": ["dof-dss/nidirect-site-modules"],
             "web/modules/origins": ["dof-dss/nicsdru_origins_modules"],
             "web/modules/migrate/{$name}": ["dof-dss/nidirect-migrations"],
