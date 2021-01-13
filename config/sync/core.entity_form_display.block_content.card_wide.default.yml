@@ -8,6 +8,7 @@ dependencies:
     - field.field.block_content.card_wide.field_image
     - field.field.block_content.card_wide.field_link
     - field.field.block_content.card_wide.field_teaser
+    - field.field.block_content.card_wide.field_title_link
   module:
     - linkit
     - media_library
@@ -17,14 +18,14 @@ bundle: card_wide
 mode: default
 content:
   field_image:
-    weight: 0
+    weight: 1
     settings:
       media_types: {  }
     third_party_settings: {  }
     type: media_library_widget
     region: content
   field_link:
-    weight: 2
+    weight: 3
     settings:
       placeholder_url: ''
       placeholder_title: ''
@@ -33,12 +34,21 @@ content:
     type: linkit
     region: content
   field_teaser:
-    weight: 1
+    weight: 2
     settings:
       size: 60
       placeholder: ''
     third_party_settings: {  }
     type: string_textfield
+    region: content
+  field_title_link:
+    weight: 0
+    settings:
+      placeholder_url: ''
+      placeholder_title: ''
+      linkit_profile: default
+    third_party_settings: {  }
+    type: linkit
     region: content
 hidden:
   body: true
