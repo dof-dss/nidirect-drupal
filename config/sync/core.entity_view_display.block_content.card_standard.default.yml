@@ -8,6 +8,7 @@ dependencies:
     - field.field.block_content.card_standard.field_image
     - field.field.block_content.card_standard.field_link
     - field.field.block_content.card_standard.field_teaser
+    - field.field.block_content.card_standard.field_title_link
   module:
     - link
 id: block_content.card_standard.default
@@ -43,6 +44,18 @@ content:
       link_to_entity: false
     third_party_settings: {  }
     type: string
+    region: content
+  field_title_link:
+    weight: 3
+    label: above
+    settings:
+      trim_length: 80
+      url_only: false
+      url_plain: false
+      rel: ''
+      target: ''
+    third_party_settings: {  }
+    type: link
     region: content
 hidden:
   body: true
