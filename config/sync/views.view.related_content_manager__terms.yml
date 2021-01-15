@@ -1,4 +1,4 @@
-uuid: a594b6c4-10fb-43f8-a924-a08f4e5279af
+uuid: 6d4f675a-0234-4d88-9f82-2030eaab386c
 langcode: en
 status: true
 dependencies:
@@ -9,8 +9,8 @@ dependencies:
     - flag
     - taxonomy
     - user
-id: site_toc_themes
-label: 'Site ToC - Themes'
+id: related_content_manager__terms
+label: 'Related Content Manager - Terms'
 module: views
 description: 'Fetch themes for table of contents '
 tag: ''
@@ -141,45 +141,6 @@ display:
           expose:
             operator_limit_selection: false
             operator_list: {  }
-        flagged:
-          id: flagged
-          table: flagging
-          field: flagged
-          relationship: flag_relationship
-          group_type: group
-          admin_label: ''
-          operator: '='
-          value: '0'
-          group: 1
-          exposed: false
-          expose:
-            operator_id: ''
-            label: ''
-            description: ''
-            use_operator: false
-            operator: ''
-            operator_limit_selection: false
-            operator_list: {  }
-            identifier: ''
-            required: false
-            remember: false
-            multiple: false
-            remember_roles:
-              authenticated: authenticated
-          is_grouped: false
-          group_info:
-            label: ''
-            description: ''
-            identifier: ''
-            optional: true
-            widget: select
-            multiple: false
-            remember: false
-            default_group: All
-            default_group_multiple: {  }
-            group_items: {  }
-          entity_type: flagging
-          plugin_id: flag_filter
       sorts:
         name:
           id: name
