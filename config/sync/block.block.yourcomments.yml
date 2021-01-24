@@ -6,6 +6,7 @@ dependencies:
     - 'block_content:webform:c87361a7-5371-4463-9d5d-fe16d21c6a73'
   module:
     - block_content
+    - system
   theme:
     - nicsdru_nidirect_theme
 id: yourcomments
@@ -22,4 +23,9 @@ settings:
   status: true
   info: ''
   view_mode: full
-visibility: {  }
+visibility:
+  request_path:
+    id: request_path
+    pages: '/form/site-feedback*'
+    negate: true
+    context_mapping: {  }
