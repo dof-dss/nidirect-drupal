@@ -9,40 +9,21 @@ dependencies:
     - image.style.nigov_full_620_x1
     - image.style.nigov_full_900_x2
     - image.style.nigov_full_940_x1
-  theme:
-    - nicsdru_origins_theme
 id: landing_full
 label: 'Landing full'
 image_style_mappings:
   -
-    breakpoint_id: nicsdru_origins_theme.phab
+    breakpoint_id: responsive_image.viewport_sizing
     multiplier: 1x
-    image_mapping_type: image_style
-    image_mapping: nigov_full_940_x1
-  -
-    breakpoint_id: nicsdru_origins_theme.phab
-    multiplier: 2x
-    image_mapping_type: image_style
-    image_mapping: nigov_full_1880_x2
-  -
-    breakpoint_id: nicsdru_origins_theme.mob
-    multiplier: 1x
-    image_mapping_type: image_style
-    image_mapping: nigov_full_620_x1
-  -
-    breakpoint_id: nicsdru_origins_theme.mob
-    multiplier: 2x
-    image_mapping_type: image_style
-    image_mapping: nigov_full_1240_x2
-  -
-    breakpoint_id: nicsdru_origins_theme.min
-    multiplier: 1x
-    image_mapping_type: image_style
-    image_mapping: nigov_full_450_x1
-  -
-    breakpoint_id: nicsdru_origins_theme.min
-    multiplier: 2x
-    image_mapping_type: image_style
-    image_mapping: nigov_full_900_x2
-breakpoint_group: nicsdru_origins_theme
+    image_mapping_type: sizes
+    image_mapping:
+      sizes: 100vw
+      sizes_image_styles:
+        - nigov_full_1240_x2
+        - nigov_full_1880_x2
+        - nigov_full_450_x1
+        - nigov_full_620_x1
+        - nigov_full_900_x2
+        - nigov_full_940_x1
+breakpoint_group: responsive_image
 fallback_image_style: nigov_full_940_x1
