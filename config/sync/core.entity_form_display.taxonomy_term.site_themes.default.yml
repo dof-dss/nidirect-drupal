@@ -13,10 +13,10 @@ dependencies:
     - field.field.taxonomy_term.site_themes.field_theme_summary
     - field.field.taxonomy_term.site_themes.field_toc_enable
     - field.field.taxonomy_term.site_themes.field_top_level_theme
-    - image.style.thumbnail
     - taxonomy.vocabulary.site_themes
   module:
-    - image
+    - media_library
+    - media_library_edit
     - metatag
     - path
     - shs
@@ -43,12 +43,13 @@ content:
     third_party_settings: {  }
     region: content
   field_banner_image:
+    type: media_library_widget
     weight: 5
-    type: image_image
     settings:
-      progress_indicator: throbber
-      preview_image_style: thumbnail
-    third_party_settings: {  }
+      media_types: {  }
+    third_party_settings:
+      media_library_edit:
+        show_edit: '1'
     region: content
   field_meta_tags:
     weight: 8

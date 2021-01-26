@@ -1,12 +1,11 @@
-uuid: e2c8b7bc-e412-4037-9620-b3547c271a1c
+uuid: e532636a-5389-4688-8b48-581e6c6c81f6
 langcode: en
 status: true
 dependencies:
   config:
     - field.storage.taxonomy_term.field_banner_image
+    - media.type.image
     - taxonomy.vocabulary.site_themes
-  module:
-    - image
 id: taxonomy_term.site_themes.field_banner_image
 field_name: field_banner_image
 entity_type: taxonomy_term
@@ -18,21 +17,12 @@ translatable: false
 default_value: {  }
 default_value_callback: ''
 settings:
-  file_directory: thin-banners
-  file_extensions: 'png gif jpg jpeg'
-  max_filesize: ''
-  max_resolution: ''
-  min_resolution: ''
-  alt_field: false
-  alt_field_required: true
-  title_field: false
-  title_field_required: false
-  default_image:
-    uuid: ''
-    alt: ''
-    title: ''
-    width: null
-    height: null
-  handler: 'default:file'
-  handler_settings: {  }
-field_type: image
+  handler: 'default:media'
+  handler_settings:
+    target_bundles:
+      image: image
+    sort:
+      field: _none
+    auto_create: false
+    auto_create_bundle: ''
+field_type: entity_reference
