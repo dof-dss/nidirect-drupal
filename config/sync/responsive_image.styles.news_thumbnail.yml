@@ -5,20 +5,17 @@ dependencies:
   config:
     - image.style.nigov_landscape_thumbnail_150x100_x1
     - image.style.nigov_landscape_thumbnail_300x200_x2
-  theme:
-    - nicsdru_origins_theme
 id: news_thumbnail
 label: 'News thumbnail'
 image_style_mappings:
   -
-    breakpoint_id: nicsdru_origins_theme.min
+    breakpoint_id: responsive_image.viewport_sizing
     multiplier: 1x
-    image_mapping_type: image_style
-    image_mapping: nigov_landscape_thumbnail_150x100_x1
-  -
-    breakpoint_id: nicsdru_origins_theme.min
-    multiplier: 2x
-    image_mapping_type: image_style
-    image_mapping: nigov_landscape_thumbnail_300x200_x2
-breakpoint_group: nicsdru_origins_theme
+    image_mapping_type: sizes
+    image_mapping:
+      sizes: 100vw
+      sizes_image_styles:
+        - nigov_landscape_thumbnail_150x100_x1
+        - nigov_landscape_thumbnail_300x200_x2
+breakpoint_group: responsive_image
 fallback_image_style: nigov_landscape_thumbnail_150x100_x1
