@@ -5,18 +5,27 @@ domains_option: 1
 domains_list: ''
 eu_only: null
 eu_only_js: null
-exclude_paths: "/admin\r\n/admin/*\r\n/batch\r\n/node/add*\r\n/node/*/*\r\n/user/*/*"
+exclude_paths: |
+  /admin
+  /admin/*
+  /batch
+  /node/add*
+  /node/*/*
+  /user/*/*
 exclude_admin_theme: false
 langcode: en
 popup_agreed:
-  value: "<h2>Thank you for accepting cookies</h2>\r\n\r\n<p>You can now hide this message or find out more about cookies.</p>\r\n"
+  value: |
+    <h2>Thank you for accepting cookies</h2>
+    
+    <p>You can now hide this message or find out more about cookies.</p>
   format: full_html
 popup_agree_button_message: 'Accept all cookies'
 popup_agreed_enabled: false
 popup_bg_hex: ''
 popup_clicking_confirmation: false
 popup_scrolling_confirmation: false
-popup_delay: 1000
+popup_delay: 300
 show_disagree_button: true
 popup_disagree_button_message: 'Find out more about cookies'
 popup_enabled: true
@@ -25,7 +34,10 @@ popup_height: null
 popup_hide_agreed: false
 popup_hide_button_message: Hide
 popup_info:
-  value: "<p class=\"eu-cookie-compliance-title\">Cookies on nidirect</p>\r\n\r\n<p>The nidirect website places small amounts of information known as cookies on your device.&nbsp;<a href=\"/articles/how-we-use-cookies\">Find out more about cookies</a>.</p>\r\n"
+  value: |
+    <h2 class="eu-cookie-compliance-title">Cookies on nidirect</h2>
+    
+    <p>The nidirect website places small amounts of information known as cookies on your device. <a href="/articles/how-we-use-cookies">Find out more about cookies</a></p>
   format: full_html
 mobile_popup_info:
   value: ''
@@ -34,7 +46,7 @@ popup_info_template: new
 mobile_breakpoint: 768
 popup_link: /node/4645
 popup_link_new_window: false
-popup_position: true
+popup_position: false
 fixed_top_position: false
 popup_text_hex: ''
 popup_width: ''
@@ -51,7 +63,10 @@ disabled_javascripts: ''
 whitelisted_cookies: ''
 consent_storage_method: do_not_store
 withdraw_message:
-  value: "<h2>We use cookies on this site to enhance your user experience</h2>\r\n\r\n<p>You have given your consent for us to set cookies.</p>\r\n"
+  value: |
+    <h2>We use cookies on this site to enhance your user experience</h2>
+    
+    <p>You have given your consent for us to set cookies.</p>
   format: full_html
 withdraw_action_button_label: 'Withdraw consent'
 withdraw_tab_button_label: 'Privacy settings'

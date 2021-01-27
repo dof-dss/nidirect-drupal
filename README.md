@@ -119,12 +119,12 @@ selected in the 'Theme/subtheme' field. This is achieved by using the 'Articles 
 
 ### Display of teasers on Landing Pages
 
-Selecting a theme/subtheme on a landing page node will result in teasers automatically being displayed for articles or taxonomy terms that match that theme/subtheme.
-This is achieved by using the nidirect_article_teasers_by_topic custom block from the nidirect_custom_blocks module, so please ensure that this block remians visible
-in at least the 'full content' view of the landing page.
+In order to add teasers to a landing page you should first select a theme/subtheme and then go in to the layout builder for the node. Once you have added a 'one column' section 
+you should then be able to add a block. Choose to 'create a custom block' and then choose 'Article Teasers by Topic' from the list of available blocks. A list of teasers will 
+then appear according to the theme/subtheme selected.
 
-Checking the 'manually control listing' checkbox on a landing page will cause the articles and taxonomy terms to be displayed in the 'Listing' field on the node edit
-form so that the editor may change the order of the teasers and/or delete some.
+Note that once you have saved the layout builder changes, you may then go back to the article teasers block and click on 'configure' - if you then select 'manually control listing'
+you will be able to add/remove teasers and/or control the order.
 
 #### Some key concepts:
 

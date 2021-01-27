@@ -1,16 +1,17 @@
 uuid: 08f8a718-7336-43d2-9733-5a63521c514c
 langcode: en
-status: true
+status: false
 dependencies:
   module:
     - node
     - origins_social_sharing
+    - system
   theme:
     - nicsdru_nidirect_theme
 id: originssocialsharing
 theme: nicsdru_nidirect_theme
-region: bottom_banner
-weight: -18
+region: content
+weight: -13
 provider: null
 plugin: origins_social_sharing
 settings:
@@ -26,12 +27,18 @@ visibility:
       article: article
       contact: contact
       embargoed_publication: embargoed_publication
+      gp_practice: gp_practice
       health_condition: health_condition
       landing_page: landing_page
       news: news
       publication: publication
-      recipe: recipe
-      umbrella_body: umbrella_body
     negate: false
     context_mapping:
       node: '@node.node_route_context:node'
+  request_path:
+    id: request_path
+    pages: |
+      <front>
+      /information-and-services/*
+    negate: true
+    context_mapping: {  }
