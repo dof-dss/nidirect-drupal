@@ -55,6 +55,23 @@ commands:
             sudo apt-get install -y libpng-dev
             sudo docker-php-ext-install gd
             composer global require hirak/prestissimo
+  install_platformsh_tools:
+    description: "Install packages and tools for interacting with platform.sh API"
+    steps:
+      - run:
+          name: Add extra OS and PHP extensions/config
+          command: |
+            sudo docker-php-ext-install pcntl posix
+      - run:
+          name: Keyscan Platform.sh region hostnames + GitHub for password-less access
+          command: |
+            mkdir -p ~/.ssh
+            ssh-keyscan -H ssh.$PLATFORM_REGION >> ~/.ssh/known_hosts
+            ssh-keyscan -H github.com >> ~/.ssh/known_hosts
+      - run:
+          name: Install the Platform.sh CLI tool
+          command: |
+            curl -sS https://platform.sh/cli/installer | php
   github_hosts_workaround:
     description: "Adds github.com to known hosts in container; for working locally."
     steps:
@@ -97,7 +114,7 @@ jobs:
           paths:
             - ./
 
-  # Test for coding standards and deprecated code.
+  # Test for coding standards.
   static_analysis:
     docker:
       - image: circleci/php:7.3.14-apache-browsers
@@ -108,11 +125,6 @@ jobs:
       - run:
           name: PHPCS static analysis
           command: /home/circleci/project/phpcs.sh /home/circleci/project "/home/circleci/project/web/modules/origins /home/circleci/project/web/modules/custom /home/circleci/project/web/modules/migrate /home/circleci/project/web/themes/custom"
-      - run:
-          name: Deprecated code check
-          command: |
-            cd /home/circleci/project
-            vendor/bin/drupal-check /home/circleci/project/web/modules/custom /home/circleci/project/web/modules/origins -e "*/tests/src/*"
 
   # Run any unit tests and any kernel tests against a vanilla D8 site + our site config imported over it (no predefined content).
   unit_kernel_tests:
@@ -247,20 +259,7 @@ jobs:
       - attach_workspace:
           at: ./
       - install_php_os_extensions
-      - run:
-          name: Add extra OS and PHP extensions/config
-          command: |
-            sudo docker-php-ext-install pcntl posix
-      - run:
-          name: Keyscan Platform.sh region hostnames + GitHub for password-less access
-          command: |
-            mkdir -p ~/.ssh
-            ssh-keyscan -H ssh.$PLATFORM_REGION >> ~/.ssh/known_hosts
-            ssh-keyscan -H github.com >> ~/.ssh/known_hosts
-      - run:
-          name: Install the Platform.sh CLI tool
-          command: |
-            curl -sS https://platform.sh/cli/installer | php
+      - install_platformsh_tools
       - run:
           name: Re-point dof-dss packages to use latest development code and push.
           command: |
@@ -288,6 +287,22 @@ jobs:
               /home/circleci/.platformsh/bin/platform environment:activate -p $PLATFORM_PROJECT_ID -e $EDGE_BUILD_BRANCH -y
             fi
 
+
+
+  # Code analysis using upgrade_status module; run against platform.sh environment because
+  # initiating/installing against Circle CI containers takes a long time indeed.
+  code_analysis:
+    docker:
+      - image: circleci/php:7.3.14-apache-browsers
+    steps:
+      - install_php_os_extensions
+      - install_platformsh_tools
+      - run:
+          name: "Invoke upgrade_status drush command"
+          command: |
+            /home/circleci/.platformsh/bin/platform environment:drush en upgrade_status -y
+            /home/circleci/.platformsh/bin/platform environment:drush upgrade_status:analyze --all --ignore-contrib --ignore-uninstalled
+
   # Separate task to allow us to sync data on PSH environments, without pauses in other jobs.
   sync_data:
     docker:
@@ -300,19 +315,7 @@ jobs:
             cd ~/project
             git checkout -b $EDGE_BUILD_BRANCH
       - install_php_os_extensions
-      - run:
-          name: Add extra OS and PHP extensions/config
-          command: |
-            sudo docker-php-ext-install pcntl posix
-      - run:
-          name: Keyscan Platform.sh region hostnames for password-less access
-          command: |
-            mkdir -p ~/.ssh
-            ssh-keyscan -H ssh.$PLATFORM_REGION >> ~/.ssh/known_hosts
-      - run:
-          name: Install the Platform.sh CLI tool
-          command: |
-            curl -sS https://platform.sh/cli/installer | php
+      - install_platformsh_tools
       - run:
           name: Trigger a data sync from master environment to nightly edge build.
           command: |
@@ -343,19 +346,7 @@ jobs:
     steps:
       - checkout_code
       - install_php_os_extensions
-      - run:
-          name: Add extra OS and PHP extensions/config
-          command: |
-            sudo docker-php-ext-install pcntl posix
-      - run:
-          name: Keyscan Platform.sh region hostnames for password-less access
-          command: |
-            mkdir -p ~/.ssh
-            ssh-keyscan -H ssh.$PLATFORM_REGION >> ~/.ssh/known_hosts
-      - run:
-          name: Install the Platform.sh CLI tool
-          command: |
-            curl -sS https://platform.sh/cli/installer | php
+      - install_platformsh_tools
       - run:
           name: Fetch database and managed files from NIDirect D7
           command: |
@@ -403,6 +394,9 @@ workflows:
       - edge_build:
           requires:
             - build
+      - code_analysis:
+          requires:
+            - edge_build
 
   # A separate scheduled workflow to sync the data after the nightly build completes.
   # This is separate to avoid using build time/compute units with arbitrary sleep commands;
