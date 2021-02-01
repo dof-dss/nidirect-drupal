@@ -286,8 +286,10 @@ jobs:
               echo "No active environment for $EDGE_BUILD_BRANCH found, attempt to activate one."
               /home/circleci/.platformsh/bin/platform environment:activate -p $PLATFORM_PROJECT_ID -e $EDGE_BUILD_BRANCH -y
             fi
-
-
+      - persist_to_workspace:
+          root: ./
+          paths:
+            - ./
 
   # Code analysis using upgrade_status module; run against platform.sh environment because
   # initiating/installing against Circle CI containers takes a long time indeed.
@@ -295,6 +297,8 @@ jobs:
     docker:
       - image: circleci/php:7.3.14-apache-browsers
     steps:
+      - attach_workspace:
+          at: ./
       - install_php_os_extensions
       - install_platformsh_tools
       - run:
