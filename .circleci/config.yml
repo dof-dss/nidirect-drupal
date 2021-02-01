@@ -304,8 +304,8 @@ jobs:
       - run:
           name: "Invoke upgrade_status drush command"
           command: |
-            /home/circleci/.platformsh/bin/platform environment:drush en upgrade_status -y
-            /home/circleci/.platformsh/bin/platform environment:drush upgrade_status:analyze --all --ignore-contrib --ignore-uninstalled
+            /home/circleci/.platformsh/bin/platform environment:drush en upgrade_status -y -p $PLATFORM_PROJECT_ID -e $EDGE_BUILD_BRANCH
+            /home/circleci/.platformsh/bin/platform environment:drush upgrade_status:analyze --all --ignore-contrib --ignore-uninstalled -p $PLATFORM_PROJECT_ID -e $EDGE_BUILD_BRANCH
 
   # Separate task to allow us to sync data on PSH environments, without pauses in other jobs.
   sync_data:
