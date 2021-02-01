@@ -307,22 +307,6 @@ jobs:
             /home/circleci/.platformsh/bin/platform environment:drush en upgrade_status -y -p $PLATFORM_PROJECT_ID -e $EDGE_BUILD_BRANCH
             /home/circleci/.platformsh/bin/platform environment:drush upgrade_status:analyze --all --ignore-contrib --ignore-uninstalled -p $PLATFORM_PROJECT_ID -e $EDGE_BUILD_BRANCH
 
-
-
-  # Code analysis using upgrade_status module; run against platform.sh environment because
-  # initiating/installing against Circle CI containers takes a long time indeed.
-  code_analysis:
-    docker:
-      - image: circleci/php:7.3.14-apache-browsers
-    steps:
-      - install_php_os_extensions
-      - install_platformsh_tools
-      - run:
-          name: "Invoke upgrade_status drush command"
-          command: |
-            /home/circleci/.platformsh/bin/platform environment:drush en upgrade_status -y
-            /home/circleci/.platformsh/bin/platform environment:drush upgrade_status:analyze --all --ignore-contrib --ignore-uninstalled
-
   # Separate task to allow us to sync data on PSH environments, without pauses in other jobs.
   sync_data:
     docker:
