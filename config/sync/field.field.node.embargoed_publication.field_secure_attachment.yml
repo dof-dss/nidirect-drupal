@@ -1,35 +1,33 @@
-uuid: 5c974d0f-f367-443e-96fe-572f0f8e6c67
+uuid: ccd6f7f6-6117-485d-af0e-9cce150856ba
 langcode: en
 status: true
 dependencies:
   config:
     - field.storage.node.field_secure_attachment
-    - media.type.document
     - node.type.embargoed_publication
+  module:
+    - file
 id: node.embargoed_publication.field_secure_attachment
 field_name: field_secure_attachment
 entity_type: node
 bundle: embargoed_publication
 label: Documents
 description: |
-  Choose at least between one and five individual files to attach to this embargoed publication revision.<br>
-  <br>
+  <p>Choose at least between one and five individual files to attach to this embargoed publication revision.</p>
   <strong>An important note about attachments:</strong>
   <ul>
   <li>Multiple revisions of a publication page can link to the same file attachment.</li>
   <li>If you need to make a new version of a file available within a publication revision, attach a new file with a different filename and remove the old file attachment (this will not affect other revisions of the publication - these will still have the old file attached).</li>
   </ul>
-required: true
+required: false
 translatable: false
 default_value: {  }
 default_value_callback: ''
 settings:
-  handler: 'default:media'
-  handler_settings:
-    target_bundles:
-      document: document
-    sort:
-      field: _none
-    auto_create: false
-    auto_create_bundle: ''
-field_type: entity_reference
+  file_directory: secure_attachment
+  file_extensions: 'pdf doc docx xls xlsx xlsm ppt pptx odt ods odp dot zip'
+  max_filesize: 30MB
+  description_field: true
+  handler: 'default:file'
+  handler_settings: {  }
+field_type: file

@@ -16,6 +16,7 @@ dependencies:
     - node.type.embargoed_publication
   module:
     - datetime
+    - file
     - layout_builder
     - smart_trim
     - text
@@ -46,14 +47,13 @@ content:
       format_type: medium_date
     third_party_settings: {  }
   field_secure_attachment:
-    type: entity_reference_entity_view
+    type: file_default
     weight: 3
-    label: inline
-    settings:
-      view_mode: embed
-      link: false
-    third_party_settings: {  }
     region: content
+    label: above
+    settings:
+      use_description_as_link_text: true
+    third_party_settings: {  }
   field_summary:
     weight: 1
     label: hidden
