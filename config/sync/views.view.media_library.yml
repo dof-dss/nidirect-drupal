@@ -10,6 +10,7 @@ dependencies:
     module:
       - media_library
   module:
+    - file
     - image
     - media
     - media_library
@@ -441,7 +442,12 @@ display:
           tokenize: false
           content: 'No media available.'
           plugin_id: text_custom
-      relationships: {  }
+      relationships:
+        field_media_file_target_id:
+          id: field_media_file_target_id
+          table: media__field_media_file
+          field: field_media_file_target_id
+          plugin_id: standard
       display_extenders: {  }
       use_ajax: true
       css_class: ''
@@ -467,10 +473,25 @@ display:
         - 'config:core.entity_view_display.media.document.embed'
         - 'config:core.entity_view_display.media.document.media_library'
         - 'config:core.entity_view_display.media.document.preview'
+        - 'config:core.entity_view_display.media.image.article_full'
+        - 'config:core.entity_view_display.media.image.banner_deep'
+        - 'config:core.entity_view_display.media.image.banner_thin'
+        - 'config:core.entity_view_display.media.image.card_large'
+        - 'config:core.entity_view_display.media.image.card_small'
         - 'config:core.entity_view_display.media.image.default'
         - 'config:core.entity_view_display.media.image.embed'
+        - 'config:core.entity_view_display.media.image.feature_card'
         - 'config:core.entity_view_display.media.image.full'
+        - 'config:core.entity_view_display.media.image.landing_full'
+        - 'config:core.entity_view_display.media.image.landscape_float'
+        - 'config:core.entity_view_display.media.image.landscape_float_xp'
+        - 'config:core.entity_view_display.media.image.landscape_full'
+        - 'config:core.entity_view_display.media.image.landscape_full_xp'
         - 'config:core.entity_view_display.media.image.media_library'
+        - 'config:core.entity_view_display.media.image.news_thumbnail'
+        - 'config:core.entity_view_display.media.image.portrait_float'
+        - 'config:core.entity_view_display.media.image.portrait_float_xp'
+        - 'config:core.entity_view_display.media.image.portrait_full'
         - 'config:core.entity_view_display.media.image.preview'
         - 'config:core.entity_view_display.media.remote_video.default'
         - 'config:core.entity_view_display.media.remote_video.embed'
@@ -737,6 +758,72 @@ display:
           entity_type: media
           entity_field: bundle
           plugin_id: field
+        filemime:
+          id: filemime
+          table: file_managed
+          field: filemime
+          relationship: field_media_file_target_id
+          group_type: group
+          admin_label: ''
+          label: 'File type'
+          exclude: false
+          alter:
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: true
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          click_sort_column: value
+          type: file_filemime
+          settings:
+            link_to_file: false
+            filemime_image: false
+          group_column: value
+          group_columns: {  }
+          group_rows: true
+          delta_limit: 0
+          delta_offset: 0
+          delta_reversed: false
+          delta_first_last: false
+          multi_type: separator
+          separator: ', '
+          field_api_classes: false
+          entity_type: file
+          entity_field: filemime
+          plugin_id: field
         status:
           id: status
           table: media_field_data
@@ -911,6 +998,7 @@ display:
         style: false
         row: false
         pager: false
+        relationships: false
       display_description: ''
       style:
         type: table
@@ -993,6 +1081,16 @@ display:
             offset: false
             offset_label: Offset
           quantity: 9
+      relationships:
+        field_media_file_target_id:
+          id: field_media_file_target_id
+          table: media__field_media_file
+          field: field_media_file_target_id
+          relationship: none
+          group_type: group
+          admin_label: 'file from field_media_file'
+          required: true
+          plugin_id: standard
     cache_metadata:
       max-age: 0
       contexts:
@@ -1310,10 +1408,25 @@ display:
         - 'config:core.entity_view_display.media.document.embed'
         - 'config:core.entity_view_display.media.document.media_library'
         - 'config:core.entity_view_display.media.document.preview'
+        - 'config:core.entity_view_display.media.image.article_full'
+        - 'config:core.entity_view_display.media.image.banner_deep'
+        - 'config:core.entity_view_display.media.image.banner_thin'
+        - 'config:core.entity_view_display.media.image.card_large'
+        - 'config:core.entity_view_display.media.image.card_small'
         - 'config:core.entity_view_display.media.image.default'
         - 'config:core.entity_view_display.media.image.embed'
+        - 'config:core.entity_view_display.media.image.feature_card'
         - 'config:core.entity_view_display.media.image.full'
+        - 'config:core.entity_view_display.media.image.landing_full'
+        - 'config:core.entity_view_display.media.image.landscape_float'
+        - 'config:core.entity_view_display.media.image.landscape_float_xp'
+        - 'config:core.entity_view_display.media.image.landscape_full'
+        - 'config:core.entity_view_display.media.image.landscape_full_xp'
         - 'config:core.entity_view_display.media.image.media_library'
+        - 'config:core.entity_view_display.media.image.news_thumbnail'
+        - 'config:core.entity_view_display.media.image.portrait_float'
+        - 'config:core.entity_view_display.media.image.portrait_float_xp'
+        - 'config:core.entity_view_display.media.image.portrait_full'
         - 'config:core.entity_view_display.media.image.preview'
         - 'config:core.entity_view_display.media.remote_video.default'
         - 'config:core.entity_view_display.media.remote_video.embed'
@@ -1662,10 +1775,25 @@ display:
         - 'config:core.entity_view_display.media.document.embed'
         - 'config:core.entity_view_display.media.document.media_library'
         - 'config:core.entity_view_display.media.document.preview'
+        - 'config:core.entity_view_display.media.image.article_full'
+        - 'config:core.entity_view_display.media.image.banner_deep'
+        - 'config:core.entity_view_display.media.image.banner_thin'
+        - 'config:core.entity_view_display.media.image.card_large'
+        - 'config:core.entity_view_display.media.image.card_small'
         - 'config:core.entity_view_display.media.image.default'
         - 'config:core.entity_view_display.media.image.embed'
+        - 'config:core.entity_view_display.media.image.feature_card'
         - 'config:core.entity_view_display.media.image.full'
+        - 'config:core.entity_view_display.media.image.landing_full'
+        - 'config:core.entity_view_display.media.image.landscape_float'
+        - 'config:core.entity_view_display.media.image.landscape_float_xp'
+        - 'config:core.entity_view_display.media.image.landscape_full'
+        - 'config:core.entity_view_display.media.image.landscape_full_xp'
         - 'config:core.entity_view_display.media.image.media_library'
+        - 'config:core.entity_view_display.media.image.news_thumbnail'
+        - 'config:core.entity_view_display.media.image.portrait_float'
+        - 'config:core.entity_view_display.media.image.portrait_float_xp'
+        - 'config:core.entity_view_display.media.image.portrait_full'
         - 'config:core.entity_view_display.media.image.preview'
         - 'config:core.entity_view_display.media.remote_video.default'
         - 'config:core.entity_view_display.media.remote_video.embed'
