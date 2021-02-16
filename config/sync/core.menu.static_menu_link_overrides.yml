@@ -66,11 +66,11 @@ definitions:
     expanded: false
     weight: 7
   'admin_toolbar_tools__extra_links:node__add__gp_practice':
-    weight: 7
+    weight: 6
+    parent: gp.add
     menu_name: admin
-    parent: 'admin_toolbar_tools.extra_links:node.add'
-    expanded: false
     enabled: true
+    expanded: false
   'admin_toolbar_tools__extra_links:node__add__health_condition':
     weight: 8
     menu_name: admin
@@ -120,10 +120,52 @@ definitions:
     expanded: false
     weight: 6
   origins_workflow__gps:
+    weight: 8
     menu_name: admin
     parent: system.admin_content
-    weight: 6
     expanded: false
     enabled: false
+  nidirect_campaign_importer__dashboard:
+    weight: 1
+    menu_name: admin
+    parent: system.admin_content
+    enabled: true
+    expanded: false
+  'admin_toolbar_tools__extra_links:view__files':
+    weight: 4
+    menu_name: admin
+    parent: system.admin_content
+    expanded: false
+    enabled: true
+  'admin_toolbar_tools__extra_links:media_page':
+    weight: 5
+    menu_name: admin
+    parent: system.admin_content
+    expanded: false
+    enabled: true
+  entity__scheduled_transition__collection:
+    weight: 6
+    menu_name: admin
+    parent: system.admin_content
+    expanded: false
+    enabled: true
+  origins_workflow__scheduled_tab:
+    weight: 7
+    menu_name: admin
+    parent: system.admin_content
+    expanded: false
+    enabled: true
+  entity__sitewide_alert__collection:
+    weight: 9
+    menu_name: admin
+    parent: system.admin_content
+    expanded: false
+    enabled: true
+  gp__add:
+    weight: 7
+    parent: 'admin_toolbar_tools.extra_links:node.add'
+    menu_name: admin
+    expanded: false
+    enabled: true
 _core:
   default_config_hash: o4bYR9ZupWb3AsOIizTUG4g-nu1mdJqA59UB7QT-ifQ
