@@ -66,11 +66,11 @@ definitions:
     expanded: false
     weight: 7
   'admin_toolbar_tools__extra_links:node__add__gp_practice':
-    weight: 7
+    weight: 6
+    parent: gp.add
     menu_name: admin
-    parent: 'admin_toolbar_tools.extra_links:node.add'
-    expanded: false
     enabled: true
+    expanded: false
   'admin_toolbar_tools__extra_links:node__add__health_condition':
     weight: 8
     menu_name: admin
@@ -159,6 +159,12 @@ definitions:
     weight: 9
     menu_name: admin
     parent: system.admin_content
+    expanded: false
+    enabled: true
+  gp__add:
+    weight: 7
+    parent: 'admin_toolbar_tools.extra_links:node.add'
+    menu_name: admin
     expanded: false
     enabled: true
 _core:
