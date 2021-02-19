@@ -1,0 +1,29 @@
+uuid: 805d60f4-360e-4b0a-9c6c-a60f759a3de1
+langcode: en
+status: true
+dependencies:
+  config:
+    - views.view.driving_instructors
+  module:
+    - system
+    - views
+  theme:
+    - nicsdru_nidirect_theme
+id: exposedformdriving_instructorsdriving_instructor_results
+theme: nicsdru_nidirect_theme
+region: sidebar_first
+weight: -10
+provider: null
+plugin: 'views_exposed_filter_block:driving_instructors-driving_instructor_results'
+settings:
+  id: 'views_exposed_filter_block:driving_instructors-driving_instructor_results'
+  label: ''
+  provider: views
+  label_display: '0'
+  views_label: ''
+visibility:
+  request_path:
+    id: request_path
+    pages: '/services/driving-instructors*'
+    negate: false
+    context_mapping: {  }
