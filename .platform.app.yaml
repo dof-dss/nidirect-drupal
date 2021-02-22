@@ -135,9 +135,3 @@ web:
         # Provide a longer TTL (2 weeks) for aggregated CSS and JS files.
         '^/sites/default/files/(css|js)':
           expires: 2w
-
-# The configuration of scheduled execution.
-crons:
-  drupal:
-    spec: '*/5 * * * *'
-    cmd: 'cd web ; drush core-cron'

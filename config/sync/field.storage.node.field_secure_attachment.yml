@@ -1,17 +1,20 @@
-uuid: 00e59dde-0f1c-40b5-81f3-4847b85529f0
+uuid: a17509cc-4193-4d49-af93-e10e1a28a68d
 langcode: en
 status: true
 dependencies:
   module:
-    - media
+    - file
     - node
 id: node.field_secure_attachment
 field_name: field_secure_attachment
 entity_type: node
-type: entity_reference
+type: file
 settings:
-  target_type: media
-module: core
+  display_field: false
+  display_default: false
+  uri_scheme: private
+  target_type: file
+module: file
 locked: false
 cardinality: -1
 translatable: true

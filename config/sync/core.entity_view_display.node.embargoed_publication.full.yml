@@ -1,8 +1,9 @@
-uuid: 6de19b2c-e11c-4fe8-90c1-04a168a98858
+uuid: 05909a26-f0e0-4c45-89db-c30d912f6696
 langcode: en
 status: true
 dependencies:
   config:
+    - core.entity_view_mode.node.full
     - field.field.node.embargoed_publication.body
     - field.field.node.embargoed_publication.field_meta_tags
     - field.field.node.embargoed_publication.field_publication_type
@@ -16,73 +17,46 @@ dependencies:
   module:
     - datetime
     - file
-    - metatag
-    - options
+    - layout_builder
     - smart_trim
     - text
     - user
-id: node.embargoed_publication.default
+third_party_settings:
+  layout_builder:
+    allow_custom: false
+    enabled: false
+id: node.embargoed_publication.full
 targetEntityType: node
 bundle: embargoed_publication
-mode: default
+mode: full
 content:
   body:
-    label: hidden
+    label: inline
     type: text_default
-    weight: 4
+    weight: 2
     settings: {  }
     third_party_settings: {  }
     region: content
-  field_meta_tags:
-    weight: 8
-    label: above
-    settings: {  }
-    third_party_settings: {  }
-    type: metatag_empty_formatter
-    region: content
-  field_publication_type:
-    type: list_default
-    weight: 1
-    region: content
-    label: above
-    settings: {  }
-    third_party_settings: {  }
   field_published_date:
     type: datetime_default
-    weight: 2
+    weight: 0
     region: content
-    label: above
+    label: inline
     settings:
-      format_type: medium
       timezone_override: ''
+      format_type: medium_date
     third_party_settings: {  }
   field_secure_attachment:
-    weight: 9
+    type: file_default
+    weight: 3
+    region: content
     label: above
     settings:
       use_description_as_link_text: true
     third_party_settings: {  }
-    type: file_default
-    region: content
-  field_site_themes:
-    type: entity_reference_label
-    weight: 0
-    region: content
-    label: above
-    settings:
-      link: true
-    third_party_settings: {  }
-  field_subtheme:
-    type: entity_reference_label
-    weight: 5
-    region: content
-    label: above
-    settings:
-      link: true
-    third_party_settings: {  }
   field_summary:
-    weight: 3
-    label: above
+    weight: 1
+    label: hidden
     settings:
       trim_length: 600
       trim_type: chars
@@ -97,20 +71,13 @@ content:
     third_party_settings: {  }
     type: smart_trim
     region: content
-  field_top_level_theme:
-    type: entity_reference_label
-    weight: 6
-    region: content
-    label: above
-    settings:
-      link: true
-    third_party_settings: {  }
-  links:
-    weight: 7
-    region: content
-    settings: {  }
-    third_party_settings: {  }
 hidden:
   content_moderation_control: true
+  field_meta_tags: true
+  field_publication_type: true
+  field_site_themes: true
+  field_subtheme: true
+  field_top_level_theme: true
   langcode: true
+  links: true
   search_api_excerpt: true
