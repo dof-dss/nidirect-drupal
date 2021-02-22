@@ -4,7 +4,7 @@
 
 Drupal source code for the NIDirect website: https://www.nidirect.gov.uk.
 
-Drupal 8 project based on `drupal-composer/drupal-project`. The project comprises of a number of disparate repositories and the diagram below outlines the relationships between them.
+Drupal 8 project based on `drupal-composer/drupal-project`. The project consists of a number of disparate repositories and the diagram below outlines the relationships between them.
 
 [Composer](https://getcomposer.org/) is used to define and build the project; see `composer.json` for details.
 
@@ -119,8 +119,8 @@ selected in the 'Theme/subtheme' field. This is achieved by using the 'Articles 
 
 ### Display of teasers on Landing Pages
 
-In order to add teasers to a landing page you should first select a theme/subtheme and then go in to the layout builder for the node. Once you have added a 'one column' section 
-you should then be able to add a block. Choose to 'create a custom block' and then choose 'Article Teasers by Topic' from the list of available blocks. A list of teasers will 
+In order to add teasers to a landing page you should first select a theme/subtheme and then go in to the layout builder for the node. Once you have added a 'one column' section
+you should then be able to add a block. Choose to 'create a custom block' and then choose 'Article Teasers by Topic' from the list of available blocks. A list of teasers will
 then appear according to the theme/subtheme selected.
 
 Note that once you have saved the layout builder changes, you may then go back to the article teasers block and click on 'configure' - if you then select 'manually control listing'
