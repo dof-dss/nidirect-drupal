@@ -5,7 +5,6 @@ dependencies:
   config:
     - views.view.driving_instructors
   module:
-    - ctools
     - system
     - views
   theme:
@@ -25,13 +24,6 @@ settings:
 visibility:
   request_path:
     id: request_path
-    pages: '/services/driving-instructors*'
+    pages: /services/driving-instructors
     negate: false
     context_mapping: {  }
-  'entity_bundle:node':
-    id: 'entity_bundle:node'
-    bundles:
-      driving_instructor: driving_instructor
-    negate: true
-    context_mapping:
-      node: '@node.node_route_context:node'
