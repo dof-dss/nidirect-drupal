@@ -4,10 +4,33 @@ status: true
 dependencies:
   module:
     - menu_ui
+    - origins_toc
+    - scheduler
 third_party_settings:
   menu_ui:
     available_menus: {  }
     parent: ''
+  origins_toc:
+    toc_enable: 0
+    toc_title: 'Table of contents'
+    toc_location: ''
+    toc_insert: after
+    toc_source_container: ''
+    toc_element: h2
+    toc_exclusions: ''
+  scheduler:
+    expand_fieldset: when_required
+    fields_display_mode: vertical_tab
+    publish_enable: false
+    publish_past_date: error
+    publish_past_date_created: false
+    publish_required: false
+    publish_revision: false
+    publish_touch: false
+    show_message_after_update: false
+    unpublish_enable: false
+    unpublish_required: false
+    unpublish_revision: false
 name: 'Health condition: alternative'
 type: health_condition_alternative
 description: 'Some health conditions are known by alternative names. This content type is intended to act as a container for that alternative information'

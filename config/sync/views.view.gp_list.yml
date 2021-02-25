@@ -2,11 +2,8 @@ uuid: 30c84a72-35b3-48ce-8afd-33edaffed9ae
 langcode: en
 status: true
 dependencies:
-  config:
-    - system.menu.admin
   module:
     - nidirect_gp
-    - user
 id: gp_list
 label: 'GP List'
 module: views
@@ -22,9 +19,8 @@ display:
     position: 0
     display_options:
       access:
-        type: perm
-        options:
-          perm: 'add gp entities'
+        type: none
+        options: {  }
       cache:
         type: tag
         options: {  }
@@ -628,7 +624,6 @@ display:
         - 'languages:language_interface'
         - url
         - url.query_args
-        - user.permissions
       tags: {  }
   gp_list_page:
     display_plugin: page
@@ -638,15 +633,6 @@ display:
     display_options:
       display_extenders: {  }
       path: admin/content/gp
-      menu:
-        type: normal
-        title: 'GP list'
-        description: ''
-        expanded: false
-        parent: system.admin_content
-        weight: 0
-        context: '0'
-        menu_name: admin
     cache_metadata:
       max-age: -1
       contexts:
@@ -654,5 +640,4 @@ display:
         - 'languages:language_interface'
         - url
         - url.query_args
-        - user.permissions
       tags: {  }
