@@ -65,7 +65,7 @@ build:
 hooks:
   build: |
     set -e
-    bash install-redis.sh 5.1.1
+    bash install-redis.sh 6.0.0
     echo "Replace vanilla CKEditor config with a custom one to fix the click/drag bug with embedded entities"
     git clone https://github.com/dof-dss/ckeditor4-fix-widget-dnd.git
     rm -rf web/core/assets/vendor/ckeditor
