@@ -4,11 +4,9 @@
  * Platform.sh settings.
  */
 
-$platformsh = new \Platformsh\ConfigReader\Config();
+use Drupal\Core\Installer\InstallerKernel;
 
-if (!$platformsh->inRuntime()) {
-  return;
-}
+$platformsh = new \Platformsh\ConfigReader\Config();
 
 // Configure the database.
 $creds = $platformsh->credentials('database');
@@ -35,28 +33,21 @@ $databases['drupal7db']['default'] = [
 ];
 $databases['migrate']['default'] = $databases['drupal7db']['default'];
 
-// Solr configuration.
-$platformsh->registerFormatter('drupal-solr', function($solr) {
-  // Default the solr core name to `collection1` for pre-Solr-6.x instances.
-  return [
-    'core' => substr($solr['path'], 5) ? : 'collection1',
-    'path' => '',
-    'host' => $solr['host'],
-    'port' => $solr['port'],
-  ];
-});
-
-// Update these values to the relationship name (from .platform.app.yaml)
-// and the machine name of the server from your Drupal configuration.
-$relationship_name = 'solr';
-$solr_server_name = 'solr_default';
-if ($platformsh->hasRelationship($relationship_name)) {
-  // Set the connector configuration to the appropriate value, as defined by the formatter above.
-  $config['search_api.server.' . $solr_server_name]['backend_config']['connector_config'] = $platformsh->formattedCredentials($relationship_name, 'drupal-solr');
+// Enable verbose error messages on development branches, but not on the production branch.
+// You may add more debug-centric settings here if desired to have them automatically enable
+// on development but not production.
+if (isset($platformsh->branch)) {
+  // Production type environment.
+  if ($platformsh->branch == 'master' || $platformsh->onDedicated()) {
+    $config['system.logging']['error_level'] = 'hide';
+  } // Development type environment.
+  else {
+    $config['system.logging']['error_level'] = 'verbose';
+  }
 }
 
 // Enable Redis caching.
-if ($platformsh->hasRelationship('redis') && !drupal_installation_attempted() && extension_loaded('redis') && class_exists('Drupal\redis\ClientFactory')) {
+if ($platformsh->hasRelationship('redis') && !InstallerKernel::installationAttempted() && extension_loaded('redis') && class_exists('Drupal\redis\ClientFactory')) {
   $redis = $platformsh->credentials('redis');
 
   // Set Redis as the default backend for any cache bin not otherwise specified.
@@ -109,20 +100,48 @@ if ($platformsh->hasRelationship('redis') && !drupal_installation_attempted() &&
   ];
 }
 
-// Configure private and temporary file paths.
-if (!isset($settings['file_private_path'])) {
-  $settings['file_private_path'] = $platformsh->appDir . '/private';
-}
-if (!isset($config['system.file']['path']['temporary'])) {
-  $config['system.file']['path']['temporary'] = $platformsh->appDir . '/tmp';
+if ($platformsh->inRuntime()) {
+  // Configure private and temporary file paths.
+  if (!isset($settings['file_private_path'])) {
+    $settings['file_private_path'] = $platformsh->appDir . '/private';
+  }
+  if (!isset($settings['file_temp_path'])) {
+    $settings['file_temp_path'] = $platformsh->appDir . '/tmp';
+  }
+
+  // Configure the default PhpStorage and Twig template cache directories.
+  if (!isset($settings['php_storage']['default'])) {
+    $settings['php_storage']['default']['directory'] = $settings['file_private_path'];
+  }
+  if (!isset($settings['php_storage']['twig'])) {
+    $settings['php_storage']['twig']['directory'] = $settings['file_private_path'];
+  }
+
+  // Set the project-specific entropy value, used for generating one-time
+  // keys and such.
+  $settings['hash_salt'] = $settings['hash_salt'] ?? $platformsh->projectEntropy;
+
+  // Set the deployment identifier, which is used by some Drupal cache systems.
+  $settings['deployment_identifier'] = $settings['deployment_identifier'] ?? $platformsh->treeId;
 }
 
-// Configure the default PhpStorage and Twig template cache directories.
-if (!isset($settings['php_storage']['default'])) {
-  $settings['php_storage']['default']['directory'] = $settings['file_private_path'];
-}
-if (!isset($settings['php_storage']['twig'])) {
-  $settings['php_storage']['twig']['directory'] = $settings['file_private_path'];
+$platformsh->registerFormatter('drupal-solr', function($solr) {
+  // Default the solr core name to `collection1` for pre-Solr-6.x instances.
+  return [
+    'core' => substr($solr['path'], 5) ? : 'collection1',
+    'path' => '',
+    'host' => $solr['host'],
+    'port' => $solr['port'],
+  ];
+});
+
+// Update these values to the relationship name (from .platform.app.yaml)
+// and the machine name of the server from your Drupal configuration.
+$relationship_name = 'solr';
+$solr_server_name = 'solr_default';
+if ($platformsh->hasRelationship($relationship_name)) {
+  // Set the connector configuration to the appropriate value, as defined by the formatter above.
+  $config['search_api.server.' . $solr_server_name]['backend_config']['connector_config'] = $platformsh->formattedCredentials($relationship_name, 'drupal-solr');
 }
 
 // The 'trusted_hosts_pattern' setting allows an admin to restrict the Host header values
@@ -171,19 +190,3 @@ foreach ($platformsh->variables() as $name => $value) {
       break;
   }
 }
-
-
-// Set the project-specific entropy value, used for generating one-time
-// keys and such.
-$settings['hash_salt'] = $settings['hash_salt'] ?? $platformsh->projectEntropy;
-
-// Set the deployment identifier, which is used by some Drupal cache systems.
-$settings['deployment_identifier'] = $settings['deployment_identifier'] ?? $platformsh->treeId;
-
-// Determine the PSH host URI.
-$psh_host = "https://" . getenv('PLATFORM_ENVIRONMENT') . "-" . getenv("PLATFORM_PROJECT") . ".uk-1.platformsh.site";
-
-// Google Analytics API config.
-$config['google_analytics_counter.settings']['general_settings']['client_id'] = getenv('GA_CLIENT_ID');
-$config['google_analytics_counter.settings']['general_settings']['client_secret'] = getenv('GA_CLIENT_SECRET');
-$config['google_analytics_counter.settings']['general_settings']['redirect_uri'] = $psh_host . "/admin/config/system/google-analytics-counter/authentication";
