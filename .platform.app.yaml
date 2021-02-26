@@ -9,14 +9,14 @@ name: 'nidirect'
 # The runtime the application uses.
 type: 'php:7.4'
 
-dependencies:
-  php:
-    composer/composer: '^2'
-
 runtime:
   # Enable the redis extension so Drupal can communicate with the Redis cache.
   extensions:
     - redis
+
+dependencies:
+  php:
+    composer/composer: '^2'
 
 # The relationships of the application with services or other applications.
 #
@@ -25,7 +25,7 @@ runtime:
 # side is in the form `:`.
 relationships:
   solr: 'solr:solr'
-  redis: 'redis:redis'
+  rediscache: "cacheredis:redis"
   #  For MariaDB, the endpoint does not change whether you used the mysql or mariadb service type.
   database: 'db:admin'
   drupal7db: 'drupal7db:admin'
