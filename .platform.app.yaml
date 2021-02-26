@@ -9,6 +9,15 @@ name: 'nidirect'
 # The runtime the application uses.
 type: 'php:7.4'
 
+dependencies:
+  php:
+    composer/composer: '^2'
+
+runtime:
+  # Enable the redis extension so Drupal can communicate with the Redis cache.
+  extensions:
+    - redis
+
 # The relationships of the application with services or other applications.
 #
 # The left-hand side is the name of the relationship as it will be exposed
