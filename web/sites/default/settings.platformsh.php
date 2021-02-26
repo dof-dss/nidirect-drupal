@@ -38,11 +38,17 @@ $databases['migrate']['default'] = $databases['drupal7db']['default'];
 // on development but not production.
 if (isset($platformsh->branch)) {
   // Production type environment.
-  if ($platformsh->branch == 'master' || $platformsh->onDedicated()) {
-    $config['system.logging']['error_level'] = 'hide';
-  } // Development type environment.
-  else {
+//  if ($platformsh->branch == 'master' || $platformsh->onDedicated()) {
+//    $config['system.logging']['error_level'] = 'hide';
+//  } // Development type environment.
+//  else {
+//    $config['system.logging']['error_level'] = 'verbose';
+//  }
+  if (getenv('LOGGING_LEVEL') === 'verbose') {
     $config['system.logging']['error_level'] = 'verbose';
+  }
+  else {
+    $config['system.logging']['error_level'] = 'hide';
   }
 }
 
