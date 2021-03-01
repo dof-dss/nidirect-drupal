@@ -321,7 +321,7 @@ jobs:
       - install_php_os_extensions
       - install_platformsh_tools
       - run:
-          name: Trigger a data sync from master environment to nightly edge build.
+          name: Trigger a data sync from production environment to nightly edge build.
           command: |
             /home/circleci/.platformsh/bin/platform sync data -p $PLATFORM_PROJECT_ID -e $EDGE_BUILD_BRANCH -y
       - run:
@@ -358,12 +358,12 @@ jobs:
       - run:
           name: Fetch database and managed files from NIDirect D7
           command: |
-            /home/circleci/.platformsh/bin/platform ssh -p $PLATFORM_PROJECT_ID -e master /app/migrate-fetch.sh $PLATFORM_LEGACY_PROJECT_ID $PLATFORM_LEGACY_BRANCH
+            /home/circleci/.platformsh/bin/platform ssh -p $PLATFORM_PROJECT_ID -e main /app/migrate-fetch.sh $PLATFORM_LEGACY_PROJECT_ID $PLATFORM_LEGACY_BRANCH
           no_output_timeout: 30m
       - run:
           name: Unpack database to legacy database service
           command: |
-            /home/circleci/.platformsh/bin/platform ssh -p $PLATFORM_PROJECT_ID -e master /app/migrate-unpack.sh
+            /home/circleci/.platformsh/bin/platform ssh -p $PLATFORM_PROJECT_ID -e main /app/migrate-unpack.sh
           no_output_timeout: 30m
 
 workflows:
