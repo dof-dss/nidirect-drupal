@@ -43,11 +43,6 @@ drush migrate:rollback --group=migrate_drupal_7_file
 
 ##### PRE, IMPORT AND POST MIGRATE ######
 
-# Execute pre-migration commands with drupal console.
-cd $DRUPAL_ROOT
-drupal nidirect:migrate:pre
-drupal nidirect:migrate:pre:feature_nodes
-
 # Import any new users
 drush migrate:import upgrade_d7_user
 
@@ -72,11 +67,6 @@ drush migrate:import nidirect_book
 
 # Import URL aliases and redirects
 drush migrate:import --group=migrate_drupal_7_link
-
-# Execute post-migration commands with drupal console.
-cd $DRUPAL_ROOT
-drupal nidirect:migrate:post
-drupal nidirect:migrate:post:feature_nodes
 
 # Clear caches and re-index Solr.
 drush cr
