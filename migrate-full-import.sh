@@ -17,6 +17,11 @@ else
   DRUPAL_ROOT=/app/web
 fi
 
+# Option to allow the preservation of certain content types.
+if [ "$1" == "-p" ] || [ "$1" == "--preserve" ]; then
+ PRESERVE=true;
+fi
+
 ##### RESET ######
 # Reset all migrations.
 for migration_id in `drush migrate:status --format=csv | grep Importing | awk -F ',' '{print $2}'`; do
@@ -32,9 +37,13 @@ drush migrate:rollback --group=migrate_drupal_7_link
 drush migrate:rollback nidirect_book
 
 # Rollback all node migrations.
-for type in driving_instructor application article external_link gp_practice health_condition landing_page news nidirect_contact contact page publication; do
+for type in driving_instructor application article external_link gp_practice health_condition news nidirect_contact contact page publication; do
   drush migrate:rollback --group=migrate_nidirect_node_$type
 done
+
+if [ ! $PRESERVE ]; then
+  drush migrate:rollback --group=migrate_nidirect_node_landing_page
+fi
 
 # Rollback GP entities.
 drush migrate:rollback --group=migrate_nidirect_entity_gp
@@ -61,9 +70,13 @@ drush migrate:import upgrade_d7_file_image
 drush migrate:import --group=migrate_nidirect_entity_gp
 
 # Import all node migrations.
-for type in driving_instructor application article external_link gp_practice health_condition landing_page news nidirect_contact contact page publication; do
+for type in driving_instructor application article external_link gp_practice health_condition news nidirect_contact contact page publication; do
   drush migrate:import --group=migrate_nidirect_node_$type --execute-dependencies
 done
+
+if [ ! $PRESERVE ]; then
+  drush migrate:import --group=migrate_nidirect_node_landing_page
+fi
 
 # Import book
 drush migrate:import nidirect_book
