@@ -12,7 +12,488 @@ id: ready_for_universal_credit
 title: 'Getting ready for Universal Credit in Northern Ireland'
 description: ''
 category: ''
-elements: "introduction_page:\n  '#type': webform_wizard_page\n  '#title': Introduction\n  '#next_button_label': Next\n  introduction:\n    '#type': processed_text\n    '#text': |\n      <drupal-media data-align=\"center\" data-entity-type=\"media\" data-entity-uuid=\"2780fb0c-2492-4380-8b02-41a60385aab6\" data-view-mode=\"landscape_float\"></drupal-media>\n      \n      <p>Universal Credit works differently from the benefits it replaces. Before making your claim you need to know:</p>\n      \n      <ul>\n      \t<li>Universal Credit will be paid twice a month, although you may request a monthly payment</li>\n      \t<li>you will be expected to make your claim online</li>\n      \t<li>you will receive a single payment for your household</li>\n      \t<li>if your Universal Credit includes an amount for rent, it will be paid directly to your landlord –&nbsp;however, subject to certain conditions, you will be able to opt out of direct payments and arrange to pay your landlord yourself</li>\n      </ul>\n      \n      <h2>Find out how ready you are</h2>\n      \n      <p>By answering the following five questions you will know if there are important changes you need to make and get advice on how to get ready for Universal Credit.</p>\n      \n      <p>This will take about five minutes.</p>\n      \n    '#format': full_html\nquestion_1_page:\n  '#type': webform_wizard_page\n  '#title': 'Question 1'\n  '#next_button_label': Next\n  question_1_title:\n    '#type': webform_markup\n    '#markup': '<h2>Question 1</h2>'\n  do_you_need_help_using_the_internet_or_a_computer_for_example_cl:\n    '#type': radios\n    '#title': 'Do you need help using the internet or a computer (for example, claiming benefits online using a computer)?'\n    '#options': yes_no\n    '#required': true\nquestion_2_page:\n  '#type': webform_wizard_page\n  '#title': 'Question 2'\n  '#next_button_label': Next\n  question_2_title:\n    '#type': webform_markup\n    '#markup': '<h2>Question 2</h2>'\n  do_you_use_an_account_to_manage_your_money_:\n    '#type': radios\n    '#title': 'Do you use an account to manage your money?'\n    '#options':\n      yes_bank_building_society_account: 'Yes, I use a current or basic account with a bank or building society'\n      yes_credit_union_account: 'Yes, I use a credit union account'\n      yes_post_office_card_account: 'Yes, I use a Post Office card account'\n      no_prepaid_card: 'No, I use a prepaid card'\n      no_have_account_prefer_not_to_use: 'No, I have an account but prefer not to use it'\n      no_account: 'No, I don’t have an account'\n      not_sure: 'I''m not sure'\n    '#required': true\nquestion_3_page:\n  '#type': webform_wizard_page\n  '#title': 'Question 3'\n  '#next_button_label': Next\n  question_3_title:\n    '#type': webform_markup\n    '#markup': '<h2>Question 3</h2>'\n  how_often_are_you_paid_from_work_tax_credits_or_other_benefits_:\n    '#type': radios\n    '#title': 'How often are you paid (from work, tax credits or other benefits)?'\n    '#options':\n      mixture: 'A mixture (for example I get paid from work and/or paid benefits for a different period)'\n      weekly: Weekly\n      two_weeks: 'Every two weeks'\n      four_weeks: 'Every four weeks'\n      monthly: Monthly\n      not_getting_paid: 'I am not currently being paid'\n      other: Other\n    '#required': true\nquestion_4_page:\n  '#type': webform_wizard_page\n  '#title': 'Question 4'\n  '#next_button_label': Next\n  question_4_title:\n    '#type': webform_markup\n    '#markup': '<h2>Question 4</h2>'\n  do_you_pay_rent_is_your_rent_paid_on_your_behalf_or_do_you_have_:\n    '#type': radios\n    '#title': 'Do you pay rent, is your rent paid on your behalf, or do you have a mortgage?'\n    '#options':\n      yes_pay_rent_direct_landlord: 'Yes, I pay rent directly to my landlord or a third party (for example, an estate agent or property management company)'\n      yes_rent_paid_direct_landlord_via_housing_benefit: 'Yes, my rent is paid directly to my landlord through my Housing Benefit'\n      yes_pay_rent_myself_and_part_paid_by_housing_benefit: 'Yes, I pay part of my rent myself and the other part is paid by my Housing Benefit'\n      yes_pay_mortgage: 'Yes, I have a mortgage and I make regular payments myself'\n      yes_pay_mortgage_and_part_paid_by_housing_benefit: 'Yes, I have a mortgage and some or all of it is paid for me through a benefit'\n      'no': 'No (for example, I live with my family or a friend, or I own my house outright)'\n    '#required': true\nquestion_5_page:\n  '#type': webform_wizard_page\n  '#title': 'Question 5'\n  '#next_button_label': Submit\n  question_5_title:\n    '#type': webform_markup\n    '#markup': '<h2>Question 5</h2>'\n  are_you_married_and_living_together_or_do_you_live_with_a_partne:\n    '#type': radios\n    '#title': 'Are you married and living together or do you live with a partner?'\n    '#options':\n      'no': 'No'\n      yes_manage_money_together: 'Yes and we manage our money together'\n      yes_manage_money_separately: 'Yes, and we manage our money separately'\n    '#required': true\nfeedback_page:\n  '#type': webform_wizard_page\n  '#title': 'Are you ready for Universal Credit?'\n  introduction_feedback:\n    '#type': processed_text\n    '#text': |\n      <p>Please review the advice below for each of the five questions you have answered to see if you are ready for Universal Credit.</p>\n      \n    '#format': full_html\n  question_1_feedback:\n    '#type': processed_text\n    '#text': |\n      <h2>Question 1</h2>\n      \n      <p>Do you need help using the internet or a computer (for example, claiming benefits online using a computer)?</p>\n      \n      <p>[webform_submission:values:do_you_need_help_using_the_internet_or_a_computer_for_example_cl:format]</p>\n      \n    '#format': full_html\n  getting_online:\n    '#type': processed_text\n    '#states':\n      visible:\n        ':input[name=\"do_you_need_help_using_the_internet_or_a_computer_for_example_cl\"]':\n          value: 'Yes'\n    '#wrapper_attributes':\n      class:\n        - 'messages messages--error'\n    '#text': |\n      <h3>Getting online</h3>\n      \n      <p>You will be expected to claim Universal Credit online. This means you will need to be able to use the internet.</p>\n      \n      <p>If you don't know how to use a computer or access the internet, you can learn how by taking a free GOT IT or GO ON beginners course through LibrariesNI. &nbsp;To find a library and courses near you, visit <a href=\"http://www.librariesni.org.uk/Libraries/Pages/libraries-home.aspx\">LibrariesNI</a>, phone 0345 4504 580 or email <a href=\"mailto:enquiries@librariesni.org\">enquiries@librariesni.org</a>.</p>\n      \n      <p>You can also visit the <a href=\"/node/5087\">Go ON NI events page</a> on nidirect.</p>\n      \n      <p>If you can use a computer a little but are not confident using the internet, try e-learning using the Online Basics course on the <a href=\"https://www.learnmyway.com/subjects/online-basics/\">Learn my way website</a>. &nbsp;&nbsp;You can get <a href=\"/node/7666\" target=\"_blank\">information and free downloadable training guides from nidirect</a>. &nbsp;</p>\n      \n      <p>If you don't have access to a computer or the internet, ask for advice at your local <a href=\"/node/2739\">Jobs &amp; Benefits office</a> when you first claim Universal Credit. If you are a library member you can use their computers free of charge. &nbsp;</p>\n      \n      <p>If you are concerned about Internet security, visit nidirect’s <a href=\"/taxonomy/term/419\">Discover the Internet section</a> or the <a href=\"http://www.getsafeonline.org/protecting-yourself/\">Get Safe Online website</a> for information and advice.</p>\n      \n    '#format': full_html\n  make_your_claim_online:\n    '#type': processed_text\n    '#states':\n      visible:\n        ':input[name=\"do_you_need_help_using_the_internet_or_a_computer_for_example_cl\"]':\n          value: 'No'\n    '#wrapper_attributes':\n      class:\n        - 'messages messages--status'\n    '#text': '<h3>Making your claim online</h3><p>You will be expected to claim Universal Credit online.</p><p>If you are concerned about Internet security, visit nidirect’s <a href=\"/taxonomy/term/419\">Discover the Internet section</a> or <a href=\"http://www.getsafeonline.org/protecting-yourself/\">Get Safe Online</a> website for information and advice.</p>'\n    '#format': full_html\n  question_2_feedback:\n    '#type': processed_text\n    '#text': |\n      <h2>Question 2</h2>\n      \n      <p>Do you use an account to manage your money?</p>\n      \n      <p>[webform_submission:values:do_you_use_an_account_to_manage_your_money_:format]</p>\n      \n    '#format': basic_html\n  account_for_payment:\n    '#type': processed_text\n    '#states':\n      visible:\n        ':input[name=\"do_you_use_an_account_to_manage_your_money_\"]':\n          value: yes_bank_building_society_account\n    '#wrapper_attributes':\n      class:\n        - 'messages messages--status'\n    '#text': |\n      <h3>Account for payment</h3>\n      \n      <p>If you're eligible for Universal Credit, it will be paid into your bank or building society account. You can also use your account to set up automated monthly payments for rent and bills.</p>\n      \n      <p>If you have a partner, Universal Credit will normally make one payment for both of you into one account.</p>\n      \n    '#format': full_html\n  account_for_payment_post_office_card_account:\n    '#type': processed_text\n    '#states':\n      visible:\n        ':input[name=\"do_you_use_an_account_to_manage_your_money_\"]':\n          value: yes_post_office_card_account\n    '#wrapper_attributes':\n      class:\n        - 'messages messages--status'\n    '#text': |\n      <h3>Account for payment</h3>\n      \n      <p>If you're eligible for Universal Credit, you can receive it through your Post Office card account. However, you can't use a Post Office card account to set up automated payments for rent and bills - you should think about opening a basic bank or building society account that offers automated payments.</p>\n      \n      <p>If you have a partner, Universal Credit will normally make one payment for both of you into one account.</p>\n      \n    '#format': full_html\n  account_for_payment_warning:\n    '#type': processed_text\n    '#states':\n      visible:\n        ':input[name=\"do_you_use_an_account_to_manage_your_money_\"]':\n          value: no_have_account_prefer_not_to_use\n    '#wrapper_attributes':\n      class:\n        - 'messages messages--error'\n    '#text': |\n      <h3>Account for payment</h3>\n      \n      <p>If you're eligible for Universal Credit, it will be paid into your bank or building society account. You can also use your account to set up automated monthly payments for rent and bills.</p>\n      \n      <p>If you have a partner, Universal Credit will normally make one payment for both of you into one account.</p>\n      \n      <p>Find out about <a href=\"/node/2030\">choosing a current account to receive Universal Credit</a>.</p>\n      \n    '#format': full_html\n  check_you_account_is_suitable:\n    '#type': processed_text\n    '#states':\n      visible:\n        ':input[name=\"do_you_use_an_account_to_manage_your_money_\"]':\n          value: yes_credit_union_account\n    '#wrapper_attributes':\n      class:\n        - 'messages messages--error'\n    '#text': |\n      <h3>Check your account is suitable</h3>\n      \n      <p>If you're eligible for Universal Credit, you may be able to get it through your credit union account. You may also be able to use the account to set up automated payments for rent or bills. Check with the credit union.</p>\n      \n      <p>If you have a partner, Universal Credit will normally make one payment for both of you into one account.</p>\n      \n      <p>Find out about <a href=\"/node/2030\">choosing a current account to receive Universal Credit</a>.</p>\n      \n    '#format': full_html\n  you_will_need_to_set_up_an_account:\n    '#type': processed_text\n    '#states':\n      visible:\n        - ':input[name=\"do_you_use_an_account_to_manage_your_money_\"]':\n            value: no_prepaid_card\n        - or\n        - ':input[name=\"do_you_use_an_account_to_manage_your_money_\"]':\n            value: no_account\n        - or\n        - ':input[name=\"do_you_use_an_account_to_manage_your_money_\"]':\n            value: not_sure\n    '#wrapper_attributes':\n      class:\n        - 'messages messages--error'\n    '#text': |\n      <h3>You will need to set up an account</h3>\n      \n      <p>Before you claim Universal Credit, you will need to set up a bank or building society account to get your payment. With a bank or building society account you can set up automated monthly payments for your rent and bills. This can work out cheaper than paying with a prepaid card or cash.</p>\n      \n      <p>If you have a partner, Universal Credit will normally make one payment for both of you into one account.</p>\n      \n      <p>Find out about <a href=\"/node/2030\">choosing a current account to receive Universal Credit </a>.</p>\n      \n    '#format': full_html\n  question_3_feedback:\n    '#type': processed_text\n    '#text': |\n      <h2>Question 3</h2>\n      \n      <p>How often are you paid (from work, tax credits or other benefits)?</p>\n      \n      <p>[webform_submission:values:how_often_are_you_paid_from_work_tax_credits_or_other_benefits_:format]</p>\n      \n    '#format': basic_html\n  budgetting_a_twice_a_month_payment:\n    '#type': processed_text\n    '#states':\n      visible:\n        ':input[name=\"how_often_are_you_paid_from_work_tax_credits_or_other_benefits_\"]':\n          value: two_weeks\n    '#wrapper_attributes':\n      class:\n        - 'messages messages--status'\n    '#text': |\n      <h3>Budgeting when you are paid twice a month</h3>\n      \n      <p>You will be paid Universal Credit twice a month, although you may request a monthly payment.</p>\n      \n      <p>You will have to pay bills and expenses out of your Universal Credit payment so before claiming Universal Credit, think about how you will plan your budget around it.</p>\n      \n      <p>nidirect has advice about <a href=\"/node/4779\">managing your money</a>.</p>\n      \n    '#format': full_html\n  budgetting_a_twice_a_month_payment_warn:\n    '#type': processed_text\n    '#states':\n      visible:\n        - ':input[name=\"how_often_are_you_paid_from_work_tax_credits_or_other_benefits_\"]':\n            value: mixture\n        - or\n        - ':input[name=\"how_often_are_you_paid_from_work_tax_credits_or_other_benefits_\"]':\n            value: weekly\n        - or\n        - ':input[name=\"how_often_are_you_paid_from_work_tax_credits_or_other_benefits_\"]':\n            value: four_weeks\n        - or\n        - ':input[name=\"how_often_are_you_paid_from_work_tax_credits_or_other_benefits_\"]':\n            value: monthly\n        - or\n        - ':input[name=\"how_often_are_you_paid_from_work_tax_credits_or_other_benefits_\"]':\n            value: not_getting_paid\n        - or\n        - ':input[name=\"how_often_are_you_paid_from_work_tax_credits_or_other_benefits_\"]':\n            value: other\n    '#wrapper_attributes':\n      class:\n        - 'messages messages--error'\n    '#text': |\n      <h3>Budgeting when you are paid twice a month</h3>\n      \n      <p>You will be paid Universal Credit twice a month, although you may request a monthly payment.</p>\n      \n      <p>You will have to pay bills and expenses out of your Universal Credit payment so before claiming Universal Credit, think about how you will plan your budget around it.</p>\n      \n      <p>nidirect has advice about <a href=\"/node/4779\">managing your money</a>.</p>\n      \n    '#format': full_html\n  question_4_feedback:\n    '#type': processed_text\n    '#text': |\n      <h2>Question 4</h2>\n      \n      <p>Do you pay rent, is your rent paid on your behalf, or do you have a mortgage?</p>\n      \n      <p>[webform_submission:values:do_you_pay_rent_is_your_rent_paid_on_your_behalf_or_do_you_have_:format]</p>\n      \n    '#format': basic_html\n  your_housing_costs_rent:\n    '#type': processed_text\n    '#states':\n      visible:\n        ':input[name=\"do_you_pay_rent_is_your_rent_paid_on_your_behalf_or_do_you_have_\"]':\n          value: yes_rent_paid_direct_landlord_via_housing_benefit\n    '#wrapper_attributes':\n      class:\n        - 'messages messages--status'\n    '#text': '<h2>Your housing costs</h2><p>Your Universal Credit payment may include a ‘Housing Element’ if you are renting a property or ‘Support for Mortgage Interest’ if you own your own home. These will be paid directly to your landlord or mortgage lender.&nbsp; However, you will be able to opt out of direct payments, subject to certain conditions.</p><p>Your Universal Credit ‘Housing Element’ may not cover all of your rent and you will be responsible for covering any shortfall. Paying the shortfall should be your top priority.</p>'\n    '#format': full_html\n  your_housing_costs_warn_rent:\n    '#type': processed_text\n    '#states':\n      visible:\n        - ':input[name=\"do_you_pay_rent_is_your_rent_paid_on_your_behalf_or_do_you_have_\"]':\n            value: yes_pay_rent_direct_landlord\n        - or\n        - ':input[name=\"do_you_pay_rent_is_your_rent_paid_on_your_behalf_or_do_you_have_\"]':\n            value: yes_pay_rent_myself_and_part_paid_by_housing_benefit\n    '#wrapper_attributes':\n      class:\n        - 'messages messages--error'\n    '#text': |\n      <h3>Your housing costs</h3>\n      \n      <p>Your Universal Credit payment may include a ‘Housing Element’ if you are renting a property. This will be paid directly to your landlord.&nbsp; However, you will be able to opt out of direct payments, subject to certain conditions.</p>\n      \n      <p>Your Universal Credit ‘Housing Element’ may not cover all of your rent and you will be responsible for covering any shortfall. Paying the shortfall should be your top priority.</p>\n      \n    '#format': full_html\n  your_housing_costs_mortgage:\n    '#type': processed_text\n    '#states':\n      visible:\n        ':input[name=\"do_you_pay_rent_is_your_rent_paid_on_your_behalf_or_do_you_have_\"]':\n          value: yes_pay_mortgage\n    '#wrapper_attributes':\n      class:\n        - 'messages messages--status'\n    '#text': |\n      <h3>Your housing costs</h3>\n      \n      <p>You will continue to pay your mortgage yourself.</p>\n      \n      <p>Your Universal Credit payment may include ‘Support for Mortgage Interest’ if you own your own home. This will be paid directly to your mortgage lender.&nbsp; However, you will be able to opt out of direct payments, subject to certain conditions.</p>\n      \n      <p>The rules around ‘Support for Mortgage Interest’ are changing.&nbsp; Payments will be made as a loan and must be paid back.&nbsp; This support will be based on a set rate of interest applied to your outstanding qualifying mortgage and paid directly to your mortgage lender.&nbsp; However, once you or your partner begins to receive earned income, the ‘Support for Mortgage Interest’ will stop.</p>\n      \n    '#format': full_html\n  your_housing_costs_mortgage_paid_via_housing_benefit:\n    '#type': processed_text\n    '#states':\n      visible:\n        ':input[name=\"do_you_pay_rent_is_your_rent_paid_on_your_behalf_or_do_you_have_\"]':\n          value: yes_pay_mortgage_and_part_paid_by_housing_benefit\n    '#wrapper_attributes':\n      class:\n        - 'messages messages--status'\n    '#text': |\n      <h3>Your housing costs</h3>\n      \n      <p>Your Universal Credit payment may include ‘Support for Mortgage Interest’ if you own your own home. This will be paid directly to your mortgage lender.&nbsp; However, you will be able to opt out of direct payments, subject to certain conditions.</p>\n      \n      <p>The rules around ‘Support for Mortgage Interest’ are changing.&nbsp; Payments will be made as a loan and must be paid back.&nbsp; This support will be based on a set rate of interest applied to your outstanding qualifying mortgage and paid directly to your mortgage lender.&nbsp; However, once you or your partner begins to receive earned income, the ‘Support for Mortgage Interest’ will stop.</p>\n      \n    '#format': full_html\n  no_housing_costs:\n    '#type': processed_text\n    '#states':\n      visible:\n        ':input[name=\"do_you_pay_rent_is_your_rent_paid_on_your_behalf_or_do_you_have_\"]':\n          value: 'no'\n    '#wrapper_attributes':\n      class:\n        - 'messages messages--status'\n    '#text': |\n      <h3>No housing costs</h3>\n      \n      <p>Your Universal Credit payment will not include financial support for housing costs.</p>\n      \n    '#format': full_html\n  question_5_feedback:\n    '#type': processed_text\n    '#text': |\n      <h2>Question 5</h2>\n      \n      <p>Are you married and living together or do you live with a partner?</p>\n      \n      <p>[webform_submission:values:are_you_married_and_living_together_or_do_you_live_with_a_partne:format]</p>\n      \n    '#format': basic_html\n  one_payment:\n    '#type': processed_text\n    '#states':\n      visible:\n        ':input[name=\"are_you_married_and_living_together_or_do_you_live_with_a_partne\"]':\n          value: 'no'\n    '#wrapper_attributes':\n      class:\n        - 'messages messages--status'\n    '#text': '<h3>One payment</h3><p>You will receive a Universal Credit payment twice a month for you and your family.</p><p>If there are other adults living in the same household, such as your grown-up children, who are also claiming Universal Credit, they will be paid separately.</p>'\n    '#format': full_html\n  joint_payment_for_you_and_your_partner:\n    '#type': processed_text\n    '#states':\n      visible:\n        - ':input[name=\"are_you_married_and_living_together_or_do_you_live_with_a_partne\"]':\n            value: yes_manage_money_together\n        - or\n        - ':input[name=\"are_you_married_and_living_together_or_do_you_live_with_a_partne\"]':\n            value: yes_manage_money_separately\n    '#wrapper_attributes':\n      class:\n        - 'messages messages--error'\n    '#text': '<h3>Joint payment for you and your partner</h3><p>You will normally get one Universal Credit payment for you and your partner. Both of you need to decide which account to have it paid into.</p><p>If there are other adults living in the same household, such as your grown-up children, who are also claiming Universal Credit, they will be paid separately.</p>'\n    '#format': full_html\n  help_and_advice:\n    '#type': processed_text\n    '#text': |\n      <h2>Help and advice</h2>\n      \n      <p>If you would like independent help and advice you can visit any independent advice office or contact:</p>\n      \n      <ul>\n      \t<li>The Welfare Reform Helpline: 0808 802 0020</li>\n      \t<li>Housing Rights: 028 90245640</li>\n      \t<li>Debt Advice: 0800 028 1881<br />\n      \t&nbsp;</li>\n      \t<li><a href=\"/node/1739\">Universal Credit</a></li>\n      </ul>\n      \n    '#format': full_html\nactions:\n  '#type': webform_actions\n  '#title': 'Submit button(s)'\n  '#submit_hide': true\n  '#wizard_prev_hide': true"
+elements: |
+  introduction_page:
+    '#type': webform_wizard_page
+    '#title': Introduction
+    '#next_button_label': Next
+    introduction:
+      '#type': processed_text
+      '#text': |
+        <drupal-media data-align="center" data-entity-type="media" data-entity-uuid="2780fb0c-2492-4380-8b02-41a60385aab6" data-view-mode="landscape_float"></drupal-media>
+        
+        <p>Universal Credit works differently from the benefits it replaces. Before making your claim you need to know:</p>
+        
+        <ul>
+        	<li>Universal Credit will be paid twice a month, although you may request a monthly payment</li>
+        	<li>you will be expected to make your claim online</li>
+        	<li>you will receive a single payment for your household</li>
+        	<li>if your Universal Credit includes an amount for rent, it will be paid directly to your landlord –&nbsp;however, subject to certain conditions, you will be able to opt out of direct payments and arrange to pay your landlord yourself</li>
+        </ul>
+        
+        <h2>Find out how ready you are</h2>
+        
+        <p>By answering the following five questions you will know if there are important changes you need to make and get advice on how to get ready for Universal Credit.</p>
+        
+        <p>This will take about five minutes.</p>
+        
+      '#format': full_html
+  question_1_page:
+    '#type': webform_wizard_page
+    '#title': 'Question 1'
+    '#next_button_label': Next
+    question_1_title:
+      '#type': webform_markup
+      '#markup': '<h2>Question 1</h2>'
+    do_you_need_help_using_the_internet_or_a_computer_for_example_cl:
+      '#type': radios
+      '#title': 'Do you need help using the internet or a computer (for example, claiming benefits online using a computer)?'
+      '#options': yes_no
+      '#required': true
+  question_2_page:
+    '#type': webform_wizard_page
+    '#title': 'Question 2'
+    '#next_button_label': Next
+    question_2_title:
+      '#type': webform_markup
+      '#markup': '<h2>Question 2</h2>'
+    do_you_use_an_account_to_manage_your_money_:
+      '#type': radios
+      '#title': 'Do you use an account to manage your money?'
+      '#options':
+        yes_bank_building_society_account: 'Yes, I use a current or basic account with a bank or building society'
+        yes_credit_union_account: 'Yes, I use a credit union account'
+        yes_post_office_card_account: 'Yes, I use a Post Office card account'
+        no_prepaid_card: 'No, I use a prepaid card'
+        no_have_account_prefer_not_to_use: 'No, I have an account but prefer not to use it'
+        no_account: 'No, I don’t have an account'
+        not_sure: 'I''m not sure'
+      '#required': true
+  question_3_page:
+    '#type': webform_wizard_page
+    '#title': 'Question 3'
+    '#next_button_label': Next
+    question_3_title:
+      '#type': webform_markup
+      '#markup': '<h2>Question 3</h2>'
+    how_often_are_you_paid_from_work_tax_credits_or_other_benefits_:
+      '#type': radios
+      '#title': 'How often are you paid (from work, tax credits or other benefits)?'
+      '#options':
+        mixture: 'A mixture (for example I get paid from work and/or paid benefits for a different period)'
+        weekly: Weekly
+        two_weeks: 'Every two weeks'
+        four_weeks: 'Every four weeks'
+        monthly: Monthly
+        not_getting_paid: 'I am not currently being paid'
+        other: Other
+      '#required': true
+  question_4_page:
+    '#type': webform_wizard_page
+    '#title': 'Question 4'
+    '#next_button_label': Next
+    question_4_title:
+      '#type': webform_markup
+      '#markup': '<h2>Question 4</h2>'
+    do_you_pay_rent_is_your_rent_paid_on_your_behalf_or_do_you_have_:
+      '#type': radios
+      '#title': 'Do you pay rent, is your rent paid on your behalf, or do you have a mortgage?'
+      '#options':
+        yes_pay_rent_direct_landlord: 'Yes, I pay rent directly to my landlord or a third party (for example, an estate agent or property management company)'
+        yes_rent_paid_direct_landlord_via_housing_benefit: 'Yes, my rent is paid directly to my landlord through my Housing Benefit'
+        yes_pay_rent_myself_and_part_paid_by_housing_benefit: 'Yes, I pay part of my rent myself and the other part is paid by my Housing Benefit'
+        yes_pay_mortgage: 'Yes, I have a mortgage and I make regular payments myself'
+        yes_pay_mortgage_and_part_paid_by_housing_benefit: 'Yes, I have a mortgage and some or all of it is paid for me through a benefit'
+        'no': 'No (for example, I live with my family or a friend, or I own my house outright)'
+      '#required': true
+  question_5_page:
+    '#type': webform_wizard_page
+    '#title': 'Question 5'
+    '#next_button_label': Submit
+    question_5_title:
+      '#type': webform_markup
+      '#markup': '<h2>Question 5</h2>'
+    are_you_married_and_living_together_or_do_you_live_with_a_partne:
+      '#type': radios
+      '#title': 'Are you married and living together or do you live with a partner?'
+      '#options':
+        'no': 'No'
+        yes_manage_money_together: 'Yes and we manage our money together'
+        yes_manage_money_separately: 'Yes, and we manage our money separately'
+      '#required': true
+  feedback_page:
+    '#type': webform_wizard_page
+    '#title': 'Are you ready for Universal Credit?'
+    introduction_feedback:
+      '#type': processed_text
+      '#text': |
+        <p>Please review the advice below for each of the five questions you have answered to see if you are ready for Universal Credit.</p>
+        
+      '#format': full_html
+    question_1_feedback:
+      '#type': processed_text
+      '#text': |
+        <h2>Question 1</h2>
+        
+        <p>Do you need help using the internet or a computer (for example, claiming benefits online using a computer)?</p>
+        
+        <p>[webform_submission:values:do_you_need_help_using_the_internet_or_a_computer_for_example_cl:format]</p>
+        
+      '#format': full_html
+    getting_online:
+      '#type': processed_text
+      '#states':
+        visible:
+          ':input[name="do_you_need_help_using_the_internet_or_a_computer_for_example_cl"]':
+            value: 'Yes'
+      '#wrapper_attributes':
+        class:
+          - 'messages messages--error'
+      '#text': |
+        <h3>Getting online</h3>
+        
+        <p>You will be expected to claim Universal Credit online. This means you will need to be able to use the internet.</p>
+        
+        <p>If you don't know how to use a computer or access the internet, you can learn how by taking a free GOT IT or GO ON beginners course through LibrariesNI. &nbsp;To find a library and courses near you, visit <a href="http://www.librariesni.org.uk/Libraries/Pages/libraries-home.aspx">LibrariesNI</a>, phone 0345 4504 580 or email <a href="mailto:enquiries@librariesni.org">enquiries@librariesni.org</a>.</p>
+        
+        <p>You can also visit the <a href="/node/5087">Go ON NI events page</a> on nidirect.</p>
+        
+        <p>If you can use a computer a little but are not confident using the internet, try e-learning using the Online Basics course on the <a href="https://www.learnmyway.com/subjects/online-basics/">Learn my way website</a>. &nbsp;&nbsp;You can get <a href="/node/7666" target="_blank">information and free downloadable training guides from nidirect</a>. &nbsp;</p>
+        
+        <p>If you don't have access to a computer or the internet, ask for advice at your local <a href="/node/2739">Jobs &amp; Benefits office</a> when you first claim Universal Credit. If you are a library member you can use their computers free of charge. &nbsp;</p>
+        
+        <p>If you are concerned about Internet security, visit nidirect’s <a href="/taxonomy/term/419">Discover the Internet section</a> or the <a href="http://www.getsafeonline.org/protecting-yourself/">Get Safe Online website</a> for information and advice.</p>
+        
+      '#format': full_html
+    make_your_claim_online:
+      '#type': processed_text
+      '#states':
+        visible:
+          ':input[name="do_you_need_help_using_the_internet_or_a_computer_for_example_cl"]':
+            value: 'No'
+      '#wrapper_attributes':
+        class:
+          - 'messages messages--status'
+      '#text': '<h3>Making your claim online</h3><p>You will be expected to claim Universal Credit online.</p><p>If you are concerned about Internet security, visit nidirect’s <a href="/taxonomy/term/419">Discover the Internet section</a> or <a href="http://www.getsafeonline.org/protecting-yourself/">Get Safe Online</a> website for information and advice.</p>'
+      '#format': full_html
+    question_2_feedback:
+      '#type': processed_text
+      '#text': |
+        <h2>Question 2</h2>
+        
+        <p>Do you use an account to manage your money?</p>
+        
+        <p>[webform_submission:values:do_you_use_an_account_to_manage_your_money_:format]</p>
+        
+      '#format': basic_html
+    account_for_payment:
+      '#type': processed_text
+      '#states':
+        visible:
+          ':input[name="do_you_use_an_account_to_manage_your_money_"]':
+            value: yes_bank_building_society_account
+      '#wrapper_attributes':
+        class:
+          - 'messages messages--status'
+      '#text': |
+        <h3>Account for payment</h3>
+        
+        <p>If you're eligible for Universal Credit, it will be paid into your bank or building society account. You can also use your account to set up automated monthly payments for rent and bills.</p>
+        
+        <p>If you have a partner, Universal Credit will normally make one payment for both of you into one account.</p>
+        
+      '#format': full_html
+    account_for_payment_post_office_card_account:
+      '#type': processed_text
+      '#states':
+        visible:
+          ':input[name="do_you_use_an_account_to_manage_your_money_"]':
+            value: yes_post_office_card_account
+      '#wrapper_attributes':
+        class:
+          - 'messages messages--status'
+      '#text': |
+        <h3>Account for payment</h3>
+        
+        <p>If you're eligible for Universal Credit, you can receive it through your Post Office card account. However, you can't use a Post Office card account to set up automated payments for rent and bills - you should think about opening a basic bank or building society account that offers automated payments.</p>
+        
+        <p>If you have a partner, Universal Credit will normally make one payment for both of you into one account.</p>
+        
+      '#format': full_html
+    account_for_payment_warning:
+      '#type': processed_text
+      '#states':
+        visible:
+          ':input[name="do_you_use_an_account_to_manage_your_money_"]':
+            value: no_have_account_prefer_not_to_use
+      '#wrapper_attributes':
+        class:
+          - 'messages messages--error'
+      '#text': |
+        <h3>Account for payment</h3>
+        
+        <p>If you're eligible for Universal Credit, it will be paid into your bank or building society account. You can also use your account to set up automated monthly payments for rent and bills.</p>
+        
+        <p>If you have a partner, Universal Credit will normally make one payment for both of you into one account.</p>
+        
+        <p>Find out about <a href="/node/2030">choosing a current account to receive Universal Credit</a>.</p>
+        
+      '#format': full_html
+    check_you_account_is_suitable:
+      '#type': processed_text
+      '#states':
+        visible:
+          ':input[name="do_you_use_an_account_to_manage_your_money_"]':
+            value: yes_credit_union_account
+      '#wrapper_attributes':
+        class:
+          - 'messages messages--error'
+      '#text': |
+        <h3>Check your account is suitable</h3>
+        
+        <p>If you're eligible for Universal Credit, you may be able to get it through your credit union account. You may also be able to use the account to set up automated payments for rent or bills. Check with the credit union.</p>
+        
+        <p>If you have a partner, Universal Credit will normally make one payment for both of you into one account.</p>
+        
+        <p>Find out about <a href="/node/2030">choosing a current account to receive Universal Credit</a>.</p>
+        
+      '#format': full_html
+    you_will_need_to_set_up_an_account:
+      '#type': processed_text
+      '#states':
+        visible:
+          - ':input[name="do_you_use_an_account_to_manage_your_money_"]':
+              value: no_prepaid_card
+          - or
+          - ':input[name="do_you_use_an_account_to_manage_your_money_"]':
+              value: no_account
+          - or
+          - ':input[name="do_you_use_an_account_to_manage_your_money_"]':
+              value: not_sure
+      '#wrapper_attributes':
+        class:
+          - 'messages messages--error'
+      '#text': |
+        <h3>You will need to set up an account</h3>
+        
+        <p>Before you claim Universal Credit, you will need to set up a bank or building society account to get your payment. With a bank or building society account you can set up automated monthly payments for your rent and bills. This can work out cheaper than paying with a prepaid card or cash.</p>
+        
+        <p>If you have a partner, Universal Credit will normally make one payment for both of you into one account.</p>
+        
+        <p>Find out about <a href="/node/2030">choosing a current account to receive Universal Credit </a>.</p>
+        
+      '#format': full_html
+    question_3_feedback:
+      '#type': processed_text
+      '#text': |
+        <h2>Question 3</h2>
+        
+        <p>How often are you paid (from work, tax credits or other benefits)?</p>
+        
+        <p>[webform_submission:values:how_often_are_you_paid_from_work_tax_credits_or_other_benefits_:format]</p>
+        
+      '#format': basic_html
+    budgetting_a_twice_a_month_payment:
+      '#type': processed_text
+      '#states':
+        visible:
+          ':input[name="how_often_are_you_paid_from_work_tax_credits_or_other_benefits_"]':
+            value: two_weeks
+      '#wrapper_attributes':
+        class:
+          - 'messages messages--status'
+      '#text': |
+        <h3>Budgeting when you are paid twice a month</h3>
+        
+        <p>You will be paid Universal Credit twice a month, although you may request a monthly payment.</p>
+        
+        <p>You will have to pay bills and expenses out of your Universal Credit payment so before claiming Universal Credit, think about how you will plan your budget around it.</p>
+        
+        <p>nidirect has advice about <a href="/node/4779">managing your money</a>.</p>
+        
+      '#format': full_html
+    budgetting_a_twice_a_month_payment_warn:
+      '#type': processed_text
+      '#states':
+        visible:
+          - ':input[name="how_often_are_you_paid_from_work_tax_credits_or_other_benefits_"]':
+              value: mixture
+          - or
+          - ':input[name="how_often_are_you_paid_from_work_tax_credits_or_other_benefits_"]':
+              value: weekly
+          - or
+          - ':input[name="how_often_are_you_paid_from_work_tax_credits_or_other_benefits_"]':
+              value: four_weeks
+          - or
+          - ':input[name="how_often_are_you_paid_from_work_tax_credits_or_other_benefits_"]':
+              value: monthly
+          - or
+          - ':input[name="how_often_are_you_paid_from_work_tax_credits_or_other_benefits_"]':
+              value: not_getting_paid
+          - or
+          - ':input[name="how_often_are_you_paid_from_work_tax_credits_or_other_benefits_"]':
+              value: other
+      '#wrapper_attributes':
+        class:
+          - 'messages messages--error'
+      '#text': |
+        <h3>Budgeting when you are paid twice a month</h3>
+        
+        <p>You will be paid Universal Credit twice a month, although you may request a monthly payment.</p>
+        
+        <p>You will have to pay bills and expenses out of your Universal Credit payment so before claiming Universal Credit, think about how you will plan your budget around it.</p>
+        
+        <p>nidirect has advice about <a href="/node/4779">managing your money</a>.</p>
+        
+      '#format': full_html
+    question_4_feedback:
+      '#type': processed_text
+      '#text': |
+        <h2>Question 4</h2>
+        
+        <p>Do you pay rent, is your rent paid on your behalf, or do you have a mortgage?</p>
+        
+        <p>[webform_submission:values:do_you_pay_rent_is_your_rent_paid_on_your_behalf_or_do_you_have_:format]</p>
+        
+      '#format': basic_html
+    your_housing_costs_rent:
+      '#type': processed_text
+      '#states':
+        visible:
+          ':input[name="do_you_pay_rent_is_your_rent_paid_on_your_behalf_or_do_you_have_"]':
+            value: yes_rent_paid_direct_landlord_via_housing_benefit
+      '#wrapper_attributes':
+        class:
+          - 'messages messages--status'
+      '#text': '<h2>Your housing costs</h2><p>Your Universal Credit payment may include a ‘Housing Element’ if you are renting a property or ‘Support for Mortgage Interest’ if you own your own home. These will be paid directly to your landlord or mortgage lender.&nbsp; However, you will be able to opt out of direct payments, subject to certain conditions.</p><p>Your Universal Credit ‘Housing Element’ may not cover all of your rent and you will be responsible for covering any shortfall. Paying the shortfall should be your top priority.</p>'
+      '#format': full_html
+    your_housing_costs_warn_rent:
+      '#type': processed_text
+      '#states':
+        visible:
+          - ':input[name="do_you_pay_rent_is_your_rent_paid_on_your_behalf_or_do_you_have_"]':
+              value: yes_pay_rent_direct_landlord
+          - or
+          - ':input[name="do_you_pay_rent_is_your_rent_paid_on_your_behalf_or_do_you_have_"]':
+              value: yes_pay_rent_myself_and_part_paid_by_housing_benefit
+      '#wrapper_attributes':
+        class:
+          - 'messages messages--error'
+      '#text': |
+        <h3>Your housing costs</h3>
+        
+        <p>Your Universal Credit payment may include a ‘Housing Element’ if you are renting a property. This will be paid directly to your landlord.&nbsp; However, you will be able to opt out of direct payments, subject to certain conditions.</p>
+        
+        <p>Your Universal Credit ‘Housing Element’ may not cover all of your rent and you will be responsible for covering any shortfall. Paying the shortfall should be your top priority.</p>
+        
+      '#format': full_html
+    your_housing_costs_mortgage:
+      '#type': processed_text
+      '#states':
+        visible:
+          ':input[name="do_you_pay_rent_is_your_rent_paid_on_your_behalf_or_do_you_have_"]':
+            value: yes_pay_mortgage
+      '#wrapper_attributes':
+        class:
+          - 'messages messages--status'
+      '#text': |
+        <h3>Your housing costs</h3>
+        
+        <p>You will continue to pay your mortgage yourself.</p>
+        
+        <p>Your Universal Credit payment may include ‘Support for Mortgage Interest’ if you own your own home. This will be paid directly to your mortgage lender.&nbsp; However, you will be able to opt out of direct payments, subject to certain conditions.</p>
+        
+        <p>The rules around ‘Support for Mortgage Interest’ are changing.&nbsp; Payments will be made as a loan and must be paid back.&nbsp; This support will be based on a set rate of interest applied to your outstanding qualifying mortgage and paid directly to your mortgage lender.&nbsp; However, once you or your partner begins to receive earned income, the ‘Support for Mortgage Interest’ will stop.</p>
+        
+      '#format': full_html
+    your_housing_costs_mortgage_paid_via_housing_benefit:
+      '#type': processed_text
+      '#states':
+        visible:
+          ':input[name="do_you_pay_rent_is_your_rent_paid_on_your_behalf_or_do_you_have_"]':
+            value: yes_pay_mortgage_and_part_paid_by_housing_benefit
+      '#wrapper_attributes':
+        class:
+          - 'messages messages--status'
+      '#text': |
+        <h3>Your housing costs</h3>
+        
+        <p>Your Universal Credit payment may include ‘Support for Mortgage Interest’ if you own your own home. This will be paid directly to your mortgage lender.&nbsp; However, you will be able to opt out of direct payments, subject to certain conditions.</p>
+        
+        <p>The rules around ‘Support for Mortgage Interest’ are changing.&nbsp; Payments will be made as a loan and must be paid back.&nbsp; This support will be based on a set rate of interest applied to your outstanding qualifying mortgage and paid directly to your mortgage lender.&nbsp; However, once you or your partner begins to receive earned income, the ‘Support for Mortgage Interest’ will stop.</p>
+        
+      '#format': full_html
+    no_housing_costs:
+      '#type': processed_text
+      '#states':
+        visible:
+          ':input[name="do_you_pay_rent_is_your_rent_paid_on_your_behalf_or_do_you_have_"]':
+            value: 'no'
+      '#wrapper_attributes':
+        class:
+          - 'messages messages--status'
+      '#text': |
+        <h3>No housing costs</h3>
+        
+        <p>Your Universal Credit payment will not include financial support for housing costs.</p>
+        
+      '#format': full_html
+    question_5_feedback:
+      '#type': processed_text
+      '#text': |
+        <h2>Question 5</h2>
+        
+        <p>Are you married and living together or do you live with a partner?</p>
+        
+        <p>[webform_submission:values:are_you_married_and_living_together_or_do_you_live_with_a_partne:format]</p>
+        
+      '#format': basic_html
+    one_payment:
+      '#type': processed_text
+      '#states':
+        visible:
+          ':input[name="are_you_married_and_living_together_or_do_you_live_with_a_partne"]':
+            value: 'no'
+      '#wrapper_attributes':
+        class:
+          - 'messages messages--status'
+      '#text': '<h3>One payment</h3><p>You will receive a Universal Credit payment twice a month for you and your family.</p><p>If there are other adults living in the same household, such as your grown-up children, who are also claiming Universal Credit, they will be paid separately.</p>'
+      '#format': full_html
+    joint_payment_for_you_and_your_partner:
+      '#type': processed_text
+      '#states':
+        visible:
+          - ':input[name="are_you_married_and_living_together_or_do_you_live_with_a_partne"]':
+              value: yes_manage_money_together
+          - or
+          - ':input[name="are_you_married_and_living_together_or_do_you_live_with_a_partne"]':
+              value: yes_manage_money_separately
+      '#wrapper_attributes':
+        class:
+          - 'messages messages--error'
+      '#text': '<h3>Joint payment for you and your partner</h3><p>You will normally get one Universal Credit payment for you and your partner. Both of you need to decide which account to have it paid into.</p><p>If there are other adults living in the same household, such as your grown-up children, who are also claiming Universal Credit, they will be paid separately.</p>'
+      '#format': full_html
+    help_and_advice:
+      '#type': processed_text
+      '#text': |
+        <h2>Help and advice</h2>
+        
+        <p>If you would like independent help and advice you can visit any independent advice office or contact:</p>
+        
+        <ul>
+        	<li>The Welfare Reform Helpline: 0808 802 0020</li>
+        	<li>Housing Rights: 028 90245640</li>
+        	<li>Debt Advice: 0800 028 1881<br />
+        	&nbsp;</li>
+        	<li><a href="/node/1739">Universal Credit</a></li>
+        </ul>
+        
+      '#format': full_html
+  actions:
+    '#type': webform_actions
+    '#title': 'Submit button(s)'
+    '#submit_hide': true
+    '#wizard_prev_hide': true
 css: ''
 javascript: ''
 settings:

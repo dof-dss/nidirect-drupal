@@ -7,7 +7,11 @@
 name: 'nidirect'
 
 # The runtime the application uses.
-type: 'php:7.3'
+type: 'php:7.4'
+
+dependencies:
+  php:
+    composer/composer: '^2'
 
 # The relationships of the application with services or other applications.
 #
@@ -16,7 +20,7 @@ type: 'php:7.3'
 # side is in the form `:`.
 relationships:
   solr: 'solr:solr'
-  redis: 'redis:redis'
+  rediscache: "cacheredis:redis"
   #  For MariaDB, the endpoint does not change whether you used the mysql or mariadb service type.
   database: 'db:admin'
   drupal7db: 'drupal7db:admin'
@@ -56,7 +60,7 @@ build:
 hooks:
   build: |
     set -e
-    bash install-redis.sh 5.1.1
+    bash install-redis.sh 5.3.3
     echo "Replace vanilla CKEditor config with a custom one to fix the click/drag bug with embedded entities"
     git clone https://github.com/dof-dss/ckeditor4-fix-widget-dnd.git
     rm -rf web/core/assets/vendor/ckeditor

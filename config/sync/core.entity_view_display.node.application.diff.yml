@@ -21,7 +21,6 @@ dependencies:
     - layout_builder
     - link
     - metatag
-    - smart_trim
     - text
     - user
 third_party_settings:
@@ -61,7 +60,7 @@ content:
     settings: {  }
     third_party_settings: {  }
   body:
-    label: hidden
+    label: above
     type: text_default
     weight: 3
     settings: {  }
@@ -76,7 +75,7 @@ content:
     type: text_default
     weight: 5
     region: content
-    label: hidden
+    label: above
     settings: {  }
     third_party_settings: {  }
   field_link:
@@ -117,19 +116,9 @@ content:
   field_summary:
     weight: 2
     label: hidden
-    settings:
-      trim_length: 600
-      trim_type: chars
-      trim_suffix: ''
-      wrap_output: false
-      wrap_class: trimmed
-      more_link: false
-      more_class: more-link
-      more_text: More
-      summary_handler: full
-      trim_options: {  }
+    settings: {  }
     third_party_settings: {  }
-    type: smart_trim
+    type: text_default
     region: content
   field_teaser:
     type: string
