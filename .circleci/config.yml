@@ -54,7 +54,6 @@ commands:
             sudo apt-get update
             sudo apt-get install -y libpng-dev
             sudo docker-php-ext-install gd
-            composer global require hirak/prestissimo
   install_platformsh_tools:
     description: "Install packages and tools for interacting with platform.sh API"
     steps:
@@ -83,7 +82,7 @@ jobs:
   # Tests the integrity of the build, stores the results in a workspace for re-use in later jobs.
   build:
     docker:
-      - image: circleci/php:7.3.14-apache-browsers
+      - image: circleci/php:7.4.15-apache-browsers
     steps:
       - checkout_code
       - install_php_os_extensions
@@ -94,7 +93,7 @@ jobs:
             - ./
   build_edge_branch:
     docker:
-      - image: circleci/php:7.3.14-apache-browsers
+      - image: circleci/php:7.4.15-apache-browsers
     steps:
       - checkout_code
       - install_php_os_extensions
@@ -117,7 +116,7 @@ jobs:
   # Test for coding standards.
   static_analysis:
     docker:
-      - image: circleci/php:7.3.14-apache-browsers
+      - image: circleci/php:7.4.15-apache-browsers
     steps:
       - attach_workspace:
           at: ./
@@ -129,7 +128,7 @@ jobs:
   # Run any unit tests and any kernel tests against a vanilla D8 site + our site config imported over it (no predefined content).
   unit_kernel_tests:
     docker:
-      - image: circleci/php:7.3.14-apache-browsers
+      - image: circleci/php:7.4.15-apache-browsers
       - image: circleci/mysql:5.7.27
     steps:
       - attach_workspace:
@@ -184,7 +183,7 @@ jobs:
   # Functional tests with headless browser; run against our edge environment.
   functional_tests:
     docker:
-      - image: circleci/php:7.3.14-apache-node-browsers
+      - image: circleci/php:7.4.15-apache-node-browsers
         environment:
           TEST_TAGS: "search content-type-validation origins_workflow regression"
       - image: drupalci/chromedriver:production
@@ -249,7 +248,7 @@ jobs:
   # Edge build: all dof-dss packages use HEAD on development branch, pushes to fixed non-integrating branch.
   edge_build:
     docker:
-      - image: circleci/php:7.3.14-apache-browsers
+      - image: circleci/php:7.4.15-apache-browsers
     environment:
       # git variables to avoid empty committer identity errors
       EMAIL: "circleci@localhost"
@@ -295,7 +294,7 @@ jobs:
   # initiating/installing against Circle CI containers takes a long time indeed.
   code_analysis:
     docker:
-      - image: circleci/php:7.3.14-apache-browsers
+      - image: circleci/php:7.4.15-apache-browsers
     steps:
       - attach_workspace:
           at: ./
@@ -310,7 +309,7 @@ jobs:
   # Separate task to allow us to sync data on PSH environments, without pauses in other jobs.
   sync_data:
     docker:
-      - image: circleci/php:7.3.14-apache-browsers
+      - image: circleci/php:7.4.15-apache-browsers
     steps:
       - checkout_code
       - run:
@@ -350,7 +349,7 @@ jobs:
   # Fetches migration assets from NIDirect D7. Platform.sh API token injected as environment variable.
   migrate_update_assets:
     docker:
-      - image: circleci/php:7.3.14-apache-browsers
+      - image: circleci/php:7.4.15-apache-browsers
     steps:
       - checkout_code
       - install_php_os_extensions
