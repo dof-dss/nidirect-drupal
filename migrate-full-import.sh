@@ -54,6 +54,9 @@ drush migrate:import upgrade_d7_file --execute-dependencies
 # Import media entities
 drush migrate:import --group=migrate_drupal_7_file
 
+# Import file images
+drush migrate:import upgrade_d7_file_image
+
 # Import GP entities.
 drush migrate:import --group=migrate_nidirect_entity_gp
 
