@@ -24,6 +24,19 @@
                     "type": "zip"
                 }
             }
+        },
+        {
+            "type": "package",
+            "package": {
+                "name": "thinktandem/migrate_booster",
+                "version": "dev-main",
+                "type":"drupal-module",
+                "source": {
+                    "url": "https://github.com/thinktandem/migrate_booster.git",
+                    "type": "git",
+                    "reference": "main"
+                }
+            }
         }
     ],
     "require": {
@@ -139,7 +152,8 @@
         "drupal/stage_file_proxy": "^1.0@beta",
         "drupal/upgrade_status": "^3.0",
         "kint-php/kint": "^3.3",
-        "previousnext/phpunit-finder": "^1.0@alpha"
+        "previousnext/phpunit-finder": "^1.0@alpha",
+        "thinktandem/migrate_booster": "dev-main"
     },
     "conflict": {
         "drupal/drupal": "*"
