@@ -22,6 +22,9 @@ if [ "$1" == "-p" ] || [ "$1" == "--preserve" ]; then
  PRESERVE=true;
 fi
 
+# Enable migrate booster module
+drush mbe
+
 ##### RESET ######
 # Reset all migrations.
 for migration_id in `drush migrate:status --format=csv | grep Importing | awk -F ',' '{print $2}'`; do
