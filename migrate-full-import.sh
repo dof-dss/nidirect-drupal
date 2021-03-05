@@ -59,33 +59,33 @@ drush migrate:rollback --group=migrate_drupal_7_file
 drush migrate:import upgrade_d7_user
 
 # Import any new taxonomy terms, with dependencies.
-drush migrate:import --group=migrate_drupal_7_taxo --execute-dependencies
+drush migrate:import --group=migrate_drupal_7_taxo --force --execute-dependencies
 
 # Import files.
-drush migrate:import upgrade_d7_file --execute-dependencies
+drush migrate:import upgrade_d7_file --force --execute-dependencies
 # Import media entities
-drush migrate:import --group=migrate_drupal_7_file
+drush migrate:import --group=migrate_drupal_7_file --force
 
 # Import file images
 drush migrate:import upgrade_d7_file_image
 
 # Import GP entities.
-drush migrate:import --group=migrate_nidirect_entity_gp
+drush migrate:import --group=migrate_nidirect_entity_gp --force
 
 # Import all node migrations.
 for type in driving_instructor application article external_link gp_practice health_condition news nidirect_contact contact page publication; do
-  drush migrate:import --group=migrate_nidirect_node_$type --execute-dependencies
+  drush migrate:import --group=migrate_nidirect_node_$type --force --execute-dependencies
 done
 
 if [ ! $PRESERVE ]; then
-  drush migrate:import --group=migrate_nidirect_node_landing_page
+  drush migrate:import --group=migrate_nidirect_node_landing_page --force
 fi
 
 # Import book
-drush migrate:import nidirect_book
+drush migrate:import nidirect_book --force
 
 # Import URL aliases and redirects
-drush migrate:import --group=migrate_drupal_7_link
+drush migrate:import --group=migrate_drupal_7_link --force
 
 # Clear caches and re-index Solr.
 drush cr
