@@ -17,9 +17,10 @@ else
   DRUPAL_ROOT=/app/web
 fi
 
-# Option to allow the preservation of certain content types.
-if [ "$1" == "-p" ] || [ "$1" == "--preserve" ]; then
- PRESERVE=true;
+# Option to import all migrations.
+# Typically web want to preserve certain content types such as landing pages from begin overwritten.
+if [ "$1" == "-a" ] || [ "$1" == "--all" ]; then
+ MIGRATE_ALL=true;
 fi
 
 # Enable migrate booster module
@@ -44,7 +45,7 @@ for type in driving_instructor application article external_link gp_practice hea
   drush migrate:rollback --group=migrate_nidirect_node_$type
 done
 
-if [ ! $PRESERVE ]; then
+if [ $MIGRATE_ALL ]; then
   drush migrate:rollback --group=migrate_nidirect_node_landing_page
 fi
 
@@ -77,7 +78,7 @@ for type in driving_instructor application article external_link gp_practice hea
   drush migrate:import --group=migrate_nidirect_node_$type --force --execute-dependencies
 done
 
-if [ ! $PRESERVE ]; then
+if [ $MIGRATE_ALL ]; then
   drush migrate:import --group=migrate_nidirect_node_landing_page --force
 fi
 
