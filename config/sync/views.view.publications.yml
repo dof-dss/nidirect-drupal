@@ -35,7 +35,7 @@ display:
       exposed_form:
         type: basic
         options:
-          submit_button: Go
+          submit_button: 'Find publications'
           reset_button: false
           reset_button_label: Reset
           exposed_sorts_label: 'Sort by'
@@ -153,6 +153,7 @@ display:
           admin_label: ''
           operator: or
           value:
+            embargoed_publication: embargoed_publication
             publication: publication
           group: 1
           exposed: false
@@ -162,6 +163,8 @@ display:
             description: ''
             use_operator: false
             operator: ''
+            operator_limit_selection: false
+            operator_list: {  }
             identifier: ''
             required: false
             remember: false
@@ -169,8 +172,6 @@ display:
             remember_roles:
               authenticated: authenticated
             reduce: false
-            operator_limit_selection: false
-            operator_list: {  }
           is_grouped: false
           group_info:
             label: ''
@@ -329,7 +330,9 @@ display:
         - 'languages:language_interface'
         - url
         - url.query_args
-      tags: {  }
+        - 'user.node_grants:view'
+      tags:
+        - 'config:search_api.index.default_content'
   search_page:
     display_plugin: page
     id: search_page
@@ -349,4 +352,6 @@ display:
         - 'languages:language_interface'
         - url
         - url.query_args
-      tags: {  }
+        - 'user.node_grants:view'
+      tags:
+        - 'config:search_api.index.default_content'

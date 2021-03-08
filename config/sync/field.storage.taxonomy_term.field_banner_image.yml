@@ -1,23 +1,17 @@
-uuid: 3c0e7696-7b23-4fbf-9980-3110b06eaea4
-langcode: und
+uuid: b79d5238-ea21-4f37-9bd2-1cb12ce4bfa3
+langcode: en
 status: true
 dependencies:
   module:
-    - file
-    - image
+    - media
     - taxonomy
 id: taxonomy_term.field_banner_image
 field_name: field_banner_image
 entity_type: taxonomy_term
-type: image
+type: entity_reference
 settings:
-  default_image:
-    uuid: ''
-  uri_scheme: public
-  target_type: file
-  display_field: false
-  display_default: false
-module: image
+  target_type: media
+module: core
 locked: false
 cardinality: 1
 translatable: true

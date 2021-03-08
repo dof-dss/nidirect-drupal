@@ -15,6 +15,7 @@ dependencies:
     - node.type.embargoed_publication
   module:
     - datetime
+    - file
     - metatag
     - options
     - smart_trim
@@ -56,13 +57,12 @@ content:
       timezone_override: ''
     third_party_settings: {  }
   field_secure_attachment:
-    type: entity_reference_entity_view
     weight: 9
     label: above
     settings:
-      view_mode: default
-      link: false
+      use_description_as_link_text: true
     third_party_settings: {  }
+    type: file_default
     region: content
   field_site_themes:
     type: entity_reference_label

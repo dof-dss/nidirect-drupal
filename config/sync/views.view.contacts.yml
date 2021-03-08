@@ -36,7 +36,7 @@ display:
       exposed_form:
         type: input_required
         options:
-          submit_button: Go
+          submit_button: 'Find contacts'
           reset_button: false
           reset_button_label: Reset
           exposed_sorts_label: 'Sort by'
@@ -181,6 +181,8 @@ display:
               health_condition_supervisor_user: '0'
               driving_instructor_supervisor_user: '0'
             placeholder: 'Search contacts'
+            expose_fields: false
+            searched_fields_id: ''
           is_grouped: false
           group_info:
             label: ''
@@ -196,6 +198,7 @@ display:
           parse_mode: edismax
           min_length: null
           fields:
+            - body
             - field_supplementary_contact
             - title_fulltext
           plugin_id: search_api_fulltext

@@ -14,7 +14,448 @@ id: year_10_subject_choices_quiz
 title: 'Year 10 subject choices quiz'
 description: ''
 category: ''
-elements: "question_1_page:\n  '#type': webform_wizard_page\n  '#title': 'Question 1'\n  '#next_button_label': Next\n  question_1:\n    '#type': radios\n    '#title': 'When picking your GCSE subjects, you should:'\n    '#description': '(select one answer)'\n    '#description_display': before\n    '#options':\n      q1_a1: 'get accurate and up to date information'\n      q1_a2: 'get reliable advice '\n      q1_a3: 'discuss your options with your subject teachers and family'\n      q1_a4: 'all of the above'\n    '#required': true\nquestion_1_feedback:\n  '#type': webform_wizard_page\n  '#title': 'Question 1 feedback'\n  '#next_button_label': 'Next question'\n  question_1_right:\n    '#type': processed_text\n    '#states':\n      visible:\n        ':input[name=\"question_1\"]':\n          value: q1_a4\n    '#wrapper_attributes':\n      class:\n        - 'info-notice info-notice--success'\n    '#text': |\n      <h2>Right!</h2>\n      \n      <p>When choosing your subjects, make sure you've accurate and up to date information. Talk to those who can give you reliable advice, such as a careers teacher or adviser, your subject teachers and family.</p>\n      \n    '#format': full_html\n  question_1_wrong:\n    '#type': processed_text\n    '#states':\n      visible:\n        ':input[name=\"question_1\"]':\n          '!value': q1_a4\n    '#wrapper_attributes':\n      class:\n        - 'info-notice info-notice--error'\n    '#text': |\n      <h2>Sorry!</h2>\n      \n      <p>The correct answer is<strong> all of the above.</strong></p>\n      \n      <p style=\"text-align:justify\">When choosing your subjects, make sure you've accurate and up to date information. Talk to those who can give you reliable advice, such as a careers teacher or adviser, your subject teachers and family.</p>\n      \n    '#format': full_html\nquestion_2_page:\n  '#type': webform_wizard_page\n  '#title': 'Question 2'\n  '#next_button_label': Next\n  question_2:\n    '#type': checkboxes\n    '#title': 'When choosing what to study, you should pick subjects:'\n    '#description': '(select all that apply)'\n    '#description_display': before\n    '#options':\n      q2_a1: 'you enjoy'\n      q2_a2: 'your friends are doing'\n      q2_a3: 'that will help with your future career path'\n      q2_a4: 'you think are easy'\n    '#options_randomize': true\n    '#required': true\nquestion_2_feedback:\n  '#type': webform_wizard_page\n  '#title': 'Question 2 feedback'\n  '#next_button_label': 'Next question'\n  question_2_right:\n    '#type': processed_text\n    '#states':\n      visible:\n        ':input[name=\"question_2[q2_a1]\"]':\n          checked: true\n        ':input[name=\"question_2[q2_a3]\"]':\n          checked: true\n        ':input[name=\"question_2[q2_a2]\"]':\n          unchecked: true\n        ':input[name=\"question_2[q2_a4]\"]':\n          unchecked: true\n    '#wrapper_attributes':\n      class:\n        - 'info-notice info-notice--success'\n    '#text': |\n      <h2>Right!</h2>\n      \n      <p>You’re more likely to do well in subjects you enjoy and are good at. However, think about what course or career you'd like to do when you leave school. If you pick a new subject, find out as much as you can about it by talking to teachers and students already studying it.</p>\n      \n      <p>&nbsp;</p>\n      \n      <p>Don't choose subjects for the wrong reasons, such as:</p>\n      \n      <ul>\n      \t<li>you like the teacher – the teacher may change</li>\n      \t<li>you think it will be easy – no subject is easy</li>\n      \t<li>there isn’t much homework – this may change</li>\n      \t<li>your friends are taking the subject – it might be right for them, but not for your chosen career path</li>\n      </ul>\n      \n    '#format': full_html\n  question_2_wrong:\n    '#type': processed_text\n    '#states':\n      visible:\n        - ':input[name=\"question_2[q2_a2]\"]':\n            checked: true\n        - or\n        - ':input[name=\"question_2[q2_a4]\"]':\n            checked: true\n        - or\n        - ':input[name=\"question_2[q2_a1]\"]':\n            unchecked: true\n        - or\n        - ':input[name=\"question_2[q2_a3]\"]':\n            unchecked: true\n    '#wrapper_attributes':\n      class:\n        - 'info-notice info-notice--error'\n    '#text': |\n      <h2>Sorry!</h2>\n      \n      <p>The correct answers are to pick subjects:</p>\n      \n      <ul>\n      \t<li><strong>you enjoy</strong></li>\n      \t<li><strong>that will help with you future career path</strong></li>\n      </ul>\n      \n      <p>You’re more likely to do well in subjects you enjoy and are good at. However, think about what course or career you'd like to do when you leave school. If you pick a new subject, find out as much as you can about it by talking to teachers and students already studying it.</p>\n      \n      <p>Don't choose subjects for the wrong reasons, such as:</p>\n      \n      <ul>\n      \t<li>you like the teacher – the teacher may change</li>\n      \t<li>you think it will be easy – no subject is easy</li>\n      \t<li>there isn’t much homework – this may change</li>\n      \t<li>your friends are taking the subject – it might be right for them, but not for your chosen career path</li>\n      </ul>\n      \n    '#format': full_html\nquestion_3_page:\n  '#type': webform_wizard_page\n  '#title': 'Question 3'\n  '#next_button_label': Next\n  question_3:\n    '#type': radios\n    '#title': 'Some subjects are only for boys or for girls.'\n    '#options':\n      q3_a1: 'True'\n      q3_a2: 'False'\n    '#options_randomize': true\n    '#required': true\nquestion_3_feedback:\n  '#type': webform_wizard_page\n  '#title': 'Question 3 feedback'\n  '#next_button_label': 'Next question'\n  question_3_right:\n    '#type': processed_text\n    '#states':\n      visible:\n        ':input[name=\"question_3\"]':\n          value: q3_a2\n    '#wrapper_attributes':\n      class:\n        - 'info-notice info-notice--success'\n    '#text': |\n      <h2>Right!</h2>\n      \n      <p>You’re more likely to do well in subjects you enjoy and are good at. However, think about what course or career you'd like to do when you leave school. If you pick a new subject, find out as much as you can about it by talking to teachers and students already studying it.</p>\n      \n      <p>&nbsp;</p>\n      \n      <p>Don't choose subjects for the wrong reasons, such as:</p>\n      \n      <ul>\n      \t<li>you like the teacher – the teacher may change</li>\n      \t<li>you think it will be easy – no subject is easy</li>\n      \t<li>there isn’t much homework – this may change</li>\n      \t<li>your friends are taking the subject – it might be right for them, but not for your chosen career path</li>\n      </ul>\n      \n    '#format': full_html\n  question_3_wrong:\n    '#type': processed_text\n    '#states':\n      visible:\n        ':input[name=\"question_3\"]':\n          value: q3_a1\n    '#wrapper_attributes':\n      class:\n        - 'info-notice info-notice--error'\n    '#text': |\n      <h2>Sorry!</h2>\n      \n      <p>There’s no such thing as subjects for boys or for girls. Don’t let gender stereotypes get in the way of picking the subjects you want.</p>\n      \n    '#format': full_html\nquestion_4_page:\n  '#type': webform_wizard_page\n  '#title': 'Question 4'\n  '#next_button_label': Next\n  question_4:\n    '#type': checkboxes\n    '#title': 'If you’re undecided about your future career path you should:'\n    '#description': '(select all that apply)'\n    '#description_display': before\n    '#options':\n      q4_a1: 'keep your options open'\n      q4_a2: 'select a range of subjects'\n      q4_a3: 'find out what jobs are in demand now and in the future'\n      q4_a4: 'pick subjects where you like the teacher '\n    '#options_randomize': true\n    '#required': true\nquestion_4_feedback:\n  '#type': webform_wizard_page\n  '#title': 'Question 4 feedback'\n  '#next_button_label': 'Next question'\n  question_4_right:\n    '#type': processed_text\n    '#states':\n      visible:\n        ':input[name=\"question_4[q4_a1]\"]':\n          checked: true\n        ':input[name=\"question_4[q4_a2]\"]':\n          checked: true\n        ':input[name=\"question_4[q4_a3]\"]':\n          checked: true\n        ':input[name=\"question_4[q4_a4]\"]':\n          unchecked: true\n    '#wrapper_attributes':\n      class:\n        - 'info-notice info-notice--success'\n    '#text': |\n      <h2>Right!</h2>\n      \n      <p>If you’re not sure which career to follow, keep your options open by making a balanced choice. Selecting a range of subjects will give you a good overview of different topics and different ways of studying and can help you identify what subjects you’re best at.</p>\n      \n    '#format': full_html\n  question_4_wrong:\n    '#type': processed_text\n    '#states':\n      visible:\n        - ':input[name=\"question_4[q4_a1]\"]':\n            unchecked: true\n        - or\n        - ':input[name=\"question_4[q4_a2]\"]':\n            unchecked: true\n        - or\n        - ':input[name=\"question_4[q4_a3]\"]':\n            unchecked: true\n        - or\n        - ':input[name=\"question_4[q4_a4]\"]':\n            checked: true\n    '#wrapper_attributes':\n      class:\n        - 'info-notice info-notice--error'\n    '#text': |\n      <h2>Sorry!</h2>\n      \n      <p>The correct answers are:</p>\n      \n      <ul>\n      \t<li><strong>keep you options open</strong></li>\n      \t<li><strong>select a range of subjects</strong></li>\n      \t<li><strong>find out what jobs are in demand now and in the future</strong></li>\n      </ul>\n      \n      <p>If you’re not sure which career to follow, keep your options open by making a balanced choice. Selecting a range of subjects will give you a good overview of different topics and different ways of studying and can help you identify what subjects you’re best at.</p>\n      \n    '#format': full_html\nquestion_5_page:\n  '#type': webform_wizard_page\n  '#title': 'Question 5'\n  '#next_button_label': Next\n  question_5:\n    '#type': radios\n    '#title': 'The Careers Service can help you:'\n    '#description': '(select one answer)'\n    '#description_display': before\n    '#options':\n      q5_a1: 'plan and make decisions for your future '\n      q5_a2: 'identify your strengths and areas for improvement'\n      q5_a3: 'consider opportunities available in education, training and employment'\n      q5_a4: 'all of the above'\n    '#required': true\nquestion_5_feedback:\n  '#type': webform_wizard_page\n  '#title': 'Question 5 feedback'\n  '#next_button_label': 'Next question'\n  question_5_right:\n    '#type': processed_text\n    '#states':\n      visible:\n        ':input[name=\"question_5\"]':\n          value: q5_a4\n    '#wrapper_attributes':\n      class:\n        - 'info-notice info-notice--success'\n    '#text': |\n      <h2>Right!</h2>\n      \n      <p>The Careers Service offers impartial careers information, advice and guidance. Professionally qualified careers advisers can help you:</p>\n      \n      <ul>\n      \t<li>plan and make decisions for your future career</li>\n      \t<li>explore your strengths and identify areas for improvement</li>\n      \t<li>consider the opportunities available in education, training and employment</li>\n      </ul>\n      \n    '#format': full_html\n  question_5_wrong:\n    '#type': processed_text\n    '#states':\n      visible:\n        ':input[name=\"question_5\"]':\n          '!value': q5_a4\n    '#wrapper_attributes':\n      class:\n        - 'info-notice info-notice--error'\n    '#text': |\n      <h2>Sorry!</h2>\n      \n      <p>The correct answer is <strong>all of the above</strong>.</p>\n      \n      <p>The Careers Service offers impartial careers information, advice and guidance. Professionally qualified careers advisers can help you:</p>\n      \n      <ul>\n      \t<li>plan and make decisions for your future career</li>\n      \t<li>explore your strengths and identify areas for improvement</li>\n      \t<li>consider the opportunities available in education, training and employment</li>\n      </ul>\n      \n    '#format': full_html\nquestion_6_page:\n  '#type': webform_wizard_page\n  '#title': 'Question 6'\n  '#next_button_label': Next\n  question_6:\n    '#type': radios\n    '#title': 'You can contact the Careers Service:'\n    '#description': '(select one answer)'\n    '#description_display': before\n    '#options':\n      q6_a1: 'by telephone'\n      q6_a2: 'face to face in school or at a local careers office'\n      q6_a3: online\n      q6_a4: 'all of the above'\n    '#required': true\nquestion_6_feedback:\n  '#type': webform_wizard_page\n  '#title': 'Question 6 feedback'\n  question_6_right:\n    '#type': processed_text\n    '#states':\n      visible:\n        ':input[name=\"question_6\"]':\n          value: q6_a4\n    '#wrapper_attributes':\n      class:\n        - 'info-notice info-notice--success'\n    '#text': |\n      <h2>Right!</h2>\n      \n      <p>Contacting the Careers Service is easy. To speak to a Careers Adviser, you can:</p>\n      \n      <ul>\n      \t<li><a href=\"https://selfservice.nidirect.gov.uk/TransactionalServices/Careers_Service/Tell_Us/Ask_careers/#/11021/Contact/View/Ask careers\" target=\"_blank\">send your query online</a> or chat to an adviser using <a href=\"/node/5169\" target=\"_blank\">Careers Webchat</a></li>\n      \t<li>telephone <strong>0300 200 7820</strong></li>\n      \t<li>speak to an adviser face to face in school</li>\n      \t<li>call in to your local careers office</li>\n      </ul>\n      \n    '#format': full_html\n  question_6_wrong:\n    '#type': processed_text\n    '#states':\n      visible:\n        ':input[name=\"question_6\"]':\n          '!value': q6_a4\n    '#wrapper_attributes':\n      class:\n        - 'info-notice info-notice--error'\n    '#text': |\n      <h2>Sorry!</h2>\n      \n      <p>The correct answer is <strong>all of the above</strong>.</p>\n      \n      <p>Contacting the Careers Service is easy. To speak to a Careers Adviser, you can:</p>\n      \n      <ul>\n      \t<li><a href=\"https://selfservice.nidirect.gov.uk/TransactionalServices/Careers_Service/Tell_Us/Ask_careers/#/11021/Contact/View/Ask careers\" target=\"_blank\">send your query online</a> or chat to an adviser using <a href=\"/node/5169\" target=\"_blank\">Careers Webchat</a></li>\n      \t<li>telephone <strong>0300 200 7820</strong></li>\n      \t<li>speak to an adviser face to face in school</li>\n      \t<li>call in to your local careers office</li>\n      </ul>\n      \n    '#format': full_html\nactions:\n  '#type': webform_actions\n  '#title': 'Submit button(s)'\n  '#submit__label': Finish\n  '#wizard_prev_hide': true"
+elements: |
+  question_1_page:
+    '#type': webform_wizard_page
+    '#title': 'Question 1'
+    '#next_button_label': Next
+    banner_1:
+      '#type': processed_text
+      '#text': |
+        <drupal-media data-align="center" data-entity-type="media" data-entity-uuid="33022702-975a-44b9-b7ff-c99dd86ae5db"></drupal-media>
+        
+      '#format': full_html
+    question_1:
+      '#type': radios
+      '#title': 'When picking your GCSE subjects, you should:'
+      '#description': '(select one answer)'
+      '#description_display': before
+      '#options':
+        q1_a1: 'get accurate and up to date information'
+        q1_a2: 'get reliable advice '
+        q1_a3: 'discuss your options with your subject teachers and family'
+        q1_a4: 'all of the above'
+      '#required': true
+  question_1_feedback:
+    '#type': webform_wizard_page
+    '#title': 'Question 1 feedback'
+    '#next_button_label': 'Next question'
+    question_1_right:
+      '#type': processed_text
+      '#states':
+        visible:
+          ':input[name="question_1"]':
+            value: q1_a4
+      '#wrapper_attributes':
+        class:
+          - 'info-notice info-notice--success'
+      '#text': |
+        <h2>Right!</h2>
+        
+        <p>When choosing your subjects, make sure you've accurate and up to date information. Talk to those who can give you reliable advice, such as a careers teacher or adviser, your subject teachers and family.</p>
+        
+      '#format': full_html
+    question_1_wrong:
+      '#type': processed_text
+      '#states':
+        visible:
+          ':input[name="question_1"]':
+            '!value': q1_a4
+      '#wrapper_attributes':
+        class:
+          - 'info-notice info-notice--error'
+      '#text': |
+        <h2>Sorry!</h2>
+        
+        <p>The correct answer is<strong> all of the above.</strong></p>
+        
+        <p style="text-align:justify">When choosing your subjects, make sure you've accurate and up to date information. Talk to those who can give you reliable advice, such as a careers teacher or adviser, your subject teachers and family.</p>
+        
+      '#format': full_html
+  question_2_page:
+    '#type': webform_wizard_page
+    '#title': 'Question 2'
+    '#next_button_label': Next
+    banner_2:
+      '#type': processed_text
+      '#text': |
+        <drupal-media data-align="center" data-entity-type="media" data-entity-uuid="2e24fe5e-30d4-4298-9583-844fa5494ffc"></drupal-media>
+        
+      '#format': full_html
+    question_2:
+      '#type': checkboxes
+      '#title': 'When choosing what to study, you should pick subjects:'
+      '#description': '(select all that apply)'
+      '#description_display': before
+      '#options':
+        q2_a1: 'you enjoy'
+        q2_a2: 'your friends are doing'
+        q2_a3: 'that will help with your future career path'
+        q2_a4: 'you think are easy'
+      '#options_randomize': true
+      '#required': true
+  question_2_feedback:
+    '#type': webform_wizard_page
+    '#title': 'Question 2 feedback'
+    '#next_button_label': 'Next question'
+    question_2_right:
+      '#type': processed_text
+      '#states':
+        visible:
+          ':input[name="question_2[q2_a1]"]':
+            checked: true
+          ':input[name="question_2[q2_a3]"]':
+            checked: true
+          ':input[name="question_2[q2_a2]"]':
+            unchecked: true
+          ':input[name="question_2[q2_a4]"]':
+            unchecked: true
+      '#wrapper_attributes':
+        class:
+          - 'info-notice info-notice--success'
+      '#text': |
+        <h2>Right!</h2>
+        
+        <p>You’re more likely to do well in subjects you enjoy and are good at. However, think about what course or career you'd like to do when you leave school. If you pick a new subject, find out as much as you can about it by talking to teachers and students already studying it.</p>
+        
+        <p>&nbsp;</p>
+        
+        <p>Don't choose subjects for the wrong reasons, such as:</p>
+        
+        <ul>
+        	<li>you like the teacher – the teacher may change</li>
+        	<li>you think it will be easy – no subject is easy</li>
+        	<li>there isn’t much homework – this may change</li>
+        	<li>your friends are taking the subject – it might be right for them, but not for your chosen career path</li>
+        </ul>
+        
+      '#format': full_html
+    question_2_wrong:
+      '#type': processed_text
+      '#states':
+        visible:
+          - ':input[name="question_2[q2_a2]"]':
+              checked: true
+          - or
+          - ':input[name="question_2[q2_a4]"]':
+              checked: true
+          - or
+          - ':input[name="question_2[q2_a1]"]':
+              unchecked: true
+          - or
+          - ':input[name="question_2[q2_a3]"]':
+              unchecked: true
+      '#wrapper_attributes':
+        class:
+          - 'info-notice info-notice--error'
+      '#text': |
+        <h2>Sorry!</h2>
+        
+        <p>The correct answers are to pick subjects:</p>
+        
+        <ul>
+        	<li><strong>you enjoy</strong></li>
+        	<li><strong>that will help with you future career path</strong></li>
+        </ul>
+        
+        <p>You’re more likely to do well in subjects you enjoy and are good at. However, think about what course or career you'd like to do when you leave school. If you pick a new subject, find out as much as you can about it by talking to teachers and students already studying it.</p>
+        
+        <p>Don't choose subjects for the wrong reasons, such as:</p>
+        
+        <ul>
+        	<li>you like the teacher – the teacher may change</li>
+        	<li>you think it will be easy – no subject is easy</li>
+        	<li>there isn’t much homework – this may change</li>
+        	<li>your friends are taking the subject – it might be right for them, but not for your chosen career path</li>
+        </ul>
+        
+      '#format': full_html
+  question_3_page:
+    '#type': webform_wizard_page
+    '#title': 'Question 3'
+    '#next_button_label': Next
+    banner_3:
+      '#type': processed_text
+      '#text': |
+        <drupal-media data-align="center" data-entity-type="media" data-entity-uuid="f79bd331-45b1-45ef-bfb5-483f3033b1f0"></drupal-media>
+        
+      '#format': full_html
+    question_3:
+      '#type': radios
+      '#title': 'Some subjects are only for boys or for girls.'
+      '#options':
+        q3_a1: 'True'
+        q3_a2: 'False'
+      '#options_randomize': true
+      '#required': true
+  question_3_feedback:
+    '#type': webform_wizard_page
+    '#title': 'Question 3 feedback'
+    '#next_button_label': 'Next question'
+    question_3_right:
+      '#type': processed_text
+      '#states':
+        visible:
+          ':input[name="question_3"]':
+            value: q3_a2
+      '#wrapper_attributes':
+        class:
+          - 'info-notice info-notice--success'
+      '#text': |
+        <h2>Right!</h2>
+        
+        <p>You’re more likely to do well in subjects you enjoy and are good at. However, think about what course or career you'd like to do when you leave school. If you pick a new subject, find out as much as you can about it by talking to teachers and students already studying it.</p>
+        
+        <p>&nbsp;</p>
+        
+        <p>Don't choose subjects for the wrong reasons, such as:</p>
+        
+        <ul>
+        	<li>you like the teacher – the teacher may change</li>
+        	<li>you think it will be easy – no subject is easy</li>
+        	<li>there isn’t much homework – this may change</li>
+        	<li>your friends are taking the subject – it might be right for them, but not for your chosen career path</li>
+        </ul>
+        
+      '#format': full_html
+    question_3_wrong:
+      '#type': processed_text
+      '#states':
+        visible:
+          ':input[name="question_3"]':
+            value: q3_a1
+      '#wrapper_attributes':
+        class:
+          - 'info-notice info-notice--error'
+      '#text': |
+        <h2>Sorry!</h2>
+        
+        <p>There’s no such thing as subjects for boys or for girls. Don’t let gender stereotypes get in the way of picking the subjects you want.</p>
+        
+      '#format': full_html
+  question_4_page:
+    '#type': webform_wizard_page
+    '#title': 'Question 4'
+    '#next_button_label': Next
+    banner_4:
+      '#type': processed_text
+      '#text': |
+        <drupal-media data-align="center" data-entity-type="media" data-entity-uuid="4a63329d-c8ec-46e8-84b1-46055155a495"></drupal-media>
+        
+      '#format': full_html
+    question_4:
+      '#type': checkboxes
+      '#title': 'If you’re undecided about your future career path you should:'
+      '#description': '(select all that apply)'
+      '#description_display': before
+      '#options':
+        q4_a1: 'keep your options open'
+        q4_a2: 'select a range of subjects'
+        q4_a3: 'find out what jobs are in demand now and in the future'
+        q4_a4: 'pick subjects where you like the teacher '
+      '#options_randomize': true
+      '#required': true
+  question_4_feedback:
+    '#type': webform_wizard_page
+    '#title': 'Question 4 feedback'
+    '#next_button_label': 'Next question'
+    question_4_right:
+      '#type': processed_text
+      '#states':
+        visible:
+          ':input[name="question_4[q4_a1]"]':
+            checked: true
+          ':input[name="question_4[q4_a2]"]':
+            checked: true
+          ':input[name="question_4[q4_a3]"]':
+            checked: true
+          ':input[name="question_4[q4_a4]"]':
+            unchecked: true
+      '#wrapper_attributes':
+        class:
+          - 'info-notice info-notice--success'
+      '#text': |
+        <h2>Right!</h2>
+        
+        <p>If you’re not sure which career to follow, keep your options open by making a balanced choice. Selecting a range of subjects will give you a good overview of different topics and different ways of studying and can help you identify what subjects you’re best at.</p>
+        
+      '#format': full_html
+    question_4_wrong:
+      '#type': processed_text
+      '#states':
+        visible:
+          - ':input[name="question_4[q4_a1]"]':
+              unchecked: true
+          - or
+          - ':input[name="question_4[q4_a2]"]':
+              unchecked: true
+          - or
+          - ':input[name="question_4[q4_a3]"]':
+              unchecked: true
+          - or
+          - ':input[name="question_4[q4_a4]"]':
+              checked: true
+      '#wrapper_attributes':
+        class:
+          - 'info-notice info-notice--error'
+      '#text': |
+        <h2>Sorry!</h2>
+        
+        <p>The correct answers are:</p>
+        
+        <ul>
+        	<li><strong>keep you options open</strong></li>
+        	<li><strong>select a range of subjects</strong></li>
+        	<li><strong>find out what jobs are in demand now and in the future</strong></li>
+        </ul>
+        
+        <p>If you’re not sure which career to follow, keep your options open by making a balanced choice. Selecting a range of subjects will give you a good overview of different topics and different ways of studying and can help you identify what subjects you’re best at.</p>
+        
+      '#format': full_html
+  question_5_page:
+    '#type': webform_wizard_page
+    '#title': 'Question 5'
+    '#next_button_label': Next
+    banner_5:
+      '#type': processed_text
+      '#text': |
+        <drupal-media data-align="center" data-entity-type="media" data-entity-uuid="2e24fe5e-30d4-4298-9583-844fa5494ffc"></drupal-media>
+        
+      '#format': full_html
+    question_5:
+      '#type': radios
+      '#title': 'The Careers Service can help you:'
+      '#description': '(select one answer)'
+      '#description_display': before
+      '#options':
+        q5_a1: 'plan and make decisions for your future '
+        q5_a2: 'identify your strengths and areas for improvement'
+        q5_a3: 'consider opportunities available in education, training and employment'
+        q5_a4: 'all of the above'
+      '#required': true
+  question_5_feedback:
+    '#type': webform_wizard_page
+    '#title': 'Question 5 feedback'
+    '#next_button_label': 'Next question'
+    question_5_right:
+      '#type': processed_text
+      '#states':
+        visible:
+          ':input[name="question_5"]':
+            value: q5_a4
+      '#wrapper_attributes':
+        class:
+          - 'info-notice info-notice--success'
+      '#text': |
+        <h2>Right!</h2>
+        
+        <p>The Careers Service offers impartial careers information, advice and guidance. Professionally qualified careers advisers can help you:</p>
+        
+        <ul>
+        	<li>plan and make decisions for your future career</li>
+        	<li>explore your strengths and identify areas for improvement</li>
+        	<li>consider the opportunities available in education, training and employment</li>
+        </ul>
+        
+      '#format': full_html
+    question_5_wrong:
+      '#type': processed_text
+      '#states':
+        visible:
+          ':input[name="question_5"]':
+            '!value': q5_a4
+      '#wrapper_attributes':
+        class:
+          - 'info-notice info-notice--error'
+      '#text': |
+        <h2>Sorry!</h2>
+        
+        <p>The correct answer is <strong>all of the above</strong>.</p>
+        
+        <p>The Careers Service offers impartial careers information, advice and guidance. Professionally qualified careers advisers can help you:</p>
+        
+        <ul>
+        	<li>plan and make decisions for your future career</li>
+        	<li>explore your strengths and identify areas for improvement</li>
+        	<li>consider the opportunities available in education, training and employment</li>
+        </ul>
+        
+      '#format': full_html
+  question_6_page:
+    '#type': webform_wizard_page
+    '#title': 'Question 6'
+    '#next_button_label': Next
+    banner_6:
+      '#type': processed_text
+      '#text': |
+        <drupal-media data-align="center" data-entity-type="media" data-entity-uuid="1bb64754-0000-46dd-bf3b-1d53c077a6c2"></drupal-media>
+        
+      '#format': full_html
+    question_6:
+      '#type': radios
+      '#title': 'You can contact the Careers Service:'
+      '#description': '(select one answer)'
+      '#description_display': before
+      '#options':
+        q6_a1: 'by telephone'
+        q6_a2: 'face to face in school or at a local careers office'
+        q6_a3: online
+        q6_a4: 'all of the above'
+      '#required': true
+  question_6_feedback:
+    '#type': webform_wizard_page
+    '#title': 'Question 6 feedback'
+    question_6_right:
+      '#type': processed_text
+      '#states':
+        visible:
+          ':input[name="question_6"]':
+            value: q6_a4
+      '#wrapper_attributes':
+        class:
+          - 'info-notice info-notice--success'
+      '#text': |
+        <h2>Right!</h2>
+        
+        <p>Contacting the Careers Service is easy. To speak to a Careers Adviser, you can:</p>
+        
+        <ul>
+        	<li><a href="https://selfservice.nidirect.gov.uk/TransactionalServices/Careers_Service/Tell_Us/Ask_careers/#/11021/Contact/View/Ask careers" target="_blank">send your query online</a> or chat to an adviser using <a href="/node/5169" target="_blank">Careers Webchat</a></li>
+        	<li>telephone <strong>0300 200 7820</strong></li>
+        	<li>speak to an adviser face to face in school</li>
+        	<li>call in to your local careers office</li>
+        </ul>
+        
+      '#format': full_html
+    question_6_wrong:
+      '#type': processed_text
+      '#states':
+        visible:
+          ':input[name="question_6"]':
+            '!value': q6_a4
+      '#wrapper_attributes':
+        class:
+          - 'info-notice info-notice--error'
+      '#text': |
+        <h2>Sorry!</h2>
+        
+        <p>The correct answer is <strong>all of the above</strong>.</p>
+        
+        <p>Contacting the Careers Service is easy. To speak to a Careers Adviser, you can:</p>
+        
+        <ul>
+        	<li><a href="https://selfservice.nidirect.gov.uk/TransactionalServices/Careers_Service/Tell_Us/Ask_careers/#/11021/Contact/View/Ask careers" target="_blank">send your query online</a> or chat to an adviser using <a href="/node/5169" target="_blank">Careers Webchat</a></li>
+        	<li>telephone <strong>0300 200 7820</strong></li>
+        	<li>speak to an adviser face to face in school</li>
+        	<li>call in to your local careers office</li>
+        </ul>
+        
+      '#format': full_html
+  actions:
+    '#type': webform_actions
+    '#title': 'Submit button(s)'
+    '#submit__label': Finish
+    '#wizard_prev_hide': true
 css: ''
 javascript: ''
 settings:
