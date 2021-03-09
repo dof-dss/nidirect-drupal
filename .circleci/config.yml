@@ -340,6 +340,10 @@ jobs:
           command: |
             /home/circleci/.platformsh/bin/platform environment:drush tei-rebuild -p $PLATFORM_PROJECT_ID -e $EDGE_BUILD_BRANCH
       - run:
+          name: Set GAC state variable
+          command: |
+            /home/circleci/.platformsh/bin/platform environment:drush "sset google_analytics_counter.access_token ${GAC_ACCESS_TOKEN}" -p $PLATFORM_PROJECT_ID -e $EDGE_BUILD_BRANCH
+      - run:
           name: Force purge of Solr index
           command: /home/circleci/.platformsh/bin/platform ssh -p $PLATFORM_PROJECT_ID -e $EDGE_BUILD_BRANCH "curl http://${PLATFORM_SOLR_HOST}/solr/default/update --data '<delete><query>*:*</query></delete>' -H 'Content-type:text/xml; charset=utf-8' && curl http://${PLATFORM_SOLR_HOST}/solr/default/update --data '<commit/>' -H 'Content-type:text/xml; charset=utf-8'"
       - run:
