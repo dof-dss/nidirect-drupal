@@ -17,6 +17,15 @@ else
   DRUPAL_ROOT=/app/web
 fi
 
+# Option to import all migrations.
+# Typically web want to preserve certain content types such as landing pages from begin overwritten.
+if [ "$1" == "-a" ] || [ "$1" == "--all" ]; then
+ MIGRATE_ALL=true;
+fi
+
+# Enable migrate booster module
+drush mbe
+
 ##### RESET ######
 # Reset all migrations.
 for migration_id in `drush migrate:status --format=csv | grep Importing | awk -F ',' '{print $2}'`; do
@@ -32,9 +41,13 @@ drush migrate:rollback --group=migrate_drupal_7_link
 drush migrate:rollback nidirect_book
 
 # Rollback all node migrations.
-for type in driving_instructor application article external_link gp_practice health_condition landing_page news nidirect_contact contact page publication; do
+for type in driving_instructor application article external_link gp_practice health_condition news nidirect_contact contact page publication; do
   drush migrate:rollback --group=migrate_nidirect_node_$type
 done
+
+if [ $MIGRATE_ALL ]; then
+  drush migrate:rollback --group=migrate_nidirect_node_landing_page
+fi
 
 # Rollback GP entities.
 drush migrate:rollback --group=migrate_nidirect_entity_gp
@@ -43,40 +56,37 @@ drush migrate:rollback --group=migrate_drupal_7_file
 
 ##### PRE, IMPORT AND POST MIGRATE ######
 
-# Execute pre-migration commands with drupal console.
-cd $DRUPAL_ROOT
-drupal nidirect:migrate:pre
-drupal nidirect:migrate:pre:feature_nodes
-
 # Import any new users
 drush migrate:import upgrade_d7_user
 
 # Import any new taxonomy terms, with dependencies.
-drush migrate:import --group=migrate_drupal_7_taxo --execute-dependencies
+drush migrate:import --group=migrate_drupal_7_taxo --force --execute-dependencies
 
 # Import files.
-drush migrate:import upgrade_d7_file --execute-dependencies
+drush migrate:import upgrade_d7_file --force --execute-dependencies
 # Import media entities
-drush migrate:import --group=migrate_drupal_7_file
+drush migrate:import --group=migrate_drupal_7_file --force
+
+# Import file images
+drush migrate:import upgrade_d7_file_image
 
 # Import GP entities.
-drush migrate:import --group=migrate_nidirect_entity_gp
+drush migrate:import --group=migrate_nidirect_entity_gp --force
 
 # Import all node migrations.
-for type in driving_instructor application article external_link gp_practice health_condition landing_page news nidirect_contact contact page publication; do
-  drush migrate:import --group=migrate_nidirect_node_$type --execute-dependencies
+for type in driving_instructor application article external_link gp_practice health_condition news nidirect_contact contact page publication; do
+  drush migrate:import --group=migrate_nidirect_node_$type --force --execute-dependencies
 done
 
+if [ $MIGRATE_ALL ]; then
+  drush migrate:import --group=migrate_nidirect_node_landing_page --force
+fi
+
 # Import book
-drush migrate:import nidirect_book
+drush migrate:import nidirect_book --force
 
 # Import URL aliases and redirects
-drush migrate:import --group=migrate_drupal_7_link
-
-# Execute post-migration commands with drupal console.
-cd $DRUPAL_ROOT
-drupal nidirect:migrate:post
-drupal nidirect:migrate:post:feature_nodes
+drush migrate:import --group=migrate_drupal_7_link --force
 
 # Clear caches and re-index Solr.
 drush cr
