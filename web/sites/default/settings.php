@@ -71,6 +71,12 @@ if (!empty(getenv('PLATFORM_BRANCH'))) {
       $settings['container_yamls'][] = $app_root . '/' . $site_path . '/services.yml';
       break;
 
+    case 'D8NID-edge':
+      // Retain as much prodution related config/settings as possible.
+      $config['config_split.config_split.production']['status'] = TRUE;
+      $settings['container_yamls'][] = $app_root . '/' . $site_path . '/services.yml';
+      break;
+
     case (stripos(getenv('PLATFORM_BRANCH'), 'D8NID-qa') !== FALSE):
       // QA environment config adjustments.
       $env_colour = '#e56716';
