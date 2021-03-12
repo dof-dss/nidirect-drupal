@@ -72,7 +72,7 @@ if (!empty(getenv('PLATFORM_BRANCH'))) {
       break;
 
     case 'D8NID-edge':
-      // Retain as much prodution related config/settings as possible.
+      // Retain as much production related config/settings as possible.
       $config['config_split.config_split.production']['status'] = TRUE;
       $settings['container_yamls'][] = $app_root . '/' . $site_path . '/services.yml';
       break;
