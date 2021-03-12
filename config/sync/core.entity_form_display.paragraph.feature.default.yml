@@ -1,0 +1,52 @@
+uuid: b22754ff-aee7-45b3-a49b-aa0fe6fa5329
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.feature.field_image
+    - field.field.paragraph.feature.field_link
+    - field.field.paragraph.feature.field_teaser
+    - field.field.paragraph.feature.field_title
+    - paragraphs.paragraphs_type.feature
+  module:
+    - link
+    - media_library
+id: paragraph.feature.default
+targetEntityType: paragraph
+bundle: feature
+mode: default
+content:
+  field_image:
+    type: media_library_widget
+    weight: 3
+    settings:
+      media_types: {  }
+    third_party_settings: {  }
+    region: content
+  field_link:
+    weight: 2
+    settings:
+      placeholder_url: ''
+      placeholder_title: ''
+    third_party_settings: {  }
+    type: link_default
+    region: content
+  field_teaser:
+    weight: 1
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+    type: string_textfield
+    region: content
+  field_title:
+    weight: 0
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+    type: string_textfield
+    region: content
+hidden:
+  created: true
+  status: true

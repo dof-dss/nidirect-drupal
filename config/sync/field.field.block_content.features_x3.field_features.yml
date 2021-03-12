@@ -1,0 +1,46 @@
+uuid: dac79ac1-5453-4ef5-9b24-fde36c19ecc3
+langcode: en
+status: true
+dependencies:
+  config:
+    - block_content.type.features_x3
+    - field.storage.block_content.field_features
+    - paragraphs.paragraphs_type.feature
+  module:
+    - entity_reference_revisions
+id: block_content.features_x3.field_features
+field_name: field_features
+entity_type: block_content
+bundle: features_x3
+label: Features
+description: ''
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:paragraph'
+  handler_settings:
+    negate: 0
+    target_bundles:
+      feature: feature
+    target_bundles_drag_drop:
+      accordion_section:
+        weight: 7
+        enabled: false
+      article_teaser:
+        weight: 8
+        enabled: false
+      card_plain:
+        weight: 9
+        enabled: false
+      feature:
+        enabled: true
+        weight: 10
+      map:
+        weight: 11
+        enabled: false
+      term_teaser:
+        weight: 12
+        enabled: false
+field_type: entity_reference_revisions
