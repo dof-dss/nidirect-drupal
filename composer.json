@@ -24,17 +24,30 @@
                     "type": "zip"
                 }
             }
+        },
+        {
+            "type": "package",
+            "package": {
+                "name": "thinktandem/migrate_booster",
+                "version": "dev-main",
+                "type":"drupal-module",
+                "source": {
+                    "url": "https://github.com/thinktandem/migrate_booster.git",
+                    "type": "git",
+                    "reference": "main"
+                }
+            }
         }
     ],
     "require": {
         "composer/installers": "^1.9",
         "cweagans/composer-patches": "^1.6.5",
-        "dof-dss/nicsdru_nidirect_theme": "^0.12.1",
-        "dof-dss/nicsdru_origins_modules": "^0.9.13",
-        "dof-dss/nicsdru_origins_theme": "^0.3.9",
-        "dof-dss/nidirect-d8-test-install-profile": "^0.2.2",
-        "dof-dss/nidirect-migrations": "^0.12.1",
-        "dof-dss/nidirect-site-modules": "^0.12.1",
+        "dof-dss/nicsdru_nidirect_theme": "^0.12.2",
+        "dof-dss/nicsdru_origins_modules": "^0.9.15",
+        "dof-dss/nicsdru_origins_theme": "^0.3.10",
+        "dof-dss/nidirect-d8-test-install-profile": "^0.12.2",
+        "dof-dss/nidirect-migrations": "^0.12.0",
+        "dof-dss/nidirect-site-modules": "^0.12.2",
         "drupal/address": "^1.7",
         "drupal/admin_toolbar": "^2.0",
         "drupal/adminimal_theme": "^1.5",
@@ -115,7 +128,7 @@
         "drupal/views_custom_cache_tag": "^1.1",
         "drupal/views_data_export": "^1.0",
         "drupal/webform": "^6.0",
-        "drupal/whatlinkshere": "^1.6",
+        "drupal/whatlinkshere": "^2.1",
         "drupal/xls_serialization": "^1.2",
         "drush/drush": "^10.1",
         "geocoder-php/google-maps-provider": "^4.6",
@@ -131,6 +144,7 @@
         "drupal/core-dev": "^8.8",
         "drupal/devel": "^4.1",
         "drupal/easy_install": "^10.1",
+        "drupal/fpa": "^2.0@beta",
         "drupal/masquerade": "^2.0@beta",
         "drupal/migrate_tools": "4.x-dev",
         "drupal/multiline_config": "1.x-dev",
@@ -139,7 +153,8 @@
         "drupal/stage_file_proxy": "^1.0@beta",
         "drupal/upgrade_status": "^3.0",
         "kint-php/kint": "^3.3",
-        "previousnext/phpunit-finder": "^1.0@alpha"
+        "previousnext/phpunit-finder": "^1.0@alpha",
+        "thinktandem/migrate_booster": "dev-main"
     },
     "conflict": {
         "drupal/drupal": "*"
@@ -157,7 +172,8 @@
                 "When embedding media, don't let authors choose view modes that are not enabled for that media type": "https://www.drupal.org/files/issues/2020-01-31/3097416-ckeditor-view-modes-8.9-combined.patch",
                 "[IGNORE] Composer-friendly patches for filename sanitation while #2492171 awaits #3032390": "https://www.drupal.org/files/issues/2020-11-18/3094052-composer-patch-filename-sanitation-7.patch",
                 "[meta] Themes improperly check renderable arrays when determining visibility": "https://www.drupal.org/files/issues/2019-02-19/themes_improperly_check_renderable_arrays_when_determining_visibility-953034-313.patch",
-                "Off-canvas style resets are overriding styles (especially SVGs) in Safari, Firefox and Chromium Edge resulting in display issues": "https://www.drupal.org/files/issues/2021-01-06/off-canvas-style-resets-2958588-13.patch"
+                "Off-canvas style resets are overriding styles (especially SVGs) in Safari, Firefox and Chromium Edge resulting in display issues": "https://www.drupal.org/files/issues/2021-01-06/off-canvas-style-resets-2958588-13.patch",
+                "Cannot save unpublished versions of published content for users without manage book privileges": "https://www.drupal.org/files/issues/2020-10-18/2918537-63.patch"
             },
             "drupal/easy_install": {
                 "Handle missing core version": "https://www.drupal.org/files/issues/2019-12-19/easy_install_core_version-3101883-0.patch"
@@ -197,9 +213,6 @@
             "drupal/moderation_sidebar": {
                 "'Draft available' text still appears after deleting a forward revision": "https://www.drupal.org/files/issues/2020-02-24/3115474-3.patch"
             },
-            "drupal/whatlinkshere": {
-                "Incorrect batch id in drush command": "https://www.drupal.org/files/issues/2021-01-26/fix-batch-id-ref.patch"
-            },
             "drupal/hms_field": {
                 "Drupal 8.9 / 9 compatibility": "https://www.drupal.org/files/issues/2020-06-05/3145496-6.patch"
             },
@@ -209,6 +222,10 @@
             "drupal/clientside_validation": {
                 "core/jquery.once is required": "https://www.drupal.org/files/issues/2021-02-23/3200022-01.patch",
                 "Cientside validation errors revert to being output as a label in webform wizard pages with ajax enabled": "https://www.drupal.org/files/issues/2021-02-24/3110890-reroll-for-3.0.x.patch"
+            },
+            "drupal/fpa": {
+                "Remove @file tag docblock": "https://www.drupal.org/files/issues/2018-04-24/fpa_remove_file_tag_2795655_3.patch",
+                "entity.manager must be changed to entity_type.manager": "https://www.drupal.org/files/issues/2021-03-01/entity_type_manager_fix.patch"
             }
         },
         "composer-exit-on-patch-failure": true,
