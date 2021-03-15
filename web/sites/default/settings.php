@@ -68,25 +68,11 @@ if (!empty(getenv('PLATFORM_BRANCH'))) {
     case 'main':
       // De-facto production settings.
       $config['config_split.config_split.production']['status'] = TRUE;
-      $settings['container_yamls'][] = $app_root . '/' . $site_path . '/services.yml';
-      break;
-
-    case 'D8NID-edge':
-      // Retain as much production related config/settings as possible.
-      $config['config_split.config_split.production']['status'] = TRUE;
-      $settings['container_yamls'][] = $app_root . '/' . $site_path . '/services.yml';
-      break;
-
-    case (stripos(getenv('PLATFORM_BRANCH'), 'D8NID-qa') !== FALSE):
-      // QA environment config adjustments.
-      $env_colour = '#e56716';
       break;
 
     default:
       // Default to use development settings/services for general platform.sh environments.
       $config['config_split.config_split.development']['status'] = TRUE;
-      $settings['container_yamls'][] = $app_root . '/' . $site_path . '/services.development.yml';
-      include $app_root . '/' . $site_path . '/settings.development.php';
   }
 }
 
