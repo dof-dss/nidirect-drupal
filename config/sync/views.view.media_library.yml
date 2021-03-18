@@ -1089,8 +1089,18 @@ display:
           relationship: none
           group_type: group
           admin_label: 'file from field_media_file'
-          required: true
+          required: false
           plugin_id: standard
+        reverse_field_media_image_media:
+          id: reverse_field_media_image_media
+          table: file_managed
+          field: reverse_field_media_image_media
+          relationship: field_media_file_target_id
+          group_type: group
+          admin_label: field_media_image
+          required: false
+          entity_type: file
+          plugin_id: entity_reverse
     cache_metadata:
       max-age: 0
       contexts:
