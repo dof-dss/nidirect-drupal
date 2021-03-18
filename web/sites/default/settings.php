@@ -87,6 +87,12 @@ $config['migrate_booster.settings']['modules'] = [
   'search_api_solr',
 ];
 
+// Override block config for homepage features FCL node ids.
+if (!empty(getenv('HOMEPAGE_TOP_FCL')) && !empty(getenv('HOMEPAGE_BOTTOM_FCL'))) {
+  $config['block.block.featuredcontent_covid19']['settings']['featured_items'] = getenv('HOMEPAGE_TOP_FCL');
+  $config['block.block.featuredcontent']['settings']['featured_items'] = getenv('HOMEPAGE_BOTTOM_FCL');
+}
+
 // Local settings. These come last so that they can override anything.
 if (file_exists($app_root . '/' . $site_path . '/settings.local.php')) {
   include $app_root . '/' . $site_path . '/settings.local.php';
