@@ -15,7 +15,6 @@ dependencies:
     - media_library_edit
     - path
     - scheduler
-    - scheduler_content_moderation_integration
 id: node.feature.default
 targetEntityType: node
 bundle: feature
@@ -86,11 +85,11 @@ content:
     settings: {  }
     third_party_settings: {  }
   publish_state:
-    type: scheduler_moderation
-    weight: 9
-    region: content
+    weight: 26
     settings: {  }
     third_party_settings: {  }
+    type: options_select
+    region: content
   scheduler_settings:
     weight: 6
     region: content
@@ -135,11 +134,11 @@ content:
     settings: {  }
     third_party_settings: {  }
   unpublish_state:
-    type: scheduler_moderation
-    weight: 10
-    region: content
+    weight: 27
     settings: {  }
     third_party_settings: {  }
+    type: options_select
+    region: content
   url_redirects:
     weight: 12
     region: content

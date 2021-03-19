@@ -47,7 +47,6 @@ dependencies:
     - metatag
     - path
     - scheduler
-    - scheduler_content_moderation_integration
     - shs
     - text
 third_party_settings:
@@ -371,11 +370,11 @@ content:
     settings: {  }
     third_party_settings: {  }
   publish_state:
-    type: scheduler_moderation
-    weight: 31
-    region: content
+    weight: 35
     settings: {  }
     third_party_settings: {  }
+    type: options_select
+    region: content
   scheduler_settings:
     weight: 20
     region: content
@@ -420,11 +419,11 @@ content:
     settings: {  }
     third_party_settings: {  }
   unpublish_state:
-    type: scheduler_moderation
-    weight: 30
-    region: content
+    weight: 36
     settings: {  }
     third_party_settings: {  }
+    type: options_select
+    region: content
   url_redirects:
     weight: 29
     region: content

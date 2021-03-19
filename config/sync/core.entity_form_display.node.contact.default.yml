@@ -33,7 +33,6 @@ dependencies:
     - metatag
     - path
     - scheduler
-    - scheduler_content_moderation_integration
     - shs
     - telephone_plus
     - text
@@ -554,11 +553,11 @@ content:
     settings: {  }
     third_party_settings: {  }
   publish_state:
-    type: scheduler_moderation
-    weight: 30
-    region: content
+    weight: 32
     settings: {  }
     third_party_settings: {  }
+    type: options_select
+    region: content
   scheduler_settings:
     weight: 16
     region: content
@@ -603,11 +602,11 @@ content:
     settings: {  }
     third_party_settings: {  }
   unpublish_state:
-    type: scheduler_moderation
-    weight: 30
-    region: content
+    weight: 33
     settings: {  }
     third_party_settings: {  }
+    type: options_select
+    region: content
   url_redirects:
     weight: 12
     region: content

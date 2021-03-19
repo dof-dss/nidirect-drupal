@@ -16,7 +16,6 @@ dependencies:
     - metatag
     - path
     - scheduler
-    - scheduler_content_moderation_integration
     - text
 _core:
   default_config_hash: sb0qCkzU_8mNq29NehYAU8jCBXWPLeX0UN8sYFVGVcw
@@ -93,11 +92,11 @@ content:
     settings: {  }
     third_party_settings: {  }
   publish_state:
-    type: scheduler_moderation
-    weight: 30
-    region: content
+    weight: 102
     settings: {  }
     third_party_settings: {  }
+    type: options_select
+    region: content
   scheduler_settings:
     weight: 20
     settings: {  }
@@ -142,11 +141,11 @@ content:
     settings: {  }
     third_party_settings: {  }
   unpublish_state:
-    type: scheduler_moderation
-    weight: 30
-    region: content
+    weight: 103
     settings: {  }
     third_party_settings: {  }
+    type: options_select
+    region: content
   url_redirects:
     weight: 50
     settings: {  }
