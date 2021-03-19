@@ -4,6 +4,7 @@ status: true
 dependencies:
   module:
     - nidirect_common
+    - system
   theme:
     - nicsdru_nidirect_theme
 id: translationhelplink
@@ -16,5 +17,10 @@ settings:
   id: translation_help_block
   label: 'Translation help link'
   provider: nidirect_common
-  label_display: visible
-visibility: {  }
+  label_display: '0'
+visibility:
+  request_path:
+    id: request_path
+    pages: /articles/translation-help
+    negate: true
+    context_mapping: {  }
