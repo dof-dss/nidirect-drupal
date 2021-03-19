@@ -7,14 +7,12 @@ dependencies:
     - field.field.node.feature.field_photo
     - field.field.node.feature.field_teaser
     - node.type.feature
-    - workflows.workflow.nics_editorial_workflow
   module:
     - content_moderation
     - linkit
     - media_library
     - media_library_edit
     - path
-    - scheduler
 id: node.feature.default
 targetEntityType: node
 bundle: feature
@@ -79,11 +77,11 @@ content:
     region: content
     third_party_settings: {  }
   publish_on:
-    type: datetime_timestamp_no_default
-    weight: 7
-    region: content
+    weight: 28
     settings: {  }
     third_party_settings: {  }
+    type: datetime_timestamp
+    region: content
   publish_state:
     weight: 26
     settings: {  }
@@ -128,11 +126,11 @@ content:
     region: content
     third_party_settings: {  }
   unpublish_on:
-    type: datetime_timestamp_no_default
-    weight: 8
-    region: content
+    weight: 29
     settings: {  }
     third_party_settings: {  }
+    type: datetime_timestamp
+    region: content
   unpublish_state:
     weight: 27
     settings: {  }

@@ -7,11 +7,9 @@ dependencies:
     - field.field.node.featured_content_list.field_subtheme
     - field.field.node.featured_content_list.field_tags
     - node.type.featured_content_list
-    - workflows.workflow.nics_editorial_workflow
   module:
     - chosen_field
     - content_moderation
-    - scheduler
     - shs
 id: node.featured_content_list.default
 targetEntityType: node
@@ -57,11 +55,11 @@ content:
     region: content
     third_party_settings: {  }
   publish_on:
-    type: datetime_timestamp_no_default
-    weight: 7
-    region: content
+    weight: 28
     settings: {  }
     third_party_settings: {  }
+    type: datetime_timestamp
+    region: content
   publish_state:
     weight: 26
     settings: {  }
@@ -99,11 +97,11 @@ content:
     region: content
     third_party_settings: {  }
   unpublish_on:
-    type: datetime_timestamp_no_default
-    weight: 8
-    region: content
+    weight: 29
     settings: {  }
     third_party_settings: {  }
+    type: datetime_timestamp
+    region: content
   unpublish_state:
     weight: 27
     settings: {  }

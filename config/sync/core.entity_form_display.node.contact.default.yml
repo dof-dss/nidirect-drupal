@@ -20,7 +20,6 @@ dependencies:
     - field.field.node.contact.field_supplementary_contact
     - field.field.node.contact.field_telephone
     - node.type.contact
-    - workflows.workflow.nics_editorial_workflow
   module:
     - address
     - content_moderation
@@ -32,7 +31,6 @@ dependencies:
     - linkit
     - metatag
     - path
-    - scheduler
     - shs
     - telephone_plus
     - text
@@ -547,11 +545,11 @@ content:
     region: content
     third_party_settings: {  }
   publish_on:
-    type: datetime_timestamp_no_default
-    weight: 18
-    region: content
+    weight: 34
     settings: {  }
     third_party_settings: {  }
+    type: datetime_timestamp
+    region: content
   publish_state:
     weight: 32
     settings: {  }
@@ -596,11 +594,11 @@ content:
     region: content
     third_party_settings: {  }
   unpublish_on:
-    type: datetime_timestamp_no_default
-    weight: 17
-    region: content
+    weight: 35
     settings: {  }
     third_party_settings: {  }
+    type: datetime_timestamp
+    region: content
   unpublish_state:
     weight: 33
     settings: {  }

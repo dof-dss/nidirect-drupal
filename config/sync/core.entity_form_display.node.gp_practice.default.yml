@@ -18,7 +18,6 @@ dependencies:
     - field.field.node.gp_practice.field_meta_tags
     - field.field.node.gp_practice.field_telephone
     - node.type.gp_practice
-    - workflows.workflow.nics_editorial_workflow
   module:
     - address
     - content_moderation
@@ -28,7 +27,6 @@ dependencies:
     - link
     - metatag
     - path
-    - scheduler
     - telephone_plus
 third_party_settings:
   field_group:
@@ -577,11 +575,11 @@ content:
     region: content
     third_party_settings: {  }
   publish_on:
-    type: datetime_timestamp_no_default
-    weight: 13
-    region: content
+    weight: 33
     settings: {  }
     third_party_settings: {  }
+    type: datetime_timestamp
+    region: content
   publish_state:
     weight: 31
     settings: {  }
@@ -626,11 +624,11 @@ content:
     region: content
     third_party_settings: {  }
   unpublish_on:
-    type: datetime_timestamp_no_default
-    weight: 12
-    region: content
+    weight: 34
     settings: {  }
     third_party_settings: {  }
+    type: datetime_timestamp
+    region: content
   unpublish_state:
     weight: 32
     settings: {  }

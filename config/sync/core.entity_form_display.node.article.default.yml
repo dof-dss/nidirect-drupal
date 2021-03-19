@@ -17,7 +17,6 @@ dependencies:
     - field.field.node.article.field_toc_enable
     - field.field.node.article.field_top_level_theme
     - node.type.article
-    - workflows.workflow.nics_editorial_workflow
   module:
     - content_moderation
     - datetime
@@ -26,7 +25,6 @@ dependencies:
     - media_library_edit
     - metatag
     - path
-    - scheduler
     - shs
     - text
 _core:
@@ -184,11 +182,11 @@ content:
     region: content
     third_party_settings: {  }
   publish_on:
-    type: datetime_timestamp_no_default
-    weight: 22
-    region: content
+    weight: 31
     settings: {  }
     third_party_settings: {  }
+    type: datetime_timestamp
+    region: content
   publish_state:
     weight: 29
     settings: {  }
@@ -233,11 +231,11 @@ content:
       match_limit: 10
     third_party_settings: {  }
   unpublish_on:
-    type: datetime_timestamp_no_default
-    weight: 23
-    region: content
+    weight: 32
     settings: {  }
     third_party_settings: {  }
+    type: datetime_timestamp
+    region: content
   unpublish_state:
     weight: 30
     settings: {  }

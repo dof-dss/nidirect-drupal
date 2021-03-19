@@ -15,13 +15,11 @@ dependencies:
     - field.field.node.application.field_teaser
     - field.field.node.application.field_top_level_theme
     - node.type.application
-    - workflows.workflow.nics_editorial_workflow
   module:
     - content_moderation
     - linkit
     - metatag
     - path
-    - scheduler
     - shs
     - text
 id: node.application.default
@@ -152,11 +150,11 @@ content:
     region: content
     third_party_settings: {  }
   publish_on:
-    type: datetime_timestamp_no_default
-    weight: 30
-    region: content
+    weight: 105
     settings: {  }
     third_party_settings: {  }
+    type: datetime_timestamp
+    region: content
   publish_state:
     weight: 103
     settings: {  }
@@ -201,11 +199,11 @@ content:
     region: content
     third_party_settings: {  }
   unpublish_on:
-    type: datetime_timestamp_no_default
-    weight: 30
-    region: content
+    weight: 106
     settings: {  }
     third_party_settings: {  }
+    type: datetime_timestamp
+    region: content
   unpublish_state:
     weight: 104
     settings: {  }
