@@ -13,15 +13,12 @@ dependencies:
     - field.field.node.embargoed_publication.field_summary
     - field.field.node.embargoed_publication.field_top_level_theme
     - node.type.embargoed_publication
-    - workflows.workflow.nics_editorial_workflow
   module:
     - content_moderation
     - datetime
     - file
     - metatag
     - path
-    - scheduler
-    - scheduler_content_moderation_integration
     - shs
     - text
 id: node.embargoed_publication.default
@@ -126,17 +123,17 @@ content:
     region: content
     third_party_settings: {  }
   publish_on:
-    type: datetime_timestamp_no_default
-    weight: 20
-    region: content
+    weight: 28
     settings: {  }
     third_party_settings: {  }
+    type: datetime_timestamp
+    region: content
   publish_state:
-    type: scheduler_moderation
-    weight: 21
-    region: content
+    weight: 26
     settings: {  }
     third_party_settings: {  }
+    type: options_select
+    region: content
   scheduler_settings:
     weight: 17
     region: content
@@ -175,17 +172,17 @@ content:
     region: content
     third_party_settings: {  }
   unpublish_on:
-    type: datetime_timestamp_no_default
-    weight: 19
-    region: content
+    weight: 29
     settings: {  }
     third_party_settings: {  }
+    type: datetime_timestamp
+    region: content
   unpublish_state:
-    type: scheduler_moderation
-    weight: 18
-    region: content
+    weight: 27
     settings: {  }
     third_party_settings: {  }
+    type: options_select
+    region: content
   url_redirects:
     weight: 16
     region: content

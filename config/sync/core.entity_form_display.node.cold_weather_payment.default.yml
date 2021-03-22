@@ -13,7 +13,6 @@ dependencies:
     - metatag
     - nidirect_cold_weather_payments
     - path
-    - scheduler
 id: node.cold_weather_payment.default
 targetEntityType: node
 bundle: cold_weather_payment
@@ -70,11 +69,11 @@ content:
     region: content
     third_party_settings: {  }
   publish_on:
-    type: datetime_timestamp_no_default
-    weight: 30
-    region: content
+    weight: 101
     settings: {  }
     third_party_settings: {  }
+    type: datetime_timestamp
+    region: content
   publish_state:
     type: scheduler_moderation
     weight: 30
@@ -119,11 +118,11 @@ content:
     region: content
     third_party_settings: {  }
   unpublish_on:
-    type: datetime_timestamp_no_default
-    weight: 30
-    region: content
+    weight: 102
     settings: {  }
     third_party_settings: {  }
+    type: datetime_timestamp
+    region: content
   unpublish_state:
     type: scheduler_moderation
     weight: 30

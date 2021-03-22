@@ -12,7 +12,6 @@ dependencies:
     - content_moderation
     - link
     - path
-    - scheduler
     - shs
 id: node.external_link.default
 targetEntityType: node
@@ -80,11 +79,11 @@ content:
     region: content
     third_party_settings: {  }
   publish_on:
-    type: datetime_timestamp_no_default
-    weight: 30
-    region: content
+    weight: 101
     settings: {  }
     third_party_settings: {  }
+    type: datetime_timestamp
+    region: content
   publish_state:
     type: scheduler_moderation
     weight: 30
@@ -129,11 +128,11 @@ content:
     region: content
     third_party_settings: {  }
   unpublish_on:
-    type: datetime_timestamp_no_default
-    weight: 30
-    region: content
+    weight: 102
     settings: {  }
     third_party_settings: {  }
+    type: datetime_timestamp
+    region: content
   unpublish_state:
     type: scheduler_moderation
     weight: 30

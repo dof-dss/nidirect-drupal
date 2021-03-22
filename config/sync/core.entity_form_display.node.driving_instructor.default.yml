@@ -19,7 +19,6 @@ dependencies:
     - link
     - metatag
     - path
-    - scheduler
     - telephone_plus
 id: node.driving_instructor.default
 targetEntityType: node
@@ -123,11 +122,11 @@ content:
     region: content
     third_party_settings: {  }
   publish_on:
-    type: datetime_timestamp_no_default
-    weight: 23
-    region: content
+    weight: 31
     settings: {  }
     third_party_settings: {  }
+    type: datetime_timestamp
+    region: content
   publish_state:
     type: scheduler_moderation
     weight: 30
@@ -172,11 +171,11 @@ content:
     region: content
     third_party_settings: {  }
   unpublish_on:
-    type: datetime_timestamp_no_default
-    weight: 22
-    region: content
+    weight: 32
     settings: {  }
     third_party_settings: {  }
+    type: datetime_timestamp
+    region: content
   unpublish_state:
     type: scheduler_moderation
     weight: 30

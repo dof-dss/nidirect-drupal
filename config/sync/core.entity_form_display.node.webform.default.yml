@@ -14,7 +14,6 @@ dependencies:
     - chosen_field
     - content_moderation
     - path
-    - scheduler
     - shs
     - text
     - webform
@@ -75,6 +74,11 @@ content:
     third_party_settings: {  }
     type: chosen_select
     region: content
+  flag:
+    weight: 10
+    settings: {  }
+    third_party_settings: {  }
+    region: content
   langcode:
     type: language_select
     weight: 7
@@ -102,11 +106,11 @@ content:
     third_party_settings: {  }
     region: content
   publish_on:
-    type: datetime_timestamp_no_default
-    weight: 13
-    region: content
+    weight: 31
     settings: {  }
     third_party_settings: {  }
+    type: datetime_timestamp
+    region: content
   publish_state:
     type: scheduler_moderation
     weight: 30
@@ -146,11 +150,11 @@ content:
     third_party_settings: {  }
     region: content
   unpublish_on:
-    type: datetime_timestamp_no_default
-    weight: 12
-    region: content
+    weight: 32
     settings: {  }
     third_party_settings: {  }
+    type: datetime_timestamp
+    region: content
   unpublish_state:
     type: scheduler_moderation
     weight: 30

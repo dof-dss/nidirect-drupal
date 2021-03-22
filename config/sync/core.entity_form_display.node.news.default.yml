@@ -12,7 +12,6 @@ dependencies:
     - field.field.node.news.field_teaser
     - field.field.node.news.field_toc_enable
     - node.type.news
-    - workflows.workflow.nics_editorial_workflow
   module:
     - content_moderation
     - datetime
@@ -21,8 +20,6 @@ dependencies:
     - media_library_edit
     - metatag
     - path
-    - scheduler
-    - scheduler_content_moderation_integration
     - text
 id: node.news.default
 targetEntityType: node
@@ -131,17 +128,17 @@ content:
     region: content
     third_party_settings: {  }
   publish_on:
-    type: datetime_timestamp_no_default
-    weight: 17
-    region: content
+    weight: 28
     settings: {  }
     third_party_settings: {  }
+    type: datetime_timestamp
+    region: content
   publish_state:
-    type: scheduler_moderation
-    weight: 22
-    region: content
+    weight: 26
     settings: {  }
     third_party_settings: {  }
+    type: options_select
+    region: content
   scheduler_settings:
     weight: 16
     region: content
@@ -180,17 +177,17 @@ content:
     region: content
     third_party_settings: {  }
   unpublish_on:
-    type: datetime_timestamp_no_default
-    weight: 18
-    region: content
+    weight: 29
     settings: {  }
     third_party_settings: {  }
+    type: datetime_timestamp
+    region: content
   unpublish_state:
-    type: scheduler_moderation
-    weight: 21
-    region: content
+    weight: 27
     settings: {  }
     third_party_settings: {  }
+    type: options_select
+    region: content
   url_redirects:
     weight: 19
     region: content

@@ -34,7 +34,6 @@ dependencies:
     - field.field.node.health_condition.field_toc_enable
     - field.field.node.health_condition.field_top_level_theme
     - node.type.health_condition
-    - workflows.workflow.nics_editorial_workflow
   module:
     - content_moderation
     - datetime
@@ -46,8 +45,6 @@ dependencies:
     - media_library_edit
     - metatag
     - path
-    - scheduler
-    - scheduler_content_moderation_integration
     - shs
     - text
 third_party_settings:
@@ -365,17 +362,17 @@ content:
     region: content
     third_party_settings: {  }
   publish_on:
-    type: datetime_timestamp_no_default
-    weight: 34
-    region: content
+    weight: 37
     settings: {  }
     third_party_settings: {  }
+    type: datetime_timestamp
+    region: content
   publish_state:
-    type: scheduler_moderation
-    weight: 31
-    region: content
+    weight: 35
     settings: {  }
     third_party_settings: {  }
+    type: options_select
+    region: content
   scheduler_settings:
     weight: 20
     region: content
@@ -414,17 +411,17 @@ content:
     region: content
     third_party_settings: {  }
   unpublish_on:
-    type: datetime_timestamp_no_default
-    weight: 33
-    region: content
+    weight: 38
     settings: {  }
     third_party_settings: {  }
+    type: datetime_timestamp
+    region: content
   unpublish_state:
-    type: scheduler_moderation
-    weight: 30
-    region: content
+    weight: 36
     settings: {  }
     third_party_settings: {  }
+    type: options_select
+    region: content
   url_redirects:
     weight: 29
     region: content
