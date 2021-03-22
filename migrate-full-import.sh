@@ -70,6 +70,9 @@ drush migrate:import --group=migrate_drupal_7_file --force
 # Import file images
 drush migrate:import upgrade_d7_file_image
 
+# Import URL aliases and redirects
+drush migrate:import --group=migrate_drupal_7_link --force
+
 # Import GP entities.
 drush migrate:import --group=migrate_nidirect_entity_gp --force
 
@@ -84,9 +87,6 @@ fi
 
 # Import book
 drush migrate:import nidirect_book --force
-
-# Import URL aliases and redirects
-drush migrate:import --group=migrate_drupal_7_link --force
 
 # Clear caches and re-index Solr.
 drush cr
