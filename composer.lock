@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "1b094993640cdc0bcfbe19f1a69ce77a",
+    "content-hash": "ed8131502e31a95d9a3c2b5f4bd9192e",
     "packages": [
         {
             "name": "alchemy/zippy",
@@ -2876,6 +2876,10 @@
                         "status": "not-covered",
                         "message": "RC releases are not covered by Drupal security advisories."
                     }
+                },
+                "patches_applied": {
+                    "core/jquery.once is required": "https://www.drupal.org/files/issues/2021-02-23/3200022-01.patch",
+                    "Cientside validation errors revert to being output as a label in webform wizard pages with ajax enabled": "https://www.drupal.org/files/issues/2021-02-24/3110890-reroll-for-3.0.x.patch"
                 }
             },
             "notification-url": "https://packages.drupal.org/8/downloads",
@@ -3503,6 +3507,71 @@
             "time": "2020-11-18T00:15:28+00:00"
         },
         {
+            "name": "drupal/cookie_content_blocker",
+            "version": "1.7.0",
+            "source": {
+                "type": "git",
+                "url": "https://git.drupalcode.org/project/cookie_content_blocker.git",
+                "reference": "8.x-1.7"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://ftp.drupal.org/files/projects/cookie_content_blocker-8.x-1.7.zip",
+                "reference": "8.x-1.7",
+                "shasum": "893e75026044c8bae8a11c37c6cc41db6ac6e235"
+            },
+            "require": {
+                "drupal/core": "^8.8 || ^9",
+                "ext-json": "*",
+                "php": "^7.1"
+            },
+            "type": "drupal-module",
+            "extra": {
+                "drupal": {
+                    "version": "8.x-1.7",
+                    "datestamp": "1607681411",
+                    "security-coverage": {
+                        "status": "covered",
+                        "message": "Covered by Drupal's security advisory policy"
+                    }
+                }
+            },
+            "notification-url": "https://packages.drupal.org/8/downloads",
+            "license": [
+                "GPL-2.0+"
+            ],
+            "authors": [
+                {
+                    "name": "Steven Buteneers",
+                    "homepage": "https://www.drupal.org/u/steven-buteneers",
+                    "role": "Maintainer"
+                },
+                {
+                    "name": "Daniël Smidt",
+                    "homepage": "https://www.drupal.org/u/dmsmidt",
+                    "role": "Maintainer"
+                },
+                {
+                    "name": "Marc Janson",
+                    "homepage": "https://www.drupal.org/u/scorpid",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Prevent loading of content with a privacy impact until consent is given. This module needs a separate cookie consent manager.",
+            "homepage": "https://www.drupal.org/project/cookie_content_blocker",
+            "keywords": [
+                "Content",
+                "Content Access Control",
+                "Content Display",
+                "Drupal",
+                "Spam Prevention"
+            ],
+            "support": {
+                "source": "http://cgit.drupalcode.org/cookie_content_blocker",
+                "issues": "https://www.drupal.org/project/issues/cookie_content_blocker?version=8.x"
+            }
+        },
+        {
             "name": "drupal/core",
             "version": "8.9.13",
             "source": {
@@ -3708,6 +3777,14 @@
                         "[web-root]/profiles/README.txt": "assets/scaffold/files/profiles.README.txt",
                         "[web-root]/themes/README.txt": "assets/scaffold/files/themes.README.txt"
                     }
+                },
+                "patches_applied": {
+                    "Prevent leftover fields from causing errors like 'Call to a member function getLabel() after enabling layout_builder'": "https://www.drupal.org/files/issues/2020-01-20/2985882-53.patch",
+                    "When embedding media, don't let authors choose view modes that are not enabled for that media type": "https://www.drupal.org/files/issues/2020-01-31/3097416-ckeditor-view-modes-8.9-combined.patch",
+                    "[IGNORE] Composer-friendly patches for filename sanitation while #2492171 awaits #3032390": "https://www.drupal.org/files/issues/2020-11-18/3094052-composer-patch-filename-sanitation-7.patch",
+                    "[meta] Themes improperly check renderable arrays when determining visibility": "https://www.drupal.org/files/issues/2019-02-19/themes_improperly_check_renderable_arrays_when_determining_visibility-953034-313.patch",
+                    "Off-canvas style resets are overriding styles (especially SVGs) in Safari, Firefox and Chromium Edge resulting in display issues": "https://www.drupal.org/files/issues/2021-01-06/off-canvas-style-resets-2958588-13.patch",
+                    "Cannot save unpublished versions of published content for users without manage book privileges": "https://www.drupal.org/files/issues/2020-10-18/2918537-63.patch"
                 }
             },
             "autoload": {
@@ -4827,7 +4904,8 @@
             ],
             "support": {
                 "source": "https://git.drupalcode.org/project/facets_pretty_paths"
-            }
+            },
+            "time": "2020-07-30T21:16:24+00:00"
         },
         {
             "name": "drupal/fastly",
@@ -5085,7 +5163,8 @@
             "homepage": "https://www.drupal.org/project/flag",
             "support": {
                 "source": "https://git.drupalcode.org/project/flag"
-            }
+            },
+            "time": "2020-08-07T07:05:58+00:00"
         },
         {
             "name": "drupal/geocoder",
@@ -5299,6 +5378,10 @@
                         "status": "not-covered",
                         "message": "Dev releases are not covered by Drupal security advisories."
                     }
+                },
+                "patches_applied": {
+                    "Add API query tweak options": "https://gist.githubusercontent.com/omahm/02ac3b7138c4d0518bd954721b74b763/raw/8d7ffa08b21359c7bf11165cdef1fb7e98483774/gac_query_options.patch",
+                    "Drupal 8.9 / 9 compatibility 1": "https://www.drupal.org/files/issues/2020-06-06/interdiff_3146542-7-8.txt"
                 }
             },
             "notification-url": "https://packages.drupal.org/8/downloads",
@@ -5320,7 +5403,8 @@
             "support": {
                 "source": "http://git.drupal.org/project/google_analytics_counter.git",
                 "issues": "https://www.drupal.org/project/issues/google_analytics_counter"
-            }
+            },
+            "time": "2020-06-17T19:33:00+00:00"
         },
         {
             "name": "drupal/handy_cache_tags",
@@ -5389,6 +5473,9 @@
                         "status": "not-covered",
                         "message": "Dev releases are not covered by Drupal security advisories."
                     }
+                },
+                "patches_applied": {
+                    "Drupal 8.9 / 9 compatibility": "https://www.drupal.org/files/issues/2020-06-05/3145496-6.patch"
                 }
             },
             "notification-url": "https://packages.drupal.org/8/downloads",
@@ -5413,7 +5500,8 @@
             "homepage": "https://www.drupal.org/project/hms_field",
             "support": {
                 "source": "https://git.drupalcode.org/project/hms_field"
-            }
+            },
+            "time": "2018-07-04T14:28:12+00:00"
         },
         {
             "name": "drupal/honeypot",
@@ -5550,6 +5638,9 @@
                         "status": "not-covered",
                         "message": "RC releases are not covered by Drupal security advisories."
                     }
+                },
+                "patches_applied": {
+                    "Widget settings to control removing & deleting existing references": "https://www.drupal.org/files/issues/2020-11-05/ief_removed_references_2875716-89.patch"
                 }
             },
             "notification-url": "https://packages.drupal.org/8/downloads",
@@ -5773,6 +5864,10 @@
                         "status": "not-covered",
                         "message": "Beta releases are not covered by Drupal security advisories."
                     }
+                },
+                "patches_applied": {
+                    "Link shown after the autocomplete selection is the bare node/xxx link, not the alias": "https://www.drupal.org/files/issues/2020-11-03/show_alias_in_autocomplete_selection-2877535-16.patch",
+                    "Linkit for Link field": "https://www.drupal.org/files/issues/2020-09-23/linkit-for-link-field-2712951-190.patch"
                 }
             },
             "notification-url": "https://packages.drupal.org/8/downloads",
@@ -6100,6 +6195,9 @@
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
                     }
+                },
+                "patches_applied": {
+                    "'Draft available' text still appears after deleting a forward revision": "https://www.drupal.org/files/issues/2020-02-24/3115474-3.patch"
                 }
             },
             "notification-url": "https://packages.drupal.org/8/downloads",
@@ -6269,6 +6367,9 @@
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
                     }
+                },
+                "patches_applied": {
+                    "Integrity constraint violation: 1048 Column 'langcode' cannot be null": "https://www.drupal.org/files/issues/2020-06-25/paragraphs-2901390-51.patch"
                 }
             },
             "notification-url": "https://packages.drupal.org/8/downloads",
@@ -6401,6 +6502,9 @@
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
                     }
+                },
+                "patches_applied": {
+                    "URL redirects listing only displays operations": "https://www.drupal.org/files/issues/2019-04-05/redirects_list_builder-3031125-9-d8.patch"
                 }
             },
             "notification-url": "https://packages.drupal.org/8/downloads",
@@ -6516,6 +6620,9 @@
                     "services": {
                         "drush.services.yml": "^9"
                     }
+                },
+                "patches_applied": {
+                    "Make revisions in any language available for scheduling": "https://www.drupal.org/files/issues/2021-02-05/scheduled_transitions_base_language_3091006_1x.patch"
                 }
             },
             "notification-url": "https://packages.drupal.org/8/downloads",
@@ -6694,6 +6801,9 @@
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
                     }
+                },
+                "patches_applied": {
+                    "Add @id as a tag to all schemas": "https://www.drupal.org/files/issues/2019-09-01/3078582-02.patch"
                 }
             },
             "notification-url": "https://packages.drupal.org/8/downloads",
@@ -7094,6 +7204,9 @@
                         "status": "not-covered",
                         "message": "Alpha releases are not covered by Drupal security advisories."
                     }
+                },
+                "patches_applied": {
+                    "SHS select is empty on views": "https://www.drupal.org/files/issues/2018-12-10/shs-blank-select-fix-3019378-3.patch"
                 }
             },
             "notification-url": "https://packages.drupal.org/8/downloads",
@@ -7546,6 +7659,9 @@
                         "status": "not-covered",
                         "message": "Project has not opted into security advisory coverage!"
                     }
+                },
+                "patches_applied": {
+                    "Add telephone extension into the link text": "https://www.drupal.org/files/issues/2020-12-03/3186246-1.patch"
                 }
             },
             "notification-url": "https://packages.drupal.org/8/downloads",
@@ -7748,7 +7864,8 @@
             "support": {
                 "source": "https://git.drupalcode.org/project/twig_extensions",
                 "issues": "https://www.drupal.org/project/issues/twig_extensions"
-            }
+            },
+            "time": "2020-06-03T15:43:52+00:00"
         },
         {
             "name": "drupal/twig_field_value",
@@ -15689,6 +15806,9 @@
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
                     }
+                },
+                "patches_applied": {
+                    "Handle missing core version": "https://www.drupal.org/files/issues/2019-12-19/easy_install_core_version-3101883-0.patch"
                 }
             },
             "notification-url": "https://packages.drupal.org/8/downloads",
@@ -15737,6 +15857,10 @@
                         "status": "not-covered",
                         "message": "Beta releases are not covered by Drupal security advisories."
                     }
+                },
+                "patches_applied": {
+                    "Remove @file tag docblock": "https://www.drupal.org/files/issues/2018-04-24/fpa_remove_file_tag_2795655_3.patch",
+                    "entity.manager must be changed to entity_type.manager": "https://www.drupal.org/files/issues/2021-03-01/entity_type_manager_fix.patch"
                 }
             },
             "notification-url": "https://packages.drupal.org/8/downloads",
@@ -15890,7 +16014,8 @@
                 "source": "http://cgit.drupalcode.org/migrate_tools",
                 "issues": "http://drupal.org/project/migrate_tools",
                 "irc": "irc://irc.freenode.org/drupal-migrate"
-            }
+            },
+            "time": "2020-06-05T20:48:48+00:00"
         },
         {
             "name": "drupal/multiline_config",
@@ -15915,6 +16040,9 @@
                         "status": "not-covered",
                         "message": "Dev releases are not covered by Drupal security advisories."
                     }
+                },
+                "patches_applied": {
+                    "Drupal 8.9 / 9 compatibility": "https://www.drupal.org/files/issues/2021-01-12/3109713-16.patch"
                 }
             },
             "notification-url": "https://packages.drupal.org/8/downloads",
@@ -15936,7 +16064,8 @@
             "support": {
                 "source": "https://cgit.drupalcode.org/multiline_config",
                 "issues": "https://www.drupal.org/project/issues/multiline_config"
-            }
+            },
+            "time": "2021-01-07T19:21:57+00:00"
         },
         {
             "name": "drupal/permissions_filter",
@@ -19180,7 +19309,8 @@
                 "url": "https://github.com/thinktandem/migrate_booster.git",
                 "reference": "main"
             },
-            "type": "drupal-module"
+            "type": "drupal-module",
+            "time": "2020-10-02T15:23:14+00:00"
         }
     ],
     "aliases": [

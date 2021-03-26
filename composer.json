@@ -30,7 +30,7 @@
             "package": {
                 "name": "thinktandem/migrate_booster",
                 "version": "dev-main",
-                "type":"drupal-module",
+                "type": "drupal-module",
                 "source": {
                     "url": "https://github.com/thinktandem/migrate_booster.git",
                     "type": "git",
@@ -63,6 +63,7 @@
         "drupal/config_split": "^2.0.0",
         "drupal/config_update": "^1.6",
         "drupal/console": "^1.9",
+        "drupal/cookie_content_blocker": "^1.7",
         "drupal/core-composer-scaffold": "^8.9.13",
         "drupal/core-project-message": "^8.9.13",
         "drupal/core-recommended": "^8.9.13",
@@ -227,6 +228,9 @@
             "drupal/fpa": {
                 "Remove @file tag docblock": "https://www.drupal.org/files/issues/2018-04-24/fpa_remove_file_tag_2795655_3.patch",
                 "entity.manager must be changed to entity_type.manager": "https://www.drupal.org/files/issues/2021-03-01/entity_type_manager_fix.patch"
+            },
+            "drupal/devel": {
+                "Brings back the Available Methods & Properties tabs for Kint dumps — Issue #221": "https://raw.githubusercontent.com/politsin/snipets/master/patch/kint.patch"
             }
         },
         "composer-exit-on-patch-failure": true,
@@ -244,21 +248,48 @@
             }
         },
         "installer-paths": {
-            "web/core": ["type:drupal-core"],
-            "web/libraries/{$name}": ["type:drupal-library"],
-            "web/modules/custom": ["dof-dss/nidirect-site-modules"],
-            "web/modules/origins": ["dof-dss/nicsdru_origins_modules"],
-            "web/modules/migrate/{$name}": ["dof-dss/nidirect-migrations"],
-            "web/profiles/custom": ["dof-dss/nidirect-d8-test-install-profile"],
-            "web/modules/contrib/{$name}": ["type:drupal-module"],
-            "web/modules/custom/{$name}": ["type:drupal-custom-module"],
-            "web/themes/custom/{$name}": ["type:drupal-custom-theme"],
-            "web/themes/contrib/{$name}": ["type:drupal-theme"],
-            "web/profiles/contrib/{$name}": ["type:drupal-profile"],
-            "drush/Commands/contrib/{$name}": ["type:drupal-drush"]
+            "web/core": [
+                "type:drupal-core"
+            ],
+            "web/libraries/{$name}": [
+                "type:drupal-library"
+            ],
+            "web/modules/custom": [
+                "dof-dss/nidirect-site-modules"
+            ],
+            "web/modules/origins": [
+                "dof-dss/nicsdru_origins_modules"
+            ],
+            "web/modules/migrate/{$name}": [
+                "dof-dss/nidirect-migrations"
+            ],
+            "web/profiles/custom": [
+                "dof-dss/nidirect-d8-test-install-profile"
+            ],
+            "web/modules/contrib/{$name}": [
+                "type:drupal-module"
+            ],
+            "web/modules/custom/{$name}": [
+                "type:drupal-custom-module"
+            ],
+            "web/themes/custom/{$name}": [
+                "type:drupal-custom-theme"
+            ],
+            "web/themes/contrib/{$name}": [
+                "type:drupal-theme"
+            ],
+            "web/profiles/contrib/{$name}": [
+                "type:drupal-profile"
+            ],
+            "drush/Commands/contrib/{$name}": [
+                "type:drupal-drush"
+            ]
         },
         "drupal-core-project-message": {
-            "include-keys": ["homepage", "support"],
+            "include-keys": [
+                "homepage",
+                "support"
+            ],
             "post-create-project-cmd-message": [
                 "<bg=blue;fg=white>                                                         </>",
                 "<bg=blue;fg=white>  Congratulations, you’ve installed the Drupal codebase  </>",
@@ -266,7 +297,6 @@
                 "<bg=blue;fg=white>                                                         </>",
                 "",
                 "<bg=yellow;fg=black>Next steps</>:",
-
                 "  * Install the site: https://www.drupal.org/docs/8/install",
                 "  * Read the user guide: https://www.drupal.org/docs/user_guide/en/index.html",
                 "  * Get support: https://www.drupal.org/support",
