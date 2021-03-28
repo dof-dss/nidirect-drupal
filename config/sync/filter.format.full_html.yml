@@ -20,11 +20,14 @@ dependencies:
     - core.entity_view_mode.media.portrait_float_xp
     - core.entity_view_mode.media.portrait_full
   module:
+    - cookie_content_blocker
     - editor
     - entity_embed
     - google_analytics_counter
+    - linkit
     - media
     - noreferrer
+    - origins_common
     - token_filter
 _core:
   default_config_hash: WNeK5FbcY8pXgEpbD_KgRzlF1-5PL3BJXwqaBctPTqw
@@ -36,43 +39,43 @@ filters:
     id: filter_align
     provider: filter
     status: false
-    weight: -42
+    weight: -41
     settings: {  }
   filter_caption:
     id: filter_caption
     provider: filter
     status: false
-    weight: -41
+    weight: -40
     settings: {  }
   filter_htmlcorrector:
     id: filter_htmlcorrector
     provider: filter
     status: false
-    weight: -44
+    weight: -43
     settings: {  }
   editor_file_reference:
     id: editor_file_reference
     provider: editor
     status: false
-    weight: -40
+    weight: -39
     settings: {  }
   entity_embed:
     id: entity_embed
     provider: entity_embed
     status: true
-    weight: -46
+    weight: -45
     settings: {  }
   filter_autop:
     id: filter_autop
     provider: filter
     status: false
-    weight: -43
+    weight: -42
     settings: {  }
   filter_html_escape:
     id: filter_html_escape
     provider: filter
     status: false
-    weight: -38
+    weight: -37
     settings: {  }
   filter_url:
     id: filter_url
@@ -85,13 +88,13 @@ filters:
     id: filter_html_image_secure
     provider: filter
     status: false
-    weight: -37
+    weight: -36
     settings: {  }
   filter_html:
     id: filter_html
     provider: filter
     status: false
-    weight: -39
+    weight: -38
     settings:
       allowed_html: '<em> <strong> <cite> <blockquote cite> <code> <ul type> <ol start type> <li> <dl> <dt> <dd> <h2 id> <h3 id> <h4 id> <h5 id> <h6 id> <s> <p> <h1> <pre> <drupal-entity data-entity-type data-entity-uuid data-entity-embed-display data-entity-embed-display-settings data-align data-caption data-embed-button> <sup> <a href hreflang !href accesskey id rel target title> <table> <caption> <tbody> <thead> <tfoot> <th> <td> <tr>'
       filter_html_help: true
@@ -113,7 +116,7 @@ filters:
     id: media_embed
     provider: media
     status: true
-    weight: -47
+    weight: -46
     settings:
       default_view_mode: article_full
       allowed_media_types:
@@ -142,5 +145,25 @@ filters:
     id: google_analytics_counter_filter
     provider: google_analytics_counter
     status: false
-    weight: -36
+    weight: -35
+    settings: {  }
+  cookie_content_blocker_filter:
+    id: cookie_content_blocker_filter
+    provider: cookie_content_blocker
+    status: true
+    weight: -44
+    settings:
+      disable_xss: '1'
+  linkit:
+    id: linkit
+    provider: linkit
+    status: false
+    weight: -34
+    settings:
+      title: true
+  origins_media_cookie_content_blocker_embed_filter:
+    id: origins_media_cookie_content_blocker_embed_filter
+    provider: origins_common
+    status: true
+    weight: -47
     settings: {  }
