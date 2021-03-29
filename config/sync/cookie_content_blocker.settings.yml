@@ -1,0 +1,27 @@
+blocked_message: 'You have not yet given permission to place the required cookies. Accept the required cookies to view this content.'
+show_button: true
+button_text: 'Show content'
+enable_click_consent_change: true
+consent_awareness:
+  accepted:
+    event:
+      name: click
+      selector: .agree-button
+    cookie:
+      operator: '==='
+      name: cookie-agreed
+      value: '2'
+  declined:
+    event:
+      name: click
+      selector: .decline-button
+    cookie:
+      operator: '==='
+      name: cookie-agreed
+      value: '0'
+  change:
+    event:
+      name: click
+      selector: .agree-button
+_core:
+  default_config_hash: rgXeqZIe6gop-4LsbTtqhiiLSvEQNTxpYg9wO02O-6Y
