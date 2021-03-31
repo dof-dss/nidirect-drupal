@@ -43,7 +43,6 @@ commands:
           name: Fetch dependencies with composer
           command: |
             composer install --no-interaction --optimize-autoloader
-
   install_php_os_extensions:
     description: "Install a standard group of extensions and packages"
     steps:
@@ -114,7 +113,7 @@ jobs:
             - ./
 
   # Test for coding standards.
-  static_analysis:
+  coding_standards:
     docker:
       - image: circleci/php:7.4.15-apache-browsers
     steps:
@@ -122,8 +121,21 @@ jobs:
           at: ./
       - run: sudo cp /home/circleci/project/.circleci/docker-php-circleci.ini /usr/local/etc/php/conf.d/
       - run:
-          name: PHPCS static analysis
+          name: PHPCS analysis
           command: /home/circleci/project/phpcs.sh /home/circleci/project "/home/circleci/project/web/modules/origins /home/circleci/project/web/modules/custom /home/circleci/project/web/modules/migrate /home/circleci/project/web/themes/custom"
+
+  deprecated_code:
+    docker:
+      - image: circleci/php:7.4.15-apache-browsers
+    steps:
+      - attach_workspace:
+          at: ./
+      - run: sudo cp /home/circleci/project/.circleci/docker-php-circleci.ini /usr/local/etc/php/conf.d/
+      - run:
+          name: Deprecated code check
+          command: |
+            cd /home/circleci/project
+            vendor/bin/drupal-check /home/circleci/project/web/modules/custom /home/circleci/project/web/modules/origins /home/circleci/project/web/modules/migrate /home/circleci/project/web/themes/custom -e "*/tests/src/*"
 
   # Run any unit tests and any kernel tests against a vanilla D8 site + our site config imported over it (no predefined content).
   unit_kernel_tests:
@@ -290,22 +302,6 @@ jobs:
           paths:
             - ./
 
-  # Code analysis using upgrade_status module; run against platform.sh environment because
-  # initiating/installing against Circle CI containers takes a long time indeed.
-  code_analysis:
-    docker:
-      - image: circleci/php:7.4.15-apache-browsers
-    steps:
-      - attach_workspace:
-          at: ./
-      - install_php_os_extensions
-      - install_platformsh_tools
-      - run:
-          name: "Invoke upgrade_status drush command"
-          command: |
-            /home/circleci/.platformsh/bin/platform environment:drush "en upgrade_status -y" -p $PLATFORM_PROJECT_ID -e $EDGE_BUILD_BRANCH
-            /home/circleci/.platformsh/bin/platform environment:drush "upgrade_status:analyze --all --ignore-contrib --ignore-uninstalled" -p $PLATFORM_PROJECT_ID -e $EDGE_BUILD_BRANCH
-
   # Separate task to allow us to sync data on PSH environments, without pauses in other jobs.
   sync_data:
     docker:
@@ -382,7 +378,10 @@ workflows:
   build-test-deploy:
     jobs:
       - build
-      - static_analysis:
+      - coding_standards:
+          requires:
+            - build
+      - deprecated_code:
           requires:
             - build
       - unit_kernel_tests:
@@ -401,7 +400,10 @@ workflows:
                 - development
     jobs:
       - build
-      - static_analysis:
+      - coding_standards:
+          requires:
+            - build
+      - deprecated_code:
           requires:
             - build
       - unit_kernel_tests:
@@ -410,9 +412,6 @@ workflows:
       - edge_build:
           requires:
             - build
-      - code_analysis:
-          requires:
-            - edge_build
 
   # A separate scheduled workflow to sync the data after the nightly build completes.
   # This is separate to avoid using build time/compute units with arbitrary sleep commands;
