@@ -7,6 +7,7 @@ dependencies:
     - field.field.block_content.banner_deep.body
     - field.field.block_content.banner_deep.field_banner_image
     - field.field.block_content.banner_deep.field_banner_image_overlay
+    - field.field.block_content.banner_deep.field_teaser
   module:
     - media_library
 id: block_content.banner_deep.default
@@ -27,6 +28,14 @@ content:
     settings:
       media_types: {  }
     third_party_settings: {  }
+    region: content
+  field_teaser:
+    weight: 26
+    settings:
+      size: 100
+      placeholder: ''
+    third_party_settings: {  }
+    type: string_textfield
     region: content
 hidden:
   body: true
