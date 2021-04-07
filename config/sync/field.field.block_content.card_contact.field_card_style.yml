@@ -1,0 +1,91 @@
+uuid: d554dac6-a75d-421d-af6a-82036cb24e23
+langcode: en
+status: true
+dependencies:
+  config:
+    - block_content.type.card_contact
+    - field.storage.block_content.field_card_style
+    - taxonomy.vocabulary.landing_pages_contact_card_colou
+  content:
+    - 'taxonomy_term:landing_pages_contact_card_colou:48525052-a854-4e79-bfdd-b804ee430f24'
+  module:
+    - dynamic_entity_reference
+id: block_content.card_contact.field_card_style
+field_name: field_card_style
+entity_type: block_content
+bundle: card_contact
+label: 'Card style'
+description: ''
+required: false
+translatable: false
+default_value:
+  -
+    target_type: taxonomy_term
+    target_uuid: 48525052-a854-4e79-bfdd-b804ee430f24
+default_value_callback: ''
+settings:
+  taxonomy_term:
+    handler: 'default:taxonomy_term'
+    handler_settings:
+      target_bundles:
+        landing_pages_contact_card_colou: landing_pages_contact_card_colou
+      sort:
+        field: name
+        direction: asc
+      auto_create: false
+      auto_create_bundle: ''
+  node:
+    handler: 'default:node'
+    handler_settings: {  }
+  content_moderation_state:
+    handler: 'default:content_moderation_state'
+    handler_settings: {  }
+  block_content:
+    handler: 'default:block_content'
+    handler_settings: {  }
+  menu_link_content:
+    handler: 'default:menu_link_content'
+    handler_settings: {  }
+  entity_embed_fake_entity:
+    handler: 'default:entity_embed_fake_entity'
+    handler_settings: {  }
+  file:
+    handler: 'default:file'
+    handler_settings: {  }
+  flagging:
+    handler: 'default:flagging'
+    handler_settings: {  }
+  gp:
+    handler: 'default:gp'
+    handler_settings: {  }
+  media:
+    handler: 'default:media'
+    handler_settings: {  }
+  paragraph:
+    handler: 'default:paragraph'
+    handler_settings: {  }
+  redirect:
+    handler: 'default:redirect'
+    handler_settings: {  }
+  search_api_task:
+    handler: 'default:search_api_task'
+    handler_settings: {  }
+  shortcut:
+    handler: 'default:shortcut'
+    handler_settings: {  }
+  sitewide_alert:
+    handler: 'default:sitewide_alert'
+    handler_settings: {  }
+  path_alias:
+    handler: 'default:path_alias'
+    handler_settings: {  }
+  user:
+    handler: 'default:user'
+    handler_settings: {  }
+  webform_submission:
+    handler: 'default:webform_submission'
+    handler_settings: {  }
+  scheduled_transition:
+    handler: 'default:scheduled_transition'
+    handler_settings: {  }
+field_type: dynamic_entity_reference

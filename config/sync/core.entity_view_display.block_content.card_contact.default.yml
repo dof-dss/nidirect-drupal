@@ -1,0 +1,37 @@
+uuid: 47f8c51f-bdd0-45c8-ad86-d4c12bece519
+langcode: en
+status: true
+dependencies:
+  config:
+    - block_content.type.card_contact
+    - field.field.block_content.card_contact.body
+    - field.field.block_content.card_contact.field_card_style
+    - field.field.block_content.card_contact.field_telephone
+  module:
+    - dynamic_entity_reference
+    - telephone_plus
+id: block_content.card_contact.default
+targetEntityType: block_content
+bundle: card_contact
+mode: default
+content:
+  field_card_style:
+    weight: 1
+    label: hidden
+    settings:
+      link: false
+    third_party_settings: {  }
+    type: dynamic_entity_reference_label
+    region: content
+  field_telephone:
+    weight: 0
+    label: hidden
+    settings:
+      vcard: true
+    third_party_settings: {  }
+    type: telephone_plus_link
+    region: content
+hidden:
+  body: true
+  langcode: true
+  search_api_excerpt: true
