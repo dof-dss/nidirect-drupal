@@ -33,7 +33,7 @@ third_party_settings:
         - field_email_address
         - field_link_url
       parent_name: ''
-      weight: 1
+      weight: 0
       format_type: html_element
       region: content
       format_settings:
@@ -52,9 +52,19 @@ targetEntityType: node
 bundle: driving_instructor
 mode: full
 content:
+  field_di_areas:
+    type: html_list_formatter
+    weight: 2
+    region: content
+    label: above
+    settings:
+      list_type: ul
+      list_classes: ''
+      display_item_link: false
+    third_party_settings: {  }
   field_di_categories:
     type: html_list_formatter
-    weight: 0
+    weight: 1
     region: content
     label: visually_hidden
     settings:
@@ -82,7 +92,7 @@ content:
       target: ''
     third_party_settings: {  }
   field_meta_tags:
-    weight: 3
+    weight: 4
     label: above
     settings: {  }
     third_party_settings: {  }
@@ -97,14 +107,13 @@ content:
     type: telephone_plus_link
     region: content
   links:
-    weight: 2
+    weight: 3
     region: content
     settings: {  }
     third_party_settings: {  }
 hidden:
   content_moderation_control: true
   field_di_adi_no: true
-  field_di_areas: true
   field_di_firstname: true
   field_di_lastname: true
   langcode: true
