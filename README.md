@@ -4,7 +4,7 @@
 
 Drupal source code for the NIDirect website: https://www.nidirect.gov.uk.
 
-Drupal 8 project based on `drupal-composer/drupal-project`. The project comprises of a number of disparate repositories and the diagram below outlines the relationships between them.
+Drupal 8 project based on `drupal/recommended-project`. The project comprises of a number of repositories and the diagram below outlines the relationships between them.
 
 [Composer](https://getcomposer.org/) is used to define and build the project; see `composer.json` for details.
 
@@ -14,7 +14,7 @@ Drupal 8 project based on `drupal-composer/drupal-project`. The project comprise
 
 ## Updating Core
 
-Follow the instructions at: https://github.com/drupal-composer/drupal-project
+Follow the instructions at: https://www.drupal.org/docs/updating-drupal/updating-drupal-core-via-composer
 
 ## Getting started
 
@@ -58,13 +58,9 @@ on the environment the application is running in.
 Like the popular git-flow workflow, but without the more complex elements:
 
 - `development` bleeding-edge. All feature branches originate from here.
-- `master` stable, automatically deployed to platform.sh. Release tags should originate from here.
+- `main` stable, automatically deployed to platform.sh. Release tags should originate from here.
 
-Preferred feature branch naming convention: `TICKET_REF-short-desc`, for example: `D8NID-123-event-listing`
-
-We highly recommend developers use a tool such as [Talisman](https://github.com/thoughtworks/talisman) to ensure they do not commit potentially sensitive material into the codebase.
-
-API keys, auth tokens or other credentials values *must* be stored as environment variables and never stored in the codebase itself.
+API keys, auth tokens or other sensitive values *must* be stored as environment variables and never stored in the codebase itself.
 
 ## Continuous integration
 
@@ -75,18 +71,18 @@ Automated testing is configured to check:
 - Run any defined unit tests via [phpunit](https://phpunit.de/).
 - Run functional UI tests using [nightwatch.js](https://nightwatchjs.org).
 
-All of these tools can be run locally with Circle CI present to ensure that even if you do not then you cannot merge your code to production until any failing tests are corrected.
+All of these tools can be run locally with Circle CI.
 
 ## Contribution
 
-All changes **must** be submitted with an appropriate pull request (PR) in GitHub. Direct commits to `master` or `development` are not normally permitted.
+All changes should be submitted with an appropriate pull request (PR) in GitHub. Direct commits to `main` or `development` are not normally permitted.
 
 ## Configuration management
 
 This project employs a suite of modules to control how site configuration is imported and behaves:
 
 - [config_split](https://www.drupal.org/project/config_split): Allows configuration to be defined per environment. Ie: development modules will be enabled for local work, and remain off/absent from others.
-- [config_readonly](https://www.drupal.org/project/config_readonly): Ensures that active configuration cannot be changed by site admins, but blocking certain system forms from saving. A whitelist is available for 'admin content' that is not necessarily tracked in code or is needed to be changed regularly by site admins.
+- [config_readonly](https://www.drupal.org/project/config_readonly): Ensures that active configuration cannot be changed by site admins, but blocking certain system forms from saving. Exceptions can be defined for 'admin content' that is not necessarily tracked in code or is needed to be changed regularly by site admins.
 - [config_ignore](https://www.drupal.org/project/config_ignore): Ensures that some site configuration is not overwritten during configuration import during deployments.
 - [multiline_config](https://www.drupal.org/project/multiline_config): Exports text strings as multiline making it easier to read, review and edit configurations such as those exported by the Webforms module.
 
@@ -119,8 +115,8 @@ selected in the 'Theme/subtheme' field. This is achieved by using the 'Articles 
 
 ### Display of teasers on Landing Pages
 
-In order to add teasers to a landing page you should first select a theme/subtheme and then go in to the layout builder for the node. Once you have added a 'one column' section 
-you should then be able to add a block. Choose to 'create a custom block' and then choose 'Article Teasers by Topic' from the list of available blocks. A list of teasers will 
+In order to add teasers to a landing page you should first select a theme/subtheme and then go in to the layout builder for the node. Once you have added a 'one column' section
+you should then be able to add a block. Choose to 'create a custom block' and then choose 'Article Teasers by Topic' from the list of available blocks. A list of teasers will
 then appear according to the theme/subtheme selected.
 
 Note that once you have saved the layout builder changes, you may then go back to the article teasers block and click on 'configure' - if you then select 'manually control listing'
@@ -128,7 +124,7 @@ you will be able to add/remove teasers and/or control the order.
 
 #### Some key concepts:
 
-> Config blacklist
+> Config blocklist
 
 This refers to configuration that is fully excluded from other environments. An example might be: the devel module; only used for debugging purposes on the local development environment.
 
@@ -182,13 +178,13 @@ To export custom blocks or menus use `/admin/structure/structure-sync/` and more
 
 ## Front-end toolchain
 
-See https://github.com/dof-dss/nicsdru_nidirect_theme/blob/master/README.md for full details.
+See https://github.com/dof-dss/nicsdru_nidirect_theme/blob/main/README.md for full details.
 
 ## Deployment
 
 The project is hosted using platform.sh which operates a continuous deployment process. That means:
 
-- Any code merged/pushed to `master` will deploy to production.
+- Any code merged/pushed to `main` will deploy to production.
 
 ### Release naming conventions
 
