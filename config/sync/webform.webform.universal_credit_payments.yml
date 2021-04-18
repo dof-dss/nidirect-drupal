@@ -1,0 +1,609 @@
+uuid: 8fd47af8-99bb-440b-87e4-b74888ba37c6
+langcode: en
+status: open
+dependencies: {  }
+open: null
+close: null
+weight: 0
+uid: 24
+template: false
+archive: false
+id: universal_credit_payments
+title: 'Universal Credit payments'
+description: 'Help tool: who to contact about money taken off Universal Credit payment'
+category: ''
+elements: |
+  question_1:
+    '#type': webform_wizard_page
+    '#title': 'Question 1'
+    '#prev_button_label': Previous
+    '#next_button_label': Next
+    what_do_you_need_help_with_:
+      '#type': radios
+      '#title': 'What do you need help with?'
+      '#description': 'You can find this information on your statement'
+      '#description_display': before
+      '#help_display': title_after
+      '#options':
+        'Advance payment': 'Advance payment'
+        'Universal Credit overpayment': 'Universal Credit overpayment'
+        'Benefit overpayment, Social Fund, Tax credits': 'Benefit overpayment, Social Fund, Tax credits'
+        'Hardship payment recovery': 'Hardship payment recover'
+        'Third party deduction': 'Third party deduction - if you owe for things like rent, Rates, or utilities'
+  question_2:
+    '#type': webform_wizard_page
+    '#title': 'Question 2'
+    '#states':
+      visible:
+        - ':input[name="what_do_you_need_help_with_"]':
+            value: 'Advance payment'
+        - or
+        - ':input[name="what_do_you_need_help_with_"]':
+            value: 'Universal Credit overpayment'
+        - or
+        - ':input[name="what_do_you_need_help_with_"]':
+            value: 'Third party deduction'
+    '#prev_button_label': Previous
+    '#next_button_label': Next
+    advance_payment_what_is_your_enquiry_about_:
+      '#type': radios
+      '#title': 'Advance payment - what is your enquiry about?'
+      '#description': 'Choose one of the following options'
+      '#description_display': before
+      '#options':
+        'How much I owe in total': 'How much I owe in total'
+        'How much I pay every month': 'How much I pay every month'
+        'I want to make a one-off payment': 'I want to make a one-off payment'
+        'I want to pause payments': 'I want to pause payments'
+      '#states':
+        visible:
+          ':input[name="what_do_you_need_help_with_"]':
+            value: 'Advance payment'
+    universal_credit_overpayment_what_is_your_enquiry_about_:
+      '#type': radios
+      '#title': 'Universal Credit overpayment - what is your enquiry about?'
+      '#description': 'Choose one of the following options'
+      '#description_display': before
+      '#options':
+        'Overpayment purpose': 'I want to know what the overpayment was for'
+        'How much left to pay': 'How much I have left to pay'
+        'One off payment': 'I want to make a one off payment'
+      '#states':
+        visible:
+          ':input[name="what_do_you_need_help_with_"]':
+            value: 'Universal Credit overpayment'
+    third_party_deductions_if_you_owe_money_for_things_like_rent_rat:
+      '#type': webform_section
+      '#title': 'Third party deductions - if you owe money for things like rent, Rates, or utilities'
+      '#description_display': before
+      '#states':
+        visible:
+          ':input[name="what_do_you_need_help_with_"]':
+            value: 'Third party deduction'
+      third_party_deductions:
+        '#type': radios
+        '#title': 'What is your enquiry about?'
+        '#options':
+          'How much paid monthly': 'How much I pay monthly'
+          'How much owed': 'How much I owe in total'
+          'What money was taken off for': 'I want to know what the money was taken off for'
+          'One of payment': 'I want to make a one-off payment'
+  result:
+    '#type': webform_wizard_page
+    '#title': Result
+    '#prev_button_label': Previous
+    '#next_button_label': Next
+    benefit_overpayment_social_fund_tax_credits_text:
+      '#type': processed_text
+      '#states':
+        visible:
+          ':input[name="what_do_you_need_help_with_"]':
+            value: 'Benefit overpayment, Social Fund, Tax credits'
+      '#text': |
+        <h2>Benefit overpayment, Social Fund, Tax Credits</h2>
+        
+        <p>Talk to&nbsp;Debt Management about benefit overpayment, Social Fund and Tax Credits.</p>
+        
+        <h3>DfC Debt Management</h3>
+        
+        <p>Telephone: <a href="tel:+448005871322">0800 587 1322</a><br />
+        Textphone: <a href="tel:+448005872986">0800 587&nbsp;2986</a></p>
+        
+        <p>Monday to Friday, 9am to 5pm.<br />
+        <a href="/node/4411">Find out about call charges</a></p>
+        
+        <p>Find out about <a href="/articles/deductions-can-be-taken-your-universal-credit-payments#toc-3">money taken off your Universal Credit payment</a>.</p>
+        
+      '#format': basic_html
+    hardship_payment_recovery_text:
+      '#type': processed_text
+      '#states':
+        visible:
+          ':input[name="what_do_you_need_help_with_"]':
+            value: 'Hardship payment recovery'
+      '#text': |
+        <h2>Hardship payment recovery</h2>
+        
+        <p>Sign into your online Universal Credit account and write a message in your journal.</p>
+        
+        <h3>Universal Credit</h3>
+        
+        <p>Telephone: <a href="tel:+448000121331">0800 012&nbsp;1331</a><br />
+        Textphone: <a href="tel:+448000121441">0800 012&nbsp;1441</a></p>
+        
+        <p>Monday to Friday, 10am to 4pm.<br />
+        <a href="/node/4411">Find out about call charges</a></p>
+        
+        <p>Find out about <a href="/articles/deductions-can-be-taken-your-universal-credit-payments#toc-3">money taken off your Universal Credit payment</a>.</p>
+        
+      '#format': basic_html
+    advance_payment___how_much_i_owe_in_total_text:
+      '#type': processed_text
+      '#states':
+        visible:
+          ':input[name="what_do_you_need_help_with_"]':
+            value: 'Advance payment'
+          ':input[name="advance_payment_what_is_your_enquiry_about_"]':
+            value: 'How much I owe in total'
+      '#text': |
+        <h2>Advance payment — how much I owe in total</h2>
+        
+        <p>The quickest way to find this out is to sign into your online Universal Credit account and look in the ‘Advances’ section.</p>
+        
+        <p>If you still need to contact us, write a message in your journal.</p>
+        
+        <h3>Universal Credit</h3>
+        
+        <p>Telephone: <a href="tel:+448000121331">0800 012&nbsp;1331</a><br />
+        Textphone: <a href="tel:+448000121441">0800 012&nbsp;1441</a></p>
+        
+        <p>Monday to Friday, 10am to 4pm.<br />
+        <a href="/node/4411">Find out about call charges</a></p>
+        
+        <p>Find out about <a href="/articles/deductions-can-be-taken-your-universal-credit-payments#toc-3">money taken off your Universal Credit payment</a>.</p>
+        
+      '#format': basic_html
+    advance_payment___how_much_i_pay_every_month_text:
+      '#type': processed_text
+      '#states':
+        visible:
+          ':input[name="what_do_you_need_help_with_"]':
+            value: 'Advance payment'
+          ':input[name="advance_payment_what_is_your_enquiry_about_"]':
+            value: 'How much I pay every month'
+      '#text': |
+        <h2>Advance payment — how much I pay every month</h2>
+        
+        <p>The quickest way to find this out is to sign into your online Universal Credit account and look in the ‘Advances’ section.&nbsp; You can also find this information in your statement.&nbsp; Look in the "Statement" section.</p>
+        
+        <p>If you still need to contact us, write a message in your journal.</p>
+        
+        <h3>Universal Credit</h3>
+        
+        <p>Telephone: <a href="tel:+448000121331">0800 012&nbsp;1331</a><br />
+        Textphone: <a href="tel:+448000121441">0800 012&nbsp;1441</a></p>
+        
+        <p>Monday to Friday, 10am to 4pm.<br />
+        <a href="/node/4411">Find out about call charges</a></p>
+        
+        <p>Find out about <a href="/articles/deductions-can-be-taken-your-universal-credit-payments#toc-3">money taken off your Universal Credit payment</a>.</p>
+        
+      '#format': basic_html
+    advance_payment___i_want_to_make_a_one_off_payment_text:
+      '#type': processed_text
+      '#states':
+        visible:
+          ':input[name="what_do_you_need_help_with_"]':
+            value: 'Advance payment'
+          ':input[name="advance_payment_what_is_your_enquiry_about_"]':
+            value: 'I want to make a one-off payment'
+      '#text': |
+        <h2>Advance payment — I want to make one-off payment</h2>
+        
+        <p>To make a payment you need to call Debt Management.</p>
+        
+        <h3>DfC Debt Management</h3>
+        
+        <p>Telephone: <a href="tel:+448005871322">0800 587 1322</a><br />
+        Textphone: <a href="tel:+448005872986">0800 587&nbsp;2986</a></p>
+        
+        <p>Monday to Friday, 9am to 5pm.<br />
+        <a href="/node/4411">Find out about call charges</a></p>
+        
+        <p>Find out about <a href="/articles/deductions-can-be-taken-your-universal-credit-payments#toc-3">money taken off your Universal Credit payment</a>.</p>
+        
+      '#format': basic_html
+    advance_payment___i_want_to_pause_repayments_text:
+      '#type': processed_text
+      '#states':
+        visible:
+          ':input[name="what_do_you_need_help_with_"]':
+            value: 'Advance payment'
+          ':input[name="advance_payment_what_is_your_enquiry_about_"]':
+            value: 'I want to pause payments'
+      '#text': |
+        <h2>Advance payment — I want to pause repayments</h2>
+        
+        <p>If you’re struggling to pay your advance, you may be able to pause your repayment for up to 3 months. This is only available in exceptional circumstances.</p>
+        
+        <p>You need to contact to Universal Credit. The quickest way to do this is to sign into your online Universal Credit account and write a message in your journal.</p>
+        
+        <h3>Universal Credit</h3>
+        
+        <p>Telephone: <a href="tel:+448000121331">0800 012&nbsp;1331</a><br />
+        Textphone: <a href="tel:+448000121441">0800 012&nbsp;1441</a></p>
+        
+        <p>Monday to Friday, 10am to 4pm.<br />
+        <a href="/node/4411">Find out about call charges</a></p>
+        
+        <p>Find out about <a href="/articles/deductions-can-be-taken-your-universal-credit-payments#toc-3">money taken off your Universal Credit payment</a>.</p>
+        
+      '#format': basic_html
+    universal_credit_overpayment__what_overpayment_was_for:
+      '#type': processed_text
+      '#states':
+        visible:
+          ':input[name="what_do_you_need_help_with_"]':
+            value: 'Universal Credit overpayment'
+          ':input[name="universal_credit_overpayment_what_is_your_enquiry_about_"]':
+            value: 'Overpayment purpose'
+      '#text': |
+        <h2>Universal Credit overpayment - I want to know what the overpayment was for</h2>
+        
+        <p>The quickest way to find this out is to sign into your online Universal Credit account. Go to your journal and find the overpayment letter containing this information.</p>
+        
+        <p>If you still need to contact us, write a message in your journal.</p>
+        
+        <h3>Universal Credit</h3>
+        
+        <p>Telephone: <a href="tel:+448000121331">0800 012&nbsp;1331</a><br />
+        Textphone: <a href="tel:+448000121441">0800 012&nbsp;1441</a></p>
+        
+        <p>Monday to Friday, 10am to 4pm.<br />
+        <a href="/node/4411">Find out about call charges</a></p>
+        
+        <p>Find out about <a href="/articles/deductions-can-be-taken-your-universal-credit-payments#toc-3">money taken off your Universal Credit payment</a>.</p>
+        
+      '#format': basic_html
+    universal_credit_overpayment__how_much_i_have_left_to_pay:
+      '#type': processed_text
+      '#states':
+        visible:
+          ':input[name="what_do_you_need_help_with_"]':
+            value: 'Universal Credit overpayment'
+          ':input[name="universal_credit_overpayment_what_is_your_enquiry_about_"]':
+            value: 'How much left to pay'
+      '#text': |
+        <h2>Universal Credit overpayment - how much I have left to pay</h2>
+        
+        <p>Call Debt Management to find out how much you have left to pay.</p>
+        
+        <h3>DfC Debt Management</h3>
+        
+        <p>Telephone: <a href="tel:+448005871322">0800 587 1322</a><br />
+        Textphone: <a href="tel:+448005872986">0800 587&nbsp;2986</a></p>
+        
+        <p>Monday to Friday, 9am to 5pm.<br />
+        <a href="/node/4411">Find out about call charges</a></p>
+        
+        <p>Find out about <a href="/articles/deductions-can-be-taken-your-universal-credit-payments#toc-3">money taken off your Universal Credit payment</a>.</p>
+        
+      '#format': basic_html
+    universal_credit_overpayment__one_off_payment:
+      '#type': processed_text
+      '#states':
+        visible:
+          ':input[name="what_do_you_need_help_with_"]':
+            value: 'Universal Credit overpayment'
+          ':input[name="universal_credit_overpayment_what_is_your_enquiry_about_"]':
+            value: 'One off payment'
+      '#text': |
+        <h2>Universal Credit overpayment - I want to make a one-off payment</h2>
+        
+        <p>To make a payment you need to call Debt Management.</p>
+        
+        <h3>DfC Debt Management</h3>
+        
+        <p>Telephone: <a href="tel:+448005871322">0800 587 1322</a><br />
+        Textphone: <a href="tel:+448005872986">0800 587&nbsp;2986</a></p>
+        
+        <p>Monday to Friday, 9am to 5pm.<br />
+        <a href="/node/4411">Find out about call charges</a></p>
+        
+        <p>Find out about <a href="/articles/deductions-can-be-taken-your-universal-credit-payments#toc-3">money taken off your Universal Credit payment</a>.</p>
+        
+      '#format': basic_html
+    third_party_deduction___why_the_money_was_taken:
+      '#type': processed_text
+      '#states':
+        visible:
+          ':input[name="what_do_you_need_help_with_"]':
+            value: 'Third party deduction'
+          ':input[name="third_party_deductions"]':
+            value: 'What money was taken off for'
+      '#text': |
+        <h2>Third party deduction&nbsp;— I want to know what the money was taken off for</h2>
+        
+        <p>The quickest way to find this out is to sign into your online Universal Credit account. Go to your journal and find the third party deduction letter containing this information.</p>
+        
+        <h3>Universal Credit</h3>
+        
+        <p>Telephone: <a href="tel:+448000121331">0800 012&nbsp;1331</a><br />
+        Textphone: <a href="tel:+448000121441">0800 012&nbsp;1441</a></p>
+        
+        <p>Monday to Friday, 10am to 4pm.<br />
+        <a href="/node/4411">Find out about call charges</a></p>
+        
+        <p>Find out about <a href="/articles/deductions-can-be-taken-your-universal-credit-payments#toc-3">money taken off your Universal Credit payment</a>.</p>
+        
+      '#format': basic_html
+    third_party_deduction___how_much_owe_i_owe_total_text:
+      '#type': processed_text
+      '#states':
+        visible:
+          ':input[name="what_do_you_need_help_with_"]':
+            value: 'Third party deduction'
+          ':input[name="third_party_deductions"]':
+            value: 'How much owed'
+      '#text': |
+        <h2>Third party deduction&nbsp;— how much do I owe in total</h2>
+        
+        <p>If you have only been paying off the debt through your benefit deductions, you should sign into your Universal Credit account and send us a message using your journal.</p>
+        
+        <p>However, if you have also made <strong>any</strong> payments directly to your supplier, you should contact them directly for a balance.</p>
+        
+        <h3>Universal Credit</h3>
+        
+        <p>Telephone: <a href="tel:+448000121331">0800 012&nbsp;1331</a><br />
+        Textphone: <a href="tel:+448000121441">0800 012&nbsp;1441</a></p>
+        
+        <p>Monday to Friday, 10am to 4pm.<br />
+        <a href="/node/4411">Find out about call charges</a></p>
+        
+        <p>Find out about <a href="/articles/deductions-can-be-taken-your-universal-credit-payments#toc-3">money taken off your Universal Credit payment</a>.</p>
+        
+      '#format': basic_html
+    third_party_deduction___how_much_i_pay_every_month_text:
+      '#type': processed_text
+      '#states':
+        visible:
+          ':input[name="what_do_you_need_help_with_"]':
+            value: 'Third party deduction'
+          ':input[name="third_party_deductions"]':
+            value: 'How much paid monthly'
+      '#text': |
+        <h2>Third party deduction - how much I pay every month</h2>
+        
+        <p>Money can be taken off your Universal Credit payment to pay your debts for:</p>
+        
+        <ul>
+        	<li>rent arrears</li>
+        	<li>service charge arrears</li>
+        	<li>court fines</li>
+        	<li>child maintenance</li>
+        	<li>utilities, like electricity, gas and water</li>
+        	<li>rates</li>
+        </ul>
+        
+        <p>Either you, the organisation or the person you owe money to, must ask Universal Credit to take this money off.</p>
+        
+        <p>There is a limit to how much of your Universal Credit payment can go towards paying these debts. We will send you a message in your journal if this happens.</p>
+        
+        <p>You can see on your statement if any money is being taken off for these debts. Look in the section ‘What we take off – deductions’.</p>
+        
+        <p>The best way to stop this happening is to contact your creditors (the people you owe money to) and make a private arrangement with them to repay what you owe. You will find their contact details on recent bills or their website.</p>
+        
+        <p>Find out about <a href="/articles/deductions-can-be-taken-your-universal-credit-payments#toc-3">money taken off your Universal Credit payment</a>.</p>
+        
+      '#format': basic_html
+    third_party_deduction___i_want_to_make_a_one_off_payment_text:
+      '#type': processed_text
+      '#states':
+        visible:
+          ':input[name="what_do_you_need_help_with_"]':
+            value: 'Third party deduction'
+          ':input[name="third_party_deductions"]':
+            value: 'One of payment'
+      '#text': |
+        <h2>Third party deduction – I want to make a one-off payment</h2>
+        
+        <p>Money can be taken off your Universal Credit payment to pay your debts for:</p>
+        
+        <ul>
+        	<li>rent arrears</li>
+        	<li>service charge arrears</li>
+        	<li>court fines</li>
+        	<li>child maintenance</li>
+        	<li>utilities, like electricity, gas and water</li>
+        	<li>Rates arrears</li>
+        </ul>
+        
+        <p>Contact your creditors (the people you owe money to) to make a payment. You will find their contact details on recent bills or their website.</p>
+        
+        <p>Find out about <a href="/articles/deductions-can-be-taken-your-universal-credit-payments#toc-3">money taken off your Universal Credit payment</a>.</p>
+        
+      '#format': basic_html
+  actions:
+    '#type': webform_actions
+    '#title': 'Submit button(s)'
+    '#submit__label': 'Start again'
+css: ''
+javascript: ''
+settings:
+  ajax: true
+  ajax_scroll_top: form
+  ajax_progress_type: throbber
+  ajax_effect: fade
+  ajax_speed: null
+  page: true
+  page_submit_path: ''
+  page_confirm_path: ''
+  page_theme_name: ''
+  form_title: source_entity_webform
+  form_submit_once: false
+  form_exception_message: ''
+  form_open_message: ''
+  form_close_message: ''
+  form_previous_submissions: true
+  form_confidential: false
+  form_confidential_message: ''
+  form_disable_remote_addr: false
+  form_convert_anonymous: false
+  form_prepopulate: false
+  form_prepopulate_source_entity: false
+  form_prepopulate_source_entity_required: false
+  form_prepopulate_source_entity_type: ''
+  form_reset: false
+  form_disable_autocomplete: false
+  form_novalidate: false
+  form_disable_inline_errors: false
+  form_required: false
+  form_unsaved: false
+  form_disable_back: false
+  form_submit_back: false
+  form_autofocus: false
+  form_details_toggle: false
+  form_access_denied: default
+  form_access_denied_title: ''
+  form_access_denied_message: ''
+  form_access_denied_attributes: {  }
+  form_file_limit: ''
+  share: false
+  share_node: false
+  share_theme_name: ''
+  share_title: true
+  share_page_body_attributes: {  }
+  submission_label: ''
+  submission_log: false
+  submission_views: {  }
+  submission_views_replace: {  }
+  submission_user_columns: {  }
+  submission_user_duplicate: false
+  submission_access_denied: default
+  submission_access_denied_title: ''
+  submission_access_denied_message: ''
+  submission_access_denied_attributes: {  }
+  submission_exception_message: ''
+  submission_locked_message: ''
+  submission_excluded_elements: {  }
+  submission_exclude_empty: false
+  submission_exclude_empty_checkbox: false
+  previous_submission_message: ''
+  previous_submissions_message: ''
+  autofill: false
+  autofill_message: ''
+  autofill_excluded_elements: {  }
+  wizard_progress_bar: false
+  wizard_progress_pages: false
+  wizard_progress_percentage: false
+  wizard_progress_link: false
+  wizard_progress_states: false
+  wizard_auto_forward: true
+  wizard_auto_forward_hide_next_button: false
+  wizard_keyboard: true
+  wizard_start_label: ''
+  wizard_preview_link: false
+  wizard_confirmation: true
+  wizard_confirmation_label: ''
+  wizard_track: ''
+  wizard_prev_button_label: ''
+  wizard_next_button_label: ''
+  wizard_toggle: true
+  wizard_toggle_show_label: ''
+  wizard_toggle_hide_label: ''
+  preview: 0
+  preview_label: ''
+  preview_title: ''
+  preview_message: ''
+  preview_attributes: {  }
+  preview_excluded_elements: {  }
+  preview_exclude_empty: true
+  preview_exclude_empty_checkbox: false
+  draft: none
+  draft_multiple: false
+  draft_auto_save: false
+  draft_saved_message: ''
+  draft_loaded_message: ''
+  draft_pending_single_message: ''
+  draft_pending_multiple_message: ''
+  confirmation_type: none
+  confirmation_title: ''
+  confirmation_message: ''
+  confirmation_url: ''
+  confirmation_attributes: {  }
+  confirmation_back: true
+  confirmation_back_label: ''
+  confirmation_back_attributes: {  }
+  confirmation_exclude_query: false
+  confirmation_exclude_token: false
+  confirmation_update: false
+  limit_total: null
+  limit_total_interval: null
+  limit_total_message: ''
+  limit_total_unique: false
+  limit_user: null
+  limit_user_interval: null
+  limit_user_message: ''
+  limit_user_unique: false
+  entity_limit_total: null
+  entity_limit_total_interval: null
+  entity_limit_user: null
+  entity_limit_user_interval: null
+  purge: none
+  purge_days: null
+  results_disabled: true
+  results_disabled_ignore: true
+  results_customize: false
+  token_view: false
+  token_update: false
+  token_delete: false
+  serial_disabled: false
+access:
+  create:
+    roles:
+      - anonymous
+      - authenticated
+    users: {  }
+    permissions: {  }
+  view_any:
+    roles: {  }
+    users: {  }
+    permissions: {  }
+  update_any:
+    roles: {  }
+    users: {  }
+    permissions: {  }
+  delete_any:
+    roles: {  }
+    users: {  }
+    permissions: {  }
+  purge_any:
+    roles: {  }
+    users: {  }
+    permissions: {  }
+  view_own:
+    roles: {  }
+    users: {  }
+    permissions: {  }
+  update_own:
+    roles: {  }
+    users: {  }
+    permissions: {  }
+  delete_own:
+    roles: {  }
+    users: {  }
+    permissions: {  }
+  administer:
+    roles: {  }
+    users: {  }
+    permissions: {  }
+  test:
+    roles: {  }
+    users: {  }
+    permissions: {  }
+  configuration:
+    roles: {  }
+    users: {  }
+    permissions: {  }
+handlers: {  }
+variants: {  }
