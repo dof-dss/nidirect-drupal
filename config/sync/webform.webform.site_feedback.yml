@@ -330,7 +330,7 @@ settings:
   form_exception_message: ''
   form_open_message: ''
   form_close_message: ''
-  form_previous_submissions: true
+  form_previous_submissions: false
   form_confidential: false
   form_confidential_message: ''
   form_remote_addr: true
@@ -400,11 +400,9 @@ settings:
   draft_pending_single_message: ''
   draft_pending_multiple_message: ''
   confirmation_type: page
-  confirmation_title: ''
+  confirmation_title: 'Thank you for your feedback'
   confirmation_message: |
-    <p class="nodeSummary">Thank you for your feedback.</p>
-    
-    <p>If you have asked for a reply, we aim to get back to you within 10 working days.</p>
+    <p class="nodeSummary">If you have asked for a reply, we aim to get back to you within 10 working days.</p>
     
     <p>All responses will usually be sent out Monday to Friday, 9.00 am to 5.00 pm (excluding public and bank holidays).</p>
   confirmation_url: ''
@@ -433,6 +431,24 @@ settings:
   results_disabled_ignore: false
   token_view: false
   token_update: false
+  page_theme_name: ''
+  form_disable_remote_addr: false
+  share: false
+  share_node: false
+  share_theme_name: ''
+  share_title: true
+  share_page_body_attributes: {  }
+  wizard_auto_forward: true
+  wizard_auto_forward_hide_next_button: false
+  wizard_keyboard: true
+  wizard_prev_button_label: ''
+  wizard_next_button_label: ''
+  wizard_toggle: false
+  wizard_toggle_show_label: ''
+  wizard_toggle_hide_label: ''
+  results_customize: false
+  token_delete: false
+  serial_disabled: false
 access:
   create:
     roles:
@@ -492,9 +508,9 @@ handlers:
     settings:
       states:
         - completed
-      to_mail: feedback@nidirect.gov.uk
+      to_mail: neil.r.blair@gmail.com
       to_options: {  }
-      cc_mail: neil.blair@finance-ni.gov.uk
+      cc_mail: ''
       cc_options: {  }
       bcc_mail: ''
       bcc_options: {  }
