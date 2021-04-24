@@ -1,0 +1,29 @@
+uuid: 20cfd0a0-2bba-4bf5-9d24-a6230facccd6
+langcode: en
+status: true
+dependencies:
+  config:
+    - block_content.type.video
+    - field.field.block_content.video.body
+    - field.field.block_content.video.field_video
+  module:
+    - media_library
+    - media_library_edit
+id: block_content.video.default
+targetEntityType: block_content
+bundle: video
+mode: default
+content:
+  field_video:
+    weight: 0
+    settings:
+      media_types: {  }
+    third_party_settings:
+      media_library_edit:
+        show_edit: '1'
+    type: media_library_widget
+    region: content
+hidden:
+  body: true
+  info: true
+  langcode: true

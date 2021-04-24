@@ -8,11 +8,20 @@ dependencies:
     - field.field.block_content.banner_deep.field_banner_image
     - field.field.block_content.banner_deep.field_banner_image_overlay
     - field.field.block_content.banner_deep.field_teaser
+  module:
+    - text
 id: block_content.banner_deep.default
 targetEntityType: block_content
 bundle: banner_deep
 mode: default
 content:
+  body:
+    type: text_default
+    weight: 3
+    region: content
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
   field_banner_image:
     type: entity_reference_entity_view
     weight: 0
@@ -40,6 +49,5 @@ content:
     type: string
     region: content
 hidden:
-  body: true
   langcode: true
   search_api_excerpt: true
