@@ -1,0 +1,26 @@
+uuid: a3c36dbd-ea54-4bd2-99c4-6507dc216974
+langcode: en
+status: true
+dependencies:
+  config:
+    - block_content.type.video
+    - field.field.block_content.video.body
+    - field.field.block_content.video.field_video
+id: block_content.video.default
+targetEntityType: block_content
+bundle: video
+mode: default
+content:
+  field_video:
+    weight: 0
+    label: hidden
+    settings:
+      view_mode: default
+      link: false
+    third_party_settings: {  }
+    type: entity_reference_entity_view
+    region: content
+hidden:
+  body: true
+  langcode: true
+  search_api_excerpt: true
