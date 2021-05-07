@@ -7,6 +7,7 @@ dependencies:
     - field.field.node.landing_page.field_listing
     - field.field.node.landing_page.field_manually_control_listing
     - field.field.node.landing_page.field_meta_tags
+    - field.field.node.landing_page.field_site_themes
     - field.field.node.landing_page.field_subtheme
     - field.field.node.landing_page.field_summary
     - field.field.node.landing_page.field_teaser
@@ -136,6 +137,22 @@ third_party_settings:
                 type: metatag_empty_formatter
             additional: {  }
             weight: 9
+          af48227d-fc2e-4cd9-b97a-31330db0d847:
+            uuid: af48227d-fc2e-4cd9-b97a-31330db0d847
+            region: content
+            configuration:
+              label_display: '0'
+              context_mapping:
+                entity: layout_builder.entity
+              id: 'field_block:node:landing_page:field_site_themes'
+              formatter:
+                label: above
+                settings:
+                  link: true
+                third_party_settings: {  }
+                type: entity_reference_label
+            additional: {  }
+            weight: 10
         third_party_settings: {  }
   layout_builder_restrictions:
     entity_view_mode_restriction:
@@ -204,6 +221,14 @@ content:
     settings: {  }
     third_party_settings: {  }
     type: metatag_empty_formatter
+    region: content
+  field_site_themes:
+    weight: 9
+    label: above
+    settings:
+      link: true
+    third_party_settings: {  }
+    type: entity_reference_label
     region: content
   field_subtheme:
     type: entity_reference_label
