@@ -61,8 +61,10 @@ elements: |
     address:
       '#type': textarea
       '#title': Address
-      '#maxlength': '500'
+      '#maxlength': 500
       '#required': true
+      '#pattern': '^(?!.*<[^>]+>).*'
+      '#pattern_error': 'HTML or markup is not permitted.'
     postcode:
       '#type': textfield
       '#title': Postcode
@@ -110,8 +112,10 @@ elements: |
       '#title': 'Please tell us your query'
       '#description': 'Please give us as much information as you can as this will help us to get back to to you as soon as possible. DO NOT include personal or financial information such as date of birth, National Insurance number, or bank and credit card details.'
       '#description_display': before
-      '#maxlength': '3000'
+      '#maxlength': 3000
       '#required': true
+      '#pattern': '^(?!.*<[^>]+>).*'
+      '#pattern_error': 'HTML or markup is not permitted.'
   actions:
     '#type': webform_actions
     '#title': 'Submit button(s)'
