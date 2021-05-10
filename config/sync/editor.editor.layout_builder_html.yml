@@ -1,14 +1,12 @@
-uuid: 0af79454-fa13-43f2-8fed-816bc926548f
+uuid: 8947c2e3-5635-4478-acde-43213c6afc1e
 langcode: en
 status: true
 dependencies:
   config:
-    - filter.format.full_html
+    - filter.format.layout_builder_html
   module:
     - ckeditor
-_core:
-  default_config_hash: 967ijj7p6i7rwrYl7r08WQFeCY_c23YAh0h8u-w_CXM
-format: full_html
+format: layout_builder_html
 editor: ckeditor
 settings:
   toolbar:
@@ -18,31 +16,23 @@ settings:
           name: Formatting
           items:
             - Bold
-            - '-'
             - Blockquote
-            - Superscript
             - RemoveFormat
         -
           name: 'Block Formatting'
           items:
             - Format
             - Styles
-            - Table
         -
           name: Linking
           items:
-            - DrupalUnlink
             - DrupalLink
+            - DrupalUnlink
         -
           name: Lists
           items:
             - BulletedList
             - NumberedList
-        -
-          name: Media
-          items:
-            - DrupalMediaLibrary
-            - location
         -
           name: Tasks
           items:
@@ -57,8 +47,6 @@ settings:
             - PasteFromWord
             - SpecialChar
             - Maximize
-            - CookieContentBlocker
-            - Source
   plugins:
     drupallink:
       linkit_enabled: true
@@ -68,17 +56,11 @@ settings:
     stylescombo:
       styles: |
         p.info-notice|Information notice
-        p.info-notice--success|Success notice
-        p.info-notice--warning|Warning notice
-        p.info-notice--error|Error notice
-        ul.split-list|Split bulleted list
-        ol.split-list|Split numbered list
-        table.table-fixed-width|Equal table columns
         p.call-to-action|Big green button
     tokenbrowser:
       token_types: {  }
 image_upload:
-  status: true
+  status: false
   scheme: public
   directory: inline-images
   max_size: ''
