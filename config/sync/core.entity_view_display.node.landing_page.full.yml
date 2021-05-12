@@ -33,7 +33,38 @@ third_party_settings:
         components: {  }
         third_party_settings: {  }
   layout_builder_restrictions:
-    allowed_block_categories: {  }
+    allowed_block_categories:
+      - Block
+      - 'Chaos Tools'
+      - 'Content fields'
+      - 'Custom block types'
+      - 'Custom blocks'
+      - Devel
+      - Facets
+      - 'Facets summary (Experimental)'
+      - Forms
+      - Geolocation
+      - Help
+      - 'Inline blocks'
+      - 'Landing pages'
+      - 'Lists (Views)'
+      - Menus
+      - 'NI Direct'
+      - NIDirect
+      - 'NIDirect Common'
+      - 'NIDirect Contacts'
+      - 'NIDirect Health Conditions'
+      - 'NIDirect Homepage'
+      - 'NIDirect News'
+      - 'Origins: Social Sharing'
+      - 'Site Themes (Views)'
+      - System
+      - 'Translation help link'
+      - User
+      - Views
+      - Webform
+      - 'Webform access'
+      - core
     entity_view_mode_restriction:
       whitelisted_blocks:
         Block: {  }
@@ -50,9 +81,11 @@ third_party_settings:
           - card_plain
           - card_standard
           - card_wide
+          - information_notice
           - text
           - video
           - video_and_caption
+        'Custom blocks': {  }
         Devel: {  }
         Facets: {  }
         'Facets summary (Experimental)': {  }
@@ -64,14 +97,17 @@ third_party_settings:
           - 'inline_block:article_teasers_by_topic'
           - 'inline_block:banner_deep'
           - 'inline_block:card_contact'
+          - 'inline_block:card_plain'
           - 'inline_block:card_standard'
           - 'inline_block:card_wide'
+          - 'inline_block:card_nested_standard'
+          - 'inline_block:card_nested_wide'
+          - 'inline_block:information_notice'
           - 'inline_block:card_deck_plain'
           - 'inline_block:text'
           - 'inline_block:video'
           - 'inline_block:video_and_caption'
-        'Landing pages':
-          - nidirect_landing_pages_health_conditions_search_and_a_z
+        'Landing pages': {  }
         'Lists (Views)': {  }
         Menus: {  }
         'NI Direct': {  }
@@ -102,7 +138,7 @@ third_party_settings:
         - teasers_x2
       whitelisted_blocks:
         layout_onecol:
-          content:
+          all_regions:
             Block: {  }
             'Chaos Tools': {  }
             'Content fields': {  }
@@ -110,9 +146,9 @@ third_party_settings:
               - accordion_menu
               - article_teasers_by_topic
               - banner_deep
-              - basic
               - card_contact
               - card_deck_plain
+              - information_notice
               - text
               - video_and_caption
             'Custom blocks': {  }
@@ -126,11 +162,12 @@ third_party_settings:
               - 'inline_block:accordion_menu'
               - 'inline_block:article_teasers_by_topic'
               - 'inline_block:banner_deep'
-              - 'inline_block:basic'
               - 'inline_block:card_contact'
+              - 'inline_block:information_notice'
               - 'inline_block:card_deck_plain'
               - 'inline_block:text'
               - 'inline_block:video_and_caption'
+            'Landing pages': {  }
             'Lists (Views)': {  }
             Menus: {  }
             'NI Direct': {  }
@@ -156,6 +193,7 @@ third_party_settings:
             'Content fields': {  }
             'Custom block types':
               - card_contact
+              - card_nested_wide
               - card_wide
               - video
             'Custom blocks': {  }
@@ -168,6 +206,7 @@ third_party_settings:
             'Inline blocks':
               - 'inline_block:card_contact'
               - 'inline_block:card_wide'
+              - 'inline_block:card_nested_wide'
               - 'inline_block:video'
             'Lists (Views)': {  }
             Menus: {  }
@@ -194,6 +233,7 @@ third_party_settings:
             'Content fields': {  }
             'Custom block types':
               - card_contact
+              - card_nested_standard
               - card_standard
             'Custom blocks': {  }
             Devel: {  }
@@ -205,6 +245,7 @@ third_party_settings:
             'Inline blocks':
               - 'inline_block:card_contact'
               - 'inline_block:card_standard'
+              - 'inline_block:card_nested_standard'
             'Lists (Views)': {  }
             Menus: {  }
             'NI Direct': {  }
