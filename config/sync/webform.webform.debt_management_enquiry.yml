@@ -52,19 +52,19 @@ elements: |
     debt_reference_number:
       '#type': textfield
       '#title': 'Debt reference number'
-      '#description': 'This may be found on a letter from Debt Management'
+      '#description': '<p>This may be found on a letter from Debt Management</p>'
       '#description_display': before
-      '#maxlength': '10'
+      '#maxlength': 10
+      '#size': 11
+      '#autocomplete': 'off'
   contact_details:
     '#type': fieldset
     '#title': 'Contact details'
     address:
       '#type': textarea
       '#title': Address
-      '#maxlength': 500
+      '#maxlength': '500'
       '#required': true
-      '#pattern': '^(?!.*<[^>]+>).*'
-      '#pattern_error': 'HTML or markup is not permitted.'
     postcode:
       '#type': textfield
       '#title': Postcode
@@ -74,12 +74,16 @@ elements: |
     contact_telephone_number:
       '#type': textfield
       '#title': 'Contact telephone number'
-      '#maxlength': '20'
+      '#maxlength': 20
       '#required': true
+      '#pattern': '^[\+0-9\s\-\(\)]+$'
+      '#pattern_error': 'Enter a valid telephone number'
     mobile_number:
       '#type': textfield
       '#title': 'Mobile number (if different)'
-      '#maxlength': '1'
+      '#maxlength': 20
+      '#pattern': '^[\+0-9\s\-\(\)]+$'
+      '#pattern_error': 'Enter a valid mobile number'
     email_address:
       '#type': email
       '#title': 'Email address'
@@ -90,7 +94,7 @@ elements: |
     '#title': 'Enquiry details'
     what_is_you_query_about_:
       '#type': webform_select_other
-      '#title': 'What is you query about?'
+      '#title': 'What is your query about?'
       '#options':
         loan_management: 'Loan management'
         overpayment_recovery: 'Overpayment recovery'
@@ -99,9 +103,9 @@ elements: |
         making_a_payment: 'Making a payment'
         third_party_deductions: 'Third party deductions'
         complaint: Complaint
-        compensation_recovery_scheme: 'Compensation recovery scheme'
-        discretionary_support_social_fund: 'Discretionary support social fund'
-        welfare_supplementary_payment: 'Welfare supplementary payment'
+        compensation_recovery_scheme: 'Compensation Recovery Scheme'
+        discretionary_support_social_fund: 'Discretionary Support / Social Fund'
+        welfare_supplementary_payment: 'Welfare Supplementary Payment'
       '#empty_option': '- Please select - '
       '#other__option_label': 'Other (please specify)'
       '#other__title': 'Please briefly specify the subject of your query'
@@ -308,6 +312,7 @@ handlers:
         &lt;p&gt;Submitted on [current-date:long]&lt;/p&gt;<br />
         &lt;p&gt;Submitted values are:&lt;/p&gt;<br />
         [webform_submission:values]
+        
       excluded_elements: {  }
       ignore_access: false
       exclude_empty: true
