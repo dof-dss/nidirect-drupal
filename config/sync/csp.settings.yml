@@ -1,0 +1,78 @@
+_core:
+  default_config_hash: o4-eDkmTmVdUICtL1VxWD3S9Ze8kNq_lHj6DskF8U8o
+report-only:
+  enable: true
+  directives:
+    default-src:
+      base: self
+    font-src:
+      sources:
+        - themes.googleusercontent.com
+        - fonts.gstatic.com
+      base: self
+    frame-src:
+      sources:
+        - www.youtube.com
+      base: self
+    img-src:
+      sources:
+        - maps.gstatic.com
+        - maps.googleapis.com
+        - 'data:'
+      base: self
+    script-src:
+      sources:
+        - www.googletagmanager.com
+      base: self
+    script-src-attr:
+      base: self
+    script-src-elem:
+      sources:
+        - www.googletagmanager.com
+      base: self
+    style-src:
+      base: self
+    style-src-attr:
+      flags:
+        - unsafe-inline
+      base: self
+    style-src-elem:
+      base: self
+    block-all-mixed-content: true
+  reporting:
+    plugin: sitelog
+enforce:
+  enable: false
+  directives:
+    default-src:
+      base: self
+    font-src:
+      sources:
+        - themes.googleusercontent.com
+        - fonts.gstatic.com
+      base: self
+    frame-src:
+      sources:
+        - www.youtube.com
+      base: self
+    img-src:
+      sources:
+        - maps.gstatic.com
+        - maps.googleapis.com
+        - 'data:'
+      base: self
+    script-src:
+      sources:
+        - www.googletagmanager.com
+      base: self
+    style-src:
+      base: self
+    style-src-attr:
+      flags:
+        - unsafe-inline
+      base: self
+    frame-ancestors:
+      base: any
+    block-all-mixed-content: true
+  reporting:
+    plugin: sitelog
