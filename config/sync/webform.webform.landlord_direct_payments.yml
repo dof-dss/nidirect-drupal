@@ -78,98 +78,107 @@ elements: |
     '#title': 'Landlord bank details'
     '#prev_button_label': Previous
     '#next_button_label': Next
-    name_on_account:
-      '#type': textfield
-      '#title': 'Bank or building society account holder’s name'
-      '#required': true
-    account_number:
-      '#type': textfield
-      '#title': 'Bank or building society account number'
-      '#required': true
-      '#pattern': '^[0-9]{8}$'
-      '#pattern_error': 'Bank account number must have eight digits'
-    sort_code:
-      '#type': textfield
-      '#title': 'Sort code'
-      '#required': true
+    landlord_bank_details_fieldset:
+      '#type': fieldset
+      '#title': 'Landlord bank details'
+      name_on_account:
+        '#type': textfield
+        '#title': 'Bank or building society account holder’s name'
+        '#required': true
+      account_number:
+        '#type': textfield
+        '#title': 'Bank or building society account number'
+        '#required': true
+        '#pattern': '^[0-9]{8}$'
+        '#pattern_error': 'Bank account number must have eight digits'
+      sort_code:
+        '#type': textfield
+        '#title': 'Sort code'
+        '#required': true
   property_address_rented_to_tenant:
     '#type': webform_wizard_page
     '#title': 'Property address rented to tenant'
     '#prev_button_label': Previous
     '#next_button_label': Next
-    property_address_line_1:
-      '#type': textfield
-      '#title': Address
-      '#required': true
-    property_address_line_2:
-      '#type': textfield
-      '#title': 'Address  line 2'
-      '#required': true
-    property_address_postcode:
-      '#type': textfield
-      '#title': Postcode
-      '#required': true
-      '#pattern': '^[bB][tT][0-9]{1,2} ?[0-9][a-zA-Z]{2}$'
-      '#pattern_error': 'You must enter a valid Northern Ireland postcode, for example, BT4 3XX.'
+    property_address_rented_to_tenant_fieldset:
+      '#type': fieldset
+      '#title': 'Property address rented to tenant'
+      property_address_line_1:
+        '#type': textfield
+        '#title': Address
+        '#required': true
+      property_address_line_2:
+        '#type': textfield
+        '#title': 'Address  line 2'
+        '#required': true
+      property_address_postcode:
+        '#type': textfield
+        '#title': Postcode
+        '#required': true
+        '#pattern': '^[bB][tT][0-9]{1,2} ?[0-9][a-zA-Z]{2}$'
+        '#pattern_error': 'You must enter a valid Northern Ireland postcode, for example, BT4 3XX.'
   tenant_information:
     '#type': webform_wizard_page
     '#title': 'Tenant information'
     '#prev_button_label': Previous
     '#next_button_label': Next
-    tenants_full_name:
-      '#type': textfield
-      '#title': Name
-      '#required': true
-    tenants_reference_number:
-      '#type': textfield
-      '#title': 'Tenant''s reference number (optional)'
-      '#pattern': '^[a-zA-Z0-9]{1,16}$'
-      '#pattern_error': 'You must provide a tenant reference number containing up to 16 characters and can include letters or digits'
-    single_or_joint_tenancy:
-      '#type': radios
-      '#title': 'The tenant has a:'
-      '#options':
-        single: 'single tenancy'
-        joint: 'joint tenancy'
-      '#required': true
-      '#states':
-        visible:
-          ':input[name="known_or_unknown_landlord"]':
-            value: unknown
-    rent_payment_frequency:
-      '#type': select
-      '#title': 'The tenant pays rent:'
-      '#options':
-        weekly: weekly
-        fortnightly: fortnightly
-        four_weeks: 'every four weeks'
-        monthly: monthly
-      '#required': true
-      '#states':
-        visible:
-          ':input[name="known_or_unknown_landlord"]':
-            value: unknown
-    amount_of_rent_tenant_pays:
-      '#type': textfield
-      '#title': 'Amount of rent tenant pays'
-      '#input_mask': '''alias'': ''currency'', ''prefix'': ''£'''
-      '#pattern': '^[0-9]{0,10}\.?[0-9]{0,2}p?$'
-      '#pattern_error': 'You must enter a valid amount in pounds sterling'
-      '#states':
-        visible:
-          ':input[name="known_or_unknown_landlord"]':
-            value: unknown
-    total_rent_arrears:
-      '#type': number
-      '#title': 'Total rent arrears'
-      '#field_prefix': £
-      '#autocomplete': 'off'
-      '#required': true
-      '#states':
-        visible:
-          ':input[name="known_or_unknown_landlord"]':
-            value: unknown
-      '#min': '0'
+    tenant_information_fieldset:
+      '#type': fieldset
+      '#title': 'Tenant information'
+      tenants_full_name:
+        '#type': textfield
+        '#title': Name
+        '#required': true
+      tenants_reference_number:
+        '#type': textfield
+        '#title': 'Tenant''s reference number (optional)'
+        '#pattern': '^[a-zA-Z0-9]{1,16}$'
+        '#pattern_error': 'You must provide a tenant reference number containing up to 16 characters and can include letters or digits'
+      single_or_joint_tenancy:
+        '#type': radios
+        '#title': 'The tenant has a:'
+        '#options':
+          single: 'single tenancy'
+          joint: 'joint tenancy'
+        '#required': true
+        '#states':
+          visible:
+            ':input[name="known_or_unknown_landlord"]':
+              value: unknown
+      rent_payment_frequency:
+        '#type': select
+        '#title': 'The tenant pays rent:'
+        '#options':
+          weekly: weekly
+          fortnightly: fortnightly
+          four_weeks: 'every four weeks'
+          monthly: monthly
+        '#required': true
+        '#states':
+          visible:
+            ':input[name="known_or_unknown_landlord"]':
+              value: unknown
+      amount_of_rent_tenant_pays:
+        '#type': textfield
+        '#title': 'Amount of rent tenant pays'
+        '#input_mask': '''alias'': ''currency'', ''prefix'': ''£'''
+        '#pattern': '^[0-9]{0,10}\.?[0-9]{0,2}p?$'
+        '#pattern_error': 'You must enter a valid amount in pounds sterling'
+        '#states':
+          visible:
+            ':input[name="known_or_unknown_landlord"]':
+              value: unknown
+      total_rent_arrears:
+        '#type': number
+        '#title': 'Total rent arrears'
+        '#field_prefix': £
+        '#autocomplete': 'off'
+        '#required': true
+        '#states':
+          visible:
+            ':input[name="known_or_unknown_landlord"]':
+              value: unknown
+        '#min': '0'
   declaration:
     '#type': processed_text
     '#display_on': view
@@ -283,6 +292,7 @@ settings:
     <div class="success-notice">
     <p>Thank you.&nbsp; Universal Credit received your request for a direct payment of your tenant&#39;s housing costs.&nbsp; They&#39;ll contact you if they need more information.</p>
     </div>
+    
   confirmation_url: ''
   confirmation_attributes: {  }
   confirmation_back: false

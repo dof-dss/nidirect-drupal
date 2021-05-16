@@ -53,6 +53,7 @@
         "drupal/adminimal_theme": "^1.5",
         "drupal/better_field_descriptions": "^1.5",
         "drupal/block_content_permissions": "^1.10",
+        "drupal/block_field": "^1.0@RC",
         "drupal/block_list_override": "^1.0",
         "drupal/chosen": "^3.0",
         "drupal/chosen_lib": "^3.0",
@@ -67,6 +68,7 @@
         "drupal/core-composer-scaffold": "^8.9.13",
         "drupal/core-project-message": "^8.9.13",
         "drupal/core-recommended": "^8.9.13",
+        "drupal/csp": "^1.15",
         "drupal/csv_serialization": "^2.0@beta",
         "drupal/diff": "^1.0",
         "drupal/entity_browser": "^2.5",
@@ -78,6 +80,7 @@
         "drupal/facets_pretty_paths": "1.x-dev",
         "drupal/fastly": "^3.9",
         "drupal/field_group": "^3.0",
+        "drupal/filelog": "^2.0",
         "drupal/flag": "4.x-dev",
         "drupal/geocoder": "^3.14",
         "drupal/geolocation": "3.x",
@@ -146,6 +149,7 @@
     "require-dev": {
         "drupal/core-dev": "^8.8",
         "drupal/devel": "^4.1",
+        "drupal/devel_entity_updates": "^3.0",
         "drupal/easy_install": "^10.1",
         "drupal/fpa": "^2.0@beta",
         "drupal/masquerade": "^2.0@beta",
@@ -178,7 +182,8 @@
                 "[meta] Themes improperly check renderable arrays when determining visibility": "https://www.drupal.org/files/issues/2019-02-19/themes_improperly_check_renderable_arrays_when_determining_visibility-953034-313.patch",
                 "Off-canvas style resets are overriding styles (especially SVGs) in Safari, Firefox and Chromium Edge resulting in display issues": "https://www.drupal.org/files/issues/2021-01-06/off-canvas-style-resets-2958588-13.patch",
                 "Cannot save unpublished versions of published content for users without manage book privileges": "https://www.drupal.org/files/issues/2020-10-18/2918537-63.patch",
-                "Layout builder fails to assign inline block access dependencies for the overrides section storage on entities with pending revisions": "https://www.drupal.org/files/issues/2021-03-22/3047022-70-backport-8.9.x.patch"
+                "Layout builder fails to assign inline block access dependencies for the overrides section storage on entities with pending revisions": "https://www.drupal.org/files/issues/2021-03-22/3047022-70-backport-8.9.x.patch",
+                "Support for AjaxResponse implementing CacheableResponseInterface": "https://gist.githubusercontent.com/omahm/cd990b5cdba637fe270ada0702717d9d/raw/60a05babb9747061df201ca9f74afb4b59166f14/cacheableAjaxResponse.patch"
             },
             "drupal/easy_install": {
                 "Handle missing core version": "https://www.drupal.org/files/issues/2019-12-19/easy_install_core_version-3101883-0.patch"
@@ -243,6 +248,9 @@
             },
             "drupal/entity_reference_unpublished": {
                 "Plugin to cover taxonomy term entities": "https://www.drupal.org/files/issues/2021-03-25/3205634-reference-unpublished-taxonomy-terms.patch"
+            },
+            "drupal/filelog": {
+                "Whole Log gets loaded into Memory when gzipping": "https://www.drupal.org/files/issues/2021-04-07/filelog-3157650-21.patch"
             }
         },
         "composer-exit-on-patch-failure": true,
