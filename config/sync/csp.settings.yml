@@ -1,0 +1,84 @@
+_core:
+  default_config_hash: o4-eDkmTmVdUICtL1VxWD3S9Ze8kNq_lHj6DskF8U8o
+report-only:
+  enable: true
+  directives:
+    default-src:
+      base: self
+    font-src:
+      sources:
+        - 'https://themes.googleusercontent.com'
+        - 'https://fonts.gstatic.com'
+      base: self
+    frame-src:
+      sources:
+        - 'https://www.youtube.com'
+      base: self
+    img-src:
+      sources:
+        - 'https://i.ytimg.com'
+        - 'https://maps.gstatic.com'
+        - 'https://maps.googleapis.com'
+        - 'data:'
+      base: self
+    script-src:
+      sources:
+        - 'https://www.googletagmanager.com'
+      base: self
+    script-src-attr:
+      base: self
+    script-src-elem:
+      sources:
+        - 'https://www.googletagmanager.com'
+      base: self
+    style-src:
+      base: self
+    style-src-attr:
+      flags:
+        - unsafe-inline
+      base: self
+    style-src-elem:
+      base: self
+    block-all-mixed-content: true
+  reporting:
+    plugin: sitelog
+enforce:
+  enable: true
+  directives:
+    default-src:
+      base: self
+    font-src:
+      sources:
+        - 'https://themes.googleusercontent.com'
+        - 'https://fonts.gstatic.com'
+      base: self
+    frame-src:
+      sources:
+        - 'https://www.youtube.com'
+      base: self
+    img-src:
+      sources:
+        - 'https://i.ytimg.com'
+        - 'https://maps.gstatic.com'
+        - 'https://maps.googleapis.com'
+        - 'data:'
+      base: self
+    script-src:
+      sources:
+        - 'https://www.googletagmanager.com'
+      base: self
+    script-src-elem:
+      sources:
+        - 'https://www.googletagmanager.com'
+      base: self
+    style-src:
+      base: self
+    style-src-attr:
+      flags:
+        - unsafe-inline
+      base: self
+    style-src-elem:
+      base: self
+    block-all-mixed-content: true
+  reporting:
+    plugin: sitelog

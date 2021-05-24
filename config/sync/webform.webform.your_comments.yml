@@ -146,6 +146,8 @@ elements: |
       '#help_display': element_before
       '#required': true
       '#required_error': 'Please provide your feedback'
+      '#pattern': '^(?!.*<[^>]+>).*'
+      '#pattern_error': 'HTML or markup is not permitted.'
       '#counter_type': character
       '#counter_minimum': 1
       '#counter_maximum': 750
@@ -162,6 +164,8 @@ elements: |
       '#help_display': element_before
       '#required': true
       '#required_error': 'Please enter your question'
+      '#pattern': '^(?!.*<[^>]+>).*'
+      '#pattern_error': 'HTML or markup is not permitted.'
       '#counter_type': character
       '#counter_minimum': 1
       '#counter_maximum': 750

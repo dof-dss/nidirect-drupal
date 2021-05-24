@@ -22,8 +22,10 @@ elements: |
       '#placeholder': 'Plain text only (3,000 characters maximum)'
       '#required': true
       '#required_error': 'You must fill in this field'
+      '#pattern': '^(?!.*<[^>]+>).*'
+      '#pattern_error': 'HTML or markup is not permitted.'
       '#counter_type': character
-      '#counter_maximum': '3000'
+      '#counter_maximum': 3000
   your_details:
     '#type': fieldset
     '#title': 'Your details'

@@ -8,6 +8,7 @@ dependencies:
     - field.field.node.landing_page.field_listing
     - field.field.node.landing_page.field_manually_control_listing
     - field.field.node.landing_page.field_meta_tags
+    - field.field.node.landing_page.field_site_themes
     - field.field.node.landing_page.field_subtheme
     - field.field.node.landing_page.field_summary
     - field.field.node.landing_page.field_teaser
@@ -45,6 +46,7 @@ third_party_settings:
       - Geolocation
       - Help
       - 'Inline blocks'
+      - 'Landing pages'
       - 'Lists (Views)'
       - Menus
       - 'NI Direct'
@@ -74,8 +76,13 @@ third_party_settings:
           - banner_deep
           - card_contact
           - card_deck_plain
+          - card_nested_standard
+          - card_nested_wide
+          - card_plain
           - card_standard
           - card_wide
+          - information_notice
+          - text
           - video
           - video_and_caption
         'Custom blocks': {  }
@@ -90,11 +97,17 @@ third_party_settings:
           - 'inline_block:article_teasers_by_topic'
           - 'inline_block:banner_deep'
           - 'inline_block:card_contact'
+          - 'inline_block:card_plain'
           - 'inline_block:card_standard'
           - 'inline_block:card_wide'
+          - 'inline_block:card_nested_standard'
+          - 'inline_block:card_nested_wide'
+          - 'inline_block:information_notice'
           - 'inline_block:card_deck_plain'
+          - 'inline_block:text'
           - 'inline_block:video'
           - 'inline_block:video_and_caption'
+        'Landing pages': {  }
         'Lists (Views)': {  }
         Menus: {  }
         'NI Direct': {  }
@@ -125,7 +138,7 @@ third_party_settings:
         - teasers_x2
       whitelisted_blocks:
         layout_onecol:
-          content:
+          all_regions:
             Block: {  }
             'Chaos Tools': {  }
             'Content fields': {  }
@@ -133,9 +146,10 @@ third_party_settings:
               - accordion_menu
               - article_teasers_by_topic
               - banner_deep
-              - basic
               - card_contact
               - card_deck_plain
+              - information_notice
+              - text
               - video_and_caption
             'Custom blocks': {  }
             Devel: {  }
@@ -148,10 +162,12 @@ third_party_settings:
               - 'inline_block:accordion_menu'
               - 'inline_block:article_teasers_by_topic'
               - 'inline_block:banner_deep'
-              - 'inline_block:basic'
               - 'inline_block:card_contact'
+              - 'inline_block:information_notice'
               - 'inline_block:card_deck_plain'
+              - 'inline_block:text'
               - 'inline_block:video_and_caption'
+            'Landing pages': {  }
             'Lists (Views)': {  }
             Menus: {  }
             'NI Direct': {  }
@@ -177,6 +193,7 @@ third_party_settings:
             'Content fields': {  }
             'Custom block types':
               - card_contact
+              - card_nested_wide
               - card_wide
               - video
             'Custom blocks': {  }
@@ -189,6 +206,7 @@ third_party_settings:
             'Inline blocks':
               - 'inline_block:card_contact'
               - 'inline_block:card_wide'
+              - 'inline_block:card_nested_wide'
               - 'inline_block:video'
             'Lists (Views)': {  }
             Menus: {  }
@@ -215,6 +233,7 @@ third_party_settings:
             'Content fields': {  }
             'Custom block types':
               - card_contact
+              - card_nested_standard
               - card_standard
             'Custom blocks': {  }
             Devel: {  }
@@ -226,6 +245,7 @@ third_party_settings:
             'Inline blocks':
               - 'inline_block:card_contact'
               - 'inline_block:card_standard'
+              - 'inline_block:card_nested_standard'
             'Lists (Views)': {  }
             Menus: {  }
             'NI Direct': {  }
@@ -310,6 +330,7 @@ content:
 hidden:
   field_listing: true
   field_manually_control_listing: true
+  field_site_themes: true
   langcode: true
   layout_builder__layout: true
   search_api_excerpt: true

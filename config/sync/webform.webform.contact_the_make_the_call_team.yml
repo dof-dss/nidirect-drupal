@@ -157,9 +157,11 @@ elements: |
       '#description_display': before
       '#required': true
       '#required_error': 'You must explain why you cannot make contact by phone'
+      '#pattern': '^(?!.*<[^>]+>).*'
+      '#pattern_error': 'HTML or markup is not permitted.'
       '#counter_type': character
-      '#counter_minimum': '2'
-      '#counter_maximum': '750'
+      '#counter_minimum': 2
+      '#counter_maximum': 750
   actions:
     '#type': webform_actions
     '#title': 'Submit button(s)'

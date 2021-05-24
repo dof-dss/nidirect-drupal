@@ -1,0 +1,64 @@
+uuid: d45f5232-1a63-4f17-91a3-c8eb8b6958a2
+langcode: en
+status: true
+dependencies:
+  module:
+    - cookie_content_blocker
+    - linkit
+    - media
+    - noreferrer
+    - origins_common
+    - token_filter
+name: 'Layout builder HTML'
+format: layout_builder_html
+weight: 0
+filters:
+  filter_html:
+    id: filter_html
+    provider: filter
+    status: true
+    weight: -50
+    settings:
+      allowed_html: '<em> <strong> <blockquote cite> <ul type class=""> <ol start type class=""> <li> <h2 id> <h3 id> <h4 id> <div class=""> <p translate class=""> <br> <a href hreflang data-entity-substitution data-entity-type data-entity-uuid title class="">'
+      filter_html_help: false
+      filter_html_nofollow: false
+  filter_align:
+    id: filter_align
+    provider: filter
+    status: false
+    weight: -39
+    settings: {  }
+  linkit:
+    id: linkit
+    provider: linkit
+    status: false
+    weight: -34
+    settings:
+      title: true
+  cookie_content_blocker_filter:
+    id: cookie_content_blocker_filter
+    provider: cookie_content_blocker
+    status: false
+    weight: 0
+    settings:
+      disable_xss: '0'
+  origins_media_cookie_content_blocker_embed_filter:
+    id: origins_media_cookie_content_blocker_embed_filter
+    provider: origins_common
+    status: false
+    weight: 0
+    settings:
+      replacement_text: 'Click here to view the video content'
+  token_filter:
+    id: token_filter
+    provider: token_filter
+    status: false
+    weight: 0
+    settings:
+      replace_empty: '0'
+  noreferrer:
+    id: noreferrer
+    provider: noreferrer
+    status: true
+    weight: 10
+    settings: {  }

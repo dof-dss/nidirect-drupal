@@ -84,9 +84,11 @@ elements: |
         '#title': 'Provide details of technical problems or make a comment about the website'
         '#placeholder': 'Plain text only, 750 characters maximum.'
         '#required': true
+        '#pattern': '^(?!.*<[^>]+>).*'
+        '#pattern_error': 'HTML or markup is not permitted.'
         '#counter_type': character
-        '#counter_minimum': '1'
-        '#counter_maximum': '750'
+        '#counter_minimum': 1
+        '#counter_maximum': 750
     do_you_want_us_to_reply_to_you:
       '#type': radios
       '#title': 'Do you want a reply?'
