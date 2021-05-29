@@ -42,12 +42,12 @@
     "require": {
         "composer/installers": "^1.9",
         "cweagans/composer-patches": "^1.6.5",
-        "dof-dss/nicsdru_nidirect_theme": "^0.12.2",
+        "dof-dss/nicsdru_nidirect_theme": "^0.14.1",
         "dof-dss/nicsdru_origins_modules": "^0.9.16",
         "dof-dss/nicsdru_origins_theme": "^0.3.12",
         "dof-dss/nidirect-d8-test-install-profile": "^0.12.2",
-        "dof-dss/nidirect-migrations": "^0.12.0",
-        "dof-dss/nidirect-site-modules": "^0.12.2",
+        "dof-dss/nidirect-migrations": "^0.14.1",
+        "dof-dss/nidirect-site-modules": "^0.14.1",
         "drupal/address": "^1.7",
         "drupal/admin_toolbar": "^2.0",
         "drupal/adminimal_theme": "^1.5",
@@ -98,6 +98,7 @@
         "drupal/metatag": "^1.8",
         "drupal/migrate_absolute_links": "^2.1",
         "drupal/migrate_plus": "^5.1",
+        "drupal/migrate_process_trim": "^1.0",
         "drupal/migrate_upgrade": "^3.2",
         "drupal/moderation_sidebar": "^1.3",
         "drupal/node_edit_protection": "^1.0",
@@ -181,7 +182,6 @@
                 "When embedding media, don't let authors choose view modes that are not enabled for that media type": "https://www.drupal.org/files/issues/2020-01-31/3097416-ckeditor-view-modes-8.9-combined.patch",
                 "[IGNORE] Composer-friendly patches for filename sanitation while #2492171 awaits #3032390": "https://www.drupal.org/files/issues/2020-11-18/3094052-composer-patch-filename-sanitation-7.patch",
                 "[meta] Themes improperly check renderable arrays when determining visibility": "https://www.drupal.org/files/issues/2019-02-19/themes_improperly_check_renderable_arrays_when_determining_visibility-953034-313.patch",
-                "Off-canvas style resets are overriding styles (especially SVGs) in Safari, Firefox and Chromium Edge resulting in display issues": "https://www.drupal.org/files/issues/2021-01-06/off-canvas-style-resets-2958588-13.patch",
                 "Cannot save unpublished versions of published content for users without manage book privileges": "https://www.drupal.org/files/issues/2020-10-18/2918537-63.patch",
                 "Layout builder fails to assign inline block access dependencies for the overrides section storage on entities with pending revisions": "https://www.drupal.org/files/issues/2021-03-22/3047022-70-backport-8.9.x.patch",
                 "Support for AjaxResponse implementing CacheableResponseInterface": "https://gist.githubusercontent.com/omahm/cd990b5cdba637fe270ada0702717d9d/raw/60a05babb9747061df201ca9f74afb4b59166f14/cacheableAjaxResponse.patch",
@@ -251,6 +251,9 @@
             },
             "drupal/filelog": {
                 "Whole Log gets loaded into Memory when gzipping": "https://www.drupal.org/files/issues/2021-04-07/filelog-3157650-21.patch"
+            },
+            "drupal/address": {
+                "Allow to set a list of preferred countries": "https://www.drupal.org/files/issues/2019-11-11/2626982-37.preferred_countries.patch"
             }
         },
         "composer-exit-on-patch-failure": true,

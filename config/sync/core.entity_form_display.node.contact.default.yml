@@ -20,6 +20,7 @@ dependencies:
     - field.field.node.contact.field_supplementary_contact
     - field.field.node.contact.field_telephone
     - node.type.contact
+    - workflows.workflow.nics_editorial_workflow
   module:
     - address
     - content_moderation
@@ -96,7 +97,10 @@ content:
     third_party_settings: {  }
   field_address:
     weight: 3
-    settings: {  }
+    settings:
+      preferred_countries:
+        - IE
+        - GB
     third_party_settings: {  }
     type: address_default
     region: content
