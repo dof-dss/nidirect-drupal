@@ -3,14 +3,10 @@ langcode: en
 status: true
 dependencies:
   config:
+    - core.entity_view_mode.media.article_float
+    - core.entity_view_mode.media.article_float_expandable
     - core.entity_view_mode.media.article_full
-    - core.entity_view_mode.media.landscape_float
-    - core.entity_view_mode.media.landscape_float_xp
-    - core.entity_view_mode.media.landscape_full
-    - core.entity_view_mode.media.landscape_full_xp
-    - core.entity_view_mode.media.portrait_float
-    - core.entity_view_mode.media.portrait_float_xp
-    - core.entity_view_mode.media.portrait_full
+    - core.entity_view_mode.media.article_full_expandable
   module:
     - cookie_content_blocker
     - editor
@@ -117,13 +113,10 @@ filters:
         remote_video: remote_video
         video: video
       allowed_view_modes:
-        landscape_float: landscape_float
-        landscape_float_xp: landscape_float_xp
-        landscape_full: landscape_full
-        landscape_full_xp: landscape_full_xp
-        portrait_float: portrait_float
-        portrait_float_xp: portrait_float_xp
-        portrait_full: portrait_full
+        article_float: article_float
+        article_float_expandable: article_float_expandable
+        article_full: article_full
+        article_full_expandable: article_full_expandable
   google_analytics_counter_filter:
     id: google_analytics_counter_filter
     provider: google_analytics_counter

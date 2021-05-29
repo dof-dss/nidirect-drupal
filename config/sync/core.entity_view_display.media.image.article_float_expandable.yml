@@ -1,13 +1,13 @@
-uuid: 3bd94fef-6639-4034-a094-cab33055ef5c
+uuid: 917dc9fd-458c-4de9-83f3-cb4a7361d83a
 langcode: en
 status: true
 dependencies:
   config:
-    - core.entity_view_mode.media.article_full
+    - core.entity_view_mode.media.article_float_expandable
     - field.field.media.image.field_caption
     - field.field.media.image.field_media_image
     - media.type.image
-    - responsive_image.styles.inline_xl
+    - responsive_image.styles.inline_expandable
   module:
     - layout_builder
     - responsive_image
@@ -17,15 +17,15 @@ third_party_settings:
     enabled: false
 _core:
   default_config_hash: jOwnt_yq6AKAfqU6f0xKnxEkFQ2eTPJWxrk3WMLbL68
-id: media.image.article_full
+id: media.image.article_float_expandable
 targetEntityType: media
 bundle: image
-mode: article_full
+mode: article_float_expandable
 content:
   field_media_image:
     label: visually_hidden
     settings:
-      responsive_image_style: inline_xl
+      responsive_image_style: inline_expandable
       image_link: ''
     third_party_settings: {  }
     type: responsive_image
