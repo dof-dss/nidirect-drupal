@@ -3,7 +3,10 @@ langcode: en
 status: true
 dependencies:
   config:
+    - core.entity_view_mode.media.article_float
+    - core.entity_view_mode.media.article_float_expandable
     - core.entity_view_mode.media.article_full
+    - core.entity_view_mode.media.article_full_expandable
     - core.entity_view_mode.media.banner_deep
     - core.entity_view_mode.media.banner_thin
     - core.entity_view_mode.media.card_large
@@ -125,7 +128,10 @@ filters:
         remote_video: remote_video
         video: video
       allowed_view_modes:
+        article_float: article_float
+        article_float_expandable: article_float_expandable
         article_full: article_full
+        article_full_expandable: article_full_expandable
         banner_deep: banner_deep
         banner_thin: banner_thin
         card_large: card_large

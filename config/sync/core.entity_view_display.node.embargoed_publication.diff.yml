@@ -5,6 +5,7 @@ dependencies:
   config:
     - core.entity_view_mode.node.diff
     - field.field.node.embargoed_publication.body
+    - field.field.node.embargoed_publication.field_additional_info
     - field.field.node.embargoed_publication.field_meta_tags
     - field.field.node.embargoed_publication.field_publication_type
     - field.field.node.embargoed_publication.field_published_date
@@ -17,9 +18,12 @@ dependencies:
   module:
     - datetime
     - field_group
+    - file
     - layout_builder
     - metatag
+    - nidirect_common
     - options
+    - smart_trim
     - text
     - user
 third_party_settings:
@@ -34,7 +38,7 @@ third_party_settings:
         - field_publication_type
         - field_meta_tags
       parent_name: ''
-      weight: 6
+      weight: 7
       format_type: html_element
       region: content
       format_settings:
@@ -65,6 +69,15 @@ content:
     region: content
     settings: {  }
     third_party_settings: {  }
+  field_additional_info:
+    type: ancestral_value_field_formatter
+    weight: 5
+    region: content
+    label: hidden
+    settings:
+      ancestor_depth: '2'
+      ancestors_only: false
+    third_party_settings: {  }
   field_meta_tags:
     weight: 10
     label: inline
@@ -88,6 +101,14 @@ content:
       format_type: medium
       timezone_override: ''
     third_party_settings: {  }
+  field_secure_attachment:
+    type: file_default
+    weight: 4
+    region: content
+    label: above
+    settings:
+      use_description_as_link_text: true
+    third_party_settings: {  }
   field_site_themes:
     type: entity_reference_label
     weight: 8
@@ -107,17 +128,26 @@ content:
   field_summary:
     weight: 2
     label: hidden
-    settings: {  }
+    settings:
+      trim_length: 600
+      trim_type: chars
+      trim_suffix: ''
+      wrap_output: false
+      wrap_class: trimmed
+      more_link: false
+      more_class: more-link
+      more_text: More
+      summary_handler: full
+      trim_options: {  }
     third_party_settings: {  }
-    type: text_default
+    type: smart_trim
     region: content
   links:
-    weight: 5
+    weight: 6
     region: content
     settings: {  }
     third_party_settings: {  }
 hidden:
-  field_secure_attachment: true
   field_top_level_theme: true
   langcode: true
   search_api_excerpt: true

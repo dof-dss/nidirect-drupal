@@ -17,6 +17,7 @@ dependencies:
     - taxonomy.vocabulary.site_themes
   module:
     - layout_builder
+    - nidirect_common
     - text
 third_party_settings:
   layout_builder:
@@ -35,11 +36,13 @@ content:
     settings: {  }
     third_party_settings: {  }
   field_additional_info:
-    type: text_default
+    type: ancestral_value_field_formatter
     weight: 2
     region: content
     label: hidden
-    settings: {  }
+    settings:
+      ancestor_depth: '2'
+      ancestors_only: 0
     third_party_settings: {  }
   field_theme_summary:
     weight: 0

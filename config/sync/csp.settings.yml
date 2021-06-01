@@ -9,6 +9,8 @@ report-only:
       sources:
         - 'https://themes.googleusercontent.com'
         - 'https://fonts.gstatic.com'
+        - 'https://cdn.jsdelivr.net'
+        - 'data:'
       base: self
     frame-src:
       sources:
@@ -16,6 +18,7 @@ report-only:
       base: self
     img-src:
       sources:
+        - 'https://cdn.jsdelivr.net'
         - 'https://i.ytimg.com'
         - 'https://maps.gstatic.com'
         - 'https://maps.googleapis.com'
@@ -24,12 +27,14 @@ report-only:
     script-src:
       sources:
         - 'https://www.googletagmanager.com'
+        - 'https://www.google-analytics.com'
       base: self
     script-src-attr:
       base: self
     script-src-elem:
       sources:
         - 'https://www.googletagmanager.com'
+        - 'https://www.google-analytics.com'
       base: self
     style-src:
       base: self
@@ -43,7 +48,7 @@ report-only:
   reporting:
     plugin: sitelog
 enforce:
-  enable: true
+  enable: false
   directives:
     default-src:
       base: self
@@ -51,6 +56,8 @@ enforce:
       sources:
         - 'https://themes.googleusercontent.com'
         - 'https://fonts.gstatic.com'
+        - 'https://cdn.jsdelivr.net'
+        - 'data:'
       base: self
     frame-src:
       sources:
@@ -58,6 +65,7 @@ enforce:
       base: self
     img-src:
       sources:
+        - 'https://cdn.jsdelivr.net'
         - 'https://i.ytimg.com'
         - 'https://maps.gstatic.com'
         - 'https://maps.googleapis.com'
@@ -66,10 +74,12 @@ enforce:
     script-src:
       sources:
         - 'https://www.googletagmanager.com'
+        - 'https://www.google-analytics.com'
       base: self
     script-src-elem:
       sources:
         - 'https://www.googletagmanager.com'
+        - 'https://www.google-analytics.com'
       base: self
     style-src:
       base: self
@@ -78,6 +88,9 @@ enforce:
         - unsafe-inline
       base: self
     style-src-elem:
+      sources:
+        - 'https://www.googletagmanager.com'
+        - 'https://www.google-analytics.com'
       base: self
     block-all-mixed-content: true
   reporting:
