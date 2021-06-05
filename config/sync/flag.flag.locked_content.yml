@@ -1,0 +1,30 @@
+uuid: a2b310c5-441b-416c-b25d-383ebedcf89c
+langcode: en
+status: true
+dependencies:
+  module:
+    - node
+id: locked_content
+label: 'Locked content'
+bundles:
+  - article
+entity_type: node
+global: true
+weight: 0
+flag_short: 'Lock this item'
+flag_long: 'Designates this item of content as being locked and only editable by administrators'
+flag_message: 'Content marked as locked'
+unflag_short: 'Unlock this item'
+unflag_long: 'Designates this item of content as being freely editable by editorial users'
+unflag_message: 'Content unlocked'
+unflag_denied_text: ''
+flag_type: 'entity:node'
+link_type: ajax_link
+flagTypeConfig:
+  show_in_links: {  }
+  show_as_field: false
+  show_on_form: true
+  show_contextual_link: false
+  extra_permissions:
+    owner: owner
+linkTypeConfig: {  }
