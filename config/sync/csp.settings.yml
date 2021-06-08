@@ -5,6 +5,10 @@ report-only:
   directives:
     default-src:
       base: self
+    connect-src:
+      sources:
+        - 'https://www.google-analytics.com'
+      base: self
     font-src:
       sources:
         - 'https://themes.googleusercontent.com'
@@ -18,6 +22,8 @@ report-only:
       base: self
     img-src:
       sources:
+        - 'https://www.googletagmanager.com'
+        - 'https://www.google-analytics.com'
         - 'https://cdn.jsdelivr.net'
         - 'https://i.ytimg.com'
         - 'https://maps.gstatic.com'
