@@ -149,7 +149,7 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
-          operator: or
+          operator: and
           value: ''
           group: 1
           exposed: true
@@ -195,9 +195,11 @@ display:
             default_group: All
             default_group_multiple: {  }
             group_items: {  }
-          parse_mode: terms
+          parse_mode: sloppy_terms
           min_length: 2
           fields:
+            - address_line1
+            - address_line2
             - body
             - field_supplementary_contact
             - title_fulltext
