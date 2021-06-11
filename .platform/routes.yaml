@@ -4,6 +4,12 @@
   upstream: "nidirect:http"
   cache:
     enabled: false
+  redirects:
+    paths:
+      '^(.*/)index\.php/(.*)':
+        to: https://{default}/$2
+        regexp: true
+        code: 301
 
 "https://www.{default}/":
   type: redirect
