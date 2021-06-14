@@ -14,9 +14,9 @@ dependencies:
     - field.field.node.article.field_subtheme
     - field.field.node.article.field_summary
     - field.field.node.article.field_teaser
-    - field.field.node.article.field_toc_enable
     - field.field.node.article.field_top_level_theme
     - node.type.article
+    - workflows.workflow.nics_editorial_workflow
   module:
     - content_moderation
     - datetime
@@ -132,14 +132,6 @@ content:
       size: 140
       placeholder: ''
     third_party_settings: {  }
-  field_toc_enable:
-    type: boolean_checkbox
-    label: above
-    settings:
-      display_label: true
-    weight: 26
-    third_party_settings: {  }
-    region: content
   field_top_level_theme:
     type: entity_reference_autocomplete
     weight: 1

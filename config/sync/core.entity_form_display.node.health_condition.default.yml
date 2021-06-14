@@ -31,9 +31,9 @@ dependencies:
     - field.field.node.health_condition.field_subtheme
     - field.field.node.health_condition.field_summary
     - field.field.node.health_condition.field_teaser
-    - field.field.node.health_condition.field_toc_enable
     - field.field.node.health_condition.field_top_level_theme
     - node.type.health_condition
+    - workflows.workflow.nics_editorial_workflow
   module:
     - content_moderation
     - datetime
@@ -312,13 +312,6 @@ content:
     settings:
       size: 60
       placeholder: ''
-    third_party_settings: {  }
-  field_toc_enable:
-    type: boolean_checkbox
-    weight: 12
-    region: content
-    settings:
-      display_label: true
     third_party_settings: {  }
   field_top_level_theme:
     type: entity_reference_autocomplete

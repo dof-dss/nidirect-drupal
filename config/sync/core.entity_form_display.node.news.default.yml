@@ -10,8 +10,8 @@ dependencies:
     - field.field.node.news.field_related_info
     - field.field.node.news.field_summary
     - field.field.node.news.field_teaser
-    - field.field.node.news.field_toc_enable
     - node.type.news
+    - workflows.workflow.nics_editorial_workflow
   module:
     - content_moderation
     - datetime
@@ -88,13 +88,6 @@ content:
     settings:
       size: 60
       placeholder: ''
-    third_party_settings: {  }
-  field_toc_enable:
-    type: boolean_checkbox
-    weight: 7
-    region: content
-    settings:
-      display_label: true
     third_party_settings: {  }
   flag:
     weight: 12
