@@ -1,0 +1,32 @@
+uuid: da7d6046-db33-4cef-9786-7e9162612679
+langcode: en
+status: true
+dependencies:
+  module:
+    - node
+id: disable_toc
+label: 'Disable Table of Contents'
+bundles:
+  - article
+  - health_condition
+  - news
+  - page
+entity_type: node
+global: true
+weight: 0
+flag_short: 'Disable ToC'
+flag_long: 'Hide the Table of Contents for this content'
+flag_message: 'Table of Contents display is now disabled for [node:title]'
+unflag_short: 'Enable ToC'
+unflag_long: 'Display the Table of Contents for this content (when appropriate)'
+unflag_message: 'Table of Contents display is now enabled for [node:title] when the page meets the ToC display requirements'
+unflag_denied_text: ''
+flag_type: 'entity:node'
+link_type: ajax_link
+flagTypeConfig:
+  show_in_links: {  }
+  show_as_field: false
+  show_on_form: true
+  show_contextual_link: false
+  extra_permissions: {  }
+linkTypeConfig: {  }
