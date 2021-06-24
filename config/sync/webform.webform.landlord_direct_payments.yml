@@ -89,18 +89,18 @@ elements: |
         '#type': textfield
         '#title': 'Bank or building society account number'
         '#maxlength': 8
-        '#size': 8
+        '#size': 9
         '#required': true
         '#pattern': '^[0-9]{8}$'
         '#pattern_error': 'Bank or building society account number must have 8 digits'
       sort_code:
         '#type': textfield
         '#title': 'Sort code'
-        '#maxlength': 6
-        '#size': 6
+        '#maxlength': 8
+        '#size': 9
         '#required': true
         '#pattern': '^(?!(?:0{6}|00-00-00))(?:\d{6}|\d\d-\d\d-\d\d)$'
-        '#pattern_error': 'Sort code must have six digits'
+        '#pattern_error': 'Sort code must contain six digits , for example 123456 or 12-34-56'
   property_address_rented_to_tenant:
     '#type': webform_wizard_page
     '#title': 'Property address rented to tenant'
@@ -138,6 +138,8 @@ elements: |
       tenants_reference_number:
         '#type': textfield
         '#title': 'Tenant''s reference number (optional)'
+        '#maxlength': 16
+        '#size': 17
         '#pattern': '^[a-zA-Z0-9]{1,16}$'
         '#pattern_error': 'You must provide a tenant reference number containing up to 16 characters and can include letters or digits'
       single_or_joint_tenancy:
