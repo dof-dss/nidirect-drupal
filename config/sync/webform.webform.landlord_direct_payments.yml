@@ -26,7 +26,7 @@ elements: |
         '#title': 'You want a direct payment of Universal Credit for your tenant''s housing costs because:'
         '#description_display': before
         '#options':
-          known: 'Universal Credit asked you for your bank account informationwn'
+          known: 'Universal Credit asked you for your bank account information'
           unknown: 'your tenant gets Universal Credit and owes two months'' rent or more'
         '#required': true
         '#required_error': 'You must choose an option.'
@@ -69,7 +69,7 @@ elements: |
       landlords_phone_number:
         '#type': textfield
         '#title': Telephone
-        '#size': '24'
+        '#size': 24
         '#required': true
         '#pattern': '^[0-9\(\) \+\-]{6,20}$'
         '#pattern_error': 'Enter a valid phone number'
@@ -88,13 +88,19 @@ elements: |
       account_number:
         '#type': textfield
         '#title': 'Bank or building society account number'
+        '#maxlength': 8
+        '#size': 8
         '#required': true
         '#pattern': '^[0-9]{8}$'
-        '#pattern_error': 'Bank account number must have eight digits'
+        '#pattern_error': 'Bank or building society account number must have 8 digits'
       sort_code:
         '#type': textfield
         '#title': 'Sort code'
+        '#maxlength': 6
+        '#size': 6
         '#required': true
+        '#pattern': '^(?!(?:0{6}|00-00-00))(?:\d{6}|\d\d-\d\d-\d\d)$'
+        '#pattern_error': 'Sort code must have six digits'
   property_address_rented_to_tenant:
     '#type': webform_wizard_page
     '#title': 'Property address rented to tenant'
@@ -184,21 +190,21 @@ elements: |
     '#display_on': view
     '#text': |
       <h2>Landlord declaration</h2>
-      
+
       <p>By sending this application for a direct payment of Universal Credit, you declare:</p>
-      
+
       <ul>
       	<li>the information you provide is true and correct</li>
       </ul>
-      
+
       <p>You understand:</p>
-      
+
       <ul>
       	<li>you might be prosecuted if you provide information that is false or incorrect</li>
       	<li>Universal Credit might refuse your request for a direct payment of Universal Credit if you don’t provide all necessary information</li>
       	<li>you must tell Universal Credit immediately about any change in the tenant’s circumstances that could affect their housing or entitlement to Universal Credit</li>
       </ul>
-      
+
     '#format': full_html
 css: ''
 javascript: ''
@@ -292,7 +298,7 @@ settings:
     <div class="success-notice">
     <p>Thank you.&nbsp; Universal Credit received your request for a direct payment of your tenant&#39;s housing costs.&nbsp; They&#39;ll contact you if they need more information.</p>
     </div>
-    
+
   confirmation_url: ''
   confirmation_attributes: {  }
   confirmation_back: false
