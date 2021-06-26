@@ -16,6 +16,7 @@ elements: |
   form_reason:
     '#type': webform_wizard_page
     '#title': 'Reason for filling in this form'
+    '#format': container
     '#prev_button_label': Previous
     '#next_button_label': Next
     reason_for_filling_in_this_form:
@@ -58,7 +59,7 @@ elements: |
         '#type': textfield
         '#title': Postcode
         '#title_display': invisible
-        '#size': '9'
+        '#size': 9
         '#placeholder': Postcode
         '#pattern': '^[a-zA-Z0-9\-\s\.]{0,18}$'
         '#pattern_error': 'Postcode contains invalid characters. You can only use numbers, letters, spaces and hyphens.'
@@ -76,6 +77,7 @@ elements: |
   landlord_bank_details:
     '#type': webform_wizard_page
     '#title': 'Landlord bank details'
+    '#format': container
     '#prev_button_label': Previous
     '#next_button_label': Next
     landlord_bank_details_fieldset:
@@ -104,6 +106,7 @@ elements: |
   property_address_rented_to_tenant:
     '#type': webform_wizard_page
     '#title': 'Property address rented to tenant'
+    '#format': container
     '#prev_button_label': Previous
     '#next_button_label': Next
     property_address_rented_to_tenant_fieldset:
@@ -112,20 +115,28 @@ elements: |
       property_address_line_1:
         '#type': textfield
         '#title': Address
+        '#placeholder': 'Address line 1'
         '#required': true
       property_address_line_2:
         '#type': textfield
         '#title': 'Address  line 2'
+        '#title_display': invisible
+        '#placeholder': 'Address line 2'
         '#required': true
       property_address_postcode:
         '#type': textfield
         '#title': Postcode
+        '#title_display': invisible
+        '#maxlength': 8
+        '#size': 9
+        '#placeholder': Postcode
         '#required': true
         '#pattern': '^[bB][tT][0-9]{1,2} ?[0-9][a-zA-Z]{2}$'
         '#pattern_error': 'You must enter a valid Northern Ireland postcode, for example, BT4 3XX.'
   tenant_information:
     '#type': webform_wizard_page
     '#title': 'Tenant information'
+    '#format': container
     '#prev_button_label': Previous
     '#next_button_label': Next
     tenant_information_fieldset:
@@ -169,51 +180,59 @@ elements: |
       amount_of_rent_tenant_pays:
         '#type': textfield
         '#title': 'Amount of rent tenant pays'
+        '#maxlength': 15
+        '#size': 10
+        '#placeholder': £0.00
         '#input_mask': '''alias'': ''currency'', ''prefix'': ''£'''
-        '#pattern': '^[0-9]{0,10}\.?[0-9]{0,2}p?$'
+        '#required': true
+        '#pattern': '^£?[0-9,]{0,10}\.?[0-9]{0,2}p?$'
         '#pattern_error': 'You must enter a valid amount in pounds sterling'
         '#states':
           visible:
             ':input[name="known_or_unknown_landlord"]':
               value: unknown
       total_rent_arrears:
-        '#type': number
+        '#type': textfield
         '#title': 'Total rent arrears'
-        '#field_prefix': £
+        '#maxlength': 15
+        '#size': 10
+        '#placeholder': £0.00
         '#autocomplete': 'off'
+        '#input_mask': '''alias'': ''currency'', ''prefix'': ''£'''
         '#required': true
-        '#states':
-          visible:
-            ':input[name="known_or_unknown_landlord"]':
-              value: unknown
-        '#min': '0'
+        '#pattern': '^£?[0-9,]{0,10}\.?[0-9]{0,2}p?$'
+        '#pattern_error': 'You must enter a valid amount in pounds sterling'
   declaration:
     '#type': processed_text
     '#display_on': view
     '#text': |
       <h2>Landlord declaration</h2>
-
+      
       <p>By sending this application for a direct payment of Universal Credit, you declare:</p>
-
+      
       <ul>
       	<li>the information you provide is true and correct</li>
       </ul>
-
+      
       <p>You understand:</p>
-
+      
       <ul>
       	<li>you might be prosecuted if you provide information that is false or incorrect</li>
       	<li>Universal Credit might refuse your request for a direct payment of Universal Credit if you don’t provide all necessary information</li>
       	<li>you must tell Universal Credit immediately about any change in the tenant’s circumstances that could affect their housing or entitlement to Universal Credit</li>
       </ul>
-
+      
     '#format': full_html
+  actions:
+    '#type': webform_actions
+    '#title': 'Submit button(s)'
+    '#submit__label': 'Accept and send'
 css: ''
 javascript: ''
 settings:
   ajax: true
   ajax_scroll_top: form
-  ajax_progress_type: ''
+  ajax_progress_type: throbber
   ajax_effect: fade
   ajax_speed: 500
   page: true
@@ -282,7 +301,7 @@ settings:
   preview: 2
   preview_label: ''
   preview_title: ''
-  preview_message: ''
+  preview_message: '<p><span style="-webkit-text-stroke-width:0px; color:#000000; display:inline !important; float:none; font-family:Lato,&quot;Open Sans&quot;,sans-serif; font-size:21px; font-style:normal; font-variant-caps:normal; font-variant-ligatures:normal; font-weight:400; letter-spacing:normal; orphans:2; text-align:start; text-decoration-color:initial; text-decoration-style:initial; text-decoration-thickness:initial; text-indent:0px; text-transform:none; white-space:normal; widows:2; word-spacing:0px">Before sending information about you and your tenant to Universal Credit, check the information is accurate.&nbsp;</span></p>'
   preview_attributes: {  }
   preview_excluded_elements: {  }
   preview_exclude_empty: true
@@ -300,7 +319,6 @@ settings:
     <div class="success-notice">
     <p>Thank you.&nbsp; Universal Credit received your request for a direct payment of your tenant&#39;s housing costs.&nbsp; They&#39;ll contact you if they need more information.</p>
     </div>
-
   confirmation_url: ''
   confirmation_attributes: {  }
   confirmation_back: false
@@ -323,10 +341,28 @@ settings:
   entity_limit_user_interval: null
   purge: none
   purge_days: null
-  results_disabled: false
+  results_disabled: true
   results_disabled_ignore: false
   token_update: false
   token_view: false
+  page_theme_name: ''
+  form_disable_remote_addr: false
+  share: false
+  share_node: false
+  share_theme_name: ''
+  share_title: true
+  share_page_body_attributes: {  }
+  wizard_auto_forward: true
+  wizard_auto_forward_hide_next_button: false
+  wizard_keyboard: true
+  wizard_prev_button_label: Previous
+  wizard_next_button_label: Next
+  wizard_toggle: true
+  wizard_toggle_show_label: ''
+  wizard_toggle_hide_label: ''
+  results_customize: false
+  token_delete: false
+  serial_disabled: false
 access:
   create:
     roles:
