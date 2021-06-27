@@ -41,12 +41,14 @@ drush migrate:rollback --group=migrate_drupal_7_link
 drush migrate:rollback nidirect_book
 
 # Rollback all node migrations.
-for type in driving_instructor application article external_link gp_practice health_condition news nidirect_contact contact page publication; do
+for type in driving_instructor application article external_link gp_practice health_condition news page publication; do
   drush migrate:rollback --group=migrate_nidirect_node_$type
 done
 
 if [ $MIGRATE_ALL ]; then
   drush migrate:rollback --group=migrate_nidirect_node_landing_page
+  drush migrate:rollback --group=migrate_nidirect_node_nidirect_contact
+  drush migrate:rollback --group=migrate_nidirect_node_contact
 fi
 
 # Rollback GP entities.
@@ -77,12 +79,14 @@ drush migrate:import --group=migrate_drupal_7_link --force
 drush migrate:import --group=migrate_nidirect_entity_gp --force
 
 # Import all node migrations.
-for type in driving_instructor application article external_link gp_practice health_condition news nidirect_contact contact page publication; do
+for type in driving_instructor application article external_link gp_practice health_condition news page publication; do
   drush migrate:import --group=migrate_nidirect_node_$type --force --execute-dependencies
 done
 
 if [ $MIGRATE_ALL ]; then
   drush migrate:import --group=migrate_nidirect_node_landing_page --force
+  drush migrate:import --group=migrate_nidirect_node_nidirect_contact --force
+  drush migrate:import --group=migrate_nidirect_node_contact --force
 fi
 
 # Import book
