@@ -1,6 +1,6 @@
 uuid: cc3f4d2f-b0ab-4121-a21d-9cc8a17aa139
 langcode: en
-status: open
+status: closed
 dependencies:
   enforced:
     module:
@@ -155,6 +155,26 @@ settings:
   results_disabled: false
   results_disabled_ignore: false
   token_update: false
+  page_theme_name: ''
+  form_disable_remote_addr: false
+  share: false
+  share_node: false
+  share_theme_name: ''
+  share_title: true
+  share_page_body_attributes: {  }
+  wizard_progress_states: false
+  wizard_auto_forward: true
+  wizard_auto_forward_hide_next_button: false
+  wizard_keyboard: true
+  wizard_prev_button_label: ''
+  wizard_next_button_label: ''
+  wizard_toggle: true
+  wizard_toggle_show_label: ''
+  wizard_toggle_hide_label: ''
+  results_customize: false
+  token_view: false
+  token_delete: false
+  serial_disabled: false
 access:
   create:
     roles:
@@ -208,7 +228,7 @@ handlers:
     label: 'Email confirmation'
     notes: ''
     handler_id: email_confirmation
-    status: true
+    status: false
     conditions: {  }
     weight: 1
     settings:
@@ -245,7 +265,7 @@ handlers:
     label: 'Email notification'
     notes: ''
     handler_id: email_notification
-    status: true
+    status: false
     conditions: {  }
     weight: 2
     settings:

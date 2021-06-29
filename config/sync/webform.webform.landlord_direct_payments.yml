@@ -16,6 +16,7 @@ elements: |
   form_reason:
     '#type': webform_wizard_page
     '#title': 'Reason for filling in this form'
+    '#format': container
     '#prev_button_label': Previous
     '#next_button_label': Next
     reason_for_filling_in_this_form:
@@ -26,7 +27,7 @@ elements: |
         '#title': 'You want a direct payment of Universal Credit for your tenant''s housing costs because:'
         '#description_display': before
         '#options':
-          known: 'Universal Credit asked you for your bank account informationwn'
+          known: 'Universal Credit asked you for your bank account information'
           unknown: 'your tenant gets Universal Credit and owes two months'' rent or more'
         '#required': true
         '#required_error': 'You must choose an option.'
@@ -58,7 +59,7 @@ elements: |
         '#type': textfield
         '#title': Postcode
         '#title_display': invisible
-        '#size': '9'
+        '#size': 9
         '#placeholder': Postcode
         '#pattern': '^[a-zA-Z0-9\-\s\.]{0,18}$'
         '#pattern_error': 'Postcode contains invalid characters. You can only use numbers, letters, spaces and hyphens.'
@@ -69,13 +70,14 @@ elements: |
       landlords_phone_number:
         '#type': textfield
         '#title': Telephone
-        '#size': '24'
+        '#size': 24
         '#required': true
         '#pattern': '^[0-9\(\) \+\-]{6,20}$'
         '#pattern_error': 'Enter a valid phone number'
   landlord_bank_details:
     '#type': webform_wizard_page
     '#title': 'Landlord bank details'
+    '#format': container
     '#prev_button_label': Previous
     '#next_button_label': Next
     landlord_bank_details_fieldset:
@@ -88,16 +90,23 @@ elements: |
       account_number:
         '#type': textfield
         '#title': 'Bank or building society account number'
+        '#maxlength': 8
+        '#size': 9
         '#required': true
         '#pattern': '^[0-9]{8}$'
-        '#pattern_error': 'Bank account number must have eight digits'
+        '#pattern_error': 'Bank or building society account number must have 8 digits'
       sort_code:
         '#type': textfield
         '#title': 'Sort code'
+        '#maxlength': 8
+        '#size': 9
         '#required': true
+        '#pattern': '^(?!(?:0{6}|00-00-00))(?:\d{6}|\d\d-\d\d-\d\d)$'
+        '#pattern_error': 'Sort code must contain six digits , for example 123456 or 12-34-56'
   property_address_rented_to_tenant:
     '#type': webform_wizard_page
     '#title': 'Property address rented to tenant'
+    '#format': container
     '#prev_button_label': Previous
     '#next_button_label': Next
     property_address_rented_to_tenant_fieldset:
@@ -106,20 +115,28 @@ elements: |
       property_address_line_1:
         '#type': textfield
         '#title': Address
+        '#placeholder': 'Address line 1'
         '#required': true
       property_address_line_2:
         '#type': textfield
         '#title': 'Address  line 2'
+        '#title_display': invisible
+        '#placeholder': 'Address line 2'
         '#required': true
       property_address_postcode:
         '#type': textfield
         '#title': Postcode
+        '#title_display': invisible
+        '#maxlength': 8
+        '#size': 9
+        '#placeholder': Postcode
         '#required': true
         '#pattern': '^[bB][tT][0-9]{1,2} ?[0-9][a-zA-Z]{2}$'
         '#pattern_error': 'You must enter a valid Northern Ireland postcode, for example, BT4 3XX.'
   tenant_information:
     '#type': webform_wizard_page
     '#title': 'Tenant information'
+    '#format': container
     '#prev_button_label': Previous
     '#next_button_label': Next
     tenant_information_fieldset:
@@ -132,6 +149,8 @@ elements: |
       tenants_reference_number:
         '#type': textfield
         '#title': 'Tenant''s reference number (optional)'
+        '#maxlength': 16
+        '#size': 17
         '#pattern': '^[a-zA-Z0-9]{1,16}$'
         '#pattern_error': 'You must provide a tenant reference number containing up to 16 characters and can include letters or digits'
       single_or_joint_tenancy:
@@ -161,24 +180,28 @@ elements: |
       amount_of_rent_tenant_pays:
         '#type': textfield
         '#title': 'Amount of rent tenant pays'
+        '#maxlength': 15
+        '#size': 10
+        '#placeholder': £0.00
         '#input_mask': '''alias'': ''currency'', ''prefix'': ''£'''
-        '#pattern': '^[0-9]{0,10}\.?[0-9]{0,2}p?$'
+        '#required': true
+        '#pattern': '^£?[0-9,]{0,10}\.?[0-9]{0,2}p?$'
         '#pattern_error': 'You must enter a valid amount in pounds sterling'
         '#states':
           visible:
             ':input[name="known_or_unknown_landlord"]':
               value: unknown
       total_rent_arrears:
-        '#type': number
+        '#type': textfield
         '#title': 'Total rent arrears'
-        '#field_prefix': £
+        '#maxlength': 15
+        '#size': 10
+        '#placeholder': £0.00
         '#autocomplete': 'off'
+        '#input_mask': '''alias'': ''currency'', ''prefix'': ''£'''
         '#required': true
-        '#states':
-          visible:
-            ':input[name="known_or_unknown_landlord"]':
-              value: unknown
-        '#min': '0'
+        '#pattern': '^£?[0-9,]{0,10}\.?[0-9]{0,2}p?$'
+        '#pattern_error': 'You must enter a valid amount in pounds sterling'
   declaration:
     '#type': processed_text
     '#display_on': view
@@ -200,12 +223,16 @@ elements: |
       </ul>
       
     '#format': full_html
+  actions:
+    '#type': webform_actions
+    '#title': 'Submit button(s)'
+    '#submit__label': 'Accept and send'
 css: ''
 javascript: ''
 settings:
   ajax: true
   ajax_scroll_top: form
-  ajax_progress_type: ''
+  ajax_progress_type: throbber
   ajax_effect: fade
   ajax_speed: 500
   page: true
@@ -274,7 +301,7 @@ settings:
   preview: 2
   preview_label: ''
   preview_title: ''
-  preview_message: ''
+  preview_message: '<p><span style="-webkit-text-stroke-width:0px; color:#000000; display:inline !important; float:none; font-family:Lato,&quot;Open Sans&quot;,sans-serif; font-size:21px; font-style:normal; font-variant-caps:normal; font-variant-ligatures:normal; font-weight:400; letter-spacing:normal; orphans:2; text-align:start; text-decoration-color:initial; text-decoration-style:initial; text-decoration-thickness:initial; text-indent:0px; text-transform:none; white-space:normal; widows:2; word-spacing:0px">Before sending information about you and your tenant to Universal Credit, check the information is accurate.&nbsp;</span></p>'
   preview_attributes: {  }
   preview_excluded_elements: {  }
   preview_exclude_empty: true
@@ -292,7 +319,6 @@ settings:
     <div class="success-notice">
     <p>Thank you.&nbsp; Universal Credit received your request for a direct payment of your tenant&#39;s housing costs.&nbsp; They&#39;ll contact you if they need more information.</p>
     </div>
-    
   confirmation_url: ''
   confirmation_attributes: {  }
   confirmation_back: false
@@ -315,10 +341,28 @@ settings:
   entity_limit_user_interval: null
   purge: none
   purge_days: null
-  results_disabled: false
+  results_disabled: true
   results_disabled_ignore: false
   token_update: false
   token_view: false
+  page_theme_name: ''
+  form_disable_remote_addr: false
+  share: false
+  share_node: false
+  share_theme_name: ''
+  share_title: true
+  share_page_body_attributes: {  }
+  wizard_auto_forward: true
+  wizard_auto_forward_hide_next_button: false
+  wizard_keyboard: true
+  wizard_prev_button_label: Previous
+  wizard_next_button_label: Next
+  wizard_toggle: true
+  wizard_toggle_show_label: ''
+  wizard_toggle_hide_label: ''
+  results_customize: false
+  token_delete: false
+  serial_disabled: false
 access:
   create:
     roles:

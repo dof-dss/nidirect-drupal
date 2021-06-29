@@ -137,7 +137,7 @@ settings:
   page_submit_path: ''
   page_confirm_path: ''
   page_admin_theme: false
-  form_title: both
+  form_title: source_entity_webform
   form_submit_once: false
   form_exception_message: ''
   form_open_message: ''
@@ -186,7 +186,7 @@ settings:
   autofill: false
   autofill_message: ''
   autofill_excluded_elements: {  }
-  wizard_progress_bar: true
+  wizard_progress_bar: false
   wizard_progress_pages: false
   wizard_progress_percentage: false
   wizard_progress_link: false
@@ -196,10 +196,10 @@ settings:
   wizard_confirmation: true
   wizard_confirmation_label: ''
   wizard_track: ''
-  preview: 0
+  preview: 2
   preview_label: ''
   preview_title: ''
-  preview_message: ''
+  preview_message: 'Before sending information, check the information is accurate.'
   preview_attributes: {  }
   preview_excluded_elements: {  }
   preview_exclude_empty: true
@@ -236,9 +236,28 @@ settings:
   entity_limit_user_interval: null
   purge: none
   purge_days: null
-  results_disabled: false
+  results_disabled: true
   results_disabled_ignore: false
   token_update: false
+  page_theme_name: ''
+  form_disable_remote_addr: false
+  share: false
+  share_node: false
+  share_theme_name: ''
+  share_title: true
+  share_page_body_attributes: {  }
+  wizard_auto_forward: true
+  wizard_auto_forward_hide_next_button: false
+  wizard_keyboard: true
+  wizard_prev_button_label: ''
+  wizard_next_button_label: ''
+  wizard_toggle: true
+  wizard_toggle_show_label: ''
+  wizard_toggle_hide_label: ''
+  results_customize: false
+  token_view: false
+  token_delete: false
+  serial_disabled: false
 access:
   create:
     roles:
@@ -312,7 +331,6 @@ handlers:
         &lt;p&gt;Submitted on [current-date:long]&lt;/p&gt;<br />
         &lt;p&gt;Submitted values are:&lt;/p&gt;<br />
         [webform_submission:values]
-        
       excluded_elements: {  }
       ignore_access: false
       exclude_empty: true

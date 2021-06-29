@@ -21,7 +21,9 @@ elements: |
     '#next_button_label': Next
     banner_1:
       '#type': processed_text
-      '#text': '<drupal-media data-align="center" data-entity-type="media" data-entity-uuid="9e5b2bef-9acc-4e08-8841-50c8f6481c7e"></drupal-media>'
+      '#text': |
+        <drupal-media data-align="center" data-entity-type="media" data-entity-uuid="113cf69f-c066-40e5-a342-4f1d92c01271" data-view-mode="banner_thin"></drupal-media>
+        
       '#format': full_html
     question_1:
       '#type': radios
@@ -77,7 +79,7 @@ elements: |
     banner_2:
       '#type': processed_text
       '#text': |
-        <drupal-media data-align="center" data-entity-type="media" data-entity-uuid="d69cf547-b628-416e-8d40-35d7822836fa"></drupal-media>
+        <drupal-media data-align="center" data-entity-type="media" data-entity-uuid="814575a8-fecb-44b6-9552-87d5b02939a1" data-view-mode="banner_thin"></drupal-media>
         
       '#format': full_html
     question_2:
@@ -175,7 +177,7 @@ elements: |
     banner_3:
       '#type': processed_text
       '#text': |
-        <drupal-media data-align="center" data-entity-type="media" data-entity-uuid="4d58b69e-7568-4904-8f5a-cffc8336d7e5"></drupal-media>
+        <drupal-media data-align="center" data-entity-type="media" data-entity-uuid="88539f9d-859f-493c-a176-82aa2d44bca9" data-view-mode="banner_thin"></drupal-media>
         
       '#format': full_html
     question_3:
@@ -238,7 +240,7 @@ elements: |
     banner_4:
       '#type': processed_text
       '#text': |
-        <drupal-media data-align="center" data-entity-type="media" data-entity-uuid="e8f24bac-fd78-43ba-9202-78e416c4d5ee"></drupal-media>
+        <drupal-media data-align="center" data-entity-type="media" data-entity-uuid="55a431b3-cad5-4944-ab13-03e910b95e68" data-view-mode="banner_thin"></drupal-media>
         
       '#format': full_html
     question_4:
@@ -317,7 +319,7 @@ elements: |
     banner_5:
       '#type': processed_text
       '#text': |
-        <drupal-media data-align="center" data-entity-type="media" data-entity-uuid="d69cf547-b628-416e-8d40-35d7822836fa"></drupal-media>
+        <drupal-media data-align="center" data-entity-type="media" data-entity-uuid="814575a8-fecb-44b6-9552-87d5b02939a1" data-view-mode="banner_thin"></drupal-media>
         
       '#format': full_html
     question_5:
@@ -385,7 +387,9 @@ elements: |
     '#next_button_label': Next
     banner_6:
       '#type': processed_text
-      '#text': '<drupal-media data-align="center" data-entity-type="media" data-entity-uuid="2a57d50b-9c10-459a-98a5-1ba22547c5fd"></drupal-media>'
+      '#text': |
+        <drupal-media data-align="center" data-entity-type="media" data-entity-uuid="ecfe7ef2-da2f-4793-84fd-155410592800" data-view-mode="banner_thin"></drupal-media>
+        
       '#format': full_html
     question_6:
       '#type': radios
@@ -469,7 +473,7 @@ settings:
   form_exception_message: ''
   form_open_message: ''
   form_close_message: ''
-  form_previous_submissions: true
+  form_previous_submissions: false
   form_confidential: false
   form_confidential_message: ''
   form_remote_addr: true
@@ -496,9 +500,7 @@ settings:
   submission_label: ''
   submission_log: false
   submission_views: {  }
-  submission_views_replace:
-    webform_routes: {  }
-    node_routes: {  }
+  submission_views_replace: {  }
   submission_user_columns: {  }
   submission_user_duplicate: false
   submission_access_denied: default
@@ -545,8 +547,8 @@ settings:
   confirmation_message: ''
   confirmation_url: ''
   confirmation_attributes: {  }
-  confirmation_back: false
-  confirmation_back_label: ''
+  confirmation_back: true
+  confirmation_back_label: 'Take quiz again'
   confirmation_back_attributes: {  }
   confirmation_exclude_query: false
   confirmation_exclude_token: false
@@ -569,6 +571,24 @@ settings:
   results_disabled_ignore: false
   token_view: false
   token_update: false
+  page_theme_name: ''
+  form_disable_remote_addr: true
+  share: false
+  share_node: false
+  share_theme_name: ''
+  share_title: true
+  share_page_body_attributes: {  }
+  wizard_auto_forward: true
+  wizard_auto_forward_hide_next_button: false
+  wizard_keyboard: true
+  wizard_prev_button_label: ''
+  wizard_next_button_label: ''
+  wizard_toggle: false
+  wizard_toggle_show_label: ''
+  wizard_toggle_hide_label: ''
+  results_customize: false
+  token_delete: false
+  serial_disabled: false
 access:
   create:
     roles:
@@ -626,7 +646,10 @@ handlers:
     conditions: {  }
     weight: 0
     settings:
-      introduction: '<p>Quiz complete!</p>'
+      introduction: |
+        <div class="info-notice info-notice--success">
+        <p>Quiz complete!</p>
+        </div>
       pass_text: ''
       fail_text: ''
       pass_score: '0'
