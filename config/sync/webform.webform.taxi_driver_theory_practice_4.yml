@@ -139,7 +139,7 @@ elements: |
       '#type': processed_text
       '#display_on': both
       '#text': |
-        <drupal-media data-align="center" data-entity-type="media" data-entity-uuid="40ca51a1-e090-4f4e-a7b2-9b577c9242b9"></drupal-media>
+        <drupal-media data-align="center" data-entity-type="media" data-entity-uuid="3003c25d-87eb-4cf7-a612-e916db08e2e7" data-view-mode="article_float"></drupal-media>
         
       '#format': full_html
     question_10:
@@ -272,10 +272,10 @@ css: ''
 javascript: ''
 settings:
   ajax: true
-  ajax_scroll_top: ''
+  ajax_scroll_top: form
   ajax_progress_type: throbber
   ajax_effect: fade
-  ajax_speed: null
+  ajax_speed: 500
   page: true
   page_submit_path: ''
   page_confirm_path: ''
@@ -359,8 +359,8 @@ settings:
   confirmation_message: ''
   confirmation_url: ''
   confirmation_attributes: {  }
-  confirmation_back: false
-  confirmation_back_label: ''
+  confirmation_back: true
+  confirmation_back_label: 'Take practice test again'
   confirmation_back_attributes: {  }
   confirmation_exclude_query: false
   confirmation_exclude_token: false
@@ -384,7 +384,7 @@ settings:
   token_view: false
   token_update: false
   page_theme_name: ''
-  form_disable_remote_addr: false
+  form_disable_remote_addr: true
   share: false
   share_node: false
   share_theme_name: ''
@@ -590,6 +590,8 @@ handlers:
         question_10:
           correct_answer: q10_a1
           correct_feedback: |
+            <drupal-media data-align="center" data-entity-type="media" data-entity-uuid="3003c25d-87eb-4cf7-a612-e916db08e2e7" data-view-mode="article_float"></drupal-media>
+            
             <h4>Bends</h4>
             
             <p>Dealing effectively and safely with bends demands that you look well ahead and try to assess accurately how severe the bend is and at what speed you need to be travelling to negotiate it under control.<br />

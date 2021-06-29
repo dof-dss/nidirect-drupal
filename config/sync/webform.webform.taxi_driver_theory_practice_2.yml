@@ -113,9 +113,9 @@ elements: |
       '#type': processed_text
       '#display_on': both
       '#text': |
-        <drupal-media data-align="center" data-entity-type="media" data-entity-uuid="12290a7d-215a-43e6-a0ba-aea85a5afa41"></drupal-media>
+        <drupal-media data-align="center" data-entity-type="media" data-entity-uuid="ed7947fa-e097-401f-a250-b7c52d412958" data-view-mode="article_float"></drupal-media>
         
-      '#format': full_html
+      '#format': basic_html
     question_8:
       '#type': radios
       '#title': 'What does this sign mean?'
@@ -384,7 +384,7 @@ settings:
   token_view: false
   token_update: false
   page_theme_name: ''
-  form_disable_remote_addr: false
+  form_disable_remote_addr: true
   share: false
   share_node: false
   share_theme_name: ''
@@ -523,7 +523,10 @@ handlers:
           incorrect_feedback: '<p>Please read "The Official DVSA Guide to DRIVING the essential skills". Section 14, Basic maintainance.</p>'
         question_8:
           correct_answer: q8_a1
-          correct_feedback: '<p>Keep a safe distance – there could be queues in front.</p>'
+          correct_feedback: |
+            <p>Keep a safe distance – there could be queues in front.</p>
+            
+            <drupal-media data-align="center" data-entity-type="media" data-entity-uuid="ed7947fa-e097-401f-a250-b7c52d412958"></drupal-media>
           incorrect_feedback: '<p>Please read "The Highway Code for NI".</p>'
         question_9:
           correct_answer: q9_a1

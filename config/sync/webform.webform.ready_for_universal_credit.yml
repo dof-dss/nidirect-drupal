@@ -20,7 +20,7 @@ elements: |
     introduction:
       '#type': processed_text
       '#text': |
-        <drupal-media alt="Universal Credit Northern Ireland" data-align="center" data-entity-type="media" data-entity-uuid="9c017453-ab2a-43d8-a683-43d98a2bcdfd" data-view-mode="landscape_float"></drupal-media>
+        <drupal-media data-align="center" data-entity-type="media" data-entity-uuid="2d9ce511-988c-4d8e-a44b-2baba9780ec0" data-view-mode="article_float"></drupal-media>
         
         <p>Universal Credit works differently from the benefits it replaces. Before making your claim you need to know:</p>
         
@@ -137,7 +137,7 @@ elements: |
         
         <p>Do you need help using the internet or a computer (for example, claiming benefits online using a computer)?</p>
         
-        <p>[webform_submission:values:do_you_need_help_using_the_internet_or_a_computer_for_example_cl:format]</p>
+        <p>Your answer: [webform_submission:values:do_you_need_help_using_the_internet_or_a_computer_for_example_cl:format]</p>
         
       '#format': full_html
     getting_online:
@@ -183,7 +183,7 @@ elements: |
         
         <p>Do you use an account to manage your money?</p>
         
-        <p>[webform_submission:values:do_you_use_an_account_to_manage_your_money_:format]</p>
+        <p>Your answer: [webform_submission:values:do_you_use_an_account_to_manage_your_money_:format]</p>
         
       '#format': basic_html
     account_for_payment:
@@ -290,7 +290,7 @@ elements: |
         
         <p>How often are you paid (from work, tax credits or other benefits)?</p>
         
-        <p>[webform_submission:values:how_often_are_you_paid_from_work_tax_credits_or_other_benefits_:format]</p>
+        <p>Your answer: [webform_submission:values:how_often_are_you_paid_from_work_tax_credits_or_other_benefits_:format]</p>
         
       '#format': basic_html
     budgetting_a_twice_a_month_payment:
@@ -353,7 +353,7 @@ elements: |
         
         <p>Do you pay rent, is your rent paid on your behalf, or do you have a mortgage?</p>
         
-        <p>[webform_submission:values:do_you_pay_rent_is_your_rent_paid_on_your_behalf_or_do_you_have_:format]</p>
+        <p>Your answer: [webform_submission:values:do_you_pay_rent_is_your_rent_paid_on_your_behalf_or_do_you_have_:format]</p>
         
       '#format': basic_html
     your_housing_costs_rent:
@@ -445,7 +445,7 @@ elements: |
         
         <p>Are you married and living together or do you live with a partner?</p>
         
-        <p>[webform_submission:values:are_you_married_and_living_together_or_do_you_live_with_a_partne:format]</p>
+        <p>Your answer: [webform_submission:values:are_you_married_and_living_together_or_do_you_live_with_a_partne:format]</p>
         
       '#format': basic_html
     one_payment:
@@ -538,9 +538,7 @@ settings:
   submission_label: ''
   submission_log: false
   submission_views: {  }
-  submission_views_replace:
-    webform_routes: {  }
-    node_routes: {  }
+  submission_views_replace: {  }
   submission_user_columns: {  }
   submission_user_duplicate: false
   submission_access_denied: default
@@ -605,12 +603,30 @@ settings:
   entity_limit_total_interval: null
   entity_limit_user: null
   entity_limit_user_interval: null
-  purge: completed
+  purge: all
   purge_days: 1
   results_disabled: false
   results_disabled_ignore: false
   token_view: false
   token_update: false
+  page_theme_name: ''
+  form_disable_remote_addr: true
+  share: false
+  share_node: false
+  share_theme_name: ''
+  share_title: true
+  share_page_body_attributes: {  }
+  wizard_auto_forward: true
+  wizard_auto_forward_hide_next_button: false
+  wizard_keyboard: true
+  wizard_prev_button_label: ''
+  wizard_next_button_label: ''
+  wizard_toggle: false
+  wizard_toggle_show_label: ''
+  wizard_toggle_hide_label: ''
+  results_customize: false
+  token_delete: false
+  serial_disabled: false
 access:
   create:
     roles:

@@ -1,0 +1,916 @@
+uuid: a1745bb0-6b5c-4260-9de1-a08c532c6797
+langcode: en
+status: open
+dependencies: {  }
+open: null
+close: null
+weight: 0
+uid: 24
+template: false
+archive: false
+id: report_legal_aid_fraud
+title: 'Report legal aid fraud'
+description: ''
+category: ''
+elements: |
+  report_who_:
+    '#type': webform_wizard_page
+    '#title': 'Report who?'
+    '#format': container
+    person_you_want_to_report_for_legal_aid_fraud:
+      '#type': radios
+      '#title': 'Person you want to report for legal aid fraud'
+      '#options':
+        'a solicitor working on legal aid to represent or defend a person in a court case': 'a solicitor working on legal aid to represent or defend a person in a court case'
+        'a barrister working on legal aid to represent or defend a person in a court case': 'a barrister working on legal aid to represent or defend a person in a court case'
+        'an employee working in or for a firm of legal aid solicitors': 'an employee working in or for a firm of legal aid solicitors'
+        'someone getting legal aid for their legal proceedings or court case': 'someone getting legal aid for their legal proceedings or court case'
+        'an employee in the Legal Services Agency Northern Ireland': 'an employee in the Legal Services Agency Northern Ireland'
+        'an employee in the Department of Justice': 'an employee in the Department of Justice'
+        'omeone else benefiting from legal aid': 'someone else benefiting from legal aid'
+      '#required': true
+      '#required_error': 'You must choose an option'
+  type_of_legal_aid_fruad:
+    '#type': webform_wizard_page
+    '#title': 'Type of legal aid fruad'
+    '#format': container
+    fraud_by_someone_else:
+      '#type': radios
+      '#title': 'Legal aid fraud you want to report'
+      '#options':
+        'misuse of public funds': 'misuse of public funds'
+        'a legal aid payment': 'a legal aid payment'
+        'something else involving legal aid': 'something else involving legal aid'
+      '#required': true
+      '#required_error': 'You must choose an option'
+      '#states':
+        visible:
+          ':input[name="person_you_want_to_report_for_legal_aid_fraud"]':
+            value: 'omeone else benefiting from legal aid'
+    fraud_by_person_getting_legal_aid:
+      '#type': radios
+      '#title': 'Legal aid fraud you want to report'
+      '#options':
+        'misuse of public funds': 'misuse of public funds'
+        'a legal aid payment': 'a legal aid payment'
+        'the person has made a false or inflated legal aid claim': 'the person has made a false or inflated legal aid claim'
+        'the person isn’t entitled to legal aid because they’re employed': 'the person isn’t entitled to legal aid because they’re employed'
+      '#required': true
+      '#required_error': 'You must choose an option'
+      '#states':
+        visible:
+          ':input[name="person_you_want_to_report_for_legal_aid_fraud"]':
+            value: 'someone getting legal aid for their legal proceedings or court case'
+    fraud_by_employee:
+      '#type': radios
+      '#title': 'Legal aid fraud you want to report'
+      '#options':
+        'misuse of public funds': 'misuse of public funds'
+        'a legal aid payment': 'a legal aid payment'
+        'an unqualified or unaccredited solicitor or barrister': 'an unqualified or unaccredited solicitor or barrister'
+        'the person has made a false or inflated legal aid claim': 'the person has made a false or inflated legal aid claim'
+        employment: employment
+        'a solicitor or barrister charging legal aid clients for private work': 'a solicitor or barrister charging legal aid clients for private work'
+        'a solicitor or barrister giving false information to the Legal Services Agency': 'a solicitor or barrister giving false information to the Legal Services Agency'
+      '#required': true
+      '#required_error': 'You must choose an option'
+      '#states':
+        visible:
+          - ':input[name="person_you_want_to_report_for_legal_aid_fraud"]':
+              value: 'a solicitor working on legal aid to represent or defend a person in a court case'
+          - xor
+          - ':input[name="person_you_want_to_report_for_legal_aid_fraud"]':
+              value: 'a barrister working on legal aid to represent or defend a person in a court case'
+          - xor
+          - ':input[name="person_you_want_to_report_for_legal_aid_fraud"]':
+              value: 'an employee working in or for a firm of legal aid solicitors'
+          - xor
+          - ':input[name="person_you_want_to_report_for_legal_aid_fraud"]':
+              value: 'an employee in the Legal Services Agency Northern Ireland'
+          - xor
+          - ':input[name="person_you_want_to_report_for_legal_aid_fraud"]':
+              value: 'an employee in the Department of Justice'
+  information_about_the_person_you_re_reporting:
+    '#type': webform_wizard_page
+    '#title': 'Information about the person you’re reporting'
+    '#states':
+      visible:
+        - ':input[name="person_you_want_to_report_for_legal_aid_fraud"]':
+            value: 'a solicitor working on legal aid to represent or defend a person in a court case'
+        - xor
+        - ':input[name="person_you_want_to_report_for_legal_aid_fraud"]':
+            value: 'a barrister working on legal aid to represent or defend a person in a court case'
+        - xor
+        - ':input[name="person_you_want_to_report_for_legal_aid_fraud"]':
+            value: 'an employee working in or for a firm of legal aid solicitors'
+    '#format': container
+    information_about_the_person_you_re_reporting_fieldset:
+      '#type': fieldset
+      '#title': 'Information about the person you’re reporting'
+      '#states':
+        visible:
+          - ':input[name="person_you_want_to_report_for_legal_aid_fraud"]':
+              value: 'a solicitor working on legal aid to represent or defend a person in a court case'
+          - or
+          - ':input[name="person_you_want_to_report_for_legal_aid_fraud"]':
+              value: 'a barrister working on legal aid to represent or defend a person in a court case'
+          - or
+          - ':input[name="person_you_want_to_report_for_legal_aid_fraud"]':
+              value: 'an employee working in or for a firm of legal aid solicitors'
+      first_name:
+        '#type': textfield
+        '#title': 'First name'
+        '#maxlength': 100
+        '#required': true
+      last_name:
+        '#type': textfield
+        '#title': 'Last name'
+        '#maxlength': 100
+        '#required': true
+      firm_of_solicitors_where_they_work:
+        '#type': textfield
+        '#title': 'Firm of solicitors where they work'
+        '#required': true
+        '#states':
+          invisible:
+            ':input[name="person_you_want_to_report_for_legal_aid_fraud"]':
+              value: 'a barrister working on legal aid to represent or defend a person in a court case'
+      firm_address:
+        '#type': textfield
+        '#title': Address
+        '#placeholder': 'Address line 1'
+        '#required': true
+      firm_address_line_2:
+        '#type': textfield
+        '#title': 'Address line 2'
+        '#title_display': invisible
+        '#placeholder': 'Address line 2'
+      firm_postcode:
+        '#type': textfield
+        '#title': Postcode
+        '#title_display': invisible
+        '#maxlength': 8
+        '#size': 9
+        '#placeholder': Postcode
+        '#required': true
+        '#pattern': '^[bB][tT][0-9]{1,2} ?[0-9][a-zA-Z]{2}$'
+        '#pattern_error': 'Enter a valid Northern Ireland postcode'
+  reporting_an_employee_in_the_department_of_justice:
+    '#type': webform_wizard_page
+    '#title': 'Reporting an employee in the Department of Justice'
+    '#states':
+      visible:
+        ':input[name="person_you_want_to_report_for_legal_aid_fraud"]':
+          value: 'an employee in the Department of Justice'
+    '#format': container
+    reporting_an_employee_in_the_department_of_justice_fieldset:
+      '#type': fieldset
+      '#title': 'Reporting an employee in the Department of Justice'
+      doj_first_name:
+        '#type': textfield
+        '#title': 'First name'
+        '#maxlength': 100
+        '#required': true
+      doj_last_name:
+        '#type': textfield
+        '#title': 'Last name'
+        '#maxlength': 100
+        '#required': true
+      doj_address:
+        '#type': textfield
+        '#title': 'Their office address or workplace'
+        '#placeholder': 'Address line 1'
+        '#required': true
+      doj_address_line_2:
+        '#type': textfield
+        '#title': 'Address line 2'
+        '#title_display': invisible
+        '#placeholder': 'Address line 2'
+      doj_postcode:
+        '#type': textfield
+        '#title': Postcode
+        '#title_display': invisible
+        '#maxlength': 8
+        '#size': 9
+        '#placeholder': Postcode
+        '#required': true
+        '#pattern': '^[bB][tT][0-9]{1,2} ?[0-9][a-zA-Z]{2}$'
+        '#pattern_error': 'Enter a valid Northern Ireland postcode'
+      their_job_contract_is_:
+        '#type': radios
+        '#title': 'Their job contract is:'
+        '#options':
+          permanent: permanent
+          temporary: temporary
+          'self-employed supplier or agency': 'self-employed supplier or agency'
+          'fixed term': 'fixed term'
+          'not known': 'not known'
+  reporting_an_employee_in_the_legal_service_agency:
+    '#type': webform_wizard_page
+    '#title': 'Reporting an employee in the Legal Service Agency'
+    '#states':
+      visible:
+        ':input[name="person_you_want_to_report_for_legal_aid_fraud"]':
+          value: 'an employee in the Legal Services Agency Northern Ireland'
+    '#format': container
+    reporting_an_employee_in_the_legal_service_agency_fieldset:
+      '#type': fieldset
+      '#title': 'Reporting an employee in the Legal Service Agency'
+      lsa_first_name:
+        '#type': textfield
+        '#title': 'First name'
+        '#maxlength': 100
+        '#required': true
+      lsa_last_name:
+        '#type': textfield
+        '#title': 'Last name'
+        '#maxlength': 100
+        '#required': true
+      lsa_address_line_1:
+        '#type': textfield
+        '#title': 'Their office address or workplace'
+        '#placeholder': 'Address line 1'
+        '#required': true
+      lsa_address_line_2:
+        '#type': textfield
+        '#title': 'Address line 2'
+        '#title_display': invisible
+        '#placeholder': 'Address line 2'
+      lsa_postcode:
+        '#type': textfield
+        '#title': Postcode
+        '#title_display': invisible
+        '#maxlength': 8
+        '#size': 9
+        '#placeholder': Postcode
+        '#required': true
+        '#pattern': '^[bB][tT][0-9]{1,2} ?[0-9][a-zA-Z]{2}$'
+      lsa_job_contract_is:
+        '#type': radios
+        '#title': 'Their job contract is:'
+        '#options':
+          permanent: permanent
+          temporary: temporary
+          'self-employed supplier or agency': 'self-employed supplier or agency'
+          'fixed term': 'fixed term'
+          'not known': 'not known'
+  name_of_the_person_you_are_reporting:
+    '#type': webform_wizard_page
+    '#title': 'Name of the person you are reporting'
+    '#states':
+      visible:
+        - ':input[name="person_you_want_to_report_for_legal_aid_fraud"]':
+            value: 'someone getting legal aid for their legal proceedings or court case'
+        - or
+        - ':input[name="person_you_want_to_report_for_legal_aid_fraud"]':
+            value: 'omeone else benefiting from legal aid'
+    '#format': container
+    name_of_the_person_you_are_reporting_fieldset:
+      '#type': fieldset
+      '#title': 'Name of the person you are reporting'
+      person_first_name:
+        '#type': textfield
+        '#title': 'First name'
+        '#maxlength': 100
+        '#required': true
+      person_last_name:
+        '#type': textfield
+        '#title': 'Last name'
+        '#maxlength': 100
+        '#required': true
+      other_names_they_use:
+        '#type': textfield
+        '#title': 'Other names they use'
+        '#maxlength': 100
+  information_you_know_about_the_person_you_are_reporting:
+    '#type': webform_wizard_page
+    '#title': 'Information you know about the person you are reporting'
+    '#states':
+      visible:
+        - ':input[name="person_you_want_to_report_for_legal_aid_fraud"]':
+            value: 'someone getting legal aid for their legal proceedings or court case'
+        - or
+        - ':input[name="person_you_want_to_report_for_legal_aid_fraud"]':
+            value: 'omeone else benefiting from legal aid'
+    '#format': container
+    information_you_know_person_legal_aid:
+      '#type': checkboxes
+      '#title': 'Information you know about the person you are reporting'
+      '#options':
+        address: address
+        DOB: 'date of birth or age'
+        telephone: telephone
+        nat_ins: 'National Insurance number'
+        email: email
+        'employment or income': 'employment or income'
+      '#required': true
+      '#states':
+        visible:
+          ':input[name="person_you_want_to_report_for_legal_aid_fraud"]':
+            value: 'someone getting legal aid for their legal proceedings or court case'
+    information_you_know_someone_else:
+      '#type': checkboxes
+      '#title': 'Information you know about the person you are reporting'
+      '#options':
+        address: address
+        DOB: 'date of birth or age'
+        telephone: telephone
+        email: email
+        nat_ins: 'National Insurance number'
+        'their solicitor': 'their solicitor'
+        'a court action or case they are involved with': 'a court action or case they are involved with'
+      '#required': true
+      '#states':
+        visible:
+          ':input[name="person_you_want_to_report_for_legal_aid_fraud"]':
+            value: 'omeone else benefiting from legal aid'
+  information_about_the_person_you_are_reporting:
+    '#type': webform_wizard_page
+    '#title': 'Information about the person you are reporting'
+    '#states':
+      visible:
+        - ':input[name="person_you_want_to_report_for_legal_aid_fraud"]':
+            value: 'someone getting legal aid for their legal proceedings or court case'
+        - or
+        - ':input[name="person_you_want_to_report_for_legal_aid_fraud"]':
+            value: 'omeone else benefiting from legal aid'
+    '#format': container
+    information_about_the_person_you_are_reporting_fieldset:
+      '#type': fieldset
+      '#title': 'Information about the person you are reporting'
+      persons_address_line_1:
+        '#type': textfield
+        '#title': Address
+        '#placeholder': 'Address line 1'
+        '#required': true
+        '#states':
+          visible:
+            - ':input[name="information_you_know_person_legal_aid[address]"]':
+                checked: true
+            - or
+            - ':input[name="information_you_know_someone_else[address]"]':
+                checked: true
+      persons_address_line_2:
+        '#type': textfield
+        '#title': 'Address line 2'
+        '#title_display': invisible
+        '#placeholder': 'Address line 2'
+        '#required': true
+        '#states':
+          visible:
+            - ':input[name="information_you_know_person_legal_aid[address]"]':
+                checked: true
+            - or
+            - ':input[name="information_you_know_someone_else[address]"]':
+                checked: true
+      persons_postcode:
+        '#type': textfield
+        '#title': Postcode
+        '#title_display': invisible
+        '#placeholder': Postcode
+        '#required': true
+        '#pattern': '^[bB][tT][0-9]{1,2} ?[0-9][a-zA-Z]{2}$'
+        '#pattern_error': 'Enter a valid Northern Ireland postcode'
+        '#states':
+          visible:
+            - ':input[name="information_you_know_person_legal_aid[address]"]':
+                checked: true
+            - or
+            - ':input[name="information_you_know_someone_else[address]"]':
+                checked: true
+      persons_date_of_birth_or_age:
+        '#type': textfield
+        '#title': 'Date of birth or age'
+        '#maxlength': 20
+        '#size': 11
+        '#required': true
+        '#states':
+          visible:
+            - ':input[name="information_you_know_person_legal_aid[DOB]"]':
+                checked: true
+            - or
+            - ':input[name="information_you_know_someone_else[DOB]"]':
+                checked: true
+      persons_telephone:
+        '#type': textfield
+        '#title': Telephone
+        '#required': true
+        '#pattern': '^[0-9\(\) \+\-]{6,20}$'
+        '#pattern_error': 'Enter a valid telephone number'
+        '#states':
+          visible:
+            - ':input[name="information_you_know_person_legal_aid[telephone]"]':
+                checked: true
+            - or
+            - ':input[name="information_you_know_someone_else[telephone]"]':
+                checked: true
+      persons_national_insurance_number:
+        '#type': textfield
+        '#title': 'National Insurance number'
+        '#maxlength': 13
+        '#size': 14
+        '#required': true
+        '#pattern': '\s*[A-CEGHJ-NOPR-TW-Za-ceghj-nopr-tw-z]{2}\s?[0-9\s]{6,9}[ABCDabcd]{1}\s?'
+        '#pattern_error': 'You must enter a valid national insurance number, for example, AA123456A'
+        '#states':
+          visible:
+            - ':input[name="information_you_know_person_legal_aid[nat_ins]"]':
+                checked: true
+            - or
+            - ':input[name="information_you_know_someone_else[nat_ins]"]':
+                checked: true
+      persons_email:
+        '#type': email
+        '#title': Email
+        '#maxlength': 255
+        '#required': true
+        '#required_error': 'Enter a valid email address'
+        '#states':
+          visible:
+            - ':input[name="information_you_know_person_legal_aid[email]"]':
+                checked: true
+            - or
+            - ':input[name="information_you_know_someone_else[email]"]':
+                checked: true
+      persons_employment_or_income:
+        '#type': textfield
+        '#title': 'Employment or income'
+        '#maxlength': 100
+        '#required': true
+        '#states':
+          visible:
+            ':input[name="information_you_know_person_legal_aid[employment or income]"]':
+              checked: true
+      persons_solicitor:
+        '#type': textfield
+        '#title': Solicitor
+        '#maxlength': 100
+        '#required': true
+        '#states':
+          visible:
+            ':input[name="information_you_know_someone_else[their solicitor]"]':
+              checked: true
+      court_proceedings_or_court_action:
+        '#type': textarea
+        '#title': 'Court proceedings or court action'
+        '#description': 'You can give more information about the court case or legal proceedings the person is involved in, including court dates and court where the case was heard. Don&rsquo;t include your personal information.'
+        '#maxlength': 1000
+        '#rows': 5
+        '#required': true
+        '#counter_type': character
+        '#counter_minimum': 1
+        '#counter_maximum': 1000
+        '#states':
+          visible:
+            ':input[name="information_you_know_someone_else[a court action or case they are involved with]"]':
+              checked: true
+  why_you_think_there_is_legal_aid_fraud:
+    '#type': webform_wizard_page
+    '#title': 'Why you think there is legal aid fraud'
+    '#states':
+      invisible:
+        ':input[name="person_you_want_to_report_for_legal_aid_fraud"]':
+          value: 'someone getting legal aid for their legal proceedings or court case'
+    why_do_you_think_there_is_legal_aid_fraud_text:
+      '#type': textarea
+      '#title': 'Why do you think there is legal aid fraud?'
+      '#description': 'You can give more information that&rsquo;s relevant to the legal aid fraud you&rsquo;re reporting. Don&rsquo;t include your own personal information.&nbsp;'
+      '#description_display': before
+      '#maxlength': 1000
+      '#rows': 5
+      '#required': true
+      '#counter_type': character
+      '#counter_minimum': 1
+      '#counter_maximum': 1000
+  why_you_re_reporting_this_person_for_legal_aid_fraud:
+    '#type': webform_wizard_page
+    '#title': 'Why you''re reporting this person for legal aid fraud'
+    '#states':
+      visible:
+        ':input[name="person_you_want_to_report_for_legal_aid_fraud"]':
+          value: 'someone getting legal aid for their legal proceedings or court case'
+    why_you_re_reporting_this_person_for_legal_aid_fraud_options:
+      '#type': checkboxes
+      '#title': 'Why you''re reporting this person for legal aid fraud'
+      '#options':
+        'they’re employed or have an income they haven’t declared': 'they’re employed or have an income they haven’t declared'
+        'they have a partner they haven’t declared': 'they have a partner they haven’t declared'
+        'they have savings, investments or own property they haven’t declared': 'they have savings, investments or own property they haven’t declared'
+      '#required': true
+      '#required_error': 'You must choose one or more options'
+  information_about_the_person_s_job_or_income:
+    '#type': webform_wizard_page
+    '#title': 'Information about the person''s job or income'
+    '#states':
+      visible:
+        ':input[name="why_you_re_reporting_this_person_for_legal_aid_fraud_options[they’re employed or have an income they haven’t declared]"]':
+          checked: true
+    '#format': container
+    information_about_the_person_s_job_or_income_fieldset:
+      '#type': fieldset
+      '#title': 'Information about the person''s job or income'
+      info_persons_job_income_options:
+        '#type': checkboxes
+        '#title': 'Describe the work status of the person you’re reporting for fraud'
+        '#options':
+          'they’re employed or working for a business or someone': 'they’re employed or working for a business or someone'
+          'they’re self-employed': 'they’re self-employed'
+          'they get cash in hand': 'they get cash in hand'
+        '#required': true
+      job_or_type_of_work_the_person_is_doing:
+        '#type': textfield
+        '#title': 'Job or type of work the person is doing'
+        '#maxlength': 100
+      their_employer_s_name_or_the_business_where_they_work:
+        '#type': textfield
+        '#title': 'Their employer’s name or the business where they work'
+      their_employer_s_address_or_business_location_where_they_work:
+        '#type': textfield
+        '#title': 'Their employer''s address or business location where they work'
+        '#placeholder': 'Address line 1'
+      their_employer_or_business_address_line_2:
+        '#type': textfield
+        '#title': 'Their employer or business address line 2'
+        '#title_display': invisible
+        '#placeholder': 'Address line 2'
+      their_employer_s_or_business_postcode:
+        '#type': textfield
+        '#title': 'Their employer''s or business postcode'
+        '#title_display': invisible
+        '#maxlength': 8
+        '#size': 9
+        '#placeholder': Postcode
+        '#pattern': '^[bB][tT][0-9]{1,2} ?[0-9][a-zA-Z]{2}$'
+        '#pattern_error': 'Enter a valid Northern Ireland postcode'
+      date_when_they_began_this_job_or_work:
+        '#type': textfield
+        '#title': 'Date when they began this job or work'
+        '#maxlength': 15
+        '#size': 11
+      number_of_hours_they_work_every_week:
+        '#type': number
+        '#title': 'Number of hours they work every week'
+        '#size': '4'
+        '#max': 168
+        '#step': 0.5
+      does_this_person_go_to_work_in_a_vehicle_:
+        '#type': radios
+        '#title': 'Does this person go to work in a vehicle?'
+        '#options':
+          'Yes': 'Yes'
+          'No': 'No'
+          'Don''t know': 'Don''t know'
+        '#options_display': side_by_side
+        '#required': true
+      vehicle_information:
+        '#type': textfield
+        '#title': 'Vehicle information'
+        '#description': 'Provide the make, model, colour or registration of the vehicle if you can'
+        '#maxlength': 100
+        '#states':
+          visible:
+            ':input[name="does_this_person_go_to_work_in_a_vehicle_"]':
+              value: 'Yes'
+  information_about_the_person_s_partner:
+    '#type': webform_wizard_page
+    '#title': 'Information about the person''s partner'
+    '#states':
+      visible:
+        ':input[name="why_you_re_reporting_this_person_for_legal_aid_fraud_options[they have a partner they haven’t declared]"]':
+          checked: true
+    '#format': container
+    information_about_the_person_s_partner_fieldset:
+      '#type': fieldset
+      '#title': 'Information about the person''s partner'
+      partners_first_name:
+        '#type': textfield
+        '#title': 'First name'
+        '#maxlength': 100
+        '#required': true
+      partners_last_name:
+        '#type': textfield
+        '#title': 'Last name'
+        '#maxlength': 100
+        '#required': true
+      partners_other_names_they_use:
+        '#type': textfield
+        '#title': 'Other names they use'
+        '#maxlength': 100
+      partners_address:
+        '#type': textfield
+        '#title': 'Partner''s address'
+        '#placeholder': 'Address line 1'
+      partners_address_line_2:
+        '#type': textfield
+        '#title': 'Partner''s address line 2'
+        '#title_display': invisible
+        '#placeholder': 'Address line 2'
+      partners_postcode:
+        '#type': textfield
+        '#title': 'Partner''s postcode'
+        '#title_display': invisible
+        '#maxlength': 8
+        '#size': 9
+        '#placeholder': Postcode
+      partners_telephone:
+        '#type': textfield
+        '#title': 'Their telephone'
+        '#maxlength': 20
+        '#size': 21
+        '#pattern': '^[\+0-9\s\-\(\)]+$'
+        '#pattern_error': 'Enter a valid telephone number'
+      partners_email:
+        '#type': email
+        '#title': 'Their email'
+        '#maxlength': 255
+      length_of_time_they_ve_lived_with_the_person_you_re_reporting:
+        '#type': textfield
+        '#title': 'Length of time they''ve lived with the person you''re reporting'
+        '#maxlength': 100
+        '#size': 30
+      the_person_s_partner_is_employed_self_employed_or_works_for_some:
+        '#type': radios
+        '#title': 'The person''s partner is employed, self-employed or works for someone'
+        '#options':
+          'Yes': 'Yes'
+          'No': 'No'
+          'Don''t know': 'Don''t know'
+        '#required': true
+        '#required_error': 'You must choose an option'
+  information_about_undeclared_income_savings_or_investments:
+    '#type': webform_wizard_page
+    '#title': 'Information about undeclared income, savings or investments'
+    '#states':
+      visible:
+        ':input[name="why_you_re_reporting_this_person_for_legal_aid_fraud_options[they have savings, investments or own property they haven’t declared]"]':
+          checked: true
+    '#format': container
+    information_about_undeclared_income_savings_investments_fieldset:
+      '#type': fieldset
+      '#title': 'Information about undeclared income, savings or investments'
+      give_a_reason_why_you_think_the_person_has_undeclared_savings_or:
+        '#type': textarea
+        '#title': 'Give a reason why you think the person has undeclared savings or non-work related income'
+        '#maxlength': 255
+        '#rows': 2
+        '#required': true
+        '#counter_type': character
+        '#counter_minimum': 1
+        '#counter_maximum': 255
+      amount_or_value_of_their_undeclared_savings_or_non_work_related_:
+        '#type': textfield
+        '#title': 'Amount or value of their undeclared savings or non-work related income'
+        '#maxlength': 30
+        '#size': 31
+      length_of_time_they_ve_had_undeclared_savings_or_non_work_relate:
+        '#type': textfield
+        '#title': 'Length of time they’ve had undeclared savings or non-work related income'
+        '#maxlength': 30
+        '#size': 31
+  additional_information:
+    '#type': webform_wizard_page
+    '#title': 'Additional information'
+    '#states':
+      visible:
+        ':input[name="person_you_want_to_report_for_legal_aid_fraud"]':
+          value: 'someone getting legal aid for their legal proceedings or court case'
+    more_information:
+      '#type': textarea
+      '#title': 'You can give more information that’s relevant to the legal aid fraud you’re reporting'
+      '#description': 'Don&rsquo;t include your own personal information.&nbsp;'
+      '#description_display': before
+      '#maxlength': 1000
+      '#rows': 5
+      '#counter_type': character
+      '#counter_minimum': 1
+      '#counter_maximum': 1000
+  actions:
+    '#type': webform_actions
+    '#title': 'Submit button(s)'
+    '#wizard_prev__label': Previous
+    '#wizard_next__label': Next
+    '#preview_next__label': Next
+css: ''
+javascript: ''
+settings:
+  ajax: true
+  ajax_scroll_top: form
+  ajax_progress_type: throbber
+  ajax_effect: fade
+  ajax_speed: null
+  page: true
+  page_submit_path: ''
+  page_confirm_path: ''
+  page_theme_name: ''
+  form_title: source_entity_webform
+  form_submit_once: false
+  form_exception_message: ''
+  form_open_message: ''
+  form_close_message: ''
+  form_previous_submissions: true
+  form_confidential: false
+  form_confidential_message: ''
+  form_disable_remote_addr: false
+  form_convert_anonymous: false
+  form_prepopulate: false
+  form_prepopulate_source_entity: false
+  form_prepopulate_source_entity_required: false
+  form_prepopulate_source_entity_type: ''
+  form_reset: false
+  form_disable_autocomplete: false
+  form_novalidate: false
+  form_disable_inline_errors: false
+  form_required: false
+  form_unsaved: false
+  form_disable_back: false
+  form_submit_back: false
+  form_autofocus: false
+  form_details_toggle: false
+  form_access_denied: default
+  form_access_denied_title: ''
+  form_access_denied_message: ''
+  form_access_denied_attributes: {  }
+  form_file_limit: ''
+  share: false
+  share_node: false
+  share_theme_name: ''
+  share_title: true
+  share_page_body_attributes: {  }
+  submission_label: ''
+  submission_log: false
+  submission_views: {  }
+  submission_views_replace: {  }
+  submission_user_columns: {  }
+  submission_user_duplicate: false
+  submission_access_denied: default
+  submission_access_denied_title: ''
+  submission_access_denied_message: ''
+  submission_access_denied_attributes: {  }
+  submission_exception_message: ''
+  submission_locked_message: ''
+  submission_excluded_elements: {  }
+  submission_exclude_empty: false
+  submission_exclude_empty_checkbox: false
+  previous_submission_message: ''
+  previous_submissions_message: ''
+  autofill: false
+  autofill_message: ''
+  autofill_excluded_elements: {  }
+  wizard_progress_bar: false
+  wizard_progress_pages: false
+  wizard_progress_percentage: false
+  wizard_progress_link: false
+  wizard_progress_states: false
+  wizard_auto_forward: true
+  wizard_auto_forward_hide_next_button: false
+  wizard_keyboard: true
+  wizard_start_label: ''
+  wizard_preview_link: false
+  wizard_confirmation: true
+  wizard_confirmation_label: ''
+  wizard_track: ''
+  wizard_prev_button_label: Previous
+  wizard_next_button_label: Next
+  wizard_toggle: true
+  wizard_toggle_show_label: ''
+  wizard_toggle_hide_label: ''
+  preview: 2
+  preview_label: ''
+  preview_title: ''
+  preview_message: '<p>Before sending the report, check the information is accurate.</p>'
+  preview_attributes: {  }
+  preview_excluded_elements:
+    information_you_know_person_legal_aid: information_you_know_person_legal_aid
+    information_you_know_someone_else: information_you_know_someone_else
+  preview_exclude_empty: true
+  preview_exclude_empty_checkbox: false
+  draft: none
+  draft_multiple: false
+  draft_auto_save: false
+  draft_saved_message: ''
+  draft_loaded_message: ''
+  draft_pending_single_message: ''
+  draft_pending_multiple_message: ''
+  confirmation_type: page
+  confirmation_title: ''
+  confirmation_message: 'Thank you. The Legal Services Agency Northern Ireland received your report of legal aid fraud. They&rsquo;ll investigate the information you reported. But they are unable to discuss the outcome of their investigation.'
+  confirmation_url: ''
+  confirmation_attributes: {  }
+  confirmation_back: true
+  confirmation_back_label: ''
+  confirmation_back_attributes: {  }
+  confirmation_exclude_query: false
+  confirmation_exclude_token: false
+  confirmation_update: false
+  limit_total: null
+  limit_total_interval: null
+  limit_total_message: ''
+  limit_total_unique: false
+  limit_user: null
+  limit_user_interval: null
+  limit_user_message: ''
+  limit_user_unique: false
+  entity_limit_total: null
+  entity_limit_total_interval: null
+  entity_limit_user: null
+  entity_limit_user_interval: null
+  purge: none
+  purge_days: null
+  results_disabled: true
+  results_disabled_ignore: true
+  results_customize: false
+  token_view: false
+  token_update: false
+  token_delete: false
+  serial_disabled: false
+access:
+  create:
+    roles:
+      - anonymous
+      - authenticated
+    users: {  }
+    permissions: {  }
+  view_any:
+    roles: {  }
+    users: {  }
+    permissions: {  }
+  update_any:
+    roles: {  }
+    users: {  }
+    permissions: {  }
+  delete_any:
+    roles: {  }
+    users: {  }
+    permissions: {  }
+  purge_any:
+    roles: {  }
+    users: {  }
+    permissions: {  }
+  view_own:
+    roles: {  }
+    users: {  }
+    permissions: {  }
+  update_own:
+    roles: {  }
+    users: {  }
+    permissions: {  }
+  delete_own:
+    roles: {  }
+    users: {  }
+    permissions: {  }
+  administer:
+    roles: {  }
+    users: {  }
+    permissions: {  }
+  test:
+    roles: {  }
+    users: {  }
+    permissions: {  }
+  configuration:
+    roles: {  }
+    users: {  }
+    permissions: {  }
+handlers:
+  email:
+    id: email
+    label: Email
+    notes: ''
+    handler_id: email
+    status: true
+    conditions: {  }
+    weight: 0
+    settings:
+      states:
+        - completed
+      to_mail: neil.r.blair@gmail.com
+      to_options: {  }
+      cc_mail: ''
+      cc_options: {  }
+      bcc_mail: ''
+      bcc_options: {  }
+      from_mail: _default
+      from_options: {  }
+      from_name: _default
+      subject: _default
+      body: |
+        Submitted on [webform_submission:created]<br />
+        Submitted values are:<br />
+        [webform_submission:values]
+      excluded_elements:
+        information_you_know_person_legal_aid: information_you_know_person_legal_aid
+        information_you_know_someone_else: information_you_know_someone_else
+      ignore_access: false
+      exclude_empty: true
+      exclude_empty_checkbox: false
+      exclude_attachments: false
+      html: true
+      attachments: false
+      twig: false
+      debug: false
+      reply_to: ''
+      return_path: ''
+      sender_mail: ''
+      sender_name: ''
+      theme_name: ''
+      parameters: {  }
+variants: {  }
