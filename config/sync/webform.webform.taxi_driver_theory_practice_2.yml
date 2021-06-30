@@ -113,7 +113,7 @@ elements: |
       '#type': processed_text
       '#display_on': both
       '#text': |
-        <drupal-media data-align="center" data-entity-type="media" data-entity-uuid="ed7947fa-e097-401f-a250-b7c52d412958" data-view-mode="article_float"></drupal-media>
+        <drupal-media data-align="center" data-entity-type="media" data-entity-uuid="f8baa387-c9f8-447d-8cd8-12334d84d1a2" data-view-mode="article_float"></drupal-media>
         
       '#format': basic_html
     question_8:
@@ -268,6 +268,10 @@ elements: |
         q15_a4: '17 hours'
       '#options_randomize': true
       '#required': true
+  actions:
+    '#type': webform_actions
+    '#title': 'Submit button(s)'
+    '#submit__label': 'Finish test'
 css: ''
 javascript: ''
 settings:
@@ -359,8 +363,8 @@ settings:
   confirmation_message: ''
   confirmation_url: ''
   confirmation_attributes: {  }
-  confirmation_back: false
-  confirmation_back_label: ''
+  confirmation_back: true
+  confirmation_back_label: 'Take practice test again'
   confirmation_back_attributes: {  }
   confirmation_exclude_query: false
   confirmation_exclude_token: false
@@ -526,7 +530,7 @@ handlers:
           correct_feedback: |
             <p>Keep a safe distance – there could be queues in front.</p>
             
-            <drupal-media data-align="center" data-entity-type="media" data-entity-uuid="ed7947fa-e097-401f-a250-b7c52d412958"></drupal-media>
+            <drupal-media data-align="center" data-entity-type="media" data-entity-uuid="f8baa387-c9f8-447d-8cd8-12334d84d1a2"></drupal-media>
           incorrect_feedback: '<p>Please read "The Highway Code for NI".</p>'
         question_9:
           correct_answer: q9_a1
