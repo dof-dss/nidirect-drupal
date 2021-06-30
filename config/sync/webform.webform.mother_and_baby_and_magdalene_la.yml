@@ -271,7 +271,11 @@ handlers:
       from_options: {  }
       from_name: '[webform_submission:values:name:raw]'
       subject: 'Mother and baby institutions investigation: register of interest'
-      body: _default
+      body: |
+        <p>Submitted on [webform_submission:created]</p>
+        
+        <p>Submitted values are:</p>
+        [webform_submission:values]
       excluded_elements:
         intro_text: intro_text
       ignore_access: false
