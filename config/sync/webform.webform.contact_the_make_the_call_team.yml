@@ -89,6 +89,8 @@ elements: |
     email_address:
       '#type': email
       '#title': 'Email address'
+      '#pattern': '[^@\s]+@[^@\s]+\.[^@\s]+'
+      '#pattern_error': 'You must enter a valid email address, for example, name@example.com'
       '#states':
         visible:
           ':input[name="can_use_a_phone"]':
@@ -260,10 +262,13 @@ settings:
   draft_pending_multiple_message: ''
   confirmation_type: page
   confirmation_title: ''
-  confirmation_message: '<h2>Thank you for your contact request</h2><p>A Make the Call&nbsp;benefit advisor will be in touch with you shortly.</p>'
+  confirmation_message: |
+    <h2>Thank you for your contact request</h2>
+    
+    <p class="info-notice info-notice--success">A Make the Call&nbsp;benefit advisor will be in touch with you shortly.</p>
   confirmation_url: ''
   confirmation_attributes: {  }
-  confirmation_back: true
+  confirmation_back: false
   confirmation_back_label: ''
   confirmation_back_attributes: {  }
   confirmation_exclude_query: false
@@ -378,6 +383,7 @@ handlers:
         <p>Submitted on [webform_submission:created:long]</p>
         <p>Submitted values are:</p>
         [webform_submission:values]
+        
       excluded_elements:
         do_you_live_in_northern_ireland: do_you_live_in_northern_ireland
       ignore_access: false
@@ -426,6 +432,7 @@ handlers:
         Make the Call Team<br />
         &nbsp;<br />
         Please note: This email was been sent from a notification-only email address that can&rsquo;t accept replies. Please do not reply to this message.
+        
       excluded_elements: {  }
       ignore_access: false
       exclude_empty: true

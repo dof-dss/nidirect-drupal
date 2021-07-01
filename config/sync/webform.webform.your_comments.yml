@@ -428,6 +428,7 @@ elements: |
         - ':input[name="do_you_want_a_reply_options"]':
             checked: true
     '#submit__label': 'Send feedback'
+  
 css: ''
 javascript: ''
 settings:
@@ -520,6 +521,7 @@ settings:
     <div class="info-notice info-notice--success">
     <p><strong>Thank you for your feedback</strong></p>
     </div>
+    
   confirmation_url: ''
   confirmation_attributes: {  }
   confirmation_back: false
@@ -612,7 +614,7 @@ handlers:
     label: Email
     notes: ''
     handler_id: email
-    status: false
+    status: true
     conditions: {  }
     weight: 0
     settings:
@@ -633,6 +635,7 @@ handlers:
         <br />
         [webform_submission:values]<br />
         --------------------------------------------------------------------------------------------- Submitted: [webform_submission:completed:long]
+        
       excluded_elements: {  }
       ignore_access: false
       exclude_empty: true
@@ -653,7 +656,7 @@ handlers:
     label: 'Auto reply'
     notes: ''
     handler_id: auto_reply
-    status: false
+    status: true
     conditions: {  }
     weight: 0
     settings:
@@ -681,6 +684,7 @@ handlers:
         All responses will usually be sent out Monday to Friday, 9.00 am to 5.00 pm (excluding public and bank holidays).
         
         This is an automated email message. Please do not reply to this email as we do not have access to emails sent to noreply@nidirect.gov.uk.
+        
       excluded_elements: {  }
       ignore_access: false
       exclude_empty: true

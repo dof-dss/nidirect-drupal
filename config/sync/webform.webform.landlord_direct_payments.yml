@@ -301,7 +301,7 @@ settings:
   preview: 2
   preview_label: ''
   preview_title: ''
-  preview_message: '<p><span style="-webkit-text-stroke-width:0px; color:#000000; display:inline !important; float:none; font-family:Lato,&quot;Open Sans&quot;,sans-serif; font-size:21px; font-style:normal; font-variant-caps:normal; font-variant-ligatures:normal; font-weight:400; letter-spacing:normal; orphans:2; text-align:start; text-decoration-color:initial; text-decoration-style:initial; text-decoration-thickness:initial; text-indent:0px; text-transform:none; white-space:normal; widows:2; word-spacing:0px">Before sending information about you and your tenant to Universal Credit, check the information is accurate.&nbsp;</span></p>'
+  preview_message: '<p>Before sending information about you and your tenant to Universal Credit, check the information is accurate.</p>'
   preview_attributes: {  }
   preview_excluded_elements: {  }
   preview_exclude_empty: true
@@ -315,14 +315,11 @@ settings:
   draft_pending_multiple_message: ''
   confirmation_type: page
   confirmation_title: ''
-  confirmation_message: |
-    <div class="success-notice">
-    <p>Thank you.&nbsp; Universal Credit received your request for a direct payment of your tenant&#39;s housing costs.&nbsp; They&#39;ll contact you if they need more information.</p>
-    </div>
+  confirmation_message: '<p class="info-notice info-notice--success">Thank you.&nbsp; Universal Credit received your request for a direct payment of your tenant&#39;s housing costs.&nbsp; They&#39;ll contact you if they need more information.</p>'
   confirmation_url: ''
   confirmation_attributes: {  }
-  confirmation_back: false
-  confirmation_back_label: ''
+  confirmation_back: true
+  confirmation_back_label: 'Make another request'
   confirmation_back_attributes: {  }
   confirmation_exclude_query: false
   confirmation_exclude_token: false
@@ -432,7 +429,11 @@ handlers:
       from_options: {  }
       from_name: nidirect
       subject: 'Set up a direct payment of a tenant''s housing costs to a landlord'
-      body: ''
+      body: |
+        Submitted on [webform_submission:created]<br />
+        <br />
+        Submitted values are:<br />
+        [webform_submission:values]
       excluded_elements: {  }
       ignore_access: false
       exclude_empty: true
