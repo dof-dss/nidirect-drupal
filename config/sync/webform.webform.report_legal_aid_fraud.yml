@@ -425,6 +425,8 @@ elements: |
         '#maxlength': 255
         '#required': true
         '#required_error': 'Enter a valid email address'
+        '#pattern': '[^@\s]+@[^@\s]+\.[^@\s]+'
+        '#pattern_error': 'You must enter a valid email address, for example, name@example.com'
         '#states':
           visible:
             - ':input[name="information_you_know_person_legal_aid[email]"]':
@@ -623,6 +625,8 @@ elements: |
         '#type': email
         '#title': 'Their email'
         '#maxlength': 255
+        '#pattern': '[^@\s]+@[^@\s]+\.[^@\s]+'
+        '#pattern_error': 'You must enter a valid email address, for example, name@example.com'
       length_of_time_they_ve_lived_with_the_person_you_re_reporting:
         '#type': textfield
         '#title': 'Length of time they''ve lived with the person you''re reporting'
@@ -793,10 +797,10 @@ settings:
   draft_pending_multiple_message: ''
   confirmation_type: page
   confirmation_title: ''
-  confirmation_message: 'Thank you. The Legal Services Agency Northern Ireland received your report of legal aid fraud. They&rsquo;ll investigate the information you reported. But they are unable to discuss the outcome of their investigation.'
+  confirmation_message: '<p class="info-notice info-notice--success">Thank you. The Legal Services Agency Northern Ireland received your report of legal aid fraud. They&rsquo;ll investigate the information you reported. But they are unable to discuss the outcome of their investigation.</p>'
   confirmation_url: ''
   confirmation_attributes: {  }
-  confirmation_back: true
+  confirmation_back: false
   confirmation_back_label: ''
   confirmation_back_attributes: {  }
   confirmation_exclude_query: false
@@ -882,7 +886,7 @@ handlers:
     settings:
       states:
         - completed
-      to_mail: neil.r.blair@gmail.com
+      to_mail: counterfraud@lsani.gov.uk
       to_options: {  }
       cc_mail: ''
       cc_options: {  }
