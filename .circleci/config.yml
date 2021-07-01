@@ -350,26 +350,6 @@ jobs:
             /home/circleci/.platformsh/bin/platform environment:drush sapi-r -p $PLATFORM_PROJECT_ID -e $EDGE_BUILD_BRANCH
             /home/circleci/.platformsh/bin/platform environment:drush sapi-i -p $PLATFORM_PROJECT_ID -e $EDGE_BUILD_BRANCH
 
-
-  # Fetches migration assets from NIDirect D7. Platform.sh API token injected as environment variable.
-  migrate_update_assets:
-    docker:
-      - image: circleci/php:7.4.15-apache-browsers
-    steps:
-      - checkout_code
-      - install_php_os_extensions
-      - install_platformsh_tools
-      - run:
-          name: Fetch database and managed files from NIDirect D7
-          command: |
-            /home/circleci/.platformsh/bin/platform ssh -p $PLATFORM_PROJECT_ID -e main /app/migrate-fetch.sh $PLATFORM_LEGACY_PROJECT_ID $PLATFORM_LEGACY_BRANCH
-          no_output_timeout: 30m
-      - run:
-          name: Unpack database to legacy database service
-          command: |
-            /home/circleci/.platformsh/bin/platform ssh -p $PLATFORM_PROJECT_ID -e main /app/migrate-unpack.sh
-          no_output_timeout: 30m
-
 workflows:
   version: 2
   # Our default pipeline that tests the integrity of our build + any tests.
@@ -433,16 +413,3 @@ workflows:
       - functional_tests:
           requires:
             - sync_data
-
-  # TODO: replace with weekly cron timing once confirmed running.
-  weekly-migration-data-sync:
-    triggers:
-      - schedule:
-          # At 02:30 every Saturday
-          cron: "30 2 * * 6"
-          filters:
-            branches:
-              only:
-                - development
-    jobs:
-      - migrate_update_assets
