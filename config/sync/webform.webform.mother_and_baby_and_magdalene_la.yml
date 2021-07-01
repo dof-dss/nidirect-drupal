@@ -37,6 +37,8 @@ elements: |
     '#maxlength': 255
     '#required': true
     '#required_error': 'You must provide your email address'
+    '#pattern': '[^@\s]+@[^@\s]+\.[^@\s]+'
+    '#pattern_error': 'You must enter a valid email address, for example, name@example.com'
   do_you_live_in_northern_ireland_:
     '#type': radios
     '#title': 'Do you live in Northern Ireland?'
@@ -270,19 +272,17 @@ handlers:
       from_name: '[webform_submission:values:name:raw]'
       subject: 'Mother and baby institutions investigation: register of interest'
       body: |
-        Submitted on [webform_submission:created]
-        Submitted by: [webform_submission:user]
+        <p>Submitted on [webform_submission:created]</p>
         
-        Submitted values are:
+        <p>Submitted values are:</p>
         [webform_submission:values]
-        
       excluded_elements:
         intro_text: intro_text
       ignore_access: false
       exclude_empty: true
       exclude_empty_checkbox: false
       exclude_attachments: false
-      html: false
+      html: true
       attachments: false
       twig: false
       debug: false
@@ -317,6 +317,7 @@ handlers:
         <p><strong>Thank you for submitting your expression of interest</strong></p>
         
         <p>You do not need to do anything. The Support Team will be in contact within the next 5 working days.</p>
+        
       excluded_elements:
         intro_text: intro_text
         name: name

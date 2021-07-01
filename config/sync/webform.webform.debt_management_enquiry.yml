@@ -87,8 +87,10 @@ elements: |
     email_address:
       '#type': email
       '#title': 'Email address'
-      '#maxlength': '255'
+      '#maxlength': 255
       '#required': true
+      '#pattern': '[^@\s]+@[^@\s]+\.[^@\s]+'
+      '#pattern_error': 'You must enter a valid email address, for example, name@example.com'
   enquiry_details:
     '#type': fieldset
     '#title': 'Enquiry details'
@@ -213,7 +215,10 @@ settings:
   draft_pending_multiple_message: ''
   confirmation_type: page
   confirmation_title: ''
-  confirmation_message: 'Thank you for your enquiry. We aim to respond to you within 2 working days.'
+  confirmation_message: |
+    <p class="info-notice info-notice--success">
+      Thank you for your enquiry. We aim to respond to you within 2 working days.
+    </p>
   confirmation_url: ''
   confirmation_attributes: {  }
   confirmation_back: false
@@ -331,6 +336,7 @@ handlers:
         &lt;p&gt;Submitted on [current-date:long]&lt;/p&gt;<br />
         &lt;p&gt;Submitted values are:&lt;/p&gt;<br />
         [webform_submission:values]
+        
       excluded_elements: {  }
       ignore_access: false
       exclude_empty: true

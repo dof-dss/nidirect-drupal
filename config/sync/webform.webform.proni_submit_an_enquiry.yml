@@ -48,6 +48,8 @@ elements: |
       '#title': Email
       '#required': true
       '#required_error': 'You must fill in this field'
+      '#pattern': '[^@\s]+@[^@\s]+\.[^@\s]+'
+      '#pattern_error': 'You must enter a valid email address, for example, name@example.com'
   actions:
     '#type': webform_actions
     '#title': 'Submit button(s)'
@@ -142,7 +144,7 @@ settings:
   draft_pending_multiple_message: ''
   confirmation_type: page
   confirmation_title: 'Thank you'
-  confirmation_message: '<p>We aim to get back to you within 10 to 14 working days with a response or update on your enquiry.</p>'
+  confirmation_message: '<p class="info-notice info-notice--success">We aim to get back to you within 10 to 14 working days with a response or update on your enquiry.</p>'
   confirmation_url: ''
   confirmation_attributes: {  }
   confirmation_back: true
