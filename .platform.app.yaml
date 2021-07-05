@@ -83,8 +83,7 @@ hooks:
     drush -y updatedb
     # General config import
     drush -y config-import
-    # Force partial imports of migration config.
-    ../migrate-config-sync.sh
+    # Final cache rebuild.
     drush -y cache-rebuild
 # The configuration of app when it is exposed to the web.
 web:
