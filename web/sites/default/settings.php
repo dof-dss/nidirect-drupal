@@ -69,12 +69,7 @@ if (!empty(getenv('PLATFORM_BRANCH'))) {
       // De-facto production settings.
       $config['config_split.config_split.production']['status'] = TRUE;
       break;
-
-    case 'D8NID-staging':
-      // Use production settings too.
-      $config['config_split.config_split.production']['status'] = TRUE;
-      break;
-
+      
     default:
       // Default to use development settings/services for general platform.sh environments.
       $config['config_split.config_split.development']['status'] = TRUE;
