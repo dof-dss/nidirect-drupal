@@ -8,10 +8,12 @@ use Symfony\Component\HttpFoundation\Response;
 $autoloader = require_once 'autoload.php';
 
 $errors = [];
+$request = Request::createFromGlobals();
 
-$kernel = DrupalKernel::createFromRequest(Request::createFromGlobals(), $autoloader, 'prod');
+$kernel = DrupalKernel::createFromRequest($request, $autoloader, 'prod');
 try {
   $kernel->boot();
+  $kernel->preHandle($request);
 } catch (Exception $e) {
   $errors[] = 'Unable to boot the kernel: ' . $e->getMessage();
 }
@@ -72,4 +74,6 @@ if (count($errors) > 0) {
 }
 
 $response->send();
+
+$kernel->terminate($request, $response);
 $kernel->shutdown();
