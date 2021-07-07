@@ -15,7 +15,9 @@ try {
   $kernel->boot();
   $kernel->preHandle($request);
 } catch (Exception $e) {
-  $errors[] = 'Unable to boot the kernel: ' . $e->getMessage();
+  // Remove database username from exception message.
+  $message = preg_replace('/\'(.*)\'(@\'.*\')/m', '\'*****\'$2', $e->getMessage());
+  $errors[] = 'Unable to boot the kernel: ' . $message;
 }
 
 // If the kernel is healthy, process with the checks.
