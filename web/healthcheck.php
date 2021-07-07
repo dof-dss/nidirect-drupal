@@ -21,3 +21,12 @@ $result = $database->query("SELECT uid FROM {users} WHERE uid = 1")->fetch();
 if (empty($result->uid)) {
   $errors[] = 'Database query failed';
 }
+
+/**
+ * Check that the site is not running in maintenance mode.
+ */
+$maintenance_mode = $container->get('state')->get('system.maintenance_mode');
+
+if ($maintenance_mode) {
+  $errors[] = 'Site offline: maintenance mode';
+}
