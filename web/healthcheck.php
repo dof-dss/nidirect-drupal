@@ -64,3 +64,4 @@ if (count($errors) > 0) {
 }
 
 $response->send();
+$kernel->shutdown();
