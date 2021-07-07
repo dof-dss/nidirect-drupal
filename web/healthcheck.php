@@ -45,9 +45,14 @@ if ($public_fs_path && $temp_file = tempnam($public_fs_path, 'status_check_')) {
     $errors[] = 'Could not create a file in the files directory.';
 }
 
+// Create and return a new Response.
 $response = new Response();
 $response->setExpires(new DateTime('01/15/2001'));
 $response->setLastModified(new DateTime());
+
+// Manually set headers for cache control.
+$response->headers->set('Cache-Control', ['no-store', 'must-revalidate', 'stale-while-revalidate=0', 'stale-if-error=0']);
+$response->headers->set('Surrogate-Control', 'max-age=30');
 
 // Format the response output.
 if (count($errors) > 0) {
