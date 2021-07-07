@@ -1,5 +1,5 @@
 # Each route describes how an incoming URL is going to be processed by Platform.sh.
-"https://{default}/":
+"https://www.{default}/":
   type: upstream
   upstream: "nidirect:http"
   cache:
@@ -11,6 +11,6 @@
         regexp: true
         code: 301
 
-"https://www.{default}/":
+"https://{default}/":
   type: redirect
-  to: "https://{default}/"
+  to: "https://www.{default}/"
