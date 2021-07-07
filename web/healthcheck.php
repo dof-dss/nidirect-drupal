@@ -3,6 +3,7 @@
 use Drupal\Core\DrupalKernel;
 use Drupal\Core\StreamWrapper\PublicStream;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 $autoloader = require_once 'autoload.php';
 
@@ -44,3 +45,17 @@ if ($public_fs_path && $temp_file = tempnam($public_fs_path, 'status_check_')) {
     $errors[] = 'Could not create a file in the files directory.';
 }
 
+$response = new Response();
+$response->setExpires(new DateTime('01/15/2001'));
+$response->setLastModified(new DateTime());
+
+// Format the response output.
+if (count($errors) > 0) {
+  $output = 'NOK' . ' 500' . '<br />' . implode("<br />\n", $errors);
+  $response->setContent($output);
+  $response->setStatusCode(500);
+} else {
+  $response->setContent('OK' . ' 200');
+}
+
+$response->send();
