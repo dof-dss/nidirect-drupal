@@ -76,6 +76,14 @@ commands:
       - run:
           name: Keyscan GitHub hostname
           command: mkdir -p ~/.ssh && ssh-keyscan -H github.com >> ~/.ssh/known_hosts
+  update_robots_dot_txt:
+    description: "Apply custom config to robots.txt file"
+    steps:
+      - run:
+          name: Update robots file
+          command: |
+            cd /home/circleci/project/web
+            cp -f robots_nidirect.txt robots.txt
 
 jobs:
   # Tests the integrity of the build, stores the results in a workspace for re-use in later jobs.
@@ -86,6 +94,7 @@ jobs:
       - checkout_code
       - install_php_os_extensions
       - composer_tasks
+      - update_robots_dot_txt
       - persist_to_workspace:
           root: ./
           paths:
@@ -107,6 +116,7 @@ jobs:
             composer require dof-dss/nidirect-site-modules:dev-development dof-dss/nidirect-migrations:dev-development \
               dof-dss/nidirect-d8-test-install-profile:dev-development dof-dss/nicsdru_origins_theme:dev-development \
               dof-dss/nicsdru_origins_modules:dev-development dof-dss/nicsdru_nidirect_theme:dev-development
+      - update_robots_dot_txt
       - persist_to_workspace:
           root: ./
           paths:
@@ -339,6 +349,12 @@ jobs:
           name: Set GAC state variable
           command: |
             /home/circleci/.platformsh/bin/platform environment:drush "sset google_analytics_counter.access_token ${GAC_ACCESS_TOKEN}" -p $PLATFORM_PROJECT_ID -e $EDGE_BUILD_BRANCH
+      - run:
+          name: Enable test user accounts
+          command: |
+            for username in nw_test_admin nw_test_apps nw_test_authenticated nw_test_author nw_test_editor nw_test_gp_author nw_test_gp_super nw_test_news_super nw_test_super; do
+              /home/circleci/.platformsh/bin/platform environment:drush user:unblock $username
+            done
       - run:
           name: Force purge of Solr index
           command: /home/circleci/.platformsh/bin/platform ssh -p $PLATFORM_PROJECT_ID -e $EDGE_BUILD_BRANCH "curl http://${PLATFORM_SOLR_HOST}/solr/default/update --data '<delete><query>*:*</query></delete>' -H 'Content-type:text/xml; charset=utf-8' && curl http://${PLATFORM_SOLR_HOST}/solr/default/update --data '<commit/>' -H 'Content-type:text/xml; charset=utf-8'"
