@@ -84,6 +84,14 @@ commands:
           command: |
             cd /home/circleci/project/web
             cp -f robots_nidirect.txt robots.txt
+  rename_healthcheck_file:
+    description: "Renames the healthcheck.php file with a uuid to prevent filename guessing"
+    steps:
+      - run:
+          name: Rename healthcheck file
+          command: |
+            cd /home/circleci/project/web
+            mv -f healthcheck.php hc_$HEALTHCHECK_ID.php
 
 jobs:
   # Tests the integrity of the build, stores the results in a workspace for re-use in later jobs.
@@ -95,6 +103,7 @@ jobs:
       - install_php_os_extensions
       - composer_tasks
       - update_robots_dot_txt
+      - rename_healthcheck_file
       - persist_to_workspace:
           root: ./
           paths:
