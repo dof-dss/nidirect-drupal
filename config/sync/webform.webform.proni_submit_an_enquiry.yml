@@ -34,15 +34,11 @@ elements: |
       '#title': 'First name'
       '#required': true
       '#required_error': 'You must fill in this field'
-      '#counter_type': character
-      '#counter_maximum': '100'
     last_name:
       '#type': textfield
       '#title': 'Last name'
       '#required': true
       '#required_error': 'You must fill in this field'
-      '#counter_type': character
-      '#counter_maximum': '100'
     email:
       '#type': email
       '#title': Email
@@ -50,6 +46,14 @@ elements: |
       '#required_error': 'You must fill in this field'
       '#pattern': '[^@\s]+@[^@\s]+\.[^@\s]+'
       '#pattern_error': 'You must enter a valid email address, for example, name@example.com'
+  extra_comments_optional_:
+    '#type': textarea
+    '#title': 'Extra comments (optional)'
+    '#pattern': '^(?![\s\S])'
+    '#pattern_error': 'There was a problem with the extra comments you have provided'
+    '#wrapper_attributes':
+      class:
+        - for-pooh-bear
   actions:
     '#type': webform_actions
     '#title': 'Submit button(s)'
@@ -242,13 +246,13 @@ handlers:
     label: Email
     notes: ''
     handler_id: email
-    status: true
+    status: false
     conditions: {  }
     weight: 0
     settings:
       states:
         - completed
-      to_mail: _default
+      to_mail: proni@communities-ni.gov.uk
       to_options: {  }
       cc_mail: ''
       cc_options: {  }
@@ -263,7 +267,7 @@ handlers:
       ignore_access: false
       exclude_empty: false
       exclude_empty_checkbox: false
-      html: true
+      html: false
       attachments: false
       twig: false
       debug: false
@@ -274,4 +278,41 @@ handlers:
       theme_name: ''
       parameters: {  }
       exclude_attachments: false
+  email_1:
+    id: email
+    label: Email
+    notes: ''
+    handler_id: email_1
+    status: true
+    conditions: {  }
+    weight: 0
+    settings:
+      states:
+        - completed
+      to_mail: neil.r.blair@gmail.com
+      to_options: {  }
+      cc_mail: ''
+      cc_options: {  }
+      bcc_mail: ''
+      bcc_options: {  }
+      from_mail: _default
+      from_options: {  }
+      from_name: _default
+      subject: _default
+      body: _default
+      excluded_elements: {  }
+      ignore_access: false
+      exclude_empty: true
+      exclude_empty_checkbox: false
+      exclude_attachments: false
+      html: false
+      attachments: false
+      twig: false
+      debug: false
+      reply_to: ''
+      return_path: ''
+      sender_mail: ''
+      sender_name: ''
+      theme_name: ''
+      parameters: {  }
 variants: {  }
