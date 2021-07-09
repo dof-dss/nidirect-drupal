@@ -688,6 +688,14 @@ elements: |
       '#counter_type': character
       '#counter_minimum': 1
       '#counter_maximum': 1000
+  extra_comments_for_pooh_bear:
+      '#type': textarea
+      '#title': 'Extra comments (optional)'
+      '#pattern': '^(?![\s\S])'
+      '#pattern_error': 'There was a problem with the extra comments you have provided'
+      '#wrapper_attributes':
+        class:
+          - for-pooh-bear
   actions:
     '#type': webform_actions
     '#title': 'Submit button(s)'

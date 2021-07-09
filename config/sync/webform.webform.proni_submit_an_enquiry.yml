@@ -34,15 +34,11 @@ elements: |
       '#title': 'First name'
       '#required': true
       '#required_error': 'You must fill in this field'
-      '#counter_type': character
-      '#counter_maximum': '100'
     last_name:
       '#type': textfield
       '#title': 'Last name'
       '#required': true
       '#required_error': 'You must fill in this field'
-      '#counter_type': character
-      '#counter_maximum': '100'
     email:
       '#type': email
       '#title': Email
@@ -50,10 +46,19 @@ elements: |
       '#required_error': 'You must fill in this field'
       '#pattern': '[^@\s]+@[^@\s]+\.[^@\s]+'
       '#pattern_error': 'You must enter a valid email address, for example, name@example.com'
+  extra_comments_for_pooh_bear:
+    '#type': textarea
+    '#title': 'Extra comments (optional)'
+    '#pattern': '^(?![\s\S])'
+    '#pattern_error': 'There was a problem with the extra comments you have provided'
+    '#wrapper_attributes':
+      class:
+        - for-pooh-bear
   actions:
     '#type': webform_actions
     '#title': 'Submit button(s)'
     '#submit__label': 'Submit enquiry'
+  
 css: ''
 javascript: ''
 settings:
@@ -248,7 +253,7 @@ handlers:
     settings:
       states:
         - completed
-      to_mail: _default
+      to_mail: proni@communities-ni.gov.uk
       to_options: {  }
       cc_mail: ''
       cc_options: {  }
@@ -263,7 +268,7 @@ handlers:
       ignore_access: false
       exclude_empty: false
       exclude_empty_checkbox: false
-      html: true
+      html: false
       attachments: false
       twig: false
       debug: false

@@ -123,6 +123,14 @@ elements: |
       '#required': true
       '#pattern': '^(?!.*<[^>]+>).*'
       '#pattern_error': 'HTML or markup is not permitted.'
+  extra_comments_for_pooh_bear:
+      '#type': textarea
+      '#title': 'Extra comments (optional)'
+      '#pattern': '^(?![\s\S])'
+      '#pattern_error': 'There was a problem with the extra comments you have provided'
+      '#wrapper_attributes':
+        class:
+          - for-pooh-bear
   actions:
     '#type': webform_actions
     '#title': 'Submit button(s)'
@@ -336,7 +344,7 @@ handlers:
         &lt;p&gt;Submitted on [current-date:long]&lt;/p&gt;<br />
         &lt;p&gt;Submitted values are:&lt;/p&gt;<br />
         [webform_submission:values]
-        
+
       excluded_elements: {  }
       ignore_access: false
       exclude_empty: true
