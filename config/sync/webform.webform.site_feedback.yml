@@ -109,6 +109,14 @@ elements: |
         required:
           ':input[name="do_you_want_us_to_reply_to_you"]':
             value: 'Yes'
+    extra_comments_for_pooh_bear:
+        '#type': textarea
+        '#title': 'Extra comments (optional)'
+        '#pattern': '^(?![\s\S])'
+        '#pattern_error': 'There was a problem with the extra comments you have provided'
+        '#wrapper_attributes':
+          class:
+            - for-pooh-bear
     angling:
       '#type': processed_text
       '#states':
