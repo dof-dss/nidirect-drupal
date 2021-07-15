@@ -144,6 +144,7 @@ elements: |
       '#title_display': invisible
       '#description_display': before
       '#help_display': element_before
+      '#placeholder': 'Do not enter web addresses.'
       '#required': true
       '#required_error': 'Please provide your feedback'
       '#counter_type': character
@@ -160,6 +161,7 @@ elements: |
       '#title_display': invisible
       '#description_display': before
       '#help_display': element_before
+      '#placeholder': 'Do not enter web addresses.'
       '#required': true
       '#required_error': 'Please enter your question'
       '#counter_type': character
@@ -170,13 +172,13 @@ elements: |
           ':input[name="is_your_feedback_about"]':
             value: question_other
   extra_comments_for_pooh_bear:
-      '#type': textarea
-      '#title': 'Extra comments (optional)'
-      '#pattern': '^(?![\s\S])'
-      '#pattern_error': 'There was a problem with the extra comments you have provided'
-      '#wrapper_attributes':
-        class:
-          - for-pooh-bear
+    '#type': textarea
+    '#title': 'Extra comments (optional)'
+    '#pattern': '^(?![\s\S])'
+    '#pattern_error': 'There was a problem with the extra comments you have provided'
+    '#wrapper_attributes':
+      class:
+        - for-pooh-bear
   angling:
     '#type': processed_text
     '#states':
@@ -436,7 +438,6 @@ elements: |
         - ':input[name="do_you_want_a_reply_options"]':
             checked: true
     '#submit__label': 'Send feedback'
-
 css: ''
 javascript: ''
 settings:
@@ -689,6 +690,7 @@ handlers:
         Thank you for your feedback.<br />
         <br />
         We aim to get back to you within 10 working days.&nbsp; All responses will usually be sent out Monday to Friday, 9.00 am to 5.00 pm (excluding public and bank holidays). This is an automated email message. Please do not reply to this email as we do not have access to emails sent to noreply@nidirect.gov.uk.
+        
       excluded_elements:
         page_url: page_url
       ignore_access: false
