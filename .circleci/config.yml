@@ -122,7 +122,7 @@ jobs:
       - run:
           name: Install dev versions of dof-dss packages with composer.
           command: |
-            composer require dof-dss/nidirect-site-modules:dev-development dof-dss/nidirect-migrations:dev-development \
+            composer require dof-dss/nidirect-site-modules:dev-development \
               dof-dss/nidirect-d8-test-install-profile:dev-development dof-dss/nicsdru_origins_theme:dev-development \
               dof-dss/nicsdru_origins_modules:dev-development dof-dss/nicsdru_nidirect_theme:dev-development
       - update_robots_dot_txt
@@ -141,7 +141,7 @@ jobs:
       - run: sudo cp /home/circleci/project/.circleci/docker-php-circleci.ini /usr/local/etc/php/conf.d/
       - run:
           name: PHPCS analysis
-          command: /home/circleci/project/phpcs.sh /home/circleci/project "/home/circleci/project/web/modules/origins /home/circleci/project/web/modules/custom /home/circleci/project/web/modules/migrate /home/circleci/project/web/themes/custom"
+          command: /home/circleci/project/phpcs.sh /home/circleci/project "/home/circleci/project/web/modules/origins /home/circleci/project/web/modules/custom /home/circleci/project/web/themes/custom"
 
   deprecated_code:
     docker:
@@ -154,7 +154,7 @@ jobs:
           name: Deprecated code check
           command: |
             cd /home/circleci/project
-            vendor/bin/drupal-check /home/circleci/project/web/modules/custom /home/circleci/project/web/modules/origins /home/circleci/project/web/modules/migrate /home/circleci/project/web/themes/custom -e "*/tests/src/*"
+            vendor/bin/drupal-check /home/circleci/project/web/modules/custom /home/circleci/project/web/modules/origins /home/circleci/project/web/themes/custom -e "*/tests/src/*"
 
   # Run any unit tests and any kernel tests against a vanilla D8 site + our site config imported over it (no predefined content).
   unit_kernel_tests:
@@ -266,7 +266,7 @@ jobs:
             sed -i -e "s|\(^DRUPAL_NIGHTWATCH_OUTPUT\)=reports/nightwatch|\1=/home/circleci/nightwatch-reports|g" /home/circleci/project/web/core/.env
 
             # Install npm packages for the projects/repos we know need them.
-            for dir in core modules/custom modules/migrate/nidirect-migrations/migrate_nidirect_node; do
+            for dir in core modules/custom; do
               cd /home/circleci/project/web/$dir
               yarn install
             done
@@ -296,7 +296,7 @@ jobs:
             cd ~/project
             git checkout -b $EDGE_BUILD_BRANCH
 
-            composer require dof-dss/nidirect-site-modules:dev-development dof-dss/nidirect-migrations:dev-development \
+            composer require dof-dss/nidirect-site-modules:dev-development \
               dof-dss/nidirect-d8-test-install-profile:dev-development dof-dss/nicsdru_origins_theme:dev-development \
               dof-dss/nicsdru_origins_modules:dev-development dof-dss/nicsdru_nidirect_theme:dev-development
 
