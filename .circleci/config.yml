@@ -116,7 +116,6 @@ jobs:
             composer require dof-dss/nidirect-site-modules:dev-development dof-dss/nidirect-migrations:dev-development \
               dof-dss/nidirect-d8-test-install-profile:dev-development dof-dss/nicsdru_origins_theme:dev-development \
               dof-dss/nicsdru_origins_modules:dev-development dof-dss/nicsdru_nidirect_theme:dev-development
-      - update_robots_dot_txt
       - persist_to_workspace:
           root: ./
           paths:
@@ -300,6 +299,7 @@ jobs:
 
             # Pause for webhook to propagate the change from GH to PSH.
             sleep 10s
+      - update_robots_dot_txt
       - run:
           name: Activate the environment if not found.
           command: |
