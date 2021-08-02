@@ -436,13 +436,12 @@ elements: |
         - ':input[name="do_you_want_a_reply_options"]':
             checked: true
     '#submit__label': 'Send feedback'
-
 css: ''
 javascript: ''
 settings:
-  ajax: true
+  ajax: false
   ajax_scroll_top: form
-  ajax_progress_type: throbber
+  ajax_progress_type: ''
   ajax_effect: ''
   ajax_speed: null
   page: true
@@ -523,13 +522,9 @@ settings:
   draft_loaded_message: ''
   draft_pending_single_message: ''
   draft_pending_multiple_message: ''
-  confirmation_type: inline
+  confirmation_type: message
   confirmation_title: ''
-  confirmation_message: |
-    <div class="info-notice info-notice--success">
-    <p><strong>Thank you for your feedback</strong></p>
-    </div>
-
+  confirmation_message: 'Thank you for your feedback'
   confirmation_url: ''
   confirmation_attributes: {  }
   confirmation_back: false
@@ -569,6 +564,11 @@ settings:
   wizard_toggle_hide_label: ''
   results_customize: false
   token_view: false
+  form_disable_remote_addr: false
+  wizard_auto_forward_hide_next_button: false
+  wizard_keyboard: true
+  token_delete: false
+  serial_disabled: false
 access:
   create:
     roles:
@@ -643,7 +643,6 @@ handlers:
 
         Submitted values are:
         [webform_submission:values]
-
       excluded_elements: {  }
       ignore_access: false
       exclude_empty: true
