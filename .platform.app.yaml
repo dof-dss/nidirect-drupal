@@ -73,6 +73,8 @@ hooks:
     rm -rf ckeditor4-fix-widget-dnd
     echo "Install Platform CLI tool"
     curl -sS https://platform.sh/cli/installer | php
+    echo "Update robots.txt with NIDirect customisations"
+    cp -f web/robots_nidirect.txt web/robots.txt 
   # The deploy hook runs after your application has been deployed and started.
   deploy: |
     set -e
