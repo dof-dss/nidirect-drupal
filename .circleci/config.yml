@@ -286,9 +286,6 @@ jobs:
             # Push to fixed, non-integrating build branch. GitHub webhook integration will propagate this
             # to platform.sh for later steps to use.
             git push -f origin $EDGE_BUILD_BRANCH
-
-            # Pause for webhook to propagate the change from GH to PSH.
-            sleep 10s
       - run:
           name: Activate the environment if not found.
           command: |
