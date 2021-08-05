@@ -85,6 +85,8 @@ jobs:
   build:
     docker:
       - image: circleci/php:7.4.15-apache-browsers
+    environment:
+      PLATFORM_REGION: "uk-1.platform.sh"
     steps:
       - hosts_keyscan
       - checkout_code
@@ -116,6 +118,8 @@ jobs:
   deprecated_code:
     docker:
       - image: circleci/php:7.4.15-apache-browsers
+    environment:
+      PROJECT_ROOT: "/home/circleci/project"
     steps:
       - attach_workspace:
           at: ./
@@ -123,8 +127,12 @@ jobs:
       - run:
           name: Deprecated code check
           command: |
-            cd /home/circleci/project
-            vendor/bin/drupal-check /home/circleci/project/web/modules/custom /home/circleci/project/web/modules/origins /home/circleci/project/web/modules/migrate /home/circleci/project/web/themes/custom -e "*/tests/src/*"
+            cd $PROJECT_ROOT
+            CHECK_DIRS="${PROJECT_ROOT}/web/modules/custom"
+            CHECK_DIRS="$CHECK_DIRS ${PROJECT_ROOT}/web/modules/origins"
+            CHECK_DIRS="$CHECK_DIRS ${PROJECT_ROOT}/web/modules/migrate"
+            CHECK_DIRS="$CHECK_DIRS ${PROJECT_ROOT}/web/themes/custom"
+            vendor/bin/drupal-check $CHECK_DIRS
 
   # Run any unit tests and any kernel tests against a vanilla D8 site + our site config imported over it (no predefined content).
   unit_kernel_tests:
@@ -255,6 +263,8 @@ jobs:
       EMAIL: "circleci@localhost"
       GIT_COMMITTER_NAME: "Circle CI"
       GIT_AUTHOR_NAME: "Circle CI"
+      EDGE_BUILD_BRANCH: "D8NID-edge"
+      PLATFORM_REGION: "uk-1.platform.sh"
     steps:
       - attach_workspace:
           at: ./
@@ -296,60 +306,54 @@ jobs:
     docker:
       - image: circleci/php:7.4.15-apache-browsers
     steps:
+      - hosts_keyscan
       - checkout_code
-      - run:
-          name: Checkout edge branch
-          command: |
-            cd ~/project
-            git checkout -b $EDGE_BUILD_BRANCH
       - install_php_os_extensions
       - install_psh_cli
       - run:
-          name: Trigger a data sync from production environment to nightly edge build.
+          name: Trigger a data sync from production environment to an edge build.
           command: |
-            /home/circleci/.platformsh/bin/platform sync data -p $PLATFORM_PROJECT_ID -e $EDGE_BUILD_BRANCH -y
+            platform sync data -p $PLATFORM_PROJECT_ID -e $EDGE_BUILD_BRANCH -y
       - run:
           name: Turn off fastly module to allow for cleaner config import
           command: |
-            /home/circleci/.platformsh/bin/platform environment:drush pmu fastly -y -p $PLATFORM_PROJECT_ID -e $EDGE_BUILD_BRANCH
+            platform environment:drush pmu fastly -y -p $PLATFORM_PROJECT_ID -e $EDGE_BUILD_BRANCH
       - run:
           name: Refresh configuration as our db will contain active prod config after sync operation
           command: |
-            /home/circleci/.platformsh/bin/platform environment:drush cim -y -p $PLATFORM_PROJECT_ID -e $EDGE_BUILD_BRANCH
-      - run:
-          name: Run structure sync import all
-          command: |
-            /home/circleci/.platformsh/bin/platform environment:drush "ia --choice=safe" -y -p $PLATFORM_PROJECT_ID -e $EDGE_BUILD_BRANCH
+            platform environment:drush cim -y -p $PLATFORM_PROJECT_ID -e $EDGE_BUILD_BRANCH
       - run:
           name: Rebuild Taxonomy Entity Index
           command: |
-            /home/circleci/.platformsh/bin/platform environment:drush tei-rebuild -p $PLATFORM_PROJECT_ID -e $EDGE_BUILD_BRANCH
+            platform environment:drush tei-rebuild -p $PLATFORM_PROJECT_ID -e $EDGE_BUILD_BRANCH
       - run:
           name: Set GAC state variable
           command: |
-            /home/circleci/.platformsh/bin/platform environment:drush "sset google_analytics_counter.access_token ${GAC_ACCESS_TOKEN}" -p $PLATFORM_PROJECT_ID -e $EDGE_BUILD_BRANCH
+            platform environment:drush "sset google_analytics_counter.access_token ${GAC_ACCESS_TOKEN}" \
+              -p $PLATFORM_PROJECT_ID -e $EDGE_BUILD_BRANCH
       - run:
           name: Enable test user accounts
           command: |
-            for username in nw_test_admin nw_test_apps nw_test_authenticated nw_test_author nw_test_editor nw_test_gp_author nw_test_gp_super nw_test_news_super nw_test_super; do
-              /home/circleci/.platformsh/bin/platform environment:drush user:unblock $username -p $PLATFORM_PROJECT_ID -e $EDGE_BUILD_BRANCH
+            for username in nw_test_admin nw_test_apps nw_test_authenticated nw_test_author nw_test_editor nw_test_gp_author nw_test_gp_super nw_test_news_super nw_test_super
+            do
+              platform environment:drush user:unblock $username -p $PLATFORM_PROJECT_ID -e $EDGE_BUILD_BRANCH
             done
       - run:
           name: Force purge of Solr index
-          command: /home/circleci/.platformsh/bin/platform ssh -p $PLATFORM_PROJECT_ID -e $EDGE_BUILD_BRANCH "curl http://${PLATFORM_SOLR_HOST}/solr/default/update --data '<delete><query>*:*</query></delete>' -H 'Content-type:text/xml; charset=utf-8' && curl http://${PLATFORM_SOLR_HOST}/solr/default/update --data '<commit/>' -H 'Content-type:text/xml; charset=utf-8'"
+          command: |
+            platform ssh -p $PLATFORM_PROJECT_ID -e $EDGE_BUILD_BRANCH \
+              "curl http://${PLATFORM_SOLR_HOST}/solr/default/update --data '<delete><query>*:*</query></delete>' -H 'Content-type:text/xml; charset=utf-8' && curl http://${PLATFORM_SOLR_HOST}/solr/default/update --data '<commit/>' -H 'Content-type:text/xml; charset=utf-8'"
       - run:
           name: Rebuild the Solr index
           command: |
-            /home/circleci/.platformsh/bin/platform environment:drush sapi-rt -p $PLATFORM_PROJECT_ID -e $EDGE_BUILD_BRANCH
-            /home/circleci/.platformsh/bin/platform environment:drush sapi-c -p $PLATFORM_PROJECT_ID -e $EDGE_BUILD_BRANCH
-            /home/circleci/.platformsh/bin/platform environment:drush sapi-r -p $PLATFORM_PROJECT_ID -e $EDGE_BUILD_BRANCH
-            /home/circleci/.platformsh/bin/platform environment:drush sapi-i -p $PLATFORM_PROJECT_ID -e $EDGE_BUILD_BRANCH
+            platform environment:drush sapi-rt -p $PLATFORM_PROJECT_ID -e $EDGE_BUILD_BRANCH
+            platform environment:drush sapi-c -p $PLATFORM_PROJECT_ID -e $EDGE_BUILD_BRANCH
+            platform environment:drush sapi-r -p $PLATFORM_PROJECT_ID -e $EDGE_BUILD_BRANCH
+            platform environment:drush sapi-i -p $PLATFORM_PROJECT_ID -e $EDGE_BUILD_BRANCH
 
 workflows:
   version: 2
-  # Our default pipeline that tests the integrity of our build + any tests.
-  # TODO: integrate a deploy job so that Circle CI can relay changes across to platform.sh
-  # rather than rely on the present webhook integration between GitHub and platform.sh repos.
+  # Our default pipeline that tests the integrity of our code.
   build-test-deploy:
     jobs:
       - build
@@ -360,8 +364,8 @@ workflows:
           requires:
             - build
 
-  # A nightly build of the project, using all dof-dss packages at HEAD from development branch.
-  nightly-edge-build:
+  # A daily build of the project, using all dof-dss packages at HEAD from development branch.
+  edge-build:
     triggers:
       - schedule:
           # At 00:00 on every day-of-week from Monday through Friday
@@ -371,24 +375,12 @@ workflows:
               only:
                 - development
     jobs:
-      - build
-      - coding_standards:
-          requires:
-            - build
-      - deprecated_code:
-          requires:
-            - build
-      - unit_kernel_tests:
-          requires:
-            - build
-      - edge_build:
-          requires:
-            - build
+      - edge_build
 
-  # A separate scheduled workflow to sync the data after the nightly build completes.
+  # A separate scheduled workflow to sync the data after the edge build completes.
   # This is separate to avoid using build time/compute units with arbitrary sleep commands;
   # platform.sh deploy hooks can take a few minutes to execute after commits are relayed to it.
-  nightly-content-sync:
+  edge-build-post-build-tasks:
     triggers:
       - schedule:
           # At 00:30 on every day-of-week from Monday through Friday
