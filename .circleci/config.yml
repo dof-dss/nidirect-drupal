@@ -134,67 +134,13 @@ jobs:
             CHECK_DIRS="$CHECK_DIRS ${PROJECT_ROOT}/web/themes/custom"
             vendor/bin/drupal-check $CHECK_DIRS
 
-  # Run any unit tests and any kernel tests against a vanilla D8 site + our site config imported over it (no predefined content).
-  unit_kernel_tests:
-    docker:
-      - image: circleci/php:7.4.15-apache-browsers
-      - image: circleci/mysql:5.7.27
-    steps:
-      - attach_workspace:
-          at: ./
-      - run:
-          name: Add extra OS and PHP extensions/config
-          command: |
-            sudo cp /home/circleci/project/.circleci/docker-php-circleci.ini /usr/local/etc/php/conf.d/
-            sudo apt-get --allow-releaseinfo-change update
-            sudo apt-get install -y libpng-dev mariadb-client rsync
-            sudo docker-php-ext-install gd pdo_mysql
-      - run:
-          name: Copy vhost into place
-          command: |
-            sudo cp .circleci/drupal.vhost /etc/apache2/sites-available/drupal.conf
-      - run:
-          name: Enable web server and vhosts
-          command: |
-            sudo a2enmod rewrite
-            sudo a2dissite 000-default
-            sudo a2ensite drupal
-            sudo service apache2 start
-      - run:
-          name: Install Drupal and configure settings
-          command: |
-            # Should be scaffolded by now.
-            cd /home/circleci/project/web
-            cp sites/default/default.settings.php sites/default/settings.php
-            cp sites/default/default.services.yml sites/default/services.yml
-            # Copy in our environment specific settings to the settings.php file.
-            cp /home/circleci/project/.circleci/drupal.settings.php sites/default/settings.php
-            # Copy PHPUnit config into core folder.
-            cp /home/circleci/project/.circleci/phpunit.circleci.xml core/
-            # Install Drupal (or restore from DB dump at this point).
-            ../vendor/bin/drush site-install -y --existing-config
-      - run:
-          name: Copy files into webroot
-          command: |
-            # Copy our build into position (./ suffix ensures hidden files are copied too).
-            sudo rsync -avq /home/circleci/project/. /var/www/html
-      - run:
-          name: PHPUnit tests (unit)
-          command: |
-            cd /var/www/html/web/core
-            ../../vendor/bin/phpunit -c /var/www/html/web/core/phpunit.circleci.xml --testsuite unit --group nidirect
-      - run:
-          name: PHPUnit tests (kernel)
-          command: |
-            cd /var/www/html/web/core
-            ../../vendor/bin/phpunit -c /var/www/html/web/core/phpunit.circleci.xml --testsuite kernel --group nidirect
-
   # Functional tests with headless browser; run against our edge environment.
   functional_tests:
     docker:
       - image: circleci/php:7.4.15-apache-node-browsers
         environment:
           TEST_TAGS: "search content-type-validation origins_workflow regression"
+          EDGE_BUILD_BRANCH: "D8NID-edge"
       - image: drupalci/chromedriver:production
         environment:
           CHROMEDRIVER_WHITELISTED_IPS: ""
@@ -202,55 +148,38 @@ jobs:
     steps:
       - attach_workspace:
           at: ./
-      - run:
-          name: Keyscan Platform.sh region hostnames
-          command: |
-            mkdir -p ~/.ssh
-            ssh-keyscan -H ssh.$PLATFORM_REGION >> ~/.ssh/known_hosts
-      - run:
-          name: Add extra extensions/config
-          command: |
-            # Add yarn deb repo.
-            sudo apt-get update
-            sudo apt-get install -y gnupg apt-transport-https libpng-dev
-            curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
-            sudo echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
-            sudo apt-get update
-            sudo apt-get install -y yarn
-            sudo docker-php-ext-install pcntl posix gd
-      - run:
-          name: Install the Platform.sh CLI tool
-          command: |
-            curl -sS https://platform.sh/cli/installer | php
+      - hosts_keyscan
+      - install_php_os_extensions
+      - install_psh_cli
       - run:
           name: Get our environment URL and store as a local shell variable
           command: |
             # Chromedriver won't use https so we dibble around with sed/grep to find the http url we want.
-            echo 'export PLATFORM_ENV_URL=$(/home/circleci/.platformsh/bin/platform url -p $PLATFORM_PROJECT_ID -e $EDGE_BUILD_BRANCH --pipe | sed -e "s|\/$||" | grep -e "^http://[^www]")' >> $BASH_ENV
+            echo 'export PLATFORM_ENV_URL=$(platform url -p $PLATFORM_PROJECT_ID -e $EDGE_BUILD_BRANCH --pipe | sed -e "s|\/$||" | grep -e "^http://[^www]")' >> $BASH_ENV
       - run:
           name: Configure nightwatch settings and files
           command: |
             # Create a folder to store our nightwatch reports and screenshots
-            mkdir -p /home/circleci/nightwatch-reports
-
+            mkdir -p ~/nightwatch-reports
             # Copy PHPUnit config into core folder.
-            cp /home/circleci/project/.circleci/phpunit.circleci.xml /home/circleci/project/web/core/
+            cp ~/project/.circleci/phpunit.circleci.xml ~/project/web/core/
             # Copy Nightwatch conf files into place.
-            cat /home/circleci/project/web/core/.env.example | sed -e "s|\(^DRUPAL_TEST_BASE_URL\)\(.\+\)|\1=$PLATFORM_ENV_URL|g" > /home/circleci/project/web/core/.env
-            sed -i -e "s|\(#\)\(DRUPAL_NIGHTWATCH_SEARCH_DIRECTORY\)=|\2=../|g" /home/circleci/project/web/core/.env
-            sed -i -e "s|\(^DRUPAL_TEST_WEBDRIVER_HOSTNAME\)=localhost|\1=127.0.0.1|g" /home/circleci/project/web/core/.env
-            sed -i -e "s|^DRUPAL_TEST_CHROMEDRIVER_AUTOSTART=true|DRUPAL_TEST_CHROMEDRIVER_AUTOSTART=false|g" /home/circleci/project/web/core/.env
-            sed -i -e "s|\(#\)\(DRUPAL_TEST_WEBDRIVER_CHROME_ARGS\)=|\2=\"--disable-gpu --headless --no-sandbox\"|g" /home/circleci/project/web/core/.env
-            sed -i -e "s|\(^DRUPAL_NIGHTWATCH_OUTPUT\)=reports/nightwatch|\1=/home/circleci/nightwatch-reports|g" /home/circleci/project/web/core/.env
+            cat ~/project/web/core/.env.example | sed -e "s|\(^DRUPAL_TEST_BASE_URL\)\(.\+\)|\1=$PLATFORM_ENV_URL|g" > ~/project/web/core/.env
+            sed -i -e "s|\(#\)\(DRUPAL_NIGHTWATCH_SEARCH_DIRECTORY\)=|\2=../|g" ~/project/web/core/.env
+            sed -i -e "s|\(^DRUPAL_TEST_WEBDRIVER_HOSTNAME\)=localhost|\1=127.0.0.1|g" ~/project/web/core/.env
+            sed -i -e "s|^DRUPAL_TEST_CHROMEDRIVER_AUTOSTART=true|DRUPAL_TEST_CHROMEDRIVER_AUTOSTART=false|g" ~/project/web/core/.env
+            sed -i -e "s|\(#\)\(DRUPAL_TEST_WEBDRIVER_CHROME_ARGS\)=|\2=\"--disable-gpu --headless --no-sandbox\"|g" ~/project/web/core/.env
+            sed -i -e "s|\(^DRUPAL_NIGHTWATCH_OUTPUT\)=reports/nightwatch|\1=/home/circleci/nightwatch-reports|g" ~/project/web/core/.env
 
             # Install npm packages for the projects/repos we know need them.
             for dir in core modules/custom modules/migrate/nidirect-migrations/migrate_nidirect_node; do
-              cd /home/circleci/project/web/$dir
-              yarn install
+              cd ~/project/web/$dir
+              npm install
             done
       - run:
           name: Run tests with Nightwatch.js
-          command: yarn --cwd=/home/circleci/project/web/core test:nightwatch $(for tag in $TEST_TAGS; do echo --tag $tag; done)
+          command: |
+            yarn --cwd=/home/circleci/project/web/core test:nightwatch $(for tag in $TEST_TAGS; do echo --tag $tag; done)
       - store_artifacts:
           path: /home/circleci/nightwatch-reports
 
@@ -266,37 +195,23 @@ jobs:
       EDGE_BUILD_BRANCH: "D8NID-edge"
       PLATFORM_REGION: "uk-1.platform.sh"
     steps:
-      - attach_workspace:
-          at: ./
+      - hosts_keyscan
+      - checkout_code
       - install_php_os_extensions
       - install_psh_cli
       - run:
+          name: Switch to edge branch
+          command: git checkout $EDGE_BUILD_BRANCH
+      - composer_tasks__edge_packages
+      - run:
           name: Re-point dof-dss packages to use latest development code and push.
           command: |
-            cd ~/project
-            git checkout -b $EDGE_BUILD_BRANCH
-
-            composer require dof-dss/nidirect-site-modules:dev-development dof-dss/nidirect-migrations:dev-development \
-              dof-dss/nidirect-d8-test-install-profile:dev-development dof-dss/nicsdru_origins_theme:dev-development \
-              dof-dss/nicsdru_origins_modules:dev-development dof-dss/nicsdru_nidirect_theme:dev-development
-
             git add composer.*
             git commit -m "Set dof-dss packages to HEAD development for build"
-
-            # Push to fixed, non-integrating build branch. GitHub webhook integration will propagate this
-            # to platform.sh for later steps to use.
-            git push -f origin $EDGE_BUILD_BRANCH
       - run:
-          name: Activate the environment if not found.
+          name: Push changes back to GitHub
           command: |
-            if ! /home/circleci/.platformsh/bin/platform environment:list -p $PLATFORM_PROJECT_ID -I --no-header --pipe | grep -q $EDGE_BUILD_BRANCH; then
-              echo "No active environment for $EDGE_BUILD_BRANCH found, attempt to activate one."
-              /home/circleci/.platformsh/bin/platform environment:activate -p $PLATFORM_PROJECT_ID -e $EDGE_BUILD_BRANCH -y
-            fi
-      - persist_to_workspace:
-          root: ./
-          paths:
-            - ./
+            git push -f origin $EDGE_BUILD_BRANCH
 
   # Separate task to allow us to sync data on PSH environments, without pauses in other jobs.
   sync_data:
@@ -388,6 +303,17 @@ workflows:
                 - D8NID-edge
     jobs:
       - sync_data
+
+  functional-tests:
+    triggers:
+      - schedule:
+          cron: "30 1 * * 1-5"
+          filters:
+            branches:
+              only:
+                - D8NID-edge
+    jobs:
+      - build
       - functional_tests:
           requires:
-            - sync_data
+            - build
