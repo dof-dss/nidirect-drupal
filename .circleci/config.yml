@@ -201,7 +201,12 @@ jobs:
       - install_psh_cli
       - run:
           name: Switch to edge branch
-          command: git checkout $EDGE_BUILD_BRANCH
+          # -b flag is important; this checkout won't have a local branch of that name
+          # (although origin/$EDGE_BUILD_BRANCH does exist) so this always works and
+          # lets us push -f to include everything at th end. If we use a plain checkout
+          # command we miss any recent config commits and only end up bumping the
+          # composer package versions after this step.
+          command: git checkout -b $EDGE_BUILD_BRANCH
       - composer_tasks__edge_packages
       - run:
           name: Re-point dof-dss packages to use latest development code and push.
