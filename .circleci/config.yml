@@ -296,7 +296,7 @@ workflows:
     triggers:
       - schedule:
           # At 00:30 on every day-of-week from Monday through Friday
-          cron: "30 0 * * 1-5"
+          cron: "30 1 * * 1-5"
           filters:
             branches:
               only:
@@ -308,7 +308,7 @@ workflows:
   functional-tests:
     triggers:
       - schedule:
-          cron: "30 1 * * 1-5"
+          cron: "0 2 * * 1-5"
           filters:
             branches:
               only:
