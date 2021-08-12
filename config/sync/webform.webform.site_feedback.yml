@@ -110,7 +110,7 @@ elements: |
           ':input[name="do_you_want_us_to_reply_to_you"]':
             value: 'Yes'
     extra_comments_for_pooh_bear:
-        '#type': textarea
+        '#type': textfield
         '#title': 'Extra comments (optional)'
         '#pattern': '^(?![\s\S])'
         '#pattern_error': 'There was a problem with the extra comments you have provided'
@@ -321,7 +321,6 @@ elements: |
     '#submit__label': 'Submit feedback'
     '#wizard_prev_hide': true
     '#wizard_next__label': Continue
-
 css: ''
 javascript: ''
 settings:
@@ -414,7 +413,6 @@ settings:
     <p class="nodeSummary">If you have asked for a reply, we aim to get back to you within 10 working days.</p>
 
     <p>All responses will usually be sent out Monday to Friday, 9.00 am to 5.00 pm (excluding public and bank holidays).</p>
-
   confirmation_url: ''
   confirmation_attributes: {  }
   confirmation_back: true
@@ -535,7 +533,6 @@ handlers:
 
         Submitted values are:
         [webform_submission:values]
-
       excluded_elements:
         important_information: important_information
         do_you_wish_to_report_an_issue_or_make_a_comment: do_you_wish_to_report_an_issue_or_make_a_comment

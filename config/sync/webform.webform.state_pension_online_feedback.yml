@@ -42,14 +42,13 @@ elements: |
       '#counter_type': character
       '#counter_maximum': 750
   extra_comments_for_pooh_bear:
-      '#type': textarea
+      '#type': textfield
       '#title': 'Extra comments (optional)'
       '#pattern': '^(?![\s\S])'
       '#pattern_error': 'There was a problem with the extra comments you have provided'
       '#wrapper_attributes':
         class:
           - for-pooh-bear
-
 css: ''
 javascript: ''
 settings:
@@ -144,7 +143,6 @@ settings:
     <p>If you have requested a reply, we aim to get back to you within 10 working days. All responses will be issued Monday to Friday, 9.00am to 5.00pm (excluding public and bank holidays).</p>
 
     <p>If you did not request a reply, we will give your comments careful consideration.</p>
-
   confirmation_url: ''
   confirmation_attributes: {  }
   confirmation_back: false
@@ -261,7 +259,6 @@ handlers:
       body: |
         &lt;p&gt;Submitted on [current-date:long]&lt;/p&gt;<br />
         [webform_submission:values]
-
       excluded_elements: {  }
       ignore_access: false
       exclude_empty: true
