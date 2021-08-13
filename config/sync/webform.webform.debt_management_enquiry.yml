@@ -121,8 +121,6 @@ elements: |
       '#description_display': before
       '#maxlength': 3000
       '#required': true
-      '#pattern': '^(?!.*<[^>]+>).*'
-      '#pattern_error': 'HTML or markup is not permitted.'
   extra_comments_for_pooh_bear:
       '#type': textfield
       '#title': 'Extra comments (optional)'
@@ -341,14 +339,16 @@ handlers:
       from_name: nidirect
       subject: 'Debt Management Enquiry from nidirect.gov.uk'
       body: |
-        &lt;p&gt;Submitted on [current-date:long]&lt;/p&gt;<br />
-        &lt;p&gt;Submitted values are:&lt;/p&gt;<br />
+        Submitted on [webform_submission:created]
+        Submitted by: [webform_submission:user]
+        
+        Submitted values are:
         [webform_submission:values]
       excluded_elements: {  }
       ignore_access: false
       exclude_empty: true
       exclude_empty_checkbox: false
-      html: true
+      html: false
       attachments: false
       twig: false
       debug: false
