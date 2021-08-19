@@ -59,8 +59,8 @@ commands:
           name: Add OS and PHP extensions
           command: |
             sudo cp /home/circleci/project/.circleci/docker-php-circleci.ini /usr/local/etc/php/conf.d/
-            sudo apt-get update
-            sudo apt-get install -y libpng-dev
+            sudo apt --allow-releaseinfo-change update
+            sudo apt install -y libpng-dev
             sudo docker-php-ext-install gd pcntl posix
   hosts_keyscan:
     description: "Keyscan for hosts that require SSH access"
