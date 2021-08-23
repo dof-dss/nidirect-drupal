@@ -30,16 +30,19 @@ elements: |
     first_name:
       '#type': textfield
       '#title': 'First name'
+      '#autocomplete': given-name
       '#required': true
       '#required_error': 'You must fill in this field'
     last_name:
       '#type': textfield
       '#title': 'Last name'
+      '#autocomplete': family-name
       '#required': true
       '#required_error': 'You must fill in this field'
     email:
       '#type': email
       '#title': Email
+      '#autocomplete': email
       '#required': true
       '#required_error': 'You must fill in this field'
       '#pattern': '[^@\s]+@[^@\s]+\.[^@\s]+'
