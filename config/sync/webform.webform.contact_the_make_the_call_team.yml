@@ -32,7 +32,7 @@ elements: |
           value: 'No'
     '#text': |
       <p class="info-notice">This service is only for people in Northern Ireland. If you live in Great Britain you should visit <a href="http://www.gov.uk">www.gov.uk</a> instead.</p>
-
+      
     '#format': full_html
   can_use_a_phone:
     '#type': radios
@@ -74,11 +74,13 @@ elements: |
     name:
       '#type': textfield
       '#title': Name
-      '#maxlength': '100'
+      '#maxlength': 100
+      '#autocomplete': name
       '#required': true
     phone_number:
       '#type': textfield
       '#title': 'Phone number'
+      '#autocomplete': tel
       '#states':
         visible:
           ':input[name="can_use_a_phone"]':
@@ -89,6 +91,7 @@ elements: |
     email_address:
       '#type': email
       '#title': 'Email address'
+      '#autocomplete': email
       '#pattern': '[^@\s]+@[^@\s]+\.[^@\s]+'
       '#pattern_error': 'You must enter a valid email address, for example, name@example.com'
       '#states':
@@ -109,8 +112,9 @@ elements: |
     address_line_1:
       '#type': textfield
       '#title': 'Address line 1'
-      '#maxlength': '100'
+      '#maxlength': 100
       '#placeholder': 'Address line 1'
+      '#autocomplete': address-line1
       '#states':
         required:
           ':input[name="can_use_a_phone"]':
@@ -119,8 +123,9 @@ elements: |
       '#type': textfield
       '#title': 'Address line 2'
       '#title_display': invisible
-      '#maxlength': '100'
+      '#maxlength': 100
       '#placeholder': 'Address line 2'
+      '#autocomplete': address-line2
       '#states':
         required:
           ':input[name="can_use_a_phone"]':
@@ -136,9 +141,10 @@ elements: |
       '#type': textfield
       '#title': Postcode
       '#title_display': invisible
-      '#maxlength': '8'
-      '#size': '8'
+      '#maxlength': 8
+      '#size': 8
       '#placeholder': Postcode
+      '#autocomplete': postal-code
       '#states':
         required:
           ':input[name="can_use_a_phone"]':
@@ -163,13 +169,13 @@ elements: |
       '#counter_minimum': 2
       '#counter_maximum': 750
   extra_comments_for_pooh_bear:
-      '#type': textfield
-      '#title': 'Extra comments (optional)'
-      '#pattern': '^(?![\s\S])'
-      '#pattern_error': 'There was a problem with the extra comments you have provided'
-      '#wrapper_attributes':
-        class:
-          - for-pooh-bear
+    '#type': textfield
+    '#title': 'Extra comments (optional)'
+    '#pattern': '^(?![\s\S])'
+    '#pattern_error': 'There was a problem with the extra comments you have provided'
+    '#wrapper_attributes':
+      class:
+        - for-pooh-bear
   actions:
     '#type': webform_actions
     '#title': 'Submit button(s)'
@@ -270,7 +276,7 @@ settings:
   confirmation_title: ''
   confirmation_message: |
     <h2>Thank you for your contact request</h2>
-
+    
     <p class="info-notice info-notice--success">A Make the Call&nbsp;benefit advisor will be in touch with you shortly.</p>
   confirmation_url: ''
   confirmation_attributes: {  }
