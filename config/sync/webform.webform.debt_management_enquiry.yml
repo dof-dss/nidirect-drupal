@@ -52,7 +52,7 @@ elements: |
       '#required': true
     debt_reference_number:
       '#type': textfield
-      '#title': 'Debt reference number'
+      '#title': 'Debt reference number (optional)'
       '#description': '<p>This may be found on a letter from Debt Management</p>'
       '#description_display': before
       '#maxlength': 10
@@ -69,7 +69,7 @@ elements: |
       '#required': true
     postcode:
       '#type': textfield
-      '#title': Postcode
+      '#title': 'Postcode (optional)'
       '#maxlength': 8
       '#autocomplete': postal-code
       '#pattern': '([Gg][Ii][Rr] 0[Aa]{2})|((([A-Za-z][0-9]{1,2})|(([A-Za-z][A-Ha-hJ-Yj-y][0-9]{1,2})|(([A-Za-z][0-9][A-Za-z])|([A-Za-z][A-Ha-hJ-Yj-y][0-9][A-Za-z]?))))\s?[0-9][A-Za-z]{2})'
@@ -84,7 +84,7 @@ elements: |
       '#pattern_error': 'Enter a valid telephone number'
     mobile_number:
       '#type': textfield
-      '#title': 'Mobile number (if different)'
+      '#title': 'Mobile number (optional)'
       '#maxlength': 20
       '#autocomplete': 'mobile tel'
       '#pattern': '^[\+0-9\s\-\(\)]+$'
