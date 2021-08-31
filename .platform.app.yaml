@@ -74,7 +74,9 @@ hooks:
     echo "Install Platform CLI tool"
     curl -sS https://platform.sh/cli/installer | php
     echo "Update robots.txt with NIDirect customisations"
-    cp -f web/robots_nidirect.txt web/robots.txt 
+    cp -f web/robots_nidirect.txt web/robots.txt
+    echo "Generate Google Analaytics auth file"
+    echo $GA_AUTH > /app/private/easy_google_analytics_counter_auth.json
   # The deploy hook runs after your application has been deployed and started.
   deploy: |
     set -e
