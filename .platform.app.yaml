@@ -17,6 +17,7 @@ runtime:
   # Enable the redis extension so Drupal can communicate with the Redis cache.
   extensions:
     - apcu
+    - newrelic
     - redis
 
 # The relationships of the application with services or other applications.
@@ -74,7 +75,7 @@ hooks:
     echo "Install Platform CLI tool"
     curl -sS https://platform.sh/cli/installer | php
     echo "Update robots.txt with NIDirect customisations"
-    cp -f web/robots_nidirect.txt web/robots.txt 
+    cp -f web/robots_nidirect.txt web/robots.txt
   # The deploy hook runs after your application has been deployed and started.
   deploy: |
     set -e
