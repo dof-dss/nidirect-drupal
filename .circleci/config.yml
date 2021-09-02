@@ -59,8 +59,8 @@ commands:
           name: Add OS and PHP extensions
           command: |
             sudo cp /home/circleci/project/.circleci/docker-php-circleci.ini /usr/local/etc/php/conf.d/
-            sudo apt-get update
-            sudo apt-get install -y libpng-dev
+            sudo apt --allow-releaseinfo-change update
+            sudo apt install -y libpng-dev
             sudo docker-php-ext-install gd pcntl posix
   hosts_keyscan:
     description: "Keyscan for hosts that require SSH access"
@@ -201,7 +201,12 @@ jobs:
       - install_psh_cli
       - run:
           name: Switch to edge branch
-          command: git checkout $EDGE_BUILD_BRANCH
+          # -b flag is important; this checkout won't have a local branch of that name
+          # (although origin/$EDGE_BUILD_BRANCH does exist) so this always works and
+          # lets us push -f to include everything at th end. If we use a plain checkout
+          # command we miss any recent config commits and only end up bumping the
+          # composer package versions after this step.
+          command: git checkout -b $EDGE_BUILD_BRANCH
       - composer_tasks__edge_packages
       - run:
           name: Re-point dof-dss packages to use latest development code and push.
@@ -296,7 +301,7 @@ workflows:
     triggers:
       - schedule:
           # At 00:30 on every day-of-week from Monday through Friday
-          cron: "30 0 * * 1-5"
+          cron: "30 1 * * 1-5"
           filters:
             branches:
               only:
@@ -308,7 +313,7 @@ workflows:
   functional-tests:
     triggers:
       - schedule:
-          cron: "30 1 * * 1-5"
+          cron: "0 2 * * 1-5"
           filters:
             branches:
               only:

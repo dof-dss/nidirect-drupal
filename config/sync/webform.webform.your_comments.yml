@@ -78,6 +78,7 @@ elements: |
   enter_a_valid_email_address:
     '#type': email
     '#title': 'Enter a valid email address'
+    '#autocomplete': email
     '#required': true
     '#required_error': 'You must enter an email address so that we can reply to you.'
     '#pattern': '[^@\s]+@[^@\s]+\.[^@\s]+'
@@ -107,7 +108,7 @@ elements: |
             value: 'No'
       '#text': |
         <p class="info-notice info-notice--warning"><strong>We will not reply to your feedback.</strong>&nbsp; Don't include any personal or financial information, for example National Insurance, credit card numbers, or phone numbers.</p>
-
+        
       '#format': full_html
     info_notice_reply:
       '#type': processed_text
@@ -135,7 +136,7 @@ elements: |
               value: other
       '#text': |
         <p class="info-notice info-notice--warning">Don't include any personal or financial information, for example National Insurance, credit card numbers, or phone numbers.</p>
-
+        
       '#format': full_html
     enter_your_feedback:
       '#type': textarea
@@ -170,13 +171,13 @@ elements: |
           ':input[name="is_your_feedback_about"]':
             value: question_other
   extra_comments_for_pooh_bear:
-      '#type': textarea
-      '#title': 'Extra comments (optional)'
-      '#pattern': '^(?![\s\S])'
-      '#pattern_error': 'There was a problem with the extra comments you have provided'
-      '#wrapper_attributes':
-        class:
-          - for-pooh-bear
+    '#type': textfield
+    '#title': 'Extra comments (optional)'
+    '#pattern': '^(?![\s\S])'
+    '#pattern_error': 'There was a problem with the extra comments you have provided'
+    '#wrapper_attributes':
+      class:
+        - for-pooh-bear
   angling:
     '#type': processed_text
     '#states':
@@ -188,10 +189,10 @@ elements: |
     '#text': |
       <div class="no-submit">
       <h2>What to do next</h2>
-
+      
       <p>Comments or queries about angling can be emailed to <a href="mailto:anglingcorrespondence@daera-ni.gov.uk">anglingcorrespondence@daera-ni.gov.uk&nbsp;</a></p>
       </div>
-
+      
     '#format': full_html
   benefits:
     '#type': processed_text
@@ -204,39 +205,39 @@ elements: |
     '#text': |
       <div class="no-submit">
       <h2>What to do next</h2>
-
+      
       <p>If you have a comment or query about benefits, you will need to contact the government department&nbsp;or&nbsp;agency which handles that benefit.&nbsp; Contacts for common benefits are listed below.</p>
-
+      
       <h3>Carer's Allowance</h3>
-
+      
       <p><span>Call 0800 587 0912<br />
       Email&nbsp;</span><a href="mailto:dcs.incomingpostteamdhc2@nissa.gsi.gov.uk">dcs.incomingpostteamdhc2@nissa.gsi.gov.uk</a></p>
-
+      
       <h3>Discretionary support / Short-term benefit advance</h3>
-
+      
       <p><span>Call 0800 587 2750&nbsp;<br />
       Email&nbsp;</span><a href="mailto:customerservice.unit@communities-ni.gov.uk ">customerservice.unit@communities-ni.gov.uk</a></p>
-
+      
       <h3>Disability Living Allowance</h3>
-
+      
       <p>Call 0800 587 0912&nbsp;<br />
       <span>Email <a href="mailto:dcs.incomingpostteamdhc2@nissa.gsi.gov.uk">dcs.incomingpostteamdhc2@nissa.gsi.gov.uk</a></span></p>
-
+      
       <h3>Employment and Support Allowance</h3>
-
+      
       <p>Call&nbsp;0800 587 1377</p>
-
+      
       <h3>Jobseeker’s Allowance</h3>
-
+      
       <p>Contact your local <a href="/node/2739">Jobs &amp; Benefits office</a></p>
-
+      
       <h3>Personal Independence Payment</h3>
-
+      
       <p>Call 0800 587 0932</p>
-
+      
       <p>If your query is about another benefit, select ‘Other’ from the drop-down menu above.</p>
       </div>
-
+      
     '#format': full_html
   blue_badge:
     '#type': processed_text
@@ -249,10 +250,10 @@ elements: |
     '#text': |
       <div class="no-submit">
       <h2>What to do next</h2>
-
+      
       <p>Comments or queries about the Blue Badge scheme can be emailed to <a href="mailto:bluebadges@infrastructure-ni.gov.uk">bluebadges@infrastructure-ni.gov.uk</a> or you can also call 0300 200 7818.</p>
       </div>
-
+      
     '#format': full_html
   careers:
     '#type': processed_text
@@ -285,10 +286,10 @@ elements: |
     '#text': |
       <div class="no-submit">
       <h2>What to do next</h2>
-
+      
       <p>For queries or advice about claiming compensation due to a road problem, contact <a href="/node/125">DFI Roads claim unit</a>.</p>
       </div>
-
+      
     '#format': full_html
   criminal_records_checks:
     '#type': processed_text
@@ -321,10 +322,10 @@ elements: |
     '#text': |
       <div class="no-submit">
       <h2>What to do next</h2>
-
+      
       <p>For queries or advice about employment rights, contact the <a href="/node/866">Labour Relations Agency</a>.</p>
       </div>
-
+      
     '#format': full_html
   groni:
     '#type': processed_text
@@ -640,7 +641,7 @@ handlers:
       subject: 'Page feedback'
       body: |
         Submitted on [webform_submission:created]
-
+        
         Submitted values are:
         [webform_submission:values]
       excluded_elements: {  }
