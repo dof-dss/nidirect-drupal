@@ -301,7 +301,7 @@ display:
           exposed: true
           expose:
             operator_id: search_api_fulltext_op
-            label: 'Search this site ...'
+            label: 'Search n i direct'
             description: ''
             use_operator: false
             operator: search_api_fulltext_op
@@ -326,7 +326,9 @@ display:
               health_condition_author_user: '0'
               health_condition_supervisor_user: '0'
               driving_instructor_supervisor_user: '0'
-            placeholder: ''
+            placeholder: 'Search nidirect'
+            expose_fields: false
+            searched_fields_id: ''
           is_grouped: false
           group_info:
             label: ''
@@ -838,10 +840,12 @@ display:
           exposed: true
           expose:
             operator_id: search_api_fulltext_op
-            label: ''
+            label: 'Search n i direct'
             description: ''
             use_operator: false
             operator: search_api_fulltext_op
+            operator_limit_selection: false
+            operator_list: {  }
             identifier: query
             required: true
             remember: false
@@ -862,8 +866,8 @@ display:
               health_condition_supervisor_user: '0'
               driving_instructor_supervisor_user: '0'
             placeholder: 'Search nidirect'
-            operator_limit_selection: false
-            operator_list: {  }
+            expose_fields: false
+            searched_fields_id: ''
           is_grouped: false
           group_info:
             label: ''

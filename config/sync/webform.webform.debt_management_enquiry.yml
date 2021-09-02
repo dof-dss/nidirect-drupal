@@ -19,7 +19,8 @@ elements: |
     full_name:
       '#type': textfield
       '#title': 'Full name'
-      '#maxlength': '100'
+      '#maxlength': 100
+      '#autocomplete': name
       '#required': true
     are_you_the_customer_:
       '#type': radios
@@ -51,7 +52,7 @@ elements: |
       '#required': true
     debt_reference_number:
       '#type': textfield
-      '#title': 'Debt reference number'
+      '#title': 'Debt reference number (optional)'
       '#description': '<p>This may be found on a letter from Debt Management</p>'
       '#description_display': before
       '#maxlength': 10
@@ -63,31 +64,36 @@ elements: |
     address:
       '#type': textarea
       '#title': Address
-      '#maxlength': '500'
+      '#maxlength': 500
+      '#autocomplete': street-address
       '#required': true
     postcode:
       '#type': textfield
-      '#title': Postcode
-      '#maxlength': '8'
+      '#title': 'Postcode (optional)'
+      '#maxlength': 8
+      '#autocomplete': postal-code
       '#pattern': '([Gg][Ii][Rr] 0[Aa]{2})|((([A-Za-z][0-9]{1,2})|(([A-Za-z][A-Ha-hJ-Yj-y][0-9]{1,2})|(([A-Za-z][0-9][A-Za-z])|([A-Za-z][A-Ha-hJ-Yj-y][0-9][A-Za-z]?))))\s?[0-9][A-Za-z]{2})'
       '#pattern_error': 'Please enter a valid UK postcode'
     contact_telephone_number:
       '#type': textfield
       '#title': 'Contact telephone number'
       '#maxlength': 20
+      '#autocomplete': tel
       '#required': true
       '#pattern': '^[\+0-9\s\-\(\)]+$'
       '#pattern_error': 'Enter a valid telephone number'
     mobile_number:
       '#type': textfield
-      '#title': 'Mobile number (if different)'
+      '#title': 'Mobile number (optional)'
       '#maxlength': 20
+      '#autocomplete': 'mobile tel'
       '#pattern': '^[\+0-9\s\-\(\)]+$'
       '#pattern_error': 'Enter a valid mobile number'
     email_address:
       '#type': email
       '#title': 'Email address'
       '#maxlength': 255
+      '#autocomplete': email
       '#required': true
       '#pattern': '[^@\s]+@[^@\s]+\.[^@\s]+'
       '#pattern_error': 'You must enter a valid email address, for example, name@example.com'
@@ -121,16 +127,14 @@ elements: |
       '#description_display': before
       '#maxlength': 3000
       '#required': true
-      '#pattern': '^(?!.*<[^>]+>).*'
-      '#pattern_error': 'HTML or markup is not permitted.'
   extra_comments_for_pooh_bear:
-      '#type': textarea
-      '#title': 'Extra comments (optional)'
-      '#pattern': '^(?![\s\S])'
-      '#pattern_error': 'There was a problem with the extra comments you have provided'
-      '#wrapper_attributes':
-        class:
-          - for-pooh-bear
+    '#type': textfield
+    '#title': 'Extra comments (optional)'
+    '#pattern': '^(?![\s\S])'
+    '#pattern_error': 'There was a problem with the extra comments you have provided'
+    '#wrapper_attributes':
+      class:
+        - for-pooh-bear
   actions:
     '#type': webform_actions
     '#title': 'Submit button(s)'
@@ -344,7 +348,6 @@ handlers:
         &lt;p&gt;Submitted on [current-date:long]&lt;/p&gt;<br />
         &lt;p&gt;Submitted values are:&lt;/p&gt;<br />
         [webform_submission:values]
-
       excluded_elements: {  }
       ignore_access: false
       exclude_empty: true

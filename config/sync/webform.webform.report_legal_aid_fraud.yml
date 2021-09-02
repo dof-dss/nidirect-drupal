@@ -142,9 +142,9 @@ elements: |
         '#required': true
       firm_address_line_2:
         '#type': textfield
-        '#title': 'Address line 2'
+        '#title': 'Address line 2 (optional)'
         '#title_display': invisible
-        '#placeholder': 'Address line 2'
+        '#placeholder': 'Address line 2 (optional)'
       firm_postcode:
         '#type': textfield
         '#title': Postcode
@@ -183,9 +183,9 @@ elements: |
         '#required': true
       doj_address_line_2:
         '#type': textfield
-        '#title': 'Address line 2'
+        '#title': 'Address line 2 (optional)'
         '#title_display': invisible
-        '#placeholder': 'Address line 2'
+        '#placeholder': 'Address line 2 (optional)'
       doj_postcode:
         '#type': textfield
         '#title': Postcode
@@ -233,9 +233,9 @@ elements: |
         '#required': true
       lsa_address_line_2:
         '#type': textfield
-        '#title': 'Address line 2'
+        '#title': 'Address line 2 (optional)'
         '#title_display': invisible
-        '#placeholder': 'Address line 2'
+        '#placeholder': 'Address line 2 (optional)'
       lsa_postcode:
         '#type': textfield
         '#title': Postcode
@@ -280,7 +280,7 @@ elements: |
         '#required': true
       other_names_they_use:
         '#type': textfield
-        '#title': 'Other names they use'
+        '#title': 'Other names they use (optional)'
         '#maxlength': 100
   information_you_know_about_the_person_you_are_reporting:
     '#type': webform_wizard_page
@@ -521,37 +521,37 @@ elements: |
         '#required': true
       job_or_type_of_work_the_person_is_doing:
         '#type': textfield
-        '#title': 'Job or type of work the person is doing'
+        '#title': 'Job or type of work the person is doing (optional)'
         '#maxlength': 100
       their_employer_s_name_or_the_business_where_they_work:
         '#type': textfield
-        '#title': 'Their employer’s name or the business where they work'
+        '#title': 'Their employer’s name or the business where they work (optional)'
       their_employer_s_address_or_business_location_where_they_work:
         '#type': textfield
-        '#title': 'Their employer''s address or business location where they work'
-        '#placeholder': 'Address line 1'
+        '#title': 'Their employer''s address or business location where they work (optional)'
+        '#placeholder': 'Address line 1 (optional)'
       their_employer_or_business_address_line_2:
         '#type': textfield
-        '#title': 'Their employer or business address line 2'
+        '#title': 'Their employer or business address line 2 (optional)'
         '#title_display': invisible
-        '#placeholder': 'Address line 2'
+        '#placeholder': 'Address line 2 (optional)'
       their_employer_s_or_business_postcode:
         '#type': textfield
-        '#title': 'Their employer''s or business postcode'
+        '#title': 'Their employer''s or business postcode (optional)'
         '#title_display': invisible
         '#maxlength': 8
-        '#size': 9
-        '#placeholder': Postcode
+        '#size': 18
+        '#placeholder': 'Postcode (optional)'
         '#pattern': '^[bB][tT][0-9]{1,2} ?[0-9][a-zA-Z]{2}$'
         '#pattern_error': 'Enter a valid Northern Ireland postcode'
       date_when_they_began_this_job_or_work:
         '#type': textfield
-        '#title': 'Date when they began this job or work'
+        '#title': 'Date when they began this job or work (optional)'
         '#maxlength': 15
         '#size': 11
       number_of_hours_they_work_every_week:
         '#type': number
-        '#title': 'Number of hours they work every week'
+        '#title': 'Number of hours they work every week (optional)'
         '#size': '4'
         '#max': 168
         '#step': 0.5
@@ -566,7 +566,7 @@ elements: |
         '#required': true
       vehicle_information:
         '#type': textfield
-        '#title': 'Vehicle information'
+        '#title': 'Vehicle information (optional)'
         '#description': 'Provide the make, model, colour or registration of the vehicle if you can'
         '#maxlength': 100
         '#states':
@@ -596,40 +596,40 @@ elements: |
         '#required': true
       partners_other_names_they_use:
         '#type': textfield
-        '#title': 'Other names they use'
+        '#title': 'Other names they use (optional)'
         '#maxlength': 100
       partners_address:
         '#type': textfield
-        '#title': 'Partner''s address'
-        '#placeholder': 'Address line 1'
+        '#title': 'Partner''s address (optional)'
+        '#placeholder': 'Address line 1 (optional)'
       partners_address_line_2:
         '#type': textfield
-        '#title': 'Partner''s address line 2'
+        '#title': 'Partner''s address line 2 (optional)'
         '#title_display': invisible
-        '#placeholder': 'Address line 2'
+        '#placeholder': 'Address line 2 (optional)'
       partners_postcode:
         '#type': textfield
-        '#title': 'Partner''s postcode'
+        '#title': 'Partner''s postcode (optional)'
         '#title_display': invisible
         '#maxlength': 8
-        '#size': 9
-        '#placeholder': Postcode
+        '#size': 18
+        '#placeholder': 'Postcode (optional)'
       partners_telephone:
         '#type': textfield
-        '#title': 'Their telephone'
+        '#title': 'Their telephone (optional)'
         '#maxlength': 20
         '#size': 21
         '#pattern': '^[\+0-9\s\-\(\)]+$'
         '#pattern_error': 'Enter a valid telephone number'
       partners_email:
         '#type': email
-        '#title': 'Their email'
+        '#title': 'Their email (optional)'
         '#maxlength': 255
         '#pattern': '[^@\s]+@[^@\s]+\.[^@\s]+'
         '#pattern_error': 'You must enter a valid email address, for example, name@example.com'
       length_of_time_they_ve_lived_with_the_person_you_re_reporting:
         '#type': textfield
-        '#title': 'Length of time they''ve lived with the person you''re reporting'
+        '#title': 'Length of time they''ve lived with the person you''re reporting (optional)'
         '#maxlength': 100
         '#size': 30
       the_person_s_partner_is_employed_self_employed_or_works_for_some:
@@ -663,12 +663,12 @@ elements: |
         '#counter_maximum': 255
       amount_or_value_of_their_undeclared_savings_or_non_work_related_:
         '#type': textfield
-        '#title': 'Amount or value of their undeclared savings or non-work related income'
+        '#title': 'Amount or value of their undeclared savings or non-work related income (optional)'
         '#maxlength': 30
         '#size': 31
       length_of_time_they_ve_had_undeclared_savings_or_non_work_relate:
         '#type': textfield
-        '#title': 'Length of time they’ve had undeclared savings or non-work related income'
+        '#title': 'Length of time they’ve had undeclared savings or non-work related income (optional)'
         '#maxlength': 30
         '#size': 31
   additional_information:
@@ -680,7 +680,7 @@ elements: |
           value: 'someone getting legal aid for their legal proceedings or court case'
     more_information:
       '#type': textarea
-      '#title': 'You can give more information that’s relevant to the legal aid fraud you’re reporting'
+      '#title': 'You can give more information that’s relevant to the legal aid fraud you’re reporting (optional)'
       '#description': 'Don&rsquo;t include your own personal information.&nbsp;'
       '#description_display': before
       '#maxlength': 1000
@@ -689,13 +689,13 @@ elements: |
       '#counter_minimum': 1
       '#counter_maximum': 1000
   extra_comments_for_pooh_bear:
-      '#type': textarea
-      '#title': 'Extra comments (optional)'
-      '#pattern': '^(?![\s\S])'
-      '#pattern_error': 'There was a problem with the extra comments you have provided'
-      '#wrapper_attributes':
-        class:
-          - for-pooh-bear
+    '#type': textfield
+    '#title': 'Extra comments (optional)'
+    '#pattern': '^(?![\s\S])'
+    '#pattern_error': 'There was a problem with the extra comments you have provided'
+    '#wrapper_attributes':
+      class:
+        - for-pooh-bear
   actions:
     '#type': webform_actions
     '#title': 'Submit button(s)'
