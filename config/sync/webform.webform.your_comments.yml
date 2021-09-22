@@ -45,12 +45,15 @@ elements: |
           claiming_compensation_roads: 'Compensation due to a road problem'
           child_maintenance: 'Child Maintenance'
           groni_civil_partnerships: 'Civil partnership certificates'
+          covid_19: 'Coronavirus (COVID-19)'
           criminal_record_checks: 'Criminal record checks (AccessNI)'
           groni_death: 'Death certificates'
           educational_maintenance_allowance: 'Educational Maintenance Allowance'
           employment_rights: 'Employment rights'
+          high_street_voucher: 'High Street voucher scheme'
           groni_marriage: 'Marriage certificates'
           motoring: Motoring
+          nidirect_account: 'nidirect account'
           passports: Passports
           PCNs: 'Penalty Charge Notices'
           pensions: Pensions
@@ -291,6 +294,30 @@ elements: |
       </div>
       
     '#format': full_html
+  covid_19:
+    '#type': processed_text
+    '#states':
+      visible:
+        ':input[name="feedback_about"]':
+          value: covid_19
+    '#wrapper_attributes':
+      role: alert
+    '#text': |
+      <div class="no-submit">
+      <h2>What to do next</h2>
+      
+      <p>If you can’t find the information you’re looking for in the&nbsp;<a href="https://www.staging-5em2ouy-wf467k64my7gc.uk-1.platformsh.site/information-and-services/health-and-wellbeing/coronavirus-covid-19">Coronavirus (COVID-19) section</a>, then for queries about:</p>
+      
+      <ul>
+      	<li>Restrictions or regulations&nbsp;—&nbsp;<a href="https://www.health-ni.gov.uk/contact" rel="noopener noreferrer" target="_blank" title="external link opens in a new window / tab">contact the Department of Health</a></li>
+      	<li>Travel advice (including self-isolation)&nbsp;—&nbsp;<a href="https://www.health-ni.gov.uk/contact" rel="noopener noreferrer" target="_blank" title="external link opens in a new window / tab">contact the Department of Health</a></li>
+      	<li>Coronavirus (COVID-19) vaccinations&nbsp;— contact the&nbsp;<a href="https://www.health-ni.gov.uk/contact" rel="noopener noreferrer" target="_blank" title="external link opens in a new window / tab">Department of Health</a>&nbsp;or&nbsp;<a href="https://www.publichealth.hscni.net/node/4802" rel="noopener noreferrer" target="_blank" title="external link opens in a new window / tab">Public Health Agency</a></li>
+      </ul>
+      
+      <p>If your query is about another topic, select ‘Other’ from the drop-down menu above.</p>
+      </div>
+      
+    '#format': full_html
   criminal_records_checks:
     '#type': processed_text
     '#states':
@@ -346,6 +373,22 @@ elements: |
       role: alert
     '#text': '<div class="no-submit"><h2>What to do next</h2><p>For queries or advice about birth, death, marriage and civil partnership certificates and research, contact the General Register Office Northern Ireland (GRONI) by email&nbsp;<a href="mailto:gro_nisra@finance-ni.gov.uk">gro_nisra@finance-ni.gov.uk</a></p></div>'
     '#format': full_html
+  high_street_voucher_scheme:
+    '#type': processed_text
+    '#states':
+      visible:
+        ':input[name="feedback_about"]':
+          value: high_street_voucher
+    '#wrapper_attributes':
+      role: alert
+    '#text': |
+      <div class="no-submit">
+      <h2>What to do next</h2>
+      
+      <p>For queries about the High Street voucher scheme,&nbsp; email&nbsp;<a data-sk="tooltip_parent" delay="150" href="mailto:HSSS.mail@economy-ni.gov.uk" rel="noopener noreferrer" target="_blank">HSSS.mail@economy-ni.gov.uk</a></p>
+      </div>
+      
+    '#format': full_html
   motoring:
     '#type': processed_text
     '#states':
@@ -355,6 +398,24 @@ elements: |
     '#wrapper_attributes':
       role: alert
     '#text': '<div class="no-submit"><h2>What to do next</h2><p>For queries about:</p><ul><li>Car tax, vehicle registration and SORN<br>contact the <a href="https://www.gov.uk/contact-the-dvla">Driver and Vehicle Licensing Agency (DVLA), Swansea</a><br>&nbsp;</li><li>Driver licensing and tests, MOT and vehicle testing<br>contact the <a href="/node/4236">Driver &amp; Vehicle Agency (DVA), Northern Ireland</a></li></ul><p>If your query is about another topic, select ‘Other’ from the drop-down menu above.</p></div>'
+    '#format': full_html
+  nidirect_account:
+    '#type': processed_text
+    '#states':
+      visible:
+        ':input[name="feedback_about"]':
+          value: nidirect_account
+    '#wrapper_attributes':
+      role: alert
+    '#text': |
+      <div class="no-submit">
+      <h2>What to do next</h2>
+      
+      <p>For queries about your identity check, email&nbsp;<a data-sk="tooltip_parent" delay="150" href="mailto:nida@nidirect.gov.uk" rel="noopener noreferrer" target="_blank">nida@nidirect.gov.uk</a>.</p>
+      
+      <p>&nbsp;</p>
+      </div>
+      
     '#format': full_html
   passports:
     '#type': processed_text
