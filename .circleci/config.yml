@@ -177,6 +177,10 @@ jobs:
               npm install
             done
       - run:
+          name: Switch off antibot module
+          command: |
+            platform environment:drush pmu antibot -y -p $PLATFORM_PROJECT_ID -e $EDGE_BUILD_BRANCH
+      - run:
           name: Run tests with Nightwatch.js
           command: |
             yarn --cwd=/home/circleci/project/web/core test:nightwatch $(for tag in $TEST_TAGS; do echo --tag $tag; done)
