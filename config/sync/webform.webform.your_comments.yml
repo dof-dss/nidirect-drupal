@@ -46,6 +46,7 @@ elements: |
           child_maintenance: 'Child Maintenance'
           groni_civil_partnerships: 'Civil partnership certificates'
           covid_19: 'Coronavirus (COVID-19)'
+          covid_19_certificate: 'COVID-19 certificate'
           criminal_record_checks: 'Criminal record checks (AccessNI)'
           groni_death: 'Death certificates'
           educational_maintenance_allowance: 'Educational Maintenance Allowance'
@@ -315,6 +316,22 @@ elements: |
       </ul>
       
       <p>If your query is about another topic, select ‘Other’ from the drop-down menu above.</p>
+      </div>
+      
+    '#format': full_html
+  covid_19_certificate:
+    '#type': processed_text
+    '#states':
+      visible:
+        ':input[name="feedback_about"]':
+          value: covid_19_certificate
+    '#wrapper_attributes':
+      role: alert
+    '#text': |
+      <div class="no-submit">
+      <h2>What to do next</h2>
+      
+      <p>For queries about your identity check, email <a href="mailto:nida@nidirect.gov.uk">nida@nidirect.gov.uk</a> and for queries about your certificate, email <a href="mailto:covidcertni@hscni.net">covidcertni@hscni.net</a>.</p>
       </div>
       
     '#format': full_html
