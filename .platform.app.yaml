@@ -119,7 +119,7 @@ web:
       # and a stale item can be served whilst Fastly fetches a fresh one from
       # the backend. Only Fastly sees the Surrogate-Control header and
       # removes it from its response. Since purging items from Fastly cache
-      # happens when content is updated it is safe to set long TTL.
+      # happens when content is updated it is safe to set a long TTL.
       headers:
         Surrogate-Control: max-age=86400, stale-while-revalidate=60
 
