@@ -59,7 +59,7 @@
         "drupal/chosen": "^3.0",
         "drupal/chosen_lib": "^3.0",
         "drupal/clientside_validation": "^3.0@RC",
-        "drupal/config_filter": "^1.4",
+        "drupal/config_filter": "^2.2",
         "drupal/config_ignore": "^2.1",
         "drupal/config_readonly": "^1.0@beta",
         "drupal/config_split": "^2.0.0",
@@ -67,7 +67,6 @@
         "drupal/console": "^1.9",
         "drupal/cookie_content_blocker": "^1.7",
         "drupal/core-composer-scaffold": "^8.9.13",
-        "drupal/core-project-message": "^8.9.13",
         "drupal/core-recommended": "^8.9.13",
         "drupal/csp": "^1.15",
         "drupal/csv_serialization": "^2.0@beta",
@@ -80,7 +79,7 @@
         "drupal/entityqueue": "^1.0",
         "drupal/eu_cookie_compliance": "^1.8",
         "drupal/facets": "^1.8",
-        "drupal/facets_pretty_paths": "1.x-dev",
+        "drupal/facets_pretty_paths": "^1.1",
         "drupal/fastly": "^3.9",
         "drupal/field_group": "^3.2",
         "drupal/filelog": "^2.0",
@@ -94,7 +93,7 @@
         "drupal/hms_field": "1.x-dev",
         "drupal/honeypot": "^2.0",
         "drupal/http_cache_control": "^2.0",
-        "drupal/inline_entity_form": "1.0.0-rc8",
+        "drupal/inline_entity_form": "^1.0.0-rc9",
         "drupal/layout_builder_modal": "^1.0@alpha",
         "drupal/layout_builder_restrictions": "^2.9",
         "drupal/linkit": "^6.0.0",
@@ -112,14 +111,14 @@
         "drupal/permissions_filter": "^1.2",
         "drupal/redirect": "^1.5",
         "drupal/redis": "^1.5",
-        "drupal/scheduled_transitions": "2.0@beta",
+        "drupal/scheduled_transitions": "^2.1",
         "drupal/scheduler": "^1.4",
         "drupal/scheduler_content_moderation_integration": "^1.1",
         "drupal/schema_metatag": "^2.2",
-        "drupal/search_api": "^1.14",
-        "drupal/search_api_autocomplete": "^1.4",
+        "drupal/search_api": "^1.20",
+        "drupal/search_api_autocomplete": "^1.5",
         "drupal/search_api_location": "^1.0@alpha",
-        "drupal/search_api_solr": "^4.1",
+        "drupal/search_api_solr": "^4.2",
         "drupal/search_api_spellcheck": "^3.0@beta",
         "drupal/shs": "^1.0@alpha",
         "drupal/simple_sitemap": "^3.8",
@@ -147,8 +146,6 @@
         "harvesthq/chosen": "^1.8",
         "oomphinc/composer-installers-extender": "^2.0",
         "platformsh/config-reader": "^2.3",
-        "solarium/solarium": "6",
-        "symfony/event-dispatcher": "4.3.11 as 3.4.41",
         "vlucas/phpdotenv": "^2.4",
         "zaporylie/composer-drupal-optimizations": "^1.0"
     },
@@ -157,7 +154,7 @@
         "drupal/devel": "^4.1",
         "drupal/devel_entity_updates": "^3.0",
         "drupal/easy_install": "^10.5",
-        "drupal/fpa": "^2.0@beta",
+        "drupal/fpa": "^3.0",
         "drupal/masquerade": "^2.0@beta",
         "drupal/migrate_tools": "^5.0",
         "drupal/multiline_config": "1.x-dev",
@@ -215,9 +212,6 @@
             "drupal/shs": {
                 "SHS select is empty on views": "https://www.drupal.org/files/issues/2018-12-10/shs-blank-select-fix-3019378-3.patch"
             },
-            "drupal/scheduled_transitions": {
-                "Make revisions in any language available for scheduling": "https://www.drupal.org/files/issues/2021-02-05/scheduled_transitions_base_language_3091006_1x.patch"
-            },
             "drupal/schema_metatag": {
                 "Add @id as a tag to all schemas": "https://www.drupal.org/files/issues/2019-09-01/3078582-02.patch"
             },
@@ -226,7 +220,7 @@
                 "Linkit for Link field": "https://www.drupal.org/files/issues/2020-09-23/linkit-for-link-field-2712951-190.patch"
             },
             "drupal/inline_entity_form": {
-                "Widget settings to control removing & deleting existing references": "https://www.drupal.org/files/issues/2020-11-05/ief_removed_references_2875716-89.patch"
+                "Widget settings to control removing & deleting existing references": "https://www.drupal.org/files/issues/2021-04-15/ief_removed_references_2875716-103.patch"
             },
             "drupal/moderation_sidebar": {
                 "'Draft available' text still appears after deleting a forward revision": "https://www.drupal.org/files/issues/2020-02-24/3115474-3.patch"
@@ -240,10 +234,6 @@
             "drupal/clientside_validation": {
                 "core/jquery.once is required": "https://www.drupal.org/files/issues/2021-02-23/3200022-01.patch",
                 "Uncaught type error patches including errors as label patch": "https://www.drupal.org/files/issues/2021-06-08/clientside_validation_typerror_3217889_3.patch"
-            },
-            "drupal/fpa": {
-                "Remove @file tag docblock": "https://www.drupal.org/files/issues/2018-04-24/fpa_remove_file_tag_2795655_3.patch",
-                "entity.manager must be changed to entity_type.manager": "https://www.drupal.org/files/issues/2021-03-01/entity_type_manager_fix.patch"
             },
             "drupal/devel": {
                 "Brings back the Available Methods & Properties tabs for Kint dumps — Issue #221": "https://raw.githubusercontent.com/politsin/snipets/master/patch/kint.patch"
@@ -311,27 +301,6 @@
             ],
             "drush/Commands/contrib/{$name}": [
                 "type:drupal-drush"
-            ]
-        },
-        "drupal-core-project-message": {
-            "include-keys": [
-                "homepage",
-                "support"
-            ],
-            "post-create-project-cmd-message": [
-                "<bg=blue;fg=white>                                                         </>",
-                "<bg=blue;fg=white>  Congratulations, you’ve installed the Drupal codebase  </>",
-                "<bg=blue;fg=white>  from the drupal/recommended-project template!          </>",
-                "<bg=blue;fg=white>                                                         </>",
-                "",
-                "<bg=yellow;fg=black>Next steps</>:",
-                "  * Install the site: https://www.drupal.org/docs/8/install",
-                "  * Read the user guide: https://www.drupal.org/docs/user_guide/en/index.html",
-                "  * Get support: https://www.drupal.org/support",
-                "  * Get involved with the Drupal community:",
-                "      https://www.drupal.org/getting-involved",
-                "  * Remove the plugin that prints this message:",
-                "      composer remove drupal/core-project-message"
             ]
         }
     }
