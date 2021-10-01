@@ -5,14 +5,12 @@ dependencies: {  }
 id: production
 label: production
 description: 'Production site split. Locks site down to prevent config changes on the live site.'
+weight: 0
+storage: null
 folder: ../config/production
 module:
   fastly: 0
   permissions_filter: 0
 theme: {  }
-blacklist: {  }
-graylist:
-  - system.performance
-graylist_dependents: true
-graylist_skip_equal: true
-weight: 0
+complete_list: {  }
+partial_list: {  }
