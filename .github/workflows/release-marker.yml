@@ -15,5 +15,5 @@ jobs:
           apiKey: ${{ secrets.NEW_RELIC_API_KEY }}
           accountId: ${{ secrets.NEW_RELIC_ACCOUNT_ID }}
           applicationId: ${{ secrets.NEW_RELIC_APPLICATION_ID }}
-          revision: $GITHUB_REF
           region: ${{ secrets.NEW_RELIC_REGION }}
+          revision: ${{ env.GITHUB_REF }}
