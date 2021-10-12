@@ -307,12 +307,13 @@ workflows:
 
   # Workflow that instructs New Relic about new release tags in the repo.
   release-marker:
-    triggers:
     jobs:
       - mark_release:
-        filters:
-          tags:
-            only: /.*/
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /.*/
 
   # A daily build of the project, using all dof-dss packages at HEAD from development branch.
   edge-build:
