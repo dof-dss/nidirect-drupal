@@ -78,6 +78,9 @@ if (!empty(getenv('PLATFORM_BRANCH'))) {
 
 $settings['simple_environment_indicator'] = sprintf('%s %s', $env_colour, $env_name);
 
+// CSP report URI config override.
+$config['csp.settings']['report-only']['reporting']['options']['subdomain'] = getenv('CSP_REPORTING_SUBDOMAIN');
+
 // Settings for Migrate Booster module.
 $config['migrate_booster.settings']['modules'] = [
   'admin_toolbar_tools',

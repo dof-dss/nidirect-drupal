@@ -8,6 +8,8 @@ report-only:
     connect-src:
       sources:
         - 'https://www.google-analytics.com'
+        - 'https://*.newrelic.com'
+        - 'https://*.nr-data.net'
       base: self
     font-src:
       sources:
@@ -38,6 +40,8 @@ report-only:
       sources:
         - 'https://www.googletagmanager.com'
         - 'https://www.google-analytics.com'
+        - 'https://*.newrelic.com'
+        - 'https://*.nr-data.net'
       base: self
     script-src-attr:
       base: self
@@ -45,6 +49,8 @@ report-only:
       sources:
         - 'https://www.googletagmanager.com'
         - 'https://www.google-analytics.com'
+        - 'https://*.newrelic.com'
+        - 'https://*.nr-data.net'
       base: self
     style-src:
       base: self
@@ -56,7 +62,10 @@ report-only:
       base: self
     block-all-mixed-content: true
   reporting:
-    plugin: sitelog
+    plugin: report-uri-com
+    options:
+      subdomain: ''
+      wizard: false
 enforce:
   enable: false
   directives:
