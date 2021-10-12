@@ -276,6 +276,12 @@ jobs:
   mark_release:
     docker:
       - image: cimg/base:2021.04
+    environment:
+      NEW_RELIC_APPLICATION_ID: "297056575"
+      NEW_RELIC_API_KEY: "NRAK-2UDJ0CSYWOMDTYO5ODHZ4RIQ6ZV"
+      NEW_RELIC_ACCOUNT_ID: "2900808"
+      NEW_RELIC_REGION: "eu"
+      CIRCLE_TAG: "zzz"
     steps:
       - run:
           name: Create a new release marker in New Relic
@@ -313,8 +319,6 @@ workflows:
         filters:
           tags:
             only: /.*/
-          branches:
-            only: D8NID-1429
 
   # A daily build of the project, using all dof-dss packages at HEAD from development branch.
   edge-build:
