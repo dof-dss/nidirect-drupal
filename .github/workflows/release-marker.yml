@@ -1,0 +1,19 @@
+name: Mark Release
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  newrelic:
+    runs-on: ubuntu-latest
+    name: New Relic
+    steps:
+      - name: Create New Relic deployment marker
+        uses: newrelic/deployment-marker-action@v1
+        with:
+          apiKey: ${{ secrets.NEW_RELIC_API_KEY }}
+          accountId: ${{ secrets.NEW_RELIC_ACCOUNT_ID }}
+          applicationId: ${{ secrets.NEW_RELIC_APPLICATION_ID }}
+          region: ${{ secrets.NEW_RELIC_REGION }}
+          revision: "${{ env.GITHUB_REF }}"
