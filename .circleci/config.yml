@@ -272,6 +272,26 @@ jobs:
             platform environment:drush sapi-r -p $PLATFORM_PROJECT_ID -e $EDGE_BUILD_BRANCH
             platform environment:drush sapi-i -p $PLATFORM_PROJECT_ID -e $EDGE_BUILD_BRANCH
 
+  # Create new release marker in New Relic
+  mark_release:
+    docker:
+      - image: cimg/base:2021.04
+    steps:
+      - run:
+          name: Create a new release marker in New Relic
+          command: |
+            curl -X POST "https://api.${NEW_RELIC_REGION}.newrelic.com/v2/applications/${NEW_RELIC_APPLICATION_ID}/deployments.json" \
+                 -H "Api-Key:${NEW_RELIC_API_KEY}" \
+                 -H "Content-Type: application/json" \
+                 -i \
+                 -d \
+            '{
+              "deployment": {
+                "revision": "'"${CIRCLE_TAG}"'",
+                "description": "Deployment marker set from Circle CI"
+              }
+            }'
+
 workflows:
   version: 2
   # Our default pipeline that tests the integrity of our code.
@@ -284,6 +304,15 @@ workflows:
       - deprecated_code:
           requires:
             - build
+
+  # Workflow that instructs New Relic about new release tags in the repo.
+  release-marker:
+    triggers:
+    jobs:
+      - mark_release:
+        filters:
+          tags:
+            only: /.*/
 
   # A daily build of the project, using all dof-dss packages at HEAD from development branch.
   edge-build:
