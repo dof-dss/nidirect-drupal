@@ -9,9 +9,11 @@ dependencies:
     - node.type.health_condition
     - node.type.landing_page
     - node.type.publication
+    - taxonomy.vocabulary.site_themes
   module:
     - book
     - node
+    - taxonomy
 id: popular_content
 label: 'Popular content'
 module: views
@@ -522,6 +524,126 @@ display:
       contexts:
         - 'languages:language_content'
         - 'languages:language_interface'
+        - 'user.node_grants:view'
+      tags: {  }
+  pop_by_term:
+    display_plugin: block
+    id: pop_by_term
+    display_title: 'by term'
+    position: 5
+    display_options:
+      display_extenders: {  }
+      display_description: ''
+      arguments:
+        term_node_tid_depth:
+          id: term_node_tid_depth
+          table: node_field_data
+          field: term_node_tid_depth
+          relationship: none
+          group_type: group
+          admin_label: ''
+          default_action: ignore
+          exception:
+            value: all
+            title_enable: false
+            title: All
+          title_enable: false
+          title: ''
+          default_argument_type: fixed
+          default_argument_options:
+            argument: ''
+          default_argument_skip_url: false
+          summary_options:
+            base_path: ''
+            count: true
+            items_per_page: 25
+            override: false
+          summary:
+            sort_order: asc
+            number_of_records: 0
+            format: default_summary
+          specify_validation: true
+          validate:
+            type: 'entity:taxonomy_term'
+            fail: 'not found'
+          validate_options:
+            bundles:
+              site_themes: site_themes
+            operation: view
+            multiple: 0
+            access: false
+          depth: 10
+          break_phrase: false
+          use_taxonomy_term_path: false
+          entity_type: node
+          plugin_id: taxonomy_index_tid_depth
+      defaults:
+        arguments: false
+    cache_metadata:
+      max-age: -1
+      contexts:
+        - 'languages:language_content'
+        - 'languages:language_interface'
+        - url
+        - 'user.node_grants:view'
+      tags: {  }
+  pop_by_top_level_term:
+    display_plugin: block
+    id: pop_by_top_level_term
+    display_title: 'by top-level term'
+    position: 4
+    display_options:
+      display_extenders: {  }
+      display_description: ''
+      arguments:
+        field_top_level_theme_target_id:
+          id: field_top_level_theme_target_id
+          table: node__field_top_level_theme
+          field: field_top_level_theme_target_id
+          relationship: none
+          group_type: group
+          admin_label: ''
+          default_action: 'not found'
+          exception:
+            value: all
+            title_enable: false
+            title: All
+          title_enable: false
+          title: ''
+          default_argument_type: fixed
+          default_argument_options:
+            argument: ''
+          default_argument_skip_url: false
+          summary_options:
+            base_path: ''
+            count: true
+            items_per_page: 25
+            override: false
+          summary:
+            sort_order: asc
+            number_of_records: 0
+            format: default_summary
+          specify_validation: true
+          validate:
+            type: 'entity:taxonomy_term'
+            fail: 'not found'
+          validate_options:
+            bundles:
+              site_themes: site_themes
+            operation: view
+            multiple: 0
+            access: false
+          break_phrase: false
+          not: false
+          plugin_id: numeric
+      defaults:
+        arguments: false
+    cache_metadata:
+      max-age: -1
+      contexts:
+        - 'languages:language_content'
+        - 'languages:language_interface'
+        - url
         - 'user.node_grants:view'
       tags: {  }
   pop_info_site_wide:

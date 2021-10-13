@@ -10,10 +10,11 @@ weight: 0
 module: easy_google_analytics_counter
 callback: easy_google_analytics_counter_cron
 scheduler:
-  id: simple
+  id: crontab
   configuration:
     rules:
-      - '* * * * *'
+      - '30 4 * * *'
+    catch_up: 0
 launcher:
   id: serial
   configuration:

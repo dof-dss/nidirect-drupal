@@ -1,4 +1,4 @@
-uuid: 67a23331-5d52-4882-9bf0-33bf93682b60
+uuid: c6a69e8a-96b5-4a6c-9e86-489d9d5fee62
 langcode: en
 status: true
 dependencies:
@@ -9,22 +9,23 @@ dependencies:
     - views
   theme:
     - nicsdru_nidirect_theme
-id: views_block__popular_content_pop_services_site_wide
+id: views_block__popular_content_pop_by_term
 theme: nicsdru_nidirect_theme
 region: sidebar_second
-weight: -12
+weight: -10
 provider: null
-plugin: 'views_block:popular_content-pop_services_site_wide'
+plugin: 'views_block:popular_content-pop_by_term'
 settings:
-  id: 'views_block:popular_content-pop_services_site_wide'
+  id: 'views_block:popular_content-pop_by_term'
   label: ''
   provider: views
   label_display: visible
   views_label: ''
   items_per_page: none
+  context_mapping: {  }
 visibility:
   request_path:
     id: request_path
-    pages: '<front>'
+    pages: '/information-and-services/*'
     negate: false
     context_mapping: {  }
