@@ -77,7 +77,7 @@ hooks:
     echo "Update robots.txt with NIDirect customisations"
     cp -f web/robots_nidirect.txt web/robots.txt
     echo "Create 'Easy Google Analytics Counter' auth file"
-    md /app/private
+    mkdir /app/private
     printf '%s\n' "$EGAC_GA_AUTH" > /app/private/easy_google_analytics_counter_auth.json
   # The deploy hook runs after your application has been deployed and started.
   deploy: |
