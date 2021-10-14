@@ -76,12 +76,12 @@ hooks:
     curl -sS https://platform.sh/cli/installer | php
     echo "Update robots.txt with NIDirect customisations"
     cp -f web/robots_nidirect.txt web/robots.txt
-    echo "Create 'Easy Google Analytics Counter' auth file"
-    mkdir /app/private
-    printf '%s\n' "$EGAC_GA_AUTH" > /app/private/easy_google_analytics_counter_auth.json
   # The deploy hook runs after your application has been deployed and started.
   deploy: |
     set -e
+    echo "Create 'Easy Google Analytics Counter' auth file"
+    mkdir /app/private
+    printf '%s\n' "$EGAC_GA_AUTH" > /app/private/easy_google_analytics_counter_auth.json
     php ./drush/platformsh_generate_drush_yml.php
     cd web
     # Rebuild caches, run db-updates and import config.
