@@ -11,7 +11,6 @@ dependencies:
     - cookie_content_blocker
     - editor
     - entity_embed
-    - google_analytics_counter
     - linkit
     - media
     - noreferrer
@@ -107,22 +106,16 @@ filters:
     weight: -47
     settings:
       default_view_mode: article_full
-      allowed_media_types:
-        audio: audio
-        image: image
-        remote_video: remote_video
-        video: video
       allowed_view_modes:
         article_float: article_float
         article_float_expandable: article_float_expandable
         article_full: article_full
         article_full_expandable: article_full_expandable
-  google_analytics_counter_filter:
-    id: google_analytics_counter_filter
-    provider: google_analytics_counter
-    status: false
-    weight: -35
-    settings: {  }
+      allowed_media_types:
+        audio: audio
+        image: image
+        remote_video: remote_video
+        video: video
   cookie_content_blocker_filter:
     id: cookie_content_blocker_filter
     provider: cookie_content_blocker
