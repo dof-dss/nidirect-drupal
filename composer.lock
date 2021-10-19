@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "cb5dd082ff6d7265e384cb32b37137a1",
+    "content-hash": "1a07a50cdb42e036caf6a80577071e7a",
     "packages": [
         {
             "name": "alchemy/zippy",
@@ -2346,6 +2346,9 @@
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
                     }
+                },
+                "patches_applied": {
+                    "Allow to set a list of preferred countries": "https://www.drupal.org/files/issues/2019-11-11/2626982-37.preferred_countries.patch"
                 }
             },
             "notification-url": "https://packages.drupal.org/8/downloads",
@@ -2957,6 +2960,10 @@
                         "status": "not-covered",
                         "message": "RC releases are not covered by Drupal security advisories."
                     }
+                },
+                "patches_applied": {
+                    "core/jquery.once is required": "https://www.drupal.org/files/issues/2021-02-23/3200022-01.patch",
+                    "Uncaught type error patches including errors as label patch": "https://www.drupal.org/files/issues/2021-06-08/clientside_validation_typerror_3217889_3.patch"
                 }
             },
             "notification-url": "https://packages.drupal.org/8/downloads",
@@ -3614,6 +3621,9 @@
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
                     }
+                },
+                "patches_applied": {
+                    "Disable XSS for tag settings to allow HTML output": "https://gist.githubusercontent.com/omahm/eb99bc8278b57798a7d82bf06c27b8d1/raw/d9d75e06300a102b072dd8166f82ec381f211b9d/cookie_content_blocker_disable_xss"
                 }
             },
             "notification-url": "https://packages.drupal.org/8/downloads",
@@ -3857,6 +3867,18 @@
                         "[web-root]/profiles/README.txt": "assets/scaffold/files/profiles.README.txt",
                         "[web-root]/themes/README.txt": "assets/scaffold/files/themes.README.txt"
                     }
+                },
+                "patches_applied": {
+                    "Prevent leftover fields from causing errors like 'Call to a member function getLabel() after enabling layout_builder'": "https://www.drupal.org/files/issues/2020-01-20/2985882-53.patch",
+                    "When embedding media, don't let authors choose view modes that are not enabled for that media type": "https://www.drupal.org/files/issues/2021-09-15/3097416-ckeditor-view-modes-8.9-combined_0.patch",
+                    "[IGNORE] Composer-friendly patches for filename sanitation while #2492171 awaits #3032390": "https://www.drupal.org/files/issues/2020-11-18/3094052-composer-patch-filename-sanitation-7.patch",
+                    "[meta] Themes improperly check renderable arrays when determining visibility": "https://www.drupal.org/files/issues/2019-02-19/themes_improperly_check_renderable_arrays_when_determining_visibility-953034-313.patch",
+                    "Cannot save unpublished versions of published content for users without manage book privileges": "https://www.drupal.org/files/issues/2020-10-18/2918537-63.patch",
+                    "Layout builder fails to assign inline block access dependencies for the overrides section storage on entities with pending revisions": "https://www.drupal.org/files/issues/2021-03-22/3047022-70-backport-8.9.x.patch",
+                    "Support for AjaxResponse implementing CacheableResponseInterface": "https://gist.githubusercontent.com/omahm/cd990b5cdba637fe270ada0702717d9d/raw/60a05babb9747061df201ca9f74afb4b59166f14/cacheableAjaxResponse.patch",
+                    "Increase service priority for logger factory": "https://gist.githubusercontent.com/johangant/3023926f40867e14385bd3d87831adfc/raw/174cec09449636263b8dcd01679945677a0d607d/increase_logger_factory_service_priority.patch",
+                    "Expose oEmbed resource object to iframe template": "https://gist.githubusercontent.com/johangant/460719ccfcf389f83db366ab7b341700/raw/65c7665f01f87b7b69494597856d62104efaf4d9/3009003-38--public-modules.patch",
+                    "'Negate' form value for condition plugins should be cast to boolean in validation": "https://www.drupal.org/files/issues/2020-03-23/3114467-8.patch"
                 }
             },
             "autoload": {
@@ -4415,7 +4437,8 @@
             "support": {
                 "source": "http://cgit.drupalcode.org/easy_google_analytics_counter",
                 "issues": "https://www.drupal.org/project/issues/easy_google_analytics_counter"
-            }
+            },
+            "time": "2020-09-12T19:38:07+00:00"
         },
         {
             "name": "drupal/embed",
@@ -4734,6 +4757,9 @@
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
                     }
+                },
+                "patches_applied": {
+                    "Plugin to cover taxonomy term entities": "https://www.drupal.org/files/issues/2021-03-25/3205634-reference-unpublished-taxonomy-terms.patch"
                 }
             },
             "notification-url": "https://packages.drupal.org/8/downloads",
@@ -5272,6 +5298,9 @@
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
                     }
+                },
+                "patches_applied": {
+                    "Whole Log gets loaded into Memory when gzipping": "https://www.drupal.org/files/issues/2021-04-07/filelog-3157650-21.patch"
                 }
             },
             "notification-url": "https://packages.drupal.org/8/downloads",
@@ -5367,7 +5396,8 @@
             "homepage": "https://www.drupal.org/project/flag",
             "support": {
                 "source": "https://git.drupalcode.org/project/flag"
-            }
+            },
+            "time": "2020-08-07T07:05:58+00:00"
         },
         {
             "name": "drupal/geocoder",
@@ -5717,55 +5747,6 @@
             }
         },
         {
-            "name": "drupal/hms_field",
-            "version": "dev-1.x",
-            "source": {
-                "type": "git",
-                "url": "https://git.drupalcode.org/project/hms_field.git",
-                "reference": "f138860c7b18c6aab00f5860b29d15b9ab2197f5"
-            },
-            "require": {
-                "drupal/core": "^8"
-            },
-            "type": "drupal-module",
-            "extra": {
-                "branch-alias": {
-                    "dev-1.x": "1.x-dev"
-                },
-                "drupal": {
-                    "version": "8.x-1.0-beta1+1-dev",
-                    "datestamp": "1530813521",
-                    "security-coverage": {
-                        "status": "not-covered",
-                        "message": "Dev releases are not covered by Drupal security advisories."
-                    }
-                }
-            },
-            "notification-url": "https://packages.drupal.org/8/downloads",
-            "license": [
-                "GPL-2.0-or-later"
-            ],
-            "authors": [
-                {
-                    "name": "Frans",
-                    "homepage": "https://www.drupal.org/user/514222"
-                },
-                {
-                    "name": "jeroen.b",
-                    "homepage": "https://www.drupal.org/user/1853532"
-                },
-                {
-                    "name": "ws.agency",
-                    "homepage": "https://www.drupal.org/user/2851415"
-                }
-            ],
-            "description": "Provides a field for Hours, Minutes and Seconds stored as seconds.",
-            "homepage": "https://www.drupal.org/project/hms_field",
-            "support": {
-                "source": "https://git.drupalcode.org/project/hms_field"
-            }
-        },
-        {
             "name": "drupal/honeypot",
             "version": "2.0.1",
             "source": {
@@ -5901,6 +5882,9 @@
                         "status": "not-covered",
                         "message": "RC releases are not covered by Drupal security advisories."
                     }
+                },
+                "patches_applied": {
+                    "Widget settings to control removing & deleting existing references": "https://www.drupal.org/files/issues/2021-04-15/ief_removed_references_2875716-103.patch"
                 }
             },
             "notification-url": "https://packages.drupal.org/8/downloads",
@@ -6124,6 +6108,11 @@
                         "status": "not-covered",
                         "message": "Beta releases are not covered by Drupal security advisories."
                     }
+                },
+                "patches_applied": {
+                    "Link shown after the autocomplete selection is the bare node/xxx link, not the alias": "https://www.drupal.org/files/issues/2020-11-03/show_alias_in_autocomplete_selection-2877535-16.patch",
+                    "Linkit for Link field": "https://www.drupal.org/files/issues/2020-09-23/linkit-for-link-field-2712951-190.patch",
+                    "Unpublished nodes not included even when option is selected": "https://www.drupal.org/files/issues/2021-05-27/linkit-unpublished-nodes-not-included-3049946-28.patch"
                 }
             },
             "notification-url": "https://packages.drupal.org/8/downloads",
@@ -6508,6 +6497,9 @@
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
                     }
+                },
+                "patches_applied": {
+                    "'Draft available' text still appears after deleting a forward revision": "https://www.drupal.org/files/issues/2020-02-24/3115474-3.patch"
                 }
             },
             "notification-url": "https://packages.drupal.org/8/downloads",
@@ -6677,6 +6669,10 @@
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
                     }
+                },
+                "patches_applied": {
+                    "Integrity constraint violation: 1048 Column 'langcode' cannot be null": "https://www.drupal.org/files/issues/2020-06-25/paragraphs-2901390-51.patch",
+                    "Paragraphs do not render: access check for \"view\" fail when using layout builder + custom blocks & content revisions because the incorrect parent revision ID is being passed in ParagraphAccessControlHandler::checkAccess()": "https://www.drupal.org/files/issues/2020-07-08/access-controll-issue-3090200-22.patch"
                 }
             },
             "notification-url": "https://packages.drupal.org/8/downloads",
@@ -6857,6 +6853,11 @@
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
                     }
+                },
+                "patches_applied": {
+                    "URL redirects listing only displays operations": "https://www.drupal.org/files/issues/2019-04-05/redirects_list_builder-3031125-9-d8.patch",
+                    "Add URL Redirects tab to taxonomy term edit form": "https://www.drupal.org/files/issues/2021-03-26/redirect_provide_redirect_tab_on_taxonomy_terms_3205896.patch",
+                    "Fix ajax error when creating redirects": "https://www.drupal.org/files/issues/2020-12-14/validation-issue-3057250-29.patch"
                 }
             },
             "notification-url": "https://packages.drupal.org/8/downloads",
@@ -7153,6 +7154,9 @@
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
                     }
+                },
+                "patches_applied": {
+                    "Add @id as a tag to all schemas": "https://www.drupal.org/files/issues/2019-09-01/3078582-02.patch"
                 }
             },
             "notification-url": "https://packages.drupal.org/8/downloads",
@@ -7555,6 +7559,9 @@
                         "status": "not-covered",
                         "message": "Alpha releases are not covered by Drupal security advisories."
                     }
+                },
+                "patches_applied": {
+                    "SHS select is empty on views": "https://www.drupal.org/files/issues/2018-12-10/shs-blank-select-fix-3019378-3.patch"
                 }
             },
             "notification-url": "https://packages.drupal.org/8/downloads",
@@ -8209,7 +8216,8 @@
             "support": {
                 "source": "https://git.drupalcode.org/project/twig_extensions",
                 "issues": "https://www.drupal.org/project/issues/twig_extensions"
-            }
+            },
+            "time": "2020-06-03T15:43:52+00:00"
         },
         {
             "name": "drupal/twig_field_value",
@@ -16622,6 +16630,9 @@
                     "services": {
                         "drush.services.yml": "^9 || ^10"
                     }
+                },
+                "patches_applied": {
+                    "Brings back the Available Methods & Properties tabs for Kint dumps — Issue #221": "https://raw.githubusercontent.com/politsin/snipets/master/patch/kint.patch"
                 }
             },
             "notification-url": "https://packages.drupal.org/8/downloads",
@@ -16736,6 +16747,9 @@
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
                     }
+                },
+                "patches_applied": {
+                    "Handle missing core version": "https://www.drupal.org/files/issues/2019-12-19/easy_install_core_version-3101883-0.patch"
                 }
             },
             "notification-url": "https://packages.drupal.org/8/downloads",
@@ -16950,7 +16964,8 @@
                 "source": "https://git.drupalcode.org/project/migrate_tools",
                 "issues": "https://www.drupal.org/project/issues/migrate_tools",
                 "slack": "#migrate"
-            }
+            },
+            "time": "2021-07-05T21:38:52+00:00"
         },
         {
             "name": "drupal/multiline_config",
@@ -16975,6 +16990,9 @@
                         "status": "not-covered",
                         "message": "Dev releases are not covered by Drupal security advisories."
                     }
+                },
+                "patches_applied": {
+                    "Drupal 8.9 / 9 compatibility": "https://www.drupal.org/files/issues/2021-01-12/3109713-16.patch"
                 }
             },
             "notification-url": "https://packages.drupal.org/8/downloads",
@@ -16996,7 +17014,8 @@
             "support": {
                 "source": "https://cgit.drupalcode.org/multiline_config",
                 "issues": "https://www.drupal.org/project/issues/multiline_config"
-            }
+            },
+            "time": "2021-01-07T19:21:57+00:00"
         },
         {
             "name": "drupal/restui",
@@ -19903,6 +19922,7 @@
                     "type": "github"
                 }
             ],
+            "abandoned": true,
             "time": "2020-11-30T07:30:19+00:00"
         },
         {
@@ -20452,7 +20472,8 @@
                 "url": "https://github.com/thinktandem/migrate_booster.git",
                 "reference": "main"
             },
-            "type": "drupal-module"
+            "type": "drupal-module",
+            "time": "2021-04-19T12:44:23+00:00"
         }
     ],
     "aliases": [],
@@ -20463,7 +20484,6 @@
         "drupal/config_readonly": 10,
         "drupal/csv_serialization": 10,
         "drupal/flag": 20,
-        "drupal/hms_field": 20,
         "drupal/layout_builder_modal": 15,
         "drupal/search_api_location": 15,
         "drupal/search_api_spellcheck": 10,
@@ -20480,5 +20500,5 @@
     "prefer-lowest": false,
     "platform": [],
     "platform-dev": [],
-    "plugin-api-version": "2.0.0"
+    "plugin-api-version": "1.1.0"
 }
