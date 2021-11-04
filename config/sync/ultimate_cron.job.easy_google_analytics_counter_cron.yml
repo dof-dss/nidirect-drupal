@@ -1,0 +1,30 @@
+uuid: 71bdeef7-139c-47bb-960c-eff9e8c14fb4
+langcode: en
+status: true
+dependencies:
+  module:
+    - easy_google_analytics_counter
+title: 'Default cron handler'
+id: easy_google_analytics_counter_cron
+weight: 0
+module: easy_google_analytics_counter
+callback: easy_google_analytics_counter_cron
+scheduler:
+  id: crontab
+  configuration:
+    rules:
+      - '30 4 * * *'
+    catch_up: 0
+launcher:
+  id: serial
+  configuration:
+    timeouts:
+      lock_timeout: 3600
+    launcher:
+      thread: 0
+logger:
+  id: database
+  configuration:
+    method: '3'
+    expire: 1209600
+    retain: 1000
