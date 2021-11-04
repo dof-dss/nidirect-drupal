@@ -224,7 +224,9 @@ display:
     display_title: 'Embed: Featured news'
     position: 1
     display_options:
-      display_extenders: {  }
+      display_extenders:
+        metatag_display_extender:
+          metatags: {  }
       title: 'Featured news'
       defaults:
         title: false
@@ -456,13 +458,19 @@ display:
         - user.permissions
       tags:
         - 'config:field.storage.node.field_published_date'
+        - 'config_split_state:field.storage.node.field_published_date'
   latest_news:
     display_plugin: embed
     id: latest_news
     display_title: 'Embed: Latest news'
     position: 1
     display_options:
-      display_extenders: {  }
+      display_extenders:
+        metatag_display_extender:
+          metatags:
+            title: News
+            description: 'This page lists the latest news releases from nidirect.'
+            keywords: 'news, nidirect, Northern Ireland'
       display_description: ''
       style:
         type: default
@@ -797,6 +805,7 @@ display:
         - user.permissions
       tags:
         - 'config:field.storage.node.field_published_date'
+        - 'config_split_state:field.storage.node.field_published_date'
   news_feed:
     display_plugin: feed
     id: news_feed
@@ -1270,6 +1279,8 @@ display:
       tags:
         - 'config:field.storage.node.field_published_date'
         - 'config:field.storage.node.field_teaser'
+        - 'config_split_state:field.storage.node.field_published_date'
+        - 'config_split_state:field.storage.node.field_teaser'
   older_news:
     display_plugin: embed
     id: older_news
@@ -1518,3 +1529,4 @@ display:
         - user.permissions
       tags:
         - 'config:field.storage.node.field_published_date'
+        - 'config_split_state:field.storage.node.field_published_date'
