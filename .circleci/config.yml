@@ -49,7 +49,7 @@ commands:
       - run:
           name: Switch dof-dss packages to HEAD on develelopment branch
           command: |
-            composer require dof-dss/nidirect-site-modules:dev-development dof-dss/nidirect-migrations:dev-development \
+            composer require dof-dss/nidirect-site-modules:dev-development \
               dof-dss/nidirect-d8-test-install-profile:dev-development dof-dss/nicsdru_origins_theme:dev-development \
                 dof-dss/nicsdru_origins_modules:dev-development dof-dss/nicsdru_nidirect_theme:dev-development
   install_php_os_extensions:
@@ -130,7 +130,6 @@ jobs:
             cd $PROJECT_ROOT
             CHECK_DIRS="${PROJECT_ROOT}/web/modules/custom"
             CHECK_DIRS="$CHECK_DIRS ${PROJECT_ROOT}/web/modules/origins"
-            CHECK_DIRS="$CHECK_DIRS ${PROJECT_ROOT}/web/modules/migrate"
             CHECK_DIRS="$CHECK_DIRS ${PROJECT_ROOT}/web/themes/custom"
             vendor/bin/drupal-check $CHECK_DIRS
 
@@ -172,7 +171,7 @@ jobs:
             sed -i -e "s|\(^DRUPAL_NIGHTWATCH_OUTPUT\)=reports/nightwatch|\1=/home/circleci/nightwatch-reports|g" ~/project/web/core/.env
 
             # Install npm packages for the projects/repos we know need them.
-            for dir in core modules/custom modules/migrate/nidirect-migrations/migrate_nidirect_node; do
+            for dir in core modules/custom; do
               cd ~/project/web/$dir
               npm install
             done
