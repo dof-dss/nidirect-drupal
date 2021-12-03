@@ -235,6 +235,13 @@ jobs:
           command: |
             platform sync data -p $PLATFORM_PROJECT_ID -e $EDGE_BUILD_BRANCH -y
       - run:
+          name: Backup data sync if the previous attempt failed.
+          command: |
+            # Pause for the blocking activity to finish.
+            sleep 90s
+            platform sync data -p $PLATFORM_PROJECT_ID -e $EDGE_BUILD_BRANCH -y
+          when: on_fail
+      - run:
           name: Turn off fastly module to allow for cleaner config import
           command: |
             platform environment:drush pmu fastly -y -p $PLATFORM_PROJECT_ID -e $EDGE_BUILD_BRANCH
