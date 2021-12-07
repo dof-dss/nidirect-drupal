@@ -10,6 +10,7 @@ dependencies:
     - field.field.block_content.video_and_caption.field_video_caption_display
   module:
     - media_library
+    - media_library_edit
 id: block_content.video_and_caption.default
 targetEntityType: block_content
 bundle: video_and_caption
@@ -28,7 +29,9 @@ content:
     weight: 0
     settings:
       media_types: {  }
-    third_party_settings: {  }
+    third_party_settings:
+      media_library_edit:
+        show_edit: '1'
     region: content
   field_video_caption_display:
     weight: 26
