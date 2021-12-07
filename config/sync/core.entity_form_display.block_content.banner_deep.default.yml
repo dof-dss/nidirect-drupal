@@ -10,6 +10,7 @@ dependencies:
     - field.field.block_content.banner_deep.field_teaser
   module:
     - media_library
+    - media_library_edit
 id: block_content.banner_deep.default
 targetEntityType: block_content
 bundle: banner_deep
@@ -29,7 +30,9 @@ content:
     weight: 1
     settings:
       media_types: {  }
-    third_party_settings: {  }
+    third_party_settings:
+      media_library_edit:
+        show_edit: '1'
     region: content
   field_teaser:
     weight: 26
