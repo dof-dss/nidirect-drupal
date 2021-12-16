@@ -20,19 +20,6 @@ $databases['default']['default'] = [
   'pdo' => [PDO::MYSQL_ATTR_COMPRESS => !empty($creds['query']['compression'])]
 ];
 
-// Migration legacy db config.
-$creds = $platformsh->credentials('drupal7db');
-$databases['drupal7db']['default'] = [
-  'driver' => $creds['scheme'],
-  'database' => $creds['path'],
-  'username' => $creds['username'],
-  'password' => $creds['password'],
-  'host' => $creds['host'],
-  'port' => $creds['port'],
-  'pdo' => [PDO::MYSQL_ATTR_COMPRESS => !empty($creds['query']['compression'])]
-];
-$databases['migrate']['default'] = $databases['drupal7db']['default'];
-
 // Enable verbose error messages on development branches, but not on the production branch.
 // You may add more debug-centric settings here if desired to have them automatically enable
 // on development but not production.

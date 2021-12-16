@@ -49,7 +49,7 @@ commands:
       - run:
           name: Switch dof-dss packages to HEAD on develelopment branch
           command: |
-            composer require dof-dss/nidirect-site-modules:dev-development dof-dss/nidirect-migrations:dev-development \
+            composer require dof-dss/nidirect-site-modules:dev-development \
               dof-dss/nidirect-d8-test-install-profile:dev-development dof-dss/nicsdru_origins_theme:dev-development \
                 dof-dss/nicsdru_origins_modules:dev-development dof-dss/nicsdru_nidirect_theme:dev-development
   install_php_os_extensions:
@@ -80,6 +80,7 @@ commands:
       - run:
           name: Add platform cli tool to $PATH
           command: echo 'export PATH="$HOME/"'.platformsh/bin':"$PATH"' >> $BASH_ENV
+
 jobs:
   # Tests the integrity of the build, stores the results in a workspace for re-use in later jobs.
   build:
@@ -130,7 +131,6 @@ jobs:
             cd $PROJECT_ROOT
             CHECK_DIRS="${PROJECT_ROOT}/web/modules/custom"
             CHECK_DIRS="$CHECK_DIRS ${PROJECT_ROOT}/web/modules/origins"
-            CHECK_DIRS="$CHECK_DIRS ${PROJECT_ROOT}/web/modules/migrate"
             CHECK_DIRS="$CHECK_DIRS ${PROJECT_ROOT}/web/themes/custom"
             vendor/bin/drupal-check $CHECK_DIRS
 
@@ -172,7 +172,7 @@ jobs:
             sed -i -e "s|\(^DRUPAL_NIGHTWATCH_OUTPUT\)=reports/nightwatch|\1=/home/circleci/nightwatch-reports|g" ~/project/web/core/.env
 
             # Install npm packages for the projects/repos we know need them.
-            for dir in core modules/custom modules/migrate/nidirect-migrations/migrate_nidirect_node; do
+            for dir in core modules/custom; do
               cd ~/project/web/$dir
               npm install
             done
@@ -236,22 +236,33 @@ jobs:
           command: |
             platform sync data -p $PLATFORM_PROJECT_ID -e $EDGE_BUILD_BRANCH -y
       - run:
+          name: Backup data sync if the previous attempt failed.
+          command: |
+            # Pause for the blocking activity to finish.
+            sleep 90s
+            platform sync data -p $PLATFORM_PROJECT_ID -e $EDGE_BUILD_BRANCH -y
+          when: on_fail
+      - run:
           name: Turn off fastly module to allow for cleaner config import
           command: |
             platform environment:drush pmu fastly -y -p $PLATFORM_PROJECT_ID -e $EDGE_BUILD_BRANCH
+          when: always
       - run:
           name: Refresh configuration as our db will contain active prod config after sync operation
           command: |
             platform environment:drush cim -y -p $PLATFORM_PROJECT_ID -e $EDGE_BUILD_BRANCH
+          when: always
       - run:
           name: Rebuild Taxonomy Entity Index
           command: |
             platform environment:drush tei-rebuild -p $PLATFORM_PROJECT_ID -e $EDGE_BUILD_BRANCH
+          when: always
       - run:
           name: Set GAC state variable
           command: |
             platform environment:drush "sset google_analytics_counter.access_token ${GAC_ACCESS_TOKEN}" \
               -p $PLATFORM_PROJECT_ID -e $EDGE_BUILD_BRANCH
+          when: always
       - run:
           name: Enable test user accounts
           command: |
@@ -260,11 +271,13 @@ jobs:
               platform environment:drush user:unblock $username -p $PLATFORM_PROJECT_ID -e $EDGE_BUILD_BRANCH
               platform environment:drush user:password $username $TEST_PASS -p $PLATFORM_PROJECT_ID -e $EDGE_BUILD_BRANCH
             done
+          when: always
       - run:
           name: Force purge of Solr index
           command: |
             platform ssh -p $PLATFORM_PROJECT_ID -e $EDGE_BUILD_BRANCH \
               "curl http://${PLATFORM_SOLR_HOST}/solr/default/update --data '<delete><query>*:*</query></delete>' -H 'Content-type:text/xml; charset=utf-8' && curl http://${PLATFORM_SOLR_HOST}/solr/default/update --data '<commit/>' -H 'Content-type:text/xml; charset=utf-8'"
+          when: always
       - run:
           name: Rebuild the Solr index
           command: |
@@ -272,6 +285,7 @@ jobs:
             platform environment:drush sapi-c -p $PLATFORM_PROJECT_ID -e $EDGE_BUILD_BRANCH
             platform environment:drush sapi-r -p $PLATFORM_PROJECT_ID -e $EDGE_BUILD_BRANCH
             platform environment:drush sapi-i -p $PLATFORM_PROJECT_ID -e $EDGE_BUILD_BRANCH
+          when: always
 
   # Create new release marker in New Relic
   mark_release:
