@@ -12,6 +12,7 @@ dependencies:
   module:
     - linkit
     - media_library
+    - media_library_edit
 id: block_content.card_standard.default
 targetEntityType: block_content
 bundle: card_standard
@@ -22,7 +23,9 @@ content:
     weight: 1
     settings:
       media_types: {  }
-    third_party_settings: {  }
+    third_party_settings:
+      media_library_edit:
+        show_edit: '1'
     region: content
   field_link:
     weight: 3
