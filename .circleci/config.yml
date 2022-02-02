@@ -127,9 +127,15 @@ jobs:
       - run: sudo cp /home/circleci/project/.circleci/docker-php-circleci.ini /usr/local/etc/php/conf.d/
       - run:
           name: Deprecated code check
+          #command: |
+          #  cd $PROJECT_ROOT
+          #  CHECK_DIRS="${PROJECT_ROOT}/web/modules/custom"
+          #  CHECK_DIRS="$CHECK_DIRS ${PROJECT_ROOT}/web/modules/origins"
+          #  CHECK_DIRS="$CHECK_DIRS ${PROJECT_ROOT}/web/themes/custom"
+          #  vendor/bin/drupal-check $CHECK_DIRS
+          #  Temporarily replace code check command above with the one below which excludes nidirect's custom modules.
           command: |
             cd $PROJECT_ROOT
-            CHECK_DIRS="${PROJECT_ROOT}/web/modules/custom"
             CHECK_DIRS="$CHECK_DIRS ${PROJECT_ROOT}/web/modules/origins"
             CHECK_DIRS="$CHECK_DIRS ${PROJECT_ROOT}/web/themes/custom"
             vendor/bin/drupal-check $CHECK_DIRS
@@ -316,9 +322,9 @@ workflows:
       - coding_standards:
           requires:
             - build
-#      - deprecated_code:
-#          requires:
-#            - build
+      - deprecated_code:
+          requires:
+            - build
 
   # Workflow that instructs New Relic about new release tags in the repo.
   release-marker:
