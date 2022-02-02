@@ -316,9 +316,9 @@ workflows:
       - coding_standards:
           requires:
             - build
-#      - deprecated_code:
-#          requires:
-#            - build
+      - deprecated_code:
+          requires:
+            - build
 
   # Workflow that instructs New Relic about new release tags in the repo.
   release-marker:
