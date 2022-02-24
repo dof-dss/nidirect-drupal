@@ -2,26 +2,30 @@
 
 #!/usr/bin/env bash
 
-TEMP_BEAT_HOME=config/filebeat/build
+if [ ! -z "${LOGZ_CONFIG}" ]; then
 
-[ ! -d $TEMP_BEAT_HOME ] && mkdir -p $TEMP_BEAT_HOME
-cd $TEMP_BEAT_HOME
+  TEMP_BEAT_HOME=config/filebeat/build
 
-echo "Created ${TEMP_BEAT_HOME}"
+  [ ! -d $TEMP_BEAT_HOME ] && mkdir -p $TEMP_BEAT_HOME
+  cd $TEMP_BEAT_HOME
 
-# Install Filebeat
-curl -L -O https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-8.0.0-linux-x86_64.tar.gz
-tar xzvf filebeat-8.0.0-linux-x86_64.tar.gz
-rm filebeat-8.0.0-linux-x86_64.tar.gz
+  echo "Created ${TEMP_BEAT_HOME}"
 
-echo "Downloaded Filebeat"
+  # Install Filebeat
+  curl -L -O https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-8.0.0-linux-x86_64.tar.gz
+  tar xzvf filebeat-8.0.0-linux-x86_64.tar.gz
+  rm filebeat-8.0.0-linux-x86_64.tar.gz
 
-# Download the certificate
-wget https://raw.githubusercontent.com/logzio/public-certificates/master/AAACertificateServices.crt
+  echo "Downloaded Filebeat"
 
-echo "Downloaded Logz.io certificate https://raw.githubusercontent.com/logzio/public-certificates/master/AAACertificateServices.crt"
+  # Download the certificate
+  wget https://raw.githubusercontent.com/logzio/public-certificates/master/AAACertificateServices.crt
 
-mkdir -p filebeat-8.0.0-linux-x86_64/pki/tls/certs
-cp AAACertificateServices.crt filebeat-8.0.0-linux-x86_64/pki/tls/certs/
+  echo "Downloaded Logz.io certificate https://raw.githubusercontent.com/logzio/public-certificates/master/AAACertificateServices.crt"
 
-echo "Copied AAACertificateServices.crt to filebeat-8.0.0-linux-x86_64/pki/tls/certs/"
+  mkdir -p filebeat-8.0.0-linux-x86_64/pki/tls/certs
+  cp AAACertificateServices.crt filebeat-8.0.0-linux-x86_64/pki/tls/certs/
+
+  echo "Copied AAACertificateServices.crt to filebeat-8.0.0-linux-x86_64/pki/tls/certs/"
+
+fi

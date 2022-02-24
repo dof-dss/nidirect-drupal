@@ -69,12 +69,8 @@ build:
 hooks:
   build: |
     set -e
-    if [ ! -z "${LOGZ_CONFIG}" ]; then
-      echo "Run the filebeat install script"
-      bash config/filebeat/scripts/install.sh
-    fi
-    # echo "Run filebeat install script"
-    # bash config/filebeat/scripts/install.sh
+    echo "Run filebeat install script"
+    bash config/filebeat/scripts/install.sh
     echo "Replace vanilla CKEditor config with a custom one to fix the click/drag bug with embedded entities"
     git clone https://github.com/dof-dss/ckeditor4-fix-widget-dnd.git
     rm -rf web/core/assets/vendor/ckeditor
@@ -90,7 +86,7 @@ hooks:
     # Copy filebeat files to filebeat mount if its empty.
     if [ ! "$(ls -A .filebeat)" ]; then
       echo "Copy filebeat build to filebeat mount"
-      cp -v -r config/filebeat/build/filebeat-8.0.0-linux-x86_64/* .filebeat/
+      cp -r config/filebeat/build/filebeat-8.0.0-linux-x86_64/* .filebeat/
       mkdir .filebeat/registry
     fi
     echo "Running filebeat"
