@@ -85,10 +85,11 @@ hooks:
   # The deploy hook runs after your application has been deployed and started.
   deploy: |
     set -e
-    # Run filebeat configuration script if filebeat directory is empty.
+    # Copy filebeat files to filebeat mount if its empty.
     if [ ! "$(ls -A filebeat)" ]; then
-      echo "Running filebeat configuration"
-      ./config/filebeat/scripts/config.sh
+      echo "Copying filebeat build to filebeat mount"
+      cp -v -r config/filebeat/build/filebeat-8.0.0-linux-x86_64/* filebeat
+      mkdir filebeat/registry
     fi
     echo "Running filebeat"
     ./filebeat/filebeat run --once
