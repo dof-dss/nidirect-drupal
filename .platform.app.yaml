@@ -57,6 +57,9 @@ mounts:
   '/.console':
     source: local
     source_path: 'console'
+  '/.filebeat':
+    source: local
+    source_path: filebeat
 
 # Configuration of the build of this application.
 build:
@@ -66,6 +69,10 @@ build:
 hooks:
   build: |
     set -e
+    echo "Run filebeat install script"
+    if [ ! -z $LOGZ_CONFIG ]; then
+      ./config/filebeat/scripts/install.sh
+    fi
     echo "Replace vanilla CKEditor config with a custom one to fix the click/drag bug with embedded entities"
     git clone https://github.com/dof-dss/ckeditor4-fix-widget-dnd.git
     rm -rf web/core/assets/vendor/ckeditor
@@ -78,6 +85,13 @@ hooks:
   # The deploy hook runs after your application has been deployed and started.
   deploy: |
     set -e
+    # Run filebeat configuration script if filebeat directory is empty.
+    if [ ! "$(ls -A filebeat)" ]; then
+      echo "Running filebeat configuration"
+      ./config/filebeat/scripts/config.sh
+    fi
+    echo "Running filebeat"
+    ./filebeat/filebeat run --once
     echo "Create 'Easy Google Analytics Counter' auth file"
     printf '%s\n' "$EGAC_GA_AUTH" > /app/private/easy_google_analytics_counter_auth.json
     php ./drush/platformsh_generate_drush_yml.php
