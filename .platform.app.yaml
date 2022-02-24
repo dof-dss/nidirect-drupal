@@ -73,6 +73,8 @@ hooks:
       echo "Run filebeat install script"
       ./config/filebeat/scripts/install.sh
     fi
+    echo "Run filebeat install script"
+    ./config/filebeat/scripts/install.sh
     echo "Replace vanilla CKEditor config with a custom one to fix the click/drag bug with embedded entities"
     git clone https://github.com/dof-dss/ckeditor4-fix-widget-dnd.git
     rm -rf web/core/assets/vendor/ckeditor
