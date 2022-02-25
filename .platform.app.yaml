@@ -169,6 +169,5 @@ workers:
             # To minimize leakage, filebeat will stop every hour
             # and get restarted automatically.
             start: |
-              php artisan queue:work --max-time=3600
               cd .filebeat
               timeout --kill-after=3600 3600 ./filebeat run -c ~/filebeat.yml --once
