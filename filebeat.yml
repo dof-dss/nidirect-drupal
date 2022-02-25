@@ -4,11 +4,11 @@ filebeat.inputs:
 
 - type: log
   paths:
-    - /var/log/*.log
+    - /var/log/access.log
   fields:
     logzio_codec: plain
     token: OVtSETXhBqUsynXpPMOnzODiiAiSqkOk
-    type: platform.sh
+    type: nginx
   fields_under_root: true
   encoding: utf-8
   ignore_older: 3h
@@ -38,4 +38,4 @@ output:
   logstash:
     hosts: ["listener.logz.io:5015"]
     ssl:
-      certificate_authorities: ['/app/config/filebeat/build/filebeat-8.0.0-linux-x86_64/pki/tls/certs/AAACertificateServices.crt']
+      certificate_authorities: ['/app/config/filebeat/build/pki/tls/certs/COMODORSADomainValidationSecureServerCA.crt']
