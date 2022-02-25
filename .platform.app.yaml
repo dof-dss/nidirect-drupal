@@ -90,8 +90,7 @@ hooks:
       mkdir .filebeat/registry
     fi
     echo "Running filebeat"
-    cd .filebeat
-    ./filebeat run --once
+    ./.filebeat/filebeat run -c filebeat.yml --once
     echo "Create 'Easy Google Analytics Counter' auth file"
     printf '%s\n' "$EGAC_GA_AUTH" > /app/private/easy_google_analytics_counter_auth.json
     php ./drush/platformsh_generate_drush_yml.php
