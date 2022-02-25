@@ -164,7 +164,3 @@ web:
         # Provide a longer TTL (2 weeks) for aggregated CSS and JS files.
         '^/sites/default/files/(css|js)':
           expires: 2w
-crons:
-  filebeat:
-    spec: '*/5 * * * *'
-    cmd: 'cd .filebeat ; ./filebeat run --once'
