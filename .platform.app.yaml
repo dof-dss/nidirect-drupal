@@ -89,9 +89,6 @@ hooks:
       cp -r config/filebeat/build/filebeat-8.0.0-linux-x86_64/* .filebeat/
       mkdir .filebeat/registry
     fi
-    echo "Running filebeat"
-    cd .filebeat
-    ./filebeat run -c ~/filebeat.yml --once
     echo "Create 'Easy Google Analytics Counter' auth file"
     printf '%s\n' "$EGAC_GA_AUTH" > /app/private/easy_google_analytics_counter_auth.json
     php ./drush/platformsh_generate_drush_yml.php
@@ -164,3 +161,14 @@ web:
         # Provide a longer TTL (2 weeks) for aggregated CSS and JS files.
         '^/sites/default/files/(css|js)':
           expires: 2w
+workers:
+    filebeat:
+        size: S
+        commands:
+            # Start filebeat.
+            # To minimize leakage, filebeat will stop every hour
+            # and get restarted automatically.
+            start: |
+              php artisan queue:work --max-time=3600
+              cd .filebeat
+              timeout --kill-after=3600 3600 ./filebeat run -c ~/filebeat.yml --once
