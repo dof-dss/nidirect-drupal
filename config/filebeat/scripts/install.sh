@@ -17,11 +17,6 @@ rm filebeat-8.0.0-linux-x86_64.tar.gz
 echo "Downloaded Filebeat"
 
 # Download the certificate
-wget https://raw.githubusercontent.com/logzio/public-certificates/master/AAACertificateServices.crt
+curl https://raw.githubusercontent.com/logzio/public-certificates/master/AAACertificateServices.crt --create-dirs -o pki/tls/certs/COMODORSADomainValidationSecureServerCA.crt
 
-echo "Downloaded Logz.io certificate https://raw.githubusercontent.com/logzio/public-certificates/master/AAACertificateServices.crt"
-
-mkdir -p filebeat-8.0.0-linux-x86_64/pki/tls/certs
-cp AAACertificateServices.crt filebeat-8.0.0-linux-x86_64/pki/tls/certs/
-
-echo "Copied AAACertificateServices.crt to filebeat-8.0.0-linux-x86_64/pki/tls/certs/"
+echo "Downloaded Logz.io certificate"
