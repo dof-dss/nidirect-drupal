@@ -166,8 +166,6 @@ workers:
         size: S
         commands:
             # Start filebeat.
-            # To minimize leakage, filebeat will stop every hour
-            # and get restarted automatically.
             start: |
               cd .filebeat
-              timeout --kill-after=3600 3600 ./filebeat run -c ~/filebeat.yml --once
+              ./filebeat run -c ~/filebeat.yml --once
