@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 SERVICE="filebeat"
 if pgrep -x "$SERVICE" >/dev/null
 then

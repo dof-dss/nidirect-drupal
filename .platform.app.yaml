@@ -161,11 +161,8 @@ web:
         # Provide a longer TTL (2 weeks) for aggregated CSS and JS files.
         '^/sites/default/files/(css|js)':
           expires: 2w
-workers:
-    filebeat:
-        size: S
-        commands:
-            # Start filebeat.
-            start: |
-              cd .filebeat
-              ./filebeat run -c ~/filebeat.yml --once
+crons:
+  # Run script to start filebeat (if its not running) every hour.
+  filebeat:
+    spec: '* * * * *'
+    cmd: 'cd config/filebeat ; ./cronjob.sh'
