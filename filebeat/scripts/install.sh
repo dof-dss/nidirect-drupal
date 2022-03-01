@@ -1,8 +1,8 @@
-# config/filebeat/scripts/install.sh
+# filebeat/scripts/install.sh
 
 #!/usr/bin/env bash
 
-TEMP_BEAT_HOME=config/filebeat/build
+TEMP_BEAT_HOME=filebeat/build
 
 [ ! -d $TEMP_BEAT_HOME ] && mkdir -p $TEMP_BEAT_HOME
 cd $TEMP_BEAT_HOME
