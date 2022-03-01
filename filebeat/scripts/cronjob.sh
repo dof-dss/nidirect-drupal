@@ -1,11 +1,7 @@
 #!/usr/bin/env bash
 
-# Check if filebeat is running and if not, run it
-SERVICE="filebeat"
-
-if pgrep -x "$SERVICE" >/dev/null
-then
-    # Do nothing, service running.
-else
+# Run filebeat if not running already.
+if [ ! "$(pgrep -x filebeat)" ]; then
+    cd /app/.filebeat
     ./filebeat run --once
 fi
