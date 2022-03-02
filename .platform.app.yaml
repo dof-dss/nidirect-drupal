@@ -69,11 +69,12 @@ build:
 hooks:
   build: |
     set -e
-    if [ ! "$(ls -A filebeat/build)" ]; then
-      echo "Filebeat build not found. Running the filebeat install script"
+    echo "Logz.io filebeat configured = $LOGZ_CONFIG"
+    if [ ! -z $LOGZ_CONFIG ]; then
+      echo "Running the filebeat install script"
       bash filebeat/scripts/install.sh
     else
-      echo "Found Filebeat build"
+      echo "Skipping filebeat install script"
     fi
     echo "Replace vanilla CKEditor config with a custom one to fix the click/drag bug with embedded entities"
     git clone https://github.com/dof-dss/ckeditor4-fix-widget-dnd.git
@@ -89,7 +90,7 @@ hooks:
     set -e
     # Copy filebeat files to filebeat mount if its empty.
     if [ ! "$(ls -A .filebeat)" ]; then
-      echo "Copy filebeat build to filebeat mount"
+      echo "Copying filebeat build to filebeat mount"
       bash filebeat/scripts/config.sh
     fi
     echo "Create 'Easy Google Analytics Counter' auth file"
