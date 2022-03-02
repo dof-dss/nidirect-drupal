@@ -70,7 +70,7 @@ hooks:
   build: |
     set -e
     echo "Logz.io filebeat configuration"
-    if [ ! -z $LOGZ_CONFIG ]; then
+    if [ "$LOGZ_CONFIG" != "TRUE" ]; then
       echo "Running the filebeat install script"
       bash filebeat/scripts/install.sh
     else
