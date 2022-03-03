@@ -4,7 +4,7 @@ filebeat.inputs:
 
 - type: log
   paths:
-    - /var/log/access.log
+    - /var/log/*.log
   fields:
     logzio_codec: plain
     token: ${LOGZ_TOKEN}
