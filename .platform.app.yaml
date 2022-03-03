@@ -71,10 +71,10 @@ hooks:
     set -e
     echo "Logz.io filebeat configuration"
     if [ "$LOGZ_CONFIG" != "TRUE" ]; then
-      echo "Running the filebeat install script"
+      echo "Running filebeat install script. Set environment variable LOGZ_CONFIG to TRUE to skip this step."
       bash filebeat/scripts/install.sh
     else
-      echo "Skipping filebeat install script"
+      echo "Skipping filebeat install script (LOGZ_CONFIG=TRUE)"
     fi
     echo "Replace vanilla CKEditor config with a custom one to fix the click/drag bug with embedded entities"
     git clone https://github.com/dof-dss/ckeditor4-fix-widget-dnd.git
