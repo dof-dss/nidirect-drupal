@@ -93,6 +93,9 @@ hooks:
       echo "Copying filebeat build to filebeat mount"
       bash filebeat/scripts/config.sh
     fi
+    # Copy filebeat.yml config file to filebeat mount.
+    echo "Copying filebeat.yml to filebeat mount"
+    cp filebeat/filebeat.yml .filebeat/
     echo "Create 'Easy Google Analytics Counter' auth file"
     printf '%s\n' "$EGAC_GA_AUTH" > /app/private/easy_google_analytics_counter_auth.json
     php ./drush/platformsh_generate_drush_yml.php
