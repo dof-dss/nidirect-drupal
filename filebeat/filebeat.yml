@@ -1,8 +1,7 @@
 ############################# Filebeat #####################################
 
 filebeat.inputs:
-
-- type: log
+- type: filestream
   paths:
     - /var/log/*.log
   fields:
