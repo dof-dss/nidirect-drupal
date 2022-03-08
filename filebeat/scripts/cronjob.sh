@@ -1,3 +1,5 @@
+# filebeat/scripts/cronjob.sh
+
 #!/usr/bin/env bash
 
 # Run filebeat if not running already.

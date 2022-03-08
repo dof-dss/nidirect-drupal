@@ -1,3 +1,5 @@
+# filebeat/scripts/config.sh
+
 #!/usr/bin/env bash
 
 # Move filebeat to mount with write access
