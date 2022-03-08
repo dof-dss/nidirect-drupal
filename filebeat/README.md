@@ -12,6 +12,8 @@ remote logging service such as Loggly, Papertrail, or Logz.io
 using the rsyslog service. **But this option is not available
 for _grid_ hosting plans.**
 
+## Bulk uploading logs
+
 A possible solution is to bulk upload log files to remote storage or
 to a log managment solution.
 
@@ -23,7 +25,7 @@ Many log management services such as Papertrail, Loggly and Logz.io
 also support bulk upload of log files via http and it would be possible
 to automate this via cron and using cURL.
 
-## Bulk upload limitations
+### Bulk upload limitations
 
 - Many log managment services set a limit on the size of files that
   can be uploaded.
@@ -296,6 +298,10 @@ differences to Logz.io.
 
 ## 8. Verify filebeat is running and logs are being received by Logz.io
 
+If filebeat is running after deployment completes, you'll very
+quickly start to see log entries arrive in Logz.io's Kibana
+interface. If you don't, there are a number of things to check.
+
 ### Check filebeat process is running
 
 SSH onto the environment and run the following command to check if filebeat is running:
@@ -359,7 +365,7 @@ Activities on the project NIDirect-D8 (wcjm3mu7bacfm), environment logging (type
 Filebeat creates and rotates its own log files as it runs in
 `.filebeat/logs/` and these may help to troubleshoot problems.
 
-## 9. Define a project variable to indicate filebeat is installed
+## 9. After installation, define a project variable to indicate filebeat is installed
 
 To ensure that the installation in the build hook does not run on every
 build, add a project environment variable to the project that will be
