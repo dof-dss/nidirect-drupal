@@ -16,9 +16,15 @@ elements: |-
   error_message:
     '#type': processed_text
     '#format': full_html
+  page_url:
+    '#type': hidden
+    '#title': 'Page URL'
+    '#default_value': '[current-page:url]'
   is_your_feedback_about:
     '#type': radios
     '#title': 'What do you want to do?'
+    '#description': 'Choose one of the following options:'
+    '#description_display': before
     '#options':
       report_problem: 'report a problem'
       feedback: 'leave feedback'
@@ -28,7 +34,11 @@ elements: |-
     '#required_error': 'You must choose what you want to do'
   which_of_these_options_best_describes_the_problem_:
     '#type': checkboxes
-    '#title': 'Which of these options best describes the problem?'
+    '#title': 'Report a problem'
+    '#description': |-
+      <span id="report_a_problem_instr">
+        Which problem did you find on this page? (Tick all that apply)
+      </span>
     '#description_display': before
     '#options':
       link_button_video: 'A link, button or video is not working'
@@ -40,6 +50,61 @@ elements: |-
       visible:
         ':input[name="is_your_feedback_about"]':
           value: report_problem
+    '#wrapper_attributes':
+      aria-describedby: report_a_problem_instr
+    '#required': true
+  messages:
+    '#type': webform_section
+    '#title': Messages
+    '#title_display': invisible
+    '#title_tag': ''
+    '#attributes':
+      aria-live: assertive
+    info_notice_noreply:
+      '#type': processed_text
+      '#states':
+        visible:
+          - ':input[name="is_your_feedback_about"]':
+              value: feedback
+          - or
+          - ':input[name="is_your_feedback_about"]':
+              value: report_problem
+      '#text': |
+        <p class="info-notice info-notice--warning">You will not receive a reply. We will consider your feedback to help improve the site.<br />
+        <br />
+        Don't include any personal or financial information, for example National Insurance, credit card numbers, or phone numbers.</p>
+      '#format': full_html
+  provide_more_information:
+    '#type': textarea
+    '#title': 'Tell us more about the problem you''re having with the nidirect website.'
+    '#title_display': before
+    '#description_display': before
+    '#help_display': element_before
+    '#maxlength': 3000
+    '#counter_type': character
+    '#counter_minimum': 1
+    '#counter_maximum': 3000
+    '#states':
+      visible:
+        ':input[name="is_your_feedback_about"]':
+          value: report_problem
+    '#required': true
+  enter_your_feedback:
+    '#type': textarea
+    '#title': 'Enter your feedback'
+    '#title_display': before
+    '#description_display': before
+    '#help_display': element_before
+    '#maxlength': 3000
+    '#required': true
+    '#required_error': 'Please provide your feedback'
+    '#counter_type': character
+    '#counter_minimum': 1
+    '#counter_maximum': 3000
+    '#states':
+      visible:
+        ':input[name="is_your_feedback_about"]':
+          value: feedback
   what_is_your_question_about:
     '#type': fieldset
     '#title': 'What is your question about?'
@@ -81,70 +146,6 @@ elements: |-
           something_else: 'My question is about something else'
       '#required': true
       '#required_error': 'You must tell us what your question is about'
-  messages:
-    '#type': webform_section
-    '#title': messages
-    '#title_display': invisible
-    '#attributes':
-      aria-live: assertive
-    info_notice_noreply:
-      '#type': processed_text
-      '#states':
-        visible:
-          - ':input[name="is_your_feedback_about"]':
-              value: report_problem
-          - or
-          - ':input[name="is_your_feedback_about"]':
-              value: feedback
-      '#text': |
-        <p class="info-notice info-notice--warning">We will not reply to your feedback. We will use the information you provide to help improve the site.<br />
-        <br />
-        Don't include any personal or financial information, for example National Insurance, credit card numbers, or phone numbers.</p>
-      '#format': full_html
-  page_url:
-    '#type': hidden
-    '#title': 'Page URL'
-    '#default_value': '[current-page:url]'
-  enter_your_feedback:
-    '#type': textarea
-    '#title': 'Enter your feedback'
-    '#title_display': before
-    '#description_display': before
-    '#help_display': element_before
-    '#maxlength': 3000
-    '#required': true
-    '#required_error': 'Please provide your feedback'
-    '#counter_type': character
-    '#counter_minimum': 1
-    '#counter_maximum': 3000
-    '#states':
-      visible:
-        ':input[name="is_your_feedback_about"]':
-          value: feedback
-  provide_more_information:
-    '#type': textarea
-    '#title': 'Provide more information about the problem you''re experiencing'
-    '#title_display': before
-    '#description_display': before
-    '#help_display': element_before
-    '#maxlength': 3000
-    '#required': true
-    '#required_error': 'Please provide your feedback'
-    '#counter_type': character
-    '#counter_minimum': 1
-    '#counter_maximum': 3000
-    '#states':
-      visible:
-        ':input[name="is_your_feedback_about"]':
-          value: report_problem
-  extra_comments_for_pooh_bear:
-    '#type': textfield
-    '#title': 'Extra comments (optional)'
-    '#pattern': '^(?![\s\S])'
-    '#pattern_error': 'There was a problem with the extra comments you have provided'
-    '#wrapper_attributes':
-      class:
-        - for-pooh-bear
   what_to_do_next:
     '#type': webform_section
     '#title': 'What to do next'
@@ -421,8 +422,16 @@ elements: |-
           ':input[name="feedback_about"]':
             value: something_else
       '#text': |
-        <p>If you have a question about a government service or policy, you should <a href="/contacts">contact the relevant government organisation directly</a> as we don’t have access to information about you held by government departments.</p>
+        <p>If you have a question about a government service or policy, you should <a href="/contacts">contact the relevant government organisation directly</a>.&nbsp; We don't have access to information about you.</p>
       '#format': full_html
+  extra_comments_for_pooh_bear:
+    '#type': textfield
+    '#title': 'Extra comments (optional)'
+    '#pattern': '^(?![\s\S])'
+    '#pattern_error': 'There was a problem with the extra comments you have provided'
+    '#wrapper_attributes':
+      class:
+        - for-pooh-bear
   actions:
     '#type': webform_actions
     '#title': 'Submit button(s)'
@@ -633,21 +642,21 @@ handlers:
       cc_options: {  }
       bcc_mail: ''
       bcc_options: {  }
-      from_mail: '[webform_submission:values:enter_a_valid_email_address:raw]'
+      from_mail: _default
       from_options: {  }
       from_name: 'nidirect visitor'
       subject: 'Page feedback'
       body: |-
-        Submitted on [webform_submission:created]
-
-        Submitted values are:
+        <p>Submitted on [webform_submission:created]</p>
+        <p>Submitted by: [webform_submission:user]</p>
+        <p>Submitted values are:</p>
         [webform_submission:values]
       excluded_elements: {  }
       ignore_access: false
       exclude_empty: true
       exclude_empty_checkbox: false
       exclude_attachments: false
-      html: false
+      html: true
       attachments: false
       twig: false
       debug: false
@@ -657,38 +666,33 @@ handlers:
       sender_name: ''
       theme_name: ''
       parameters: {  }
-  auto_reply:
+  test_submission_email:
     id: email
-    label: 'Auto reply'
-    notes: ''
-    handler_id: auto_reply
-    status: true
-    conditions:
-      enabled:
-        ':input[name="do_you_want_a_reply_options"]':
-          value: 'Yes'
-        ':input[name="enter_a_valid_email_address"]':
-          filled: true
-    weight: 0
+    label: 'Test submission email'
+    notes: 'Enable this email handler to test form submissions.  This handler should be disabled by default.'
+    handler_id: test_submission_email
+    status: false
+    conditions: {  }
+    weight: 1
     settings:
       states:
         - completed
-      to_mail: '[webform_submission:values:enter_a_valid_email_address:raw]'
+      to_mail: webdev.isid@gmail.com
       to_options: {  }
       cc_mail: ''
       cc_options: {  }
       bcc_mail: ''
       bcc_options: {  }
-      from_mail: noreply@nidirect.gov.uk
+      from_mail: _default
       from_options: {  }
-      from_name: NIDirect
-      subject: 'Thank you for your feedback on nidirect.gov.uk'
+      from_name: 'nidirect visitor'
+      subject: 'Page feedback'
       body: |-
-        Thank you for your feedback.<br />
-        <br />
-        We aim to get back to you within 10 working days.&nbsp; All responses will usually be sent out Monday to Friday, 9.00 am to 5.00 pm (excluding public and bank holidays). This is an automated email message. Please do not reply to this email as we do not have access to emails sent to noreply@nidirect.gov.uk.
-      excluded_elements:
-        page_url: page_url
+        <p>Submitted on [webform_submission:created]</p>
+        <p>Submitted by: [webform_submission:user]</p>
+        <p>Submitted values are:</p>
+        [webform_submission:values]
+      excluded_elements: {  }
       ignore_access: false
       exclude_empty: true
       exclude_empty_checkbox: false
