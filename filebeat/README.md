@@ -96,7 +96,7 @@ cron.
 ├── composer.json
 ├── composer.lock
 ├── LICENSE
-├── phpcd.sh
+├── phpcs.sh
 └── README.md
 ```
 
