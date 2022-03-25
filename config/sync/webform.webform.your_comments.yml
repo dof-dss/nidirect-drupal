@@ -23,8 +23,6 @@ elements: |-
   is_your_feedback_about:
     '#type': radios
     '#title': 'What do you want to do?'
-    '#description': 'Choose one of the following options:'
-    '#description_display': before
     '#options':
       report_problem: 'report a problem'
       feedback: 'leave feedback'
@@ -226,7 +224,8 @@ elements: |-
         visible:
           ':input[name="feedback_about"]':
             value: careers
-      '#text': '<div class="no-submit"><h2><p>For queries or advice about careers, contact the <a href="/node/800">Careers Service</a>.</p></div>'
+      '#text': |
+        <p>For queries or advice about careers, contact the <a data-entity-substitution="canonical" data-entity-type="node" data-entity-uuid="4849e4ec-9cbb-4ff9-a26b-7e2397f748b7" href="/careers-service">Careers Service</a>.</p>
       '#format': full_html
     child_maintenance:
       '#type': processed_text
