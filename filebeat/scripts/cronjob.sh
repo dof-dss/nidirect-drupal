@@ -6,4 +6,5 @@
 if ! pgrep -x "filebeat" >/dev/null; then
   cd /app/.filebeat;
   ./filebeat run &>/dev/null & disown;
+  exit 0;
 fi
