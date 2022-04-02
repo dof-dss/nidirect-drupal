@@ -57,6 +57,9 @@ mounts:
   '/.console':
     source: local
     source_path: 'console'
+  '/.filebeat':
+    source: local
+    source_path: 'filebeat'
 
 # Configuration of the build of this application.
 build:
@@ -66,6 +69,13 @@ build:
 hooks:
   build: |
     set -e
+    echo "Logz.io filebeat configuration"
+    if [ "$LOGZ_CONFIG" != "TRUE" ]; then
+      echo "Running filebeat install script. Set environment variable LOGZ_CONFIG to TRUE to skip this step."
+      bash filebeat/scripts/install.sh
+    else
+      echo "Skipping filebeat install script (LOGZ_CONFIG=TRUE)"
+    fi
     echo "Replace vanilla CKEditor config with a custom one to fix the click/drag bug with embedded entities"
     git clone https://github.com/dof-dss/ckeditor4-fix-widget-dnd.git
     rm -rf web/core/assets/vendor/ckeditor
@@ -78,6 +88,14 @@ hooks:
   # The deploy hook runs after your application has been deployed and started.
   deploy: |
     set -e
+    # Copy filebeat files to filebeat mount if its empty.
+    if [ ! "$(ls -A .filebeat)" ]; then
+      echo "Copying filebeat build to filebeat mount"
+      bash filebeat/scripts/config.sh
+    fi
+    # Copy filebeat.yml config file to filebeat mount.
+    echo "Copying filebeat.yml to filebeat mount"
+    cp filebeat/filebeat.yml .filebeat/
     echo "Create 'Easy Google Analytics Counter' auth file"
     printf '%s\n' "$EGAC_GA_AUTH" > /app/private/easy_google_analytics_counter_auth.json
     php ./drush/platformsh_generate_drush_yml.php
@@ -150,3 +168,8 @@ web:
         # Provide a longer TTL (2 weeks) for aggregated CSS and JS files.
         '^/sites/default/files/(css|js)':
           expires: 2w
+#crons:
+#  # Run script to start filebeat (if its not running) every hour.
+#  filebeat:
+#    spec: '*/5 * * * *'
+#    cmd: 'timeout 60s /bin/bash /app/filebeat/scripts/cronjob.sh'
