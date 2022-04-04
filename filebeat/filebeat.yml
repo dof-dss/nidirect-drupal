@@ -3,7 +3,7 @@
 filebeat.inputs:
 - type: log
   paths:
-    - /var/log/*.log
+    - /app/log/*-access.log
   fields:
     logzio_codec: plain
     token: ${LOGZ_TOKEN}
@@ -11,7 +11,6 @@ filebeat.inputs:
   fields_under_root: true
   encoding: utf-8
   ignore_older: 0
-  tail_files: true
 
 #For version 6.x and lower
 #filebeat.registry_file: /var/lib/filebeat/registry
