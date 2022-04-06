@@ -10,31 +10,44 @@
 # This script, when run via cron, will periodically copy today's latest log
 # entries into a log file on a writeable mount. Filebeat can then harvest
 # this log file reliably because it is never truncated.
+echo "Filebeat log shipping cronjob started ..."
 
 cd $LOGS_MOUNT_PATH
 
 # Create log file for today if it doesn't already exist.
 TODAY_DATE=$(date +%Y-%m-%d)
 TODAY_LOG_FILE=${TODAY_DATE}-access.log
+echo "> Creating log file for ${TODAY_DATE} if it does not exist ..."
 if [ ! -f ./${TODAY_LOG_FILE} ]; then
     touch ./${TODAY_LOG_FILE}
+    echo "${TODAY_LOG_FILE} created"
+else
+    echo "${TODAY_LOG_FILE} already exists"
 fi
 
-# Compare latest access log entries for today and add to today's access log.
+# Compare latest access log entries with existing entries for today and add in newest entries.
+echo "> Retrieving latest log entries from /var/log/access.log and writing to ${TODAY_LOG_FILE}"
 cat /var/log/access.log | grep $(date +%d/%b/%Y:) > ./latest.log
-diff --changed-group-format='%>' --unchanged-group-format='' $TODAY_LOG_FILE latest.log > diff.log
-cat diff.log >> $TODAY_LOG_FILE
-
-# Remove temp log files used for diff comparison.
-rm latest.log diff.log
-
-# Run filebeat to ship today's log (to remote logging service).
-cd /app/.filebeat
-./filebeat run --once
+diff --changed-group-format='%>' --unchanged-group-format='' $TODAY_LOG_FILE latest.log > new.log
+cat new.log >> $TODAY_LOG_FILE
+rm latest.log new.log
 
 # Delete yesterdays log file if it exists.
 YESTERDAY_DATE=$(date --date="yesterday" +%Y-%m-%d)
 YESTERDAY_LOG_FILE=${YESTERDAY_DATE}-access.log
+echo "> Deleting ${YESTERDAY_LOG_FILE} if it exists ..."
 if [ -f ./${YESTERDAY_LOG_FILE} ]; then
-    rm ./${YESTERDAY_LOG_FILE}
+    rm ${YESTERDAY_LOG_FILE}
+    echo "${YESTERDAY_LOG_FILE} deleted"
+else
+    echo "${YESTERDAY_LOG_FILE} does not exist"
 fi
+
+# Run filebeat to ship today's log (to remote logging service).
+echo "> Running filebeat --once ..."
+cd /app/.filebeat
+./filebeat run --once
+
+echo "Filebeat log shipping complete"
+
+exit 0
