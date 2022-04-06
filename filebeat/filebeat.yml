@@ -10,8 +10,11 @@ filebeat.inputs:
     type: nginx
   fields_under_root: true
   encoding: utf-8
-  ignore_older: 0
+  ignore_older: 24h
   close_eof: true
+  close_inactive: 1m
+  close_timeout: 4m
+
 
 #For version 6.x and lower
 #filebeat.registry_file: /var/lib/filebeat/registry
