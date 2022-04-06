@@ -1,7 +1,7 @@
-# filebeat/scripts/cronjob.sh
-
 #!/usr/bin/env bash
 
+# filebeat/scripts/cronjob.sh
+#
 # Ship today's latest log entries using Filebeat.
 #
 # Platform.sh truncates logs in /var/log to 100 MB. Filebeat cannot track
@@ -12,7 +12,7 @@
 # this log file reliably because it is never truncated.
 echo "Filebeat log shipping cronjob started ..."
 
-cd $LOGS_MOUNT_PATH
+cd $LOGS_MOUNT_PATH || exit
 
 # Create log file for today if it doesn't already exist.
 TODAY_DATE=$(date +%Y-%m-%d)
@@ -45,7 +45,7 @@ fi
 
 # Run filebeat to ship today's log (to remote logging service).
 echo "> Running filebeat --once ..."
-cd /app/.filebeat
+cd /app/.filebeat || exit
 ./filebeat run --once
 
 echo "Filebeat log shipping complete"

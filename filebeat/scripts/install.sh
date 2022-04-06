@@ -1,6 +1,6 @@
-# filebeat/scripts/install.sh
-
 #!/usr/bin/env bash
+
+# filebeat/scripts/install.sh
 
 TEMP_BEAT_HOME=filebeat/build
 
