@@ -30,6 +30,8 @@ echo "> Retrieving latest log entries from /var/log/access.log and writing to ${
 cat /var/log/access.log | grep $(date +%d/%b/%Y:) > ./latest.log
 diff --changed-group-format='%>' --unchanged-group-format='' $TODAY_LOG_FILE latest.log > new.log
 cat new.log >> $TODAY_LOG_FILE
+echo "> Shipping latest log entries from /var/log/access.log to Logz.io using cURL"
+cat new.log | curl -X POST "https://listener.logz.io:8071?token=${LOGZ_TOKEN}" -v --data-binary @-
 rm latest.log new.log
 
 # Delete yesterdays log file if it exists.
@@ -44,10 +46,10 @@ else
 fi
 
 # Run filebeat to ship today's log (to remote logging service).
-echo "> Running filebeat --once ..."
-cd /app/.filebeat || exit
-./filebeat run --once
+#echo "> Running filebeat --once ..."
+#cd /app/.filebeat || exit
+#./filebeat run --once
 
-echo "Filebeat log shipping complete"
+#echo "Filebeat log shipping complete"
 
 exit 0
