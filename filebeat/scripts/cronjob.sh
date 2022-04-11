@@ -31,7 +31,7 @@ cat /var/log/access.log | grep $(date +%d/%b/%Y:) > ./latest.log
 diff --changed-group-format='%>' --unchanged-group-format='' $TODAY_LOG_FILE latest.log > new.log
 cat new.log >> $TODAY_LOG_FILE
 echo "> Shipping latest log entries from /var/log/access.log to Logz.io using cURL"
-cat new.log | curl -X POST "https://listener.logz.io:8071?token=${LOGZ_TOKEN}" -v --data-binary @-
+curl -T new.log https://listener.logz.io:8022/file_upload/${LOGZ_TOKEN}/nginx
 rm latest.log new.log
 
 # Delete yesterdays log file if it exists.
