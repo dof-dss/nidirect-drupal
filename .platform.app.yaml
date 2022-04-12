@@ -155,7 +155,7 @@ web:
           expires: 2w
 crons:
   # Log shipping cron.
-  filebeat:
+  logging:
     spec: '*/5 * * * *'
     commands:
       start: '/bin/bash /app/logging/scripts/cronjob.sh'
