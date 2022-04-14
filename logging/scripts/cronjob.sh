@@ -42,8 +42,8 @@ cat access-new.log >> $TODAY_ACCESS_LOG
 # Compare latest drupal log entries with existing entries for today and add in newest entries.
 echo "> Retrieving latest log entries from /app/log/drupal.log and writing to ${TODAY_DRUPAL_LOG}"
 cat /app/log/drupal.log | grep "$(date +'%a, %d/%m/%Y -')" > ./drupal-latest.log
-diff --changed-group-format='%>' --unchanged-group-format='' $TODAY_ACCESS_LOG drupal-latest.log > drupal-new.log
-cat drupal-new.log >> $TODAY_ACCESS_LOG
+diff --changed-group-format='%>' --unchanged-group-format='' $TODAY_DRUPAL_LOG drupal-latest.log > drupal-new.log
+cat drupal-new.log >> $TODAY_DRUPAL_LOG
 
 # Upload new access and drupal log entries to logz.io using cURL.
 echo "> Shipping latest log entries from /var/log/access.log to Logz.io using cURL"
