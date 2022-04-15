@@ -1,0 +1,17 @@
+uuid: 4cc391da-bd25-463f-a51f-82266a4915e3
+langcode: en
+status: true
+dependencies:
+  module:
+    - nidirect_dblog
+title: 'Default cron handler'
+id: nidirect_dblog_cron
+weight: 0
+module: nidirect_dblog
+callback: nidirect_dblog_cron
+scheduler:
+  id: simple
+launcher:
+  id: serial
+logger:
+  id: database
