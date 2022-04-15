@@ -47,8 +47,8 @@ cat drupal-new.log >> $TODAY_DRUPAL_LOG
 
 # Upload new access and drupal log entries to logz.io using cURL.
 echo "> Shipping latest log entries from /var/log/access.log to Logz.io using cURL"
-curl -T access-new.log https://listener.logz.io:8022/file_upload/${LOGZ_TOKEN}/nginx
-curl -T drupal-new.log https://listener.logz.io:8022/file_upload/${LOGZ_TOKEN}/http-bulk
+curl -T access-new.log https://listener.logz.io:8022/file_upload/${LOGZ_TOKEN}/nginx_access
+curl -T drupal-new.log https://listener.logz.io:8022/file_upload/${LOGZ_TOKEN}/drupal
 
 # Clean up temporary log files.
 rm access-latest.log access-new.log drupal-latest.log drupal-new.log
