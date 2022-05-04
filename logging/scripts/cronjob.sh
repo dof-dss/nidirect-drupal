@@ -9,7 +9,7 @@
 # entries into a log file on a writeable mount and upload newest log entries
 # to a logging service.
 
-# Check script is running on production, otherwise exit.
+# LOGZ_TOKEN environment variable is required for this script to run.
 if [ -z $LOGZ_TOKEN ]; then
     echo "LOGZ_TOKEN is not set"
     exit 1
