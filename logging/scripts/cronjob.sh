@@ -45,6 +45,11 @@ diff --changed-group-format='%>' --unchanged-group-format='' $TODAY_ACCESS_LOG a
 cat access-new.log >> $TODAY_ACCESS_LOG
 echo "> Shipping latest log entries from /var/log/access.log to Logz.io using cURL"
 curl -T access-new.log https://listener.logz.io:8022/file_upload/${LOGZ_TOKEN}/nginx_access
+res=$?
+if test "$res" != "0"; then
+   echo "> The cURL command failed with: $res"
+   exit 1
+fi
 
 # Clean up temporary log files.
 rm access-latest.log access-new.log
@@ -83,6 +88,11 @@ if [ -f /app/log/drupal.log ]; then
     cat drupal-new.log >> $TODAY_DRUPAL_LOG
     echo "> Shipping latest drupal log entries to Logz.io using cURL"
     curl -T drupal-new.log https://listener.logz.io:8022/file_upload/${LOGZ_TOKEN}/drupal
+    res=$?
+    if test "$res" != "0"; then
+       echo "> The cURL command failed with: $res"
+       exit 1
+    fi
 
     # Clean up temporary log files.
     rm drupal-latest.log drupal-new.log
