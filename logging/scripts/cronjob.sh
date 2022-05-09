@@ -29,7 +29,7 @@ YESTERDAY_DATE=$(date --date="yesterday" +%Y-%m-%d)
 # Create log file to keep track of today's access log entries.
 TODAY_ACCESS_LOG=${TODAY_DATE}-access.log
 
-echo "> Creating ${TODAY_ACCESS_LOG} ..."
+echo "Creating ${TODAY_ACCESS_LOG} ..."
 
 if [ ! -f ./${TODAY_ACCESS_LOG} ]; then
     touch ./${TODAY_ACCESS_LOG}
@@ -39,16 +39,21 @@ else
 fi
 
 # Get latest access log entries and ship to logz.io.
-echo "> Retrieving latest log entries from /var/log/access.log and writing to ${TODAY_ACCESS_LOG}"
+echo "Retrieving latest log entries from /var/log/access.log and writing to ${TODAY_ACCESS_LOG}"
 cat /var/log/access.log | grep $(date +%d/%b/%Y:) > ./access-latest.log
 diff --changed-group-format='%>' --unchanged-group-format='' $TODAY_ACCESS_LOG access-latest.log > access-new.log
 cat access-new.log >> $TODAY_ACCESS_LOG
-echo "> Shipping latest log entries from /var/log/access.log to Logz.io using cURL"
-curl -T access-new.log https://listener.logz.io:8022/file_upload/${LOGZ_TOKEN}/nginx_access
-res=$?
-if test "$res" != "0"; then
-   echo "> The cURL command failed with: $res"
-   exit 1
+echo "Shipping latest log entries from /var/log/access.log to Logz.io using cURL"
+http_response=$(curl -T access-new.log -s -w "%{response_code}" https://listener.logz.io:8022/file_upload/${LOGZ_TOKEN}/nginx_access)
+exit_code=$?
+if [ "$exit_code" != "0" ]; then
+    echo "The cURL command failed with: $exit_code"
+    exit 1
+elif [ "$http_response" != "200" ]; then
+    echo "Log shipping failed with: $http_response"
+    exit 1
+elif [ "$http_response" = "200" ]; then
+    echo "Log shipping succeeded with: $http_response"
 fi
 
 # Clean up temporary log files.
@@ -57,7 +62,7 @@ rm access-latest.log access-new.log
 # Delete yesterdays log files.
 YESTERDAY_ACCESS_LOG=${YESTERDAY_DATE}-access.log
 
-echo "> Deleting yesterday's log files ..."
+echo "Deleting yesterday's log files ..."
 
 if [ -f ./${YESTERDAY_ACCESS_LOG} ]; then
     rm ${YESTERDAY_ACCESS_LOG}
@@ -72,7 +77,7 @@ if [ -f /app/log/drupal.log ]; then
     # Create log file to keep track of today's drupal log entries.
     TODAY_DRUPAL_LOG=${TODAY_DATE}-drupal.log
 
-    echo "> Creating ${TODAY_DRUPAL_LOG} ..."
+    echo "Creating ${TODAY_DRUPAL_LOG} ..."
 
     if [ ! -f ./${TODAY_DRUPAL_LOG} ]; then
         touch ./${TODAY_DRUPAL_LOG}
@@ -82,16 +87,21 @@ if [ -f /app/log/drupal.log ]; then
     fi
 
     # Get latest drupal log entries and ship logz.io.
-    echo "> Retrieving latest log entries from /app/log/drupal.log and writing to ${TODAY_DRUPAL_LOG}"
+    echo "Retrieving latest log entries from /app/log/drupal.log and writing to ${TODAY_DRUPAL_LOG}"
     cat /app/log/drupal.log | grep "$(date +'%a, %d/%m/%Y -')" > ./drupal-latest.log
     diff --changed-group-format='%>' --unchanged-group-format='' $TODAY_DRUPAL_LOG drupal-latest.log > drupal-new.log
     cat drupal-new.log >> $TODAY_DRUPAL_LOG
-    echo "> Shipping latest drupal log entries to Logz.io using cURL"
-    curl -T drupal-new.log https://listener.logz.io:8022/file_upload/${LOGZ_TOKEN}/drupal
-    res=$?
-    if test "$res" != "0"; then
-       echo "> The cURL command failed with: $res"
-       exit 1
+    echo "Shipping latest drupal log entries to Logz.io using cURL"
+    http_response=$(curl -T drupal-new.log -s -w "%{response_code}" https://listener.logz.io:8022/file_upload/${LOGZ_TOKEN}/drupal)
+    exit_code=$?
+    if [ "$exit_code" != "0" ]; then
+        echo "The cURL command failed with: $exit_code"
+        exit 1
+    elif [ "$http_response" != "200" ]; then
+        echo "Log shipping failed with: $http_response"
+        exit 1
+    elif [ "$http_response" = "200" ]; then
+        echo "Log shipping succeeded with: $http_response"
     fi
 
     # Clean up temporary log files.
@@ -100,7 +110,7 @@ if [ -f /app/log/drupal.log ]; then
     # Delete yesterdays log files.
     YESTERDAY_DRUPAL_LOG=${YESTERDAY_DATE}-drupal.log
 
-    echo "> Deleting yesterday's drupal log ..."
+    echo "Deleting yesterday's drupal log ..."
 
     if [ -f ./${YESTERDAY_DRUPAL_LOG} ]; then
         rm ${YESTERDAY_DRUPAL_LOG}
@@ -109,5 +119,7 @@ if [ -f /app/log/drupal.log ]; then
         echo "${YESTERDAY_DRUPAL_LOG} does not exist"
     fi
 fi
+
+echo "Log shipping cronjob complete"
 
 exit 0
