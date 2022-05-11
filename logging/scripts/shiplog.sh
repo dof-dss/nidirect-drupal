@@ -17,12 +17,7 @@ if [ -z $LOGZ_TOKEN ]; then
 fi
 
 # Mount for logs must exist or exit script.
-if [ -f /app/log ]; then
-    cd /app/log
-else
-    err "Log mount /app/log does not exist"
-    exit 1
-fi
+cd /app/log || err "Log mount /app/log does not exist" && exit 1
 
 LOG_NAME=$1
 LOG_PATH=$2
