@@ -6,18 +6,16 @@
 # Usage: /bin/bash /app/logging/scripts/shiplog.sh [LOG_NAME] [LOG_PATH] [LOG_DATE_PATTERN] [LOG_TYPE]
 #    eg: /bin/bash /app/logging/scripts/shiplog.sh "access" "/var/log/access.log" "$(date +%d/%b/%Y:)" "nginx_access"'
 
-err() {
-  echo "[$(date +'%Y-%m-%dT%H:%M:%S%z')]: $*" >&2
-}
+echo "Shipping log ..."
 
 # LOGZ_TOKEN environment variable is required for this script to run.
 if [ -z $LOGZ_TOKEN ]; then
-    err "LOGZ_TOKEN is not set"
+    echo "LOGZ_TOKEN is not set - exiting"
     exit 1
 fi
 
 # Mount for logs must exist or exit script.
-cd /app/log || err "Log mount /app/log does not exist" && exit 1
+cd /app/log || echo "Log mount /app/log does not exist - exiting" && exit 1
 
 LOG_NAME=$1
 LOG_PATH=$2
@@ -29,7 +27,7 @@ TODAY_DATE=$(date +%Y-%m-%d)
 YESTERDAY_DATE=$(date --date="yesterday" +%Y-%m-%d)
 
 if [ -z $LOG_NAME ] || [ -z $LOG_PATH ] || [ -z $LOG_DATE_PATTERN ] || [ -z $LOG_TYPE ]; then
-    err "shiplog called with too few parameters. Expected four."
+    echo "shiplog called with too few parameters. Expected four."
     echo 'Usage: ./shiplog.sh [LOG_NAME] [LOG_PATH] [LOG_DATE_PATTERN] [LOG_TYPE]'
     echo '   eg: ./shiplog.sh "access" "/var/log/access.log" "$(date +%d/%b/%Y:)" "nginx_access"'
     exit 1
@@ -74,9 +72,9 @@ if [ -f $LOG_PATH ]; then
     rm $LOG_NAME-latest.log $LOG_NAME-new.log
 
     if [ "$exit_code" != "0" ]; then
-        err "The cURL command failed with: $exit_code"
+        echo "The cURL command failed with: $exit_code"
     elif [ "$http_response" != "200" ]; then
-        err "Log shipping failed with: $http_response"
+        echo "Log shipping failed with: $http_response"
     fi
 
     if [ "$exit_code" != "0" ] || [ "$http_response" != "200" ]; then
@@ -89,7 +87,7 @@ if [ -f $LOG_PATH ]; then
 
     echo "Log shipping succeeded with: $http_response"
 else
-    err "${LOG_PATH} does not exist"
+    echo "${LOG_PATH} does not exist"
     exit 1
 fi
 
