@@ -61,7 +61,7 @@ if [ -f $LOG_PATH ]; then
 
     # Get latest log entries and ship to logz.io.
     echo "Retrieving latest log entries from ${LOG_PATH} and writing to ${todays_log}"
-    cat $LOG_PATH | grep $LOG_DATE_PATTERN > ./$LOG_NAME-latest.log
+    cat $LOG_PATH | grep "$LOG_DATE_PATTERN" > ./$LOG_NAME-latest.log
     diff --changed-group-format='%>' --unchanged-group-format='' $todays_log $LOG_NAME-latest.log > $LOG_NAME-new.log
     cat $LOG_NAME-new.log >> $todays_log
     echo "Shipping latest log entries from ${todays_log} to Logz.io using cURL"
