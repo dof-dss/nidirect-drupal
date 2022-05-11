@@ -15,11 +15,11 @@ if [ -z $LOGZ_TOKEN ]; then
 fi
 
 # Mount for logs must exist or exit script.
-cd /app/log || echo "Log mount /app/log does not exist - exiting" && exit 1
+cd /app/log || exit
 
 LOG_NAME=$1
 LOG_PATH=$2
-LOG_PATTERN=$3
+LOG_DATE_PATTERN=$3
 LOG_TYPE=$4
 
 # Script will be creating logs for today and removing yesterday's logs
@@ -61,11 +61,11 @@ if [ -f $LOG_PATH ]; then
 
     # Get latest log entries and ship to logz.io.
     echo "Retrieving latest log entries from ${LOG_PATH} and writing to ${todays_log}"
-    cat $LOG_PATH | grep $LOG_PATTERN > ./$LOG_NAME-latest.log
+    cat $LOG_PATH | grep $LOG_DATE_PATTERN > ./$LOG_NAME-latest.log
     diff --changed-group-format='%>' --unchanged-group-format='' $todays_log $LOG_NAME-latest.log > $LOG_NAME-new.log
     cat $LOG_NAME-new.log >> $todays_log
     echo "Shipping latest log entries from ${todays_log} to Logz.io using cURL"
-    http_response=$(curl -T new.log -s -w "%{response_code}" https://listener.logz.io:8022/file_upload/${LOGZ_TOKEN}/${LOG_TYPE})
+    http_response=$(curl -T $LOG_NAME-new.log -s -w "%{response_code}" https://listener.logz.io:8022/file_upload/${LOGZ_TOKEN}/${LOG_TYPE})
     exit_code=$?
 
     # Clean up temporary log files.
@@ -78,10 +78,6 @@ if [ -f $LOG_PATH ]; then
     fi
 
     if [ "$exit_code" != "0" ] || [ "$http_response" != "200" ]; then
-        email = "From: noreply@nidirect.gov.uk\n"
-        email += "Subject: Logz upload failed on project "
-        email += "${PLATFORM_PROJECT} branch ${PLATFORM_BRANCH}"
-        printf $email | /usr/sbin/sendmail eddwebdev@finance-ni.gov.uk
         exit 1
     fi
 
