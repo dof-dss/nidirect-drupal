@@ -137,7 +137,7 @@ mounts:
 ```yaml
 crons:
   # Log shipping cron.
-  filebeat:
+  logging:
     spec: '*/5 * * * *'
     commands:
       start: '/bin/bash /app/logging/scripts/cronjob.sh'
