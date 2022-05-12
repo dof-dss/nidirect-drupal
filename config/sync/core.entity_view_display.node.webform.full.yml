@@ -5,6 +5,7 @@ dependencies:
   config:
     - core.entity_view_mode.node.full
     - field.field.node.webform.body
+    - field.field.node.webform.field_meta_tags
     - field.field.node.webform.field_site_themes
     - field.field.node.webform.field_subtheme
     - field.field.node.webform.field_teaser
@@ -43,6 +44,8 @@ content:
     type: webform_entity_reference_entity_view
     region: content
 hidden:
+  content_moderation_control: true
+  field_meta_tags: true
   field_site_themes: true
   field_subtheme: true
   field_teaser: true
