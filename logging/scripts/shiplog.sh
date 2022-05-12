@@ -26,8 +26,9 @@ LOG_TYPE=$4
 TODAY_DATE=$(date +%Y-%m-%d)
 YESTERDAY_DATE=$(date --date="yesterday" +%Y-%m-%d)
 
-if [ -z "$LOG_NAME" ] || [ -z "$LOG_PATH" ] || [ -z "$LOG_DATE_PATTERN" ] || [ -z "$LOG_TYPE" ]; then
-    echo "shiplog called with too few parameters. Expected four."
+# Check 4 arguments passed.
+if [ $# -ne 4 ]; then
+    echo "shiplog called with incorrect number of arguments. Expected 4, got $#."
     echo 'Usage: ./shiplog.sh [LOG_NAME] [LOG_PATH] [LOG_DATE_PATTERN] [LOG_TYPE]'
     echo '   eg: ./shiplog.sh "access" "/var/log/access.log" "$(date +%d/%b/%Y:)" "nginx_access"'
     exit 1
