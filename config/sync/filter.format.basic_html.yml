@@ -28,7 +28,7 @@ filters:
     status: true
     weight: -50
     settings:
-      allowed_html: '<a class href hreflang> <em> <strong> <cite> <blockquote cite> <code> <ul class type> <ol class start type> <li> <dl> <dt> <dd> <h2 id> <h3 id> <h4 id> <div class> <p class translate> <br> <img src alt height width data-* typeof> <sup> <table class> <caption> <tbody> <thead> <tfoot> <th scope> <td> <tr> <drupal-entity data-entity-type data-entity-uuid data-entity-embed-display data-entity-embed-display-settings data-align data-caption data-embed-button alt title class> <picture data-* alt title class> <source srcset media type> <address> <drupal-media data-entity-type data-entity-uuid data-entity-embed-display data-entity-embed-display-settings data-align data-caption data-embed-button data-view-mode alt title class>'
+      allowed_html: '<a class href hreflang> <em> <strong> <cite> <blockquote cite> <code> <ul class type> <ol class start type> <li> <dl> <dt> <dd> <h2 id> <h3 id> <h4 id> <div class> <p class translate> <br> <img src alt height width data-* typeof> <sup> <table class> <caption> <tbody> <thead> <tfoot> <th scope> <td> <tr> <drupal-entity data-entity-type data-entity-uuid data-entity-embed-display data-entity-embed-display-settings data-align data-caption data-embed-button alt title class> <picture data-* alt title class> <source srcset media type> <address> <drupal-media data-entity-type data-entity-uuid data-entity-embed-display data-entity-embed-display-settings data-align data-caption data-embed-button data-view-mode alt title class> <strike> <span dir lang>'
       filter_html_help: false
       filter_html_nofollow: false
   filter_align:
@@ -106,20 +106,20 @@ filters:
     weight: -47
     settings:
       default_view_mode: article_full
-      allowed_view_modes:
-        article_float: article_float
-        article_float_expandable: article_float_expandable
-        article_full: article_full
-        article_full_expandable: article_full_expandable
       allowed_media_types:
         audio: audio
         image: image
         remote_video: remote_video
         video: video
+      allowed_view_modes:
+        article_float: article_float
+        article_float_expandable: article_float_expandable
+        article_full: article_full
+        article_full_expandable: article_full_expandable
   cookie_content_blocker_filter:
     id: cookie_content_blocker_filter
     provider: cookie_content_blocker
-    status: true
+    status: false
     weight: -44
     settings:
       disable_xss: '1'
@@ -133,7 +133,7 @@ filters:
   origins_media_cookie_content_blocker_embed_filter:
     id: origins_media_cookie_content_blocker_embed_filter
     provider: origins_common
-    status: true
+    status: false
     weight: -48
     settings:
       replacement_text: 'Click here to view the video content'
