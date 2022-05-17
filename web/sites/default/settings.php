@@ -51,7 +51,7 @@ $config['geolocation_google_maps.settings']['google_map_api_server_key'] = geten
 $config['geocoder.settings']['plugins_options']['googlemaps']['apikey'] = getenv('GOOGLE_MAP_API_SERVER_KEY');
 
 // Environment indicator defaults.
-$env_colour = !empty(getenv('SIMPLEI_ENV_COLOR')) ? getenv('SIMPLEI_ENV_COLOR') : '#000000';;
+$env_colour = !empty(getenv('SIMPLEI_ENV_COLOUR')) ? getenv('SIMPLEI_ENV_COLOUR') : '#000000';
 $env_name = !empty(getenv('SIMPLEI_ENV_NAME')) ? getenv('SIMPLEI_ENV_NAME') : getenv('PLATFORM_BRANCH');
 
 // Prevents legacy Symfony ApcClassLoader from being used instead of Composer's.
@@ -69,7 +69,7 @@ if (!empty(getenv('PLATFORM_BRANCH'))) {
       // De-facto production settings.
       $config['config_split.config_split.production']['status'] = TRUE;
       break;
-      
+
     default:
       // Default to use development settings/services for general platform.sh environments.
       $config['config_split.config_split.development']['status'] = TRUE;
