@@ -121,6 +121,11 @@ filters:
     weight: -46
     settings:
       default_view_mode: article_full
+      allowed_media_types:
+        audio: audio
+        image: image
+        remote_video: remote_video
+        video: video
       allowed_view_modes:
         article_float: article_float
         article_float_expandable: article_float_expandable
@@ -141,11 +146,6 @@ filters:
         portrait_float: portrait_float
         portrait_float_xp: portrait_float_xp
         portrait_full: portrait_full
-      allowed_media_types:
-        audio: audio
-        image: image
-        remote_video: remote_video
-        video: video
   cookie_content_blocker_filter:
     id: cookie_content_blocker_filter
     provider: cookie_content_blocker
