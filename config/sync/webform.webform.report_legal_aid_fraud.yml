@@ -12,7 +12,7 @@ id: report_legal_aid_fraud
 title: 'Report legal aid fraud'
 description: ''
 category: ''
-elements: |
+elements: |-
   report_who_:
     '#type': webform_wizard_page
     '#title': 'Report who?'
@@ -32,7 +32,7 @@ elements: |
       '#required_error': 'You must choose an option'
   type_of_legal_aid_fruad:
     '#type': webform_wizard_page
-    '#title': 'Type of legal aid fruad'
+    '#title': 'Type of legal aid fraud'
     '#format': container
     fraud_by_someone_else:
       '#type': radios
@@ -473,6 +473,7 @@ elements: |
       invisible:
         ':input[name="person_you_want_to_report_for_legal_aid_fraud"]':
           value: 'someone getting legal aid for their legal proceedings or court case'
+    '#format': container
     why_do_you_think_there_is_legal_aid_fraud_text:
       '#type': textarea
       '#title': 'Why do you think there is legal aid fraud?'
@@ -491,9 +492,10 @@ elements: |
       visible:
         ':input[name="person_you_want_to_report_for_legal_aid_fraud"]':
           value: 'someone getting legal aid for their legal proceedings or court case'
+    '#format': container
     why_you_re_reporting_this_person_for_legal_aid_fraud_options:
       '#type': checkboxes
-      '#title': 'Why you''re reporting this person for legal aid fraud'
+      '#title': 'Why are you reporting this person for legal aid fraud?'
       '#options':
         'they’re employed or have an income they haven’t declared': 'they’re employed or have an income they haven’t declared'
         'they have a partner they haven’t declared': 'they have a partner they haven’t declared'
@@ -743,6 +745,9 @@ settings:
   form_access_denied_message: ''
   form_access_denied_attributes: {  }
   form_file_limit: ''
+  form_method: ''
+  form_action: ''
+  form_attributes: {  }
   share: false
   share_node: false
   share_theme_name: ''
@@ -904,10 +909,10 @@ handlers:
       from_options: {  }
       from_name: _default
       subject: _default
-      body: |
-        Submitted on [webform_submission:created]<br />
-        Submitted values are:<br />
-        [webform_submission:values]
+      body: |-
+        <p><strong>Submitted on:</strong> [webform_submission:created]<br />
+        <strong>Submitted values are:</strong></p>
+        [webform_submission:values:report_who_:html] [webform_submission:values:type_of_legal_aid_fruad:html] [webform_submission:values:information_about_the_person_you_re_reporting_fieldset:html] [webform_submission:values:reporting_an_employee_in_the_department_of_justice_fieldset:html] [webform_submission:values:reporting_an_employee_in_the_legal_service_agency_fieldset:html] [webform_submission:values:name_of_the_person_you_are_reporting_fieldset:html] [webform_submission:values:information_about_the_person_you_are_reporting_fieldset:html] [webform_submission:values:why_you_think_there_is_legal_aid_fraud:html] [webform_submission:values:why_you_re_reporting_this_person_for_legal_aid_fraud:html] [webform_submission:values:information_about_the_person_s_job_or_income_fieldset:html] [webform_submission:values:information_about_the_person_s_partner_fieldset:html] [webform_submission:values:information_about_undeclared_income_savings_investments_fieldset:html] [webform_submission:values:additional_information:html]
       excluded_elements:
         information_you_know_person_legal_aid: information_you_know_person_legal_aid
         information_you_know_someone_else: information_you_know_someone_else

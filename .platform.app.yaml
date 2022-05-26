@@ -30,7 +30,6 @@ relationships:
   redis: "redis:redis"
   #  For MariaDB, the endpoint does not change whether you used the mysql or mariadb service type.
   database: 'db:admin'
-  drupal7db: 'drupal7db:admin'
 
 # The size of the persistent disk of the application (in MB).
 disk: 30720
@@ -58,6 +57,9 @@ mounts:
   '/.console':
     source: local
     source_path: 'console'
+  '/log':
+    source: local
+    source_path: 'log'
 
 # Configuration of the build of this application.
 build:
@@ -152,7 +154,9 @@ web:
         '^/sites/default/files/(css|js)':
           expires: 2w
 crons:
-  # Once a day, prune/delete filelog entries older than 30 days.
-  filelog:
-    spec: '0 1 * * *'
-    cmd: 'cd /app/private; find logs -mtime +30 -exec rm -rf {} \;'
+  # Log shipping cron.
+  logging:
+    spec: '*/5 * * * *'
+    commands:
+      start: '/bin/bash /app/logging/scripts/cronjob.sh'
+    shutdown_timeout: 290
