@@ -65,9 +65,10 @@
         "drupal/config_update": "^1.6",
         "drupal/console": "^1.9",
         "drupal/cookie_content_blocker": "^1.7",
-        "drupal/core-composer-scaffold": "~9.2.0",
-        "drupal/core-project-message": "~9.2.0",
-        "drupal/core-recommended": "~9.2.0",
+        "drupal/core-composer-scaffold": "9.2.20",
+        "drupal/core-dev": "9.2.20",
+        "drupal/core-project-message": "9.2.20",
+        "drupal/core-recommended": "9.2.20",
         "drupal/csp": "^1.15",
         "drupal/csv_serialization": "^2.0@beta",
         "drupal/ctools": "^3.7",
@@ -153,7 +154,6 @@
         "zaporylie/composer-drupal-optimizations": "^1.0"
     },
     "require-dev": {
-        "drupal/core-dev": "~9.2.0",
         "drupal/devel": "^4.1",
         "drupal/devel_entity_updates": "^3.0",
         "drupal/easy_install": "^10.5",
@@ -167,6 +167,10 @@
         "drupal/upgrade_status": "^3.0",
         "kint-php/kint": "^3.3",
         "mglaman/drupal-check": "^1.1",
+        "mglaman/phpstan-drupal": "^1.1",
+        "phpstan/extension-installer": "^1.1",
+        "phpstan/phpstan": "^1.6",
+        "phpstan/phpstan-deprecation-rules": "^1.0",
         "previousnext/phpunit-finder": "^1.0@alpha",
         "thinktandem/migrate_booster": "dev-main"
     },
@@ -212,6 +216,9 @@
             },
             "drupal/inline_entity_form": {
                 "Widget settings to control removing & deleting existing references": "https://www.drupal.org/files/issues/2021-04-15/ief_removed_references_2875716-103.patch"
+            },
+            "drupal/google_tag": {
+                "Resolve Html checker errors": "https://www.drupal.org/files/issues/2022-03-29/3272258-2.patch"
             },
             "drupal/paragraphs": {
                 "Integrity constraint violation: 1048 Column 'langcode' cannot be null": "https://www.drupal.org/files/issues/2020-06-25/paragraphs-2901390-51.patch",
