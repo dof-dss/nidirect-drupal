@@ -58,7 +58,7 @@ commands:
       - run:
           name: Add OS and PHP extensions
           command: |
-            sudo cp /home/circleci/project/.circleci/docker-php-circleci.ini /usr/local/etc/php/conf.d/
+            sudo cp /home/circleci/project/.circleci/docker-php-circleci.ini /usr/local/etc/php-fpm.d/
             sudo apt --allow-releaseinfo-change update
             sudo apt install -y libpng-dev
             sudo docker-php-ext-install gd pcntl posix
