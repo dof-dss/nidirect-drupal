@@ -59,9 +59,7 @@ commands:
           name: Add OS and PHP extensions
           command: |
             sudo cp /home/circleci/project/.circleci/docker-php-circleci.ini /usr/local/etc/php-fpm.d/
-            sudo apt --allow-releaseinfo-change update
-            sudo apt install -y libpng-dev
-            sudo docker-php-ext-install gd pcntl posix
+            sudo -E install-php-extensions libpng-dev gd pcntl posix
   hosts_keyscan:
     description: "Keyscan for hosts that require SSH access"
     steps:
@@ -85,7 +83,7 @@ jobs:
   # Tests the integrity of the build, stores the results in a workspace for re-use in later jobs.
   build:
     docker:
-      - image: cimg/php:7.4.29-browsers
+      - image: cimg/php:7.4.29-ext-test
     environment:
       PLATFORM_REGION: "uk-1.platform.sh"
     steps:
@@ -137,7 +135,7 @@ jobs:
   # Functional tests with headless browser; run against our edge environment.
   functional_tests:
     docker:
-      - image: cimg/php:7.4.29-browsers
+      - image: cimg/php:7.4.29-ext-test
         environment:
           TEST_TAGS: "search content-type-validation origins_workflow regression"
           EDGE_BUILD_BRANCH: "D8NID-edge"
@@ -190,7 +188,7 @@ jobs:
   # Edge build: all dof-dss packages use HEAD on development branch, pushes to fixed non-integrating branch.
   edge_build:
     docker:
-      - image: cimg/php:7.4.29-browsers
+      - image: cimg/php:7.4.29-ext-test
     environment:
       # git variables to avoid empty committer identity errors
       EMAIL: "circleci@localhost"
@@ -225,7 +223,7 @@ jobs:
   # Separate task to allow us to sync data on PSH environments, without pauses in other jobs.
   sync_data:
     docker:
-      - image: cimg/php:7.4.29-browsers
+      - image: cimg/php:7.4.29-ext-test
     steps:
       - hosts_keyscan
       - checkout_code
