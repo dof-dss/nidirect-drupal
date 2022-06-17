@@ -85,7 +85,7 @@ jobs:
   # Tests the integrity of the build, stores the results in a workspace for re-use in later jobs.
   build:
     docker:
-      - image: circleci/php:7.4.15-apache-browsers
+      - image: cimg/php:7.4.29-browsers
     environment:
       PLATFORM_REGION: "uk-1.platform.sh"
     steps:
@@ -100,7 +100,7 @@ jobs:
   # Test for coding standards - will inherit the workspace/filesystem changes from build step, above.
   coding_standards:
     docker:
-      - image: circleci/php:7.4.15-apache-browsers
+      - image: cimg/php:7.4.29-browsers
     environment:
       PROJECT_ROOT: "/home/circleci/project"
       PLATFORM_REGION: "uk-1.platform.sh"
@@ -118,7 +118,7 @@ jobs:
 
   deprecated_code:
     docker:
-      - image: circleci/php:7.4.15-apache-browsers
+      - image: cimg/php:7.4.29-browsers
     environment:
       PROJECT_ROOT: "/home/circleci/project"
     steps:
@@ -137,7 +137,7 @@ jobs:
   # Functional tests with headless browser; run against our edge environment.
   functional_tests:
     docker:
-      - image: circleci/php:7.4.15-apache-node-browsers
+      - image: cimg/php:7.4.29-browsers
         environment:
           TEST_TAGS: "search content-type-validation origins_workflow regression"
           EDGE_BUILD_BRANCH: "D8NID-edge"
@@ -190,7 +190,7 @@ jobs:
   # Edge build: all dof-dss packages use HEAD on development branch, pushes to fixed non-integrating branch.
   edge_build:
     docker:
-      - image: circleci/php:7.4.15-apache-browsers
+      - image: cimg/php:7.4.29-browsers
     environment:
       # git variables to avoid empty committer identity errors
       EMAIL: "circleci@localhost"
@@ -225,7 +225,7 @@ jobs:
   # Separate task to allow us to sync data on PSH environments, without pauses in other jobs.
   sync_data:
     docker:
-      - image: circleci/php:7.4.15-apache-browsers
+      - image: cimg/php:7.4.29-browsers
     steps:
       - hosts_keyscan
       - checkout_code
