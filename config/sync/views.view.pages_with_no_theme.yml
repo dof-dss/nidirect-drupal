@@ -34,7 +34,7 @@ display:
     display_plugin: default
     position: 0
     display_options:
-      title: 'Pages missing theme/subtheme'
+      title: 'Pages with missing theme/subtheme'
       fields:
         title_1:
           id: title_1
@@ -821,12 +821,13 @@ display:
         - 'user.node_grants:view'
         - user.permissions
       tags: {  }
-  page_1:
-    id: page_1
-    display_title: Page
+  pages_no_theme:
+    id: pages_no_theme
+    display_title: 'Pages no theme'
     display_plugin: page
     position: 1
     display_options:
+      display_description: 'Content administration view listing nodes with a missing theme/subtheme'
       display_extenders:
         metatag_display_extender:
           metatags: {  }
