@@ -1,42 +1,18 @@
-uuid: 4aeec51b-9eb4-4468-81c6-0c1d8ac9e55a
-cookie_lifetime: 365
-domain: ''
-domains_option: 1
-domains_list: .translate.goog
-eu_only: null
-eu_only_js: null
-exclude_paths: |
-  /admin
-  /admin/*
-  /batch
-  /node/add*
-  /node/*/*
-  /user/*/*
-exclude_admin_theme: false
+_core:
+  default_config_hash: HwyPQpj5lIcdzj0xE5VMS12fUdAv7dXaSueT8crtmHk
 langcode: en
-popup_agreed:
-  value: |
-    <h2>Thank you for accepting cookies</h2>
-    
-    <p>You can now hide this message or find out more about cookies.</p>
-  format: full_html
-popup_agree_button_message: 'Accept cookies'
-popup_agreed_enabled: false
-popup_bg_hex: ''
+uuid: 4aeec51b-9eb4-4468-81c6-0c1d8ac9e55a
+popup_enabled: true
 popup_clicking_confirmation: false
 popup_scrolling_confirmation: false
-popup_delay: 300
-show_disagree_button: true
-popup_disagree_button_message: 'Find out more about cookies'
-popup_enabled: true
-popup_find_more_button_message: 'More info'
-popup_height: null
-popup_hide_agreed: false
-popup_hide_button_message: Hide
+eu_only: false
+eu_only_js: false
+popup_position: false
+fixed_top_position: false
 popup_info:
-  value: |
+  value: |-
     <h2 class="eu-cookie-compliance-title">Cookies on nidirect</h2>
-    
+
     <p>We use some essential cookies to make this service work. We’d like to set additional cookies so we can remember your settings, understand how people use the service and make improvements. Some of our pages allow selected third parties to set cookies – for example, pages that contain YouTube videos or Google Maps.&nbsp;<br />
     <a href="/articles/how-we-use-cookies">Find out more about how we use cookies</a></p>
   format: full_html
@@ -44,52 +20,85 @@ mobile_popup_info:
   value: ''
   format: basic_html
 popup_info_template: new
+popup_agree_button_message: 'Accept cookies'
+popup_more_info_button_message: ''
 mobile_breakpoint: 768
+popup_agreed_enabled: false
+popup_hide_agreed: false
+disagree_button_label: 'Reject cookies'
+popup_agreed:
+  value: |-
+    <h2>Thank you for accepting cookies</h2>
+
+    <p>You can now hide this message or find out more about cookies.</p>
+  format: full_html
+popup_find_more_button_message: 'More info'
+popup_hide_button_message: Hide
 popup_link: /node/4645
 popup_link_new_window: false
-popup_position: false
-fixed_top_position: false
-popup_text_hex: ''
+popup_height: null
 popup_width: ''
+popup_delay: 300
+show_more_info: false
+popup_bg_hex: ''
+popup_text_hex: ''
+domain: ''
+domains_option: 1
+domains_list: .translate.goog
+exclude_paths: |-
+  /admin
+  /admin/*
+  /batch
+  /node/add*
+  /node/*/*
+  /user/*/*
+exclude_admin_theme: true
+cookie_session: 0
+set_cookie_session_zero_on_disagree: 0
+cookie_lifetime: 365
+use_mobile_message: false
 use_bare_css: true
 disagree_do_not_show_popup: false
-reload_page: true
-cookie_name: ''
-exclude_uid_1: false
-better_support_for_screen_readers: true
-use_mobile_message: false
-method: opt_in
-disagree_button_label: 'Reject cookies'
-disabled_javascripts: ''
-whitelisted_cookies: ''
-consent_storage_method: do_not_store
-withdraw_message:
-  value: |
-    <h2>We use cookies on this site to enhance your user experience</h2>
-    
-    <p>You have given your consent for us to set cookies.</p>
-  format: full_html
-withdraw_action_button_label: 'Withdraw consent'
-withdraw_tab_button_label: 'Privacy settings'
-withdraw_enabled: false
-cookie_categories: ''
-enable_save_preferences_button: true
-save_preferences_button_label: 'Save preferences'
-accept_all_categories_button_label: 'Accept all cookies'
-fix_first_cookie_category: true
-select_all_categories_by_default: false
-withdraw_button_on_info_popup: false
-domain_all_sites: false
-_core:
-  default_config_hash: HwyPQpj5lIcdzj0xE5VMS12fUdAv7dXaSueT8crtmHk
-cookie_session: 0
-cookie_policy_version: 1.0.0
-show_more_info: false
-popup_more_info_button_message: ''
-set_cookie_session_zero_on_disagree: 0
+reload_page: false
 reload_options: null
 reload_routes_list: ''
-automatic_cookies_removal: false
+cookie_name: ''
+exclude_uid_1: true
+better_support_for_screen_readers: true
+method: opt_in
+disabled_javascripts: 'public://google_tag/nidirect/google_tag.script.js'
+automatic_cookies_removal: true
 allowed_cookies: ''
+consent_storage_method: do_not_store
+withdraw_message:
+  value: |-
+    <h2 class="eu-cookie-compliance-title">Cookies on nidirect</h2>
+
+    <p>You have given your consent for us to set additional cookies&nbsp;so we can remember your settings, understand how people use the service and make improvements.&nbsp; If you have changed your mind, you can withdraw consent.<br />
+    <a href="/articles/how-we-use-cookies">Find out more about how we use cookies</a></p>
+  format: full_html
+withdraw_tab_button_label: 'Cookie settings'
+withdraw_action_button_label: 'Withdraw consent'
+withdraw_enabled: true
+withdraw_button_on_info_popup: false
+save_preferences_button_label: 'Save preferences'
+accept_all_categories_button_label: 'Accept all cookies'
+enable_save_preferences_button: true
+domain_all_sites: false
+settings_tab_enabled: true
 containing_element: body
-settings_tab_enabled: false
+cookie_policy_version: 1.0.0
+cookie_value_disagreed: '0'
+cookie_value_agreed_show_thank_you: '1'
+cookie_value_agreed: '2'
+show_disagree_button: true
+popup_disagree_button_message: 'Find out more about cookies'
+whitelisted_cookies: ''
+cookie_categories: ''
+fix_first_cookie_category: true
+select_all_categories_by_default: false
+accessibility_focus: false
+dependencies:
+  config:
+    - filter.format.basic_html
+    - filter.format.full_html
