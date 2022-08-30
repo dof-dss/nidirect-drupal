@@ -81,8 +81,6 @@ jobs:
   # Tests the integrity of the build, stores the results in a workspace for re-use in later jobs.
   build:
     <<: *docker_image
-    environment:
-      PLATFORM_REGION: "uk-1.platform.sh"
     steps:
       - checkout_code
       - composer_tasks
