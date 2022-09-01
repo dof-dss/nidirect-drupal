@@ -7,6 +7,7 @@ default_docker_image: &docker_image
         PLATFORM_REGION: "uk-1.platform.sh"
         PROJECT_ROOT: "/home/docker/project"
         PHP_EXTENSION_GD: 1
+        PHP_EXTENSIONS: "gd"
         PHP_INI_MEMORY_LIMIT: 1g
 
 # Re-usable commands.
@@ -81,8 +82,6 @@ jobs:
   # Tests the integrity of the build, stores the results in a workspace for re-use in later jobs.
   build:
     <<: *docker_image
-    environment:
-      PLATFORM_REGION: "uk-1.platform.sh"
     steps:
       - checkout_code
       - composer_tasks
