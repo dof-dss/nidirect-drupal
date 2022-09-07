@@ -22,10 +22,11 @@ dependencies:
     - user
 third_party_settings:
   layout_builder:
-    allow_custom: false
     enabled: false
+    allow_custom: false
   layout_builder_restrictions:
     entity_view_mode_restriction:
+      allowed_layouts: {  }
       allowed_blocks:
         'Chaos Tools': {  }
         Content: {  }
@@ -59,7 +60,6 @@ third_party_settings:
           - webform_block
         core:
           - page_title_block
-      allowed_layouts: {  }
 id: node.landing_page.featured
 targetEntityType: node
 bundle: landing_page
@@ -67,8 +67,6 @@ mode: featured
 content:
   field_teaser:
     type: smart_trim
-    weight: 1
-    region: content
     label: hidden
     settings:
       trim_length: 15
@@ -77,13 +75,15 @@ content:
       wrap_output: true
       wrap_class: trimmed
       more_link: true
-      more_text: more
       more_class: more-link
+      more_text: more
+      summary_handler: full
       trim_options:
         text: true
         trim_zero: false
-      summary_handler: full
     third_party_settings: {  }
+    weight: 1
+    region: content
 hidden:
   content_moderation_control: true
   field_enable_title: true

@@ -1,13 +1,20 @@
 version: 2.1
 
+default_docker_image: &docker_image
+  docker:
+    - image: thecodingmachine/php:7.4-v4-apache-node14
+      environment:
+        PLATFORM_REGION: "uk-1.platform.sh"
+        PROJECT_ROOT: "/home/docker/project"
+        PHP_EXTENSION_GD: 1
+        PHP_EXTENSIONS: "gd"
+        PHP_INI_MEMORY_LIMIT: 1g
+
 # Re-usable commands.
 commands:
   checkout_code:
     description: "Handle composer access tokens, SSH key fingerprints and code checkout"
     steps:
-      - run:
-          name: Add GitHub access token for composer
-          command: echo 'composer config -g github-oauth.github.com $GITHUB_TOKEN' >> $BASH_ENV
       # Add SSH user key so we can access related repositories as part of our initial clone + composer install command.
       # f8:f0 >> private fingerprint to allow Circle CI to talk to platform.sh.
       # 89:cc >> GitHub user key fingerprint.
@@ -52,16 +59,6 @@ commands:
             composer require dof-dss/nidirect-site-modules:dev-development \
               dof-dss/nidirect-d8-test-install-profile:dev-development dof-dss/nicsdru_origins_theme:dev-development \
                 dof-dss/nicsdru_origins_modules:dev-development dof-dss/nicsdru_nidirect_theme:dev-development
-  install_php_os_extensions:
-    description: "Install a standard group of extensions and packages"
-    steps:
-      - run:
-          name: Add OS and PHP extensions
-          command: |
-            sudo cp /home/circleci/project/.circleci/docker-php-circleci.ini /usr/local/etc/php/conf.d/
-            sudo apt --allow-releaseinfo-change update
-            sudo apt install -y libpng-dev
-            sudo docker-php-ext-install gd pcntl posix
   hosts_keyscan:
     description: "Keyscan for hosts that require SSH access"
     steps:
@@ -84,14 +81,9 @@ commands:
 jobs:
   # Tests the integrity of the build, stores the results in a workspace for re-use in later jobs.
   build:
-    docker:
-      - image: circleci/php:7.4.15-apache-browsers
-    environment:
-      PLATFORM_REGION: "uk-1.platform.sh"
+    <<: *docker_image
     steps:
-      - hosts_keyscan
       - checkout_code
-      - install_php_os_extensions
       - composer_tasks
       - persist_to_workspace:
           root: ./
@@ -99,32 +91,23 @@ jobs:
             - ./
   # Test for coding standards - will inherit the workspace/filesystem changes from build step, above.
   coding_standards:
-    docker:
-      - image: circleci/php:7.4.15-apache-browsers
-    environment:
-      PROJECT_ROOT: "/home/circleci/project"
-      PLATFORM_REGION: "uk-1.platform.sh"
+    <<: *docker_image
     steps:
       - attach_workspace:
           at: ./
-      - run: sudo cp /home/circleci/project/.circleci/docker-php-circleci.ini /usr/local/etc/php/conf.d/
       - run:
           name: PHPCS analysis
           command: |
             CHECK_DIRS="${PROJECT_ROOT}/web/modules/custom"
             CHECK_DIRS="${CHECK_DIRS} ${PROJECT_ROOT}/web/modules/origins"
             CHECK_DIRS="${CHECK_DIRS} ${PROJECT_ROOT}/web/themes/custom"
-            ~/project/phpcs.sh ${PROJECT_ROOT} $CHECK_DIRS
+            $PROJECT_ROOT/phpcs.sh ${PROJECT_ROOT} $CHECK_DIRS
 
   deprecated_code:
-    docker:
-      - image: circleci/php:7.4.15-apache-browsers
-    environment:
-      PROJECT_ROOT: "/home/circleci/project"
+    <<: *docker_image
     steps:
       - attach_workspace:
           at: ./
-      - run: sudo cp /home/circleci/project/.circleci/docker-php-circleci.ini /usr/local/etc/php/conf.d/
       - run:
           name: Deprecated code check
           command: |
@@ -132,7 +115,7 @@ jobs:
             CHECK_DIRS="${PROJECT_ROOT}/web/modules/custom"
             CHECK_DIRS="$CHECK_DIRS ${PROJECT_ROOT}/web/modules/origins"
             CHECK_DIRS="$CHECK_DIRS ${PROJECT_ROOT}/web/themes/custom"
-            vendor/bin/phpstan analyse -c phpstan.neon $CHECK_DIRS
+            vendor/bin/drupal-check $CHECK_DIRS
 
   # Functional tests with headless browser; run against our edge environment.
   functional_tests:
@@ -189,19 +172,16 @@ jobs:
 
   # Edge build: all dof-dss packages use HEAD on development branch, pushes to fixed non-integrating branch.
   edge_build:
-    docker:
-      - image: circleci/php:7.4.15-apache-browsers
+    <<: *docker_image
     environment:
       # git variables to avoid empty committer identity errors
       EMAIL: "circleci@localhost"
       GIT_COMMITTER_NAME: "Circle CI"
       GIT_AUTHOR_NAME: "Circle CI"
       EDGE_BUILD_BRANCH: "D8NID-edge"
-      PLATFORM_REGION: "uk-1.platform.sh"
     steps:
       - hosts_keyscan
       - checkout_code
-      - install_php_os_extensions
       - install_psh_cli
       - run:
           name: Switch to edge branch
@@ -224,12 +204,10 @@ jobs:
 
   # Separate task to allow us to sync data on PSH environments, without pauses in other jobs.
   sync_data:
-    docker:
-      - image: circleci/php:7.4.15-apache-browsers
+    <<: *docker_image
     steps:
       - hosts_keyscan
       - checkout_code
-      - install_php_os_extensions
       - install_psh_cli
       - run:
           name: Trigger a data sync from production environment to an edge build.
