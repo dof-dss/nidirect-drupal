@@ -1,0 +1,29 @@
+uuid: e32a77c9-5e9d-4592-b44b-dfb77bdfc895
+langcode: en
+status: true
+dependencies:
+  module:
+    - autoban
+title: 'Default cron handler'
+id: autoban_cron
+weight: 0
+module: autoban
+callback: autoban_cron
+scheduler:
+  id: simple
+  configuration:
+    rules:
+      - '* * * * *'
+launcher:
+  id: serial
+  configuration:
+    timeouts:
+      lock_timeout: 3600
+    launcher:
+      thread: 0
+logger:
+  id: database
+  configuration:
+    method: '3'
+    expire: 1209600
+    retain: 1000
