@@ -138,7 +138,7 @@ jobs:
           name: Get our environment URL and store as a local shell variable
           command: |
             # Chromedriver won't use https so we dibble around with sed/grep to find the http url we want.
-            echo 'export PLATFORM_ENV_URL=$(platform url -p $PLATFORM_PROJECT_ID -e $EDGE_BUILD_BRANCH --pipe | sed -e "s|\/$||" | grep -e "^http://[^www]")' >> $BASH_ENV
+            echo 'export PLATFORM_ENV_URL=$(platform url -p $PLATFORM_PROJECT -e $EDGE_BUILD_BRANCH --pipe | sed -e "s|\/$||" | grep -e "^http://[^www]")' >> $BASH_ENV
       - run:
           name: Configure nightwatch settings and files
           command: |
@@ -162,7 +162,7 @@ jobs:
       - run:
           name: Switch off antibot module
           command: |
-            platform environment:drush pmu antibot -y -p $PLATFORM_PROJECT_ID -e $EDGE_BUILD_BRANCH
+            platform environment:drush pmu antibot -y -p $PLATFORM_PROJECT -e $EDGE_BUILD_BRANCH
       - run:
           name: Run tests with Nightwatch.js
           command: |
@@ -212,57 +212,57 @@ jobs:
       - run:
           name: Trigger a data sync from production environment to an edge build.
           command: |
-            platform sync data -p $PLATFORM_PROJECT_ID -e $EDGE_BUILD_BRANCH -y
+            platform sync data -p $PLATFORM_PROJECT -e $EDGE_BUILD_BRANCH -y
       - run:
           name: Backup data sync if the previous attempt failed.
           command: |
             # Pause for the blocking activity to finish.
             sleep 90s
-            platform sync data -p $PLATFORM_PROJECT_ID -e $EDGE_BUILD_BRANCH -y
+            platform sync data -p $PLATFORM_PROJECT -e $EDGE_BUILD_BRANCH -y
           when: on_fail
       - run:
           name: Turn off fastly module to allow for cleaner config import
           command: |
-            platform environment:drush pmu fastly -y -p $PLATFORM_PROJECT_ID -e $EDGE_BUILD_BRANCH
+            platform environment:drush pmu fastly -y -p $PLATFORM_PROJECT -e $EDGE_BUILD_BRANCH
           when: always
       - run:
           name: Refresh configuration as our db will contain active prod config after sync operation
           command: |
-            platform environment:drush cim -y -p $PLATFORM_PROJECT_ID -e $EDGE_BUILD_BRANCH
+            platform environment:drush cim -y -p $PLATFORM_PROJECT -e $EDGE_BUILD_BRANCH
           when: always
       - run:
           name: Rebuild Taxonomy Entity Index
           command: |
-            platform environment:drush tei-rebuild -p $PLATFORM_PROJECT_ID -e $EDGE_BUILD_BRANCH
+            platform environment:drush tei-rebuild -p $PLATFORM_PROJECT -e $EDGE_BUILD_BRANCH
           when: always
       - run:
           name: Set GAC state variable
           command: |
             platform environment:drush "sset google_analytics_counter.access_token ${GAC_ACCESS_TOKEN}" \
-              -p $PLATFORM_PROJECT_ID -e $EDGE_BUILD_BRANCH
+              -p $PLATFORM_PROJECT -e $EDGE_BUILD_BRANCH
           when: always
       - run:
           name: Enable test user accounts
           command: |
             for username in nw_test_admin nw_test_apps nw_test_authenticated nw_test_author nw_test_editor nw_test_gp_author nw_test_gp_super nw_test_news_super nw_test_super
             do
-              platform environment:drush user:unblock $username -p $PLATFORM_PROJECT_ID -e $EDGE_BUILD_BRANCH
-              platform environment:drush user:password $username $TEST_PASS -p $PLATFORM_PROJECT_ID -e $EDGE_BUILD_BRANCH
+              platform environment:drush user:unblock $username -p $PLATFORM_PROJECT -e $EDGE_BUILD_BRANCH
+              platform environment:drush user:password $username $TEST_PASS -p $PLATFORM_PROJECT -e $EDGE_BUILD_BRANCH
             done
           when: always
       - run:
           name: Force purge of Solr index
           command: |
-            platform ssh -p $PLATFORM_PROJECT_ID -e $EDGE_BUILD_BRANCH \
+            platform ssh -p $PLATFORM_PROJECT -e $EDGE_BUILD_BRANCH \
               "curl http://${PLATFORM_SOLR_HOST}/solr/default/update --data '<delete><query>*:*</query></delete>' -H 'Content-type:text/xml; charset=utf-8' && curl http://${PLATFORM_SOLR_HOST}/solr/default/update --data '<commit/>' -H 'Content-type:text/xml; charset=utf-8'"
           when: always
       - run:
           name: Rebuild the Solr index
           command: |
-            platform environment:drush sapi-rt -p $PLATFORM_PROJECT_ID -e $EDGE_BUILD_BRANCH
-            platform environment:drush sapi-c -p $PLATFORM_PROJECT_ID -e $EDGE_BUILD_BRANCH
-            platform environment:drush sapi-r -p $PLATFORM_PROJECT_ID -e $EDGE_BUILD_BRANCH
-            platform environment:drush sapi-i -p $PLATFORM_PROJECT_ID -e $EDGE_BUILD_BRANCH
+            platform environment:drush sapi-rt -p $PLATFORM_PROJECT -e $EDGE_BUILD_BRANCH
+            platform environment:drush sapi-c -p $PLATFORM_PROJECT -e $EDGE_BUILD_BRANCH
+            platform environment:drush sapi-r -p $PLATFORM_PROJECT -e $EDGE_BUILD_BRANCH
+            platform environment:drush sapi-i -p $PLATFORM_PROJECT -e $EDGE_BUILD_BRANCH
           when: always
 
   # Create new release marker in New Relic
