@@ -50,7 +50,7 @@
         "dof-dss/nidirect-d8-test-install-profile": "^1.0",
         "dof-dss/nidirect-site-modules": "^2.2",
         "drupal/address": "^1.7",
-        "drupal/admin_toolbar": "^3.0",
+        "drupal/admin_toolbar": "^3.2",
         "drupal/adminimal_theme": "^1.5",
         "drupal/advban": "^1.4",
         "drupal/antibot": "^1.4",
@@ -61,18 +61,18 @@
         "drupal/block_list_override": "^1.0",
         "drupal/chosen": "^3.0",
         "drupal/chosen_lib": "^3.0",
-        "drupal/clientside_validation": "3.0.0-rc4",
+        "drupal/clientside_validation": "^3.0",
         "drupal/config_filter": "^2.2",
         "drupal/config_ignore": "^2.1",
         "drupal/config_readonly": "^1.0@beta",
         "drupal/config_split": "^2.0.0",
         "drupal/config_update": "^1.6",
         "drupal/console": "^1.9",
-        "drupal/cookie_content_blocker": "^1.7",
-        "drupal/core-composer-scaffold": "~9.3.15",
+        "drupal/cookie_content_blocker": "^2.0",
+        "drupal/core-composer-scaffold": "^9.4",
         "drupal/core-dev": "~9.3.15",
-        "drupal/core-project-message": "~9.3.15",
-        "drupal/core-recommended": "~9.3.15",
+        "drupal/core-project-message": "^9.4",
+        "drupal/core-recommended": "^9.4",
         "drupal/csp": "^1.15",
         "drupal/csv_serialization": "^2.0@beta",
         "drupal/ctools": "^3.7",
@@ -84,12 +84,12 @@
         "drupal/entity_reference_unpublished": "^1.2",
         "drupal/entityqueue": "^1.0",
         "drupal/eu_cookie_compliance": "^1.20",
-        "drupal/facets": "^1.8",
+        "drupal/facets": "^2.0",
         "drupal/facets_pretty_paths": "^1.1",
         "drupal/fastly": "^3.9",
         "drupal/field_group": "^3.2",
         "drupal/file_delete_ui": "^1.0@alpha",
-        "drupal/filelog": "^2.0",
+        "drupal/filelog": "^2.1",
         "drupal/flag": "4.x-dev",
         "drupal/geocoder": "^3.14",
         "drupal/geolocation": "3.x",
@@ -120,12 +120,12 @@
         "drupal/scheduler": "^1.4",
         "drupal/scheduler_content_moderation_integration": "^1.1",
         "drupal/schema_metatag": "^2.2",
-        "drupal/search_api": "^1.20",
-        "drupal/search_api_autocomplete": "^1.5",
+        "drupal/search_api": "^1.26",
+        "drupal/search_api_autocomplete": "^1.7",
         "drupal/search_api_location": "^1.0@alpha",
         "drupal/search_api_solr": "^4.2",
-        "drupal/search_api_spellcheck": "^3.0@beta",
-        "drupal/shs": "^1.0@alpha",
+        "drupal/search_api_spellcheck": "^4.0",
+        "drupal/shs": "^2.0@RC",
         "drupal/simple_sitemap": "^3.8",
         "drupal/simplei": "^1.1",
         "drupal/sitewide_alert": "^2.0",
@@ -144,7 +144,7 @@
         "drupal/views_contextual_filters_or": "^1.1",
         "drupal/views_custom_cache_tag": "^1.1",
         "drupal/views_data_export": "^1.0",
-        "drupal/webform": "^6.0",
+        "drupal/webform": "^6.2@beta",
         "drupal/whatlinkshere": "^2.1",
         "drupal/xls_serialization": "^1.2",
         "drush/drush": "^10.1",
@@ -159,7 +159,7 @@
         "zaporylie/composer-drupal-optimizations": "^1.0"
     },
     "require-dev": {
-        "drupal/devel": "^4.1",
+        "drupal/devel": "^5.0",
         "drupal/devel_entity_updates": "^3.0",
         "drupal/easy_install": "^10.5",
         "drupal/fpa": "^3.0",
@@ -202,10 +202,6 @@
             "drupal/autoban": {
                 "Enable the Autoban module to check log entries within a set window": "https://gist.githubusercontent.com/dof-dss-eddwebdev/b92067cf80d5302cb566a93f1356eee6/raw/27490b483f4749106131e1606d37c91fa9679515/autoban-8-x-1-7-window.patch"
             },
-            "drupal/clientside_validation": {
-                "core/jquery.once is required": "https://www.drupal.org/files/issues/2021-02-23/3200022-01.patch",
-                "Uncaught type error patches including errors as label patch": "https://www.drupal.org/files/issues/2021-06-08/clientside_validation_typerror_3217889_3.patch"
-            },
             "drupal/cookie_content_blocker": {
                 "Disable XSS for tag settings to allow HTML output": "https://gist.githubusercontent.com/omahm/eb99bc8278b57798a7d82bf06c27b8d1/raw/d9d75e06300a102b072dd8166f82ec381f211b9d/cookie_content_blocker_disable_xss"
             },
@@ -228,6 +224,9 @@
             "drupal/entity_reference_unpublished": {
                 "Plugin to cover taxonomy term entities": "https://www.drupal.org/files/issues/2021-03-25/3205634-reference-unpublished-taxonomy-terms.patch"
             },
+            "drupal/flag": {
+                "Fix-WSOD-when-click-scheduled-transitions-from-moderation-sidebar": "https://gist.githubusercontent.com/omahm/6448dbf36a93cdb8761f8c030e5836fc/raw/d5f150a3fb8627184b829688b1ea7740eba3efc9/Fix-WSOD-when-click-scheduled-transitions-from-moderation-sidebar.patch"
+            },
             "drupal/google_tag": {
                 "Resolve Html checker errors": "https://www.drupal.org/files/issues/2022-03-29/3272258-2.patch"
             },
@@ -240,11 +239,12 @@
             },
             "drupal/linkit": {
                 "Link shown after the autocomplete selection is the bare node/xxx link, not the alias": "https://www.drupal.org/files/issues/2020-11-03/show_alias_in_autocomplete_selection-2877535-16.patch",
-                "Linkit for Link field": "https://www.drupal.org/files/issues/2020-09-23/linkit-for-link-field-2712951-190.patch",
+                "Linkit for Link field #2712951": "https://www.drupal.org/files/issues/2022-07-22/2712951-293.patch",
                 "Unpublished nodes not included even when option is selected": "https://www.drupal.org/files/issues/2021-05-27/linkit-unpublished-nodes-not-included-3049946-28.patch"
             },
             "drupal/moderation_sidebar": {
-                "'Draft available' text still appears after deleting a forward revision": "https://www.drupal.org/files/issues/2020-02-24/3115474-3.patch"
+                "'Draft available' text still appears after deleting a forward revision": "https://www.drupal.org/files/issues/2020-02-24/3115474-3.patch",
+                "Can't preview a new node #3264639": "https://www.drupal.org/files/issues/2022-02-16/preview-new-node-3264639-2.patch"
             },
             "drupal/multiline_config": {
                 "Drupal 8.9 / 9 compatibility": "https://www.drupal.org/files/issues/2021-01-12/3109713-16.patch"
@@ -264,7 +264,7 @@
                 "Add @id as a tag to all schemas": "https://www.drupal.org/files/issues/2019-09-01/3078582-02.patch"
             },
             "drupal/shs": {
-                "SHS select is empty on views": "https://www.drupal.org/files/issues/2018-12-10/shs-blank-select-fix-3019378-3.patch"
+                "Error saving null/empty value after 2.0.0-rc1 update #3241169": "https://www.drupal.org/files/issues/2022-02-28/shs-Error_saving_null_empty_value_after_2.0.0-rc1_update-3241169-36.patch"
             }
         },
         "composer-exit-on-patch-failure": true,
