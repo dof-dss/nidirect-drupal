@@ -9,6 +9,13 @@ name: 'nidirect'
 # The runtime the application uses.
 type: 'php:8.1'
 
+# Application variables.
+# Set non-sensitive variables here only.
+# Use Platform CLI or console to set sensitive variables.
+variables:
+  php:
+    memory_limit: "256M"
+
 dependencies:
   php:
     composer/composer: '^2'
