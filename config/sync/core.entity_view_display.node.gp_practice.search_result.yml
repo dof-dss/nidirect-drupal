@@ -26,8 +26,8 @@ dependencies:
     - user
 third_party_settings:
   layout_builder:
-    allow_custom: false
     enabled: false
+    allow_custom: false
 id: node.gp_practice.search_result
 targetEntityType: node
 bundle: gp_practice
@@ -35,43 +35,41 @@ mode: search_result
 content:
   field_address:
     type: address_default
-    weight: 2
-    region: content
     label: hidden
     settings: {  }
     third_party_settings: {  }
+    weight: 2
+    region: content
   field_gp_appointments:
     type: link
+    label: visually_hidden
+    settings:
+      trim_length: 80
+      url_only: false
+      url_plain: false
+      rel: '0'
+      target: '0'
+    third_party_settings: {  }
     weight: 3
     region: content
-    label: visually_hidden
-    settings:
-      trim_length: 80
-      url_only: false
-      url_plain: false
-      rel: '0'
-      target: '0'
-    third_party_settings: {  }
   field_gp_practice_lead:
     type: entity_reference_label
+    label: hidden
+    settings:
+      link: false
+    third_party_settings: {  }
     weight: 0
     region: content
-    label: hidden
-    settings:
-      link: false
-    third_party_settings: {  }
   field_gp_practice_member:
     type: entity_reference_label
-    weight: 1
-    region: content
     label: hidden
     settings:
       link: false
     third_party_settings: {  }
+    weight: 1
+    region: content
   field_gp_prescriptions:
     type: link
-    weight: 4
-    region: content
     label: visually_hidden
     settings:
       trim_length: 80
@@ -80,6 +78,8 @@ content:
       rel: '0'
       target: '0'
     third_party_settings: {  }
+    weight: 4
+    region: content
 hidden:
   content_moderation_control: true
   field_contact_address_01: true

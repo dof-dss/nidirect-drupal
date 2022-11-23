@@ -16,13 +16,13 @@ plugin: featured_news_block
 settings:
   id: featured_news_block
   label: 'Featured news'
-  provider: nidirect_news
   label_display: visible
+  provider: nidirect_news
 visibility:
   node_type:
     id: node_type
-    bundles:
-      news: news
     negate: false
     context_mapping:
       node: '@node.node_route_context:node'
+    bundles:
+      news: news

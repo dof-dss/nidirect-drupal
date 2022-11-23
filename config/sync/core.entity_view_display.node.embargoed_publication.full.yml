@@ -25,48 +25,48 @@ dependencies:
     - user
 third_party_settings:
   layout_builder:
-    allow_custom: false
     enabled: false
+    allow_custom: false
 id: node.embargoed_publication.full
 targetEntityType: node
 bundle: embargoed_publication
 mode: full
 content:
   body:
-    label: inline
     type: text_default
-    weight: 2
+    label: inline
     settings: {  }
     third_party_settings: {  }
+    weight: 2
     region: content
   field_additional_info:
     type: ancestral_value_field_formatter
-    weight: 4
-    region: content
     label: hidden
     settings:
       ancestor_depth: '2'
       ancestors_only: false
     third_party_settings: {  }
+    weight: 4
+    region: content
   field_published_date:
     type: datetime_default
-    weight: 0
-    region: content
     label: inline
     settings:
       timezone_override: ''
       format_type: medium_date
     third_party_settings: {  }
+    weight: 0
+    region: content
   field_secure_attachment:
     type: file_default
-    weight: 3
-    region: content
     label: above
     settings:
       use_description_as_link_text: true
     third_party_settings: {  }
+    weight: 3
+    region: content
   field_summary:
-    weight: 1
+    type: smart_trim
     label: hidden
     settings:
       trim_length: 600
@@ -80,7 +80,7 @@ content:
       summary_handler: full
       trim_options: {  }
     third_party_settings: {  }
-    type: smart_trim
+    weight: 1
     region: content
 hidden:
   content_moderation_control: true

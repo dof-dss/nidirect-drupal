@@ -17,8 +17,8 @@ dependencies:
     - user
 third_party_settings:
   layout_builder:
-    allow_custom: true
     enabled: true
+    allow_custom: true
     sections:
       -
         layout_id: layout_onecol
@@ -29,45 +29,46 @@ third_party_settings:
             uuid: 7b749ad5-1d5d-4e84-8688-f3c0b0cd0bdd
             region: content
             configuration:
+              id: 'field_block:node:page:body'
               label_display: '0'
               context_mapping:
                 entity: layout_builder.entity
-              id: 'field_block:node:page:body'
               formatter:
-                label: hidden
                 type: text_default
+                label: hidden
                 settings: {  }
                 third_party_settings: {  }
-            additional: {  }
             weight: 2
+            additional: {  }
           5657fbd8-f081-437f-b7cf-a2c7290117cd:
             uuid: 5657fbd8-f081-437f-b7cf-a2c7290117cd
             region: content
             configuration:
+              id: 'extra_field_block:node:page:links'
               label_display: '0'
               context_mapping:
                 entity: layout_builder.entity
-              id: 'extra_field_block:node:page:links'
-            additional: {  }
             weight: 3
+            additional: {  }
           bcae0924-2c73-4cab-86be-094a7069329a:
             uuid: bcae0924-2c73-4cab-86be-094a7069329a
             region: content
             configuration:
+              id: 'field_block:node:page:field_meta_tags'
               label_display: '0'
               context_mapping:
                 entity: layout_builder.entity
-              id: 'field_block:node:page:field_meta_tags'
               formatter:
+                type: metatag_empty_formatter
                 label: above
                 settings: {  }
                 third_party_settings: {  }
-                type: metatag_empty_formatter
-            additional: {  }
             weight: 4
+            additional: {  }
         third_party_settings: {  }
   layout_builder_restrictions:
     entity_view_mode_restriction:
+      allowed_layouts: {  }
       allowed_blocks:
         'Chaos Tools': {  }
         'Content fields':
@@ -93,7 +94,6 @@ third_party_settings:
           - webform_block
         core:
           - page_title_block
-      allowed_layouts: {  }
 _core:
   default_config_hash: g1S3_GLaxq4l3I9RIca5Mlz02MxI2KmOquZpHw59akM
 id: node.page.default
@@ -102,33 +102,33 @@ bundle: page
 mode: default
 content:
   body:
-    label: hidden
     type: text_default
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
     weight: 2
     region: content
+  content_moderation_control:
     settings: {  }
     third_party_settings: {  }
-  content_moderation_control:
     weight: 0
     region: content
-    settings: {  }
-    third_party_settings: {  }
   field_meta_tags:
-    weight: 4
+    type: metatag_empty_formatter
     label: above
     settings: {  }
     third_party_settings: {  }
-    type: metatag_empty_formatter
+    weight: 4
     region: content
   links:
+    settings: {  }
+    third_party_settings: {  }
     weight: 3
     region: content
-    settings: {  }
-    third_party_settings: {  }
   toc_display:
-    weight: -10
     settings: {  }
     third_party_settings: {  }
+    weight: -10
     region: content
 hidden:
   field_next_audit_due: true

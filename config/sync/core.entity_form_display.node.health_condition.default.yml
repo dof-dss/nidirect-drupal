@@ -59,16 +59,16 @@ third_party_settings:
         - field_hc_primary_symptom_3
         - field_hc_primary_symptom_4
         - field_hc_secondary_symptoms
+      label: 'Classification information'
+      region: content
       parent_name: ''
       weight: 15
       format_type: details
       format_settings:
-        id: group_hc_classification
         classes: ''
+        id: group_hc_classification
         open: false
         required_fields: true
-      label: 'Classification information'
-      region: content
 id: node.health_condition.default
 targetEntityType: node
 bundle: health_condition
@@ -77,13 +77,13 @@ content:
   body:
     type: text_textarea_with_summary
     weight: 11
+    region: content
     settings:
       rows: 9
       summary_rows: 3
       placeholder: ''
       show_summary: false
     third_party_settings: {  }
-    region: content
   created:
     type: datetime_timestamp
     weight: 22
@@ -99,25 +99,25 @@ content:
       placeholder: ''
     third_party_settings: {  }
   field_alternative_condition:
+    type: inline_entity_form_complex
     weight: 1
+    region: content
     settings:
       form_mode: default
       override_labels: true
       label_singular: 'Alternative condition title'
       label_plural: 'Alternative condition titles'
-      collapsible: true
       allow_new: true
-      match_operator: STARTS_WITH
-      removed_reference: delete
-      revision: false
-      collapsed: false
       allow_existing: false
+      match_operator: STARTS_WITH
       allow_duplicate: false
+      collapsible: true
+      collapsed: false
+      revision: false
+      removed_reference: delete
     third_party_settings:
       entity_browser_entity_form:
         entity_browser_id: _none
-    type: inline_entity_form_complex
-    region: content
   field_banner_image:
     type: media_library_widget
     weight: 6
@@ -133,9 +133,9 @@ content:
     region: content
     settings:
       match_operator: CONTAINS
+      match_limit: 10
       size: 60
       placeholder: ''
-      match_limit: 10
     third_party_settings: {  }
   field_hc_body_system:
     type: entity_reference_autocomplete
@@ -143,9 +143,9 @@ content:
     region: content
     settings:
       match_operator: CONTAINS
+      match_limit: 10
       size: 60
       placeholder: ''
-      match_limit: 10
     third_party_settings: {  }
   field_hc_condition_type:
     type: entity_reference_autocomplete
@@ -153,9 +153,9 @@ content:
     region: content
     settings:
       match_operator: CONTAINS
+      match_limit: 10
       size: 60
       placeholder: ''
-      match_limit: 10
     third_party_settings: {  }
   field_hc_info_source:
     type: options_buttons
@@ -169,9 +169,9 @@ content:
     region: content
     settings:
       match_operator: CONTAINS
+      match_limit: 10
       size: 60
       placeholder: ''
-      match_limit: 10
     third_party_settings: {  }
   field_hc_primary_symptom_2:
     type: entity_reference_autocomplete
@@ -179,9 +179,9 @@ content:
     region: content
     settings:
       match_operator: CONTAINS
+      match_limit: 10
       size: 60
       placeholder: ''
-      match_limit: 10
     third_party_settings: {  }
   field_hc_primary_symptom_3:
     type: entity_reference_autocomplete
@@ -189,9 +189,9 @@ content:
     region: content
     settings:
       match_operator: CONTAINS
+      match_limit: 10
       size: 60
       placeholder: ''
-      match_limit: 10
     third_party_settings: {  }
   field_hc_primary_symptom_4:
     type: entity_reference_autocomplete
@@ -199,9 +199,9 @@ content:
     region: content
     settings:
       match_operator: CONTAINS
+      match_limit: 10
       size: 60
       placeholder: ''
-      match_limit: 10
     third_party_settings: {  }
   field_hc_secondary_symptoms:
     type: entity_reference_autocomplete
@@ -209,9 +209,9 @@ content:
     region: content
     settings:
       match_operator: CONTAINS
+      match_limit: 10
       size: 60
       placeholder: ''
-      match_limit: 10
     third_party_settings: {  }
   field_last_review_date:
     type: datetime_default
@@ -220,12 +220,12 @@ content:
     settings: {  }
     third_party_settings: {  }
   field_meta_tags:
+    type: metatag_firehose
     weight: 27
+    region: content
     settings:
       sidebar: true
     third_party_settings: {  }
-    type: metatag_firehose
-    region: content
   field_next_review_date:
     type: datetime_default
     weight: 19
@@ -238,9 +238,9 @@ content:
     region: content
     settings:
       match_operator: CONTAINS
+      match_limit: 10
       size: 60
       placeholder: ''
-      match_limit: 10
     third_party_settings: {  }
   field_photo:
     type: media_library_widget
@@ -263,9 +263,9 @@ content:
     region: content
     settings:
       match_operator: CONTAINS
+      match_limit: 10
       size: 60
       placeholder: ''
-      match_limit: 10
     third_party_settings: {  }
   field_related_info:
     type: linkit
@@ -297,13 +297,13 @@ content:
       force_deepest: false
     third_party_settings: {  }
   field_summary:
+    type: string_textarea
     weight: 10
+    region: content
     settings:
       rows: 5
       placeholder: ''
     third_party_settings: {  }
-    type: string_textarea
-    region: content
   field_teaser:
     type: string_textfield
     weight: 8
@@ -318,9 +318,9 @@ content:
     region: content
     settings:
       match_operator: CONTAINS
+      match_limit: 10
       size: 60
       placeholder: ''
-      match_limit: 10
     third_party_settings: {  }
   flag:
     weight: 9
@@ -337,8 +337,8 @@ content:
   moderation_state:
     type: moderation_state_default
     weight: 28
-    settings: {  }
     region: content
+    settings: {  }
     third_party_settings: {  }
   path:
     type: path
@@ -348,23 +348,23 @@ content:
     third_party_settings: {  }
   promote:
     type: boolean_checkbox
-    settings:
-      display_label: true
     weight: 23
     region: content
+    settings:
+      display_label: true
     third_party_settings: {  }
   publish_on:
-    weight: 37
-    settings: {  }
-    third_party_settings: {  }
     type: datetime_timestamp
+    weight: 37
     region: content
-  publish_state:
-    weight: 35
     settings: {  }
     third_party_settings: {  }
+  publish_state:
     type: options_select
+    weight: 35
     region: content
+    settings: {  }
+    third_party_settings: {  }
   scheduler_settings:
     weight: 20
     region: content
@@ -372,17 +372,17 @@ content:
     third_party_settings: {  }
   status:
     type: boolean_checkbox
-    settings:
-      display_label: true
     weight: 26
     region: content
+    settings:
+      display_label: true
     third_party_settings: {  }
   sticky:
     type: boolean_checkbox
-    settings:
-      display_label: true
     weight: 24
     region: content
+    settings:
+      display_label: true
     third_party_settings: {  }
   title:
     type: string_textfield
@@ -395,25 +395,25 @@ content:
   uid:
     type: entity_reference_autocomplete
     weight: 21
+    region: content
     settings:
       match_operator: CONTAINS
+      match_limit: 10
       size: 60
       placeholder: ''
-      match_limit: 10
-    region: content
     third_party_settings: {  }
   unpublish_on:
-    weight: 38
-    settings: {  }
-    third_party_settings: {  }
     type: datetime_timestamp
+    weight: 38
     region: content
-  unpublish_state:
-    weight: 36
     settings: {  }
     third_party_settings: {  }
+  unpublish_state:
     type: options_select
+    weight: 36
     region: content
+    settings: {  }
+    third_party_settings: {  }
   url_redirects:
     weight: 29
     region: content
