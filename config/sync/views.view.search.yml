@@ -19,62 +19,12 @@ base_table: search_api_index_default_content
 base_field: search_api_id
 display:
   default:
-    display_plugin: default
     id: default
     display_title: Master
+    display_plugin: default
     position: 0
     display_options:
-      access:
-        type: none
-        options: {  }
-      cache:
-        type: search_api_tag
-        options: {  }
-      query:
-        type: views_query
-        options:
-          skip_access: 0
-          bypass_access: 0
-          preserve_facet_query_args: false
-      exposed_form:
-        type: basic
-        options:
-          submit_button: Search
-          reset_button: false
-          reset_button_label: Reset
-          exposed_sorts_label: 'Sort by'
-          expose_sort_order: true
-          sort_asc_label: Asc
-          sort_desc_label: Desc
-      pager:
-        type: full
-        options:
-          items_per_page: 20
-          offset: 0
-          id: 0
-          total_pages: null
-          tags:
-            previous: '‹ Previous'
-            next: 'Next ›'
-            first: '« First'
-            last: 'Last »'
-          expose:
-            items_per_page: false
-            items_per_page_label: 'Items per page'
-            items_per_page_options: '5, 10, 25, 50'
-            items_per_page_options_all: false
-            items_per_page_options_all_label: '- All -'
-            offset: false
-            offset_label: Offset
-          quantity: 9
-      style:
-        type: default
-        options:
-          grouping: {  }
-          row_class: card
-          default_row_class: false
-      row:
-        type: fields
+      title: Search
       fields:
         title:
           id: title
@@ -83,6 +33,7 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
+          plugin_id: search_api_field
           label: ''
           exclude: false
           alter:
@@ -145,7 +96,6 @@ display:
             use_highlighting: false
             multi_type: separator
             multi_separator: ', '
-          plugin_id: search_api_field
         field_teaser:
           id: field_teaser
           table: search_api_datasource_default_content_entity_node
@@ -153,6 +103,8 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
+          entity_type: node
+          plugin_id: search_api_field
           label: ''
           exclude: true
           alter:
@@ -215,8 +167,6 @@ display:
             use_highlighting: false
             multi_type: separator
             multi_separator: ', '
-          entity_type: node
-          plugin_id: search_api_field
         field_summary:
           id: field_summary
           table: search_api_datasource_default_content_entity_node
@@ -224,6 +174,8 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
+          entity_type: node
+          plugin_id: search_api_field
           label: ''
           exclude: false
           alter:
@@ -285,8 +237,97 @@ display:
             use_highlighting: false
             multi_type: separator
             multi_separator: ', '
-          entity_type: node
-          plugin_id: search_api_field
+      pager:
+        type: full
+        options:
+          offset: 0
+          items_per_page: 20
+          total_pages: null
+          id: 0
+          tags:
+            next: 'Next ›'
+            previous: '‹ Previous'
+            first: '« First'
+            last: 'Last »'
+          expose:
+            items_per_page: false
+            items_per_page_label: 'Items per page'
+            items_per_page_options: '5, 10, 25, 50'
+            items_per_page_options_all: false
+            items_per_page_options_all_label: '- All -'
+            offset: false
+            offset_label: Offset
+          quantity: 9
+      exposed_form:
+        type: basic
+        options:
+          submit_button: Search
+          reset_button: false
+          reset_button_label: Reset
+          exposed_sorts_label: 'Sort by'
+          expose_sort_order: true
+          sort_asc_label: Asc
+          sort_desc_label: Desc
+      access:
+        type: none
+        options: {  }
+      cache:
+        type: search_api_tag
+        options: {  }
+      empty:
+        search_api_spellcheck_did_you_mean:
+          id: search_api_spellcheck_did_you_mean
+          table: views
+          field: search_api_spellcheck_did_you_mean
+          relationship: none
+          group_type: group
+          admin_label: ''
+          plugin_id: search_api_spellcheck_did_you_mean
+          empty: true
+          search_api_spellcheck_count: 1
+          search_api_spellcheck_hide_on_result: 1
+          search_api_spellcheck_collate: true
+        area:
+          id: area
+          table: views
+          field: area
+          relationship: none
+          group_type: group
+          admin_label: ''
+          plugin_id: text
+          empty: true
+          content:
+            value: '<p>Try searching again using different words or browse the <a href="/sitemap">sitemap</a>.</p>'
+            format: basic_html
+          tokenize: false
+      sorts:
+        search_api_relevance:
+          id: search_api_relevance
+          table: search_api_index_default_content
+          field: search_api_relevance
+          relationship: none
+          group_type: group
+          admin_label: ''
+          plugin_id: search_api
+          order: DESC
+          expose:
+            label: ''
+            field_identifier: search_api_relevance
+          exposed: false
+        title:
+          id: title
+          table: search_api_index_default_content
+          field: title
+          relationship: none
+          group_type: group
+          admin_label: ''
+          plugin_id: search_api
+          order: ASC
+          expose:
+            label: ''
+            field_identifier: title
+          exposed: false
+      arguments: {  }
       filters:
         search_api_fulltext:
           id: search_api_fulltext
@@ -295,6 +336,7 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
+          plugin_id: search_api_fulltext
           operator: or
           value: ''
           group: 1
@@ -326,8 +368,8 @@ display:
               health_condition_author_user: '0'
               health_condition_supervisor_user: '0'
               driving_instructor_supervisor_user: '0'
-            placeholder: 'Search nidirect'
             expose_fields: false
+            placeholder: 'Search nidirect'
             searched_fields_id: ''
           is_grouped: false
           group_info:
@@ -344,7 +386,6 @@ display:
           parse_mode: terms
           min_length: null
           fields: {  }
-          plugin_id: search_api_fulltext
         type:
           id: type
           table: search_api_index_default_content
@@ -352,6 +393,7 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
+          plugin_id: search_api_options
           operator: not
           value:
             gp_practice: gp_practice
@@ -385,33 +427,21 @@ display:
             default_group_multiple: {  }
             group_items: {  }
           reduce_duplicates: false
-          plugin_id: search_api_options
-      sorts:
-        search_api_relevance:
-          id: search_api_relevance
-          table: search_api_index_default_content
-          field: search_api_relevance
-          relationship: none
-          group_type: group
-          admin_label: ''
-          order: DESC
-          exposed: false
-          expose:
-            label: ''
-          plugin_id: search_api
-        title:
-          id: title
-          table: search_api_index_default_content
-          field: title
-          relationship: none
-          group_type: group
-          admin_label: ''
-          order: ASC
-          exposed: false
-          expose:
-            label: ''
-          plugin_id: search_api
-      title: Search
+      style:
+        type: default
+        options:
+          grouping: {  }
+          row_class: card
+          default_row_class: false
+      row:
+        type: fields
+      query:
+        type: search_api_query
+        options:
+          bypass_access: false
+          skip_access: false
+          preserve_facet_query_args: false
+      relationships: {  }
       header:
         result:
           id: result
@@ -420,9 +450,9 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
+          plugin_id: result
           empty: false
           content: '@total results'
-          plugin_id: result
         search_api_spellcheck_did_you_mean:
           id: search_api_spellcheck_did_you_mean
           table: views
@@ -434,34 +464,6 @@ display:
           field: search_api_spellcheck_suggetions
           plugin_id: search_api_spellcheck_suggestions
       footer: {  }
-      empty:
-        search_api_spellcheck_did_you_mean:
-          id: search_api_spellcheck_did_you_mean
-          table: views
-          field: search_api_spellcheck_did_you_mean
-          relationship: none
-          group_type: group
-          admin_label: ''
-          empty: true
-          search_api_spellcheck_count: 1
-          search_api_spellcheck_hide_on_result: 1
-          search_api_spellcheck_collate: true
-          plugin_id: search_api_spellcheck_did_you_mean
-        area:
-          id: area
-          table: views
-          field: area
-          relationship: none
-          group_type: group
-          admin_label: ''
-          empty: true
-          tokenize: false
-          content:
-            value: '<p>Try searching again using different words or browse the <a href="/sitemap">sitemap</a>.</p>'
-            format: basic_html
-          plugin_id: text
-      relationships: {  }
-      arguments: {  }
       display_extenders: {  }
     cache_metadata:
       max-age: -1
@@ -476,29 +478,11 @@ display:
         - 'config:field.storage.node.field_teaser'
         - 'config:search_api.index.default_content'
   search_page:
-    display_plugin: page
     id: search_page
     display_title: Page
+    display_plugin: page
     position: 1
     display_options:
-      display_extenders: {  }
-      path: search
-      header:
-        result:
-          id: result
-          table: views
-          field: result
-          relationship: none
-          group_type: group
-          admin_label: ''
-          empty: false
-          content: '<h2 class="view--count">@total results</h2>'
-          plugin_id: result
-      defaults:
-        header: false
-        footer: false
-        fields: false
-      footer: {  }
       fields:
         title:
           id: title
@@ -507,6 +491,7 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
+          plugin_id: search_api_field
           label: ''
           exclude: false
           alter:
@@ -569,7 +554,6 @@ display:
             use_highlighting: false
             multi_type: separator
             multi_separator: ', '
-          plugin_id: search_api_field
         field_teaser:
           id: field_teaser
           table: search_api_datasource_default_content_entity_node
@@ -577,6 +561,8 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
+          entity_type: node
+          plugin_id: search_api_field
           label: ''
           exclude: true
           alter:
@@ -639,8 +625,6 @@ display:
             use_highlighting: false
             multi_type: separator
             multi_separator: ', '
-          entity_type: node
-          plugin_id: search_api_field
         field_summary:
           id: field_summary
           table: search_api_datasource_default_content_entity_node
@@ -648,6 +632,8 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
+          entity_type: node
+          plugin_id: search_api_field
           label: ''
           exclude: false
           alter:
@@ -709,8 +695,24 @@ display:
             use_highlighting: false
             multi_type: separator
             multi_separator: ', '
-          entity_type: node
-          plugin_id: search_api_field
+      defaults:
+        fields: false
+        header: false
+        footer: false
+      header:
+        result:
+          id: result
+          table: views
+          field: result
+          relationship: none
+          group_type: group
+          admin_label: ''
+          plugin_id: result
+          empty: false
+          content: '<h2 class="view--count">@total results</h2>'
+      footer: {  }
+      display_extenders: {  }
+      path: search
     cache_metadata:
       max-age: -1
       contexts:
@@ -724,13 +726,11 @@ display:
         - 'config:field.storage.node.field_teaser'
         - 'config:search_api.index.default_content'
   site_search:
-    display_plugin: embed
     id: site_search
     display_title: 'Embed: Site search'
+    display_plugin: embed
     position: 2
     display_options:
-      display_extenders: {  }
-      display_description: ''
       fields:
         title:
           id: title
@@ -739,6 +739,7 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
+          plugin_id: search_api_field
           label: ''
           exclude: false
           alter:
@@ -801,20 +802,11 @@ display:
             use_highlighting: false
             multi_type: separator
             multi_separator: ', '
-          plugin_id: search_api_field
-      defaults:
-        fields: false
-        pager: false
-        exposed_form: false
-        empty: false
-        filters: false
-        filter_groups: false
-        cache: false
       pager:
         type: some
         options:
-          items_per_page: 5
           offset: 0
+          items_per_page: 5
       exposed_form:
         type: basic
         options:
@@ -825,6 +817,9 @@ display:
           expose_sort_order: false
           sort_asc_label: Asc
           sort_desc_label: Desc
+      cache:
+        type: none
+        options: {  }
       empty: {  }
       filters:
         search_api_fulltext:
@@ -834,6 +829,7 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
+          plugin_id: search_api_fulltext
           operator: or
           value: ''
           group: 1
@@ -865,8 +861,8 @@ display:
               health_condition_author_user: '0'
               health_condition_supervisor_user: '0'
               driving_instructor_supervisor_user: '0'
-            placeholder: 'Search nidirect'
             expose_fields: false
+            placeholder: 'Search nidirect'
             searched_fields_id: ''
           is_grouped: false
           group_info:
@@ -883,7 +879,6 @@ display:
           parse_mode: terms
           min_length: null
           fields: {  }
-          plugin_id: search_api_fulltext
         type:
           id: type
           table: search_api_index_default_content
@@ -891,6 +886,7 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
+          plugin_id: search_api_options
           operator: not
           value:
             gp_practice: gp_practice
@@ -924,14 +920,20 @@ display:
             default_group_multiple: {  }
             group_items: {  }
           reduce_duplicates: false
-          plugin_id: search_api_options
       filter_groups:
         operator: AND
         groups:
           1: AND
-      cache:
-        type: none
-        options: {  }
+      defaults:
+        empty: false
+        cache: false
+        pager: false
+        exposed_form: false
+        fields: false
+        filters: false
+        filter_groups: false
+      display_description: ''
+      display_extenders: {  }
     cache_metadata:
       max-age: -1
       contexts:

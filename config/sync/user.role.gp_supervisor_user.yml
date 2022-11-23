@@ -1,28 +1,7 @@
 uuid: a3db4fff-7af0-4952-9308-b33c68640c82
 langcode: en
 status: true
-dependencies:
-  config:
-    - filter.format.basic_html
-    - media.type.audio
-    - media.type.document
-    - media.type.image
-    - media.type.remote_video
-    - media.type.video
-    - node.type.gp_practice
-    - workflows.workflow.nics_editorial_workflow
-  module:
-    - content_moderation
-    - filter
-    - media
-    - moderation_sidebar
-    - nidirect_gp
-    - node
-    - redirect
-    - scheduled_transitions
-    - system
-    - toolbar
-    - tour
+dependencies: {  }
 id: gp_supervisor_user
 label: 'gp supervisor user'
 weight: 4
@@ -108,11 +87,10 @@ permissions:
   - 'use workbench_moderation my drafts tab'
   - 'use workbench_moderation needs review tab'
   - 'view all gp revisions'
-  - 'view any unpublished content'
   - 'view gp_practice revisions'
   - 'view own files'
-  - 'view all unpublished content'
-  - 'view all unpublished media'
+  - 'view own unpublished content'
+  - 'view own unpublished media'
   - 'view scheduled content'
   - 'view scheduled transitions node gp_practice'
   - 'view the administration theme'

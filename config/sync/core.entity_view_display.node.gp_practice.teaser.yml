@@ -25,8 +25,8 @@ dependencies:
     - user
 third_party_settings:
   layout_builder:
-    allow_custom: false
     enabled: false
+    allow_custom: false
 id: node.gp_practice.teaser
 targetEntityType: node
 bundle: gp_practice
@@ -34,27 +34,25 @@ mode: teaser
 content:
   field_address:
     type: address_default
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
     weight: 1
     region: content
-    label: hidden
-    settings: {  }
-    third_party_settings: {  }
   field_gp_appointments:
     type: link
+    label: hidden
+    settings:
+      trim_length: 80
+      url_only: false
+      url_plain: false
+      rel: ''
+      target: ''
+    third_party_settings: {  }
     weight: 2
     region: content
-    label: hidden
-    settings:
-      trim_length: 80
-      url_only: false
-      url_plain: false
-      rel: ''
-      target: ''
-    third_party_settings: {  }
   field_gp_prescriptions:
     type: link
-    weight: 3
-    region: content
     label: hidden
     settings:
       trim_length: 80
@@ -63,11 +61,13 @@ content:
       rel: ''
       target: ''
     third_party_settings: {  }
-  gp_names:
-    weight: 0
+    weight: 3
     region: content
+  gp_names:
     settings: {  }
     third_party_settings: {  }
+    weight: 0
+    region: content
 hidden:
   content_moderation_control: true
   field_contact_address_01: true

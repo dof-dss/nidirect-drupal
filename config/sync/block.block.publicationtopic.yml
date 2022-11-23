@@ -18,15 +18,15 @@ plugin: 'facet_block:publication_topic'
 settings:
   id: 'facet_block:publication_topic'
   label: 'Publication topic'
-  provider: facets
   label_display: visible
+  provider: facets
   block_id: publicationtopic
 visibility:
   request_path:
     id: request_path
-    pages: |
+    negate: false
+    context_mapping: {  }
+    pages: |-
       /publications
       /publications/date/*
       /publications/topic/*
-    negate: false
-    context_mapping: {  }

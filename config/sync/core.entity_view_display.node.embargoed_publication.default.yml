@@ -28,68 +28,68 @@ bundle: embargoed_publication
 mode: default
 content:
   body:
-    label: hidden
     type: text_default
-    weight: 4
+    label: hidden
     settings: {  }
     third_party_settings: {  }
+    weight: 4
     region: content
   field_additional_info:
-    weight: 10
+    type: text_default
     label: above
     settings: {  }
     third_party_settings: {  }
-    type: text_default
+    weight: 10
     region: content
   field_meta_tags:
-    weight: 8
+    type: metatag_empty_formatter
     label: above
     settings: {  }
     third_party_settings: {  }
-    type: metatag_empty_formatter
+    weight: 8
     region: content
   field_publication_type:
     type: list_default
-    weight: 1
-    region: content
     label: above
     settings: {  }
     third_party_settings: {  }
+    weight: 1
+    region: content
   field_published_date:
     type: datetime_default
-    weight: 2
-    region: content
     label: above
     settings:
-      format_type: medium
       timezone_override: ''
+      format_type: medium
     third_party_settings: {  }
+    weight: 2
+    region: content
   field_secure_attachment:
-    weight: 9
+    type: file_default
     label: above
     settings:
       use_description_as_link_text: true
     third_party_settings: {  }
-    type: file_default
+    weight: 9
     region: content
   field_site_themes:
     type: entity_reference_label
+    label: above
+    settings:
+      link: true
+    third_party_settings: {  }
     weight: 0
     region: content
-    label: above
-    settings:
-      link: true
-    third_party_settings: {  }
   field_subtheme:
     type: entity_reference_label
-    weight: 5
-    region: content
     label: above
     settings:
       link: true
     third_party_settings: {  }
+    weight: 5
+    region: content
   field_summary:
-    weight: 3
+    type: smart_trim
     label: above
     settings:
       trim_length: 600
@@ -103,21 +103,21 @@ content:
       summary_handler: full
       trim_options: {  }
     third_party_settings: {  }
-    type: smart_trim
+    weight: 3
     region: content
   field_top_level_theme:
     type: entity_reference_label
-    weight: 6
-    region: content
     label: above
     settings:
       link: true
     third_party_settings: {  }
-  links:
-    weight: 7
+    weight: 6
     region: content
+  links:
     settings: {  }
     third_party_settings: {  }
+    weight: 7
+    region: content
 hidden:
   content_moderation_control: true
   langcode: true

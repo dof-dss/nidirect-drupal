@@ -9,13 +9,6 @@ dependencies:
     - search_api
 id: driving_instructors_facet_summary
 name: 'Driving instructors facet summary'
-facets:
-  driving_instructor_categories:
-    checked: true
-    label: 'Category of tuition'
-    separator: ', '
-    weight: 0
-    show_count: false
 facet_source_id: 'search_api:views_page__driving_instructors__driving_instructor_results'
 processor_configs:
   hide_when_not_rendered:
@@ -23,3 +16,10 @@ processor_configs:
     weights:
       build: '45'
     settings: {  }
+facets:
+  driving_instructor_categories:
+    checked: true
+    label: 'Category of tuition'
+    separator: ', '
+    show_count: false
+    weight: 0

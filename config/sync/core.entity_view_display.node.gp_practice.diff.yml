@@ -31,21 +31,22 @@ dependencies:
     - user
 third_party_settings:
   layout_builder:
-    allow_custom: false
     enabled: false
+    allow_custom: false
   field_group:
     group_address:
       children:
         - field_address
         - field_telephone
         - field_gp_practice_website
+      label: address
       parent_name: ''
+      region: content
       weight: 3
       format_type: html_element
-      region: content
       format_settings:
-        id: ''
         classes: vcard
+        id: ''
         element: div
         show_label: false
         label_element: h3
@@ -53,20 +54,20 @@ third_party_settings:
         attributes: ''
         effect: none
         speed: fast
-      label: address
     group_additional_content_details:
       children:
         - field_gp_practice_no
         - field_gp_partnership_no
         - field_gp_lcg
         - field_meta_tags
+      label: 'Additional content details'
       parent_name: ''
+      region: content
       weight: 7
       format_type: html_element
-      region: content
       format_settings:
-        id: ''
         classes: field-collection
+        id: ''
         element: div
         show_label: false
         label_element: h3
@@ -74,28 +75,25 @@ third_party_settings:
         attributes: ''
         effect: none
         speed: fast
-      label: 'Additional content details'
 id: node.gp_practice.diff
 targetEntityType: node
 bundle: gp_practice
 mode: diff
 content:
   content_moderation_control:
+    settings: {  }
+    third_party_settings: {  }
     weight: 0
     region: content
-    settings: {  }
-    third_party_settings: {  }
   field_address:
     type: address_default
-    weight: 4
-    region: content
     label: hidden
     settings: {  }
     third_party_settings: {  }
+    weight: 4
+    region: content
   field_gp_appointments:
     type: link
-    weight: 4
-    region: content
     label: visually_hidden
     settings:
       trim_length: 80
@@ -104,49 +102,49 @@ content:
       rel: ''
       target: ''
     third_party_settings: {  }
+    weight: 4
+    region: content
   field_gp_lcg:
     type: list_default
-    weight: 14
-    region: content
     label: inline
     settings: {  }
     third_party_settings: {  }
+    weight: 14
+    region: content
   field_gp_partnership_no:
     type: string
+    label: inline
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
     weight: 13
     region: content
-    label: inline
-    settings:
-      link_to_entity: false
-    third_party_settings: {  }
   field_gp_practice_lead:
     type: entity_reference_label
+    label: hidden
+    settings:
+      link: false
+    third_party_settings: {  }
     weight: 1
     region: content
-    label: hidden
-    settings:
-      link: false
-    third_party_settings: {  }
   field_gp_practice_member:
     type: entity_reference_label
-    weight: 2
-    region: content
     label: hidden
     settings:
       link: false
     third_party_settings: {  }
+    weight: 2
+    region: content
   field_gp_practice_no:
     type: string
-    weight: 12
-    region: content
     label: inline
     settings:
       link_to_entity: false
     third_party_settings: {  }
+    weight: 12
+    region: content
   field_gp_practice_website:
     type: link
-    weight: 6
-    region: content
     label: inline
     settings:
       trim_length: 80
@@ -155,10 +153,10 @@ content:
       rel: ''
       target: ''
     third_party_settings: {  }
+    weight: 6
+    region: content
   field_gp_prescriptions:
     type: link
-    weight: 5
-    region: content
     label: visually_hidden
     settings:
       trim_length: 80
@@ -167,17 +165,24 @@ content:
       rel: ''
       target: ''
     third_party_settings: {  }
+    weight: 5
+    region: content
   field_location:
     type: geolocation_map
-    weight: 6
-    region: content
     label: above
     settings:
-      title: ''
       set_marker: true
       common_map: false
-      info_text: ''
       use_overridden_map_settings: false
+      title: ''
+      info_text: ''
+      centre:
+        fit_bounds:
+          enable: true
+          weight: -101
+          settings:
+            reset_zoom: true
+          map_center_id: fit_bounds
       map_provider_id: google_maps
       map_provider_settings:
         type: ROADMAP
@@ -185,6 +190,9 @@ content:
         minZoom: 0
         maxZoom: 18
         rotateControl: false
+        height: 400px
+        width: 100%
+        gestureHandling: auto
         mapTypeControl: 1
         streetViewControl: 1
         zoomControl: 1
@@ -192,37 +200,29 @@ content:
         scrollwheel: 1
         disableDoubleClickZoom: 0
         draggable: 1
-        height: 400px
-        width: 100%
         info_auto_display: 1
         marker_icon_path: ''
         disableAutoPan: 1
         style: ''
         preferScrollingToZooming: 0
-        gestureHandling: auto
       data_provider_settings: {  }
-      centre:
-        fit_bounds:
-          enable: true
-          weight: -101
-          map_center_id: fit_bounds
-          settings:
-            reset_zoom: true
     third_party_settings: {  }
+    weight: 6
+    region: content
   field_meta_tags:
     type: metatag_empty_formatter
-    weight: 15
-    region: content
     label: inline
     settings: {  }
     third_party_settings: {  }
+    weight: 15
+    region: content
   field_telephone:
-    weight: 5
+    type: telephone_plus_link
     label: hidden
     settings:
       vcard: true
     third_party_settings: {  }
-    type: telephone_plus_link
+    weight: 5
     region: content
 hidden:
   field_contact_address_01: true
