@@ -17,79 +17,12 @@ base_table: search_api_index_contacts
 base_field: search_api_id
 display:
   default:
-    display_plugin: default
     id: default
     display_title: Master
+    display_plugin: default
     position: 0
     display_options:
-      access:
-        type: none
-        options: {  }
-      cache:
-        type: search_api_tag
-        options: {  }
-      query:
-        type: views_query
-        options:
-          bypass_access: false
-          skip_access: false
-          preserve_facet_query_args: false
-      exposed_form:
-        type: basic
-        options:
-          submit_button: 'Find instructors'
-          reset_button: false
-          reset_button_label: Reset
-          exposed_sorts_label: 'Sort results'
-          expose_sort_order: true
-          sort_asc_label: Asc
-          sort_desc_label: Desc
-      pager:
-        type: full
-        options:
-          items_per_page: 21
-          offset: 0
-          id: 0
-          total_pages: null
-          tags:
-            previous: '‹ previous'
-            next: 'next ›'
-            first: '« First'
-            last: 'Last »'
-          expose:
-            items_per_page: false
-            items_per_page_label: 'Items per page'
-            items_per_page_options: '5, 10, 25, 50'
-            items_per_page_options_all: false
-            items_per_page_options_all_label: '- All -'
-            offset: false
-            offset_label: Offset
-          quantity: 9
-      style:
-        type: default
-        options:
-          grouping: {  }
-          row_class: ''
-          default_row_class: true
-          uses_fields: false
-      row:
-        type: search_api
-        options:
-          view_modes:
-            'entity:node':
-              application: default
-              article: default
-              contact: default
-              driving_instructor: teaser
-              embargoed_publication: default
-              gp_practice: default
-              health_condition: default
-              landing_page: default
-              news: default
-              page: default
-              publication: default
-              recipe: default
-              umbrella_body: default
+      title: 'Find an approved driving or motorcycle instructor'
       fields:
         title:
           id: title
@@ -98,6 +31,8 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
+          entity_type: node
+          plugin_id: search_api_field
           label: ''
           exclude: false
           alter:
@@ -160,8 +95,98 @@ display:
             use_highlighting: false
             multi_type: separator
             multi_separator: ', '
-          entity_type: node
-          plugin_id: search_api_field
+      pager:
+        type: full
+        options:
+          offset: 0
+          items_per_page: 21
+          total_pages: null
+          id: 0
+          tags:
+            next: 'next ›'
+            previous: '‹ previous'
+            first: '« First'
+            last: 'Last »'
+          expose:
+            items_per_page: false
+            items_per_page_label: 'Items per page'
+            items_per_page_options: '5, 10, 25, 50'
+            items_per_page_options_all: false
+            items_per_page_options_all_label: '- All -'
+            offset: false
+            offset_label: Offset
+          quantity: 9
+      exposed_form:
+        type: basic
+        options:
+          submit_button: 'Find instructors'
+          reset_button: false
+          reset_button_label: Reset
+          exposed_sorts_label: 'Sort results'
+          expose_sort_order: true
+          sort_asc_label: Asc
+          sort_desc_label: Desc
+      access:
+        type: none
+        options: {  }
+      cache:
+        type: search_api_tag
+        options: {  }
+      empty:
+        area:
+          id: area
+          table: views
+          field: area
+          relationship: none
+          group_type: group
+          admin_label: ''
+          plugin_id: text
+          empty: true
+          content:
+            value: 'There were no results found.'
+            format: basic_html
+          tokenize: false
+      sorts:
+        search_api_relevance:
+          id: search_api_relevance
+          table: search_api_index_contacts
+          field: search_api_relevance
+          relationship: none
+          group_type: group
+          admin_label: ''
+          plugin_id: search_api
+          order: DESC
+          expose:
+            label: Relevance
+            field_identifier: search_api_relevance
+          exposed: true
+        random:
+          id: random
+          table: views
+          field: random
+          relationship: none
+          group_type: group
+          admin_label: ''
+          plugin_id: random
+          order: ASC
+          expose:
+            label: Random
+            field_identifier: random
+          exposed: true
+        field_di_lastname:
+          id: field_di_lastname
+          table: search_api_index_contacts
+          field: field_di_lastname
+          relationship: none
+          group_type: group
+          admin_label: ''
+          plugin_id: search_api
+          order: ASC
+          expose:
+            label: 'Last name'
+            field_identifier: field_di_lastname
+          exposed: true
+      arguments: {  }
       filters:
         search_api_fulltext:
           id: search_api_fulltext
@@ -170,6 +195,7 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
+          plugin_id: search_api_fulltext
           operator: or
           value: ''
           group: 1
@@ -217,7 +243,6 @@ display:
           parse_mode: terms
           min_length: null
           fields: {  }
-          plugin_id: search_api_fulltext
         type:
           id: type
           table: search_api_index_contacts
@@ -225,6 +250,7 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
+          plugin_id: search_api_options
           operator: or
           value:
             driving_instructor: driving_instructor
@@ -236,6 +262,8 @@ display:
             description: ''
             use_operator: false
             operator: ''
+            operator_limit_selection: false
+            operator_list: {  }
             identifier: ''
             required: false
             remember: false
@@ -243,8 +271,6 @@ display:
             remember_roles:
               authenticated: authenticated
             reduce: false
-            operator_limit_selection: false
-            operator_list: {  }
           is_grouped: false
           group_info:
             label: ''
@@ -258,7 +284,6 @@ display:
             default_group_multiple: {  }
             group_items: {  }
           reduce_duplicates: false
-          plugin_id: search_api_options
         field_di_categories:
           id: field_di_categories
           table: search_api_index_contacts
@@ -266,6 +291,7 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
+          plugin_id: search_api_term
           operator: or
           value: {  }
           group: 1
@@ -311,65 +337,42 @@ display:
             default_group_multiple: {  }
             group_items: {  }
           reduce_duplicates: false
-          type: select
-          limit: true
           vid: drive_instr_categories
+          type: select
           hierarchy: false
+          limit: true
           error_message: true
-          plugin_id: search_api_term
-      sorts:
-        search_api_relevance:
-          id: search_api_relevance
-          table: search_api_index_contacts
-          field: search_api_relevance
-          relationship: none
-          group_type: group
-          admin_label: ''
-          order: DESC
-          exposed: true
-          expose:
-            label: Relevance
-          plugin_id: search_api
-        random:
-          id: random
-          table: views
-          field: random
-          relationship: none
-          group_type: group
-          admin_label: ''
-          order: ASC
-          exposed: true
-          expose:
-            label: Random
-          plugin_id: random
-        field_di_lastname:
-          id: field_di_lastname
-          table: search_api_index_contacts
-          field: field_di_lastname
-          relationship: none
-          group_type: group
-          admin_label: ''
-          order: ASC
-          exposed: true
-          expose:
-            label: 'Last name'
-          plugin_id: search_api
-      header: {  }
-      footer: {  }
-      empty:
-        area:
-          id: area
-          table: views
-          field: area
-          relationship: none
-          group_type: group
-          admin_label: ''
-          empty: true
-          tokenize: false
-          content:
-            value: 'There were no results found.'
-            format: basic_html
-          plugin_id: text
+      style:
+        type: default
+        options:
+          grouping: {  }
+          row_class: ''
+          default_row_class: true
+          uses_fields: false
+      row:
+        type: search_api
+        options:
+          view_modes:
+            'entity:node':
+              application: default
+              article: default
+              contact: default
+              driving_instructor: teaser
+              embargoed_publication: default
+              gp_practice: default
+              health_condition: default
+              landing_page: default
+              news: default
+              page: default
+              publication: default
+              recipe: default
+              umbrella_body: default
+      query:
+        type: search_api_query
+        options:
+          bypass_access: false
+          skip_access: false
+          preserve_facet_query_args: false
       relationships:
         field_di_categories:
           id: field_di_categories
@@ -378,13 +381,13 @@ display:
           relationship: none
           group_type: group
           admin_label: 'Categories: Taxonomy term'
-          required: false
-          skip_access: false
           entity_type: node
           plugin_id: search_api
-      arguments: {  }
+          required: false
+          skip_access: false
+      header: {  }
+      footer: {  }
       display_extenders: {  }
-      title: 'Find an approved driving or motorcycle instructor'
     cache_metadata:
       max-age: 0
       contexts:
@@ -399,18 +402,18 @@ display:
       tags:
         - 'config:search_api.index.contacts'
   driving_instructor_results:
-    display_plugin: page
     id: driving_instructor_results
     display_title: Page
+    display_plugin: page
     position: 2
     display_options:
-      display_extenders: {  }
-      path: services/driving-instructors
       cache:
         type: none
       defaults:
         cache: false
       exposed_block: true
+      display_extenders: {  }
+      path: services/driving-instructors
     cache_metadata:
       max-age: 0
       contexts:

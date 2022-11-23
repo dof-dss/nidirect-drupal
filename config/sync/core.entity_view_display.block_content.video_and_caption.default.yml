@@ -16,27 +16,27 @@ bundle: video_and_caption
 mode: default
 content:
   field_caption:
-    weight: 0
+    type: basic_string
     label: hidden
     settings: {  }
     third_party_settings: {  }
-    type: basic_string
+    weight: 0
     region: content
   field_video:
     type: entity_reference_entity_view
-    weight: 1
     label: hidden
     settings:
       view_mode: default
       link: false
     third_party_settings: {  }
+    weight: 1
     region: content
   field_video_caption_display:
-    weight: 2
+    type: list_key
     label: hidden
     settings: {  }
     third_party_settings: {  }
-    type: list_key
+    weight: 2
     region: content
 hidden:
   body: true

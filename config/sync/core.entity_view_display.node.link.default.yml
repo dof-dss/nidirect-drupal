@@ -19,15 +19,13 @@ mode: default
 content:
   field_link_type:
     type: list_default
-    weight: 1
-    region: content
     label: above
     settings: {  }
     third_party_settings: {  }
+    weight: 1
+    region: content
   field_link_url:
     type: link
-    weight: 0
-    region: content
     label: above
     settings:
       trim_length: 80
@@ -36,18 +34,20 @@ content:
       rel: ''
       target: ''
     third_party_settings: {  }
+    weight: 0
+    region: content
   field_meta_tags:
-    weight: 3
+    type: metatag_empty_formatter
     label: above
     settings: {  }
     third_party_settings: {  }
-    type: metatag_empty_formatter
+    weight: 3
     region: content
   links:
-    weight: 2
-    region: content
     settings: {  }
     third_party_settings: {  }
+    weight: 2
+    region: content
 hidden:
   langcode: true
   search_api_excerpt: true

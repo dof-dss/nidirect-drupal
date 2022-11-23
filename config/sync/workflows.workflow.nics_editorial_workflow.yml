@@ -28,25 +28,25 @@ type: content_moderation
 type_settings:
   states:
     archived:
-      published: false
-      default_revision: true
       label: Archived
       weight: 3
+      published: false
+      default_revision: true
     draft:
       label: Draft
-      published: false
-      default_revision: false
       weight: 0
-    needs_review:
       published: false
       default_revision: false
+    needs_review:
       label: 'Needs Review'
       weight: 2
+      published: false
+      default_revision: false
     published:
       label: Published
+      weight: 1
       published: true
       default_revision: true
-      weight: 1
   transitions:
     archive:
       label: Archive
@@ -58,10 +58,10 @@ type_settings:
       weight: 3
     create_new_draft:
       label: 'Create New Draft'
-      to: draft
-      weight: -3
       from:
         - draft
+      to: draft
+      weight: -3
     draft_of_published:
       label: 'Draft of Published'
       from:
@@ -70,10 +70,10 @@ type_settings:
       weight: 6
     publish:
       label: Publish
-      to: published
-      weight: 1
       from:
         - needs_review
+      to: published
+      weight: 1
     quick_publish:
       label: 'Quick Publish'
       from:

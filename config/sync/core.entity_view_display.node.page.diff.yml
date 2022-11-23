@@ -17,10 +17,11 @@ dependencies:
     - user
 third_party_settings:
   layout_builder:
-    allow_custom: false
     enabled: false
+    allow_custom: false
   layout_builder_restrictions:
     entity_view_mode_restriction:
+      allowed_layouts: {  }
       allowed_blocks:
         'Chaos Tools': {  }
         Content: {  }
@@ -49,7 +50,6 @@ third_party_settings:
           - webform_block
         core:
           - page_title_block
-      allowed_layouts: {  }
 _core:
   default_config_hash: g1S3_GLaxq4l3I9RIca5Mlz02MxI2KmOquZpHw59akM
 id: node.page.diff
@@ -58,33 +58,33 @@ bundle: page
 mode: diff
 content:
   body:
-    label: hidden
     type: text_default
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
     weight: 2
     region: content
+  content_moderation_control:
     settings: {  }
     third_party_settings: {  }
-  content_moderation_control:
     weight: 0
     region: content
-    settings: {  }
-    third_party_settings: {  }
   field_meta_tags:
-    weight: 4
+    type: metatag_empty_formatter
     label: above
     settings: {  }
     third_party_settings: {  }
-    type: metatag_empty_formatter
+    weight: 4
     region: content
   links:
+    settings: {  }
+    third_party_settings: {  }
     weight: 3
     region: content
-    settings: {  }
-    third_party_settings: {  }
   toc_display:
-    weight: -10
     settings: {  }
     third_party_settings: {  }
+    weight: -10
     region: content
 hidden:
   field_next_audit_due: true

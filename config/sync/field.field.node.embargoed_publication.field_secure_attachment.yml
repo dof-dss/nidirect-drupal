@@ -12,7 +12,7 @@ field_name: field_secure_attachment
 entity_type: node
 bundle: embargoed_publication
 label: Documents
-description: |
+description: |-
   <p>Choose at least between one and five individual files to attach to this embargoed publication revision.</p>
   <strong>An important note about attachments:</strong>
   <ul>
@@ -24,10 +24,10 @@ translatable: false
 default_value: {  }
 default_value_callback: ''
 settings:
+  handler: 'default:file'
+  handler_settings: {  }
   file_directory: secure_attachment
   file_extensions: 'pdf doc docx xls xlsx xlsm ppt pptx odt ods odp dot zip'
   max_filesize: 30MB
   description_field: true
-  handler: 'default:file'
-  handler_settings: {  }
 field_type: file

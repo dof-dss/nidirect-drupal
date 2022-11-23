@@ -39,8 +39,8 @@ dependencies:
     - user
 third_party_settings:
   layout_builder:
-    allow_custom: false
     enabled: false
+    allow_custom: false
 id: node.health_condition.search_result
 targetEntityType: node
 bundle: health_condition
@@ -48,55 +48,55 @@ mode: search_result
 content:
   field_hc_primary_symptom_1:
     type: entity_reference_label
+    label: hidden
+    settings:
+      link: false
+    third_party_settings: {  }
     weight: 1
     region: content
-    label: hidden
-    settings:
-      link: false
-    third_party_settings: {  }
   field_hc_primary_symptom_2:
     type: entity_reference_label
+    label: hidden
+    settings:
+      link: false
+    third_party_settings: {  }
     weight: 2
     region: content
-    label: hidden
-    settings:
-      link: false
-    third_party_settings: {  }
   field_hc_primary_symptom_3:
     type: entity_reference_label
+    label: hidden
+    settings:
+      link: false
+    third_party_settings: {  }
     weight: 3
     region: content
-    label: hidden
-    settings:
-      link: false
-    third_party_settings: {  }
   field_hc_primary_symptom_4:
     type: entity_reference_label
-    weight: 4
-    region: content
     label: hidden
     settings:
       link: false
     third_party_settings: {  }
+    weight: 4
+    region: content
   field_related_conditions:
     type: entity_reference_label
-    weight: 5
-    region: content
     label: hidden
     settings:
       link: true
     third_party_settings: {  }
+    weight: 5
+    region: content
   field_summary:
-    weight: 0
+    type: text_default
     label: hidden
     settings: {  }
     third_party_settings: {  }
-    type: text_default
+    weight: 0
     region: content
   toc_display:
-    weight: -10
     settings: {  }
     third_party_settings: {  }
+    weight: -10
     region: content
 hidden:
   banner_display: true

@@ -16,60 +16,12 @@ base_table: search_api_index_contacts
 base_field: search_api_id
 display:
   default:
-    display_plugin: default
     id: default
     display_title: Master
+    display_plugin: default
     position: 0
     display_options:
-      access:
-        type: none
-        options: {  }
-      cache:
-        type: search_api_tag
-        options: {  }
-      query:
-        type: views_query
-        options:
-          bypass_access: false
-          skip_access: false
-          preserve_facet_query_args: false
-      exposed_form:
-        type: input_required
-        options:
-          submit_button: 'Find contacts'
-          reset_button: false
-          reset_button_label: Reset
-          exposed_sorts_label: 'Sort by'
-          expose_sort_order: true
-          sort_asc_label: Asc
-          sort_desc_label: Desc
-          text_input_required: ''
-          text_input_required_format: basic_html
-      pager:
-        type: full
-        options:
-          items_per_page: 50
-          offset: 0
-          id: 0
-          total_pages: null
-          tags:
-            previous: '‹ Previous'
-            next: 'Next ›'
-            first: '« First'
-            last: 'Last »'
-          expose:
-            items_per_page: false
-            items_per_page_label: 'Items per page'
-            items_per_page_options: '5, 10, 25, 50'
-            items_per_page_options_all: false
-            items_per_page_options_all_label: '- All -'
-            offset: false
-            offset_label: Offset
-          quantity: 9
-      style:
-        type: html_list
-      row:
-        type: fields
+      title: Contacts
       fields:
         title:
           id: title
@@ -78,6 +30,7 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
+          plugin_id: search_api_field
           label: ''
           exclude: false
           alter:
@@ -140,7 +93,99 @@ display:
             use_highlighting: false
             multi_type: separator
             multi_separator: ', '
-          plugin_id: search_api_field
+      pager:
+        type: full
+        options:
+          offset: 0
+          items_per_page: 50
+          total_pages: null
+          id: 0
+          tags:
+            next: 'Next ›'
+            previous: '‹ Previous'
+            first: '« First'
+            last: 'Last »'
+          expose:
+            items_per_page: false
+            items_per_page_label: 'Items per page'
+            items_per_page_options: '5, 10, 25, 50'
+            items_per_page_options_all: false
+            items_per_page_options_all_label: '- All -'
+            offset: false
+            offset_label: Offset
+          quantity: 9
+      exposed_form:
+        type: input_required
+        options:
+          submit_button: 'Find contacts'
+          reset_button: false
+          reset_button_label: Reset
+          exposed_sorts_label: 'Sort by'
+          expose_sort_order: true
+          sort_asc_label: Asc
+          sort_desc_label: Desc
+          text_input_required: ''
+          text_input_required_format: basic_html
+      access:
+        type: none
+        options: {  }
+      cache:
+        type: search_api_tag
+        options: {  }
+      empty:
+        search_api_spellcheck_did_you_mean:
+          id: search_api_spellcheck_did_you_mean
+          table: views
+          field: search_api_spellcheck_did_you_mean
+          relationship: none
+          group_type: group
+          admin_label: ''
+          plugin_id: search_api_spellcheck_did_you_mean
+          empty: true
+          search_api_spellcheck_count: 1
+          search_api_spellcheck_hide_on_result: 1
+          search_api_spellcheck_collate: true
+        area:
+          id: area
+          table: views
+          field: area
+          relationship: none
+          group_type: group
+          admin_label: ''
+          plugin_id: text
+          empty: true
+          content:
+            value: 'Sorry no contacts were found.'
+            format: basic_html
+          tokenize: false
+      sorts:
+        search_api_relevance:
+          id: search_api_relevance
+          table: search_api_index_contacts
+          field: search_api_relevance
+          relationship: none
+          group_type: group
+          admin_label: ''
+          plugin_id: search_api
+          order: DESC
+          expose:
+            label: Relevance
+            field_identifier: search_api_relevance
+          exposed: true
+        title:
+          id: title
+          table: search_api_index_contacts
+          field: title
+          relationship: none
+          group_type: group
+          admin_label: ''
+          plugin_id: search_api
+          order: ASC
+          expose:
+            label: Title
+            field_identifier: title
+          exposed: true
+      arguments: {  }
       filters:
         search_api_fulltext:
           id: search_api_fulltext
@@ -149,6 +194,7 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
+          plugin_id: search_api_fulltext
           operator: and
           value: ''
           group: 1
@@ -180,8 +226,8 @@ display:
               health_condition_author_user: '0'
               health_condition_supervisor_user: '0'
               driving_instructor_supervisor_user: '0'
-            placeholder: 'Search contacts'
             expose_fields: false
+            placeholder: 'Search contacts'
             searched_fields_id: ''
           is_grouped: false
           group_info:
@@ -203,33 +249,17 @@ display:
             - body
             - field_supplementary_contact
             - title_fulltext
-          plugin_id: search_api_fulltext
-      sorts:
-        search_api_relevance:
-          id: search_api_relevance
-          table: search_api_index_contacts
-          field: search_api_relevance
-          relationship: none
-          group_type: group
-          admin_label: ''
-          order: DESC
-          exposed: true
-          expose:
-            label: Relevance
-          plugin_id: search_api
-        title:
-          id: title
-          table: search_api_index_contacts
-          field: title
-          relationship: none
-          group_type: group
-          admin_label: ''
-          order: ASC
-          exposed: true
-          expose:
-            label: Title
-          plugin_id: search_api
-      title: Contacts
+      style:
+        type: html_list
+      row:
+        type: fields
+      query:
+        type: search_api_query
+        options:
+          bypass_access: false
+          skip_access: false
+          preserve_facet_query_args: false
+      relationships: {  }
       header:
         result:
           id: result
@@ -238,38 +268,10 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
+          plugin_id: result
           empty: false
           content: '<h2 class="view--count">@total results</h2>'
-          plugin_id: result
       footer: {  }
-      empty:
-        search_api_spellcheck_did_you_mean:
-          id: search_api_spellcheck_did_you_mean
-          table: views
-          field: search_api_spellcheck_did_you_mean
-          relationship: none
-          group_type: group
-          admin_label: ''
-          empty: true
-          search_api_spellcheck_count: 1
-          search_api_spellcheck_hide_on_result: 1
-          search_api_spellcheck_collate: true
-          plugin_id: search_api_spellcheck_did_you_mean
-        area:
-          id: area
-          table: views
-          field: area
-          relationship: none
-          group_type: group
-          admin_label: ''
-          empty: true
-          tokenize: false
-          content:
-            value: 'Sorry no contacts were found.'
-            format: basic_html
-          plugin_id: text
-      relationships: {  }
-      arguments: {  }
       display_extenders: {  }
     cache_metadata:
       max-age: -1
@@ -284,17 +286,17 @@ display:
       tags:
         - 'config:search_api.index.contacts'
   contact_search:
-    display_plugin: embed
     id: contact_search
     display_title: 'Embed: Contacts search'
+    display_plugin: embed
     position: 1
     display_options:
+      display_description: 'Solr powered content search'
       display_extenders:
         metatag_display_extender:
           metatags:
             description: 'This page lists contacts for public bodies and organisations which work to assist the public in Northern Ireland'
             keywords: 'contacts, public bodies, nidirect, Northern Ireland'
-      display_description: 'Solr powered content search'
     cache_metadata:
       max-age: -1
       contexts:

@@ -30,38 +30,43 @@ mode: default
 content:
   field_address:
     type: address_default
-    weight: 3
-    region: content
     label: above
     settings: {  }
     third_party_settings: {  }
+    weight: 3
+    region: content
   field_gp_practice_lead:
     type: entity_reference_label
+    label: hidden
+    settings:
+      link: false
+    third_party_settings: {  }
     weight: 0
     region: content
-    label: hidden
-    settings:
-      link: false
-    third_party_settings: {  }
   field_gp_practice_member:
     type: entity_reference_label
-    weight: 2
-    region: content
     label: hidden
     settings:
       link: false
     third_party_settings: {  }
+    weight: 2
+    region: content
   field_location:
     type: geolocation_map
-    weight: 4
-    region: content
     label: hidden
     settings:
-      title: ''
       set_marker: true
       common_map: false
-      info_text: ''
       use_overridden_map_settings: false
+      title: ''
+      info_text: ''
+      centre:
+        fit_bounds:
+          enable: true
+          weight: -101
+          settings:
+            reset_zoom: true
+          map_center_id: fit_bounds
       map_provider_id: google_maps
       map_provider_settings:
         type: ROADMAP
@@ -69,6 +74,9 @@ content:
         minZoom: 0
         maxZoom: 18
         rotateControl: false
+        height: 400px
+        width: 100%
+        gestureHandling: auto
         mapTypeControl: 1
         streetViewControl: 1
         zoomControl: 1
@@ -76,36 +84,28 @@ content:
         scrollwheel: 1
         disableDoubleClickZoom: 0
         draggable: 1
-        height: 400px
-        width: 100%
         info_auto_display: 1
         marker_icon_path: ''
         disableAutoPan: 1
         style: ''
         preferScrollingToZooming: 0
-        gestureHandling: auto
       data_provider_settings: {  }
-      centre:
-        fit_bounds:
-          enable: true
-          weight: -101
-          map_center_id: fit_bounds
-          settings:
-            reset_zoom: true
     third_party_settings: {  }
+    weight: 4
+    region: content
   field_telephone:
-    weight: 5
+    type: telephone_plus_link
     label: above
     settings:
       vcard: true
     third_party_settings: {  }
-    type: telephone_plus_link
+    weight: 5
     region: content
   gp_names:
-    weight: 1
-    region: content
     settings: {  }
     third_party_settings: {  }
+    weight: 1
+    region: content
 hidden:
   content_moderation_control: true
   field_contact_address_01: true

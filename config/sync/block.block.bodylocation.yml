@@ -18,14 +18,14 @@ plugin: 'facet_block:body_location'
 settings:
   id: 'facet_block:body_location'
   label: 'Body part'
-  provider: facets
   label_display: visible
+  provider: facets
   block_id: bodylocation
 visibility:
   request_path:
     id: request_path
-    pages: |
-      /services/health-conditions-a-z
-      /services/health-conditions-a-z/*
     negate: false
     context_mapping: {  }
+    pages: |-
+      /services/health-conditions-a-z
+      /services/health-conditions-a-z/*

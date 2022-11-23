@@ -15,10 +15,12 @@ bundle: map
 mode: preview
 content:
   field_location:
-    weight: 0
+    type: geolocation_map
     label: hidden
     settings:
       set_marker: true
+      common_map: true
+      use_overridden_map_settings: false
       title: ''
       info_text:
         value: ''
@@ -26,63 +28,61 @@ content:
       centre:
         fit_bounds:
           enable: true
+          weight: -101
           settings:
             reset_zoom: true
-          weight: -101
           map_center_id: fit_bounds
         client_location:
-          weight: 0
           enable: false
+          weight: 0
           map_center_id: client_location
         fixed_boundaries:
+          enable: false
+          weight: 0
           settings:
-            north: ''
-            east: ''
             south: ''
             west: ''
-          weight: 0
-          enable: false
+            north: ''
+            east: ''
           map_center_id: fixed_boundaries
         fixed_value:
+          enable: false
+          weight: 0
           settings:
+            location_option_id: fixed_value
             latitude: null
             longitude: null
-            location_option_id: fixed_value
-          weight: 0
-          enable: false
           map_center_id: location_plugins
         ipstack:
-          settings:
-            access_key: ''
-            location_option_id: ipstack
-          weight: 0
           enable: false
+          weight: 0
+          settings:
+            location_option_id: ipstack
+            access_key: ''
           map_center_id: location_plugins
         freeogeoip:
-          weight: 0
           enable: false
-          map_center_id: location_plugins
+          weight: 0
           settings:
             location_option_id: freeogeoip
+          map_center_id: location_plugins
       map_provider_id: google_static_maps
       map_provider_settings:
-        height: 400
-        width: 400
-        type: ROADMAP
-        zoom: 10
-        scale: 1
-        format: png
         map_features:
           geolocation_marker_scroll_to_id:
             weight: 0
             settings:
               scroll_target_id: ''
             enabled: false
-      use_overridden_map_settings: false
-      common_map: true
+        type: ROADMAP
+        zoom: 10
+        height: 400
+        width: 400
+        format: png
+        scale: 1
       data_provider_settings: {  }
     third_party_settings: {  }
-    type: geolocation_map
+    weight: 0
     region: content
 hidden:
   search_api_excerpt: true

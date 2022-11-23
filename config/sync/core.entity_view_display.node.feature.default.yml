@@ -16,7 +16,7 @@ bundle: feature
 mode: default
 content:
   field_link_url:
-    weight: 2
+    type: link_separate
     label: hidden
     settings:
       trim_length: 80
@@ -25,24 +25,24 @@ content:
       rel: ''
       target: ''
     third_party_settings: {  }
-    type: link_separate
+    weight: 2
     region: content
   field_photo:
-    weight: 0
+    type: entity_reference_entity_view
     label: hidden
     settings:
       view_mode: feature_card
       link: false
     third_party_settings: {  }
-    type: entity_reference_entity_view
+    weight: 0
     region: content
   field_teaser:
-    weight: 1
+    type: string
     label: hidden
     settings:
       link_to_entity: false
     third_party_settings: {  }
-    type: string
+    weight: 1
     region: content
 hidden:
   content_moderation_control: true

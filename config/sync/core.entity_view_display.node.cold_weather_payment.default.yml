@@ -18,33 +18,33 @@ bundle: cold_weather_payment
 mode: default
 content:
   field_cwp_payments_period:
-    weight: 102
+    type: daterange_default
     label: above
     settings:
-      separator: '-'
-      format_type: medium
       timezone_override: ''
+      format_type: medium
+      separator: '-'
     third_party_settings: {  }
-    type: daterange_default
+    weight: 102
     region: content
   field_cwp_payments_triggered:
-    weight: 103
+    type: nidirect_cold_weather_period
     label: above
     settings: {  }
     third_party_settings: {  }
-    type: nidirect_cold_weather_period
+    weight: 103
     region: content
   field_meta_tags:
-    weight: 101
+    type: metatag_empty_formatter
     label: above
     settings: {  }
     third_party_settings: {  }
-    type: metatag_empty_formatter
+    weight: 101
     region: content
   links:
-    weight: 100
     settings: {  }
     third_party_settings: {  }
+    weight: 100
     region: content
 hidden:
   langcode: true

@@ -32,23 +32,29 @@ name: 'Solr default'
 description: ''
 backend: search_api_solr
 backend_config:
+  retrieve_data: false
+  highlight_data: false
+  site_hash: false
+  server_prefix: ''
+  domain: generic
+  environment: default
   connector: standard
   connector_config:
     scheme: http
-    host: solr
-    port: 8983
+    host: solr.internal
+    port: 8080
     path: /
     core: default
     timeout: 5
     index_timeout: 5
     optimize_timeout: 10
     finalize_timeout: 30
-    commit_within: 1000
     solr_version: ''
     http_method: AUTO
+    commit_within: 1000
     jmx: false
     solr_install_dir: ../../..
-    skip_schema_check: false
+  optimize: false
   disabled_field_types: {  }
   disabled_caches: {  }
   disabled_request_handlers:
@@ -57,11 +63,4 @@ backend_config:
   disabled_request_dispatchers:
     - request_dispatcher_httpcaching_default_7_0_0
   rows: 10
-  retrieve_data: false
-  highlight_data: false
-  server_prefix: ''
-  domain: generic
-  environment: default
-  optimize: false
-  site_hash: false
-  fallback_multiple: true
+  skip_schema_check: false

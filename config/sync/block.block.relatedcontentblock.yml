@@ -16,14 +16,14 @@ plugin: nidirect_related_content_block
 settings:
   id: nidirect_related_content_block
   label: 'Related content'
-  provider: nidirect_related_content
   label_display: visible
+  provider: nidirect_related_content
 visibility:
   'entity_bundle:node':
     id: 'entity_bundle:node'
-    bundles:
-      application: application
-      article: article
     negate: false
     context_mapping:
       node: '@node.node_route_context:node'
+    bundles:
+      application: application
+      article: article
