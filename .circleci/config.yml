@@ -231,11 +231,6 @@ jobs:
             platform environment:drush cim -y -p $PLATFORM_PROJECT -e $EDGE_BUILD_BRANCH
           when: always
       - run:
-          name: Rebuild Taxonomy Entity Index
-          command: |
-            platform environment:drush tei-rebuild -p $PLATFORM_PROJECT -e $EDGE_BUILD_BRANCH
-          when: always
-      - run:
           name: Set GAC state variable
           command: |
             platform environment:drush "sset google_analytics_counter.access_token ${GAC_ACCESS_TOKEN}" \
