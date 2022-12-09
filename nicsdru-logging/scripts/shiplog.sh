@@ -14,6 +14,11 @@ if [ -z "$LOGZ_TOKEN" ]; then
     exit 1
 fi
 
+# Set LOGZ_URL if environment variable is not set.
+if [ -z "$LOGZ_URL" ]; then
+    LOGZ_URL="https://listener-uk.logz.io:8022"
+fi
+
 # Mount for logs must exist or exit script.
 cd /app/log || exit
 
@@ -66,7 +71,7 @@ if [ -f "$LOG_PATH" ]; then
     diff --changed-group-format='%>' --unchanged-group-format='' "$todays_log" "$LOG_NAME-latest.log" > "$LOG_NAME-new.log"
     cat "$LOG_NAME-new.log" >> "$todays_log"
     echo "Shipping latest log entries from ${todays_log} to Logz.io using cURL"
-    http_response=$(curl -T "$LOG_NAME-new.log" -s -w "%{response_code}" https://listener.logz.io:8022/file_upload/"${LOGZ_TOKEN}"/"${LOG_TYPE}")
+    http_response=$(curl -T "$LOG_NAME-new.log" -s -w "%{response_code}" $LOGZ_URL/file_upload/"${LOGZ_TOKEN}"/"${LOG_TYPE}")
     exit_code=$?
 
     # Clean up temporary log files.
