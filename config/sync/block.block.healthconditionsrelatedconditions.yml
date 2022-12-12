@@ -16,13 +16,13 @@ plugin: healthconditions_related_conditions
 settings:
   id: healthconditions_related_conditions
   label: 'Related conditions'
-  provider: nidirect_health_conditions
   label_display: visible
+  provider: nidirect_health_conditions
 visibility:
   node_type:
     id: node_type
-    bundles:
-      health_condition: health_condition
     negate: false
     context_mapping:
       node: '@node.node_route_context:node'
+    bundles:
+      health_condition: health_condition

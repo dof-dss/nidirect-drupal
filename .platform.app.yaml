@@ -9,6 +9,13 @@ name: 'nidirect'
 # The runtime the application uses.
 type: 'php:8.1'
 
+# Application variables.
+# Set non-sensitive variables here only.
+# Use Platform CLI or console to set sensitive variables.
+variables:
+  php:
+    memory_limit: "256M"
+
 dependencies:
   php:
     composer/composer: '^2'
@@ -158,5 +165,5 @@ crons:
   logging:
     spec: '*/5 * * * *'
     commands:
-      start: '/bin/bash /app/logging/scripts/cronjob.sh'
+      start: '/bin/bash /app/cronjob.sh'
     shutdown_timeout: 290

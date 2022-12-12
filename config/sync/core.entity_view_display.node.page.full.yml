@@ -16,10 +16,11 @@ dependencies:
     - user
 third_party_settings:
   layout_builder:
-    allow_custom: false
     enabled: false
+    allow_custom: false
   layout_builder_restrictions:
     entity_view_mode_restriction:
+      allowed_layouts: {  }
       allowed_blocks:
         'Chaos Tools': {  }
         Content: {  }
@@ -48,7 +49,6 @@ third_party_settings:
           - webform_block
         core:
           - page_title_block
-      allowed_layouts: {  }
 _core:
   default_config_hash: g1S3_GLaxq4l3I9RIca5Mlz02MxI2KmOquZpHw59akM
 id: node.page.full
@@ -57,17 +57,17 @@ bundle: page
 mode: full
 content:
   body:
-    label: hidden
     type: text_default
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
     weight: 1
     region: content
+  toc_display:
     settings: {  }
     third_party_settings: {  }
-  toc_display:
     weight: 0
     region: content
-    settings: {  }
-    third_party_settings: {  }
 hidden:
   content_moderation_control: true
   field_meta_tags: true

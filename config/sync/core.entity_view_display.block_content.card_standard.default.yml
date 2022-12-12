@@ -18,15 +18,15 @@ mode: default
 content:
   field_image:
     type: entity_reference_entity_view
-    weight: 0
     label: hidden
     settings:
       view_mode: card_small
       link: false
     third_party_settings: {  }
+    weight: 0
     region: content
   field_link:
-    weight: 2
+    type: link
     label: hidden
     settings:
       trim_length: 80
@@ -35,18 +35,18 @@ content:
       rel: ''
       target: ''
     third_party_settings: {  }
-    type: link
+    weight: 2
     region: content
   field_teaser:
-    weight: 1
+    type: string
     label: hidden
     settings:
       link_to_entity: false
     third_party_settings: {  }
-    type: string
+    weight: 1
     region: content
   field_title_link:
-    weight: 3
+    type: link
     label: above
     settings:
       trim_length: 80
@@ -55,7 +55,7 @@ content:
       rel: ''
       target: ''
     third_party_settings: {  }
-    type: link
+    weight: 3
     region: content
 hidden:
   body: true

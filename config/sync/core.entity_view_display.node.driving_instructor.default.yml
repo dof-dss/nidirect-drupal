@@ -26,57 +26,55 @@ mode: default
 content:
   field_di_adi_no:
     type: string
-    weight: 7
-    region: content
     label: above
     settings:
       link_to_entity: false
     third_party_settings: {  }
+    weight: 7
+    region: content
   field_di_areas:
     type: entity_reference_label
-    weight: 6
-    region: content
     label: above
     settings:
       link: true
     third_party_settings: {  }
+    weight: 6
+    region: content
   field_di_categories:
     type: html_list_formatter
-    weight: 5
-    region: content
     label: above
     settings:
       list_type: ul
       list_classes: ''
       display_item_link: false
     third_party_settings: {  }
+    weight: 5
+    region: content
   field_di_firstname:
     type: string
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
     weight: 0
     region: content
-    label: above
-    settings:
-      link_to_entity: false
-    third_party_settings: {  }
   field_di_lastname:
     type: string
-    weight: 1
-    region: content
     label: above
     settings:
       link_to_entity: false
     third_party_settings: {  }
+    weight: 1
+    region: content
   field_email_address:
     type: basic_string
-    weight: 3
-    region: content
     label: above
     settings: {  }
     third_party_settings: {  }
+    weight: 3
+    region: content
   field_link_url:
     type: link
-    weight: 4
-    region: content
     label: above
     settings:
       trim_length: 80
@@ -85,26 +83,28 @@ content:
       rel: ''
       target: ''
     third_party_settings: {  }
+    weight: 4
+    region: content
   field_meta_tags:
-    weight: 9
+    type: metatag_empty_formatter
     label: above
     settings: {  }
     third_party_settings: {  }
-    type: metatag_empty_formatter
+    weight: 9
     region: content
   field_telephone:
-    weight: 2
+    type: telephone_plus_link
     label: above
     settings:
       vcard: true
     third_party_settings: {  }
-    type: telephone_plus_link
+    weight: 2
     region: content
   links:
-    weight: 8
-    region: content
     settings: {  }
     third_party_settings: {  }
+    weight: 8
+    region: content
 hidden:
   content_moderation_control: true
   langcode: true

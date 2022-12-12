@@ -11,21 +11,21 @@ dependencies:
     - user
 third_party_settings:
   layout_builder:
-    allow_custom: false
     enabled: false
+    allow_custom: false
 id: node.health_condition_alternative.search_result
 targetEntityType: node
 bundle: health_condition_alternative
 mode: search_result
 content:
   field_parent_condition:
-    weight: 0
+    type: entity_reference_entity_view
     label: hidden
     settings:
       view_mode: search_result
       link: false
     third_party_settings: {  }
-    type: entity_reference_entity_view
+    weight: 0
     region: content
 hidden:
   langcode: true

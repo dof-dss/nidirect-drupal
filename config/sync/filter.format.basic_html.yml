@@ -53,7 +53,7 @@ filters:
     id: entity_embed
     provider: entity_embed
     status: true
-    weight: -45
+    weight: -46
     settings: {  }
   filter_autop:
     id: filter_autop
@@ -96,14 +96,14 @@ filters:
     id: token_filter
     provider: token_filter
     status: true
-    weight: -48
+    weight: -45
     settings:
       replace_empty: '1'
   media_embed:
     id: media_embed
     provider: media
     status: true
-    weight: -46
+    weight: -47
     settings:
       default_view_mode: article_full
       allowed_view_modes:
@@ -119,7 +119,7 @@ filters:
   cookie_content_blocker_filter:
     id: cookie_content_blocker_filter
     provider: cookie_content_blocker
-    status: true
+    status: false
     weight: -44
     settings:
       disable_xss: '1'
@@ -127,13 +127,13 @@ filters:
     id: linkit
     provider: linkit
     status: false
-    weight: -35
+    weight: -34
     settings:
       title: true
   origins_media_cookie_content_blocker_embed_filter:
     id: origins_media_cookie_content_blocker_embed_filter
     provider: origins_common
-    status: true
-    weight: -47
+    status: false
+    weight: -48
     settings:
       replacement_text: 'Click here to view the video content'

@@ -14,7 +14,7 @@ field_name: field_listing
 entity_type: node
 bundle: landing_page
 label: Listing
-description: |
+description: |-
   You may change the order of the content and subtopics above and/or remove some of them. This will then affect the listing shown at the bottom of the page.<br\>
   If you wish to revert to the default listing, then just un-check the 'manually control listing' checkbox.
 required: false
@@ -24,18 +24,18 @@ default_value_callback: ''
 settings:
   handler: 'default:paragraph'
   handler_settings:
-    negate: 0
     target_bundles:
       article_teaser: article_teaser
       term_teaser: term_teaser
+    negate: 0
     target_bundles_drag_drop:
       article_teaser:
-        enabled: true
         weight: 4
+        enabled: true
       map:
         weight: 5
         enabled: false
       term_teaser:
-        enabled: true
         weight: 6
+        enabled: true
 field_type: entity_reference_revisions

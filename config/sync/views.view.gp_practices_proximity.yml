@@ -24,75 +24,12 @@ base_table: node_field_data
 base_field: nid
 display:
   default:
-    display_plugin: default
     id: default
     display_title: Master
+    display_plugin: default
     position: 0
     display_options:
-      access:
-        type: perm
-        options:
-          perm: 'access content'
-      cache:
-        type: tag
-        options: {  }
-      query:
-        type: views_query
-        options:
-          disable_sql_rewrite: false
-          distinct: false
-          replica: false
-          query_comment: ''
-          query_tags: {  }
-          contextual_filters_or: 0
-      exposed_form:
-        type: basic
-        options:
-          submit_button: Go
-          reset_button: false
-          reset_button_label: Reset
-          exposed_sorts_label: 'Sort by'
-          expose_sort_order: false
-          sort_asc_label: Asc
-          sort_desc_label: Desc
-      pager:
-        type: full
-        options:
-          items_per_page: 10
-          offset: 0
-          id: 0
-          total_pages: null
-          tags:
-            previous: '‹ Previous'
-            next: 'Next ›'
-            first: '« First'
-            last: 'Last »'
-          expose:
-            items_per_page: false
-            items_per_page_label: 'Items per page'
-            items_per_page_options: '5, 10, 25, 50'
-            items_per_page_options_all: false
-            items_per_page_options_all_label: '- All -'
-            offset: false
-            offset_label: Offset
-          quantity: 9
-      style:
-        type: default
-        options:
-          grouping: {  }
-          row_class: card
-          default_row_class: false
-          uses_fields: true
-      row:
-        type: fields
-        options:
-          default_field_elements: true
-          inline:
-            title: title
-            field_location_proximity: field_location_proximity
-            field_address: field_address
-          separator: ''
-          hide_empty: false
+      title: 'Find a GP practice'
       fields:
         title:
           id: title
@@ -101,6 +38,9 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
+          entity_type: node
+          entity_field: title
+          plugin_id: field
           label: ''
           exclude: true
           alter:
@@ -156,9 +96,6 @@ display:
           multi_type: separator
           separator: ', '
           field_api_classes: false
-          entity_type: node
-          entity_field: title
-          plugin_id: field
         field_location_proximity:
           id: field_location_proximity
           table: node__field_location
@@ -166,6 +103,7 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
+          plugin_id: geolocation_field_proximity
           label: ''
           exclude: true
           alter:
@@ -215,30 +153,29 @@ display:
           format_plural_string: !!binary MSBtaWxlA0Bjb3VudCBtaWxlcw==
           prefix: ''
           suffix: ''
+          display_unit: mi
           center:
             fixed_value:
+              enable: false
               weight: 0
               settings:
                 latitude: ''
                 longitude: ''
-              enable: false
               location_plugin_id: fixed_value
             field_location_proximity:
               enable: true
               weight: 0
               location_plugin_id: views_proximity_argument
             ipstack:
+              enable: false
               weight: 0
               settings:
                 access_key: ''
-              enable: false
               location_plugin_id: ipstack
             freeogeoip:
-              weight: 0
               enable: false
+              weight: 0
               location_plugin_id: freeogeoip
-          display_unit: mi
-          plugin_id: geolocation_field_proximity
         field_gp_practice_member_1:
           id: field_gp_practice_member_1
           table: node__field_gp_practice_member
@@ -246,6 +183,7 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
+          plugin_id: field
           label: ''
           exclude: true
           alter:
@@ -301,7 +239,6 @@ display:
           multi_type: separator
           separator: ''
           field_api_classes: false
-          plugin_id: field
         field_gp_practice_lead:
           id: field_gp_practice_lead
           table: node__field_gp_practice_lead
@@ -309,6 +246,7 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
+          plugin_id: field
           label: ''
           exclude: true
           alter:
@@ -364,7 +302,6 @@ display:
           multi_type: separator
           separator: ', '
           field_api_classes: false
-          plugin_id: field
         field_gp_appointments:
           id: field_gp_appointments
           table: node__field_gp_appointments
@@ -372,6 +309,7 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
+          plugin_id: field
           label: ''
           exclude: true
           alter:
@@ -431,7 +369,6 @@ display:
           multi_type: separator
           separator: ', '
           field_api_classes: false
-          plugin_id: field
         field_gp_prescriptions:
           id: field_gp_prescriptions
           table: node__field_gp_prescriptions
@@ -439,6 +376,7 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
+          plugin_id: field
           label: ''
           exclude: true
           alter:
@@ -498,7 +436,6 @@ display:
           multi_type: separator
           separator: ', '
           field_api_classes: false
-          plugin_id: field
         nothing:
           id: nothing
           table: views
@@ -506,6 +443,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'Title and distance'
+          plugin_id: custom
           label: ''
           exclude: false
           alter:
@@ -547,7 +485,6 @@ display:
           hide_empty: false
           empty_zero: false
           hide_alter_empty: false
-          plugin_id: custom
         nothing_1:
           id: nothing_1
           table: views
@@ -555,6 +492,7 @@ display:
           relationship: none
           group_type: group
           admin_label: GPs
+          plugin_id: custom
           label: ''
           exclude: false
           alter:
@@ -596,7 +534,6 @@ display:
           hide_empty: false
           empty_zero: false
           hide_alter_empty: false
-          plugin_id: custom
         field_address:
           id: field_address
           table: node__field_address
@@ -604,6 +541,7 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
+          plugin_id: field
           label: ''
           exclude: false
           alter:
@@ -658,7 +596,6 @@ display:
           multi_type: separator
           separator: ', '
           field_api_classes: false
-          plugin_id: field
         nothing_2:
           id: nothing_2
           table: views
@@ -666,11 +603,12 @@ display:
           relationship: none
           group_type: group
           admin_label: 'Online services availability'
+          plugin_id: custom
           label: ''
           exclude: false
           alter:
             alter_text: true
-            text: |
+            text: |-
               <ul class="list--no-bullet list--inline list--gp-online-services">
                 {{ field_gp_appointments }}
                 {{ field_gp_prescriptions }}
@@ -711,33 +649,45 @@ display:
           hide_empty: false
           empty_zero: false
           hide_alter_empty: false
-          plugin_id: custom
-      filters:
-        status:
-          value: '1'
-          table: node_field_data
-          field: status
-          plugin_id: boolean
-          entity_type: node
-          entity_field: status
-          id: status
+      pager:
+        type: full
+        options:
+          offset: 0
+          items_per_page: 10
+          total_pages: null
+          id: 0
+          tags:
+            next: 'Next ›'
+            previous: '‹ Previous'
+            first: '« First'
+            last: 'Last »'
           expose:
-            operator: ''
-            operator_limit_selection: false
-            operator_list: {  }
-          group: 1
-        type:
-          id: type
-          table: node_field_data
-          field: type
-          value:
-            gp_practice: gp_practice
-          entity_type: node
-          entity_field: type
-          plugin_id: bundle
-          expose:
-            operator_limit_selection: false
-            operator_list: {  }
+            items_per_page: false
+            items_per_page_label: 'Items per page'
+            items_per_page_options: '5, 10, 25, 50'
+            items_per_page_options_all: false
+            items_per_page_options_all_label: '- All -'
+            offset: false
+            offset_label: Offset
+          quantity: 9
+      exposed_form:
+        type: basic
+        options:
+          submit_button: Go
+          reset_button: false
+          reset_button_label: Reset
+          exposed_sorts_label: 'Sort by'
+          expose_sort_order: false
+          sort_asc_label: Asc
+          sort_desc_label: Desc
+      access:
+        type: perm
+        options:
+          perm: 'access content'
+      cache:
+        type: tag
+        options: {  }
+      empty: {  }
       sorts:
         field_location_proximity:
           id: field_location_proximity
@@ -746,11 +696,12 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
+          plugin_id: geolocation_sort_proximity
           order: ASC
-          exposed: false
           expose:
             label: ''
-          plugin_id: geolocation_sort_proximity
+            field_identifier: field_location_proximity
+          exposed: false
         title:
           id: title
           table: node_field_data
@@ -758,31 +709,14 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
-          order: ASC
-          exposed: false
-          expose:
-            label: ''
           entity_type: node
           entity_field: title
           plugin_id: standard
-      title: 'Find a GP practice'
-      header:
-        area:
-          id: area
-          table: views
-          field: area
-          relationship: none
-          group_type: group
-          admin_label: ''
-          empty: true
-          tokenize: false
-          content:
-            value: ''
-            format: basic_html
-          plugin_id: text
-      footer: {  }
-      empty: {  }
-      relationships: {  }
+          order: ASC
+          expose:
+            label: ''
+            field_identifier: title
+          exposed: false
       arguments:
         field_location_proximity:
           id: field_location_proximity
@@ -791,6 +725,7 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
+          plugin_id: geolocation_argument_proximity
           default_action: ignore
           exception:
             value: all
@@ -805,8 +740,8 @@ display:
           summary_options:
             base_path: ''
             count: true
-            items_per_page: 25
             override: false
+            items_per_page: 25
           summary:
             sort_order: asc
             number_of_records: 0
@@ -816,7 +751,74 @@ display:
             type: none
             fail: 'not found'
           validate_options: {  }
-          plugin_id: geolocation_argument_proximity
+      filters:
+        status:
+          id: status
+          table: node_field_data
+          field: status
+          entity_type: node
+          entity_field: status
+          plugin_id: boolean
+          value: '1'
+          group: 1
+          expose:
+            operator: ''
+            operator_limit_selection: false
+            operator_list: {  }
+        type:
+          id: type
+          table: node_field_data
+          field: type
+          entity_type: node
+          entity_field: type
+          plugin_id: bundle
+          value:
+            gp_practice: gp_practice
+          expose:
+            operator_limit_selection: false
+            operator_list: {  }
+      style:
+        type: default
+        options:
+          grouping: {  }
+          row_class: card
+          default_row_class: false
+          uses_fields: true
+      row:
+        type: fields
+        options:
+          default_field_elements: true
+          inline:
+            title: title
+            field_location_proximity: field_location_proximity
+            field_address: field_address
+          separator: ''
+          hide_empty: false
+      query:
+        type: views_query
+        options:
+          query_comment: ''
+          disable_sql_rewrite: false
+          distinct: false
+          replica: false
+          query_tags: {  }
+          contextual_filters_or: false
+      relationships: {  }
+      header:
+        area:
+          id: area
+          table: views
+          field: area
+          relationship: none
+          group_type: group
+          admin_label: ''
+          plugin_id: text
+          empty: true
+          content:
+            value: ''
+            format: basic_html
+          tokenize: false
+      footer: {  }
       display_extenders: {  }
     cache_metadata:
       max-age: -1
@@ -834,13 +836,13 @@ display:
         - 'config:field.storage.node.field_gp_practice_member'
         - 'config:field.storage.node.field_gp_prescriptions'
   gps_by_proximity:
-    display_plugin: embed
     id: gps_by_proximity
     display_title: 'Embed: GPs by proximity'
+    display_plugin: embed
     position: 2
     display_options:
-      display_extenders: {  }
       display_description: ''
+      display_extenders: {  }
     cache_metadata:
       max-age: -1
       contexts:

@@ -40,59 +40,59 @@ third_party_settings:
         - field_gp_lcg
         - field_gp_appointments
         - field_gp_prescriptions
+      label: 'Practice details'
+      region: content
       parent_name: ''
       weight: 0
       format_type: details
       format_settings:
-        id: group_gp_practice_details
         classes: ''
+        id: group_gp_practice_details
         open: false
         required_fields: true
-      label: 'Practice details'
-      region: content
     group_contact_details:
       children:
         - field_gp_practice_website
         - field_telephone
         - field_address
         - field_location
+      label: 'Contact details'
+      region: content
       parent_name: ''
       weight: 1
       format_type: details
       format_settings:
-        id: group_gp_practice_contact
         classes: ''
+        id: group_gp_practice_contact
         open: false
         required_fields: true
-      label: 'Contact details'
-      region: content
     group_practice_members:
       children:
         - field_gp_practice_lead
         - group_other_gps_in_this_practice
+      label: 'Practice members'
+      region: content
       parent_name: ''
       weight: 2
       format_type: details
       format_settings:
-        id: group_gp_practice_members
         classes: ''
+        id: group_gp_practice_members
         open: false
         required_fields: true
-      label: 'Practice members'
-      region: content
     group_other_gps_in_this_practice:
       children:
         - field_gp_practice_member
+      label: 'Other GPs in this practice'
+      region: content
       parent_name: group_practice_members
       weight: 5
       format_type: details
       format_settings:
-        id: group_gp_practice_members_other
         classes: ''
+        id: group_gp_practice_members_other
         open: false
         required_fields: true
-      label: 'Other GPs in this practice'
-      region: content
 id: node.gp_practice.default
 targetEntityType: node
 bundle: gp_practice
@@ -170,9 +170,9 @@ content:
     region: content
     settings:
       match_operator: CONTAINS
+      match_limit: 10
       size: 60
       placeholder: ''
-      match_limit: 10
     third_party_settings: {  }
   field_gp_practice_member:
     type: entity_reference_autocomplete
@@ -180,9 +180,9 @@ content:
     region: content
     settings:
       match_operator: CONTAINS
+      match_limit: 10
       size: 60
       placeholder: ''
-      match_limit: 10
     third_party_settings: {  }
   field_gp_practice_name:
     type: string_textfield
@@ -229,61 +229,59 @@ content:
     weight: 4
     region: content
     settings:
+      auto_client_location: ''
+      auto_client_location_marker: '0'
+      allow_override_map_settings: 0
+      hide_textfield_form: false
       centre:
         client_location:
-          weight: 0
           enable: false
+          weight: 0
           map_center_id: client_location
         fixed_boundaries:
+          enable: false
+          weight: 0
           settings:
-            north: ''
-            east: ''
             south: ''
             west: ''
-          weight: 0
-          enable: false
+            north: ''
+            east: ''
           map_center_id: fixed_boundaries
         fit_bounds:
           enable: true
-          settings:
-            min_zoom: null
-            reset_zoom: false
           weight: 0
+          settings:
+            reset_zoom: false
+            min_zoom: null
           map_center_id: fit_bounds
         fixed_value:
+          enable: false
+          weight: 0
           settings:
+            location_option_id: fixed_value
             latitude: null
             longitude: null
-            location_option_id: fixed_value
-          weight: 0
-          enable: false
           map_center_id: location_plugins
         ipstack:
-          settings:
-            access_key: ''
-            location_option_id: ipstack
-          weight: 0
           enable: false
+          weight: 0
+          settings:
+            location_option_id: ipstack
+            access_key: ''
           map_center_id: location_plugins
         freeogeoip:
-          weight: 0
           enable: false
-          map_center_id: location_plugins
+          weight: 0
           settings:
             location_option_id: freeogeoip
+          map_center_id: location_plugins
       google_map_settings:
-        height: 400px
-        width: 100%
-        type: ROADMAP
-        zoom: 10
-        maxZoom: 18
-        minZoom: 0
-        gestureHandling: auto
         map_features:
           marker_infobubble:
             weight: 0
             settings:
               close_other: 1
+              close_button: 0
               close_button_src: ''
               shadow_style: 0
               padding: 10
@@ -298,7 +296,6 @@ content:
               arrow_style: 2
               arrow_position: 30
               arrow_size: 10
-              close_button: 0
             enabled: false
           control_streetview:
             weight: 0
@@ -307,12 +304,12 @@ content:
               behavior: default
             enabled: false
           control_zoom:
-            enabled: true
             weight: 0
             settings:
               position: RIGHT_CENTER
               behavior: default
               style: LARGE
+            enabled: true
           map_restriction:
             weight: 0
             settings:
@@ -332,11 +329,11 @@ content:
             settings:
               image_path: ''
               styles: ''
-              zoom_on_click: true
-              grid_size: 60
-              minimum_cluster_size: 2
               max_zoom: 15
+              minimum_cluster_size: 2
+              zoom_on_click: true
               average_center: false
+              grid_size: 60
             enabled: false
           marker_icon:
             weight: 0
@@ -359,13 +356,13 @@ content:
                 height: null
             enabled: false
           marker_infowindow:
-            enabled: true
             weight: 0
             settings:
               info_window_solitary: true
               disable_auto_pan: true
-              max_width: null
               info_auto_display: false
+              max_width: null
+            enabled: true
           control_recenter:
             weight: 0
             settings:
@@ -399,7 +396,9 @@ content:
             settings:
               spiderfiable_marker_path: /modules/contrib/geolocation/modules/geolocation_google_maps/images/marker-plus.svg
               markersWontMove: true
+              markersWontHide: false
               keepSpiderfied: true
+              ignoreMapClick: false
               nearbyDistance: 20
               circleSpiralSwitchover: 9
               circleFootSeparation: 23
@@ -407,8 +406,6 @@ content:
               spiralLengthStart: 11
               spiralLengthFactor: 4
               legWeight: 1.5
-              markersWontHide: false
-              ignoreMapClick: false
             enabled: false
           google_maps_layer_traffic:
             weight: 0
@@ -420,12 +417,12 @@ content:
               behavior: default
             enabled: false
           control_maptype:
-            enabled: true
             weight: 0
             settings:
               position: RIGHT_BOTTOM
               behavior: default
               style: DEFAULT
+            enabled: true
           context_popup:
             weight: 0
             settings:
@@ -443,10 +440,10 @@ content:
             weight: 0
             enabled: false
           control_locate:
-            enabled: true
             weight: 0
             settings:
               position: TOP_LEFT
+            enabled: true
           map_disable_poi:
             weight: 0
             enabled: false
@@ -456,14 +453,14 @@ content:
           drawing:
             weight: 0
             settings:
+              polyline: false
               strokeColor: '#FF0000'
               strokeOpacity: '0.8'
               strokeWeight: '2'
-              fillColor: '#FF0000'
-              fillOpacity: '0.35'
-              polyline: false
               geodesic: false
               polygon: false
+              fillColor: '#FF0000'
+              fillOpacity: '0.35'
             enabled: false
           control_fullscreen:
             weight: 0
@@ -482,10 +479,10 @@ content:
                 autocomplete_min_length: 1
                 component_restrictions:
                   route: ''
-                  locality: ''
-                  administrative_area: ''
-                  postal_code: ''
                   country: ''
+                  administrative_area: ''
+                  locality: ''
+                  postal_code: ''
                 boundary_restriction:
                   south: ''
                   west: ''
@@ -501,10 +498,13 @@ content:
           google_maps_layer_transit:
             weight: 0
             enabled: false
-      auto_client_location_marker: '0'
-      allow_override_map_settings: 0
-      hide_textfield_form: false
-      auto_client_location: ''
+        type: ROADMAP
+        zoom: 10
+        minZoom: 0
+        maxZoom: 18
+        height: 400px
+        width: 100%
+        gestureHandling: auto
     third_party_settings:
       geolocation_address:
         enable: true
@@ -516,10 +516,10 @@ content:
           autocomplete_min_length: 1
           component_restrictions:
             route: ''
-            locality: ''
-            administrative_area: ''
-            postal_code: ''
             country: UK
+            administrative_area: ''
+            locality: ''
+            postal_code: ''
           boundary_restriction:
             south: ''
             west: ''
@@ -536,18 +536,18 @@ content:
           administrative-area: false
           postal-code: false
   field_meta_tags:
+    type: metatag_firehose
     weight: 9
+    region: content
     settings:
       sidebar: true
     third_party_settings: {  }
-    type: metatag_firehose
-    region: content
   field_telephone:
+    type: telephone_plus_widget
     weight: 2
+    region: content
     settings: {  }
     third_party_settings: {  }
-    type: telephone_plus_widget
-    region: content
   langcode:
     type: language_select
     weight: 3
@@ -558,8 +558,8 @@ content:
   moderation_state:
     type: moderation_state_default
     weight: 15
-    settings: {  }
     region: content
+    settings: {  }
     third_party_settings: {  }
   path:
     type: path
@@ -569,23 +569,23 @@ content:
     third_party_settings: {  }
   promote:
     type: boolean_checkbox
-    settings:
-      display_label: true
     weight: 5
     region: content
+    settings:
+      display_label: true
     third_party_settings: {  }
   publish_on:
-    weight: 33
-    settings: {  }
-    third_party_settings: {  }
     type: datetime_timestamp
+    weight: 33
     region: content
-  publish_state:
-    weight: 31
     settings: {  }
     third_party_settings: {  }
+  publish_state:
     type: options_select
+    weight: 31
     region: content
+    settings: {  }
+    third_party_settings: {  }
   scheduler_settings:
     weight: 11
     region: content
@@ -593,17 +593,17 @@ content:
     third_party_settings: {  }
   status:
     type: boolean_checkbox
-    settings:
-      display_label: true
     weight: 8
     region: content
+    settings:
+      display_label: true
     third_party_settings: {  }
   sticky:
     type: boolean_checkbox
-    settings:
-      display_label: true
     weight: 6
     region: content
+    settings:
+      display_label: true
     third_party_settings: {  }
   title:
     type: string_textfield
@@ -616,25 +616,25 @@ content:
   uid:
     type: entity_reference_autocomplete
     weight: 4
+    region: content
     settings:
       match_operator: CONTAINS
+      match_limit: 10
       size: 60
       placeholder: ''
-      match_limit: 10
-    region: content
     third_party_settings: {  }
   unpublish_on:
-    weight: 34
-    settings: {  }
-    third_party_settings: {  }
     type: datetime_timestamp
+    weight: 34
     region: content
-  unpublish_state:
-    weight: 32
     settings: {  }
     third_party_settings: {  }
+  unpublish_state:
     type: options_select
+    weight: 32
     region: content
+    settings: {  }
+    third_party_settings: {  }
   url_redirects:
     weight: 14
     region: content

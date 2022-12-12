@@ -31,8 +31,8 @@ dependencies:
     - user
 third_party_settings:
   layout_builder:
-    allow_custom: false
     enabled: false
+    allow_custom: false
   field_group:
     group_address:
       children:
@@ -40,12 +40,14 @@ third_party_settings:
         - field_telephone
         - field_email_address
         - field_contact_website
+      label: address
       parent_name: ''
+      region: content
       weight: 2
       format_type: html_element
       format_settings:
-        id: ''
         classes: vcard
+        id: ''
         element: address
         show_label: false
         label_element: h3
@@ -53,45 +55,41 @@ third_party_settings:
         attributes: ''
         effect: none
         speed: fast
-      label: address
-      region: content
 id: node.contact.full
 targetEntityType: node
 bundle: contact
 mode: full
 content:
   body:
-    label: hidden
     type: text_default
-    weight: 1
+    label: hidden
     settings: {  }
     third_party_settings: {  }
+    weight: 1
     region: content
   field_address:
-    weight: 4
+    type: address_default
     label: hidden
     settings: {  }
     third_party_settings: {  }
-    type: address_default
+    weight: 4
     region: content
   field_contact_additional_info:
     type: text_default
-    weight: 4
-    region: content
     label: hidden
     settings: {  }
     third_party_settings: {  }
+    weight: 4
+    region: content
   field_contact_hours:
     type: text_default
-    weight: 3
-    region: content
     label: above
     settings: {  }
     third_party_settings: {  }
+    weight: 3
+    region: content
   field_contact_website:
     type: link
-    weight: 9
-    region: content
     label: inline
     settings:
       trim_length: 80
@@ -100,15 +98,17 @@ content:
       rel: ''
       target: ''
     third_party_settings: {  }
+    weight: 9
+    region: content
   field_email_address:
     type: basic_string
-    weight: 8
-    region: content
     label: inline
     settings: {  }
     third_party_settings: {  }
+    weight: 8
+    region: content
   field_location:
-    weight: 6
+    type: gmaps_lazy_load_formatter
     label: above
     settings:
       map_type: roadmap
@@ -118,12 +118,10 @@ content:
       map_width: '900'
       map_height: '400'
     third_party_settings: {  }
-    type: gmaps_lazy_load_formatter
+    weight: 6
     region: content
   field_related_info:
     type: link
-    weight: 5
-    region: content
     label: above
     settings:
       trim_length: 80
@@ -132,19 +130,21 @@ content:
       rel: ''
       target: ''
     third_party_settings: {  }
-  field_telephone:
     weight: 5
+    region: content
+  field_telephone:
+    type: nidirect_telephone_link
     label: hidden
     settings:
       vcard: '1'
     third_party_settings: {  }
-    type: nidirect_telephone_link
+    weight: 5
     region: content
   links:
-    weight: 0
-    region: content
     settings: {  }
     third_party_settings: {  }
+    weight: 0
+    region: content
 hidden:
   content_moderation_control: true
   field_contact_category: true

@@ -42,76 +42,74 @@ dependencies:
     - user
 third_party_settings:
   layout_builder:
-    allow_custom: false
     enabled: false
+    allow_custom: false
 id: node.health_condition.full
 targetEntityType: node
 bundle: health_condition
 mode: full
 content:
   body:
-    label: hidden
     type: text_default
-    weight: 3
+    label: hidden
     settings: {  }
     third_party_settings: {  }
+    weight: 3
     region: content
   field_additional_info:
     type: text_default
-    weight: 9
-    region: content
     label: hidden
     settings: {  }
     third_party_settings: {  }
+    weight: 9
+    region: content
   field_hc_info_source:
     type: entity_reference_entity_view
-    weight: 5
-    region: content
     label: hidden
     settings:
       view_mode: full
       link: false
     third_party_settings: {  }
+    weight: 5
+    region: content
   field_last_review_date:
     type: datetime_custom
+    label: hidden
+    settings:
+      timezone_override: ''
+      date_format: 'F Y'
+    third_party_settings: {  }
     weight: 7
     region: content
-    label: hidden
-    settings:
-      timezone_override: ''
-      date_format: 'F Y'
-    third_party_settings: {  }
   field_next_review_date:
     type: datetime_custom
-    weight: 6
-    region: content
     label: hidden
     settings:
       timezone_override: ''
       date_format: 'F Y'
     third_party_settings: {  }
+    weight: 6
+    region: content
   field_photo:
     type: entity_reference_entity_view
-    weight: 2
-    region: content
     label: hidden
     settings:
       view_mode: embed
       link: false
     third_party_settings: {  }
+    weight: 2
+    region: content
   field_published_date:
     type: datetime_custom
-    weight: 8
-    region: content
     label: hidden
     settings:
       timezone_override: ''
       date_format: 'F Y'
     third_party_settings: {  }
+    weight: 8
+    region: content
   field_related_info:
     type: link
-    weight: 4
-    region: content
     label: above
     settings:
       trim_length: 80
@@ -120,8 +118,10 @@ content:
       rel: ''
       target: ''
     third_party_settings: {  }
+    weight: 4
+    region: content
   field_summary:
-    weight: 1
+    type: smart_trim
     label: hidden
     settings:
       trim_length: 600
@@ -135,13 +135,13 @@ content:
       summary_handler: full
       trim_options: {  }
     third_party_settings: {  }
-    type: smart_trim
+    weight: 1
     region: content
   toc_display:
-    weight: 0
-    region: content
     settings: {  }
     third_party_settings: {  }
+    weight: 0
+    region: content
 hidden:
   banner_display: true
   content_moderation_control: true

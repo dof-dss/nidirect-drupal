@@ -34,21 +34,21 @@ bundle: contact
 mode: default
 content:
   body:
-    label: hidden
     type: text_default
-    weight: 1
+    label: hidden
     settings: {  }
     third_party_settings: {  }
+    weight: 1
     region: content
   field_address:
-    weight: 5
+    type: address_default
     label: above
     settings: {  }
     third_party_settings: {  }
-    type: address_default
+    weight: 5
     region: content
   field_location:
-    weight: 6
+    type: gmaps_lazy_load_formatter
     label: above
     settings:
       map_type: roadmap
@@ -58,17 +58,17 @@ content:
       map_width: '300'
       map_height: '300'
     third_party_settings: {  }
-    type: gmaps_lazy_load_formatter
+    weight: 6
     region: content
   field_meta_tags:
-    weight: 2
+    type: metatag_empty_formatter
     label: above
     settings: {  }
     third_party_settings: {  }
-    type: metatag_empty_formatter
+    weight: 2
     region: content
   field_related_info:
-    weight: 7
+    type: link
     label: above
     settings:
       trim_length: 80
@@ -77,10 +77,10 @@ content:
       rel: ''
       target: ''
     third_party_settings: {  }
-    type: link
+    weight: 7
     region: content
   field_summary:
-    weight: 3
+    type: smart_trim
     label: above
     settings:
       trim_length: 600
@@ -94,21 +94,21 @@ content:
       summary_handler: full
       trim_options: {  }
     third_party_settings: {  }
-    type: smart_trim
+    weight: 3
     region: content
   field_telephone:
-    weight: 4
+    type: nidirect_telephone_link
     label: above
     settings:
       vcard: true
     third_party_settings: {  }
-    type: nidirect_telephone_link
+    weight: 4
     region: content
   links:
-    weight: 0
-    region: content
     settings: {  }
     third_party_settings: {  }
+    weight: 0
+    region: content
 hidden:
   content_moderation_control: true
   field_contact_additional_info: true

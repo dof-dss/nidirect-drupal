@@ -15,12 +15,14 @@ plugin: page_title_block
 settings:
   id: page_title_block
   label: 'Page title'
-  provider: core
   label_display: '0'
+  provider: core
 visibility:
   request_path:
     id: request_path
-    pages: |
+    negate: false
+    context_mapping: {  }
+    pages: |-
       <front>
       /publications
       /publications/date/*
@@ -28,5 +30,3 @@ visibility:
       /services/gp-practices
       /services/health-conditions-a-z*
       /services/driving-instructors
-    negate: false
-    context_mapping: {  }
