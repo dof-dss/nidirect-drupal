@@ -167,3 +167,7 @@ crons:
     commands:
       start: '/bin/bash /app/cronjob.sh'
     shutdown_timeout: 290
+  # Workaround for the "mysterious disappearing breadcrumb" saga.
+  breadcrumb-reveal-thyself:
+    spec: '0 5 * * *'
+    commands: 'cd web ; drush cc render'
