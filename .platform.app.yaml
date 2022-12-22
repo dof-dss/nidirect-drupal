@@ -170,4 +170,5 @@ crons:
   # Workaround for the "mysterious disappearing breadcrumb" saga.
   breadcrumb-reveal-thyself:
     spec: '0 5 * * *'
-    commands: 'cd web ; drush cc render'
+    commands:
+      start: 'cd web ; drush cc render'
