@@ -36,6 +36,7 @@ $settings['config_readonly'] = (bool) getenv('CONFIG_READONLY');
 // Permit changes via command line.
 if (PHP_SAPI === 'cli') {
   $settings['config_readonly'] = FALSE;
+  ini_set('memory_limit', '256M');
 }
 
 // Configuration that is allowed to be changed in readonly environments.
