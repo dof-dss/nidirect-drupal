@@ -176,9 +176,9 @@ elements: |-
         '#type': textfield
         '#title': 'Amount of rent tenant pays'
         '#maxlength': 15
-        '#size': 10
-        '#placeholder': £0.00
-        '#input_mask': '''alias'': ''currency'', ''prefix'': ''£'''
+        '#size': 15
+        '#autocomplete': 'off'
+        '#input_mask': '''alias'': ''currency'', ''prefix'': ''£'', ''digitsOptional'': ''true'', ''placeholder'': '''', ''rightAlign'': ''false'''
         '#required': true
         '#pattern': '^£?[0-9,]{0,10}\.?[0-9]{0,2}p?$'
         '#pattern_error': 'You must enter a valid amount in pounds sterling'
@@ -190,10 +190,9 @@ elements: |-
         '#type': textfield
         '#title': 'Total rent arrears'
         '#maxlength': 15
-        '#size': 10
-        '#placeholder': £0.00
+        '#size': 15
         '#autocomplete': 'off'
-        '#input_mask': '''alias'': ''currency'', ''prefix'': ''£'''
+        '#input_mask': '''alias'': ''currency'', ''prefix'': ''£'', ''digitsOptional'': ''true'', ''placeholder'': '''', ''rightAlign'': ''false'''
         '#required': true
         '#pattern': '^£?[0-9,]{0,10}\.?[0-9]{0,2}p?$'
         '#pattern_error': 'You must enter a valid amount in pounds sterling'
@@ -202,21 +201,20 @@ elements: |-
     '#display_on': view
     '#text': |
       <h2>Landlord declaration</h2>
-      
+
       <p>By sending this application for a direct payment of Universal Credit, you declare:</p>
-      
+
       <ul>
       	<li>the information you provide is true and correct</li>
       </ul>
-      
+
       <p>You understand:</p>
-      
+
       <ul>
       	<li>you might be prosecuted if you provide information that is false or incorrect</li>
       	<li>Universal Credit might refuse your request for a direct payment of Universal Credit if you don’t provide all necessary information</li>
       	<li>you must tell Universal Credit immediately about any change in the tenant’s circumstances that could affect their housing or entitlement to Universal Credit</li>
       </ul>
-      
     '#format': full_html
   extra_comments_for_pooh_bear:
     '#type': textfield
@@ -437,7 +435,7 @@ handlers:
       sender_mail: ''
       sender_name: ''
       subject: 'Set up a direct payment of a tenant''s housing costs to a landlord'
-      body: |-
+      body: |
         Submitted on [webform_submission:created]<br />
         <br />
         Submitted values are:<br />
