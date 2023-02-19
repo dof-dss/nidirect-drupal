@@ -8,7 +8,7 @@ report-only:
     connect-src:
       base: self
       sources:
-        - 'https://www.google-analytics.com'
+        - 'https://*.google-analytics.com'
         - 'https://*.newrelic.com'
         - 'https://*.nr-data.net'
     font-src:
@@ -25,9 +25,9 @@ report-only:
     img-src:
       base: self
       sources:
-        - 'https://translate.google.com'
-        - 'https://www.googletagmanager.com'
-        - 'https://www.google-analytics.com'
+        - 'https://*.google.com'
+        - 'https://*.googletagmanager.com'
+        - 'https://*.google-analytics.com'
         - 'https://cdn.jsdelivr.net'
         - 'https://i.ytimg.com'
         - 'https://www.gstatic.com'
@@ -39,8 +39,8 @@ report-only:
     script-src:
       base: self
       sources:
-        - 'https://www.googletagmanager.com'
-        - 'https://www.google-analytics.com'
+        - 'https://*.googletagmanager.com'
+        - 'https://*.google-analytics.com'
         - 'https://*.newrelic.com'
         - 'https://*.nr-data.net'
     script-src-attr:
@@ -48,8 +48,8 @@ report-only:
     script-src-elem:
       base: self
       sources:
-        - 'https://www.googletagmanager.com'
-        - 'https://www.google-analytics.com'
+        - 'https://*.googletagmanager.com'
+        - 'https://*.google-analytics.com'
         - 'https://*.newrelic.com'
         - 'https://*.nr-data.net'
     style-src:
@@ -62,10 +62,7 @@ report-only:
       base: self
     block-all-mixed-content: true
   reporting:
-    plugin: report-uri-com
-    options:
-      subdomain: ''
-      wizard: false
+    plugin: none
 enforce:
   enable: false
   directives:

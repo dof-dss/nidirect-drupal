@@ -13,6 +13,22 @@ title: 'Report legal aid fraud'
 description: ''
 category: ''
 elements: |-
+  prequisites:
+    '#type': webform_wizard_page
+    '#title': Prequisites
+    '#prev_button_label': Previous
+    '#next_button_label': Continue
+    from_ni:
+      '#type': processed_text
+      '#text': |
+        <div class="info-notice">
+        <h2>Applies only to Northern Ireland</h2>
+
+        <p>If you live in England or Wales you can report legal aid fraud to the&nbsp;<a href="https://www.gov.uk/guidance/legal-aid-agency-special-investigations">Legal Aid Agency for England and Wales</a>. &nbsp;If you live in Scotland you can report legal aid fraud to the&nbsp;<a href="https://www.mygov.scot/report-legal-aid-fraud">Scottish Legal Aid Board</a>.</p>
+        </div>
+
+        <p>Select continue to report legal aid fraud&nbsp;in Northern Ireland.</p>
+      '#format': full_html
   report_who_:
     '#type': webform_wizard_page
     '#title': 'Report who?'
