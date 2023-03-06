@@ -17,6 +17,10 @@ suggester_settings:
       - body
       - field_supplementary_contact
       - title_fulltext
+    highlight:
+      enabled: false
+      field: ''
+    suggest_keys: false
     view_modes:
       'entity:node':
         contact: ''
@@ -33,8 +37,8 @@ search_settings:
         - contact_search
 options:
   limit: 5
-  min_length: 2
+  min_length: 3
   show_count: false
-  delay: null
+  delay: 500
   submit_button_selector: ':submit'
   autosubmit: true
