@@ -27,23 +27,21 @@ bundle: application
 mode: full
 content:
   body:
-    label: hidden
     type: text_default
-    weight: 1
+    label: hidden
     settings: {  }
     third_party_settings: {  }
+    weight: 1
     region: content
   field_additional_info:
     type: text_default
-    weight: 3
-    region: content
     label: hidden
     settings: {  }
     third_party_settings: {  }
+    weight: 3
+    region: content
   field_link:
     type: link
-    weight: 2
-    region: content
     label: hidden
     settings:
       trim_length: null
@@ -52,10 +50,10 @@ content:
       rel: '0'
       target: '0'
     third_party_settings: {  }
+    weight: 2
+    region: content
   field_related_info:
     type: link
-    weight: 4
-    region: content
     label: above
     settings:
       trim_length: 80
@@ -64,8 +62,10 @@ content:
       rel: ''
       target: ''
     third_party_settings: {  }
+    weight: 4
+    region: content
   field_summary:
-    weight: 0
+    type: smart_trim
     label: hidden
     settings:
       trim_length: 600
@@ -79,7 +79,7 @@ content:
       summary_handler: full
       trim_options: {  }
     third_party_settings: {  }
-    type: smart_trim
+    weight: 0
     region: content
 hidden:
   banner_display: true

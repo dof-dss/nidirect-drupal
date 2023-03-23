@@ -23,83 +23,34 @@ base_table: node_field_data
 base_field: nid
 display:
   default:
-    display_plugin: default
     id: default
     display_title: Master
+    display_plugin: default
     position: 0
     display_options:
-      access:
-        type: none
-        options: {  }
-      cache:
-        type: tag
-        options: {  }
-      query:
-        type: views_query
-        options:
-          disable_sql_rewrite: false
-          distinct: false
-          replica: false
-          query_comment: ''
-          query_tags: {  }
-          contextual_filters_or: false
-      exposed_form:
-        type: basic
-        options:
-          submit_button: Apply
-          reset_button: false
-          reset_button_label: Reset
-          exposed_sorts_label: 'Sort by'
-          expose_sort_order: true
-          sort_asc_label: Asc
-          sort_desc_label: Desc
-      pager:
-        type: some
-        options:
-          items_per_page: 5
-          offset: 0
-      style:
-        type: html_list
-        options:
-          grouping: {  }
-          row_class: ''
-          default_row_class: false
-          type: ul
-          wrapper_class: ''
-          class: ''
-      row:
-        type: fields
-        options:
-          default_field_elements: false
-          inline: {  }
-          separator: ''
-          hide_empty: false
+      title: 'Popular information'
       fields:
         title:
           id: title
           table: node_field_data
           field: title
+          relationship: none
+          group_type: group
+          admin_label: ''
           entity_type: node
           entity_field: title
+          plugin_id: field
           label: ''
+          exclude: false
           alter:
             alter_text: false
             make_link: false
             absolute: false
-            trim: false
             word_boundary: false
             ellipsis: false
             strip_tags: false
+            trim: false
             html: false
-          hide_empty: false
-          empty_zero: false
-          settings:
-            link_to_entity: true
-          plugin_id: field
-          relationship: none
-          group_type: group
-          admin_label: ''
-          exclude: false
           element_type: ''
           element_class: ''
           element_label_type: ''
@@ -109,9 +60,13 @@ display:
           element_wrapper_class: ''
           element_default_classes: true
           empty: ''
+          hide_empty: false
+          empty_zero: false
           hide_alter_empty: true
           click_sort_column: value
           type: string
+          settings:
+            link_to_entity: true
           group_column: value
           group_columns: {  }
           group_rows: true
@@ -122,20 +77,59 @@ display:
           multi_type: separator
           separator: ', '
           field_api_classes: false
+      pager:
+        type: some
+        options:
+          offset: 0
+          items_per_page: 5
+      exposed_form:
+        type: basic
+        options:
+          submit_button: Apply
+          reset_button: false
+          reset_button_label: Reset
+          exposed_sorts_label: 'Sort by'
+          expose_sort_order: true
+          sort_asc_label: Asc
+          sort_desc_label: Desc
+      access:
+        type: none
+        options: {  }
+      cache:
+        type: tag
+        options: {  }
+      empty: {  }
+      sorts:
+        page_views:
+          id: page_views
+          table: node_field_data
+          field: page_views
+          relationship: none
+          group_type: group
+          admin_label: ''
+          entity_type: node
+          entity_field: page_views
+          plugin_id: standard
+          order: DESC
+          expose:
+            label: ''
+            field_identifier: page_views
+          exposed: false
+      arguments: {  }
       filters:
         status:
-          value: '1'
+          id: status
           table: node_field_data
           field: status
-          plugin_id: boolean
           entity_type: node
           entity_field: status
-          id: status
+          plugin_id: boolean
+          value: '1'
+          group: 1
           expose:
             operator: ''
             operator_limit_selection: false
             operator_list: {  }
-          group: 1
         type:
           id: type
           table: node_field_data
@@ -143,6 +137,9 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
+          entity_type: node
+          entity_field: type
+          plugin_id: bundle
           operator: in
           value:
             article: article
@@ -179,9 +176,6 @@ display:
             default_group: All
             default_group_multiple: {  }
             group_items: {  }
-          entity_type: node
-          entity_field: type
-          plugin_id: bundle
         page_views:
           id: page_views
           table: node_field_data
@@ -189,6 +183,9 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
+          entity_type: node
+          entity_field: page_views
+          plugin_id: numeric
           operator: '>'
           value:
             min: ''
@@ -210,9 +207,9 @@ display:
             multiple: false
             remember_roles:
               authenticated: authenticated
-            placeholder: ''
             min_placeholder: ''
             max_placeholder: ''
+            placeholder: ''
           is_grouped: false
           group_info:
             label: ''
@@ -225,9 +222,6 @@ display:
             default_group: All
             default_group_multiple: {  }
             group_items: {  }
-          entity_type: node
-          entity_field: page_views
-          plugin_id: numeric
         depth:
           id: depth
           table: book
@@ -235,6 +229,7 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
+          plugin_id: numeric
           operator: '<='
           value:
             min: ''
@@ -256,9 +251,9 @@ display:
             multiple: false
             remember_roles:
               authenticated: authenticated
-            placeholder: ''
             min_placeholder: ''
             max_placeholder: ''
+            placeholder: ''
           is_grouped: false
           group_info:
             label: ''
@@ -271,7 +266,6 @@ display:
             default_group: All
             default_group_multiple: {  }
             group_items: {  }
-          plugin_id: numeric
         depth_1:
           id: depth_1
           table: book
@@ -279,6 +273,7 @@ display:
           relationship: nid
           group_type: group
           admin_label: ''
+          plugin_id: numeric
           operator: empty
           value:
             min: ''
@@ -300,9 +295,9 @@ display:
             multiple: false
             remember_roles:
               authenticated: authenticated
-            placeholder: ''
             min_placeholder: ''
             max_placeholder: ''
+            placeholder: ''
           is_grouped: false
           group_info:
             label: ''
@@ -315,25 +310,36 @@ display:
             default_group: All
             default_group_multiple: {  }
             group_items: {  }
-          plugin_id: numeric
-      sorts:
-        page_views:
-          id: page_views
-          table: node_field_data
-          field: page_views
-          relationship: none
-          group_type: group
-          admin_label: ''
-          order: DESC
-          exposed: false
-          expose:
-            label: ''
-          entity_type: node
-          entity_field: page_views
-          plugin_id: standard
-      header: {  }
-      footer: {  }
-      empty: {  }
+      filter_groups:
+        operator: AND
+        groups:
+          1: AND
+          2: OR
+      style:
+        type: html_list
+        options:
+          grouping: {  }
+          row_class: ''
+          default_row_class: false
+          type: ul
+          wrapper_class: ''
+          class: ''
+      row:
+        type: fields
+        options:
+          default_field_elements: false
+          inline: {  }
+          separator: ''
+          hide_empty: false
+      query:
+        type: views_query
+        options:
+          query_comment: ''
+          disable_sql_rewrite: false
+          distinct: false
+          replica: false
+          query_tags: {  }
+          contextual_filters_or: false
       relationships:
         nid:
           id: nid
@@ -342,16 +348,11 @@ display:
           relationship: none
           group_type: group
           admin_label: 'Book Page'
-          required: false
           plugin_id: standard
-      arguments: {  }
+          required: false
+      header: {  }
+      footer: {  }
       display_extenders: {  }
-      filter_groups:
-        operator: AND
-        groups:
-          1: AND
-          2: OR
-      title: 'Popular information'
     cache_metadata:
       max-age: -1
       contexts:
@@ -360,30 +361,25 @@ display:
         - 'user.node_grants:view'
       tags: {  }
   block_1:
-    display_plugin: block
     id: block_1
     display_title: 'health conditions'
+    display_plugin: block
     position: 3
     display_options:
-      display_extenders:
-        metatag_display_extender:
-          metatags: {  }
-          tokenize: false
-      display_description: ''
       filters:
         status:
-          value: '1'
+          id: status
           table: node_field_data
           field: status
-          plugin_id: boolean
           entity_type: node
           entity_field: status
-          id: status
+          plugin_id: boolean
+          value: '1'
+          group: 1
           expose:
             operator: ''
             operator_limit_selection: false
             operator_list: {  }
-          group: 1
         type:
           id: type
           table: node_field_data
@@ -391,6 +387,9 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
+          entity_type: node
+          entity_field: type
+          plugin_id: bundle
           operator: in
           value:
             health_condition: health_condition
@@ -423,9 +422,6 @@ display:
             default_group: All
             default_group_multiple: {  }
             group_items: {  }
-          entity_type: node
-          entity_field: type
-          plugin_id: bundle
         page_views:
           id: page_views
           table: node_field_data
@@ -433,6 +429,9 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
+          entity_type: node
+          entity_field: page_views
+          plugin_id: numeric
           operator: '>'
           value:
             min: ''
@@ -454,9 +453,9 @@ display:
             multiple: false
             remember_roles:
               authenticated: authenticated
-            placeholder: ''
             min_placeholder: ''
             max_placeholder: ''
+            placeholder: ''
           is_grouped: false
           group_info:
             label: ''
@@ -469,9 +468,6 @@ display:
             default_group: All
             default_group_multiple: {  }
             group_items: {  }
-          entity_type: node
-          entity_field: page_views
-          plugin_id: numeric
         depth:
           id: depth
           table: book
@@ -479,6 +475,7 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
+          plugin_id: numeric
           operator: '<='
           value:
             min: ''
@@ -500,9 +497,9 @@ display:
             multiple: false
             remember_roles:
               authenticated: authenticated
-            placeholder: ''
             min_placeholder: ''
             max_placeholder: ''
+            placeholder: ''
           is_grouped: false
           group_info:
             label: ''
@@ -515,7 +512,6 @@ display:
             default_group: All
             default_group_multiple: {  }
             group_items: {  }
-          plugin_id: numeric
         depth_1:
           id: depth_1
           table: book
@@ -523,6 +519,7 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
+          plugin_id: numeric
           operator: empty
           value:
             min: ''
@@ -544,9 +541,9 @@ display:
             multiple: false
             remember_roles:
               authenticated: authenticated
-            placeholder: ''
             min_placeholder: ''
             max_placeholder: ''
+            placeholder: ''
           is_grouped: false
           group_info:
             label: ''
@@ -559,15 +556,19 @@ display:
             default_group: All
             default_group_multiple: {  }
             group_items: {  }
-          plugin_id: numeric
-      defaults:
-        filters: false
-        filter_groups: false
       filter_groups:
         operator: AND
         groups:
           1: AND
           2: OR
+      defaults:
+        filters: false
+        filter_groups: false
+      display_description: ''
+      display_extenders:
+        metatag_display_extender:
+          metatags: {  }
+          tokenize: false
     cache_metadata:
       max-age: -1
       contexts:
@@ -576,14 +577,11 @@ display:
         - 'user.node_grants:view'
       tags: {  }
   pop_by_term:
-    display_plugin: block
     id: pop_by_term
     display_title: 'by term'
+    display_plugin: block
     position: 5
     display_options:
-      display_extenders:
-        metatag_display_extender: {  }
-      display_description: ''
       arguments:
         term_node_tid_depth:
           id: term_node_tid_depth
@@ -592,6 +590,8 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
+          entity_type: node
+          plugin_id: taxonomy_index_tid_depth
           default_action: ignore
           exception:
             value: all
@@ -606,8 +606,8 @@ display:
           summary_options:
             base_path: ''
             count: true
-            items_per_page: 25
             override: false
+            items_per_page: 25
           summary:
             sort_order: asc
             number_of_records: 0
@@ -619,32 +619,26 @@ display:
           validate_options:
             bundles:
               site_themes: site_themes
+            access: false
             operation: view
             multiple: 0
-            access: false
-          depth: 10
           break_phrase: false
+          depth: 10
           use_taxonomy_term_path: false
-          entity_type: node
-          plugin_id: taxonomy_index_tid_depth
-      defaults:
-        arguments: false
-        filters: false
-        filter_groups: false
       filters:
         status:
-          value: '1'
+          id: status
           table: node_field_data
           field: status
-          plugin_id: boolean
           entity_type: node
           entity_field: status
-          id: status
+          plugin_id: boolean
+          value: '1'
+          group: 1
           expose:
             operator: ''
             operator_limit_selection: false
             operator_list: {  }
-          group: 1
         type:
           id: type
           table: node_field_data
@@ -652,6 +646,9 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
+          entity_type: node
+          entity_field: type
+          plugin_id: bundle
           operator: in
           value:
             article: article
@@ -686,9 +683,6 @@ display:
             default_group: All
             default_group_multiple: {  }
             group_items: {  }
-          entity_type: node
-          entity_field: type
-          plugin_id: bundle
         page_views:
           id: page_views
           table: node_field_data
@@ -696,6 +690,9 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
+          entity_type: node
+          entity_field: page_views
+          plugin_id: numeric
           operator: '>'
           value:
             min: ''
@@ -717,9 +714,9 @@ display:
             multiple: false
             remember_roles:
               authenticated: authenticated
-            placeholder: ''
             min_placeholder: ''
             max_placeholder: ''
+            placeholder: ''
           is_grouped: false
           group_info:
             label: ''
@@ -732,9 +729,6 @@ display:
             default_group: All
             default_group_multiple: {  }
             group_items: {  }
-          entity_type: node
-          entity_field: page_views
-          plugin_id: numeric
         depth:
           id: depth
           table: book
@@ -742,6 +736,7 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
+          plugin_id: numeric
           operator: '<='
           value:
             min: ''
@@ -763,9 +758,9 @@ display:
             multiple: false
             remember_roles:
               authenticated: authenticated
-            placeholder: ''
             min_placeholder: ''
             max_placeholder: ''
+            placeholder: ''
           is_grouped: false
           group_info:
             label: ''
@@ -778,7 +773,6 @@ display:
             default_group: All
             default_group_multiple: {  }
             group_items: {  }
-          plugin_id: numeric
         depth_1:
           id: depth_1
           table: book
@@ -786,6 +780,7 @@ display:
           relationship: nid
           group_type: group
           admin_label: ''
+          plugin_id: numeric
           operator: empty
           value:
             min: ''
@@ -807,9 +802,9 @@ display:
             multiple: false
             remember_roles:
               authenticated: authenticated
-            placeholder: ''
             min_placeholder: ''
             max_placeholder: ''
+            placeholder: ''
           is_grouped: false
           group_info:
             label: ''
@@ -822,12 +817,18 @@ display:
             default_group: All
             default_group_multiple: {  }
             group_items: {  }
-          plugin_id: numeric
       filter_groups:
         operator: AND
         groups:
           1: AND
           2: OR
+      defaults:
+        arguments: false
+        filters: false
+        filter_groups: false
+      display_description: ''
+      display_extenders:
+        metatag_display_extender: {  }
     cache_metadata:
       max-age: -1
       contexts:
@@ -837,14 +838,11 @@ display:
         - 'user.node_grants:view'
       tags: {  }
   pop_by_top_level_term:
-    display_plugin: block
     id: pop_by_top_level_term
     display_title: 'by top-level term'
+    display_plugin: block
     position: 4
     display_options:
-      display_extenders:
-        metatag_display_extender: {  }
-      display_description: ''
       arguments:
         field_top_level_theme_target_id:
           id: field_top_level_theme_target_id
@@ -853,6 +851,7 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
+          plugin_id: numeric
           default_action: 'not found'
           exception:
             value: all
@@ -867,8 +866,8 @@ display:
           summary_options:
             base_path: ''
             count: true
-            items_per_page: 25
             override: false
+            items_per_page: 25
           summary:
             sort_order: asc
             number_of_records: 0
@@ -880,30 +879,25 @@ display:
           validate_options:
             bundles:
               site_themes: site_themes
+            access: false
             operation: view
             multiple: 0
-            access: false
           break_phrase: false
           not: false
-          plugin_id: numeric
-      defaults:
-        arguments: false
-        filters: false
-        filter_groups: false
       filters:
         status:
-          value: '1'
+          id: status
           table: node_field_data
           field: status
-          plugin_id: boolean
           entity_type: node
           entity_field: status
-          id: status
+          plugin_id: boolean
+          value: '1'
+          group: 1
           expose:
             operator: ''
             operator_limit_selection: false
             operator_list: {  }
-          group: 1
         type:
           id: type
           table: node_field_data
@@ -911,6 +905,9 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
+          entity_type: node
+          entity_field: type
+          plugin_id: bundle
           operator: in
           value:
             article: article
@@ -945,9 +942,6 @@ display:
             default_group: All
             default_group_multiple: {  }
             group_items: {  }
-          entity_type: node
-          entity_field: type
-          plugin_id: bundle
         page_views:
           id: page_views
           table: node_field_data
@@ -955,6 +949,9 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
+          entity_type: node
+          entity_field: page_views
+          plugin_id: numeric
           operator: '>'
           value:
             min: ''
@@ -976,9 +973,9 @@ display:
             multiple: false
             remember_roles:
               authenticated: authenticated
-            placeholder: ''
             min_placeholder: ''
             max_placeholder: ''
+            placeholder: ''
           is_grouped: false
           group_info:
             label: ''
@@ -991,9 +988,6 @@ display:
             default_group: All
             default_group_multiple: {  }
             group_items: {  }
-          entity_type: node
-          entity_field: page_views
-          plugin_id: numeric
         depth:
           id: depth
           table: book
@@ -1001,6 +995,7 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
+          plugin_id: numeric
           operator: '<='
           value:
             min: ''
@@ -1022,9 +1017,9 @@ display:
             multiple: false
             remember_roles:
               authenticated: authenticated
-            placeholder: ''
             min_placeholder: ''
             max_placeholder: ''
+            placeholder: ''
           is_grouped: false
           group_info:
             label: ''
@@ -1037,7 +1032,6 @@ display:
             default_group: All
             default_group_multiple: {  }
             group_items: {  }
-          plugin_id: numeric
         depth_1:
           id: depth_1
           table: book
@@ -1045,6 +1039,7 @@ display:
           relationship: nid
           group_type: group
           admin_label: ''
+          plugin_id: numeric
           operator: empty
           value:
             min: ''
@@ -1066,9 +1061,9 @@ display:
             multiple: false
             remember_roles:
               authenticated: authenticated
-            placeholder: ''
             min_placeholder: ''
             max_placeholder: ''
+            placeholder: ''
           is_grouped: false
           group_info:
             label: ''
@@ -1081,12 +1076,18 @@ display:
             default_group: All
             default_group_multiple: {  }
             group_items: {  }
-          plugin_id: numeric
       filter_groups:
         operator: AND
         groups:
           1: AND
           2: OR
+      defaults:
+        arguments: false
+        filters: false
+        filter_groups: false
+      display_description: ''
+      display_extenders:
+        metatag_display_extender: {  }
     cache_metadata:
       max-age: -1
       contexts:
@@ -1096,17 +1097,17 @@ display:
         - 'user.node_grants:view'
       tags: {  }
   pop_info_site_wide:
-    display_plugin: block
     id: pop_info_site_wide
     display_title: 'information site wide'
+    display_plugin: block
     position: 1
     display_options:
-      display_extenders:
-        metatag_display_extender: {  }
-      display_description: ''
       defaults:
         filters: true
         filter_groups: true
+      display_description: ''
+      display_extenders:
+        metatag_display_extender: {  }
     cache_metadata:
       max-age: -1
       contexts:
@@ -1115,32 +1116,26 @@ display:
         - 'user.node_grants:view'
       tags: {  }
   pop_services_site_wide:
-    display_plugin: block
     id: pop_services_site_wide
     display_title: 'services site wide'
+    display_plugin: block
     position: 2
     display_options:
-      display_extenders: {  }
-      display_description: ''
       title: 'Popular services'
-      defaults:
-        title: false
-        filters: false
-        filter_groups: false
       filters:
         status:
-          value: '1'
+          id: status
           table: node_field_data
           field: status
-          plugin_id: boolean
           entity_type: node
           entity_field: status
-          id: status
+          plugin_id: boolean
+          value: '1'
+          group: 1
           expose:
             operator: ''
             operator_limit_selection: false
             operator_list: {  }
-          group: 1
         type:
           id: type
           table: node_field_data
@@ -1148,6 +1143,9 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
+          entity_type: node
+          entity_field: type
+          plugin_id: bundle
           operator: in
           value:
             application: application
@@ -1180,9 +1178,6 @@ display:
             default_group: All
             default_group_multiple: {  }
             group_items: {  }
-          entity_type: node
-          entity_field: type
-          plugin_id: bundle
         page_views:
           id: page_views
           table: node_field_data
@@ -1190,6 +1185,9 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
+          entity_type: node
+          entity_field: page_views
+          plugin_id: numeric
           operator: '>'
           value:
             min: ''
@@ -1211,9 +1209,9 @@ display:
             multiple: false
             remember_roles:
               authenticated: authenticated
-            placeholder: ''
             min_placeholder: ''
             max_placeholder: ''
+            placeholder: ''
           is_grouped: false
           group_info:
             label: ''
@@ -1226,9 +1224,6 @@ display:
             default_group: All
             default_group_multiple: {  }
             group_items: {  }
-          entity_type: node
-          entity_field: page_views
-          plugin_id: numeric
         depth:
           id: depth
           table: book
@@ -1236,6 +1231,7 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
+          plugin_id: numeric
           operator: '<='
           value:
             min: ''
@@ -1257,9 +1253,9 @@ display:
             multiple: false
             remember_roles:
               authenticated: authenticated
-            placeholder: ''
             min_placeholder: ''
             max_placeholder: ''
+            placeholder: ''
           is_grouped: false
           group_info:
             label: ''
@@ -1272,7 +1268,6 @@ display:
             default_group: All
             default_group_multiple: {  }
             group_items: {  }
-          plugin_id: numeric
         depth_1:
           id: depth_1
           table: book
@@ -1280,6 +1275,7 @@ display:
           relationship: nid
           group_type: group
           admin_label: ''
+          plugin_id: numeric
           operator: empty
           value:
             min: ''
@@ -1301,9 +1297,9 @@ display:
             multiple: false
             remember_roles:
               authenticated: authenticated
-            placeholder: ''
             min_placeholder: ''
             max_placeholder: ''
+            placeholder: ''
           is_grouped: false
           group_info:
             label: ''
@@ -1316,12 +1312,17 @@ display:
             default_group: All
             default_group_multiple: {  }
             group_items: {  }
-          plugin_id: numeric
       filter_groups:
         operator: AND
         groups:
           1: AND
           2: OR
+      defaults:
+        title: false
+        filters: false
+        filter_groups: false
+      display_description: ''
+      display_extenders: {  }
     cache_metadata:
       max-age: -1
       contexts:

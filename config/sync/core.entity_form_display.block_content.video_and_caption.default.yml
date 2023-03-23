@@ -17,28 +17,28 @@ bundle: video_and_caption
 mode: default
 content:
   field_caption:
+    type: string_textarea
     weight: 1
+    region: content
     settings:
       rows: 3
       placeholder: ''
     third_party_settings: {  }
-    type: string_textarea
-    region: content
   field_video:
     type: media_library_widget
     weight: 0
+    region: content
     settings:
       media_types: {  }
     third_party_settings:
       media_library_edit:
         show_edit: '1'
-    region: content
   field_video_caption_display:
+    type: options_select
     weight: 26
+    region: content
     settings: {  }
     third_party_settings: {  }
-    type: options_select
-    region: content
 hidden:
   body: true
   info: true

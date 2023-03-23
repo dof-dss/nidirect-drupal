@@ -40,35 +40,39 @@
         }
     ],
     "require": {
+        "ext-dom": "20031129",
+        "ext-simplexml": "*",
         "composer/installers": "^1.9",
         "cweagans/composer-patches": "^1.6.5",
-        "dof-dss/nicsdru_nidirect_theme": "^2.0",
-        "dof-dss/nicsdru_origins_modules": "^1.0",
-        "dof-dss/nicsdru_origins_theme": "^0.4",
+        "dof-dss/nicsdru_nidirect_theme": "^2.1",
+        "dof-dss/nicsdru_origins_modules": "^1.4",
+        "dof-dss/nicsdru_origins_theme": "^0.5.0",
         "dof-dss/nidirect-d8-test-install-profile": "^1.0",
-        "dof-dss/nidirect-site-modules": "^2.1",
+        "dof-dss/nidirect-site-modules": "^2.2",
         "drupal/address": "^1.7",
-        "drupal/admin_toolbar": "^3.0",
+        "drupal/admin_toolbar": "^3.2",
         "drupal/adminimal_theme": "^1.5",
+        "drupal/advban": "^1.5",
         "drupal/antibot": "^1.4",
+        "drupal/autoban": "^1.8",
         "drupal/better_field_descriptions": "^1.6",
         "drupal/block_content_permissions": "^1.10",
         "drupal/block_field": "^1.0@RC",
         "drupal/block_list_override": "^1.0",
         "drupal/chosen": "^3.0",
         "drupal/chosen_lib": "^3.0",
-        "drupal/clientside_validation": "^3.0@RC",
+        "drupal/clientside_validation": "^3.0",
         "drupal/config_filter": "^2.2",
         "drupal/config_ignore": "^2.1",
         "drupal/config_readonly": "^1.0@beta",
         "drupal/config_split": "^2.0.0",
         "drupal/config_update": "^1.6",
         "drupal/console": "^1.9",
-        "drupal/cookie_content_blocker": "^1.7",
-        "drupal/core-composer-scaffold": "~9.3.15",
+        "drupal/cookie_content_blocker": "^2.0",
+        "drupal/core-composer-scaffold": "^9.4",
         "drupal/core-dev": "~9.3.15",
-        "drupal/core-project-message": "~9.3.15",
-        "drupal/core-recommended": "~9.3.15",
+        "drupal/core-project-message": "^9.4",
+        "drupal/core-recommended": "^9.4",
         "drupal/csp": "^1.15",
         "drupal/csv_serialization": "^2.0@beta",
         "drupal/ctools": "^3.7",
@@ -79,13 +83,13 @@
         "drupal/entity_embed": "^1.2",
         "drupal/entity_reference_unpublished": "^1.2",
         "drupal/entityqueue": "^1.0",
-        "drupal/eu_cookie_compliance": "^1.8",
-        "drupal/facets": "^1.8",
+        "drupal/eu_cookie_compliance": "^1.20",
+        "drupal/facets": "^2.0",
         "drupal/facets_pretty_paths": "^1.1",
         "drupal/fastly": "^3.9",
         "drupal/field_group": "^3.2",
         "drupal/file_delete_ui": "^1.0@alpha",
-        "drupal/filelog": "^2.0",
+        "drupal/filelog": "^2.1",
         "drupal/flag": "4.x-dev",
         "drupal/geocoder": "^3.14",
         "drupal/geolocation": "3.x",
@@ -116,15 +120,15 @@
         "drupal/scheduler": "^1.4",
         "drupal/scheduler_content_moderation_integration": "^1.1",
         "drupal/schema_metatag": "^2.2",
-        "drupal/search_api": "^1.20",
-        "drupal/search_api_autocomplete": "^1.5",
+        "drupal/search_api": "^1.26",
+        "drupal/search_api_autocomplete": "^1.7",
         "drupal/search_api_location": "^1.0@alpha",
         "drupal/search_api_solr": "^4.2",
-        "drupal/search_api_spellcheck": "^3.0@beta",
-        "drupal/shs": "^1.0@alpha",
+        "drupal/search_api_spellcheck": "^4.0",
+        "drupal/shs": "^2.0@RC",
         "drupal/simple_sitemap": "^3.8",
         "drupal/simplei": "^1.1",
-        "drupal/sitewide_alert": "^1.3",
+        "drupal/sitewide_alert": "^2.0",
         "drupal/smart_trim": "^1.2",
         "drupal/structure_sync": "^2.0",
         "drupal/taxonomy_access_fix": "^3.1",
@@ -136,10 +140,11 @@
         "drupal/twig_field_value": "^2.0",
         "drupal/twig_tweak": "^2.4",
         "drupal/ultimate_cron": "^2.0@alpha",
+        "drupal/upgrade_status": "^3.14",
         "drupal/views_contextual_filters_or": "^1.1",
         "drupal/views_custom_cache_tag": "^1.1",
         "drupal/views_data_export": "^1.0",
-        "drupal/webform": "^6.0",
+        "drupal/webform": "^6.2@beta",
         "drupal/whatlinkshere": "^2.1",
         "drupal/xls_serialization": "^1.2",
         "drush/drush": "^10.1",
@@ -154,7 +159,7 @@
         "zaporylie/composer-drupal-optimizations": "^1.0"
     },
     "require-dev": {
-        "drupal/devel": "^4.1",
+        "drupal/devel": "^5.0",
         "drupal/devel_entity_updates": "^3.0",
         "drupal/easy_install": "^10.5",
         "drupal/fpa": "^3.0",
@@ -164,13 +169,8 @@
         "drupal/restui": "^1.17",
         "drupal/stage_file_proxy": "^1.0@beta",
         "drupal/twig_vardumper": "^2.2",
-        "drupal/upgrade_status": "^3.0",
         "kint-php/kint": "^3.3",
-        "mglaman/drupal-check": "^1.1",
-        "mglaman/phpstan-drupal": "^1.1",
-        "phpstan/extension-installer": "^1.1",
-        "phpstan/phpstan": "^1.6",
-        "phpstan/phpstan-deprecation-rules": "^1.0",
+        "mglaman/drupal-check": "^1.4",
         "previousnext/phpunit-finder": "^1.0@alpha",
         "thinktandem/migrate_booster": "dev-main"
     },
@@ -199,10 +199,6 @@
             "drupal/address": {
                 "Allow to set a list of preferred countries": "https://www.drupal.org/files/issues/2019-11-11/2626982-37.preferred_countries.patch"
             },
-            "drupal/clientside_validation": {
-                "core/jquery.once is required": "https://www.drupal.org/files/issues/2021-02-23/3200022-01.patch",
-                "Uncaught type error patches including errors as label patch": "https://www.drupal.org/files/issues/2021-06-08/clientside_validation_typerror_3217889_3.patch"
-            },
             "drupal/cookie_content_blocker": {
                 "Disable XSS for tag settings to allow HTML output": "https://gist.githubusercontent.com/omahm/eb99bc8278b57798a7d82bf06c27b8d1/raw/d9d75e06300a102b072dd8166f82ec381f211b9d/cookie_content_blocker_disable_xss"
             },
@@ -214,7 +210,8 @@
                 "Support for AjaxResponse implementing CacheableResponseInterface": "https://gist.githubusercontent.com/omahm/cd990b5cdba637fe270ada0702717d9d/raw/60a05babb9747061df201ca9f74afb4b59166f14/cacheableAjaxResponse.patch",
                 "Increase service priority for logger factory": "https://gist.githubusercontent.com/johangant/3023926f40867e14385bd3d87831adfc/raw/174cec09449636263b8dcd01679945677a0d607d/increase_logger_factory_service_priority.patch",
                 "'Negate' form value for condition plugins should be cast to boolean in validation": "https://www.drupal.org/files/issues/2020-03-23/3114467-8.patch",
-                "Remove invalid iframe attributes from oembed field formatter": "https://www.drupal.org/files/issues/2019-07-31/remove-iframe-attributes-3071446-4.patch"
+                "Remove invalid iframe attributes from oembed field formatter": "https://www.drupal.org/files/issues/2019-07-31/remove-iframe-attributes-3071446-4.patch",
+                "Stable theme's off-canvas reset css causes incorrect box-sizing": "https://www.drupal.org/files/issues/2023-02-10/3340931-off-canvas-reset-2.patch"
             },
             "drupal/devel": {
                 "Brings back the Available Methods & Properties tabs for Kint dumps — Issue #221": "https://raw.githubusercontent.com/politsin/snipets/master/patch/kint.patch"
@@ -225,11 +222,8 @@
             "drupal/entity_reference_unpublished": {
                 "Plugin to cover taxonomy term entities": "https://www.drupal.org/files/issues/2021-03-25/3205634-reference-unpublished-taxonomy-terms.patch"
             },
-            "drupal/inline_entity_form": {
-                "Widget settings to control removing & deleting existing references": "https://www.drupal.org/files/issues/2021-04-15/ief_removed_references_2875716-103.patch"
-            },
-            "drupal/google_tag": {
-                "Resolve Html checker errors": "https://www.drupal.org/files/issues/2022-03-29/3272258-2.patch"
+            "drupal/flag": {
+                "Fix-WSOD-when-click-scheduled-transitions-from-moderation-sidebar": "https://gist.githubusercontent.com/omahm/6448dbf36a93cdb8761f8c030e5836fc/raw/d5f150a3fb8627184b829688b1ea7740eba3efc9/Fix-WSOD-when-click-scheduled-transitions-from-moderation-sidebar.patch"
             },
             "drupal/paragraphs": {
                 "Integrity constraint violation: 1048 Column 'langcode' cannot be null": "https://www.drupal.org/files/issues/2020-06-25/paragraphs-2901390-51.patch",
@@ -239,29 +233,29 @@
                 "field_last_password_reset is unknown while importing configuration on site without password_policy activated": "https://www.drupal.org/files/issues/2020-01-17/password_policy-n2771129-109.patch"
             },
             "drupal/linkit": {
-                "Link shown after the autocomplete selection is the bare node/xxx link, not the alias": "https://www.drupal.org/files/issues/2020-11-03/show_alias_in_autocomplete_selection-2877535-16.patch",
-                "Linkit for Link field": "https://www.drupal.org/files/issues/2020-09-23/linkit-for-link-field-2712951-190.patch",
-                "Unpublished nodes not included even when option is selected": "https://www.drupal.org/files/issues/2021-05-27/linkit-unpublished-nodes-not-included-3049946-28.patch"
+                "Link shown after the autocomplete selection is the bare node/xxx link, not the alias": "https://www.drupal.org/files/issues/2020-11-03/show_alias_in_autocomplete_selection-2877535-16.patch"
             },
             "drupal/moderation_sidebar": {
-                "'Draft available' text still appears after deleting a forward revision": "https://www.drupal.org/files/issues/2020-02-24/3115474-3.patch"
+                "'Draft available' text still appears after deleting a forward revision": "https://www.drupal.org/files/issues/2020-02-24/3115474-3.patch",
+                "Can't preview a new node #3264639": "https://www.drupal.org/files/issues/2022-02-16/preview-new-node-3264639-2.patch"
             },
             "drupal/multiline_config": {
                 "Drupal 8.9 / 9 compatibility": "https://www.drupal.org/files/issues/2021-01-12/3109713-16.patch"
             },
+            "drupal/redis": {
+                "Cache Expiration doesn't follow Drupal conventions #2877893": "https://www.drupal.org/files/issues/fix-ttl-logic-2877893-1.patch"
+            },
             "drupal/redirect": {
                 "URL redirects listing only displays operations": "https://www.drupal.org/files/issues/2019-04-05/redirects_list_builder-3031125-9-d8.patch",
                 "Add URL Redirects tab to taxonomy term edit form": "https://www.drupal.org/files/issues/2021-03-26/redirect_provide_redirect_tab_on_taxonomy_terms_3205896.patch",
-                "Fix ajax error when creating redirects": "https://www.drupal.org/files/issues/2020-12-14/validation-issue-3057250-29.patch"
+                "Fix ajax error when creating redirects": "https://www.drupal.org/files/issues/2020-12-14/validation-issue-3057250-29.patch",
+                "Empty query params on source cause TypeError": "https://www.drupal.org/files/issues/2022-10-25/3315928-7-redirect-empty-source-query-options.patch"
             },
             "drupal/scheduled_transitions": {
                 "No scheduled revisions appear for migrated nodes": "https://www.drupal.org/files/issues/2021-11-01/scheduled_transitions_base_language_3091006_2x.patch"
             },
-            "drupal/schema_metatag": {
-                "Add @id as a tag to all schemas": "https://www.drupal.org/files/issues/2019-09-01/3078582-02.patch"
-            },
             "drupal/shs": {
-                "SHS select is empty on views": "https://www.drupal.org/files/issues/2018-12-10/shs-blank-select-fix-3019378-3.patch"
+                "Error saving null/empty value after 2.0.0-rc1 update #3241169": "https://www.drupal.org/files/issues/2022-02-28/shs-Error_saving_null_empty_value_after_2.0.0-rc1_update-3241169-36.patch"
             }
         },
         "composer-exit-on-patch-failure": true,

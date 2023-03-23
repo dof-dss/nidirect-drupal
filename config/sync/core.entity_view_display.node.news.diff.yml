@@ -22,21 +22,22 @@ dependencies:
     - user
 third_party_settings:
   layout_builder:
-    allow_custom: false
     enabled: false
+    allow_custom: false
   field_group:
     group_additional_content_details:
       children:
         - field_teaser
         - field_toc_enable
         - field_meta_tags
+      label: 'Additional content details'
       parent_name: ''
+      region: content
       weight: 6
       format_type: html_element
-      region: content
       format_settings:
-        id: ''
         classes: field-collection
+        id: ''
         element: div
         show_label: false
         label_element: h3
@@ -44,69 +45,68 @@ third_party_settings:
         attributes: ''
         effect: none
         speed: fast
-      label: 'Additional content details'
 id: node.news.diff
 targetEntityType: node
 bundle: news
 mode: diff
 content:
   body:
-    label: hidden
     type: text_default
-    weight: 5
+    label: hidden
     settings: {  }
     third_party_settings: {  }
+    weight: 5
     region: content
   content_moderation_control:
-    weight: 0
-    region: content
     settings: {  }
     third_party_settings: {  }
+    weight: 0
+    region: content
   field_meta_tags:
     type: metatag_empty_formatter
-    weight: 10
-    region: content
     label: inline
     settings: {  }
     third_party_settings: {  }
+    weight: 10
+    region: content
   field_photo:
-    weight: 4
+    type: media_thumbnail
     label: hidden
     settings:
-      image_style: ''
       image_link: ''
+      image_style: ''
     third_party_settings: {  }
-    type: media_thumbnail
+    weight: 4
     region: content
   field_published_date:
     type: datetime_default
-    weight: 2
-    region: content
     label: inline
     settings:
       timezone_override: ''
       format_type: medium_date
     third_party_settings: {  }
+    weight: 2
+    region: content
   field_summary:
-    weight: 3
+    type: text_default
     label: hidden
     settings: {  }
     third_party_settings: {  }
-    type: text_default
+    weight: 3
     region: content
   field_teaser:
     type: string
-    weight: 8
-    region: content
     label: inline
     settings:
       link_to_entity: false
     third_party_settings: {  }
-  toc_display:
-    weight: 1
+    weight: 8
     region: content
+  toc_display:
     settings: {  }
     third_party_settings: {  }
+    weight: 1
+    region: content
 hidden:
   field_related_info: true
   langcode: true

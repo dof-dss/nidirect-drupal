@@ -23,53 +23,53 @@ dependencies:
     - user
 third_party_settings:
   layout_builder:
-    allow_custom: false
     enabled: false
+    allow_custom: false
 id: node.publication.full
 targetEntityType: node
 bundle: publication
 mode: full
 content:
   body:
-    label: inline
     type: text_default
-    weight: 2
+    label: inline
     settings: {  }
     third_party_settings: {  }
+    weight: 2
     region: content
   field_additional_info:
     type: ancestral_value_field_formatter
-    weight: 4
-    region: content
     label: visually_hidden
     settings:
       ancestor_depth: '2'
       ancestors_only: 0
     third_party_settings: {  }
+    weight: 4
+    region: content
   field_attachment:
     type: entity_reference_entity_view
-    weight: 3
-    region: content
     label: inline
     settings:
       view_mode: embed
       link: false
     third_party_settings: {  }
+    weight: 3
+    region: content
   field_published_date:
     type: datetime_default
-    weight: 0
-    region: content
     label: inline
     settings:
       timezone_override: ''
       format_type: medium_date
     third_party_settings: {  }
+    weight: 0
+    region: content
   field_summary:
-    weight: 1
+    type: basic_string
     label: hidden
     settings: {  }
     third_party_settings: {  }
-    type: basic_string
+    weight: 1
     region: content
 hidden:
   banner_display: true

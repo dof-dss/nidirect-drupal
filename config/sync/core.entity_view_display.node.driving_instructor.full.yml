@@ -24,21 +24,22 @@ dependencies:
     - user
 third_party_settings:
   layout_builder:
-    allow_custom: false
     enabled: false
+    allow_custom: false
   field_group:
     group_contact_info:
       children:
         - field_telephone
         - field_email_address
         - field_link_url
+      label: 'Contact info'
       parent_name: ''
+      region: content
       weight: 0
       format_type: html_element
-      region: content
       format_settings:
-        id: ''
         classes: ''
+        id: ''
         element: div
         show_label: false
         label_element: h3
@@ -46,7 +47,6 @@ third_party_settings:
         attributes: ''
         effect: none
         speed: fast
-      label: 'Contact info'
 id: node.driving_instructor.full
 targetEntityType: node
 bundle: driving_instructor
@@ -54,35 +54,33 @@ mode: full
 content:
   field_di_areas:
     type: html_list_formatter
-    weight: 2
-    region: content
     label: above
     settings:
       list_type: ul
       list_classes: ''
       display_item_link: false
     third_party_settings: {  }
+    weight: 2
+    region: content
   field_di_categories:
     type: html_list_formatter
-    weight: 1
-    region: content
     label: visually_hidden
     settings:
       list_type: ul
       list_classes: 'list--no-bullet list--inline list--checklist'
       display_item_link: false
     third_party_settings: {  }
+    weight: 1
+    region: content
   field_email_address:
     type: email_mailto
-    weight: 5
-    region: content
     label: inline
     settings: {  }
     third_party_settings: {  }
+    weight: 5
+    region: content
   field_link_url:
     type: link
-    weight: 6
-    region: content
     label: inline
     settings:
       trim_length: 80
@@ -91,26 +89,28 @@ content:
       rel: ''
       target: ''
     third_party_settings: {  }
+    weight: 6
+    region: content
   field_meta_tags:
-    weight: 4
+    type: metatag_empty_formatter
     label: above
     settings: {  }
     third_party_settings: {  }
-    type: metatag_empty_formatter
+    weight: 4
     region: content
   field_telephone:
-    weight: 4
+    type: telephone_plus_link
     label: inline
     settings:
       vcard: true
     third_party_settings: {  }
-    type: telephone_plus_link
+    weight: 4
     region: content
   links:
-    weight: 3
-    region: content
     settings: {  }
     third_party_settings: {  }
+    weight: 3
+    region: content
 hidden:
   content_moderation_control: true
   field_di_adi_no: true

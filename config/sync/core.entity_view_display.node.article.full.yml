@@ -26,8 +26,8 @@ dependencies:
     - user
 third_party_settings:
   layout_builder:
-    allow_custom: false
     enabled: false
+    allow_custom: false
 _core:
   default_config_hash: ChmU3AVqDKU32A_fyChG0W9dTRKmVBR58B6OClCLvZI
 id: node.article.full
@@ -37,33 +37,31 @@ mode: full
 content:
   body:
     type: text_default
-    weight: 3
-    region: content
+    label: hidden
     settings: {  }
     third_party_settings: {  }
-    label: hidden
+    weight: 3
+    region: content
   field_additional_info:
     type: ancestral_value_field_formatter
-    weight: 5
-    region: content
     label: hidden
     settings:
       ancestor_depth: '2'
       ancestors_only: false
     third_party_settings: {  }
+    weight: 5
+    region: content
   field_photo:
     type: entity_reference_entity_view
-    weight: 2
-    region: content
     label: hidden
     settings:
       view_mode: embed
       link: false
     third_party_settings: {  }
+    weight: 2
+    region: content
   field_related_info:
     type: link
-    weight: 4
-    region: content
     label: above
     settings:
       trim_length: 80
@@ -72,8 +70,10 @@ content:
       rel: ''
       target: ''
     third_party_settings: {  }
+    weight: 4
+    region: content
   field_summary:
-    weight: 1
+    type: smart_trim
     label: hidden
     settings:
       trim_length: 600
@@ -87,13 +87,13 @@ content:
       summary_handler: full
       trim_options: {  }
     third_party_settings: {  }
-    type: smart_trim
+    weight: 1
     region: content
   toc_display:
-    weight: 0
-    region: content
     settings: {  }
     third_party_settings: {  }
+    weight: 0
+    region: content
 hidden:
   banner_display: true
   content_moderation_control: true

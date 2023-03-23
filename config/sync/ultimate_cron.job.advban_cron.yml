@@ -1,0 +1,29 @@
+uuid: 5d0cb98f-e006-4fd2-ad27-ca38c3b72e6d
+langcode: en
+status: true
+dependencies:
+  module:
+    - advban
+title: 'Default cron handler'
+id: advban_cron
+weight: 0
+module: advban
+callback: advban_cron
+scheduler:
+  id: simple
+  configuration:
+    rules:
+      - '* * * * *'
+launcher:
+  id: serial
+  configuration:
+    timeouts:
+      lock_timeout: 3600
+    launcher:
+      thread: 0
+logger:
+  id: database
+  configuration:
+    method: '3'
+    expire: 1209600
+    retain: 1000

@@ -22,8 +22,8 @@ dependencies:
     - user
 third_party_settings:
   layout_builder:
-    allow_custom: false
     enabled: false
+    allow_custom: false
 id: node.publication.search_result
 targetEntityType: node
 bundle: publication
@@ -31,20 +31,20 @@ mode: search_result
 content:
   field_publication_type:
     type: list_default
-    weight: 1
-    region: content
     label: hidden
     settings: {  }
     third_party_settings: {  }
+    weight: 1
+    region: content
   field_published_date:
     type: datetime_default
-    weight: 0
-    region: content
     label: inline
     settings:
       timezone_override: ''
       format_type: medium_date
     third_party_settings: {  }
+    weight: 0
+    region: content
 hidden:
   banner_display: true
   body: true

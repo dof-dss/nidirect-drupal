@@ -9,19 +9,6 @@ dependencies:
     - search_api
 id: health_conditions_facet_summary
 name: 'Health conditions facet summary'
-facets:
-  body_location:
-    checked: true
-    label: 'Body location'
-    separator: ', '
-    weight: 0
-    show_count: false
-  condition_type:
-    checked: true
-    label: 'Condition type / disease process'
-    separator: ', '
-    weight: 0
-    show_count: false
 facet_source_id: 'search_api:views_page__health_conditions__search_page'
 processor_configs:
   hide_when_not_rendered:
@@ -29,3 +16,16 @@ processor_configs:
     weights:
       build: '45'
     settings: {  }
+facets:
+  body_location:
+    checked: true
+    label: 'Body location'
+    separator: ', '
+    show_count: false
+    weight: 0
+  condition_type:
+    checked: true
+    label: 'Condition type / disease process'
+    separator: ', '
+    show_count: false
+    weight: 0

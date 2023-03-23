@@ -7,7 +7,14 @@
 name: 'nidirect'
 
 # The runtime the application uses.
-type: 'php:7.4'
+type: 'php:8.1'
+
+# Application variables.
+# Set non-sensitive variables here only.
+# Use Platform CLI or console to set sensitive variables.
+variables:
+  php:
+    memory_limit: "128M"
 
 dependencies:
   php:
@@ -19,6 +26,10 @@ runtime:
     - apcu
     - newrelic
     - redis
+  # Sizing hints.
+  sizing_hints:
+    request_memory: 56
+    reserved_memory: 70
 
 # The relationships of the application with services or other applications.
 #
@@ -158,5 +169,10 @@ crons:
   logging:
     spec: '*/5 * * * *'
     commands:
-      start: '/bin/bash /app/logging/scripts/cronjob.sh'
+      start: '/bin/bash /app/cronjob.sh'
     shutdown_timeout: 290
+  # Workaround for the "mysterious disappearing breadcrumb" saga.
+  breadcrumb-reveal-thyself:
+    spec: '0 5 * * *'
+    commands:
+      start: 'cd web ; drush cc render'
