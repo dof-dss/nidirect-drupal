@@ -42,8 +42,8 @@ parameters:
     #
     # Not recommended in production environments
     # @default true
-    cache: false
-  http.response.debug_cacheability_headers: true
+    cache: true
+  http.response.debug_cacheability_headers: false
 services:
   cache.backend.null:
     class: Drupal\Core\Cache\NullBackendFactory
