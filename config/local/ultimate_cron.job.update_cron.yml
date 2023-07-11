@@ -1,4 +1,4 @@
-uuid: 53aecf2f-d499-4930-8ef5-b18a1e76841f
+uuid: ec5705a9-bab0-4e93-a28d-7cc95c4ccdae
 langcode: en
 status: true
 dependencies:
@@ -10,8 +10,21 @@ weight: 0
 module: update
 callback: update_cron
 scheduler:
-  id: simple
+  id: crontab
+  configuration:
+    rules:
+      - '35 4 * * *'
+    catch_up: 0
 launcher:
   id: serial
+  configuration:
+    timeouts:
+      lock_timeout: 3600
+    launcher:
+      thread: 0
 logger:
   id: database
+  configuration:
+    method: '3'
+    expire: 1209600
+    retain: 1000
