@@ -16,13 +16,13 @@ parameters:
     # collector. When a session is deleted, authenticated users are logged out,
     # and the contents of the user's $_SESSION variable is discarded.
     # @default 200000
-    gc_maxlifetime: 86400
+    gc_maxlifetime: 200000
     #
     # Set session cookie lifetime (in seconds), i.e. the time from the session
     # is created to the cookie expires, i.e. when the browser is expected to
     # discard the cookie. The value 0 means "until the browser is closed".
     # @default 2000000
-    cookie_lifetime: 86400
+    cookie_lifetime: 2000000
     #
     # Drupal automatically generates a unique session cookie name based on the
     # full domain name used to access the site. This mechanism is sufficient
@@ -55,7 +55,7 @@ parameters:
     #
     # Not recommended in production environments
     # @default false
-    debug: false
+    debug: true
     # Twig auto-reload:
     #
     # Automatically recompile Twig templates whenever the source code changes.
@@ -75,7 +75,7 @@ parameters:
     #
     # Not recommended in production environments
     # @default true
-    cache: true
+    cache: false
   renderer.config:
     # Renderer required cache contexts:
     #
@@ -125,19 +125,19 @@ parameters:
   #
   # Not recommended in production environments
   # @default false
-  http.response.debug_cacheability_headers: false
+  http.response.debug_cacheability_headers: true
   factory.keyvalue:
     {}
     # Default key/value storage service to use.
     # @default keyvalue.database
     # default: keyvalue.database
-  # Collection-specific overrides.
-  # state: keyvalue.database
+    # Collection-specific overrides.
+    # state: keyvalue.database
   factory.keyvalue.expirable:
     {}
     # Default key/value expirable storage service to use.
-  # @default keyvalue.database.expirable
-  # default: keyvalue.database.expirable
+    # @default keyvalue.database.expirable
+    # default: keyvalue.database.expirable
   # Allowed protocols for URL generation.
   filter_protocols:
     - http
@@ -154,10 +154,10 @@ parameters:
     - webcal
     - rtsp
 
-    # Configure Cross-Site HTTP requests (CORS).
-    # Read https://developer.mozilla.org/en-US/docs/Web/HTTP/Access_control_CORS
-    # for more information about the topic in general.
-    # Note: By default the configuration is disabled.
+   # Configure Cross-Site HTTP requests (CORS).
+   # Read https://developer.mozilla.org/en-US/docs/Web/HTTP/Access_control_CORS
+   # for more information about the topic in general.
+   # Note: By default the configuration is disabled.
   cors.config:
     enabled: false
     # Specify allowed headers, like 'x-allowed-header'.
