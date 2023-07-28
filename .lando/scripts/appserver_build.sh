@@ -66,4 +66,11 @@ if [ ! -f "/app/.env" ]; then
   cp -v /app/.env.example /app/.env
   echo "NB: to view/complete relevant sections of your .env file use this command:"
   echo "platform ssh -e main 'env | sort'"
+  echo "When done, rebuild the appserver service: lando rebuild -s appserver -y"
 fi
+
+echo "=== Obtaining and importing the database ==="
+echo "platform db:dump -z -e main"
+echo "lando db-import <filename>.sql.gz"
+echo "And finally, rebuild the container and import config:"
+echo "lando drush cr && lando cim -y"
