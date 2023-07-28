@@ -4,18 +4,12 @@
 DRUPAL_REPO_URL=git@github.com:dof-dss/nidirect-drupal.git
 
 DRUPAL_ROOT=/app/web
-DRUPAL_SETTINGS_FILE=$DRUPAL_ROOT/sites/default/settings.php
-DRUPAL_SERVICES_FILE=$DRUPAL_ROOT/sites/default/services.yml
 DRUPAL_CUSTOM_CODE=$DRUPAL_ROOT/modules/custom
 DRUPAL_TEST_PROFILE=$DRUPAL_ROOT/profiles/custom/test_profile
 
 # Semaphore files to control whether we need to trigger an install
 # of supporting software or config files.
 CKEDITOR_PATCHED=/etc/CKEDITOR_PATCHED
-
-# Update APT cache and install Vim.
-apt update
-apt install -y vim
 
 # Create export directories for config and data.
 if [ ! -d "/app/.lando/exports" ]; then
@@ -43,18 +37,18 @@ echo "Creating settings.local.php file using our Lando copy"
 chmod -R ug+rw $DRUPAL_ROOT/sites/default
 
 # Copy default services config and replace key values for local development.
-cp -v /app/config/drupal.settings.php $DRUPAL_ROOT/sites/default/settings.local.php
-cp -v /app/config/drupal.services.yml $DRUPAL_SERVICES_FILE
+cp -v /app/.lando/config/settings.local.php $DRUPAL_ROOT/sites/default/settings.local.php
+cp -v /app/.lando/config/local.development.services.yml $DRUPAL_ROOT/sites/local.development.services.yml
 
 echo "Copying Redis service overrides"
-cp -v /app/config/redis.services.yml $DRUPAL_ROOT/sites/default/redis.services.yml
+cp -v /app/.lando/config/redis.services.yml $DRUPAL_ROOT/sites/default/redis.services.yml
 
 if [ ! -f "$CKEDITOR_PATCHED" ]; then
   # Replace vanilla CKEditor config with a custom one to fix the click/drag bug with embedded entities.
   echo "Replace vanilla CKEditor config with a custom one to fix the click/drag bug with embedded entities"
   git clone https://github.com/dof-dss/ckeditor4-fix-widget-dnd.git /tmp/ckeditor4-fix-widget-dnd
   rm -rf $DRUPAL_ROOT/core/assets/vendor/ckeditor
-  mv -v /tmp/ckeditor4-fix-widget-dnd/build/ckeditor $DRUPAL_ROOT/core/assets/vendor/ckeditor
+  mv /tmp/ckeditor4-fix-widget-dnd/build/ckeditor $DRUPAL_ROOT/core/assets/vendor/ckeditor
   rm -rf /tmp/ckeditor4-fix-widget-dnd
 
   touch $CKEDITOR_PATCHED
