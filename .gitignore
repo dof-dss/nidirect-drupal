@@ -15,6 +15,7 @@ console/
 
 # Ignore sensitive information
 /web/sites/*/settings.local.php
+/web/sites/local.development.services.yml
 
 # Ignore Drupal's files directory
 /web/sites/*/files/
@@ -32,11 +33,17 @@ console/
 # Ignore raw SQL files, potentially dangerous.
 *.sql
 
+# Local dev outputs.
+.lando/exports
+
 # Misc tooling files to ingore.
 .swp
 .vscode
 .DS_Store
-.talismanrc
+*.sql.gz
+imports
+.htpasswd
+web/modules/*/package-lock.json
 
 # Ignore migration config
 /config/sync/migrate_plus.*
