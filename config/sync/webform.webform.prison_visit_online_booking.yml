@@ -1,9 +1,7 @@
 uuid: 2b3be5ed-8d02-41fb-8e07-6a5c5d3468c3
 langcode: en
 status: open
-dependencies:
-  module:
-    - nidirect_webforms
+dependencies: {  }
 weight: 0
 open: null
 close: null
@@ -118,6 +116,10 @@ elements: |-
       '#type': webform_computed_twig
       '#title': 'Visit details'
       '#title_display': invisible
+      '#states':
+        invisible:
+          ':input[name="prisoner_id"]':
+            filled: true
       '#mode': html
       '#template': |-
         <p><strong>Visit type:</strong> {{ data.prison_visit_type }}</p>
@@ -132,6 +134,224 @@ elements: |-
             {{ '(integrated)' | t }}
           {% endif %}
         </p>
+    visit_maghaberry_integrated:
+      '#type': fieldset
+      '#title': 'Visit face to face in Maghaberry Prison'
+      '#states':
+        visible:
+          ':input[name="prison_visit_sequence"]':
+            value:
+              less: '9000'
+          ':input[name="prison_visit_type"]':
+            value: face-to-face
+          ':input[name="prison_visit_prison_name"]':
+            value: Maghaberry
+      vmi_details:
+        '#type': webform_computed_twig
+        '#title': 'Visit details'
+        '#title_display': invisible
+        '#states':
+          invisible:
+            '':
+              '': ''
+        '#mode': html
+        '#template': '<p><strong>Week commencing:</strong> {{ data.prison_visit_week_date }}</p>'
+      visit_maghaberry_integrated_tuesday:
+        '#type': checkboxes
+        '#title': Tuesday
+        '#options':
+          '0915': '9:15am'
+          1045: '10:45am'
+          1415: '2:15pm'
+          '15:30': '3:30pm'
+        '#options_display': buttons_horizontal
+      visit_maghaberry_integrated_wednesday:
+        '#type': checkboxes
+        '#title': Wednesday
+        '#options':
+          '0915': '9:15am'
+          1045: '10:45am'
+          1415: '2:15pm'
+          '15:30': '3:30pm'
+        '#options_display': buttons_horizontal
+      visit_maghaberry_integrated_thursday:
+        '#type': checkboxes
+        '#title': Thursday
+        '#options':
+          '0915': '9:15am'
+          1045: '10:45am'
+          1415: '2:15pm'
+          '15:30': '3:30pm'
+        '#options_display': buttons_horizontal
+      visit_maghaberry_integrated_saturday:
+        '#type': checkboxes
+        '#title': Saturday
+        '#options':
+          '0915': '9:15am'
+          1045: '10:45am'
+          1415: '2:15pm'
+          '15:30': '3:30pm'
+        '#options_display': buttons_horizontal
+    visit_maghaberry_separates:
+      '#type': fieldset
+      '#title': 'Visit face to face in Maghaberry Prison'
+      '#states':
+        visible:
+          ':input[name="prison_visit_sequence"]':
+            value:
+              greater_equal: '9000'
+          ':input[name="prison_visit_type"]':
+            value: face-to-face
+          ':input[name="prison_visit_prison_name"]':
+            value: Maghaberry
+      vms_details:
+        '#type': webform_computed_twig
+        '#title': 'Visit details'
+        '#title_display': invisible
+        '#states':
+          invisible:
+            '':
+              '': ''
+        '#mode': html
+        '#template': '<p><strong>Week commencing:</strong> {{ data.prison_visit_week_date }}</p>'
+      visit_maghaberry_separates_tuesday:
+        '#type': checkboxes
+        '#title': Tuesday
+        '#options':
+          1030: '10:30am'
+          1430: '2:30pm'
+        '#options_display': buttons_horizontal
+      visit_maghaberry_separates_wednesday:
+        '#type': checkboxes
+        '#title': Wednesday
+        '#options':
+          1030: '10:30am'
+          1430: '2:30pm'
+        '#options_display': buttons_horizontal
+      visit_maghaberry_separates_thursday:
+        '#type': checkboxes
+        '#title': Thursday
+        '#options':
+          1030: '10:30am'
+          1430: '2:30pm'
+        '#options_display': buttons_horizontal
+      visit_maghaberry_separates_saturday:
+        '#type': checkboxes
+        '#title': Saturday
+        '#options':
+          1030: '10:30am'
+          1430: '2:30pm'
+        '#options_display': buttons_horizontal
+    maghaberry_virtual:
+      '#type': fieldset
+      '#title': 'Virtual visit with Maghaberry Prison'
+      '#states':
+        visible:
+          ':input[name="prison_visit_prison_name"]':
+            value: Maghaberry
+          ':input[name="prison_visit_type"]':
+            value: virtual
+      vmv_details:
+        '#type': webform_computed_twig
+        '#title': 'Visit details'
+        '#title_display': invisible
+        '#states':
+          invisible:
+            '':
+              '': ''
+        '#mode': html
+        '#template': '<p><strong>Week commencing:</strong> {{ data.prison_visit_week_date }}</p>'
+      visit_maghaberry_virtual_monday:
+        '#type': checkboxes
+        '#title': Monday
+        '#options':
+          '0930': '9:30am'
+          1000: '10:00am'
+          1030: '10:30am'
+          1100: '11:00am'
+          1130: '11:30am'
+          1430: '2:30pm'
+          1500: '3:00pm'
+          1530: '3:30pm'
+        '#options_display': buttons_horizontal
+      visit_maghaberry_virtual_tuesday:
+        '#type': checkboxes
+        '#title': Tuesday
+        '#options':
+          '0930': '9:30am'
+          1000: '10:00am'
+          1030: '10:30am'
+          1100: '11:00am'
+          1130: '11:30am'
+          1430: '2:30pm'
+          1500: '3:00pm'
+          1530: '3:30pm'
+        '#options_display': buttons_horizontal
+      visit_maghaberry_virtual_wednesday:
+        '#type': checkboxes
+        '#title': Wednesday
+        '#options':
+          '0930': '9:30am'
+          1000: '10:00am'
+          1030: '10:30am'
+          1100: '11:00am'
+          1130: '11:30am'
+          1430: '2:30pm'
+          1500: '3:00pm'
+          1530: '3:30pm'
+        '#options_display': buttons_horizontal
+      visit_maghaberry_virtual_thursday:
+        '#type': checkboxes
+        '#title': Thursday
+        '#options':
+          '0930': '9:30am'
+          1000: '10:00am'
+          1030: '10:30am'
+          1100: '11:00am'
+          1130: '11:30am'
+          1430: '2:30pm'
+          1500: '3:00pm'
+          1530: '3:30pm'
+        '#options_display': buttons_horizontal
+      visit_maghaberry_virtual_friday:
+        '#type': checkboxes
+        '#title': Friday
+        '#options':
+          '0930': '9:30am'
+          1000: '10:00am'
+          1030: '10:30am'
+          1100: '11:00am'
+          1130: '11:30am'
+          1430: '2:30pm'
+          1500: '3:00pm'
+          1530: '3:30pm'
+        '#options_display': buttons_horizontal
+      visit_maghaberry_virtual_saturday:
+        '#type': checkboxes
+        '#title': Saturday
+        '#options':
+          '0930': '9:30am'
+          1000: '10:00am'
+          1030: '10:30am'
+          1100: '11:00am'
+          1130: '11:30am'
+          1430: '2:30pm'
+          1500: '3:00pm'
+          1530: '3:30pm'
+        '#options_display': buttons_horizontal
+      visit_maghaberry_virtual_sunday:
+        '#type': checkboxes
+        '#title': Sunday
+        '#options':
+          '0930': '9:30am'
+          1000: '10:00am'
+          1030: '10:30am'
+          1100: '11:00am'
+          1130: '11:30am'
+          1430: '2:30pm'
+          1500: '3:00pm'
+          1530: '3:30pm'
+        '#options_display': buttons_horizontal
 css: ''
 javascript: ''
 settings:
@@ -354,19 +574,4 @@ handlers:
       theme_name: ''
       parameters: {  }
       debug: false
-  prison_visit_booking:
-    id: prison_visit_booking
-    handler_id: prison_visit_booking
-    label: 'Prison Visit Booking'
-    notes: ''
-    status: true
-    conditions: {  }
-    weight: 0
-    settings:
-      visit_type:
-        V: virtual
-        F: face-to-face
-      visit_prison:
-        MY: Maghaberry
-        HK: Hydebank
 variants: {  }

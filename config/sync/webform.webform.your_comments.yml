@@ -11,7 +11,7 @@ archive: false
 id: your_comments
 title: 'Your comments'
 description: 'Page feedback form'
-category: ''
+categories: {  }
 elements: |-
   error_message:
     '#type': processed_text
@@ -67,7 +67,7 @@ elements: |-
           - or
           - ':input[name="is_your_feedback_about"]':
               value: report_problem
-      '#text': |
+      '#text': |-
         <p class="info-notice info-notice--warning">You will not receive a reply. We will consider your feedback to help improve the site.<br />
         <br />
         Don't include any personal or financial information, for example National Insurance, credit card numbers, or phone numbers.</p>
@@ -153,13 +153,14 @@ elements: |-
           filled: true
     '#attributes':
       aria-live: assertive
+      data-nosnippet: true
     angling:
       '#type': processed_text
       '#states':
         visible:
           ':input[name="feedback_about"]':
             value: angling
-      '#text': |
+      '#text': |-
         <div class="no-submit">
 
         <p>Comments or queries about angling can be emailed to <a href="mailto:anglingcorrespondence@daera-ni.gov.uk">anglingcorrespondence@daera-ni.gov.uk&nbsp;</a></p>
@@ -171,7 +172,7 @@ elements: |-
         visible:
           ':input[name="feedback_about"]':
             value: benefits
-      '#text': |
+      '#text': |-
         <div class="no-submit">
 
         <p>If you have a comment or query about benefits, you will need to contact the government department&nbsp;or&nbsp;agency which handles that benefit.&nbsp; Contacts for common benefits are listed below.</p>
@@ -212,7 +213,7 @@ elements: |-
         visible:
           ':input[name="feedback_about"]':
             value: blue_badge
-      '#text': |
+      '#text': |-
         <div class="no-submit">
 
         <p>Comments or queries about the Blue Badge scheme can be emailed to <a href="mailto:bluebadges@infrastructure-ni.gov.uk">bluebadges@infrastructure-ni.gov.uk</a> or you can also call 0300 200 7818.</p>
@@ -224,7 +225,7 @@ elements: |-
         visible:
           ':input[name="feedback_about"]':
             value: careers
-      '#text': |
+      '#text': |-
         <p>For queries or advice about careers, contact the <a data-entity-substitution="canonical" data-entity-type="node" data-entity-uuid="4849e4ec-9cbb-4ff9-a26b-7e2397f748b7" href="/careers-service">Careers Service</a>.</p>
       '#format': full_html
     child_maintenance:
@@ -241,7 +242,7 @@ elements: |-
         visible:
           ':input[name="feedback_about"]':
             value: claiming_compensation_roads
-      '#text': |
+      '#text': |-
         <div class="no-submit">
 
         <p>For queries or advice about claiming compensation due to a road problem, contact <a href="/node/125">DFI Roads claim unit</a>.</p>
@@ -253,10 +254,9 @@ elements: |-
         visible:
           ':input[name="feedback_about"]':
             value: covid_19
-      '#text': |
+      '#text': |-
         <div class="no-submit">
-
-        <p>If you can’t find the information you’re looking for in the&nbsp;<a href="https://www.staging-5em2ouy-wf467k64my7gc.uk-1.platformsh.site/information-and-services/health-and-wellbeing/coronavirus-covid-19">Coronavirus (COVID-19) section</a>, then for queries about:</p>
+        <p>If you can’t find the information you’re looking for in the&nbsp;<a data-entity-substitution="canonical" data-entity-type="node" data-entity-uuid="9fbac1c3-b232-4b5b-a7ad-a150c1760a8b" href="/campaigns/coronavirus-covid-19">Coronavirus (COVID-19) section</a>, then for queries about:</p>
 
         <ul>
         	<li>Restrictions or regulations&nbsp;—&nbsp;<a href="https://www.health-ni.gov.uk/contact" rel="noopener noreferrer" target="_blank" title="external link opens in a new window / tab">contact the Department of Health</a></li>
@@ -273,7 +273,7 @@ elements: |-
         visible:
           ':input[name="feedback_about"]':
             value: covid_19_certificate
-      '#text': |
+      '#text': |-
         <div class="no-submit">
 
         <p>For queries about your identity check, email <a href="mailto:nida@nidirect.gov.uk">nida@nidirect.gov.uk</a> and for queries about your certificate, email <a href="mailto:covidcertni@hscni.net">covidcertni@hscni.net</a>.</p>
@@ -301,7 +301,7 @@ elements: |-
         visible:
           ':input[name="feedback_about"]':
             value: employment_rights
-      '#text': |
+      '#text': |-
         <div class="no-submit">
 
         <p>For queries or advice about employment rights, contact the <a href="/node/866">Labour Relations Agency</a>.</p>
@@ -330,7 +330,7 @@ elements: |-
         visible:
           ':input[name="feedback_about"]':
             value: high_street_voucher
-      '#text': |
+      '#text': |-
         <div class="no-submit">
 
         <p>For queries about the High Street Spend Local Scheme,&nbsp; email&nbsp;<a href="mailto:HSSS.mail@economy-ni.gov.uk">HSSS.mail@economy-ni.gov.uk</a>.</p>
@@ -350,7 +350,7 @@ elements: |-
         visible:
           ':input[name="feedback_about"]':
             value: nidirect_account
-      '#text': |
+      '#text': |-
         <div class="no-submit">
 
         <p>For queries about your identity check, email <a href="mailto:nida@nidirect.gov.uk">nida@nidirect.gov.uk</a>.</p>
@@ -420,7 +420,7 @@ elements: |-
         visible:
           ':input[name="feedback_about"]':
             value: something_else
-      '#text': |
+      '#text': |-
         <p>If you have a question about a government service or policy, you should <a href="/contacts">contact the relevant government organisation directly</a>.&nbsp; We don't have access to information about you.</p>
       '#format': full_html
   extra_comments_for_pooh_bear:
@@ -483,7 +483,8 @@ settings:
   form_access_denied_message: ''
   form_access_denied_attributes: {  }
   form_file_limit: ''
-  form_attributes: {  }
+  form_attributes:
+    data-nosnippet: true
   form_method: ''
   form_action: ''
   share: false
@@ -529,6 +530,8 @@ settings:
   wizard_toggle: false
   wizard_toggle_show_label: ''
   wizard_toggle_hide_label: ''
+  wizard_page_type: container
+  wizard_page_title_tag: h2
   preview: 0
   preview_label: ''
   preview_title: ''
