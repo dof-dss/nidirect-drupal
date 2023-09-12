@@ -14,6 +14,7 @@ dependencies:
     - node.type.driving_instructor
   module:
     - feeds_ex
+    - feeds_fetcher_headers
     - feeds_log
     - feeds_tamper
     - node
@@ -56,10 +57,13 @@ id: ais_importer
 description: 'Imports driving instructors'
 help: ''
 import_period: 86400
-fetcher: upload
+fetcher: httpfetcherheaders
 fetcher_configuration:
-  allowed_extensions: 'txt csv tsv xml opml json'
-  directory: 'private://feeds'
+  auto_detect_feeds: 0
+  use_pubsubhubbub: 0
+  always_download: 0
+  fallback_hub: ''
+  request_timeout: '30'
 parser: jsonpath
 parser_configuration:
   context:
