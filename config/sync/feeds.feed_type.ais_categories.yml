@@ -1,0 +1,99 @@
+uuid: d1cd0837-5f22-48a6-a216-902537ec394a
+langcode: en
+status: true
+dependencies:
+  config:
+    - taxonomy.vocabulary.drive_instr_categories
+  module:
+    - feeds_ex
+    - feeds_log
+    - taxonomy
+third_party_settings:
+  feeds_log:
+    status: true
+    operations:
+      created: created
+      updated: updated
+      deleted: deleted
+      skipped: skipped
+      failed: failed
+      cleaned: cleaned
+    items:
+      created: created
+      updated: updated
+      deleted: deleted
+      skipped: skipped
+      failed: failed
+    source: true
+label: 'AIS categories'
+id: ais_categories
+description: 'Imports driving instructor categories'
+help: ''
+import_period: 86400
+fetcher: upload
+fetcher_configuration:
+  allowed_extensions: 'txt csv tsv xml opml json'
+  directory: 'private://feeds'
+parser: jsonpath
+parser_configuration:
+  context:
+    value: '$.categories.*'
+  source_encoding:
+    - auto
+  display_errors: false
+  line_limit: 100
+processor: 'entity:taxonomy_term'
+processor_configuration:
+  values:
+    vid: drive_instr_categories
+  langcode: en
+  insert_new: 1
+  update_existing: 1
+  update_non_existent: _delete
+  skip_hash_check: false
+  authorize: false
+  revision: true
+  expire: -1
+  owner_feed_author: false
+  owner_id: 0
+custom_sources:
+  label:
+    value: label
+    label: label
+    machine_name: label
+    type: json
+  group:
+    value: group
+    label: group
+    machine_name: group
+    type: json
+  id:
+    value: id
+    label: id
+    machine_name: id
+    type: json
+mappings:
+  -
+    target: name
+    map:
+      value: label
+    settings:
+      language: null
+    unique:
+      value: 1
+  -
+    target: parent
+    map:
+      target_id: group
+    settings:
+      reference_by: name
+      feeds_item: guid
+      autocreate: 0
+      autocreate_bundle: drive_instr_categories
+  -
+    target: uuid
+    map:
+      value: id
+    settings: {  }
+    unique:
+      value: 1
