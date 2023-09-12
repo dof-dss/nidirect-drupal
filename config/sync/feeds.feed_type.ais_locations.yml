@@ -1,11 +1,12 @@
-uuid: d1cd0837-5f22-48a6-a216-902537ec394a
+uuid: a0eb98ac-2a22-4e13-8b5b-0eca80e1daea
 langcode: en
 status: true
 dependencies:
   config:
-    - taxonomy.vocabulary.drive_instr_categories
+    - taxonomy.vocabulary.ni_postcodes
   module:
     - feeds_ex
+    - feeds_fetcher_headers
     - feeds_log
     - taxonomy
 third_party_settings:
@@ -25,19 +26,22 @@ third_party_settings:
       skipped: skipped
       failed: failed
     source: true
-label: 'AIS categories'
-id: ais_categories
-description: 'Imports driving instructor categories'
+label: 'AIS locations'
+id: ais_locations
+description: 'Imports driving instructor locations'
 help: ''
 import_period: 2419200
-fetcher: upload
+fetcher: httpfetcherheaders
 fetcher_configuration:
-  allowed_extensions: 'txt csv tsv xml opml json'
-  directory: 'private://feeds'
+  auto_detect_feeds: 0
+  use_pubsubhubbub: 0
+  always_download: 0
+  fallback_hub: ''
+  request_timeout: '30'
 parser: jsonpath
 parser_configuration:
   context:
-    value: '$.categories.*'
+    value: '$.locations.*'
   source_encoding:
     - auto
   display_errors: false
@@ -45,55 +49,40 @@ parser_configuration:
 processor: 'entity:taxonomy_term'
 processor_configuration:
   values:
-    vid: drive_instr_categories
+    vid: ni_postcodes
   langcode: en
   insert_new: 1
   update_existing: 1
   update_non_existent: _delete
   skip_hash_check: false
   authorize: false
-  revision: true
+  revision: false
   expire: -1
   owner_feed_author: false
   owner_id: 0
 custom_sources:
-  label:
-    value: label
-    label: label
-    machine_name: label
+  postcode:
+    value: postcode
+    label: postcode
+    machine_name: postcode
     type: json
-  group:
-    value: group
-    label: group
-    machine_name: group
-    type: json
-  id:
-    value: id
-    label: id
-    machine_name: id
+  coverage:
+    value: coverage
+    label: coverage
+    machine_name: coverage
     type: json
 mappings:
   -
     target: name
     map:
-      value: label
+      value: postcode
     settings:
       language: null
-    unique:
-      value: 1
+    unique: {  }
   -
-    target: parent
+    target: description
     map:
-      target_id: group
+      value: coverage
     settings:
-      reference_by: name
-      feeds_item: guid
-      autocreate: 0
-      autocreate_bundle: drive_instr_categories
-  -
-    target: uuid
-    map:
-      value: id
-    settings: {  }
-    unique:
-      value: 1
+      language: null
+      format: plain_text
