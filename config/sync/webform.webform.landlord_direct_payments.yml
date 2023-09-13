@@ -174,11 +174,11 @@ elements: |-
               value: unknown
       amount_of_rent_tenant_pays:
         '#type': textfield
-        '#title': '  Amount of rent tenant pays'
+        '#title': 'Amount of rent tenant pays'
         '#maxlength': 15
-        '#size': 15
-        '#autocomplete': 'off'
-        '#input_mask': '''alias'': ''currency'', ''prefix'': ''£'', ''digitsOptional'': ''true'', ''placeholder'': '''', ''rightAlign'': ''false'''
+        '#size': 10
+        '#placeholder': £0.00
+        '#input_mask': '''alias'': ''currency'', ''prefix'': ''£'''
         '#required': true
         '#pattern': '^£?[0-9,]{0,10}\.?[0-9]{0,2}p?$'
         '#pattern_error': 'You must enter a valid amount in pounds sterling'
@@ -190,9 +190,10 @@ elements: |-
         '#type': textfield
         '#title': 'Total rent arrears'
         '#maxlength': 15
-        '#size': 15
+        '#size': 10
+        '#placeholder': £0.00
         '#autocomplete': 'off'
-        '#input_mask': '''alias'': ''currency'', ''prefix'': ''£'', ''digitsOptional'': ''true'', ''placeholder'': '''', ''rightAlign'': ''false'''
+        '#input_mask': '''alias'': ''currency'', ''prefix'': ''£'''
         '#required': true
         '#pattern': '^£?[0-9,]{0,10}\.?[0-9]{0,2}p?$'
         '#pattern_error': 'You must enter a valid amount in pounds sterling'
@@ -215,6 +216,7 @@ elements: |-
       	<li>Universal Credit might refuse your request for a direct payment of Universal Credit if you don’t provide all necessary information</li>
       	<li>you must tell Universal Credit immediately about any change in the tenant’s circumstances that could affect their housing or entitlement to Universal Credit</li>
       </ul>
+
     '#format': full_html
   extra_comments_for_pooh_bear:
     '#type': textfield
@@ -269,9 +271,6 @@ settings:
   form_access_denied_message: ''
   form_access_denied_attributes: {  }
   form_file_limit: ''
-  form_attributes: {  }
-  form_method: ''
-  form_action: ''
   share: false
   share_node: false
   share_theme_name: ''
@@ -315,8 +314,6 @@ settings:
   wizard_toggle: true
   wizard_toggle_show_label: ''
   wizard_toggle_hide_label: ''
-  wizard_page_type: container
-  wizard_page_title_tag: h2
   preview: 2
   preview_label: ''
   preview_title: ''
@@ -364,6 +361,8 @@ settings:
   token_update: false
   token_delete: false
   serial_disabled: false
+  page_admin_theme: false
+  form_remote_addr: true
 access:
   create:
     roles:

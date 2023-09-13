@@ -1,7 +1,9 @@
 uuid: 2b3be5ed-8d02-41fb-8e07-6a5c5d3468c3
 langcode: en
 status: open
-dependencies: {  }
+dependencies:
+  module:
+    - nidirect_webforms
 weight: 0
 open: null
 close: null
@@ -13,6 +15,24 @@ title: 'Prison visit online booking'
 description: ''
 categories: {  }
 elements: |-
+  prison_visit_prison_name:
+    '#type': hidden
+    '#title': prison_visit_prison_name
+  prison_visit_type:
+    '#type': hidden
+    '#title': prison_visit_type
+  prison_visit_order_valid_from:
+    '#type': hidden
+    '#title': prison_visit_order_valid_from
+  prison_visit_order_valid_to:
+    '#type': hidden
+    '#title': prison_visit_order_valid_to
+  prison_visit_week_date_start:
+    '#type': hidden
+    '#title': prison_visit_week_date_start
+  prison_visit_sequence:
+    '#type': hidden
+    '#title': prison_visit_sequence
   prisoner_details_page:
     '#type': webform_wizard_page
     '#title': 'Prisoner details'
@@ -38,18 +58,6 @@ elements: |-
         '#autocomplete': 'off'
         '#input_mask': A9999
         '#required': true
-      prison_visit_prison_name:
-        '#type': hidden
-        '#title': prison_visit_prison_name
-      prison_visit_type:
-        '#type': hidden
-        '#title': prison_visit_type
-      prison_visit_week_date:
-        '#type': hidden
-        '#title': prison_visit_week_date
-      prison_visit_sequence:
-        '#type': hidden
-        '#title': prison_visit_sequence
   visitor_details_page:
     '#type': webform_wizard_page
     '#title': 'Visitor details'
@@ -117,240 +125,1187 @@ elements: |-
       '#title': 'Visit details'
       '#title_display': invisible
       '#states':
-        invisible:
+        visible:
           ':input[name="prisoner_id"]':
             filled: true
       '#mode': html
       '#template': |-
-        <p><strong>Visit type:</strong> {{ data.prison_visit_type }}</p>
-        <p><strong>Prison:</strong> {{ data.prison_visit_prison_name }}</p>
-        <p><strong>Week commencing:</strong> {{ data.prison_visit_week_date }}</p>
+        <h2>{{ data.prison_visit_prison_name }}</h2>
         <p>
-          <strong>Visit sequence:</strong>
-          {{ data.prison_visit_sequence }}
-          {% if data.prison_visit_sequence >= 9000 %}
-            {{ '(separates)' | t }}
-          {% else %}
-            {{ '(integrated)' | t }}
-          {% endif %}
+        <strong class="meta">
+        {{ data.prison_visit_type | title }}
+        {% if data.prison_visit_sequence >= 9000 %}
+          {{ '(separates)' | t }}
+        {% else %}
+          {{ '(integrated)' | t }}
+        {% endif %}
+        </strong>
         </p>
-    visit_maghaberry_integrated:
-      '#type': fieldset
-      '#title': 'Visit face to face in Maghaberry Prison'
-      '#states':
-        visible:
-          ':input[name="prison_visit_sequence"]':
-            value:
-              less: '9000'
-          ':input[name="prison_visit_type"]':
-            value: face-to-face
-          ':input[name="prison_visit_prison_name"]':
-            value: Maghaberry
-      vmi_details:
-        '#type': webform_computed_twig
-        '#title': 'Visit details'
-        '#title_display': invisible
-        '#states':
-          invisible:
-            '':
-              '': ''
-        '#mode': html
-        '#template': '<p><strong>Week commencing:</strong> {{ data.prison_visit_week_date }}</p>'
-      visit_maghaberry_integrated_tuesday:
-        '#type': checkboxes
-        '#title': Tuesday
-        '#options':
-          '0915': '9:15am'
-          1045: '10:45am'
-          1415: '2:15pm'
-          '15:30': '3:30pm'
-        '#options_display': buttons_horizontal
-      visit_maghaberry_integrated_wednesday:
-        '#type': checkboxes
-        '#title': Wednesday
-        '#options':
-          '0915': '9:15am'
-          1045: '10:45am'
-          1415: '2:15pm'
-          '15:30': '3:30pm'
-        '#options_display': buttons_horizontal
-      visit_maghaberry_integrated_thursday:
-        '#type': checkboxes
-        '#title': Thursday
-        '#options':
-          '0915': '9:15am'
-          1045: '10:45am'
-          1415: '2:15pm'
-          '15:30': '3:30pm'
-        '#options_display': buttons_horizontal
-      visit_maghaberry_integrated_saturday:
-        '#type': checkboxes
-        '#title': Saturday
-        '#options':
-          '0915': '9:15am'
-          1045: '10:45am'
-          1415: '2:15pm'
-          '15:30': '3:30pm'
-        '#options_display': buttons_horizontal
-    visit_maghaberry_separates:
-      '#type': fieldset
-      '#title': 'Visit face to face in Maghaberry Prison'
-      '#states':
-        visible:
-          ':input[name="prison_visit_sequence"]':
-            value:
-              greater_equal: '9000'
-          ':input[name="prison_visit_type"]':
-            value: face-to-face
-          ':input[name="prison_visit_prison_name"]':
-            value: Maghaberry
-      vms_details:
-        '#type': webform_computed_twig
-        '#title': 'Visit details'
-        '#title_display': invisible
-        '#states':
-          invisible:
-            '':
-              '': ''
-        '#mode': html
-        '#template': '<p><strong>Week commencing:</strong> {{ data.prison_visit_week_date }}</p>'
-      visit_maghaberry_separates_tuesday:
-        '#type': checkboxes
-        '#title': Tuesday
-        '#options':
-          1030: '10:30am'
-          1430: '2:30pm'
-        '#options_display': buttons_horizontal
-      visit_maghaberry_separates_wednesday:
-        '#type': checkboxes
-        '#title': Wednesday
-        '#options':
-          1030: '10:30am'
-          1430: '2:30pm'
-        '#options_display': buttons_horizontal
-      visit_maghaberry_separates_thursday:
-        '#type': checkboxes
-        '#title': Thursday
-        '#options':
-          1030: '10:30am'
-          1430: '2:30pm'
-        '#options_display': buttons_horizontal
-      visit_maghaberry_separates_saturday:
-        '#type': checkboxes
-        '#title': Saturday
-        '#options':
-          1030: '10:30am'
-          1430: '2:30pm'
-        '#options_display': buttons_horizontal
-    maghaberry_virtual:
-      '#type': fieldset
-      '#title': 'Virtual visit with Maghaberry Prison'
-      '#states':
-        visible:
-          ':input[name="prison_visit_prison_name"]':
-            value: Maghaberry
-          ':input[name="prison_visit_type"]':
-            value: virtual
-      vmv_details:
-        '#type': webform_computed_twig
-        '#title': 'Visit details'
-        '#title_display': invisible
-        '#states':
-          invisible:
-            '':
-              '': ''
-        '#mode': html
-        '#template': '<p><strong>Week commencing:</strong> {{ data.prison_visit_week_date }}</p>'
-      visit_maghaberry_virtual_monday:
+    slots_week_1:
+      '#type': details
+      '#title': 'Week commencing [DATE]'
+      '#open': true
+      '#summary_attributes':
+        class:
+          - btn
+          - btn--primary
+          - btn--block
+      monday_week_1:
         '#type': checkboxes
         '#title': Monday
         '#options':
-          '0930': '9:30am'
-          1000: '10:00am'
-          1030: '10:30am'
-          1100: '11:00am'
-          1130: '11:30am'
-          1430: '2:30pm'
-          1500: '3:00pm'
-          1530: '3:30pm'
+          '08:00': '8.00 am'
+          '08:15': '8.15 am'
+          '08:30': '8.30 am'
+          '09:15': '9.15 am'
+          '08:45': '8.45 am'
+          '09:00': '9.00 am'
+          '09:30': '9.30 am'
+          '09:45': '9.45 am'
+          '10:00': '10.00 am'
+          '10:15': '10.15 am'
+          '10:30': '10.30 am'
+          '10:45': '10.45 am'
+          '11:00': '11.00 am'
+          '11:15': '11.15 am'
+          '11:30': '11.30 am'
+          '11:45': '11.45 am'
+          '12:00': '12.00 pm'
+          '12:15': '12.15 pm'
+          '12:30': '12.30 pm'
+          '12:45': '12.45 pm'
+          '13:00': '1.00 pm'
+          '13:15': '1.15 pm'
+          '13:30': '1.30 pm'
+          '13:45': '1.45 pm'
+          '14:00': '2.00 pm'
+          '14:15': '2.15 pm'
+          '14:30': '2.30 pm'
+          '14:45': '2.45 pm'
+          '15:00': '3.00 pm'
+          '15:15': '3.15 pm'
+          '15:30': '3.30 pm'
+          '15:45': '3.45 pm'
+          '16:00': '4.00 pm'
+          '16:15': '4.15 pm'
+          '16:30': '4.30 pm'
+          '16:45': '4.45 pm'
+          '17:00': '5.00 pm'
+          '17:15': '5.15 pm'
+          '17:30': '5.30 pm'
+          '17:45': '5.45 pm'
+          '18:00': '6.00 pm'
+          '18:15': '6.15 pm'
+          '18:30': '6.30 pm'
+          '18:45': '6.45 pm'
+          '19:00': '7.00 pm'
+          '19:15': '7.15 pm'
+          '19:30': '7.30 pm'
+          '19:45': '7.45 pm'
         '#options_display': buttons_horizontal
-      visit_maghaberry_virtual_tuesday:
+      tuesday_week_1:
         '#type': checkboxes
         '#title': Tuesday
         '#options':
-          '0930': '9:30am'
-          1000: '10:00am'
-          1030: '10:30am'
-          1100: '11:00am'
-          1130: '11:30am'
-          1430: '2:30pm'
-          1500: '3:00pm'
-          1530: '3:30pm'
+          '09:00': '9.00 am'
+          '09:15': '9.15 am'
+          '09:30': '9.30 am'
+          '09:45': '9.45 am'
+          '10:00': '10.00 am'
+          '10:15': '10.15 am'
+          '10:30': '10.30 am'
+          '10:45': '10.45 am'
+          '11:00': '11.00 am'
+          '11:15': '11.15 am'
+          '11:30': '11.30 am'
+          '11:45': '11.45 am'
+          '12:00': '12.00 pm'
+          '12:15': '12.15 pm'
+          '12:30': '12.30 pm'
+          '12:45': '12.45 pm'
+          '13:00': '1.00 pm'
+          '13:15': '1.15 pm'
+          '13:30': '1.30 pm'
+          '13:45': '1.45 pm'
+          '14:00': '2.00 pm'
+          '14:15': '2.15 pm'
+          '14:30': '2.30 pm'
+          '14:45': '2.45 pm'
+          '15:00': '3.00 pm'
+          '15:15': '3.15 pm'
+          '15:30': '3.30 pm'
+          '15:45': '3.45 pm'
+          '16:00': '4.00 pm'
+          '16:15': '4.15 pm'
+          '16:30': '4.30 pm'
+          '16:45': '4.45 pm'
+          '17:00': '5.00 pm'
+          '17:15': '5.15 pm'
+          '17:30': '5.30 pm'
         '#options_display': buttons_horizontal
-      visit_maghaberry_virtual_wednesday:
+      wednesday_week_1:
         '#type': checkboxes
         '#title': Wednesday
         '#options':
-          '0930': '9:30am'
-          1000: '10:00am'
-          1030: '10:30am'
-          1100: '11:00am'
-          1130: '11:30am'
-          1430: '2:30pm'
-          1500: '3:00pm'
-          1530: '3:30pm'
+          '09:00': '9.00 am'
+          '09:15': '9.15 am'
+          '09:30': '9.30 am'
+          '09:45': '9.45 am'
+          '10:00': '10.00 am'
+          '10:15': '10.15 am'
+          '10:30': '10.30 am'
+          '10:45': '10.45 am'
+          '11:00': '11.00 am'
+          '11:15': '11.15 am'
+          '11:30': '11.30 am'
+          '11:45': '11.45 am'
+          '12:00': '12.00 pm'
+          '12:15': '12.15 pm'
+          '12:30': '12.30 pm'
+          '12:45': '12.45 pm'
+          '13:00': '1.00 pm'
+          '13:15': '1.15 pm'
+          '13:30': '1.30 pm'
+          '13:45': '1.45 pm'
+          '14:00': '2.00 pm'
+          '14:15': '2.15 pm'
+          '14:30': '2.30 pm'
+          '14:45': '2.45 pm'
+          '15:00': '3.00 pm'
+          '15:15': '3.15 pm'
+          '15:30': '3.30 pm'
+          '15:45': '3.45 pm'
+          '16:00': '4.00 pm'
+          '16:15': '4.15 pm'
+          '16:30': '4.30 pm'
+          '16:45': '4.45 pm'
+          '17:00': '5.00 pm'
+          '17:15': '5.15 pm'
+          '17:30': '5.30 pm'
         '#options_display': buttons_horizontal
-      visit_maghaberry_virtual_thursday:
+      thursday_week_1:
         '#type': checkboxes
         '#title': Thursday
         '#options':
-          '0930': '9:30am'
-          1000: '10:00am'
-          1030: '10:30am'
-          1100: '11:00am'
-          1130: '11:30am'
-          1430: '2:30pm'
-          1500: '3:00pm'
-          1530: '3:30pm'
+          '09:00': '9.00 am'
+          '09:15': '9.15 am'
+          '09:30': '9.30 am'
+          '09:45': '9.45 am'
+          '10:00': '10.00 am'
+          '10:15': '10.15 am'
+          '10:30': '10.30 am'
+          '10:45': '10.45 am'
+          '11:00': '11.00 am'
+          '11:15': '11.15 am'
+          '11:30': '11.30 am'
+          '11:45': '11.45 am'
+          '12:00': '12.00 pm'
+          '12:15': '12.15 pm'
+          '12:30': '12.30 pm'
+          '12:45': '12.45 pm'
+          '13:00': '1.00 pm'
+          '13:15': '1.15 pm'
+          '13:30': '1.30 pm'
+          '13:45': '1.45 pm'
+          '14:00': '2.00 pm'
+          '14:15': '2.15 pm'
+          '14:30': '2.30 pm'
+          '14:45': '2.45 pm'
+          '15:00': '3.00 pm'
+          '15:15': '3.15 pm'
+          '15:30': '3.30 pm'
+          '15:45': '3.45 pm'
+          '16:00': '4.00 pm'
+          '16:15': '4.15 pm'
+          '16:30': '4.30 pm'
+          '16:45': '4.45 pm'
+          '17:00': '5.00 pm'
+          '17:15': '5.15 pm'
+          '17:30': '5.30 pm'
         '#options_display': buttons_horizontal
-      visit_maghaberry_virtual_friday:
+      friday_week_1:
         '#type': checkboxes
         '#title': Friday
         '#options':
-          '0930': '9:30am'
-          1000: '10:00am'
-          1030: '10:30am'
-          1100: '11:00am'
-          1130: '11:30am'
-          1430: '2:30pm'
-          1500: '3:00pm'
-          1530: '3:30pm'
+          '09:00': '9.00 am'
+          '09:15': '9.15 am'
+          '09:30': '9.30 am'
+          '09:45': '9.45 am'
+          '10:00': '10.00 am'
+          '10:15': '10.15 am'
+          '10:30': '10.30 am'
+          '10:45': '10.45 am'
+          '11:00': '11.00 am'
+          '11:15': '11.15 am'
+          '11:30': '11.30 am'
+          '11:45': '11.45 am'
+          '12:00': '12.00 pm'
+          '12:15': '12.15 pm'
+          '12:30': '12.30 pm'
+          '12:45': '12.45 pm'
+          '13:00': '1.00 pm'
+          '13:15': '1.15 pm'
+          '13:30': '1.30 pm'
+          '13:45': '1.45 pm'
+          '14:00': '2.00 pm'
+          '14:15': '2.15 pm'
+          '14:30': '2.30 pm'
+          '14:45': '2.45 pm'
+          '15:00': '3.00 pm'
+          '15:15': '3.15 pm'
+          '15:30': '3.30 pm'
+          '15:45': '3.45 pm'
+          '16:00': '4.00 pm'
+          '16:15': '4.15 pm'
+          '16:30': '4.30 pm'
+          '16:45': '4.45 pm'
+          '17:00': '5.00 pm'
+          '17:15': '5.15 pm'
+          '17:30': '5.30 pm'
         '#options_display': buttons_horizontal
-      visit_maghaberry_virtual_saturday:
+      saturday_week_1:
         '#type': checkboxes
         '#title': Saturday
         '#options':
-          '0930': '9:30am'
-          1000: '10:00am'
-          1030: '10:30am'
-          1100: '11:00am'
-          1130: '11:30am'
-          1430: '2:30pm'
-          1500: '3:00pm'
-          1530: '3:30pm'
+          '09:00': '9.00 am'
+          '09:15': '9.15 am'
+          '09:30': '9.30 am'
+          '09:45': '9.45 am'
+          '10:00': '10.00 am'
+          '10:15': '10.15 am'
+          '10:30': '10.30 am'
+          '10:45': '10.45 am'
+          '11:00': '11.00 am'
+          '11:15': '11.15 am'
+          '11:30': '11.30 am'
+          '11:45': '11.45 am'
+          '12:00': '12.00 pm'
+          '12:15': '12.15 pm'
+          '12:30': '12.30 pm'
+          '12:45': '12.45 pm'
+          '13:00': '1.00 pm'
+          '13:15': '1.15 pm'
+          '13:30': '1.30 pm'
+          '13:45': '1.45 pm'
+          '14:00': '2.00 pm'
+          '14:15': '2.15 pm'
+          '14:30': '2.30 pm'
+          '14:45': '2.45 pm'
+          '15:00': '3.00 pm'
+          '15:15': '3.15 pm'
+          '15:30': '3.30 pm'
+          '15:45': '3.45 pm'
+          '16:00': '4.00 pm'
+          '16:15': '4.15 pm'
+          '16:30': '4.30 pm'
+          '16:45': '4.45 pm'
+          '17:00': '5.00 pm'
+          '17:15': '5.15 pm'
+          '17:30': '5.30 pm'
         '#options_display': buttons_horizontal
-      visit_maghaberry_virtual_sunday:
+      sunday_week_1:
         '#type': checkboxes
         '#title': Sunday
         '#options':
-          '0930': '9:30am'
-          1000: '10:00am'
-          1030: '10:30am'
-          1100: '11:00am'
-          1130: '11:30am'
-          1430: '2:30pm'
-          1500: '3:00pm'
-          1530: '3:30pm'
+          '09:00': '9.00 am'
+          '09:15': '9.15 am'
+          '09:30': '9.30 am'
+          '09:45': '9.45 am'
+          '10:00': '10.00 am'
+          '10:15': '10.15 am'
+          '10:30': '10.30 am'
+          '10:45': '10.45 am'
+          '11:00': '11.00 am'
+          '11:15': '11.15 am'
+          '11:30': '11.30 am'
+          '11:45': '11.45 am'
+          '12:00': '12.00 pm'
+          '12:15': '12.15 pm'
+          '12:30': '12.30 pm'
+          '12:45': '12.45 pm'
+          '13:00': '1.00 pm'
+          '13:15': '1.15 pm'
+          '13:30': '1.30 pm'
+          '13:45': '1.45 pm'
+          '14:00': '2.00 pm'
+          '14:15': '2.15 pm'
+          '14:30': '2.30 pm'
+          '14:45': '2.45 pm'
+          '15:00': '3.00 pm'
+          '15:15': '3.15 pm'
+          '15:30': '3.30 pm'
+          '15:45': '3.45 pm'
+          '16:00': '4.00 pm'
+          '16:15': '4.15 pm'
+          '16:30': '4.30 pm'
+          '16:45': '4.45 pm'
+          '17:00': '5.00 pm'
+          '17:15': '5.15 pm'
+          '17:30': '5.30 pm'
+        '#options_display': buttons_horizontal
+    slots_week_2:
+      '#type': details
+      '#title': 'Week commencing [DATE]'
+      '#summary_attributes':
+        class:
+          - btn
+          - btn--primary
+          - btn--block
+      monday_week_2:
+        '#type': checkboxes
+        '#title': Monday
+        '#options':
+          '09:00': '9.00 am'
+          '09:15': '9.15 am'
+          '09:30': '9.30 am'
+          '09:45': '9.45 am'
+          '10:00': '10.00 am'
+          '10:15': '10.15 am'
+          '10:30': '10.30 am'
+          '10:45': '10.45 am'
+          '11:00': '11.00 am'
+          '11:15': '11.15 am'
+          '11:30': '11.30 am'
+          '11:45': '11.45 am'
+          '12:00': '12.00 pm'
+          '12:15': '12.15 pm'
+          '12:30': '12.30 pm'
+          '12:45': '12.45 pm'
+          '13:00': '1.00 pm'
+          '13:15': '1.15 pm'
+          '13:30': '1.30 pm'
+          '13:45': '1.45 pm'
+          '14:00': '2.00 pm'
+          '14:15': '2.15 pm'
+          '14:30': '2.30 pm'
+          '14:45': '2.45 pm'
+          '15:00': '3.00 pm'
+          '15:15': '3.15 pm'
+          '15:30': '3.30 pm'
+          '15:45': '3.45 pm'
+          '16:00': '4.00 pm'
+          '16:15': '4.15 pm'
+          '16:30': '4.30 pm'
+          '16:45': '4.45 pm'
+          '17:00': '5.00 pm'
+          '17:15': '5.15 pm'
+          '17:30': '5.30 pm'
+        '#options_display': buttons_horizontal
+      tuesday_week_2:
+        '#type': checkboxes
+        '#title': Tuesday
+        '#options':
+          '09:00': '9.00 am'
+          '09:15': '9.15 am'
+          '09:30': '9.30 am'
+          '09:45': '9.45 am'
+          '10:00': '10.00 am'
+          '10:15': '10.15 am'
+          '10:30': '10.30 am'
+          '10:45': '10.45 am'
+          '11:00': '11.00 am'
+          '11:15': '11.15 am'
+          '11:30': '11.30 am'
+          '11:45': '11.45 am'
+          '12:00': '12.00 pm'
+          '12:15': '12.15 pm'
+          '12:30': '12.30 pm'
+          '12:45': '12.45 pm'
+          '13:00': '1.00 pm'
+          '13:15': '1.15 pm'
+          '13:30': '1.30 pm'
+          '13:45': '1.45 pm'
+          '14:00': '2.00 pm'
+          '14:15': '2.15 pm'
+          '14:30': '2.30 pm'
+          '14:45': '2.45 pm'
+          '15:00': '3.00 pm'
+          '15:15': '3.15 pm'
+          '15:30': '3.30 pm'
+          '15:45': '3.45 pm'
+          '16:00': '4.00 pm'
+          '16:15': '4.15 pm'
+          '16:30': '4.30 pm'
+          '16:45': '4.45 pm'
+          '17:00': '5.00 pm'
+          '17:15': '5.15 pm'
+          '17:30': '5.30 pm'
+        '#options_display': buttons_horizontal
+      wednesday_week_2:
+        '#type': checkboxes
+        '#title': Wednesday
+        '#options':
+          '09:00': '9.00 am'
+          '09:15': '9.15 am'
+          '09:30': '9.30 am'
+          '09:45': '9.45 am'
+          '10:00': '10.00 am'
+          '10:15': '10.15 am'
+          '10:30': '10.30 am'
+          '10:45': '10.45 am'
+          '11:00': '11.00 am'
+          '11:15': '11.15 am'
+          '11:30': '11.30 am'
+          '11:45': '11.45 am'
+          '12:00': '12.00 pm'
+          '12:15': '12.15 pm'
+          '12:30': '12.30 pm'
+          '12:45': '12.45 pm'
+          '13:00': '1.00 pm'
+          '13:15': '1.15 pm'
+          '13:30': '1.30 pm'
+          '13:45': '1.45 pm'
+          '14:00': '2.00 pm'
+          '14:15': '2.15 pm'
+          '14:30': '2.30 pm'
+          '14:45': '2.45 pm'
+          '15:00': '3.00 pm'
+          '15:15': '3.15 pm'
+          '15:30': '3.30 pm'
+          '15:45': '3.45 pm'
+          '16:00': '4.00 pm'
+          '16:15': '4.15 pm'
+          '16:30': '4.30 pm'
+          '16:45': '4.45 pm'
+          '17:00': '5.00 pm'
+          '17:15': '5.15 pm'
+          '17:30': '5.30 pm'
+        '#options_display': buttons_horizontal
+      thursday_week_2:
+        '#type': checkboxes
+        '#title': Thursday
+        '#options':
+          '09:00': '9.00 am'
+          '09:15': '9.15 am'
+          '09:30': '9.30 am'
+          '09:45': '9.45 am'
+          '10:00': '10.00 am'
+          '10:15': '10.15 am'
+          '10:30': '10.30 am'
+          '10:45': '10.45 am'
+          '11:00': '11.00 am'
+          '11:15': '11.15 am'
+          '11:30': '11.30 am'
+          '11:45': '11.45 am'
+          '12:00': '12.00 pm'
+          '12:15': '12.15 pm'
+          '12:30': '12.30 pm'
+          '12:45': '12.45 pm'
+          '13:00': '1.00 pm'
+          '13:15': '1.15 pm'
+          '13:30': '1.30 pm'
+          '13:45': '1.45 pm'
+          '14:00': '2.00 pm'
+          '14:15': '2.15 pm'
+          '14:30': '2.30 pm'
+          '14:45': '2.45 pm'
+          '15:00': '3.00 pm'
+          '15:15': '3.15 pm'
+          '15:30': '3.30 pm'
+          '15:45': '3.45 pm'
+          '16:00': '4.00 pm'
+          '16:15': '4.15 pm'
+          '16:30': '4.30 pm'
+          '16:45': '4.45 pm'
+          '17:00': '5.00 pm'
+          '17:15': '5.15 pm'
+          '17:30': '5.30 pm'
+        '#options_display': buttons_horizontal
+      friday_week_2:
+        '#type': checkboxes
+        '#title': Friday
+        '#options':
+          '09:00': '9.00 am'
+          '09:15': '9.15 am'
+          '09:30': '9.30 am'
+          '09:45': '9.45 am'
+          '10:00': '10.00 am'
+          '10:15': '10.15 am'
+          '10:30': '10.30 am'
+          '10:45': '10.45 am'
+          '11:00': '11.00 am'
+          '11:15': '11.15 am'
+          '11:30': '11.30 am'
+          '11:45': '11.45 am'
+          '12:00': '12.00 pm'
+          '12:15': '12.15 pm'
+          '12:30': '12.30 pm'
+          '12:45': '12.45 pm'
+          '13:00': '1.00 pm'
+          '13:15': '1.15 pm'
+          '13:30': '1.30 pm'
+          '13:45': '1.45 pm'
+          '14:00': '2.00 pm'
+          '14:15': '2.15 pm'
+          '14:30': '2.30 pm'
+          '14:45': '2.45 pm'
+          '15:00': '3.00 pm'
+          '15:15': '3.15 pm'
+          '15:30': '3.30 pm'
+          '15:45': '3.45 pm'
+          '16:00': '4.00 pm'
+          '16:15': '4.15 pm'
+          '16:30': '4.30 pm'
+          '16:45': '4.45 pm'
+          '17:00': '5.00 pm'
+          '17:15': '5.15 pm'
+          '17:30': '5.30 pm'
+        '#options_display': buttons_horizontal
+      saturday_week_2:
+        '#type': checkboxes
+        '#title': Saturday
+        '#options':
+          '09:00': '9.00 am'
+          '09:15': '9.15 am'
+          '09:30': '9.30 am'
+          '09:45': '9.45 am'
+          '10:00': '10.00 am'
+          '10:15': '10.15 am'
+          '10:30': '10.30 am'
+          '10:45': '10.45 am'
+          '11:00': '11.00 am'
+          '11:15': '11.15 am'
+          '11:30': '11.30 am'
+          '11:45': '11.45 am'
+          '12:00': '12.00 pm'
+          '12:15': '12.15 pm'
+          '12:30': '12.30 pm'
+          '12:45': '12.45 pm'
+          '13:00': '1.00 pm'
+          '13:15': '1.15 pm'
+          '13:30': '1.30 pm'
+          '13:45': '1.45 pm'
+          '14:00': '2.00 pm'
+          '14:15': '2.15 pm'
+          '14:30': '2.30 pm'
+          '14:45': '2.45 pm'
+          '15:00': '3.00 pm'
+          '15:15': '3.15 pm'
+          '15:30': '3.30 pm'
+          '15:45': '3.45 pm'
+          '16:00': '4.00 pm'
+          '16:15': '4.15 pm'
+          '16:30': '4.30 pm'
+          '16:45': '4.45 pm'
+          '17:00': '5.00 pm'
+          '17:15': '5.15 pm'
+          '17:30': '5.30 pm'
+        '#options_display': buttons_horizontal
+      sunday_week_2:
+        '#type': checkboxes
+        '#title': Sunday
+        '#options':
+          '09:00': '9.00 am'
+          '09:15': '9.15 am'
+          '09:30': '9.30 am'
+          '09:45': '9.45 am'
+          '10:00': '10.00 am'
+          '10:15': '10.15 am'
+          '10:30': '10.30 am'
+          '10:45': '10.45 am'
+          '11:00': '11.00 am'
+          '11:15': '11.15 am'
+          '11:30': '11.30 am'
+          '11:45': '11.45 am'
+          '12:00': '12.00 pm'
+          '12:15': '12.15 pm'
+          '12:30': '12.30 pm'
+          '12:45': '12.45 pm'
+          '13:00': '1.00 pm'
+          '13:15': '1.15 pm'
+          '13:30': '1.30 pm'
+          '13:45': '1.45 pm'
+          '14:00': '2.00 pm'
+          '14:15': '2.15 pm'
+          '14:30': '2.30 pm'
+          '14:45': '2.45 pm'
+          '15:00': '3.00 pm'
+          '15:15': '3.15 pm'
+          '15:30': '3.30 pm'
+          '15:45': '3.45 pm'
+          '16:00': '4.00 pm'
+          '16:15': '4.15 pm'
+          '16:30': '4.30 pm'
+          '16:45': '4.45 pm'
+          '17:00': '5.00 pm'
+          '17:15': '5.15 pm'
+          '17:30': '5.30 pm'
+        '#options_display': buttons_horizontal
+    slots_week_3:
+      '#type': details
+      '#title': 'Week commencing [DATE]'
+      '#summary_attributes':
+        class:
+          - btn
+          - btn--primary
+          - btn--block
+      monday_week_3:
+        '#type': checkboxes
+        '#title': Monday
+        '#options':
+          '09:00': '9.00 am'
+          '09:15': '9.15 am'
+          '09:30': '9.30 am'
+          '09:45': '9.45 am'
+          '10:00': '10.00 am'
+          '10:15': '10.15 am'
+          '10:30': '10.30 am'
+          '10:45': '10.45 am'
+          '11:00': '11.00 am'
+          '11:15': '11.15 am'
+          '11:30': '11.30 am'
+          '11:45': '11.45 am'
+          '12:00': '12.00 pm'
+          '12:15': '12.15 pm'
+          '12:30': '12.30 pm'
+          '12:45': '12.45 pm'
+          '13:00': '1.00 pm'
+          '13:15': '1.15 pm'
+          '13:30': '1.30 pm'
+          '13:45': '1.45 pm'
+          '14:00': '2.00 pm'
+          '14:15': '2.15 pm'
+          '14:30': '2.30 pm'
+          '14:45': '2.45 pm'
+          '15:00': '3.00 pm'
+          '15:15': '3.15 pm'
+          '15:30': '3.30 pm'
+          '15:45': '3.45 pm'
+          '16:00': '4.00 pm'
+          '16:15': '4.15 pm'
+          '16:30': '4.30 pm'
+          '16:45': '4.45 pm'
+          '17:00': '5.00 pm'
+          '17:15': '5.15 pm'
+          '17:30': '5.30 pm'
+        '#options_display': buttons_horizontal
+      tuesday_week_3:
+        '#type': checkboxes
+        '#title': Tuesday
+        '#options':
+          '09:00': '9.00 am'
+          '09:15': '9.15 am'
+          '09:30': '9.30 am'
+          '09:45': '9.45 am'
+          '10:00': '10.00 am'
+          '10:15': '10.15 am'
+          '10:30': '10.30 am'
+          '10:45': '10.45 am'
+          '11:00': '11.00 am'
+          '11:15': '11.15 am'
+          '11:30': '11.30 am'
+          '11:45': '11.45 am'
+          '12:00': '12.00 pm'
+          '12:15': '12.15 pm'
+          '12:30': '12.30 pm'
+          '12:45': '12.45 pm'
+          '13:00': '1.00 pm'
+          '13:15': '1.15 pm'
+          '13:30': '1.30 pm'
+          '13:45': '1.45 pm'
+          '14:00': '2.00 pm'
+          '14:15': '2.15 pm'
+          '14:30': '2.30 pm'
+          '14:45': '2.45 pm'
+          '15:00': '3.00 pm'
+          '15:15': '3.15 pm'
+          '15:30': '3.30 pm'
+          '15:45': '3.45 pm'
+          '16:00': '4.00 pm'
+          '16:15': '4.15 pm'
+          '16:30': '4.30 pm'
+          '16:45': '4.45 pm'
+          '17:00': '5.00 pm'
+          '17:15': '5.15 pm'
+          '17:30': '5.30 pm'
+        '#options_display': buttons_horizontal
+      wednesday_week_3:
+        '#type': checkboxes
+        '#title': Wednesday
+        '#options':
+          '09:00': '9.00 am'
+          '09:15': '9.15 am'
+          '09:30': '9.30 am'
+          '09:45': '9.45 am'
+          '10:00': '10.00 am'
+          '10:15': '10.15 am'
+          '10:30': '10.30 am'
+          '10:45': '10.45 am'
+          '11:00': '11.00 am'
+          '11:15': '11.15 am'
+          '11:30': '11.30 am'
+          '11:45': '11.45 am'
+          '12:00': '12.00 pm'
+          '12:15': '12.15 pm'
+          '12:30': '12.30 pm'
+          '12:45': '12.45 pm'
+          '13:00': '1.00 pm'
+          '13:15': '1.15 pm'
+          '13:30': '1.30 pm'
+          '13:45': '1.45 pm'
+          '14:00': '2.00 pm'
+          '14:15': '2.15 pm'
+          '14:30': '2.30 pm'
+          '14:45': '2.45 pm'
+          '15:00': '3.00 pm'
+          '15:15': '3.15 pm'
+          '15:30': '3.30 pm'
+          '15:45': '3.45 pm'
+          '16:00': '4.00 pm'
+          '16:15': '4.15 pm'
+          '16:30': '4.30 pm'
+          '16:45': '4.45 pm'
+          '17:00': '5.00 pm'
+          '17:15': '5.15 pm'
+          '17:30': '5.30 pm'
+        '#options_display': buttons_horizontal
+      thursday_week_3:
+        '#type': checkboxes
+        '#title': Thursday
+        '#options':
+          '09:00': '9.00 am'
+          '09:15': '9.15 am'
+          '09:30': '9.30 am'
+          '09:45': '9.45 am'
+          '10:00': '10.00 am'
+          '10:15': '10.15 am'
+          '10:30': '10.30 am'
+          '10:45': '10.45 am'
+          '11:00': '11.00 am'
+          '11:15': '11.15 am'
+          '11:30': '11.30 am'
+          '11:45': '11.45 am'
+          '12:00': '12.00 pm'
+          '12:15': '12.15 pm'
+          '12:30': '12.30 pm'
+          '12:45': '12.45 pm'
+          '13:00': '1.00 pm'
+          '13:15': '1.15 pm'
+          '13:30': '1.30 pm'
+          '13:45': '1.45 pm'
+          '14:00': '2.00 pm'
+          '14:15': '2.15 pm'
+          '14:30': '2.30 pm'
+          '14:45': '2.45 pm'
+          '15:00': '3.00 pm'
+          '15:15': '3.15 pm'
+          '15:30': '3.30 pm'
+          '15:45': '3.45 pm'
+          '16:00': '4.00 pm'
+          '16:15': '4.15 pm'
+          '16:30': '4.30 pm'
+          '16:45': '4.45 pm'
+          '17:00': '5.00 pm'
+          '17:15': '5.15 pm'
+          '17:30': '5.30 pm'
+        '#options_display': buttons_horizontal
+      friday_week_3:
+        '#type': checkboxes
+        '#title': Friday
+        '#options':
+          '09:00': '9.00 am'
+          '09:15': '9.15 am'
+          '09:30': '9.30 am'
+          '09:45': '9.45 am'
+          '10:00': '10.00 am'
+          '10:15': '10.15 am'
+          '10:30': '10.30 am'
+          '10:45': '10.45 am'
+          '11:00': '11.00 am'
+          '11:15': '11.15 am'
+          '11:30': '11.30 am'
+          '11:45': '11.45 am'
+          '12:00': '12.00 pm'
+          '12:15': '12.15 pm'
+          '12:30': '12.30 pm'
+          '12:45': '12.45 pm'
+          '13:00': '1.00 pm'
+          '13:15': '1.15 pm'
+          '13:30': '1.30 pm'
+          '13:45': '1.45 pm'
+          '14:00': '2.00 pm'
+          '14:15': '2.15 pm'
+          '14:30': '2.30 pm'
+          '14:45': '2.45 pm'
+          '15:00': '3.00 pm'
+          '15:15': '3.15 pm'
+          '15:30': '3.30 pm'
+          '15:45': '3.45 pm'
+          '16:00': '4.00 pm'
+          '16:15': '4.15 pm'
+          '16:30': '4.30 pm'
+          '16:45': '4.45 pm'
+          '17:00': '5.00 pm'
+          '17:15': '5.15 pm'
+          '17:30': '5.30 pm'
+        '#options_display': buttons_horizontal
+      saturday_week_3:
+        '#type': checkboxes
+        '#title': Saturday
+        '#options':
+          '09:00': '9.00 am'
+          '09:15': '9.15 am'
+          '09:30': '9.30 am'
+          '09:45': '9.45 am'
+          '10:00': '10.00 am'
+          '10:15': '10.15 am'
+          '10:30': '10.30 am'
+          '10:45': '10.45 am'
+          '11:00': '11.00 am'
+          '11:15': '11.15 am'
+          '11:30': '11.30 am'
+          '11:45': '11.45 am'
+          '12:00': '12.00 pm'
+          '12:15': '12.15 pm'
+          '12:30': '12.30 pm'
+          '12:45': '12.45 pm'
+          '13:00': '1.00 pm'
+          '13:15': '1.15 pm'
+          '13:30': '1.30 pm'
+          '13:45': '1.45 pm'
+          '14:00': '2.00 pm'
+          '14:15': '2.15 pm'
+          '14:30': '2.30 pm'
+          '14:45': '2.45 pm'
+          '15:00': '3.00 pm'
+          '15:15': '3.15 pm'
+          '15:30': '3.30 pm'
+          '15:45': '3.45 pm'
+          '16:00': '4.00 pm'
+          '16:15': '4.15 pm'
+          '16:30': '4.30 pm'
+          '16:45': '4.45 pm'
+          '17:00': '5.00 pm'
+          '17:15': '5.15 pm'
+          '17:30': '5.30 pm'
+        '#options_display': buttons_horizontal
+      sunday_week_3:
+        '#type': checkboxes
+        '#title': Sunday
+        '#options':
+          '09:00': '9.00 am'
+          '09:15': '9.15 am'
+          '09:30': '9.30 am'
+          '09:45': '9.45 am'
+          '10:00': '10.00 am'
+          '10:15': '10.15 am'
+          '10:30': '10.30 am'
+          '10:45': '10.45 am'
+          '11:00': '11.00 am'
+          '11:15': '11.15 am'
+          '11:30': '11.30 am'
+          '11:45': '11.45 am'
+          '12:00': '12.00 pm'
+          '12:15': '12.15 pm'
+          '12:30': '12.30 pm'
+          '12:45': '12.45 pm'
+          '13:00': '1.00 pm'
+          '13:15': '1.15 pm'
+          '13:30': '1.30 pm'
+          '13:45': '1.45 pm'
+          '14:00': '2.00 pm'
+          '14:15': '2.15 pm'
+          '14:30': '2.30 pm'
+          '14:45': '2.45 pm'
+          '15:00': '3.00 pm'
+          '15:15': '3.15 pm'
+          '15:30': '3.30 pm'
+          '15:45': '3.45 pm'
+          '16:00': '4.00 pm'
+          '16:15': '4.15 pm'
+          '16:30': '4.30 pm'
+          '16:45': '4.45 pm'
+          '17:00': '5.00 pm'
+          '17:15': '5.15 pm'
+          '17:30': '5.30 pm'
+        '#options_display': buttons_horizontal
+    slots_week_4:
+      '#type': details
+      '#title': 'Week commencing [DATE]'
+      '#summary_attributes':
+        class:
+          - btn
+          - btn--primary
+          - btn--block
+      monday_week_4:
+        '#type': checkboxes
+        '#title': Monday
+        '#options':
+          '09:00': '9.00 am'
+          '09:15': '9.15 am'
+          '09:30': '9.30 am'
+          '09:45': '9.45 am'
+          '10:00': '10.00 am'
+          '10:15': '10.15 am'
+          '10:30': '10.30 am'
+          '10:45': '10.45 am'
+          '11:00': '11.00 am'
+          '11:15': '11.15 am'
+          '11:30': '11.30 am'
+          '11:45': '11.45 am'
+          '12:00': '12.00 pm'
+          '12:15': '12.15 pm'
+          '12:30': '12.30 pm'
+          '12:45': '12.45 pm'
+          '13:00': '1.00 pm'
+          '13:15': '1.15 pm'
+          '13:30': '1.30 pm'
+          '13:45': '1.45 pm'
+          '14:00': '2.00 pm'
+          '14:15': '2.15 pm'
+          '14:30': '2.30 pm'
+          '14:45': '2.45 pm'
+          '15:00': '3.00 pm'
+          '15:15': '3.15 pm'
+          '15:30': '3.30 pm'
+          '15:45': '3.45 pm'
+          '16:00': '4.00 pm'
+          '16:15': '4.15 pm'
+          '16:30': '4.30 pm'
+          '16:45': '4.45 pm'
+          '17:00': '5.00 pm'
+          '17:15': '5.15 pm'
+          '17:30': '5.30 pm'
+        '#options_display': buttons_horizontal
+      tuesday_week_4:
+        '#type': checkboxes
+        '#title': Tuesday
+        '#options':
+          '09:00': '9.00 am'
+          '09:15': '9.15 am'
+          '09:30': '9.30 am'
+          '09:45': '9.45 am'
+          '10:00': '10.00 am'
+          '10:15': '10.15 am'
+          '10:30': '10.30 am'
+          '10:45': '10.45 am'
+          '11:00': '11.00 am'
+          '11:15': '11.15 am'
+          '11:30': '11.30 am'
+          '11:45': '11.45 am'
+          '12:00': '12.00 pm'
+          '12:15': '12.15 pm'
+          '12:30': '12.30 pm'
+          '12:45': '12.45 pm'
+          '13:00': '1.00 pm'
+          '13:15': '1.15 pm'
+          '13:30': '1.30 pm'
+          '13:45': '1.45 pm'
+          '14:00': '2.00 pm'
+          '14:15': '2.15 pm'
+          '14:30': '2.30 pm'
+          '14:45': '2.45 pm'
+          '15:00': '3.00 pm'
+          '15:15': '3.15 pm'
+          '15:30': '3.30 pm'
+          '15:45': '3.45 pm'
+          '16:00': '4.00 pm'
+          '16:15': '4.15 pm'
+          '16:30': '4.30 pm'
+          '16:45': '4.45 pm'
+          '17:00': '5.00 pm'
+          '17:15': '5.15 pm'
+          '17:30': '5.30 pm'
+        '#options_display': buttons_horizontal
+      wednesday_week_4:
+        '#type': checkboxes
+        '#title': Wednesday
+        '#options':
+          '09:00': '9.00 am'
+          '09:15': '9.15 am'
+          '09:30': '9.30 am'
+          '09:45': '9.45 am'
+          '10:00': '10.00 am'
+          '10:15': '10.15 am'
+          '10:30': '10.30 am'
+          '10:45': '10.45 am'
+          '11:00': '11.00 am'
+          '11:15': '11.15 am'
+          '11:30': '11.30 am'
+          '11:45': '11.45 am'
+          '12:00': '12.00 pm'
+          '12:15': '12.15 pm'
+          '12:30': '12.30 pm'
+          '12:45': '12.45 pm'
+          '13:00': '1.00 pm'
+          '13:15': '1.15 pm'
+          '13:30': '1.30 pm'
+          '13:45': '1.45 pm'
+          '14:00': '2.00 pm'
+          '14:15': '2.15 pm'
+          '14:30': '2.30 pm'
+          '14:45': '2.45 pm'
+          '15:00': '3.00 pm'
+          '15:15': '3.15 pm'
+          '15:30': '3.30 pm'
+          '15:45': '3.45 pm'
+          '16:00': '4.00 pm'
+          '16:15': '4.15 pm'
+          '16:30': '4.30 pm'
+          '16:45': '4.45 pm'
+          '17:00': '5.00 pm'
+          '17:15': '5.15 pm'
+          '17:30': '5.30 pm'
+        '#options_display': buttons_horizontal
+      thursday_week_4:
+        '#type': checkboxes
+        '#title': Thursday
+        '#options':
+          '09:00': '9.00 am'
+          '09:15': '9.15 am'
+          '09:30': '9.30 am'
+          '09:45': '9.45 am'
+          '10:00': '10.00 am'
+          '10:15': '10.15 am'
+          '10:30': '10.30 am'
+          '10:45': '10.45 am'
+          '11:00': '11.00 am'
+          '11:15': '11.15 am'
+          '11:30': '11.30 am'
+          '11:45': '11.45 am'
+          '12:00': '12.00 pm'
+          '12:15': '12.15 pm'
+          '12:30': '12.30 pm'
+          '12:45': '12.45 pm'
+          '13:00': '1.00 pm'
+          '13:15': '1.15 pm'
+          '13:30': '1.30 pm'
+          '13:45': '1.45 pm'
+          '14:00': '2.00 pm'
+          '14:15': '2.15 pm'
+          '14:30': '2.30 pm'
+          '14:45': '2.45 pm'
+          '15:00': '3.00 pm'
+          '15:15': '3.15 pm'
+          '15:30': '3.30 pm'
+          '15:45': '3.45 pm'
+          '16:00': '4.00 pm'
+          '16:15': '4.15 pm'
+          '16:30': '4.30 pm'
+          '16:45': '4.45 pm'
+          '17:00': '5.00 pm'
+          '17:15': '5.15 pm'
+          '17:30': '5.30 pm'
+        '#options_display': buttons_horizontal
+      friday_week_4:
+        '#type': checkboxes
+        '#title': Friday
+        '#options':
+          '09:00': '9.00 am'
+          '09:15': '9.15 am'
+          '09:30': '9.30 am'
+          '09:45': '9.45 am'
+          '10:00': '10.00 am'
+          '10:15': '10.15 am'
+          '10:30': '10.30 am'
+          '10:45': '10.45 am'
+          '11:00': '11.00 am'
+          '11:15': '11.15 am'
+          '11:30': '11.30 am'
+          '11:45': '11.45 am'
+          '12:00': '12.00 pm'
+          '12:15': '12.15 pm'
+          '12:30': '12.30 pm'
+          '12:45': '12.45 pm'
+          '13:00': '1.00 pm'
+          '13:15': '1.15 pm'
+          '13:30': '1.30 pm'
+          '13:45': '1.45 pm'
+          '14:00': '2.00 pm'
+          '14:15': '2.15 pm'
+          '14:30': '2.30 pm'
+          '14:45': '2.45 pm'
+          '15:00': '3.00 pm'
+          '15:15': '3.15 pm'
+          '15:30': '3.30 pm'
+          '15:45': '3.45 pm'
+          '16:00': '4.00 pm'
+          '16:15': '4.15 pm'
+          '16:30': '4.30 pm'
+          '16:45': '4.45 pm'
+          '17:00': '5.00 pm'
+          '17:15': '5.15 pm'
+          '17:30': '5.30 pm'
+        '#options_display': buttons_horizontal
+      saturday_week_4:
+        '#type': checkboxes
+        '#title': Saturday
+        '#options':
+          '09:00': '9.00 am'
+          '09:15': '9.15 am'
+          '09:30': '9.30 am'
+          '09:45': '9.45 am'
+          '10:00': '10.00 am'
+          '10:15': '10.15 am'
+          '10:30': '10.30 am'
+          '10:45': '10.45 am'
+          '11:00': '11.00 am'
+          '11:15': '11.15 am'
+          '11:30': '11.30 am'
+          '11:45': '11.45 am'
+          '12:00': '12.00 pm'
+          '12:15': '12.15 pm'
+          '12:30': '12.30 pm'
+          '12:45': '12.45 pm'
+          '13:00': '1.00 pm'
+          '13:15': '1.15 pm'
+          '13:30': '1.30 pm'
+          '13:45': '1.45 pm'
+          '14:00': '2.00 pm'
+          '14:15': '2.15 pm'
+          '14:30': '2.30 pm'
+          '14:45': '2.45 pm'
+          '15:00': '3.00 pm'
+          '15:15': '3.15 pm'
+          '15:30': '3.30 pm'
+          '15:45': '3.45 pm'
+          '16:00': '4.00 pm'
+          '16:15': '4.15 pm'
+          '16:30': '4.30 pm'
+          '16:45': '4.45 pm'
+          '17:00': '5.00 pm'
+          '17:15': '5.15 pm'
+          '17:30': '5.30 pm'
+        '#options_display': buttons_horizontal
+      sunday_week_4:
+        '#type': checkboxes
+        '#title': Sunday
+        '#options':
+          '09:00': '9.00 am'
+          '09:15': '9.15 am'
+          '09:30': '9.30 am'
+          '09:45': '9.45 am'
+          '10:00': '10.00 am'
+          '10:15': '10.15 am'
+          '10:30': '10.30 am'
+          '10:45': '10.45 am'
+          '11:00': '11.00 am'
+          '11:15': '11.15 am'
+          '11:30': '11.30 am'
+          '11:45': '11.45 am'
+          '12:00': '12.00 pm'
+          '12:15': '12.15 pm'
+          '12:30': '12.30 pm'
+          '12:45': '12.45 pm'
+          '13:00': '1.00 pm'
+          '13:15': '1.15 pm'
+          '13:30': '1.30 pm'
+          '13:45': '1.45 pm'
+          '14:00': '2.00 pm'
+          '14:15': '2.15 pm'
+          '14:30': '2.30 pm'
+          '14:45': '2.45 pm'
+          '15:00': '3.00 pm'
+          '15:15': '3.15 pm'
+          '15:30': '3.30 pm'
+          '15:45': '3.45 pm'
+          '16:00': '4.00 pm'
+          '16:15': '4.15 pm'
+          '16:30': '4.30 pm'
+          '16:45': '4.45 pm'
+          '17:00': '5.00 pm'
+          '17:15': '5.15 pm'
+          '17:30': '5.30 pm'
         '#options_display': buttons_horizontal
 css: ''
 javascript: ''
@@ -574,4 +1529,369 @@ handlers:
       theme_name: ''
       parameters: {  }
       debug: false
+  prison_visit_booking:
+    id: prison_visit_booking
+    handler_id: prison_visit_booking
+    label: 'Prison Visit Booking'
+    notes: ''
+    status: true
+    conditions: {  }
+    weight: 0
+    settings:
+      prisons:
+        MY: Maghaberry
+        HW: 'Hydebank Wood'
+        MN: Magilligan
+      visit_order_number_length: 12
+      visit_type:
+        F: face-to-face
+        V: virtual
+        E: enhanced
+      visit_advance_notice:
+        F: '24 hours'
+        V: '48 hours'
+        E: '24 hours'
+      booking_reference_validity_period_days:
+        F: 7
+        V: 7
+        E: 28
+      visit_slots:
+        Maghaberry:
+          face-to-face:
+            Monday: null
+            Tuesday:
+              integrated:
+                '09:15': '9.15 am'
+                '10:45': '10.45 am'
+                '14:15': '2.15 pm'
+                '15:30': '3.30 pm'
+              separates:
+                '10:30': '10.30 am'
+                '14:30': '2:30 pm'
+            Wednesday:
+              integrated:
+                '09:15': '9.15 am'
+                '10:45': '10.45 am'
+                '14:15': '2.15 pm'
+                '15:30': '3.30 pm'
+              separates:
+                '10:30': '10.30 am'
+                '14:30': '2:30 pm'
+            Thursday:
+              integrated:
+                '09:15': '9.15 am'
+                '10:45': '10.45 am'
+                '14:15': '2.15 pm'
+                '15:30': '3.30 pm'
+              separates:
+                '10:30': '10.30 am'
+                '14:30': '2:30 pm'
+            Friday: null
+            Saturday:
+              integrated:
+                '09:15': '9.15 am'
+                '10:45': '10.45 am'
+                '14:15': '2.15 pm'
+                '15:30': '3.30 pm'
+              separates:
+                '10:30': '10.30 am'
+                '14:30': '2:30 pm'
+            Sunday: null
+          virtual:
+            Monday:
+              '09:30': '9.30 am'
+              '10:00': '10.00 am'
+              '10:30': '10.30 am'
+              '11:00': '11.30 am'
+              '14:30': '2.30 pm'
+              '15:00': '3.00 pm'
+            Tuesday:
+              '09:30': '9.30 am'
+              '10:00': '10.00 am'
+              '10:30': '10.30 am'
+              '11:00': '11.30 am'
+              '14:30': '2.30 pm'
+              '15:00': '3.00 pm'
+            Wednesday:
+              '09:30': '9.30 am'
+              '10:00': '10.00 am'
+              '10:30': '10.30 am'
+              '11:00': '11.30 am'
+              '14:30': '2.30 pm'
+              '15:00': '3.00 pm'
+            Thursday:
+              '09:30': '9.30 am'
+              '10:00': '10.00 am'
+              '10:30': '10.30 am'
+              '11:00': '11.30 am'
+              '14:30': '2.30 pm'
+              '15:00': '3.00 pm'
+            Friday:
+              '09:30': '9.30 am'
+              '10:00': '10.00 am'
+              '10:30': '10.30 am'
+              '11:00': '11.30 am'
+              '14:30': '2.30 pm'
+              '15:00': '3.00 pm'
+            Saturday:
+              '09:30': '9.30 am'
+              '10:00': '10.00 am'
+              '10:30': '10.30 am'
+              '11:00': '11.30 am'
+              '14:30': '2.30 pm'
+              '15:00': '3.00 pm'
+            Sunday:
+              '09:30': '9.30 am'
+              '10:00': '10.00 am'
+              '10:30': '10.30 am'
+              '11:00': '11.30 am'
+              '14:30': '2.30 pm'
+              '15:00': '3.00 pm'
+          enhanced:
+            Monday: null
+            Tuesday:
+              integrated:
+                '09:15': '9.15 am'
+                '10:45': '10.45 am'
+                '14:15': '2.15 pm'
+                '15:30': '3.30 pm'
+              separates:
+                '10:30': '10.30 am'
+                '14:30': '2:30 pm'
+            Wednesday:
+              integrated:
+                '09:15': '9.15 am'
+                '10:45': '10.45 am'
+                '14:15': '2.15 pm'
+                '15:30': '3.30 pm'
+              separates:
+                '10:30': '10.30 am'
+                '14:30': '2:30 pm'
+            Thursday:
+              integrated:
+                '09:15': '9.15 am'
+                '10:45': '10.45 am'
+                '14:15': '2.15 pm'
+                '15:30': '3.30 pm'
+              separates:
+                '10:30': '10.30 am'
+                '14:30': '2:30 pm'
+            Friday: null
+            Saturday: null
+            Sunday: null
+        'Hydebank Wood':
+          face-to-face:
+            Monday: null
+            Tuesday:
+              integrated:
+                '09:30': '9.30 am'
+                '10:45': '10.45 am'
+                '14:00': '2.00 pm'
+                '15:15': '3.15 pm'
+              separates: null
+            Wednesday:
+              integrated:
+                '09:30': '9.30 am'
+                '10:45': '10.45 am'
+                '14:00': '2.00 pm'
+                '15:15': '3.15 pm'
+              separates: null
+            Thursday: null
+            Friday: null
+            Saturday: null
+            Sunday:
+              integrated:
+                '09:30': '9.30 am'
+                '10:45': '10.45 am'
+                '14:30': '2.30 pm'
+              separates: null
+          virtual:
+            Monday:
+              '09:00': '9.00 am'
+              '10:00': '10.00 am'
+              '11:00': '11.00 am'
+              '14:00': '2.00 pm'
+              '15:00': '3.00 pm'
+              '16:00': '4.00 pm'
+            Tuesday:
+              '09:00': '9.00 am'
+              '10:00': '10.00 am'
+              '11:00': '11.00 am'
+              '14:00': '2.00 pm'
+              '15:00': '3.00 pm'
+              '16:00': '4.00 pm'
+            Wednesday:
+              '09:00': '9.00 am'
+              '10:00': '10.00 am'
+              '11:00': '11.00 am'
+              '14:00': '2.00 pm'
+              '15:00': '3.00 pm'
+              '16:00': '4.00 pm'
+            Thursday:
+              '09:00': '9.00 am'
+              '10:00': '10.00 am'
+              '11:00': '11.00 am'
+              '14:00': '2.00 pm'
+              '15:00': '3.00 pm'
+              '16:00': '4.00 pm'
+            Friday:
+              '09:00': '9.00 am'
+              '10:00': '10.00 am'
+              '11:00': '11.00 am'
+              '14:00': '2.00 pm'
+              '15:00': '3.00 pm'
+              '16:00': '4.00 pm'
+            Saturday:
+              '09:30': '9.30 am'
+              '10:00': '10.00 am'
+              '10:30': '10.30 am'
+              '11:00': '11.00 am'
+              '11:30': '11.30 am'
+              '14:00': '2.00 pm'
+              '14:30': '2.30 pm'
+              '15:00': '3.00 pm'
+              '15:30': '3.30 pm'
+              '16:00': '4.00 pm'
+              '16:30': '4.30 pm'
+              '18:00': '6.00 pm'
+              '18:30': '6.30 pm'
+              '19:00': '7.00 pm'
+              '19:30': '7.30 pm'
+            Sunday:
+              '09:00': '9.00 am'
+              '10:00': '10.00 am'
+              '11:00': '11.30 am'
+              '14:00': '2.00 pm'
+              '15:00': '3.00 pm'
+              '16:00': '4.00 pm'
+          enhanced: null
+        Magilligan:
+          face-to-face:
+            Monday: null
+            Tuesday: null
+            Wednesday:
+              integrated:
+                '10:00': '10.00 am'
+                '14:00': '2.00 pm'
+              separates: null
+            Thursday: null
+            Friday:
+              integrated:
+                '10:00': '10.00 am'
+                '14:00': '2.00 pm'
+              separates: null
+            Saturday:
+              integrated:
+                '10:00': '10.00 am'
+                '14:00': '2.00 pm'
+              separates: null
+            Sunday: null
+          virtual:
+            Monday:
+              '08:30': '8.30 am'
+              '09:00': '9.00 am'
+              '09:30': '9.30 am'
+              '10:00': '10.00 am'
+              '10:30': '10.30 am'
+              '11:00': '11.00 am'
+              '11:30': '11:30 am'
+              '14:00': '2.00 pm'
+              '14:30': '2.30 pm'
+              '15:00': '3.00 pm'
+              '15:30': '3.30 pm'
+              '16:00': '4.00 pm'
+              '16:30': '4.30 pm'
+              '17:00': '5.00 pm'
+              '17:30': '5.30 pm'
+            Tuesday:
+              '08:30': '8.30 am'
+              '09:00': '9.00 am'
+              '09:30': '9.30 am'
+              '10:00': '10.00 am'
+              '10:30': '10.30 am'
+              '11:00': '11.00 am'
+              '11:30': '11:30 am'
+              '14:00': '2.00 pm'
+              '14:30': '2.30 pm'
+              '15:00': '3.00 pm'
+              '15:30': '3.30 pm'
+              '16:00': '4.00 pm'
+              '16:30': '4.30 pm'
+              '17:00': '5.00 pm'
+              '17:30': '5.30 pm'
+            Wednesday:
+              '08:30': '8.30 am'
+              '09:00': '9.00 am'
+              '09:30': '9.30 am'
+              '10:00': '10.00 am'
+              '10:30': '10.30 am'
+              '11:00': '11.00 am'
+              '11:30': '11:30 am'
+              '14:00': '2.00 pm'
+              '14:30': '2.30 pm'
+              '15:00': '3.00 pm'
+              '15:30': '3.30 pm'
+              '16:00': '4.00 pm'
+              '16:30': '4.30 pm'
+              '17:00': '5.00 pm'
+              '17:30': '5.30 pm'
+            Thursday:
+              '08:30': '8.30 am'
+              '09:00': '9.00 am'
+              '09:30': '9.30 am'
+              '10:00': '10.00 am'
+              '10:30': '10.30 am'
+              '11:00': '11.00 am'
+              '11:30': '11:30 am'
+              '14:00': '2.00 pm'
+              '14:30': '2.30 pm'
+              '15:00': '3.00 pm'
+              '15:30': '3.30 pm'
+              '16:00': '4.00 pm'
+              '16:30': '4.30 pm'
+              '17:00': '5.00 pm'
+              '17:30': '5.30 pm'
+            Friday:
+              '08:30': '8.30 am'
+              '09:00': '9.00 am'
+              '09:30': '9.30 am'
+              '10:00': '10.00 am'
+              '10:30': '10.30 am'
+              '11:00': '11.00 am'
+              '11:30': '11:30 am'
+              '14:00': '2.00 pm'
+              '14:30': '2.30 pm'
+              '15:00': '3.00 pm'
+              '15:30': '3.30 pm'
+              '16:00': '4.00 pm'
+              '16:30': '4.30 pm'
+              '17:00': '5.00 pm'
+              '17:30': '5.30 pm'
+            Saturday:
+              '09:00': '9.00 am'
+              '09:30': '9.30 am'
+              '10:00': '10.00 am'
+              '10:30': '10.30 am'
+              '11:00': '11.00 am'
+              '11:30': '11:30 am'
+              '14:00': '2.00 pm'
+              '14:30': '2.30 pm'
+              '15:00': '3.00 pm'
+              '15:30': '3.30 pm'
+              '16:00': '4.00 pm'
+              '16:30': '4.30 pm'
+            Sunday:
+              '09:00': '9.00 am'
+              '09:30': '9.30 am'
+              '10:00': '10.00 am'
+              '10:30': '10.30 am'
+              '11:00': '11.00 am'
+              '11:30': '11:30 am'
+              '14:00': '2.00 pm'
+              '14:30': '2.30 pm'
+              '15:00': '3.00 pm'
+              '15:30': '3.30 pm'
+              '16:00': '4.00 pm'
+              '16:30': '4.30 pm'
+          enhanced: null
 variants: {  }
