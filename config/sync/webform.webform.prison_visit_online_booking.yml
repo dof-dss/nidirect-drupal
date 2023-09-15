@@ -18,9 +18,15 @@ elements: |-
   prison_visit_prison_name:
     '#type': hidden
     '#title': prison_visit_prison_name
+  prison_visit_prison_name_key:
+    '#type': hidden
+    '#title': prison_visit_prison_name_key
   prison_visit_type:
     '#type': hidden
     '#title': prison_visit_type
+  prison_visit_type_key:
+    '#type': hidden
+    '#title': prison_visit_type_key
   prison_visit_order_valid_from:
     '#type': hidden
     '#title': prison_visit_order_valid_from
@@ -33,6 +39,12 @@ elements: |-
   prison_visit_sequence:
     '#type': hidden
     '#title': prison_visit_sequence
+  prison_visit_prisoner_category:
+    '#type': hidden
+    '#title': prison_visit_prisoner_category
+  prison_visit_prisoner_subcategory:
+    '#type': hidden
+    '#title': prison_visit_prisoner_subcategory
   prisoner_details_page:
     '#type': webform_wizard_page
     '#title': 'Prisoner details'
@@ -58,63 +70,6 @@ elements: |-
         '#autocomplete': 'off'
         '#input_mask': A9999
         '#required': true
-  visitor_details_page:
-    '#type': webform_wizard_page
-    '#title': 'Visitor details'
-    '#next_button_label': Next
-    visitor_1_details:
-      '#type': fieldset
-      '#title': 'Your details'
-      visitor_1_intro:
-        '#type': webform_markup
-        '#markup': '<p>Complete details on this page for the main visitor. There is an option at the end to add additional visitors to the same booking.</p><p>Note that: <ul><li> the date of birth must match what is held on record for the given visitor ID;</li><li>The mail address provided will be the address your booking confirmation is sent to;</li><li>A contact telephone is requested in order that the prison booking team can contact the visitor, should they need to discuss this booking.</li></ul></p>'
-      visitor_1_id:
-        '#type': textfield
-        '#title': 'Visitor ID'
-        '#autocomplete': 'off'
-        '#required': true
-        '#required_error': 'enter the visitor ID for the main visitor'
-      visitor_1_dob:
-        '#type': date
-        '#title': 'Date of birth'
-        '#required': true
-        '#required_error': 'Enter a valid date of birth'
-      visitor_1_email:
-        '#type': webform_email_confirm
-        '#title': 'Email address'
-        '#required': true
-        '#pattern': '[^@\s]+@[^@\s]+\.[^@\s]+'
-        '#pattern_error': 'Enter a valid email address'
-      visitor_1_telephone:
-        '#type': tel
-        '#title': 'Telephone number'
-        '#required': true
-      visitor_1_special_needs:
-        '#type': checkbox
-        '#title': 'Special requirements'
-      visitor_1_add_visitors:
-        '#type': checkbox
-        '#title': 'Add additional visitors'
-  additional_visitor_details:
-    '#type': webform_wizard_page
-    '#title': 'Additional visitor details'
-    '#states':
-      visible:
-        ':input[name="visitor_1_add_visitors"]':
-          checked: true
-    '#next_button_label': Next
-    visitor_2__details:
-      '#type': fieldset
-      '#title': 'Additional visitor details'
-      visitor_2_id:
-        '#type': textfield
-        '#title': 'Visitor ID'
-      visitor_2_dob:
-        '#type': date
-        '#title': 'Date of birth'
-      visitor_2_special_needs:
-        '#type': checkbox
-        '#title': 'Special requirements'
   visit_preferred_day_and_time:
     '#type': webform_wizard_page
     '#title': 'Visit preferred day and time'
@@ -134,11 +89,8 @@ elements: |-
         <p>
         <strong class="meta">
         {{ data.prison_visit_type | title }}
-        {% if data.prison_visit_sequence >= 9000 %}
-          {{ '(separates)' | t }}
-        {% else %}
-          {{ '(integrated)' | t }}
-        {% endif %}
+        {{ data.prison_visit_prisoner_category }}
+        {{ data.prison_visit_prisoner_subcategory }}
         </strong>
         </p>
     slots_week_1:
@@ -314,6 +266,63 @@ elements: |-
         '#title': Sunday
         '#options': prison_visit_times
         '#options_display': buttons_horizontal
+  visitor_details_page:
+    '#type': webform_wizard_page
+    '#title': 'Visitor details'
+    '#next_button_label': Next
+    visitor_1_details:
+      '#type': fieldset
+      '#title': 'Your details'
+      visitor_1_intro:
+        '#type': webform_markup
+        '#markup': '<p>Complete details on this page for the main visitor. There is an option at the end to add additional visitors to the same booking.</p><p>Note that: <ul><li> the date of birth must match what is held on record for the given visitor ID;</li><li>The mail address provided will be the address your booking confirmation is sent to;</li><li>A contact telephone is requested in order that the prison booking team can contact the visitor, should they need to discuss this booking.</li></ul></p>'
+      visitor_1_id:
+        '#type': textfield
+        '#title': 'Visitor ID'
+        '#autocomplete': 'off'
+        '#required': true
+        '#required_error': 'enter the visitor ID for the main visitor'
+      visitor_1_dob:
+        '#type': date
+        '#title': 'Date of birth'
+        '#required': true
+        '#required_error': 'Enter a valid date of birth'
+      visitor_1_email:
+        '#type': webform_email_confirm
+        '#title': 'Email address'
+        '#required': true
+        '#pattern': '[^@\s]+@[^@\s]+\.[^@\s]+'
+        '#pattern_error': 'Enter a valid email address'
+      visitor_1_telephone:
+        '#type': tel
+        '#title': 'Telephone number'
+        '#required': true
+      visitor_1_special_needs:
+        '#type': checkbox
+        '#title': 'Special requirements'
+      visitor_1_add_visitors:
+        '#type': checkbox
+        '#title': 'Add additional visitors'
+  additional_visitor_details:
+    '#type': webform_wizard_page
+    '#title': 'Additional visitor details'
+    '#states':
+      visible:
+        ':input[name="visitor_1_add_visitors"]':
+          checked: true
+    '#next_button_label': Next
+    visitor_2__details:
+      '#type': fieldset
+      '#title': 'Additional visitor details'
+      visitor_2_id:
+        '#type': textfield
+        '#title': 'Visitor ID'
+      visitor_2_dob:
+        '#type': date
+        '#title': 'Date of birth'
+      visitor_2_special_needs:
+        '#type': checkbox
+        '#title': 'Special requirements'
 css: ''
 javascript: ''
 settings:
@@ -550,6 +559,18 @@ handlers:
         HW: 'Hydebank Wood'
         MN: Magilligan
       visit_order_number_length: 12
+      visit_order_number_categories:
+        integrated:
+          -
+            - 1
+            - 8999
+        separates:
+          -
+            - 9000
+            - 9499
+          -
+            - 9500
+            - 9999
       visit_type:
         F: face-to-face
         V: virtual
