@@ -1,0 +1,206 @@
+<?php
+
+/**
+ * @file
+ * Contains nidirect_webforms.module.
+ */
+
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\webform\Utility\WebformElementHelper;
+use Drupal\webform\WebformSubmissionInterface;
+
+/**
+ * Implements hook_help().
+ */
+function nidirect_webforms_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    // Main module help for the nidirect_webforms module.
+    case 'help.page.nidirect_webforms':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('Custom Webform handlers and components.') . '</p>';
+      $output .= '<h4>' . t('Quiz Results Handler') . '</h4>';
+      $output .= '<p>' . t('The Quiz Results handler provides a submit handler for display quiz results, scoring and feedback to the user.') . '</p>';
+      $output .= '<p>' . t('Instructions:') . '</p>';
+      $output .= '<ul><li>' . t('Build your Webform with the question elements (radios or checkboxes) given a machine name of "question_XX".') . '</li>';
+      $output .= '<li>' . t('Once complete, go to the Webform "Settings" tab and "Emails/Handlers".') . '</li>';
+      $output .= '<li>' . t('Add a new Handler of type "Quiz Results".') . '</li>';
+      $output .= '<li>' . t('Complete the "Result Text" and "Answers" sections, an individual answer section will be provided for each radio or checkbox element with a machine name beginning "question_".') . '</li>';
+      $output .= '<li>' . t('Under the "Advanced tab you have the option toggle the score/feedback display and to delete the users Webform submission when completed.') . '</li></ul>';
+      return $output;
+
+    default:
+  }
+}
+
+/**
+ * Implements hook_theme().
+ */
+function nidirect_webforms_theme() {
+  return [
+    'nidirect_webforms_quiz_results' => [
+      'render element' => 'children',
+      'variables' => [
+        'introduction' => NULL,
+        'result' => NULL,
+        'feedback_introduction' => NULL,
+        'feedback' => [],
+        'score' => 0,
+        'max_score' => 0,
+        'display_score' => 1,
+        'display_feedback' => 1,
+        'pass_score' => 0,
+        'passed' => NULL,
+      ],
+    ],
+    'nidirect_webforms_quiz_answer_feedback' => [
+      'render element' => 'children',
+      'variables' => [
+        'title' => NULL,
+        'question' => NULL,
+        'user_answer' => NULL,
+        'feedback' => NULL,
+        'passed' => NULL,
+      ],
+    ],
+  ];
+}
+
+/**
+ * Implements hook_page_attachments().
+ */
+function nidirect_webforms_page_attachments(array &$attachments) {
+  // Add js to look for multiple webforms on a page.
+  $attachments['#attached']['library'][] = 'nidirect_webforms/multiple_webform_submit.js';
+}
+
+/**
+ * Implements hook_ENTITY_TYPE_presave().
+ */
+function nidirect_webforms_webform_submission_presave(WebformSubmissionInterface $submission) {
+  $webform_id = $submission->getWebform()->id();
+
+  if (in_array($webform_id, ['your_comments', 'site_feedback'])) {
+    $component_ids = [
+      'provide_details_of_technical_problems_or_make_a_comment_about_th',
+      'enter_your_feedback',
+      'question_details',
+    ];
+
+    foreach ($component_ids as $textarea_element_id) {
+      $raw_element_value = $submission->getElementData($textarea_element_id);
+
+      if (!empty($raw_element_value)) {
+        $filtered_value = strip_tags($raw_element_value);
+        $submission->setElementData($textarea_element_id, $filtered_value);
+      }
+    }
+  }
+}
+
+/**
+ * Implements hook_form_alter().
+ */
+function nidirect_webforms_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+
+  if (preg_match('/webform/', $form_id)) {
+    $form['#cache']['contexts'] = ['url.path'];
+
+    // Site feedback form has an issue where conditional visibility
+    // of the action buttons based on selections in the second stage of
+    // the wizard also hides the first page's Continue/Next button.
+    // Carefully pruning the class that controls this acts as an acceptable
+    // workaround until this is fixed in webform itself.
+    if (!empty($form['#webform_id']) && $form['#webform_id'] === 'site_feedback' && !empty($form['elements']['actions']['#attributes']['class'])) {
+      $classes = &$form['elements']['actions']['#attributes']['class'];
+      foreach ($classes as $key => &$value) {
+        if ($value === 'js-webform-states-hidden') {
+          unset($classes[$key]);
+        }
+      }
+    }
+
+    // Add in a hidden honeypot field to all webforms that aren't on the first step of a wizard.
+    if (\Drupal::service('module_handler')->moduleExists('honeypot')) {
+      // If the wizard prev button is there, we're past the first step.
+      if (empty($form['actions']['wizard_next']) ||
+        (!empty($form['actions']['wizard_next']) && !empty($form['actions']['wizard_prev']))
+      ) {
+
+        $options = ['honeypot', 'time_restriction'];
+        \Drupal::service('honeypot')
+          ->addFormProtection($form, $form_state, $options);
+      }
+    }
+  }
+
+  if (preg_match('/webform_submission_prison_visit/', $form_id)) {
+    $form['#attached']['library'][] = 'nidirect_webforms/prison_visit_booking';
+  }
+}
+
+/**
+ * Implements hook_honeypot_form_protections_alter().
+ */
+function nidirect_webforms_honeypot_form_protections_alter(&$options, $form) {
+  // Remove honeypot time restrictions from some webforms - especially
+  // quiz type and 'wizard' webforms which present one question at a time
+  // and so users can answer them pretty quickly and too easily trigger
+  // a time restriction error.
+
+  // Id fragments of webforms we will alter. We use fragments because
+  // the full id can contain specific node ids the webform is embedded in.
+  $form_id_frags = [
+    'webform_submission_universal_credit_payments',
+    'webform_submission_taxi_driver_theory_practice',
+    'webform_submission_ready_for_universal_credit',
+    'webform_submission_year_10_subject_choices_quiz',
+    'webform_submission_should_i_get_tested_for_coronavi',
+  ];
+
+  foreach ($form_id_frags as $id_frag) {
+    // If the current form id matches one of id frags we want to alter ...
+    if (strpos($form['form_id']['#value'], $id_frag) !== FALSE) {
+      // Find and remove the time_restriction option.
+      $key = array_search('time_restriction', $options);
+      if (!empty($key)) {
+        unset($options[$key]);
+        break;
+      }
+    }
+  }
+}
+
+/**
+ * Implements hook_preprocess_form_element().
+ */
+function nidirect_webforms_preprocess_form_element(&$variables) {
+
+  if (!WebformElementHelper::isWebformElement($variables['element'])) {
+    return;
+  }
+
+  $element = $variables['element'];
+
+  // Fix a11y issue with webform_select_other element labels.
+  // @TODO: create issue on webform issue queue.
+
+  // The wrapping webform_select_other element has a visible label that IS NOT
+  // associated with the select element it contains. So we stop that one being
+  // displayed.
+  if ($element['#type'] === 'webform_select_other') {
+    $element['#title_display'] = 'none';
+    $variables['label_display'] = 'none';
+    $variables['label']['#title_display'] = 'none';
+  }
+
+  // The select element inside the webform_select_other element has a label
+  // that IS associated with the select (via a for attribute) is visually
+  // hidden.  We want that to be visible.
+  if (!empty($element['#webform_other'])) {
+    $element['#title_display'] = 'before';
+    $variables['label_display'] = 'before';
+    $variables['label']['#title_display'] = 'before';
+  }
+}

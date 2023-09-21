@@ -1,0 +1,44 @@
+{#
+/**
+ * @file
+ * Component for a navigation menu.
+ *
+ * Variables:
+ * - modifier_class: [string] Classes to modify the default component styling.
+ * - heading: [string] Accessible heading.
+ * - navigation: [array] The navigation trail items. Each item is an object
+ *   containing:
+ *   - text: [string] Text of the item.
+ *   - url: [string] URL of the item (optional).
+ */
+#}
+
+{% set menu_id = menu_name ~'-menu' %}
+{% set menu_heading = menu_name ~' menu' %}
+{%
+  set nav_classes = [
+  menu_name ~'-menu',
+  classes,
+  'clearfix',
+]
+%}
+
+<nav class="{{ nav_classes|join (' ')}}" tabindex="-1" aria-labelledby="{{ menu_id }}">
+  <h2 id="{{ menu_id }}" class="element-invisible">{{ menu_heading|default('menu') }}</h2>
+  {%  if menu_name == 'main' %}
+  <label class="element-invisible" for="menu-toggle">Click me to toggle menu</label>
+  <input class="toggler" type="checkbox" id="menu-toggle">
+  <div class="hamburger"><div></div></div>
+  {% endif %}
+  <ul class="nav-menu">
+    {% for item in navigation %}
+      <li class="nav-item">
+        {% if item.url %}
+          <a class="nav-link" href="{{ item.url }}">{{ item.text }}</a>
+        {% else %}
+          <span class="active-link">{{ item.text }}</span>
+        {% endif %}
+      </li>
+    {% endfor %}
+  </ul>
+</nav>

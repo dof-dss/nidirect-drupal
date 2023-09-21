@@ -1,0 +1,129 @@
+nidirect-global-styles:
+  version: 1.x
+  css:
+    # The SMACSS category, "base", is loaded before other categories. Drupal 8
+    # loads stylesheets based on the SMACSS ordering of:
+    # base, layout, component, state, theme
+    base:
+      # css/1_base/fonts.css: { minified: true }
+      css/1_base/root.css: { minified: true }
+      css/1_base/html5.css: { minified: true }
+      css/1_base/links.css: { minified: true }
+      css/1_base/headings.css: { minified: true }
+      css/1_base/text.css: { minified: true }
+      css/1_base/grouping.css: { minified: true }
+      css/1_base/embedded.css: { minified: true }
+      css/1_base/forms.css: { minified: true }
+      css/3_components/form/form.css: { minified: true }
+      css/1_base/tables.css: { minified: true }
+    # The SMACSS category, "layout", is loaded after "base" styles.
+    layout:
+      css/2_layouts/layouts-common.css: { weight: -100, minified: true }
+      css/2_layouts/nics-1-col-layouts.css: { minified: true }
+      css/2_layouts/nics-2-col-layouts.css: { minified: true }
+      css/2_layouts/nics-3-col-layouts.css: { minified: true }
+      css/2_layouts/nidirect-2-col-layouts.css: { minified: true }
+    # The SMACSS category, "component", is loaded after "base and layout" styles.
+    component:
+      css/3_components/layout/header.css: { minified: true }
+      css/3_components/layout/footer.css: { minified: true }
+      css/3_components/layout/main-menu.css: { minified: true }
+      css/3_components/navigation/nav-menu.css: { minified: true }
+      css/3_components/navigation/footer-menu.css: { minified: true }
+      css/3_components/navigation/breadcrumb.css: { minified: true }
+      css/3_components/navigation/contextual.css: { minified: true }
+      css/3_components/navigation/sub-menus.css: { minified: true }
+      css/3_components/navigation/toggle-list.css: { minified: true }
+      css/3_components/navigation/toc-menu.css: { minified: true }
+      css/3_components/navigation/book.css: { minified: true }
+      css/3_components/navigation/pager.css: { minified: true }
+      css/3_components/form/buttons.css: { minified: true }
+      css/3_components/form/form.css: { minified: true }
+      css/3_components/form/webform.css: { minified: true }
+      css/3_components/form/search-form.css: { minified: true }
+      css/3_components/content/icons-messages.css: { minified: true }
+      css/3_components/content/lists.css: { minified: true }
+      css/3_components/content/responsive-images.css: { minified: true }
+      css/3_components/content/video.css: { minified: true }
+      css/3_components/content/banners.css: { minified: true }
+      css/3_components/content/cards.css: { minified: true }
+      css/3_components/content/card-contact.css: { minified: true }
+      css/3_components/content/quizzes.css: { minified: true }
+      css/3_components/content/text.css: { minified: true }
+      css/3_components/field/field-label.css: { minified: true }
+      css/3_components/field/file-link.css: { minified: true }
+      css/3_components/block/section-feedback.css: { minified: true }
+      css/3_components/block/section-translation-help.css: { minified: true }
+      css/3_components/block/social-sharing.css: { minified: true }
+  js:
+    js/thwoop-images.js: { minified: true }
+    js/section-feedback.js: { minified: true }
+    js/site-search.js: { minified: true }
+    js/sitewide-alerts.js: { minified: true }
+  dependencies:
+    - core/drupal
+    - core/jquery
+    - core/jquery.once
+    - core/modernizr
+
+nidirect-specific-styles:
+  version: 1.x
+  css:
+    component:
+      css/3_components/block/site-logo.css: { minified: true }
+      css/3_components/block/az-facet-list.css: { minified: true }
+      css/3_components/content/gmap.css: { minified: true }
+      css/3_components/content/utilities.css: { minified: true }
+      css/3_components/field/field-footer-text.css: { minified: true }
+      css/3_components/field/field-photo.css: { minified: true }
+      css/3_components/field/field-summary.css: { minified: true }
+      css/3_components/field/vcard.css: { minified: true }
+      css/3_components/drupal-diff.css: { minified: true }
+    state:
+      css/4_state/navigation/sub-menus.css: { minified: true }
+      css/4_state/content/cards.css: { minified: true }
+    theme:
+      css/5_theme/entities.css: { minified: true }
+      css/5_theme/print.css: { minified: true }
+      css/5_theme/searches.css: { minified: true }
+      css/5_theme/views.css: { minified: true }
+      css/5_theme/landing.css: { minified: true }
+      '//fonts.googleapis.com/css?family=Lato': { type: external }
+
+nidirect-table-of-contents:
+  version: VERSION
+  js:
+    js/in_page_navigation.js: { minified: true }
+  dependencies:
+    - core/drupal
+    - core/jquery
+    - core/jquery.once
+
+nidirect-accordions:
+  version: VERSION
+  css:
+    component:
+      css/3_components/content/accordions.css: { minified: true }
+  js:
+    js/accordions.js: { minified: true }
+  dependencies:
+    - core/drupal
+    - core/jquery
+    - core/jquery.once
+
+# This library provides styling for common admin interface components - the library is only loaded for
+# authenticated users and on the user login form - @see nicsdru_nidirect_theme.theme for processing functions
+authenticated-styles:
+  version: VERSION
+  css:
+    theme:
+      css/3_components/form/layout-builder-form.css: { minified: true, weight: -6 }
+      css/3_components/layout/layout-builder.css: { minified: true, weight: -5 }
+
+nidirect-ui:
+  js:
+    js/ui.js: { minified: false }
+  dependencies:
+    - core/drupal
+    - core/jquery
+    - core/jquery.once

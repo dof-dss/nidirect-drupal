@@ -1,0 +1,127 @@
+/*
+ * @file
+ * Provides the layout styles for common nics 2 column layouts.
+ */
+
+@import '../init';
+
+// Layouts
+//
+// The layout styling for major parts of the page are created 'mobile-first' using flexbox and grid. Limited fallbacks
+// declaring appropriate fallback's where the technology is not widely enough implemented in currently used web
+// browsers. We utilise auto-prefixer to help in this regard to ensure that when prefixing for a declaration is required
+// for a particular vendor that the developer need not be concerned with making sure this is done.
+//
+// NOTE: if you want to use CSS grid in an IE-friendly way, you should only use it in scenarios where the the number of
+// columns and rows is known and grid items can then be placed explicitly (IE does not support auto-placement of items).
+// Using grid areas also works well in IE where grid items are specifically placed in a specific grid area.
+//
+// As NICS has comparatively few variations in layouts, therefore layouts can be covered with relatively little code.
+// This section of the styleguide is essentially broken into 2 main areas - common classes and utilities that are
+// required and used for layout, then there are a series of individual layouts.
+//
+// Weight: -8
+//
+// Style guide: layouts
+
+// Layouts - common
+//
+// Common classes and utilities that are required and used for constructing page layout.
+//
+// Weight: -7
+//
+// Style guide: layouts.common
+
+// Container
+//
+// `.container` defines a simple wrapper class that permits the associated tag to fill the width of the page until it
+// reaches a maximum width (defined by the `$max-grid-width` variable in init/variables. When the container reaches
+// the max-width, it is centered on the page. All other layout structures should be nested inside this centered layout
+// to ensure that content does not get too wide on very large screens. Note that `.grid` class which indicates the start
+// of a grid container can be applied at the same level as `.container`, the grid will not be able to stretch beyond
+// the maximum width of the container.
+//
+// Weight: -1
+//
+// Style guide: layouts.common.container
+
+.container {
+  padding: 0 15px;
+  @include breakpoint($tab) {
+    margin: 0 auto;
+    max-width: $max-grid-width;
+    padding: 0 20px;
+  }
+
+  &--no-padding {
+    padding: 0;
+  }
+}
+
+// Grid
+//
+// `.grid` defines a simple wrapper class that establishes a cssgrid by declaring `display: grid;`. The grid will take
+// the maximum amount of available space available to the element. A grid layout consists of a parent element, with one
+// or more child elements. For NICS purposes the behaviour of the child elements is described by the individual layout
+// more on that later in the guide. The space between child elements is described by the grid-gap attribute which we
+// assign to a variable `$grid-gap`. The gap can be set to none by applying the modifier class `.no-gutter` to the
+// parent grid element.
+//
+// Weight: -1
+//
+// Style guide: layouts.common.grid
+.grid {
+  display: grid;
+  grid-column-gap: $grid-gap;
+  grid-template-columns: 1fr;
+  grid-template-rows: min-content; // IE fix. Use min-content instead of auto.
+
+  &.no-gutter {
+    grid-column-gap: 0;
+  }
+}
+
+// Grid areas
+//
+// `.ga-*` class can be applied to child elements in a `.grid` to define grid-area's when using cssgrid. It is not
+// necessary a requirement to add a `.ga*` class to each of the child elements after a grid is established each will be
+// placed in the next available grid row / column. However by adding one of these classes it helps with providing
+// appropriate fallbacks and hopefully helps understanding the intentions of where a child element should be in the grid.
+//
+// Weight: -1
+//
+// Style guide: layouts.common.grid-areas
+
+// Grid area full
+//
+// `.ga-full` class can be applied to child elements in a `.grid` to set the child element to have the full available
+// width of the parent grid space.
+//
+// Weight: -1
+//
+// Style guide: layouts.common.grid-areas
+
+.ga-full {
+  grid-column: 1 / -1;
+  // needed for the floated layout
+  float: left;
+  clear: both;
+  width: 100%;
+}
+
+// Disable fallback widths on grid items for browsers that can support css grid.
+// sass-lint:disable no-important
+@supports (display: grid) {
+  .grid > * {
+    width: auto !important;
+  }
+}
+
+// IE fix.
+@media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
+  // Disable fallback widths set on grid items for IE11 which has partial support for grid.
+  .grid > * {
+    // sass-lint:disable no-important
+    width: 100% !important;
+  }
+}

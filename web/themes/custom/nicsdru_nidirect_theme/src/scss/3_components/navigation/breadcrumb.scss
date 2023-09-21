@@ -1,0 +1,60 @@
+/*
+ * @file
+ * Provides the styling for a navigation breadcrumb.
+ */
+@import '../../init';
+
+// Breadcrumb navigation
+//
+// The path to the current page in the form of a list of links.
+//
+// Markup: breadcrumb.twig
+//
+// Style guide: components.navigation.breadcrumb
+
+.breadcrumb,
+%breadcrumb {
+  margin: 1.2rem auto 0;
+
+  @include breakpoint($phab) {
+    margin: 2.1rem auto 0;
+  }
+
+  @at-root .path-taxonomy &--list {
+    @include breakpoint($tab) {
+      max-width: $article-max-width;
+    }
+  }
+
+  @media print {
+    display: none;
+  }
+
+  &--list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  &--item {
+    @include adjust-font-size-to(14px, 4);
+    display: inline;
+    list-style-type: none;
+    margin: 0 5px 0 0;
+    padding: 0;
+
+    &::after {
+      content: '\203A';
+      font-size: 1.6rem;
+    }
+
+    &:last-child::after {
+      content: '';
+    }
+  }
+
+  a {
+    @include link-state-style($link-body-no-visited);
+    margin-right: 5px;
+  }
+}

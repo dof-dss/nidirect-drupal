@@ -1,0 +1,87 @@
+<?php
+
+/**
+ * @file
+ * Contains nidirect_school_closures.module.
+ */
+
+use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
+use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Render\BubbleableMetadata;
+use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\node\NodeInterface;
+
+/**
+ * Implements hook_help().
+ */
+function nidirect_school_closures_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    // Main module help for the nidirect_school_closures module.
+    case 'help.page.nidirect_school_closures':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('Displays information on school closures') . '</p>';
+      return $output;
+
+    default:
+  }
+}
+
+/**
+ * Implements hook_theme().
+ */
+function nidirect_school_closures_theme() {
+  return [
+    'nidirect_school_closures' => [
+      'render element' => 'children',
+      'variables' => [
+        'closures' => NULL,
+        'updated' => NULL,
+        'error' => FALSE,
+      ],
+    ],
+  ];
+}
+
+/**
+ * Implements hook_token_info().
+ */
+function nidirect_school_closures_token_info() {
+  $types['nidirect'] = ['name' => 'NI Direct'];
+
+  $tokens['school_closures'] = [
+    'name' => t('School closures'),
+    'description' => t('Displays school closure information.'),
+  ];
+
+  return [
+    'types' => $types,
+    'tokens' => ['nidirect' => $tokens],
+  ];
+}
+
+/**
+ * Implements hook_tokens().
+ */
+function nidirect_school_closures_tokens($type, $tokens, array $data, array $options, BubbleableMetadata $bubbleable_metadata) {
+  $service = \Drupal::service('nidirect_school_closures.source.default');
+  $replacements = [];
+
+  if ($type == 'nidirect') {
+    foreach ($tokens as $name => $original) {
+      switch ($name) {
+        case 'school_closures':
+          $output = [
+            '#theme' => 'nidirect_school_closures',
+            '#closures' => $service->getClosures(),
+            '#error' => $service->hasErrors(),
+            '#updated' => $service->getUpdated(),
+            '#attached' => ['library' => 'nidirect_school_closures/school_closures'],
+          ];
+          $replacements[$original] = \Drupal::service('renderer')->render($output);
+          break;
+      }
+    }
+  }
+  return $replacements;
+}

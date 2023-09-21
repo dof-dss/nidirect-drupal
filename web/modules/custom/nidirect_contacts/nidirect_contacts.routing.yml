@@ -1,0 +1,19 @@
+
+nidirect_contacts.default:
+  path: '/contacts'
+  defaults:
+    _controller: '\Drupal\nidirect_contacts\Controller\ContactListingController::default'
+    _title_callback: '\Drupal\nidirect_contacts\Controller\ContactListingController::getTitle'
+    route_type: contacts
+  requirements:
+    _permission: 'access content'
+
+nidirect_contacts.letter:
+  path: '/contacts/letter/{letter}'
+  defaults:
+    _controller: '\Drupal\nidirect_contacts\Controller\ContactListingController::filterByLetter'
+    _title_callback: '\Drupal\nidirect_contacts\Controller\ContactListingController::getTitle'
+    route_type: contacts_letter
+  requirements:
+    _permission: 'access content'
+    letter: '[a-z|A-Z|0-9]{1}'

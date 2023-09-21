@@ -1,0 +1,6 @@
+services:
+  nidirect-common.replace-node-links.commands:
+    class: \Drupal\nidirect_common\Commands\ReplaceNodeLinks
+    arguments: ['@path_alias.manager']
+    tags:
+      - { name: drush.command }

@@ -1,0 +1,73 @@
+/*
+ * @file
+ * Base definitions for error messages.
+ */
+
+%error-bubble {
+
+  @include responsive-typo-map($body-text);
+  display: block;
+  position: relative;
+  z-index: 101;
+  width: fit-content;
+  max-width: 56rem;
+  font-weight: bold;
+  padding: .9rem;
+  color: $white;
+  background-color: $hc-red;
+  border: 1px solid $hc-red;
+  border-radius: 3px;
+  box-shadow: 0 8px 12px -4px rgba(0, 0, 0, .3);
+  opacity: 1;
+
+  // Bubble arrow. By default points up.
+  &::before {
+    content: '';
+    border: .9rem solid transparent;
+    border-bottom-color: $hc-red;
+    position: absolute;
+    top: -1.7rem;
+    left: 1.4rem;
+  }
+
+  // Modifier to cause error bubbles to "float" below the form control so that the layout of
+  // controls that follow it (in the DOM) are not disturbed by the error bubble.
+  &--floating-below {
+    position: absolute;
+    top: calc(100% + .9rem);
+    right: auto;
+    bottom: auto;
+    left: auto;
+    width: max-content;
+    min-width: 16rem;
+
+    // Bubble arrow points up.
+    &::before {
+      content: '';
+      border: .9rem solid transparent;
+      border-bottom-color: $hc-red;
+      position: absolute;
+      top: -1.7rem;
+      left: 1.4rem;
+    }
+  }
+
+  // Modifier to cause error bubbles to "float" right of the form control so that the layout of
+  // controls that follow it (in the DOM) are not disturbed by the error bubble.
+  &--floating-right {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: auto;
+    left: auto;
+    width: calc(33% - .9rem);
+
+    // The bubble arrow needs to point left.
+    &::before {
+      border-bottom-color: transparent;
+      border-right-color: $hc-red;
+      top: 1.2rem;
+      left: -1.8rem;
+    }
+  }
+}

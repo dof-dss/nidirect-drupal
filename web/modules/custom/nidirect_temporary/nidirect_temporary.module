@@ -1,0 +1,24 @@
+<?php
+
+/**
+ * @file
+ * Contains nidirect_temporary.module.
+ */
+
+use Drupal\Core\Routing\RouteMatchInterface;
+
+/**
+ * Implements hook_help().
+ */
+function nidirect_temporary_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    // Main module help for the nidirect_temporary module.
+    case 'help.page.nidirect_temporary':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('Temporary dev fixes - uninstall when in production') . '</p>';
+      return $output;
+
+    default:
+  }
+}

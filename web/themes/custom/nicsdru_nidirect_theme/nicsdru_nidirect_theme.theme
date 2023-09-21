@@ -1,0 +1,37 @@
+<?php
+
+/**
+ * @file
+ * Functions to support theming in the nicsdru_nidirect_theme theme.
+ */
+
+use Drupal\Core\Url;
+
+// Import the theme's individual hook files.
+require_once __DIR__ . '/inc/alter.inc';
+require_once __DIR__ . '/inc/preprocess.inc';
+require_once __DIR__ . '/inc/process.inc';
+require_once __DIR__ . '/inc/theme.inc';
+
+/**
+ * Utility function to render 'campaign list' view.
+ */
+function _render_campaign_list() {
+  // Render the 'campaign list' view to see which taxonomy terms
+  // have been overridden.
+  $campaigns_view = views_embed_view('articles_by_term', 'campaigns_embed');
+  \Drupal::service('renderer')->renderRoot($campaigns_view);
+  $terms_to_override = [];
+  // Store taxonomy term tids that are overridden
+  // by campaigns.
+  foreach ($campaigns_view['view_build']['#view']->result as $row) {
+    if (isset($row->_entity->get('field_subtheme')->target_id)) {
+      $terms_to_override[$row->_entity->get('field_subtheme')->target_id] = [
+        '#type' => 'link',
+        '#title' => $row->_entity->getTitle(),
+        '#url' => Url::fromRoute('entity.node.canonical', ['node' => $row->nid]),
+      ];
+    }
+  }
+  return $terms_to_override;
+}

@@ -1,0 +1,8 @@
+{# If there is no modifier set a default layout for a css grid so each grid item is 1 fr #}
+{% if modifier_class is empty %}
+  {% set modifier_class = 'kss-default-grid-layout' %}
+{% endif %}
+<div class="container grid {{ modifier_class }}">
+  <div class="kss-layout-block ga-main">The <code>.ga-main</code> grid item.</div>
+  <div class="kss-layout-block ga-aside">The <code>.ga-aside</code> grid item.</div>
+</div>

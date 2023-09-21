@@ -1,0 +1,6 @@
+services:
+  nidirect_hospital_waiting_times.http_headers_subscriber:
+    class: Drupal\nidirect_hospital_waiting_times\EventSubscriber\HttpHeadersSubscriber
+    arguments: ['@current_route_match', '@config.factory']
+    tags:
+      - { name: event_subscriber }

@@ -1,0 +1,60 @@
+<!doctype html>
+
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+
+  <title>Home | {{ site_name }}</title>
+  <meta name="description" content="Static site development test page.">
+  <meta name="author" content="David Corbett">
+  <link rel="apple-touch-icon" sizes="180x180" href="images/favicons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="images/favicons/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="images/favicons/favicon-16x16.png">
+  <link rel="manifest" href="images/favicons/site.webmanifest">
+  <link rel="mask-icon" href="images/favicons/safari-pinned-tab.svg" color="#0a7ad0">
+  <meta name="msapplication-TileColor" content="#ffffff">
+  <meta name="theme-color" content="#ffffff">
+
+  <link href="https://fonts.googleapis.com/css?family=Lato"
+        rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+
+</head>
+<body>
+  <a id="skip-link" class="element-invisible element-focusable" href="#main-content">Skip to content</a>
+  <header class="gd-row header">
+    {% include 'scss/3_components/site-logo/site-logo.twig' %}
+    {% include 'scss/3_components/search-form/search-form.twig' %}
+  </header>
+  {% include 'scss/2_layouts/navigation/nav-menu/nav-menu.twig' with {'menu_name': 'main', 'navigation': main_navigation} %}
+  <a class="element-invisible" id="main-content>">Start of content</a>
+  {% block content %}{% endblock %}
+  <aside class="region-feedback" id="page-feedback-webform" data-url="/forms/feedback?s=/" aria-labelledby="page-feedback">
+    <h2 id="page-feedback" class="element-invisible">Submit Feedback about this page</h2>
+    <form action="/feedback" method="post">
+      <div class="nid-page-feedback-radio-single form-item webform-component webform-component-radios webform-component--nid-page-feedback-intro webform-container-inline">
+        <label for="submit-feedback-intro">Would you like to send a comment about this page?</label>
+        <input required="required" type="radio" id="submit-feedback-intro" name="submitted[nid_page_feedback_intro]" value="yes" class="form-radio">
+      </div>
+    </form>
+  </aside>
+  <footer id="footer" class="footer">
+    <div class="container gd-row footer--inner-wrap">
+      <section class="col-12" aria-labelledby="related-sites">
+        <h2 id="related-sites">Related sites</h2>
+        <ul>
+          <li><a href="#">gov.uk</a></li>
+          <li><a href="#">nibusinessinfo.co.uk</a></li>
+        </ul>
+      </section>
+      {% include 'scss/2_layouts/navigation/nav-menu/nav-menu.twig' with {'menu_name': 'footer', 'navigation': footer_navigation, 'classes': 'col-12 menu-inline'} %}
+    </div>
+
+  </footer>
+
+<script src="js/scripts.js"></script>
+</body>
+</html>

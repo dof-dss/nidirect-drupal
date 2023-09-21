@@ -1,0 +1,114 @@
+/**
+ * @file
+ * Provides the layout links to downloadable files.
+ */
+
+@import '../../init';
+
+// File links
+//
+// It is common to link to downloadable non-html files. When such a link is provided from a fielded entity, there is a
+// custom formatter provided in the nics origins_common module that handles the mark up and output of the link in order
+// that useful classes and attributes are provided to the an end user and user agents.
+//
+// Style guide: components.file-links
+
+.file {
+ &-link {
+
+   &.file--ico {
+     @include adjust-font-size-to(21px, 4.5);
+     font-weight: 500;
+     display: block;
+     min-height: 5rem;
+     padding-left: 6.5rem;
+     position: relative;
+
+     &:focus {
+       background-color: $link;
+       color: #fff;
+       outline: 5px solid $link;
+       text-decoration: none;
+
+       &::before {
+         background-position-y: bottom;
+       }
+
+       .meta {
+         color: #fff;
+       }
+     }
+
+     &::before {
+       background: resolve('nigov-file-icons.svg') -750px 0 / auto no-repeat;
+       content: '';
+       position: absolute;
+       left: 0;
+       top: 0;
+       height: 5rem;
+       width: 5rem;
+     }
+
+     &__word::before,
+     &__doc::before,
+     &__docx::before,
+     &__dot::before {
+       background-position-x: 0;
+     }
+
+     &__pdf::before {
+       background-position-x: -75px;
+     }
+
+     &__excel::before,
+     &__xls::before,
+     &__xlsx::before,
+     &__xlsm::before {
+       background-position-x: -150px;
+     }
+
+     &__powerpoint::before,
+     &__ppt::before,
+     &__pptx::before,
+     &__pptm::before {
+       background-position-x: -225px;
+     }
+
+     &__opendocument-text::before,
+     &__odt::before {
+       background-position-x: -300px;
+     }
+
+     &__opendocument-spreadsheet::before,
+     &__ods::before {
+       background-position-x: -375px;
+     }
+
+     &__opendocument-presentation::before,
+     &__odp::before {
+       background-position-x: -450px;
+     }
+
+     &__csv::before {
+       background-position-x: -525px;
+     }
+
+     &__zip::before {
+       background-position-x: -600px;
+     }
+
+     &__html::before {
+       background-position-x: -675px;
+     }
+
+     .meta {
+       @include adjust-font-size-to(14px, 3.5);
+       display: block;
+     }
+   }
+
+   &--simple {
+     @include responsive-typo-map($normal-text)
+   }
+ }
+}

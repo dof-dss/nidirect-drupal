@@ -1,0 +1,42 @@
+/*
+ * @file
+ * Helper partial to outline the order theme files should be loaded - used for reference & in the style guide.
+ */
+@import '../init';
+
+// Theme
+//
+// Theme rules are similar to state rules in that they describe how components or modules or layouts might look in a
+// given context / scenario, however the difference here is that is it is a very specific context and unlikely to be
+// re-usable.
+//
+// Weight: -2
+//
+// Style guide: theme
+
+// Entities
+//
+// Provides very specific styling for entities / content types.
+//
+// Weight: 1
+//
+// Style guide: theme.entities
+@import 'entities';
+
+// Searches
+//
+// Provides very specific styling for search index pages.
+//
+// Weight: 2
+//
+// Style guide: theme.searches
+@import 'searches';
+
+// Views
+//
+// Provides very specific styling for view pages and blocks.
+//
+// Weight: 3
+//
+// Style guide: theme.views
+@import 'views';
