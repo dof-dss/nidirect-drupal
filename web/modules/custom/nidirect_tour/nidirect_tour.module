@@ -1,0 +1,24 @@
+<?php
+
+/**
+ * @file
+ * Contains nidirect_tour.module.
+ */
+
+use Drupal\Core\Routing\RouteMatchInterface;
+
+/**
+ * Implements hook_help().
+ */
+function nidirect_tour_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    // Main module help for the nidirect_tour module.
+    case 'help.page.nidirect_tour':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('Tours of the NIDirect site administration section') . '</p>';
+      return $output;
+
+    default:
+  }
+}

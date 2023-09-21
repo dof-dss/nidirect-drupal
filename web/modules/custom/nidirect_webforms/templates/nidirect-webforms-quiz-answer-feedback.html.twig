@@ -1,0 +1,20 @@
+{% set quiz_feedback_classes = [
+  'quiz-feedback',
+  passed ? 'info-notice info-notice--large info-notice--success' : 'info-notice info-notice--large info-notice--error'
+]
+%}
+<h3 class="quiz-question">
+  {{ title }}
+  <span class="subtitle">{{ question }}</span>
+</h3>
+<details{{ attributes.addClass(quiz_feedback_classes) }} open="open">
+  <summary>
+    <span class="visually-hidden">Your answer: </span>
+    {{ user_answer }}
+    <span class="{{ passed ? 'success' : 'error' }}">
+      <span class="visually-hidden"> is </span>
+      {{ passed ? 'correct' : 'wrong' }}
+    </span>
+  </summary>
+  {{ feedback }}
+</details>

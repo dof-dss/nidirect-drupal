@@ -1,0 +1,4 @@
+services:
+  nidirect_related_content.manager:
+    class: Drupal\nidirect_related_content\RelatedContentManager
+    arguments: ['@entity_type.manager', '@current_route_match', '@renderer', '@flag']

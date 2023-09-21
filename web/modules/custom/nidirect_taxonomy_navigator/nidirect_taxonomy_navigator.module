@@ -1,0 +1,24 @@
+<?php
+
+/**
+ * @file
+ * Contains nidirect_taxonomy_navigator.module.
+ */
+
+use Drupal\Core\Routing\RouteMatchInterface;
+
+/**
+ * Implements hook_help().
+ */
+function nidirect_taxonomy_navigator_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    // Main module help for the nidirect_taxonomy_navigator module.
+    case 'help.page.nidirect_taxonomy_navigator':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('Manage your large taxonomies') . '</p>';
+      return $output;
+
+    default:
+  }
+}

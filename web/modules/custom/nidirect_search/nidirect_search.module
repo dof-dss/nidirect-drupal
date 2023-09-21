@@ -1,0 +1,150 @@
+<?php
+
+/**
+ * @file
+ * Contains nidirect_search.module.
+ */
+
+use Drupal\Core\Cache\Cache;
+use Drupal\Core\Language\Language;
+use Drupal\Core\Language\LanguageInterface;
+use Drupal\Core\Link;
+use Drupal\search_api\Query\QueryInterface as SearchApiQueryInterface;
+use Drupal\search_api_solr\Utility\Utility as SolrUtility;
+use Solarium\Core\Query\QueryInterface;
+
+/**
+ * Implements hook_preprocess_search_api_spellcheck_did_you_mean().
+ *
+ * Removes trailing comma on the link text + URL used by the
+ * spelling suggestion returned from Solr dictionary.
+ */
+function nidirect_search_preprocess_search_api_spellcheck_did_you_mean(&$variables) {
+  $query_parameter = 'query';
+
+  // Some inconsistencies between views to work around so if empty, try another
+  // known value.
+  $route_name = \Drupal::routeMatch()->getRouteName();
+
+  if ($route_name == 'view.health_conditions.search_page') {
+    $query_parameter = 'query_health_az';
+  }
+  if ($route_name == 'nidirect_contacts.default') {
+    $query_parameter = 'query_contacts_az';
+  }
+
+  if ($variables['link'] instanceof Link) {
+    $link_text = $variables['link']->getText();
+    $variables['link']->setText(str_replace(',', '', $link_text));
+
+    $link_url = $variables['link']->getUrl();
+    $link_url_query = $link_url->getRouteParameters()[$query_parameter];
+
+    $link_url->setRouteParameter($query_parameter, str_replace(',', '', $link_url_query));
+    $link_url->setOptions([
+      'attributes' => [
+        'data-self-ref' => ['false'],
+      ],
+    ]);
+  }
+
+  // Fix the cache contexts to be the same based on path and query parameter.
+  $variables['#cache']['contexts'] = ['url.query_args:' . $query_parameter];
+}
+
+/**
+ * Implements hook_search_api_solr_query_alter().
+ *
+ * Added here because unclear why the spellcheck_en dictionary is not
+ * populating/building in Solr.
+ * spellcheck_und is an effective mirror image and has the same configuration
+ * so can still be safely used.
+ *
+ * This hook can be removed if/when non-local dev Solr config is
+ * more cooperative.
+ */
+function nidirect_search_search_api_solr_query_alter(QueryInterface $solarium_query, SearchApiQueryInterface $query) {
+  $route_name = \Drupal::routeMatch()->getRouteName();
+
+  $query_id = 'query';
+
+  switch ($route_name) {
+    case 'nidirect_contacts.default':
+      $query_id = 'query_contacts_az';
+      break;
+
+    case 'search_api_autocomplete.autocomplete':
+      $query_id = 'q';
+      break;
+
+  }
+
+  $search_term = \Drupal::requestStack()->getCurrentRequest()->get($query_id);
+
+  // Maps to <str name="name">spelling_und</str> in solrconfig_extra.xml.
+  /** @var \Solarium\QueryType\Select\Query\Query $solarium_query */
+  $solarium_query->getSpellcheck()->setDictionary('spelling_' . LanguageInterface::LANGCODE_NOT_SPECIFIED);
+  $solarium_query->addParam('spellcheck.onlyMorePopular', FALSE);
+  $solarium_query->addParam('spellcheck.extendedResults', FALSE);
+  $solarium_query->addParam('spellcheck.count', 1);
+
+  // General search tweaks.
+  $solarium_query->addParam('mm.autoRelax', TRUE);
+
+  // Set the default Solr search index.
+  $index_id = 'default_content';
+
+  if ($route_name == 'view.search.search_page') {
+    // General search config.
+    $solarium_query->addParam('defType', 'edismax');
+    $solarium_query->addParam('tie', '0.01');
+  }
+
+  // Change Solr index to Contacts.
+  if ($route_name == 'nidirect_contacts.default' || $route_name == 'nidirect_contacts.letter') {
+
+    $index_id = 'contacts';
+    // See https://lucene.apache.org/solr/guide/7_7/the-dismax-query-parser.html#mm-minimum-should-match-parameter.
+    // Adjusts the sensitivity of matching based on the number of search
+    // terms provided.
+    $solarium_query->addParam('mm', '2<67% 5<50%');
+  }
+
+  $search_cache = \Drupal::cache()->get('elevated_solr_ids');
+
+  // Load enabled elevated solr id entities if not stored in the cache.
+  if (empty($search_cache->data)) {
+    $elevated_id_entities = \Drupal::entityTypeManager()->getStorage('solr_elevated_id')->loadByProperties(['status' => 1]);
+    \Drupal::cache()->set('elevated_solr_ids', $elevated_id_entities, Cache::PERMANENT);
+  }
+  else {
+    $elevated_id_entities = $search_cache->data;
+  }
+
+  $elevation_ids = [];
+
+  // Build up a collection of node id's to use in the elevated query.
+  foreach ($elevated_id_entities as $elevated_entity) {
+    if ($elevated_entity->index() == $index_id && $elevated_entity->label() == $search_term) {
+      $elevation_ids = array_merge($elevation_ids, explode(',', $elevated_entity->nodes()));
+    }
+  }
+
+  // Add elevations to the query.
+  if (!empty($elevation_ids)) {
+    $solr_hash = SolrUtility::getSiteHash();
+    $elevation_items = [];
+
+    // Prefix/suffix our node ids with:
+    // <hash>-<index_id>-entity:<entity_type>/<entity_id>:<langcode>.
+    foreach ($elevation_ids as $entity_ref) {
+      $elevation_items[] = sprintf('%s-%s-entity:%s:%s',
+        $solr_hash,
+        $index_id,
+        'node/' . $entity_ref,
+        Language::LANGCODE_NOT_SPECIFIED);
+    }
+
+    $solarium_query->addParam('elevateIds', implode(',', $elevation_items));
+  }
+}

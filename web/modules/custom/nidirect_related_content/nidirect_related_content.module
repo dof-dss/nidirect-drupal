@@ -1,0 +1,152 @@
+<?php
+
+/**
+ * @file
+ * Contains nidirect_related_content.module.
+ */
+
+use Drupal\Core\Block\BlockPluginInterface;
+use Drupal\taxonomy\TermInterface;
+use Drupal\views\ViewExecutable;
+
+/**
+ * Implements hook_views_pre_build().
+ */
+function nidirect_related_content_views_pre_build(ViewExecutable $view) {
+  $id = $view->id();
+  $display = $view->current_display;
+
+  if (in_array($id, ['related_content', 'popular_content']) &&
+    in_array($display, ['content_by_theme', 'pop_by_term'])) {
+
+    $route_name = \Drupal::routeMatch()->getRouteName();
+
+    // Fetch node from Full (canonical) or preview display.
+    if ($route_name == 'entity.node.canonical') {
+      $node = \Drupal::routeMatch()->getParameter('node');
+    }
+    elseif ($route_name == 'entity.node.preview') {
+      $node = \Drupal::routeMatch()->getParameter('node_preview');
+    }
+    elseif ($route_name == 'entity.taxonomy_term.canonical') {
+      $term = \Drupal::routeMatch()->getParameter('taxonomy_term');
+    }
+    else {
+      return [];
+    }
+
+    $sub_theme = 'all';
+    $site_themes = 'all';
+
+    if (!empty($node->field_subtheme)) {
+      $sub_theme = $node->field_subtheme->target_id ?? 'all';
+      $site_themes = $node->field_site_themes->target_id ?? 'all';
+    }
+
+    if (!empty($term)) {
+      $sub_theme = $term->id() ?? 'all';
+      $site_themes = $term->id() ?? 'all';
+    }
+
+    // If it's an editorially privileged user account, remove
+    // the hidden flag filters. Catchily named 'flagged_1' and 'flagged_2'
+    // by flag module, one for each filter group defined in the views UI.
+    if (\Drupal::currentUser()->hasPermission('administer nodes')) {
+      foreach (['flagged_1', 'flagged_2'] as $filter_id) {
+        if (!empty($view->filter[$filter_id])) {
+          unset($view->filter[$filter_id]);
+        }
+      }
+    }
+
+    $view->setArguments([$sub_theme, $site_themes]);
+  }
+}
+
+/**
+ * Implements hook_views_pre_render().
+ */
+function nidirect_related_content_views_pre_render(ViewExecutable $view) {
+  if ($view->id() != 'related_content' && $view->current_display != 'content_by_theme') {
+    return;
+  }
+
+  $route_name = \Drupal::routeMatch()->getRouteName();
+
+  // Fetch node from Full (canonical) or preview display.
+  if ($route_name == 'entity.node.canonical') {
+    $node = \Drupal::routeMatch()->getParameter('node');
+  }
+  elseif ($route_name == 'entity.node.preview') {
+    $node = \Drupal::routeMatch()->getParameter('node_preview');
+  }
+  else {
+    return [];
+  }
+
+  if (empty($node->field_subtheme)) {
+    return;
+  }
+
+  $sub_theme = $node->field_subtheme->target_id;
+
+  // Set the title of the view to be the parent term of the
+  // present active subtheme term.
+  if (!empty($sub_theme)) {
+    $term = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->load($sub_theme);
+    $view->setTitle($term->label());
+  }
+}
+
+/**
+ * Implements hook_preprocess_views_view_field().
+ */
+function nidirect_related_content_preprocess_views_view_field(&$variables) {
+  if ($variables['view']->id() != 'related_content' && $variables['view']->current_display != 'content_by_theme') {
+    return;
+  }
+
+  $route_name = \Drupal::routeMatch()->getRouteName();
+
+  // Fetch node from Full (canonical) or preview display.
+  if ($route_name == 'entity.node.canonical') {
+    $node = \Drupal::routeMatch()->getParameter('node');
+  }
+  elseif ($route_name == 'entity.node.preview') {
+    $node = \Drupal::routeMatch()->getParameter('node_preview');
+  }
+  else {
+    return [];
+  }
+
+  if ($node->id() == $variables['row']->nid) {
+    $variables['output'] = $node->getTitle();
+  }
+
+  // Vary each rendered field in this display by URL because
+  // the active page is never a link, just the title.
+  $variables['#cache']['contexts'][] = 'url';
+}
+
+/**
+ * Implements hook_block_view_alter().
+ */
+function nidirect_related_content_block_view_alter(array &$build, BlockPluginInterface $block) {
+  // A few early break conditions to reduce conditional indentation/improve legibility
+  // further down the function.
+  if ($block->getPluginId() != 'nidirect_related_content_block') {
+    return;
+  }
+  if (\Drupal::routeMatch()->getRouteName() != 'entity.node.canonical') {
+    return;
+  }
+
+  $node = \Drupal::routeMatch()->getParameter('node');
+  if ($node->hasField('field_subtheme') && !$node->get('field_subtheme')->isEmpty()) {
+    $term = $node->get('field_subtheme')->entity;
+
+    if ($term instanceof TermInterface) {
+      $build['#configuration']['label'] = $term->label() ?? '';
+    }
+  }
+}

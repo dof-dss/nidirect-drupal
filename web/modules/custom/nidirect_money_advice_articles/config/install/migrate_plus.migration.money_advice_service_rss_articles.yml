@@ -1,0 +1,98 @@
+id: money_advice_service_rss_articles
+label: Import Money Advice Service RSS feed
+migration_group: money_advice_service_rss
+dependencies: {  }
+migration_tags:
+  - nidirect
+source:
+  plugin: url
+  data_fetcher_plugin: http
+  data_parser_plugin: xml
+  urls:
+    - 'https://webfeeds.moneyadviceservice.org.uk/feeds/2024.rss'
+    - 'https://webfeeds.moneyadviceservice.org.uk/feeds/2025.rss'
+    - 'https://webfeeds.moneyadviceservice.org.uk/feeds/2027.rss'
+    - 'https://webfeeds.moneyadviceservice.org.uk/feeds/2028.rss'
+    - 'https://webfeeds.moneyadviceservice.org.uk/feeds/2030.rss'
+    - 'https://webfeeds.moneyadviceservice.org.uk/feeds/2038.rss'
+    - 'https://webfeeds.moneyadviceservice.org.uk/feeds/2039.rss'
+    - 'https://webfeeds.moneyadviceservice.org.uk/feeds/2040.rss'
+    - 'https://webfeeds.moneyadviceservice.org.uk/feeds/2041.rss'
+    - 'https://webfeeds.moneyadviceservice.org.uk/feeds/2042.rss'
+    - 'https://webfeeds.moneyadviceservice.org.uk/feeds/2043.rss'
+    - 'https://webfeeds.moneyadviceservice.org.uk/feeds/2044.rss'
+    - 'https://webfeeds.moneyadviceservice.org.uk/feeds/2045.rss'
+    - 'https://webfeeds.moneyadviceservice.org.uk/feeds/2046.rss'
+    - 'https://webfeeds.moneyadviceservice.org.uk/feeds/2047.rss'
+    - 'https://webfeeds.moneyadviceservice.org.uk/feeds/2048.rss'
+    - 'https://webfeeds.moneyadviceservice.org.uk/feeds/2049.rss'
+    - 'https://webfeeds.moneyadviceservice.org.uk/feeds/2050.rss'
+    - 'https://webfeeds.moneyadviceservice.org.uk/feeds/2051.rss'
+    - 'https://webfeeds.moneyadviceservice.org.uk/feeds/2052.rss'
+    - 'https://webfeeds.moneyadviceservice.org.uk/feeds/2053.rss'
+  item_selector: /rss/channel/item
+  fields:
+    -
+      name: guid
+      label: GUID
+      selector: guid
+    -
+      name: title
+      label: Title
+      selector: title
+    -
+      name: pub_date
+      label: 'Publication date'
+      selector: pubDate
+    -
+      name: body
+      label: Body
+      selector: description
+  ids:
+    guid:
+      type: string
+process:
+  title:
+    -
+      plugin: get
+      source: title
+  body/format:
+      plugin: default_value
+      default_value: basic_html
+  body/value: body
+  created:
+    -
+      plugin: format_date
+      from_format: 'D, d M Y H:i:s O'
+      to_format: 'U'
+      source: pub_date
+  published:
+    -
+      plugin: default_value
+      default_value: 1
+  field_summary:
+    -
+      plugin: callback
+      callable:
+        - '\Drupal\nidirect_money_advice_articles\ArticleProcessors'
+        - summary
+      source: body
+  field_teaser:
+    -
+      plugin: callback
+      callable:
+        - '\Drupal\nidirect_money_advice_articles\ArticleProcessors'
+        - teaser
+      source: body
+  field_subtheme:
+    -
+      plugin: callback
+      callable:
+        - '\Drupal\nidirect_money_advice_articles\ArticleProcessors'
+        - subtheme
+      source: body
+destination:
+  plugin: entity:node
+  default_bundle: article
+migration_dependencies:
+  required: {  }
