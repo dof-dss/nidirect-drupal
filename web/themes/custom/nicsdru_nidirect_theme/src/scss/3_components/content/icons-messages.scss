@@ -1,0 +1,247 @@
+/*
+ * @file
+ * Provides the styling for icon components. The file then extrapolates some concepts around icons further
+ * for when they are used in some kind of message container.
+ */
+@import '../../init';
+
+// Icons
+//
+// Icons are common in web design and are usually used to signify in a short artistic manner what would take a number of
+// words, and therefore visible space on the page, to convey. Where an icon is frequently used on the page, it makes
+// sense to load the item once and then alter its state using a style attribute. This can be tricky with traditional
+// bitmap images and often requires loading several versions of a image to attain an effect and also compounding this
+// hindrance is that often the image needs sized for various viewing platforms. Scalable Vector Graphics (SVG) overcomes
+// many of the issues that bitmap images have and provide vector based drawings that when implemented in a prescribed
+// manner can be very effective in delivering sharp icons in all conceivable scenarios of use. This theme adopts the
+// principle that icons should be SVG as far as possible. There is a lot of good content on the web about svg and how to
+// use it to best effect etc. This theme will use svg either as:
+// - inline image
+// - background image
+// for inline images, the techniques outline at https://css-tricks.com/svg-sprites-use-better-icon-fonts/ form the basis
+// for dealing with inline svg icons. Within the node scripts used to compile the theme there is a function for
+// concatenating individual svg icons into a single svg image with each individual icon declared as a symbol in the
+// larger file. The script is fired as part of the build processes, but can also be invoked on the commandline via
+// `npm run icons`. To render an icon out a user would simply declare a svg tag with appropriate classes and then the
+// `<use>` directive for example `<svg class="ico"><use xlink:href="#symbol"></use></svg>`. The available symbols are
+// outlined in more detail below.
+//
+// Style guide: components.icons
+
+// Icons - .ico
+//
+// The `.ico` class should be applied to all inline svg icons, this is a qualifier class used to set properties common
+// to all icons, making them behave as inline elements and ensuring appropriate space around the icon.
+//
+// Style guide: components.icons.ico
+.ico {
+  display: inline;
+  margin-left: .2em;
+
+  // Icons - external link icon
+  //
+  // The `.ico-elink` class should be applied to icons depicting an external window link. It sets height, width, spacing
+  // and colour properties for the icon. The symbol is identified by `#elink` and be invoked inline with via this code
+  // `<svg class="ico ico-elink"><use xlink:href="#elink"></use></svg>`
+  //
+  // Style guide: components.icons.elink
+  &-elink {
+    height: 1.1rem;
+    width: 1.4rem;
+    margin-bottom: .3rem;
+  }
+
+  // Icons - arrows
+  //
+  // The `.ico-arrow-*` classes should be applied to icons depicting an action arrow. It sets height, width, spacing,
+  // direction and colour properties for the icon. The symbol is identified by `#arrow` and be invoked inline with via
+  // this code `<svg class="ico ico-elink"><use xlink:href="#arrow"></use></svg>`.
+  // Point to note is that a single symbol (`#arrow`) in the group svg is used for all the following classes:
+  // `.ico-arrow-left`; `.ico-arrow-right`; `.ico-arrow-up`; and `.ico-arrow-down`. The direction the arrow points is
+  // modified via css styling to the different positions.
+  //
+  // Style guide: components.icons.arrows
+  &-arrow-left {
+    transform: rotate(180deg);
+  }
+
+  // for completeness, include a commented reminder that arrow-right exists and is the default render output.
+  //&-arrow-right {
+  //  transform: rotate(0deg);
+  //}
+
+  &-arrow-up {
+    transform: rotate(270deg);
+  }
+
+  &-arrow-down {
+    transform: rotate(90deg);
+  }
+}
+
+%notice-builder {
+  border: 2px solid;
+  margin: 1.5em 0;
+  padding: 1.2rem 1em 1em 5rem;
+  background: #fff resolve('i.svg') no-repeat 1.1rem 1.1rem / 28px 28px;
+
+  @include breakpoint($phab, $no-query: true) {
+    padding: 1.4rem 1em 1em 6rem;
+    background-position: 1.4rem 1.4rem;
+    background-size: 30px 30px;
+  }
+
+  & > *:first-child {
+    margin-top: 0;
+  }
+
+  & > *:last-child {
+    margin-bottom: 0;
+  }
+
+  & > h2:first-child,
+  & > h3:first-child {
+    @include adjust-font-size-to(21px, 4.5);
+
+    @include breakpoint($phab) {
+      @include adjust-font-size-to(24px, 5);
+    }
+  }
+}
+
+.info-notice,
+.form-item.info-notice {
+  @extend %notice-builder;
+  border-color: $brand-primary-light;
+
+  .no-svg & {
+    background-image: resolve('i.png');
+  }
+
+  &--large {
+
+    border-width: .25em;
+    padding: .5em 5rem 1em;
+    margin: 1em 0 1.5em;
+    background-size: 3rem 3rem;
+    background-position: 1rem 1rem;
+
+    @include breakpoint($phab) {
+      background-size: 4rem 4rem;
+      background-position: 2rem 2rem;
+      border-width: .3334em;
+      padding: .5em 8rem 1.5em;
+    }
+
+    > *:first-child {
+      margin-top: .9rem;
+
+      @include breakpoint($tab) {
+        margin-top: 1.5rem;
+      }
+    }
+
+    p,
+    li {
+      @include responsive-typo-map($large-text);
+    }
+  }
+
+  &--success {
+    border-color: $btn-action;
+    background-image: resolve('status.svg');
+
+    .no-svg & {
+      background-image: resolve('status.png');
+    }
+  }
+
+  &--error {
+    border-color: #e34f4f;
+    background-image: resolve('wrong.svg');
+
+    .no-svg & {
+      background-image: resolve('wrong.png');
+    }
+  }
+
+  &--warning {
+    border-color: #db6304;
+    background-image: resolve('warning.svg');
+
+    .no-svg & {
+      background-image: resolve('warning.png');
+    }
+  }
+}
+
+// Messages.
+//
+// Messages are part of Drupal core.
+//
+// Style guide: components.messages
+.messages-list {
+  margin: 2.5rem 0;
+  list-style: none;
+
+  .field &,
+  .form-wrapper & {
+    margin-bottom: 0;
+  }
+}
+
+.messages,
+.form-item.messages {
+  @extend %notice-builder;
+
+  &--error {
+    border-color: #e34f4f;
+    background: #fff resolve('wrong.svg') no-repeat .9rem .9rem / 24px 24px;
+
+    @include breakpoint($phab, $no-query: true) {
+      background: #fff resolve('wrong.svg') no-repeat 1.4rem 1.4rem / 30px 30px;
+    }
+
+    .no-svg & {
+      background-image: resolve('wrong.png');
+    }
+  }
+
+  &--status {
+    border-color: $btn-action;
+    background: #fff resolve('status.svg') no-repeat .9rem .9rem / 24px 24px;
+
+    @include breakpoint($phab, $no-query: true) {
+      background: #fff resolve('status.svg') no-repeat 1.4rem 1.4rem / 30px 30px;
+    }
+
+    .no-svg & {
+      background-image: resolve('status.png');
+    }
+  }
+
+  &--warning {
+    border-color: #db6304;
+    background: #fff resolve('warning.svg') no-repeat .9rem .9rem / 24px 24px;
+
+    @include breakpoint($phab, $no-query: true) {
+      background: #fff resolve('warning.svg') no-repeat 1.4rem 1.4rem / 30px 30px;
+    }
+
+    .no-svg & {
+      background-image: resolve('warning.png');
+    }
+  }
+
+  &__list {
+    margin: 0;
+  }
+
+  &__item {
+    @include adjust-font-size-to(18px);
+
+    &:first-child {
+      margin-top: 0;
+    }
+  }
+}

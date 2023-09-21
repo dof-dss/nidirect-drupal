@@ -1,0 +1,107 @@
+/*
+ * @file
+ * Contact cards for telephone helplines.
+ */
+
+@import '../../init';
+
+.card--contact {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 8em;
+  padding: 1em 1em 1em 20%;
+  margin: 1em 0 1.5em;
+  background-color: $brand-primary-medium;
+  color: #fff;
+
+  @include breakpoint($tab) {
+    padding: 1em 1em 1em 17.5%;
+  }
+
+  &-black {
+    background-color: $charcoal;
+  }
+
+  &-green {
+    background-color: $hc-green;
+  }
+
+  &-orange {
+    background-color: $hc-orange;
+  }
+
+  &-red {
+    background-color: $hc-red;
+  }
+
+  &::before {
+    content: '';
+    display: block;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 13%;
+    margin: 1em 3.5%;
+    height: calc(85% - 2em);
+    min-height: 102px;
+    background: transparent resolve('phone.png') top center no-repeat;
+    background-size: contain;
+
+    @include breakpoint($tab) {
+      width: 10%;
+      margin: 1em 3.75%;
+    }
+  }
+
+  > * {
+    color: #fff;
+  }
+
+  > *:first-child {
+    margin-top: 0;
+  }
+
+  > *:last-child {
+    margin-bottom: 0;
+  }
+
+  .card__heading {
+    @include responsive-typo-map($large-text);
+    margin: 0;
+    color: #fff;
+  }
+
+  .card__content {
+
+    padding: 0;
+
+    > * {
+      color: #fff;
+    }
+
+    .tel {
+      display: flex;
+      flex-flow: column;
+
+      .title {
+        @include responsive-typo-map($large-text);
+        order: 0;
+      }
+
+      .value {
+        font-size: 2em;
+        line-height: 1.5;
+        order: 1;
+      }
+
+      a.value {
+        @include link-state-style($link-card--contact);
+      }
+
+      .supplementary {
+        order: 2;
+      }
+    }
+  }
+}

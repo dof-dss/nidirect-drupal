@@ -1,0 +1,227 @@
+/*
+ * @file
+ * Provides some base definitions that are common among button type elements.
+ */
+
+@mixin btn($size: default, $arrow-direction: none, $arrow-colour: white) {
+
+  // Default coloring for all buttons.
+  @include btn-color($btn, $btn, $white, 'dark'); // bg-color, border-color, txt-color, scheme.
+
+  // Properties shared by all buttons.  Try to avoid specifying properties that will often be overridden. Especially
+  // sizing, spacing and font properties.
+  display: inline-block;
+  border: 1px solid transparent;
+  border-radius: 0;
+  text-align: center;
+  text-decoration: none;
+  background-repeat: no-repeat;
+  background-position-y: center;
+  appearance: none;
+
+  &:link,
+  &:visited {
+    color: $white;
+  }
+
+  &:focus {
+    outline: 3px solid #000;
+  }
+
+  &:hover {
+    text-decoration: none;
+  }
+
+  &:active {
+    outline: 0;
+  }
+
+  // Set background arrow depending on direction and colour of arrow.
+  @if $arrow-direction {
+    @if $arrow-direction == right {
+      @if $arrow-colour == black {
+        background-image: resolve('arrow_forward_black.svg');
+      }
+      @else {
+        background-image: resolve('arrow_forward_white.svg');
+      }
+    }
+    @else if $arrow-direction == left {
+      @if $arrow-colour == black {
+        background-image: resolve('arrow_back_black.svg');
+      }
+      @else {
+        background-image: resolve('arrow_back_white.svg');
+      }
+    }
+  }
+
+  // Add sizing to the button using the _btn private mixin.
+  // @include _btn($min-width, $min-height, $padding, $arrow-direction).
+  // Note the _btn mixin will calculate appropriate padding to accommodate arrows depending on the
+  // the amount of side padding the button it is given - bigger left or right padding = bigger arrow.
+  @if $size == 'small' {
+    @include responsive-typo-map($btn-small);
+    @include _btn(3.2rem, 3.2rem, (.4rem .4rem), $arrow-direction);
+    @include breakpoint($tab) {
+      @include _btn(3.6rem, 3.6rem, (.4rem .8rem), $arrow-direction);
+    }
+  }
+  @else if $size == 'standard' {
+    @include responsive-typo-map($btn-default);
+    @include _btn(4.4rem, 4.4rem, (.8rem 1.2rem), $arrow-direction);
+    @include breakpoint($tab) {
+      @include _btn(4.5rem, 4.5rem, (.8rem 1.3rem), $arrow-direction);
+    }
+  }
+  @else if $size == 'medium' {
+    @include responsive-typo-map($btn-medium);
+    @include _btn(6rem, 4.4rem, (.7rem 1.4rem), $arrow-direction);
+    @include breakpoint($tab) {
+      @include _btn(9rem, 4.5rem, (.6rem 1.7rem), $arrow-direction);
+    }
+  }
+  @else if $size == 'large' {
+    @include responsive-typo-map($btn-large);
+    @include _btn(8rem, 4.8rem, (.7rem 1.6rem), $arrow-direction);
+    @include breakpoint($tab) {
+      @include _btn(15rem, 5.4rem, (.8rem 1.9rem), $arrow-direction);
+    }
+  }
+  @else {
+    @include responsive-typo-map($btn-default);
+    @include _btn(4.4rem, 4.4rem, (.8rem 1.2rem), $arrow-direction);
+    @include breakpoint($tab) {
+      @include _btn(4.5rem, 4.5rem, (.8rem 1.3rem), $arrow-direction);
+    }
+  }
+}
+
+@mixin btn-color($bg-color: $dark-grey, $border-color: $bg-color, $txt-color: $white, $scheme: 'dark') {
+
+  $bg-color-hover: darken($bg-color, 5%);
+  $bg-color-active: darken($bg-color, 8%);
+  $bg-color-focus: $bg-color-active;
+  $border-color-hover: darken($border-color, 5%);
+  $border-color-active: darken($border-color, 10%);
+  $border-color-focus: darken($border-color, 5%);
+
+  @if($scheme == 'light') {
+    $bg-color-hover: lighten($bg-color, 5%);
+    $bg-color-active: darken($bg-color, 3%);
+    $bg-color-focus: $bg-color-active;
+    $border-color-hover: darken($border-color, 5%);
+    $border-color-active: darken($border-color, 5%);
+    $border-color-focus: darken($border-color, 5%);
+  }
+
+  background-color: $bg-color;
+  border-color: $border-color;
+  color: $txt-color;
+
+  &:hover {
+    background-color: $bg-color-hover;
+    border-color: $border-color-hover;
+    color: $txt-color;
+  }
+
+  &:active {
+    background-color: $bg-color-active;
+    border-color: $border-color-active;
+    color: $txt-color;
+  }
+
+  &:focus {
+    background-color: $bg-color-focus;
+    border-color: $border-color-focus;
+    color: $txt-color;
+  }
+}
+
+@mixin _btn($min-width, $min-height, $padding, $arrow-direction) {
+  min-width: $min-width;
+  min-height: $min-height;
+  padding: $padding;
+
+  @if $arrow-direction {
+
+    // Make room for an arrow - add extra padding to the left or right of the button.
+    // The background arrow is 2/3 width of the extra left or right padding
+    // and is offset by half of the space remaining.
+
+    // Defaults.
+    $padding-side: 1em;
+    $background-size: .6667em;
+    $background-position-x-offset: ($padding-side - $background-size) / 2;
+
+    @if type-of($padding) == 'list' {
+      // The second value in the list is side padding.
+      // Double it to make room for an arrow.
+      $padding-side: nth($padding, 2) * 2;
+      // The arrow is 2/3 width of the padding available to it.
+      $background-size: $padding-side * .6667;
+      // The arrow is offset from the side of the button by half of the remaining space.
+      $background-position-x-offset: ($padding-side - $background-size) / 2;
+    }
+
+    background-size: $background-size auto;
+
+    // Set the padding and background-position depending on arrow direction.
+    @if $arrow-direction == left {
+      padding-left: $padding-side;
+      background-position: left $background-position-x-offset top 50%;
+    }
+
+    @if $arrow-direction == right {
+      padding-right: $padding-side;
+      background-position: right $background-position-x-offset top 50%;
+    }
+  }
+}
+
+@mixin btn--block {
+  display: block !important;
+  width: 100%;
+}
+
+@mixin btn--link {
+
+  @include link-state-style($link-body-no-visited);
+
+  // Remove button background and border.
+  // Since this is a modifier mixin, it needs to be aggressive and so some properties
+  // will use the !important rule.
+  background: none !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+@mixin btn--link-inline {
+  @include btn--link;
+
+  // Remove or reset sizing and spacing properties.
+  // Since this is a modifier mixin, it needs to be aggressive and so some properties
+  // will use the !important rule.
+  display: inline !important;
+  width: auto !important;
+  height: auto !important;
+  min-width: auto !important;
+  min-height: auto !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+// The disabled variation should always go last, so that it overrides any
+// other variations.
+%button--disabled[disabled] {
+  // Re-set default cursor for disabled elements.
+  cursor: default;
+  color: color(button-disabled);
+
+  &:hover,
+  &:focus,
+  &:active {
+    // Override any link underlines and color changes.
+    color: color(button-disabled);
+  }
+}

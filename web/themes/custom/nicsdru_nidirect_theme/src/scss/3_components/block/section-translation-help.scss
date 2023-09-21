@@ -1,0 +1,45 @@
+@import '../../init';
+
+.section-translation-help {
+
+  position: relative;
+
+  @at-root body:not(.path-taxonomy) & {
+    margin-top: 3em;
+  }
+
+  &__link {
+    @include link-state-style($link-page-bottom);
+    display: block;
+    position: relative;
+    width: 100%;
+    max-height: 4.5rem;
+    padding: 1rem 15px;
+    margin: 0;
+    font-size: inherit;
+    line-height: inherit;
+    text-align: left;
+    // sass-lint:disable no-misspelled-properties
+    text-underline-offset: 3px;
+    // sass-lint:enable no-misspelled-properties
+
+    @include breakpoint($tab) {
+      width: 50%;
+      position: absolute;
+      right: 0;
+      padding: .5em 20px;
+      text-align: right;
+    }
+
+    &::after {
+      content: '';
+      display: inline-block;
+      width: 2.4rem;
+      height: 2.4rem;
+      margin-left: .6rem;
+      vertical-align: middle;
+      background: transparent resolve('translate_48px.svg') center center no-repeat;
+      background-size: 2.4rem;
+    }
+  }
+}

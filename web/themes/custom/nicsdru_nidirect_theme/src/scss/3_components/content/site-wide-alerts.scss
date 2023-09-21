@@ -1,0 +1,153 @@
+/*
+ * @file
+ * Provides the styling for site wide alert notices.
+ */
+@import '../../init';
+
+// Site wide alerts.
+//
+// Style guide: components.icons
+
+#sitewide-alert {
+  width: 100%;
+}
+
+.sitewide-alert {
+  position: relative;
+  width: 100%;
+  min-height: 60px;
+  margin: 0;
+  padding: 0 8px 0 12px;
+
+  @include breakpoint($phab) {
+    padding: 3px 8px 0 16px;
+  }
+
+  @include breakpoint($lap) {
+    padding: 6px 20px;
+  }
+
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: center;
+  align-items: center;
+
+  &.alert-standard {
+    background-color: $prussian-blue;
+  }
+
+  &.alert-warning {
+    background-color: $hc-orange;
+  }
+
+  &.alert-call-to-action {
+    background-color: $hc-green;
+  }
+
+  &.alert-operation-shamrock {
+    background-color: $charcoal;
+  }
+
+  // Alert layout.
+
+  > span {
+    // 1st flex item wraps around the alert message.
+    flex: 100% 0 1;
+    max-width: 900px;
+
+    &:last-child {
+      // When this flex-item is all alone...
+      max-width: 944px;
+    }
+  }
+
+  .close {
+    // 2nd flex item - sits beside the alert message.
+    flex: 44px 0 0; // Fixed with, no growth or shrinkage.
+    width: 44px;
+    height: 44px;
+    margin: 3px 0;
+    position: relative; // Contains absolutely positioned pseudo elements.
+    right: 10px;
+    display: block;
+    background: none;
+    border: 3px solid transparent;
+
+    &:hover,
+    &:focus {
+      border-color: #fff;
+      outline: 0;
+    }
+
+    &::before,
+    &::after {
+      position: absolute;
+      content: '';
+      display: inline-block;
+      width: 16px;
+      height: 3px;
+      background-color: #fff;
+    }
+
+    &::before {
+      left: calc(50% - 8px);
+      top: calc(50% - 2px);
+      transform: rotate(45deg);
+    }
+
+    &::after {
+      left: calc(50% - 8px);
+      top: calc(50% - 2px);
+      transform: rotate(135deg);
+    }
+
+    span[aria-hidden='true'] {
+      display: none;
+    }
+  }
+
+  &__message {
+    position: relative;
+    display: block;
+    width: 100%;
+    padding: 0 .5em 0 2.3334em;
+
+    > strong:first-child {
+      display: block;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 1.5em;
+      height: 1.5em;
+      line-height: 1.5em;
+      color: black;
+      text-align: center;
+      background-color: #fff;
+      font-weight: 900;
+      font-size: 1em;
+      border-radius: 50%;
+    }
+
+    a {
+      @include link-state-style($link-site-wide-alert);
+    }
+
+    h2 {
+     @include adjust-font-size-to(21px);
+      line-height: 1;
+      margin: .6667em 0;
+
+      @include breakpoint($tab) {
+        @include adjust-font-size-to(24px);
+      }
+    }
+
+    > * {
+      color: #fff;
+    }
+
+    > p {
+      margin: .5em 0;
+    }
+  }
+}

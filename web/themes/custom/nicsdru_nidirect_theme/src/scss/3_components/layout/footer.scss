@@ -1,0 +1,33 @@
+/*
+ * @file
+ * Provides the layout styles for the footer area.
+ */
+@import '../../init';
+
+.footer {
+  width: 100%;
+  background-color: color(grey-light);
+  padding: 0 0 4.5em;
+  margin-top: 0;
+
+  &-main.container {
+    width: 100%;
+
+    @include breakpoint($tab) {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      grid-template-areas: 'menu social';
+      align-items: center;
+    }
+  }
+
+  .nav {
+    &-menu {
+      grid-area: menu;
+    }
+
+    &-social {
+      grid-area: social;
+    }
+  }
+}
