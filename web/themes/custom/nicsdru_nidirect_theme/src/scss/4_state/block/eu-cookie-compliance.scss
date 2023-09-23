@@ -1,0 +1,174 @@
+@import '../../init';
+
+.sliding-popup-bottom,
+.sliding-popup-top {
+  width: 100%;
+  z-index: 99999;
+  //text-align: center;
+}
+
+.sliding-popup-bottom {
+  position: fixed;
+}
+
+.sliding-popup-top {
+  position: relative;
+}
+
+.eu-cookie-compliance,
+.eu-cookie-withdraw, {
+  &-banner {
+    width: 100%;
+    background: $tangaroa;
+    padding-bottom: 1.6rem;
+
+    @include breakpoint($tab) {
+      padding-bottom: 2.1rem;
+    }
+
+    .popup-content {
+      grid-template-columns: 1fr;
+      grid-template-rows: auto auto;
+      grid-row-gap: 1.5em;
+    }
+  }
+
+  &-buttons {
+    display: flex;
+    flex-direction: row-reverse;
+    text-align: right;
+    align-self: end;
+
+    .btn {
+      margin-left: 1em;
+
+      &:not(.decline-button) {
+        padding-left: 1.5em;
+        padding-right: 1.5em;
+      }
+
+      &:focus {
+        outline-color: #fff;
+      }
+    }
+  }
+
+  &-message {
+
+    h2 {
+      @include responsive-typo-map($h3-text);
+      color: white;
+    }
+
+    a,
+    .find-more-button {
+      @include link-state-style($link-cookie-notice);
+    }
+
+    p {
+      @include adjust-font-size-to(16px, 4);
+      color: white;
+
+      @include breakpoint($tab) {
+        @include adjust-font-size-to(18px, 4.5);
+      }
+
+      &:first-child {
+        @include adjust-font-size-to(24px, 5.3);
+        margin: 1.6rem 0;
+
+        @include breakpoint($phab) {
+          @include adjust-font-size-to(28px, 6);
+        }
+
+        @include breakpoint($tab) {
+          margin: 2.4rem 0 1.2rem;
+          font-weight: bold;
+        }
+      }
+
+      &:last-of-type {
+        margin-bottom: 0;
+      }
+    }
+  }
+}
+
+.eu-cookie-compliance-default-button,
+.eu-cookie-compliance-secondary-button,
+.eu-cookie-compliance-more-button,
+.eu-cookie-compliance-hide-button,
+.eu-cookie-withdraw-tab {
+  cursor: pointer;
+}
+
+.eu-cookie-withdraw-wrapper.sliding-popup-top,
+.eu-cookie-withdraw-wrapper.sliding-popup-top .eu-cookie-withdraw-banner {
+  transform: scaleY(-1);
+}
+
+.eu-cookie-withdraw-wrapper.sliding-popup-top .eu-cookie-withdraw-tab {
+  transform: translate(-50%, -100%) scaleY(-1);
+}
+
+button.eu-cookie-withdraw-tab {
+  position: absolute;
+  top: 0;
+  left: -11em;
+  z-index: -1;
+  color: #bebebe;
+  border: 0;
+  width: 11em;
+  height: 50px;
+  padding: 0 50px 0 1em;
+  background-color: #041e34;
+  text-align: right;
+  transform: translate(50px, -50px);
+  transition: left ease .3s;
+
+  &::after {
+    content: '';
+    display: block;
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 50px;
+    height: 50px;
+    background: #041e34 url('/core/misc/icons/bebebe/cog.svg') right 12.5px top 12.5px no-repeat;
+    background-size: 25px;
+  }
+
+  &:hover {
+    left: -50px;
+  }
+
+  &:focus-visible {
+    outline: none;
+    animation-name: cookie-banner-button-slide-out, cookie-banner-button-slide-in;
+    animation-duration: .3s, .3s;
+    animation-delay:  0s, 1.5s;
+    animation-iteration-count: 1, 1;
+    animation-fill-mode: both;
+
+    &::after {
+      outline: 3px solid #bebebe;
+      outline-offset: -9px;
+    }
+  }
+
+  .eu-cookie-compliance-popup-open &,
+  .eu-cookie-compliance-popup-open &:focus {
+    left: -50px;
+    animation: none;
+  }
+}
+
+@keyframes cookie-banner-button-slide-out {
+  0%   {left: -11em;}
+  100% {left: -50px;}
+}
+
+@keyframes cookie-banner-button-slide-in {
+  0%   {left: -50px;}
+  100% {left: -11em;}
+}

@@ -1,0 +1,69 @@
+id: admin-dashboard
+module: nidirect_tour
+label: 'Admin content'
+langcode: en
+routes:
+  - route_name: system.admin_content
+tips:
+  introduction:
+    id: introduction
+    plugin: text
+    label: 'Introduction'
+    body: '<p>This is the administration content page.</p>
+    <p>From here you can Create, Edit, Delete and search for content, files and media (depending on your account privileges).</p>
+    <p>Click "next" to continue through the tour.</p>'
+    weight: 1
+  type-nav:
+    id: content-tabs
+    plugin: text
+    label: 'Content type navigation'
+    body: 'You can switch between lists of content types by clicking on the tabs here.'
+    weight: 2
+    location: bottom
+    attributes:
+      data-id: block-adminimal-theme-primary-local-tasks
+  moderation-nav:
+    id: moderation-tab
+    plugin: text
+    label: 'Moderation navigation'
+    body: 'You can navigate between a content Overview which displays all the content you have access to and the various moderation displays.'
+    weight: 3
+    location: bottom
+    attributes:
+      data-id: block-adminimal-theme-secondary-local-tasks
+  search-filter:
+    id: filter-form
+    plugin: text
+    label: 'Finding content'
+    body: 'You can search for content by title, type, theme and published status using the Filter controls.'
+    weight: 4
+    location: top
+    attributes:
+      data-id: block-adminimal-theme-content
+  filter-sort:
+    id: filter-sort
+    plugin: text
+    label: 'Sort order'
+    body: 'Clicking a column title link will sort the results in ascending order, click again to sort descending order.'
+    weight: 5
+    location: top
+    attributes:
+      data-class: view-content table.views-table thead tr th.views-field-title
+  node-operations:
+    id: node-operations
+    plugin: text
+    label: 'Content operations'
+    body: 'If you have permission select from the dropdown to Edit or Delete an individual item.'
+    weight: 6
+    location: left
+    attributes:
+      data-class: view-content table.views-table tbody tr td.views-field-operations
+  table-paging:
+    id: table-paging
+    plugin: text
+    label: 'Paging'
+    body: 'Navigate between pages of results by clicking on either the page numbers or the text links.'
+    weight: 6
+    location: top
+    attributes:
+      data-class: pager__items li:first

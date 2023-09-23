@@ -1,0 +1,363 @@
+<?php
+
+/**
+ * @file
+ * Custom code for health conditions features.
+ */
+
+use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
+use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\node\NodeInterface;
+use Drupal\taxonomy\TermInterface;
+use Drupal\views\Plugin\views\query\QueryPluginBase;
+use Drupal\views\ViewExecutable;
+
+/**
+ * Implements hook_ENTITY_TYPE_view().
+ */
+function nidirect_health_conditions_node_view(array &$build, EntityInterface $entity, EntityViewDisplayInterface $display, $view_mode) {
+  if ($entity->bundle() == 'health_condition' && $view_mode == 'search_result') {
+    // Force basic_html format for summary in this view mode.
+    if (!empty($build['field_summary']['#items'])) {
+      $build['field_summary']['#format'] = 'basic_html';
+    }
+
+    // Glue on the related conditions block as part of the render array. Re-use
+    // the block render array because it's displayed in a similar way to the
+    // health condition node sidebar contents for related conditions.
+    $build['related_conditions'] = \Drupal::service('plugin.manager.block')
+      ->createInstance('healthconditions_related_conditions', ['node' => $entity])->build();
+  }
+
+  if ($entity->bundle() == 'health_condition_alternative' && $view_mode == 'search_result') {
+    // Inject the parent condition's summary text into the render array
+    // and hide the parent condition node so it doesn't render in itself.
+    $hc_node = &$build['field_parent_condition'][0]['#node'];
+
+    if ($hc_node instanceof NodeInterface &&
+      $hc_node->bundle() == 'health_condition' &&
+        $hc_node->isPublished()) {
+
+      // Use of $view_mode ensures we get the appropriate field config.
+      $build['field_summary'] = $hc_node->field_summary->view($view_mode);
+      $build['field_parent_condition']['#access'] = FALSE;
+    }
+  }
+}
+
+/**
+ * Implements hook_views_pre_render().
+ */
+function nidirect_health_conditions_views_pre_render(ViewExecutable $view) {
+
+  // Inject custom formatted views header for search API based view.
+  $single_message = '';
+  $plural_message = '';
+  $search_term = '';
+
+  if ($view->id() == 'health_conditions' && $view->current_display == 'search_page') {
+    $query_params = $view->getExposedInput();
+    $search_term = $query_params['query_health_az'] ?? '';
+
+    // Generate the header content to show N condition(s) matching
+    // 'search term'.
+    $single_message = "@count condition matching '@search_term'";
+    $plural_message = "@count conditions matching '@search_term'";
+  }
+
+  // Replicate the above pattern of message, but alter wording on node based
+  // view (filter by letter).
+  // NB: these are separate views because each uses different base entities and
+  // you cannot mix entity bases in views. It's also much easier to use the
+  // built-in filters for the node title field to allow a 'starts with' query
+  // operator (see hook_views_query_alter below) that you cannot get with a
+  // search API based view.
+  if ($view->id() == 'health_conditions_a_to_z' && $view->current_display == 'health_conditions_by_letter') {
+    $search_term = $view->args[0] ?? '';
+    $search_term = strtoupper($search_term);
+
+    // Generate the header content to show N condition(s)
+    // matching 'search term'.
+    $single_message = "@count condition";
+    $plural_message = "@count conditions";
+  }
+
+  if (empty($search_term) || $view->total_rows == 0) {
+    return;
+  }
+
+  $view->header['area']->options['content']['value'] = \Drupal::translation()->formatPlural(
+    $view->total_rows,
+    $single_message,
+    $plural_message, [
+      '@count' => $view->total_rows,
+      '@search_term' => $search_term,
+    ]
+  );
+}
+
+/**
+ * Implements hook_views_query_alter().
+ */
+function nidirect_health_conditions_views_query_alter(ViewExecutable $view, QueryPluginBase $query) {
+  if ($view->id() == 'health_conditions_a_to_z' && $view->current_display == 'health_conditions_by_letter') {
+    if (!empty($query->where)) {
+      // where[0] refers to the contextual filter, but the out-of-the-box options
+      // doesn't permit a 'LIKE' comparison. So we adjust it here to pass the
+      // controller's parameter for letter into the view and let it do the heavy
+      // lifting of the query.
+      $query->where[0]['conditions'][0]['value'] .= '%';
+      $query->where[0]['conditions'][0]['operator'] = 'LIKE';
+    }
+  }
+}
+
+/**
+ * Implements hook_preprocess_block().
+ */
+function nidirect_health_conditions_preprocess_block(&$variables) {
+
+  // If we're on a health condition node, render the block title.
+  if ($variables['plugin_id'] != 'views_exposed_filter_block:health_conditions-search_page') {
+    return;
+  }
+
+  $route_name = \Drupal::routeMatch()->getRouteName();
+
+  // Fetch node from Full (canonical) or preview display.
+  if ($route_name == 'entity.node.canonical') {
+    $node = \Drupal::routeMatch()->getParameter('node');
+  }
+  elseif ($route_name == 'entity.node.preview') {
+    $node = \Drupal::routeMatch()->getParameter('node_preview');
+  }
+  else {
+    return [];
+  }
+
+  if (!empty($node) && $node->bundle() == 'health_condition') {
+    $variables['label'] = t('Health conditions A to Z');
+  }
+}
+
+/**
+ * Implements hook_preprocess_field().
+ */
+function nidirect_health_conditions_preprocess_field(&$variables) {
+  if ($variables['field_name'] != 'field_related_info') {
+    return;
+  }
+
+  if ($variables['element']['#bundle'] == 'health_condition' && $variables['element']['#view_mode'] == 'full') {
+    // Change field label on health_condition bundle, full view mode.
+    $variables['label'] = t('More useful links');
+  }
+}
+
+/**
+ * Implements hook_inline_entity_form_entity_form_alter().
+ *
+ * Perform alterations before an entity form is included in the IEF widget.
+ * Different to the usual hook_form_alter() hooks associated with Form API.
+ *
+ * Used here to clean up the UX of adding a new alternative health condition
+ * title to make it feel less like a node and more like a single field value
+ * (what the editor cares about).
+ *
+ * Only kicks in when adding a new health condition alternative node via
+ * the IEF on a health condition node edit form. We don't include on the 'add'
+ * form because we can't add the entity reference field value using a node that
+ * doesn't yet exist.
+ */
+function nidirect_health_conditions_inline_entity_form_entity_form_alter(array &$entity_form, FormStateInterface &$form_state) {
+
+  if ($entity_form['#bundle'] == 'health_condition_alternative') {
+    $is_edit_form = \Drupal::routeMatch()->getRouteName() == 'entity.node.edit_form';
+    $node = \Drupal::routeMatch()->getParameter('node');
+
+    // If we're adding from the health condition node edit form then pre-set
+    // the parent condition value and hide it so it's out of the way.
+    if ($is_edit_form && $node->bundle() === 'health_condition' && $entity_form['#op'] == 'add') {
+      // The autocomplete widget doesn't take a node id as a value, it
+      // requires the full-fat node object as per:
+      // https://api.drupal.org/api/drupal/core%21lib%21Drupal%21Core%21Entity%21Element%21EntityAutocomplete.php/class/EntityAutocomplete/8.7.x
+      $entity_form['field_parent_condition']['widget'][0]['target_id']['#default_value'] = $node;
+    }
+    else {
+      // Assign a temporary health condition as the parent.
+      // The parent will be updated to the actual health condition once that
+      // node has been saved.
+      // See: nidirect_health_conditions_node_insert().
+      $temp_node = \Drupal::entityTypeManager()->getStorage('node')
+        ->loadByProperties([
+          'type' => 'health_condition',
+          'status' => 1,
+        ]);
+
+      $entity_form['field_parent_condition']['widget'][0]['target_id']['#default_value'] = reset($temp_node);
+    }
+
+    // Change element type as hide() appears to ignore the value we set.
+    $entity_form['status']['widget']['value']['#type'] = 'hidden';
+    // Publish by default.
+    $entity_form['status']['widget']['value']['#value'] = TRUE;
+
+    // Always hide some fields when using the inline entity form regardless of
+    // $entity_form['#op']. To change this value, don't use the IEF form. Edit
+    // the node directly via the main content edit listings.
+    hide($entity_form['field_parent_condition']);
+
+  }
+}
+
+/**
+ * Implements hook_node_insert().
+ */
+function nidirect_health_conditions_node_insert(NodeInterface $node) {
+  // Update each alternative health condition parent to the newly
+  // saved health condition node.
+  // See: nidirect_health_conditions_inline_entity_form_entity_form_alter().
+  if ($node->getType() === 'health_condition') {
+    $alt_conditions = $node->get('field_alternative_condition');
+    // Update parent of each alternative condition.
+    foreach ($alt_conditions->referencedEntities() as $alt) {
+      $alt->set('field_parent_condition', $node);
+      $alt->setPublished($node->isPublished());
+      $alt->save();
+    }
+  }
+}
+
+/**
+ * Implements hook_NODE_update().
+ *
+ * Intended to keep Health Condition Alternative Title nodes' publish status
+ * in sync with the parent Health Condition publish status. This ensures
+ * consistency of appearance in the db and solr search results which are
+ * all pre-filtered on entity status.
+ */
+function nidirect_health_conditions_node_update(NodeInterface $node) {
+  if ($node->bundle() != 'health_condition') {
+    return;
+  }
+
+  $alt_titles = $node->field_alternative_condition->referencedEntities() ?? [];
+  $hc_publish_state = $node->isPublished();
+
+  foreach ($alt_titles as $index => $alt_node) {
+    $alt_node->setPublished($hc_publish_state);
+    $alt_node->save();
+  }
+}
+
+/**
+ * Implements hook_entity_prepare_form().
+ */
+function nidirect_health_conditions_entity_prepare_form(EntityInterface $entity, $operation, FormStateInterface $form_state) {
+  // Preset specific theme on new health condition node form.
+  if (\Drupal::routeMatch()->getRouteName() == 'node.add' && $entity->bundle() == 'health_condition') {
+    $result = \Drupal::entityTypeManager()->getStorage('taxonomy_term')
+      ->loadByProperties(['name' => 'Illnesses and conditions']);
+    $term = reset($result);
+
+    if ($term instanceof TermInterface) {
+      /** @var \Drupal\node\NodeInterface $entity */
+      $entity->set('field_subtheme', $term->id());
+    }
+  }
+}
+
+/**
+ * Implements hook_preprocess_node().
+ */
+function nidirect_health_conditions_preprocess_node(array &$variables) {
+  $node_type = $variables['node']->getType();
+  $view_mode = $variables['view_mode'];
+
+  if ($node_type === 'health_condition') {
+    $variables['#attached']['library'][] = 'nidirect_health_conditions/search_conditions_prompt';
+  }
+  if ($node_type === 'health_condition_alternative' && $view_mode === 'search_result') {
+    $hc_node = $variables['content']['field_parent_condition'][0]['#node'];
+
+    if ($hc_node instanceof NodeInterface && $hc_node->bundle() === 'health_condition') {
+      $variables['url'] = $hc_node->toUrl()->toString();
+    }
+  }
+}
+
+/**
+ * Implements hook_page_attachments_alter().
+ */
+function nidirect_health_conditions_page_attachments_alter(array &$attachments) {
+
+  if (empty($attachments['#attached']['html_head'])) {
+    return;
+  }
+
+  if (\Drupal::routeMatch()->getRouteName() != 'entity.node.canonical') {
+    return;
+  }
+
+  // Preprocess Health condition nodes' schema.org metatags.
+  $node = \Drupal::routeMatch()->getParameter('node');
+
+  if ($node instanceof NodeInterface && $node->bundle() == 'health_condition') {
+    // Collect tags added by Schema Metatag into structured data array.
+    $schema_metatag_manager = \Drupal::service('schema_metatag.schema_metatag_manager');
+    $items = $schema_metatag_manager->parseJsonld($attachments['#attached']['html_head']);
+
+    // Always add or replace any existing entries for 'about' with some
+    // preprocessed details from the health condition node.
+    $items['@graph'][0]['about'] = [
+      '@type' => "MedicalCondition",
+      'name' => $node->getTitle(),
+    ];
+
+    $hc_alternative_nodes = \Drupal::entityTypeManager()->getStorage('node')
+      ->loadByProperties([
+        'type' => 'health_condition_alternative',
+        'field_parent_condition' => $node->id(),
+        'status' => 1,
+      ]);
+
+    if (!empty($hc_alternative_nodes)) {
+      $ac_names = array_map(function ($alt_node) {
+        return $alt_node->getTitle();
+      }, $hc_alternative_nodes);
+
+      $items['@graph'][0]['about']['alternateName'] = array_values($ac_names);
+    }
+
+    // Map our symptoms to the 'keywords' element.
+    $symptoms = \Drupal::service('nidirect_health_conditions.utility')->getSymptoms($node);
+
+    if (!empty($symptoms)) {
+      $items['@graph'][0]['keywords'] = $symptoms;
+    }
+
+    // Re-encode the JSON-LD for the page head.
+    $jsonld = $schema_metatag_manager->encodeJsonld($items);
+    if (!empty($jsonld)) {
+      $attachments['#attached']['html_head'][] = [
+        [
+          '#type' => 'html_tag',
+          '#tag' => 'script',
+          '#value' => $jsonld,
+          '#attributes' => ['type' => 'application/ld+json'],
+        ],
+        'schema_metatag',
+      ];
+    }
+  }
+}
+
+/**
+ * Implements hook_inline_entity_form_table_fields_alter().
+ */
+function nidirect_health_conditions_inline_entity_form_table_fields_alter(array &$fields, array $context) {
+  if ($context['parent_bundle'] == 'health_condition' && $context['field_name'] == 'field_alternative_condition') {
+    unset($fields['status']);
+  }
+}

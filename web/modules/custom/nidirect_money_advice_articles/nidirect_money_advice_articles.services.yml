@@ -1,0 +1,6 @@
+services:
+  nidirect_money_advice_articles.eventsubscriber.post:
+    class: 'Drupal\nidirect_money_advice_articles\EventSubscriber\PostMigrationSubscriber'
+    arguments: ['@entity_type.manager', '@logger.factory']
+    tags:
+      - { name: 'event_subscriber' }

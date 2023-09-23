@@ -1,0 +1,181 @@
+/*
+ * @file
+ * Provides styling for webform specific components.
+ */
+@import '../../init';
+@import 'button/button-defs';
+@import 'error-messages/error-messages';
+
+.form-textarea-wrapper {
+  line-height: 0;
+}
+
+.webform-counter {
+  margin-bottom: 0;
+
+  + .form-item--error-message.error,
+  + .form-item--error-message .error {
+    position: absolute;
+    margin-top: .9rem;
+  }
+}
+
+.text-count-wrapper {
+  @include responsive-typo-map($body-text);
+  color: #fff;
+  background-color: $charcoal;
+  padding: .3334em .6rem;
+  margin: 0;
+
+  &.webform-counter-warning .text-count {
+    color: lighten(color('orange'), 10%);
+    font-weight: bold;
+  }
+
+  input + & {
+    max-width: 560px;
+  }
+}
+
+
+/* webform radios and checkboxes displayed inline are wrapped with this class */
+.webform-options-display-side-by-side {
+
+  // webform css adds unwanted margin on child labels
+  label {
+    margin: 0;
+  }
+
+  .form-item {
+    display: inline-block;
+    width: auto;
+    padding: 0;
+
+    &--error-message .error {
+      @extend %error-bubble--floating-below;
+    }
+  }
+
+
+}
+
+.webform-options-display-buttons {
+
+  margin: 0;
+  display: inline-flex;
+
+  .webform-options-display-buttons-wrapper {
+    margin: .5em .5em .5em 0;
+  }
+
+  .form-item {
+    padding: 0;
+    margin: 0;
+
+    input:checked ~ label {
+      background-color: $brand-primary-light;
+      color: #000;
+    }
+  }
+
+  label.webform-options-display-buttons-label {
+    display: inline-block;
+    height: auto;
+    min-width: 5.5em;
+    color: $text;
+    border: 0;
+    box-shadow: inset 0 0 0 1px $charcoal;
+    white-space: nowrap;
+  }
+}
+
+.webform-submission-form {
+  .form-submit:not(:first-child) {
+    margin-left: 1.5em;
+  }
+
+  .banner {
+    @include breakpoint($tab) {
+      // Banner needs to break out of it's parent and be full width of the page.
+      width: 940px;
+      max-width: calc(100vw - 40px);
+    }
+  }
+}
+
+.webform-preview .webform-submission-data {
+
+  > .webform-container {
+    margin: 2.5em 0 2em;
+  }
+
+  > .form-item {
+    margin: 2em 0;
+  }
+
+  .webform-element {
+    background-color: $grey-lightest;
+    padding: .5em;
+
+    label {
+      position: relative;
+      background-color: #fff;
+      top: -.5em;
+      left: -.5em;
+      width: calc(100% + 1em);
+      padding-bottom: .5em;
+    }
+  }
+
+  details {
+    summary {
+      @include responsive-typo-map($h2-text);
+      color: color(brand-secondary);
+    }
+  }
+}
+
+input[type='submit'].webform-button--submit {
+  @include btn(large);
+  @include btn-color($btn-primary, $btn-primary, #fff, 'dark');
+}
+
+input[type='submit'].webform-button--next,
+input[type='submit'].webform-button--preview {
+  @include btn(large, right, white);
+  @include btn-color($btn-primary);
+}
+
+input[type='submit'].webform-button--previous {
+  @include btn(large, left);
+}
+
+.js-webform-states-hidden[style*='display: none'] {
+  animation: fade-out 1s;
+}
+
+.js-webform-states-hidden[style*='display: block'] {
+  animation: fade-in 1s;
+}
+
+@keyframes fade-in {
+
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes fade-out {
+
+  0% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}

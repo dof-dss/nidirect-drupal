@@ -1,0 +1,46 @@
+<?php
+
+/**
+ * @file
+ * Schema and update hooks for the landing pages module.
+ */
+
+use Drupal\Core\Database\Database;
+
+/**
+ * Implementations of hook_update_N().
+ */
+
+/**
+ * Create Layout Builder Block Manager database table.
+ */
+function nidirect_landing_pages_update_8001() {
+  $table = [
+    'description' => 'Stores references to custom blocks created within landing page nodes.',
+    'fields' => [
+      'nid' => [
+        'description' => 'Node ID',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ],
+      'bid' => [
+        'description' => 'Block content ID',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ],
+    ],
+    'primary key' => ['bid'],
+  ];
+  $schema = Database::getConnection()->schema();
+  $schema->createTable('nidirect_layout_builder_block_manager', $table);
+}
+
+/**
+ * Remove redundant Layout Builder Block manager table.
+ */
+function nidirect_landing_pages_update_8002() {
+  $schema = Database::getConnection()->schema();
+  $schema->dropTable('nidirect_layout_builder_block_manager');
+}

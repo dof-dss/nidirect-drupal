@@ -1,0 +1,200 @@
+/*
+ * @file
+ * Provides the styling for button components.
+ */
+@import '../../init';
+@import 'button/button-defs';
+
+// Buttons
+//
+// Responsive buttons in various sizes and colours and with arrows. Component classes set the size of the buttons
+// and add arrows to the left or right.  Modifier classes can be combined with component classes to set colours and
+// and other things.
+//
+// *NOTE*:
+// * In all the component and modifier classes below ".btn" is interchangeable with ".button" so `.btn-small` is the
+// the same thing as `.button-small`.
+// * You should avoid combining button component classes together.
+// * DO NOT do this: `class="btn btn-right btn-small"`. If you want a small button with a right arrow you just need
+// one component class `class=".btn-small-right"`.
+// * You can, of course, combine a component class with one or more modifier classes - `btn-small-right btn--primary btn--block`
+// is totally fine.
+//
+// A basic button component:
+// * `.btn` or `.button` - add to buttons, input[type=button] or links to make a basic standard sized button.
+//
+// Small, medium and large button components
+//
+// These act as standalone button component classes. There is no need to combine with `.btn` (or `button`).  Each of
+// these act in a responsive way. The font-size, line-height and padding all adjust at different breakpoints.
+// So a button with class `.btn-small` will be smaller on a small screen compared to larger screen. It will be
+// relatively smaller than `.btn-medium` and `.btn-large` buttons at any screen size.
+//
+// * Small `.btn-small`
+// * Standard `.btn-standard`
+// * Medium `.btn-medium`
+// * Large `.btn-large`
+//
+// *Caution* the small button is smaller than recommended touch target sizes in WCAG and other user interface
+// guidelines. So don't cram them together.  Make sure there is ample white-space around small buttons to separate
+// them from adjacent buttons or links.
+//
+// Button with arrow component
+// * `.btn-left` | `.btn-right` - creates a standard sized button with a left or right arrow.
+// * Small  `btn-small-left` `.btn-small-right` - a small button with a left or right arrow.
+// * Medium `.btn-medium-left` `.btn-medium-right` - a medium button with a left or right arrow.
+// * Large `.btn-large-left` `.btn-large-right` - a large button with a left or right arrow.
+//
+// Button action (colour) modifiers - use these modifier classes in combination with component classes to change the
+// style of the button (usually the colour) depending on its purpose.
+// * `btn--primary` - used for the primary actions in a form like submitting it.
+// * `btn--secondary` - used for secondary actions in a form.
+// * `btn--action` - used for call to action buttons where we really (really) want people to hit that button.
+// * `btn--warning` - used for actions that carry some risk.
+// * `btn--danger` - used for actions that are dangerous (e.g. Delete).
+//
+// Button modifiers (other):
+// * `btn--link` makes a button look like a link - but it is still an inline-block like other buttons.
+// * 'btn--link-inline' makes a button look and behave like an inline link.
+// * 'btn--block' makes a button a block (rather than an inline-block) so that it will sit on a line by itself
+//   and by default will be 100% width of the parent container.
+//
+// Style guide: components.buttons
+
+.btn,
+.button,
+#drupal-off-canvas .button {
+  // button with default size, no arrow
+  @include btn(default, none, white);
+
+  &-right {
+    @include btn(default, right);
+  }
+
+  &-left {
+    @include btn(default, left);
+  }
+
+  &-small {
+    @include btn(small);
+
+    &-right {
+      @include btn(small, right);
+    }
+
+    &-left {
+      @include btn(small, left);
+    }
+  }
+
+  &-medium {
+    @include btn(medium);
+
+    &-right {
+      @include btn(medium, right);
+    }
+
+    &-left {
+      @include btn(medium, left);
+    }
+  }
+
+  &-large {
+    @include btn(large);
+
+    &-right {
+      @include btn(large, right);
+    }
+
+    &-left {
+      @include btn(large, left);
+    }
+  }
+
+  &--block {
+    @include btn--block;
+  }
+
+  &--link,
+  &.link {
+    @include btn--link;
+
+    &-inline {
+      @include btn--link-inline;
+    }
+  }
+
+  &--primary {
+    @include btn-color($btn-primary);
+  }
+
+  &--secondary {
+    @include btn-color($btn-secondary);
+  }
+
+  &--action {
+    @include btn-color($btn-action);
+  }
+
+  &--danger {
+    @include btn-color($btn-danger);
+  }
+
+  &--warning {
+    @include btn-color($btn-warning);
+  }
+
+  .dropbutton-widget & {
+    color: $charcoal;
+  }
+}
+
+// Call to action (a.k.a. "Big green button").
+//
+// A "call to action" is an element in a web page that invites the user to perform an action. Usually they are
+// prominent links or buttons (e.g. “Buy this now!”) or lead to a web page with additional information (e.g.
+// “Learn more…”) that asks the user to take action.
+//
+// The .call-to-action style, when added to a link or a button creates a big green button. It is commonly used on
+// application/service pages to launch a service. It can occasionally be found on landing pages too (e.g.
+// on the OSNI landing page for launching the "OSNI online Map Shop").
+//
+// Style guide: components.buttons.call-to-action
+.call-to-action {
+  @include btn(large);
+  @include btn-color($btn-action);
+  position: relative;
+  padding-right: 3.9rem !important;
+
+  @at-root a#{&} {
+    text-align: left;
+    color: color(white);
+  }
+
+  .ico-arrow-right {
+    height: 2.5rem;
+    margin-right: 1.2rem;
+    position: absolute;
+    right: 0;
+    top: calc(50% - 1.25rem);
+    width: 1.5rem;
+  }
+}
+
+// Replacement for .call-to-action suitable for use in CKEditor.
+.btn--call-to-action {
+  @include btn(large, right);
+  @include btn-color($btn-action);
+}
+
+// Drupal off canvas buttons - shown in "off" canvas Drupal dialogs.
+#drupal-off-canvas .button {
+  @include btn(small);
+}
+
+.facet--btn {
+  // Overrides to facet button styles coming from nicsdru_origins_theme.
+  @include link-state-style($link-facet-btn);
+}
+
+

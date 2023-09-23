@@ -1,0 +1,17 @@
+<div id="school-closure-results">
+
+  <p>{% trans %}Last updated{% endtrans %}: {{ updated|date('g.i a') }} on {{ updated|date('j F Y') }}.</p>
+
+  {% if closures|length > 0 %}
+    {% for closure in closures %}
+    <div class="columnItem">
+      <h3 data-transliterated="{{ closure.altname }}">{{ closure.name }} | {{ closure.location }}</h3>
+      <p class="description">{{ closure.date|date('l jS F Y') }} {{ closure.reason|t|default("") }}</p>
+    </div>
+    {% endfor %}
+  {% elseif error %}
+    <p>{% trans %}Sorry, there was a problem with this service. Please contact your school for information on possible closures.{% endtrans %}</p>
+  {% else %}
+    <p>{% trans %}There are no school closures.{% endtrans %}</p>
+  {% endif %}
+</div>

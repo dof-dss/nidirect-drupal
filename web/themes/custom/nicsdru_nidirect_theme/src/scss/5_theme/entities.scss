@@ -1,0 +1,184 @@
+/*
+ * @file
+ * Provides very specific styling for entities / content types.
+ */
+@import '../init';
+
+/*
+ * Application content type
+ * the wrapper around the application link field 'button' needs to inherit some spacing around the element to keep the
+ * pages vertical rhythm.
+ */
+.launch-service {
+  margin: 1.2rem 0;
+}
+
+/*
+ * GP Practice content type
+ * - the wrapper around the application link field 'button' needs to have the spacing around the element tweaked to keep
+ * the pages vertical rhythm.
+ * - adjust the some attrs on the list of practice members
+ */
+.page-node-type-gp-practice {
+  .launch-service {
+    display: inline-block;
+    margin: 2.7rem 1.2rem 0 0;
+  }
+
+  .call-to-action {
+    @include adjust-font-size-to(18px);
+  }
+}
+
+.list--gp-practice-members {
+  .list-item {
+    color: #666;
+    margin: 0;
+
+    &::after {
+      content: ',';
+    }
+
+    &:last-child::after {
+      content: '';
+    }
+  }
+}
+
+/*
+ * Health condition content type
+ * - adjust the text for the last / next review information
+ */
+.review-info {
+  @include adjust-font-size-to(16px, 4);
+  margin: 0;
+}
+
+.page-node-type-health-condition {
+  p.meta {
+    @include adjust-font-size-to(15px, 4);
+    letter-spacing: -.25px;
+    margin: 0;
+    padding-bottom: .9rem;
+  }
+}
+
+/*
+ * News content type
+ */
+
+.page-node-type-news {
+  .published-date {
+    @include responsive-typo-map($small-text);
+    margin: -.8rem 0 2rem; // Tightens up to the h1.
+    @include breakpoint($tab) {
+      margin: -.9rem 0 2rem;
+    };
+  }
+}
+
+/*
+ * Publication content type
+ */
+
+.page-node-type-publication,
+.page-node-type-embargoed-publication {
+  .published-date {
+    @include responsive-typo-map($small-text);
+    margin: -.8rem 0 2rem; // Tightens up to the h1.
+    @include breakpoint($tab) {
+      margin: -.9rem 0 2rem;
+    };
+  }
+
+  .file-link {
+    margin-bottom: 1.5em;
+  }
+}
+
+.path-taxonomy {
+  .social-sharing {
+    margin: 3em 0;
+  }
+}
+
+.webform-submission-prison-visit-online-booking-form {
+
+  details[data-webform-key^='slots_week'] {
+
+    padding-bottom: 1.5em;
+
+    summary {
+      position: relative;
+      margin-bottom: 1em;
+      padding-left: 3em;
+      text-align: left;
+
+      &::after {
+        content: '';
+        display: inline-block;
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 3em;
+        height: 100%;
+        background: transparent resolve('arrow_forward_white.svg') center center / 1.5em no-repeat;
+        transition: transform .2s ease;
+      }
+    }
+
+    &[open] summary::after {
+      transform: rotate(90deg);
+    }
+
+    fieldset {
+      margin: 0 .75em 1em;
+
+      span.fieldset-legend {
+        @include responsive-typo-map($large-text);
+      }
+    }
+
+    fieldset:has(.webform-options-display-buttons-wrapper:only-child) {
+
+      @include breakpoint($tab) {
+        margin-right: 1em;
+      }
+
+      display: inline-flex;
+      margin: 0 .5em 0 0;
+      flex-flow: column nowrap;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+
+      .webform-options-display-buttons-wrapper {
+        margin: .5em .25em;
+      }
+    }
+
+  }
+
+  .visit-details dl {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: flex-start;
+
+    dt,
+    dd {
+      max-width: fit-content;
+      padding: .25em .5em;
+      margin: 0;
+    }
+
+    dt {
+      font-weight: bold;
+      background-color: $brand-primary-lighter;
+    }
+
+    dd {
+      margin-right: 1em;
+    }
+  }
+
+}

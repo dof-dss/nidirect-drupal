@@ -1,0 +1,19 @@
+@import '../init';
+
+// Triptych
+//
+// This layout defines three equal width child elements each would have approximately one third of the available space.
+//
+// Weight: 0
+//
+// Markup: ../kss-templates/layouts-nics-3-col.twig
+//
+// Style guide: layouts.three-column.triptych
+.layout--triptych {
+
+  @include breakpoint($tab) {
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: auto;
+    grid-gap: $grid-gap;
+  }
+}

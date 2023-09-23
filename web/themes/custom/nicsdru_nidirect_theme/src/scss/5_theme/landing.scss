@@ -1,0 +1,202 @@
+/*
+ * @file
+ * Provides very specific styling for landing pages.
+ */
+@import '../init';
+
+.page-node-type-landing-page {
+
+  .info-notice,
+  .card-deck,
+  .accordion,
+  .video-and-caption,
+  .text-block {
+
+    @include rhythm-margins(3.5, 7);
+
+    @include breakpoint($phab, $no-query: true) {
+      @include rhythm-margins(4, 8);
+    }
+
+    @include breakpoint($tab, $no-query: true) {
+      @include rhythm-margins(5, 10);
+    }
+  }
+
+  .card-deck:not(.card-deck--plain) .card {
+    border-top: .9rem solid $brand-primary-medium;
+    outline-width: 0;
+
+    .card__image:empty ~ .card__body {
+
+      > p,
+      > li {
+        @include responsive-typo-map($body-text);
+      }
+
+      .card__title {
+        @include responsive-typo-map($card-title);
+      }
+    }
+  }
+
+  .card-deck + .card-deck:not(.card-deck--plain) {
+    margin-top: rhythm(-3);
+
+    @include breakpoint($phab, $no-query: true) {
+      margin-top: rhythm(-3.5);
+    }
+
+    @include breakpoint($tab, $no-query: true) {
+      margin-top: rhythm(-4.5);
+    }
+  }
+
+  // Page summary theming for landing pages.
+  .page-summary {
+    @include responsive-typo-map($landing-page-summary);
+    font-weight: normal;
+  }
+
+  .card-deck--plain {
+
+    .card {
+      padding: .6rem 1.8rem .9rem 1.5rem;
+      border-left: .3rem solid lighten($brand-primary-medium, 40%);
+
+      &:focus,
+      &:hover {
+        border-left-color: $brand-primary-medium;
+        background-color: $brand-primary-lightest;
+      }
+
+      &__title {
+        @include responsive-typo-map($card-title);
+        padding: 0;
+        margin: 0;
+        // Need to use !important to ensure following styles are overridden for all link states.
+        color: $brand-secondary !important;
+        text-decoration: none !important;
+        background-color: transparent !important;
+        box-shadow: none !important;
+
+        &::after {
+          content: none;
+        }
+      }
+
+      &__content {
+        max-width: 720px;
+        padding: 0;
+        margin: .8rem 0 0;
+
+        @include breakpoint($tab, $no-query: true) {
+          margin: .9rem 0 0;
+        }
+
+        .more {
+          white-space: nowrap;
+          color: $link;
+          text-decoration: underline;
+        }
+      }
+    }
+  }
+
+  // Theming of accordions for landing pages. Generic accordion component defined in 3_components/content/accordions
+  .accordion {
+
+    border-bottom: 1px solid $brand-primary;
+
+    .accordion-heading {
+      padding-left: .8rem;
+
+      @include breakpoint($tab, $no-query: true) {
+        padding-left: 1.5rem;
+      }
+    }
+
+    .accordion-section {
+
+      .no-js & {
+
+        @include breakpoint($tab, $no-query: true) {
+          margin: 0 1.6rem 1em;
+        }
+
+        margin: 0 1.6rem 1em;
+        padding: 0;
+      }
+
+      .js & {
+
+        &.expanded {
+          margin: 0 1.6rem 1em;
+
+          @include breakpoint($tab, $no-query: true) {
+            margin: 0 1.8rem 1em;
+          }
+        }
+      }
+    }
+
+    .accordion-section-title {
+      border-top: 1px solid $brand-primary;
+    }
+  }
+
+  // Theming of contact cards for landing pages.
+  .card-deck--x2 .card--contact {
+    margin: 0;
+
+    @include breakpoint($phab) {
+      .tel .title {
+        @include responsive-typo-map($body-text);
+      }
+
+      .tel .value {
+        @include responsive-typo-map($xxl-text);
+      }
+
+      .tel .supplementary {
+        @include responsive-typo-map($small-text);
+      }
+    }
+
+    @include breakpoint($phab) {
+      padding-left: 27.5%;
+
+      &::before {
+        width: 15%;
+        margin: 1em 6.25%;
+      }
+    }
+  }
+
+  .card-deck--x3 .card--contact {
+
+    @include breakpoint($tab) {
+      .tel .title {
+        @include adjust-font-size-to(17px, 4);
+      }
+
+      .tel .value {
+        @include responsive-typo-map($xl-text);
+      }
+
+      .tel .supplementary {
+        @include adjust-font-size-to(15px, 4)
+      }
+    }
+
+    @include breakpoint($tab) {
+      padding-left: 27.5%;
+
+      &::before {
+        width: 15%;
+        margin: 1em 6.25%;
+      }
+    }
+  }
+}
+

@@ -1,0 +1,542 @@
+/*
+ * @file
+ * Provides very specific styling for search index pages.
+ */
+@import '../init';
+
+.page-search {
+  h1 em.placeholder {
+    font-style: normal;
+    font-size: smaller;
+  }
+}
+
+.search-intro {
+
+  @include breakpoint($tab) {
+    width: 80%;
+    margin: 3rem auto;
+  }
+}
+
+.search-results {
+
+  header {
+    margin: 1.5em 0;
+
+    @include breakpoint($tab) {
+      margin: 0 0 1em;
+    }
+  }
+
+  h2:first-of-type,
+  .view--count {
+    margin: 3.2rem 0 1.2rem;
+
+    @include breakpoint($tab) {
+      margin: 3.6rem 0 1.8rem;
+    }
+
+    .subtitle {
+      @include responsive-typo-map($small-text);
+      color: $ash-grey;
+      display: block;
+    }
+  }
+
+  .view-sort-options {
+    @include responsive-typo-map($small-text);
+    color: $ash-grey;
+    display: block;
+
+    .label-inline {
+
+      &::after {
+        content: ' | ';
+      }
+    }
+  }
+
+  &-list {
+    margin: 0;
+  }
+
+  &--title {
+    margin-top: 0;
+  }
+
+  h3 {
+    @include responsive-typo-map($large-text);
+    margin: 0 0 .6rem;
+  }
+
+  .meta {
+    margin: .9rem 0;
+
+    .meta-list-item {
+      margin-left: 1rem;
+    }
+  }
+
+  .extract {
+    @include adjust-font-size-to(16px, 3.5);
+    margin: 1.5rem 0 1.2rem;
+  }
+}
+
+// GP Practice search form
+//
+// The GP Practice search form is a bit different to search on other search index pages because it has a "use my
+// location" feature.  This JS driven feature adds a label + button preceding the normal search input which users can
+// click if they want to allow using their location to find nearby GP practices.  The label and button are only output
+// if the user's browser supports navigator.geolocation.  This presence or absence of this label and button drastically
+// affect the layout of the form overall.  That is dealt with here.
+
+form#views-exposed-form-gp-practices-find-a-gp {
+
+  .js & {
+    flex-wrap: wrap;
+    max-width: 760px;
+
+    // Larger screens - everything on one flex row.
+    @include breakpoint($phab) {
+      align-items: flex-end;
+
+      .form-item-search-api-views-fulltext {
+        flex: auto;
+      }
+    }
+
+    > div {
+      margin: 0 0 1em;
+    }
+
+    .find-by-location {
+      flex: 100% 0 1;
+      margin-right: 1.5em;
+
+      @include breakpoint($phab) {
+        flex: 35% 0 1;
+        margin-right: 2em;
+      }
+
+      input[type='button'] {
+        height: 4.5rem;
+        padding: 0 1em;
+        width: 100%;
+        min-width: 44px;
+        max-width: 275px;
+      }
+    }
+
+    .form-item-search-api-views-fulltext {
+      flex: calc(100% - 6em) 0 1;
+
+      @include breakpoint($phab) {
+        flex: calc(65% - 6em) 0 1;
+      }
+    }
+  }
+}
+
+// GP Practice results
+//
+// GP Practice search page outputs each search result in `.card` wrapper. Inside the wrapper there are a number of
+// details provided for each practice, for example the list practitioners, the address and whether they offer any online
+// services. The code inside the wrapper is all wrapped in a linking anchor tag (which takes the user to the full node
+// page of the given practice). To match the design we introduce here, style overrides for each of the individual
+// lines of code.
+//
+// Markup: ../kss-templates/gp-practice-search-card.twig
+//
+// Weight: -2
+//
+// Style guide: theme.searches.gp-practices
+
+.search-results--gp-practice {
+
+  &.search-results .card {
+    padding-bottom: 1em;
+  }
+
+  .card {
+
+    h3,
+    .card__title {
+      padding: 0;
+      margin: 0 0 .6rem;
+    }
+
+    .adr {
+      margin: 0;
+
+      span {
+        display: inline-block;
+        padding-right: .3334em;
+        white-space: nowrap;
+
+        &::after {
+          content: ',';
+        }
+
+        &:last-child::after {
+          content: '';
+        }
+      }
+    }
+
+    .list--gp-practice-members {
+      margin: 0;
+    }
+
+    .list--gp-online-services {
+      margin: .6rem 0 0;
+
+      .list-item {
+        color: #666;
+        background: transparent resolve('status.svg') no-repeat right / 16px 16px;
+        margin-bottom: 0;
+        margin-right: 4px;
+        padding-right: 18px;
+
+        @include breakpoint($mob, $no-query: true) {
+          background-size: 18px 18px;
+          margin-right: 7px;
+          padding-right: 22px;
+        }
+
+        @include breakpoint($phab, $no-query: true) {
+          background-size: 21px 21px;
+          margin-right: 9px;
+          padding-right: 25px;
+        }
+      }
+    }
+  }
+}
+
+// Contacts index page
+//
+// The contacts search has a few rules that are only applicable to the search page(s) that contacts lists of contacts.
+// These rules are in essence to enhance aesthetics to the original design.
+//
+// Weight: -2
+//
+// Style guide: theme.searches.contacts
+#contacts-az--title {
+  margin: .5em 0;
+}
+
+.search-form--contacts {
+  margin-bottom: 0; // On contact search results page, no bottom margin under search box.
+}
+
+
+// Health conditions search / a to z.
+
+// On a health condition node, the search label and input container needs a little more width.
+.page-node-type-health-condition {
+  [data-drupal-selector='views-exposed-form-health-conditions-search-page'] {
+    padding-right: 0;
+  }
+}
+
+.form-item-query-health-az {
+  position: relative;
+  margin: 0;
+
+  label {
+    font-size: 1.6rem;
+    line-height: 2.4rem;
+    margin: 0 0 8px;
+
+    @include breakpoint($tab) {
+      line-height: 2.7rem;
+      margin: 0 0 9px;
+    }
+  }
+}
+
+.search-results--health-conditions {
+
+  margin-top: 0;
+
+  &.accordion .accordion-section-title {
+    @include responsive-typo-map($large-text);
+    padding: 0;
+
+    button::after {
+      background-size: 20px auto;
+    }
+  }
+
+  .symptoms {
+    display: flex;
+    flex-flow: column nowrap;
+
+    @include breakpoint($phab) {
+      flex-flow: row nowrap;
+    }
+
+    > * {
+      font-size: 1.4rem;
+      line-height: 1;
+      color: $ash-grey;
+      background-color: #fff;
+
+      @include breakpoint($tab) {
+        font-size: 1.6rem;
+      }
+    }
+
+    .label-inline {
+      white-space: nowrap;
+      padding: .3rem 0;
+      margin: .3rem .5em .3rem 0;
+    }
+
+    .values {
+      display: flex;
+      flex-flow: row wrap;
+
+      .meta {
+        padding: .3rem .6rem;
+        margin: .3rem .2rem;
+        white-space: nowrap;
+        background-color: $grey-lightest;
+        color: $ash-grey;
+        font-size: inherit;
+        line-height: 1;
+      }
+    }
+  }
+
+  .page-summary {
+    @include responsive-typo-map($small-text);
+    font-weight: normal;
+    margin: .5em 0;
+    color: $ash-grey;
+    background-color: #fff;
+  }
+
+  h4 {
+    @include responsive-typo-map($body-text);
+    margin: 1em 0 0 !important;
+  }
+
+  ul.related-condition-list {
+    list-style: none;
+    display: flex;
+    flex-flow: row wrap;
+    margin: 0;
+    padding: 0;
+
+    li {
+      @include responsive-typo-map($small-text);
+      padding: 0;
+      margin: .3rem 1em .3rem 0;
+    }
+  }
+}
+
+// Illnesses and conditions health conditions search.
+.page-node-type-landing-page #views-exposed-form-health-conditions-search-page {
+  position: relative;
+  display: block;
+  max-width: 360px;
+  margin-bottom: 1em;
+
+  .form-item-query-health-az {
+    width: 100%;
+    margin-bottom: 1em;
+
+    ::placeholder {
+      font-size: 1.5rem;
+    }
+
+    #edit-query-health-az {
+      width: calc(100% - 6rem);
+    }
+  }
+
+  .form-actions {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    margin: 0;
+  }
+}
+
+// Driving Instructors search form.
+.search-form--driving-instructors {
+
+  flex-wrap: wrap;
+
+  .form-item-help {
+    flex: 100% 2 1;
+    margin: 0;
+
+    > ul {
+      margin-top: 0;
+    }
+  }
+
+  .search-options {
+    flex: 100% 2 1;
+
+    legend {
+      @include responsive-typo-map($body-text);
+      color: $text;
+      margin: 0;
+    }
+
+    #edit-categories {
+      display: inline-flex;
+    }
+
+    .form-type-radio {
+      display: inline-block;
+      width: auto;
+      padding: 0;
+    }
+  }
+}
+
+// Driving Instructors search results.
+.search-results--driving-instructors {
+
+  .card-deck {
+    grid-row-gap: .5em;
+  }
+
+  .card {
+    padding-bottom: 1em;
+
+    &:first-child {
+      padding-top: 0;
+    }
+
+    &__title {
+      padding: 0;
+
+      .subtitle {
+        font-size: smaller;
+        color: $grey-dark;
+
+        &::before {
+          content: '\2014';
+          display: inline-block;
+          margin: 0 .3334em;
+        }
+      }
+    }
+
+    &__content {
+
+      .list--checklist {
+        margin: .5em 0;
+
+        li {
+          @include breakpoint($tab) {
+            font-size: 1.7rem;
+            line-height: 2.7rem;
+          }
+        }
+      }
+
+      .field {
+
+        display: inline-flex;
+        align-items: baseline;
+        margin: .3rem 0;
+
+        &__label {
+          margin-right: 6px;
+
+          &::after {
+            content: ':';
+          }
+        }
+
+        &__items {
+          display: inline;
+        }
+
+        &__item {
+          display: inline-flex;
+          align-items: baseline;
+          margin-right: .5em;
+
+          .title::after {
+            display: inline-block;
+            content: ':';
+          }
+
+          &.tel {
+
+            .title {
+              white-space: nowrap;
+              order: 0;
+            }
+
+            .supplementary {
+              @include responsive-typo-map($small-text);
+              order: 2;
+              color: $grey-dark;
+            }
+
+            .value {
+              order: 1;
+              word-break: break-all;
+              margin: 0 .5em;
+            }
+          }
+        }
+
+        &--name-field-telephone .field__label {
+          @include visually-hidden;
+        }
+
+        &--name-field-email-address a,
+        &--name-field-link-url a {
+          word-break: break-all;
+        }
+      }
+    }
+  }
+}
+
+// Cold Weather Payments search form.
+.search-form--cwp {
+  flex-wrap: wrap;
+  align-items: flex-end;
+  margin: 1em 0 1.5em;
+
+  .form-item-postcode {
+    flex: auto 0 0;
+    margin: 0 0 .5em;
+
+    label {
+      display: block;
+      max-width: 200px;
+      margin: 0 0 .5em;
+    }
+
+    input {
+      // Must be same or greater width than label - otherwise the form submit will not sit at the end of the input.
+      width: 200px;
+      max-width: 200px;
+    }
+  }
+
+  input.form-submit {
+    flex: 6rem 0 0;
+    margin-bottom: .5em;
+  }
+
+  .ajax-spinner {
+    min-height: 44px;
+    margin: 0 .5em;
+  }
+}
+

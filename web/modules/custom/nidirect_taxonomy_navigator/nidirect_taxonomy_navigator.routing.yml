@@ -1,0 +1,48 @@
+
+nidirect_taxonomy_navigator.taxonomy_navigator_controller:
+  path: '/admin/structure/taxonomy_navigator'
+  defaults:
+    _controller: '\Drupal\nidirect_taxonomy_navigator\Controller\TaxonomyNavigatorController::index'
+    _title: 'Taxonomy Navigator'
+  requirements:
+    _permission: 'access taxonomy overview'
+  options:
+    _admin_route: TRUE
+nidirect_taxonomy_navigator.taxonomy_navigator_form:
+  path: '/admin/structure/taxonomy_navigator/{vocabulary}/{taxonomy_term}'
+  defaults:
+    _form: '\Drupal\nidirect_taxonomy_navigator\Form\TaxonomyNavigatorForm'
+    _title: 'Taxonomy Navigator'
+    _title_callback: '\Drupal\nidirect_taxonomy_navigator\Controller\TaxonomyNavigatorController::navigatorVocabularyTitle'
+    taxonomy_term: '0'
+  requirements:
+    _custom_access: 'Drupal\nidirect_taxonomy_navigator\TaxonomyNavigatorAccess::canViewTerms'
+  options:
+    parameters:
+      vocabulary:
+        type: entity:taxonomy_vocabulary
+    _admin_route: TRUE
+nidirect_taxonomy_navigator.nidirect_taxonomy_navigator_search.autocomplete:
+  path: '/admin/structure/taxonomy_navigator/search/autocomplete/{vocabulary}'
+  defaults:
+    _controller: '\Drupal\nidirect_taxonomy_navigator\Controller\TaxonomyNavigatorController::searchAutocomplete'
+    _format: json
+  requirements:
+    _custom_access: 'Drupal\nidirect_taxonomy_navigator\TaxonomyNavigatorAccess::canViewTerms'
+  options:
+    parameters:
+      vocabulary:
+        type: entity:taxonomy_vocabulary
+    _admin_route: TRUE
+nidirect_taxonomy_navigator.set_parent_term_form:
+  path: '/admin/structure/taxonomy_navigator/setparent/{vocabulary}/{taxonomy_term}'
+  defaults:
+    _form: '\Drupal\nidirect_taxonomy_navigator\Form\SetParentTermForm'
+    _title: 'Set parent term'
+  requirements:
+    _custom_access: 'Drupal\nidirect_taxonomy_navigator\TaxonomyNavigatorAccess::canEditTerms'
+  options:
+    parameters:
+      vocabulary:
+        type: entity:taxonomy_vocabulary
+    _admin_route: TRUE

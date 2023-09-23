@@ -1,0 +1,106 @@
+/*
+ * @file
+ * Provides overrides for card components in specific contexts.
+ */
+@import '../../init';
+
+.search-content {
+  .view-search {
+    max-width: 740px;
+  }
+}
+
+// Front page taxonomy cards
+//
+// Style guide: components.layouts.cards.home-site-topics
+.section--info-services {
+  .card {
+    &-deck {
+      grid-row-gap: .6667em;
+
+      @include breakpoint($phab) {
+        grid-row-gap: 1em;
+      }
+    }
+
+    &__title {
+      @include adjust-font-size-to(17px, 4);
+      font-weight: 700;
+      margin-bottom: .2rem;
+      @include breakpoint($phab) {
+        @include adjust-font-size-to(18px, 4.5);
+        font-weight: 700;
+        margin-bottom: .3rem;
+      }
+    }
+
+    p {
+      @include adjust-font-size-to(15px, 3.5);
+      margin: .5em 0;
+      @include breakpoint($phab) {
+        @include adjust-font-size-to(16px, 3.5);
+      }
+    }
+  }
+}
+
+// Front page feature cards.
+//
+// Some small adjustments from the classic card styles.
+// Style guide: components.layouts.cards.features
+
+.section--featured {
+
+  .card {
+
+    @include breakpoint($mob $tab) {
+      padding: .6rem;
+    }
+
+    &__title::after {
+      right: -1.6rem;
+    }
+
+    &__body {
+      @include breakpoint($mob $tab) {
+        padding: 0 0 0 1em;
+      }
+      @include breakpoint($tab) {
+        padding: .6667em .5em .5em;
+      }
+    }
+  }
+}
+
+.latest-news .card-deck {
+
+  .card_content {
+    max-width: $max-content-width;
+  }
+
+  @include breakpoint($mob) {
+    .card__body {
+      padding: 0 0 0 1em;
+    }
+  }
+}
+
+// IE fixes.
+@media all and (-ms-high-contrast: none) and (min-width: $phab), (-ms-high-contrast: active) and (min-width: $phab) {
+
+  .section--info-services {
+
+    // Since IE is using a basic flexbox layout for card-decks we
+    // don't have any grid-gap. So we use padding instead.
+    .card-deck {
+
+      > *:nth-child(odd) {
+        padding-right: 1rem;
+      }
+
+      > *:nth-child(even) {
+        padding-left: 1rem;
+      }
+    }
+  }
+}

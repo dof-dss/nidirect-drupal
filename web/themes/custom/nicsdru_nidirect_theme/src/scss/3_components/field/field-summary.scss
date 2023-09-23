@@ -1,0 +1,37 @@
+/*
+ * @file
+ * Provides the layout styles for content output from field_summary for any entity.
+ */
+@import '../../init';
+
+.nodeSummary, // legacy class still found in some content - TODO: replace with page-summary.
+.page-summary,
+.page-summary p,
+.contact--body p:first-child {
+  @include responsive-typo-map($large-text);
+  font-weight: 700;
+
+  &:first-child {
+    margin-top: 0;
+  }
+}
+
+.page-summary {
+  margin: 0 0 2.4rem;
+
+  @include breakpoint($tab) {
+    margin: 0 0 2.7rem;
+  }
+
+  // Page summary may or may not contain P tags and BR tags.
+  // Ensure they do not break up the summary.
+  p {
+    display: inline;
+    margin: 0;
+  }
+
+  br {
+    display: none;
+  }
+}
+

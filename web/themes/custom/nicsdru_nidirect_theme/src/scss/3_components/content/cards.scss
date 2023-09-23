@@ -1,0 +1,543 @@
+/*
+ * @file
+ * Provides the styling for creating a card component.
+ */
+
+@import '../../init';
+
+// Cards.
+//
+// Cards organise information into meaningful and distinct blocks of content. They are called "cards" because they are
+// often designed to look like real-world tangible cards in user interfaces (think of trump cards, business cards, or
+// even post-it notes). A card gathers snippets of information about a "thing" to serve as an entry point to more
+// detailed information about that "thing".  Cards often contain an image, a heading, a short description or "teaser
+// text" and the entire card can act as a link or contain a link (or links) to view more detailed information.
+//
+// Cards on the surface look like simple components, but there can be many variations in card styles and
+// how they are arranged on the page. They are normally arranged in a "card deck" component which has some influence on
+// the card styles (see the card-deck component).
+//
+// Card modifiers
+// `.card--no-shadow` - modify a card to remove any box-shadow applied.
+// `.card--no-border` - modify a card to remove any border applied.
+// `.card--no-edges` - modify a card to remove box-shadow and borders.
+// `.card--plain` - modify a card make it look "plain". At present this does the same thing as `.card--no-edges`.
+// `.card--no-padding` - modify a card to remove padding from the card itself and the .card__body.
+//
+// Style guide: components.content.cards
+
+.card {
+  // A classic card with an image on top of a card body. The card edges are defined with box-shadow.
+  display: flex;
+  flex-flow: column nowrap;
+  box-shadow: 0 1px 2px $grey-medium;
+  margin: 0; // Spacing for cards is controlled by parent containers.
+
+  &__image {
+    flex: auto 0 0;
+
+    &:empty {
+      flex: 0;
+    }
+
+    .media-image {
+      // Resolve font-size and line-height causing empty white-space.
+      font-size: .1px;
+      line-height: 0;
+
+      img {
+        margin: 0;
+      }
+    }
+  }
+
+  &__body {
+    flex: auto 0 1;
+    padding: 1em;
+
+    > p,
+    > ul,
+    > ol {
+      margin: .9rem 0;
+    }
+  }
+
+  &__title {
+    @include responsive-typo-map($card-title);
+    margin: 0 0 .9rem;
+  }
+
+  &__meta {
+    @include adjust-font-size-to(15px, 3.6667);
+    @include breakpoint($tab) {
+      @include adjust-font-size-to(16px, 4);
+    }
+
+    margin: .9rem 0;
+    color: $meta;
+  }
+
+  &__meta + p,
+  &__content {
+    margin-top: 0;
+  }
+
+  // Card modifiers.
+  &--no-shadow {
+    box-shadow: none;
+  }
+
+  &--no-border {
+    border: 0;
+  }
+
+  &--no-edges,
+  &--plain {
+    box-shadow: none;
+    border: 0;
+  }
+
+  &--no-padding {
+    padding: 0;
+
+    &__body {
+      padding: 0;
+    }
+  }
+}
+
+// When a link is a card ...
+a.card {
+  text-decoration: none;
+  background-color: transparent;
+  outline-color: transparent;
+  transition: background-color .3s, outline-color .3s, border-color .3s;
+  color: $text;
+
+  &:hover,
+  &:focus {
+    background-color: $brand-primary-lighter;
+    outline: .9rem solid $brand-primary-lighter;
+    outline-offset: 0;
+
+    .card__title::after {
+      background-color: $charcoal;
+      background-image: url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2025%2015%22%3E%3Cstyle%20type%3D%22text%2Fcss%22%3E%20.st0%7Bfill%3A%23ffffff%3Bfill-rule%3Aevenodd%3Bclip-rule%3Aevenodd%3B%7D%20%3C%2Fstyle%3E%3Cpath%20class%3D%22st0%22%20d%3D%22M12.5%200L0%2012l3%203%209.5-10L22%2015l3-3L12.5%200z%22%2F%3E%3C%2Fsvg%3E%0A');
+    }
+  }
+
+  .card__title {
+    position: relative;
+    padding-right: 36px;
+    color: color(brand-secondary);
+
+    &::after {
+      content: '';
+      display: inline-block;
+      position: absolute;
+      top: .3rem;
+      right: -.6rem;
+      width: 3rem;
+      height: 2.4rem;
+      background-image: url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2025%2015%22%3E%3Cstyle%20type%3D%22text%2Fcss%22%3E%20.st0%7Bfill%3A%230e6bb3%3Bfill-rule%3Aevenodd%3Bclip-rule%3Aevenodd%3B%7D%20%3C%2Fstyle%3E%3Cpath%20class%3D%22st0%22%20d%3D%22M12.5%200L0%2012l3%203%209.5-10L22%2015l3-3L12.5%200z%22%2F%3E%3C%2Fsvg%3E%0A');
+      background-position: center center;
+      background-size: 2.2rem auto;
+      background-repeat: no-repeat;
+      transform: rotate(90deg);
+    }
+  }
+
+  // A link is a card and it or it's parent card-deck have the --plain modifier ...
+  &--plain,
+  .card-deck--plain & {
+
+    // Need to reset some styles from the classic card link style.
+    color: $text;
+    text-decoration: none;
+    // sass-lint:disable no-misspelled-properties
+    text-underline-offset: 3px;
+    // sass-lint:enable no-misspelled-properties
+
+    &:hover,
+    &:focus {
+      background-color: transparent;
+      outline: none;
+    }
+
+    // The card title looks and behaves like a standard link.
+    .card__title {
+      padding: 0;
+      color: $link;
+      text-decoration: underline;
+      text-decoration-thickness: 1px;
+      text-decoration-color: $link;
+
+      &::after {
+        content: none;
+      }
+    }
+
+    &:focus .card__title {
+      color: #fff;
+      background-color: $link;
+      box-shadow: 0 0 0 3px $link;
+    }
+
+    &:hover .card__title {
+      color: $link;
+      background-color: transparent;
+      box-shadow: none;
+      text-decoration-thickness: 2px;
+      text-decoration-color: $brand-secondary;
+    }
+
+    &:active .card__title {
+      color: $link-active;
+      background-color: transparent;
+      text-underline-color: $link-active;
+    }
+  }
+}
+
+// Cards are often arranged in a "card deck" and the deck needs to be responsive moving from single column on small
+// screens to multiple columns on larger screens.
+//
+// `.card-deck` arranges cards in a single column grid.  It doesn't do much by itself - so add some modifiers.
+//
+// Card Deck Modifiers
+//
+// `.card-deck--x2`, `.card-deck--x3`, `.card-deck--x4` modify card-decks into multiple columns. The number of columns
+// starts at one on small screens and increases to the maximum number of columns indicated by '--xN' fragment of the
+// modifier.
+//
+// `.card-deck--list` modifies a card deck so that the cards adjust their internal layout at different screen sizes.
+// * On small screens, the classic card layout is used (card image on top of card body)
+// * On larger screens, the internal layout of the cards switch to a row layout (card image to the left of the card body).
+//
+// `.card-deck--list-to-x2`, `.card-deck--list-to-x3`, `.card-deck--list-to-x4` modified decks are a hybrid of
+// the --list and --xN column modifiers.
+// * On small screens - a single column of cards in a classic card layout (card image on top of card body)
+// * On medium screens the internal layout of the cards go to a row layout (card image left of card body)
+// * On large screens the deck becomes multi-column and the card's internal layout reverts to the classic column layout.
+//
+// `.card-deck--search-results` is a deck used on search results pages. It's a simple single column of plain cards with
+//  a few styling adjustments to cards that are common to search page results. Additional tweaks for specific
+// search pages are found in theme/searches.scss.
+//
+// `.card-deck--plain` modifies a deck of cards to basically remove card edges (no border or box shadow) so that the
+// cards really don't look much like cards any more ... (*sniff*)
+//
+// `.card-deck--no-row-gap` modifies a card deck to remove row gaps between cards.
+//
+// `.card-deck--no-column-gap` modifies a card deck to remove column gaps between cards.
+//
+// Style guide: components.content.card-decks
+
+.card-deck {
+
+  // By default, use grid to layout the cards in a single column.
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-gap: 1.5em 2rem;
+  margin-top: 0;
+  margin-bottom: 1.5em;
+
+  // Ensure cards in a deck take the full width and height of their grid container.
+  .card {
+    width: 100%;
+    height: 100%;
+  }
+
+  &--no-row-gap {
+    grid-row-gap: 0;
+  }
+
+  &--no-column-gap {
+    grid-column-gap: 0;
+  }
+
+  // .card-deck--x2 allows up to two columns of cards as screen size increases.
+  &--x2 {
+    @include breakpoint($phab) {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  // .card-deck--x3 allows up to three columns of cards as screen size increases.
+  &--x3 {
+    @include breakpoint($phab) {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    @include breakpoint($tab) {
+      grid-template-columns: 1fr 1fr 1fr;
+    }
+  }
+
+  // .card-deck--x4 allows up to four columns of cards as screen size increases.
+  &--x4 {
+    @include breakpoint($phab) {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    @include breakpoint($tab) {
+      grid-template-columns: 1fr 1fr 1fr;
+    }
+
+    @include breakpoint($lap) {
+      grid-template-columns: 1fr 1fr 1fr 1fr;
+    }
+  }
+
+  // Card deck lists (single column) and single column list to multi-column hybrids.
+  &--list {
+    .card {
+      // Column layout for card (small screen sizes).
+      flex-flow: column nowrap;
+
+      @include breakpoint(0 $mob) {
+        .card__body {
+          padding-top: 1.2rem;
+        }
+      }
+
+      // Row layout for all other screen sizes.
+      @include breakpoint($mob) {
+        flex-flow: row nowrap;
+
+        .card__image {
+          flex: 150px 0 0;
+
+          &:empty {
+            flex: 0;
+          }
+        }
+
+        .card__body {
+          padding: 1em;
+          align-self: center;
+        }
+      }
+    }
+
+    // Card deck list / column hybrids.
+    &-to-x2,
+    &-to-x3,
+    &-to-x4 {
+      .card {
+        // Column layout for card (small and larger screen sizes).
+        flex-flow: column nowrap;
+
+        // Row layout at mid screen sizes.
+        @include breakpoint($mob $tab) {
+          flex-flow: row nowrap;
+
+          .card__image {
+            flex: 33% 0 0;
+
+            &:empty {
+              flex: 0;
+            }
+          }
+
+          .card__body {
+            padding-left: 1em;
+            align-self: center;
+          }
+        }
+      }
+    }
+
+    // Card deck list / column hybrids finally arrange cards in multi-column layout at large screens sizes.
+    &-to-x2 {
+      @include breakpoint($tab) {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    &-to-x3 {
+      @include breakpoint($tab) {
+        grid-template-columns: 1fr 1fr 1fr;
+      }
+    }
+
+    &-to-x4 {
+      @include breakpoint($tab) {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      @include breakpoint($lap) {
+        grid-template-columns: 1fr 1fr 1fr 1fr;
+      }
+    }
+  }
+
+  // Card deck modifier for search results.
+  &--search-results {
+    grid-row-gap: .5em;
+
+    .card {
+      padding: .5em 0 1em;
+      box-shadow: 0 1px 0 0 $grey-medium;
+      border: 0;
+
+      &:first-child {
+        padding-top: 0;
+      }
+
+      &__title {
+        @include responsive-typo-map($large-text);
+        margin: 0 0 .6rem;
+        padding: 0;
+      }
+
+      &__meta {
+        margin: .9rem 0;
+        padding: 0;
+      }
+
+      &__content {
+        margin: 0;
+        padding: 0;
+      }
+    }
+  }
+
+  // Card deck modifier for plain cards unadorned with box-shadow or borders (or anything that actually makes them look
+  // like a card!).
+  &--plain {
+    .card {
+      box-shadow: none;
+      border: 0;
+    }
+  }
+
+  // Layout Builder adjustments for card decks and cards.
+
+  // Cards can be dragged and dropped into card deck regions.  Multiple cards in the same
+  // region must stack on top of each other.
+  .layout-builder__region {
+    display: flex;
+    flex-flow: column nowrap;
+  }
+
+  // This class is added to all blocks in layout builder and adds unwanted padding.
+  &.layout-builder-block {
+    padding: 0;
+  }
+
+  .layout-builder-block {
+    padding: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  // Prevent adding multiple cards (blocks) into a card-deck section (region) in layout builder
+  section .layout-builder-block + .layout-builder__add-block {
+    display: none;
+  }
+}
+
+// IE fixes.
+@media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
+
+  // Most types of card deck can contain a variable number of cards.
+  // Grid is difficult to do in IE when the number of columns / rows is unknown.
+  // So we use flex instead.
+
+  .card-deck {
+    display: flex;
+    flex-flow: column nowrap;
+    margin-bottom: 0;
+
+    > * {
+      // Flex items - use explicitly set widths rather than flex basis (which we set to auto).
+      flex: auto 0 0;
+      width: 100%;
+      height: auto;
+      margin-bottom: 1.5em;
+    }
+
+    .card {
+      width: 100%;
+      height: auto;
+    }
+  }
+}
+
+@media all and (-ms-high-contrast: none) and (min-width: $phab), (-ms-high-contrast: active) and (min-width: $phab) {
+
+  .card-deck--x2,
+  .card-deck--x3,
+  .card-deck--x4 {
+    flex-flow: row wrap;
+
+    > * {
+      width: 49.9999% !important;
+    }
+  }
+
+  .card-deck--list {
+    &-to-x2,
+    &-to-x3,
+    &-to-x4 {
+      .card {
+        flex-flow: row nowrap;
+        height: min-content !important;
+      }
+    }
+  }
+}
+
+@media all and (-ms-high-contrast: none) and (min-width: $tab), (-ms-high-contrast: active) and (min-width: $tab) {
+  .card-deck--x3 {
+    > * {
+      width: 33.3333% !important;
+    }
+  }
+
+  .card-deck--x4 {
+    > * {
+      width: 23.9999% !important;
+    }
+  }
+
+  // Switch to grid for these types of card decks where the number of cards is fixed
+  // and so autoplacement (which IE cannot do) is not needed. Note that everytime a
+  // a modifier changes the number of columns, we have to set the number of rows and
+  // the grid gap at the same time so that autoprefixer creates IE grid rules correctly.
+  .card-deck--list {
+    &-to-x2,
+    &-to-x3,
+    &-to-x4 {
+      display: grid;
+
+      .card {
+        flex-flow: column nowrap;
+        height: 100% !important;
+        margin-bottom: 0;
+      }
+    }
+
+    &-to-x2 {
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: min-content;
+      grid-gap: 1.5em 2rem;
+    }
+
+    &-to-x3 {
+      grid-template-columns: 1fr 1fr 1fr;
+      grid-template-rows: min-content;
+      grid-gap: 1.5em 2rem;
+    }
+
+    &-to-x4 {
+      grid-template-columns: 1fr 1fr 1fr 1fr;
+      grid-template-rows: min-content;
+      grid-gap: 1.5em 2rem;
+    }
+  }
+}
+
+
+
