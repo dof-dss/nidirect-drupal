@@ -416,7 +416,7 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
     $form_values = $form_state->getValues();
     $count = 0;
 
-    foreach($form_values as $element_name => $element_values) {
+    foreach ($form_values as $element_name => $element_values) {
       if (str_contains($element_name, '_week_') && is_array($element_values)) {
         foreach ($element_values as $slot) {
           $count++;
@@ -429,7 +429,7 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
         }
       }
     }
-    
+
   }
 
 }
