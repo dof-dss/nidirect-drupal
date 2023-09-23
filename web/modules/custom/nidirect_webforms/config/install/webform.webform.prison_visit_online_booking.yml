@@ -70,6 +70,72 @@ elements: |-
         '#autocomplete': 'off'
         '#input_mask': A9999
         '#required': true
+  visitor_details_page:
+    '#type': webform_wizard_page
+    '#title': 'Visitor details'
+    '#next_button_label': Next
+    visitor_1_details:
+      '#type': fieldset
+      '#title': 'Your details'
+      visitor_1_intro:
+        '#type': webform_markup
+        '#markup': |-
+          <p class="info-notice" role="status">
+          Provide your details as the main visitor. &nbsp;There is an option at the end to add additional visitors to the same booking.
+          </p>
+      visitor_1_id:
+        '#type': textfield
+        '#title': 'Visitor ID'
+        '#autocomplete': 'off'
+        '#required': true
+        '#required_error': 'enter the visitor ID for the main visitor'
+      visitor_1_dob:
+        '#type': date
+        '#title': 'Date of birth'
+        '#description': 'Your date of birth must match the one we have on record for you.'
+        '#description_display': before
+        '#required': true
+        '#required_error': 'Enter a valid date of birth'
+      visitor_1_email:
+        '#type': webform_email_confirm
+        '#title': 'Email address'
+        '#description': 'We will use this email address to notify you if your booking is successful.'
+        '#description_display': before
+        '#required': true
+        '#pattern': '[^@\s]+@[^@\s]+\.[^@\s]+'
+        '#pattern_error': 'Enter a valid email address'
+      visitor_1_telephone:
+        '#type': tel
+        '#title': 'Telephone number'
+        '#description': 'Provide your telephone number in case we need to contact you about this booking.'
+        '#description_display': before
+        '#required': true
+      visitor_1_special_needs:
+        '#type': checkbox
+        '#title': 'Special requirements'
+      visitor_1_add_visitors:
+        '#type': checkbox
+        '#title': 'Add additional visitors'
+  additional_visitor_details:
+    '#type': webform_wizard_page
+    '#title': 'Additional visitor details'
+    '#states':
+      visible:
+        ':input[name="visitor_1_add_visitors"]':
+          checked: true
+    '#next_button_label': Next
+    visitor_2__details:
+      '#type': fieldset
+      '#title': 'Additional visitor details'
+      visitor_2_id:
+        '#type': textfield
+        '#title': 'Visitor ID'
+      visitor_2_dob:
+        '#type': date
+        '#title': 'Date of birth'
+      visitor_2_special_needs:
+        '#type': checkbox
+        '#title': 'Special requirements'
   visit_preferred_day_and_time:
     '#type': webform_wizard_page
     '#title': 'Visit preferred day and time'
@@ -79,24 +145,32 @@ elements: |-
       '#type': webform_computed_twig
       '#title': 'Visit details'
       '#title_display': invisible
-      '#states':
-        visible:
-          ':input[name="prisoner_id"]':
-            filled: true
       '#mode': html
       '#template': |-
-        <h2>{{ data.prison_visit_prison_name }}</h2>
-        <p>
-        <strong class="meta">
-        {{ data.prison_visit_type | title }}
-        {{ data.prison_visit_prisoner_category }}
-        {{ data.prison_visit_prisoner_subcategory }}
-        </strong>
-        </p>
+        <div class="visit-details" role="status">
+
+          <h2 class="visually-hidden">Visit details</h2>
+          
+          <dl>
+            <dt>Prison</dt><dd>{{ data.prison_visit_prison_name }}</dd>
+            <dt>Visit type</dt><dd>{{ data.prison_visit_type }}</dd>
+            <dt>Visiting prisoner</dt><dd>{{ data.prisoner_id }}</dd>
+          </dl>
+         
+          <p class="info-notice">
+            Choose up to 
+            {% if data.visitor_order_number | slice(2, 1) == 'E' %}
+              five
+            {% else %}
+              three
+            {% endif %}
+            time slots for your visit. &nbsp;We will try to book the first available&nbsp;slot.
+          </p>
+          
+        </div>
     slots_week_1:
       '#type': details
       '#title': 'Week commencing [DATE]'
-      '#open': true
       '#summary_attributes':
         class:
           - btn
@@ -266,64 +340,7 @@ elements: |-
         '#title': Sunday
         '#options': prison_visit_times
         '#options_display': buttons_horizontal
-  visitor_details_page:
-    '#type': webform_wizard_page
-    '#title': 'Visitor details'
-    '#next_button_label': Next
-    visitor_1_details:
-      '#type': fieldset
-      '#title': 'Your details'
-      visitor_1_intro:
-        '#type': webform_markup
-        '#markup': '<p>Complete details on this page for the main visitor. There is an option at the end to add additional visitors to the same booking.</p><p>Note that: <ul><li> the date of birth must match what is held on record for the given visitor ID;</li><li>The mail address provided will be the address your booking confirmation is sent to;</li><li>A contact telephone is requested in order that the prison booking team can contact the visitor, should they need to discuss this booking.</li></ul></p>'
-      visitor_1_id:
-        '#type': textfield
-        '#title': 'Visitor ID'
-        '#autocomplete': 'off'
-        '#required': true
-        '#required_error': 'enter the visitor ID for the main visitor'
-      visitor_1_dob:
-        '#type': date
-        '#title': 'Date of birth'
-        '#required': true
-        '#required_error': 'Enter a valid date of birth'
-      visitor_1_email:
-        '#type': webform_email_confirm
-        '#title': 'Email address'
-        '#required': true
-        '#pattern': '[^@\s]+@[^@\s]+\.[^@\s]+'
-        '#pattern_error': 'Enter a valid email address'
-      visitor_1_telephone:
-        '#type': tel
-        '#title': 'Telephone number'
-        '#required': true
-      visitor_1_special_needs:
-        '#type': checkbox
-        '#title': 'Special requirements'
-      visitor_1_add_visitors:
-        '#type': checkbox
-        '#title': 'Add additional visitors'
-  additional_visitor_details:
-    '#type': webform_wizard_page
-    '#title': 'Additional visitor details'
-    '#states':
-      visible:
-        ':input[name="visitor_1_add_visitors"]':
-          checked: true
-    '#next_button_label': Next
-    visitor_2__details:
-      '#type': fieldset
-      '#title': 'Additional visitor details'
-      visitor_2_id:
-        '#type': textfield
-        '#title': 'Visitor ID'
-      visitor_2_dob:
-        '#type': date
-        '#title': 'Date of birth'
-      visitor_2_special_needs:
-        '#type': checkbox
-        '#title': 'Special requirements'
-css: ''
+css: '.form-item-visit-details {}'
 javascript: ''
 settings:
   ajax: false
@@ -412,14 +429,27 @@ settings:
   wizard_toggle_hide_label: ''
   wizard_page_type: container
   wizard_page_title_tag: h2
-  preview: 0
-  preview_label: ''
-  preview_title: ''
+  preview: 2
+  preview_label: Confirmation
+  preview_title: 'Confirm prison visit'
   preview_message: ''
   preview_attributes: {  }
-  preview_excluded_elements: {  }
+  preview_excluded_elements:
+    prison_visit_prison_name: prison_visit_prison_name
+    prison_visit_prison_name_key: prison_visit_prison_name_key
+    prison_visit_type: prison_visit_type
+    prison_visit_type_key: prison_visit_type_key
+    prison_visit_order_valid_from: prison_visit_order_valid_from
+    prison_visit_order_valid_to: prison_visit_order_valid_to
+    prison_visit_week_date_start: prison_visit_week_date_start
+    prison_visit_sequence: prison_visit_sequence
+    prison_visit_prisoner_category: prison_visit_prisoner_category
+    prison_visit_prisoner_subcategory: prison_visit_prisoner_subcategory
+    visitor_1_intro: visitor_1_intro
+    visitor_1_special_needs: visitor_1_special_needs
+    visitor_2_special_needs: visitor_2_special_needs
   preview_exclude_empty: true
-  preview_exclude_empty_checkbox: false
+  preview_exclude_empty_checkbox: true
   draft: none
   draft_multiple: false
   draft_auto_save: false
@@ -711,28 +741,22 @@ handlers:
           face-to-face:
             Monday: null
             Tuesday:
-              integrated:
-                '09:30': '9.30 am'
-                '10:45': '10.45 am'
-                '14:00': '2.00 pm'
-                '15:15': '3.15 pm'
-              separates: null
+              '09:30': '9.30 am'
+              '10:45': '10.45 am'
+              '14:00': '2.00 pm'
+              '15:15': '3.15 pm'
             Wednesday:
-              integrated:
-                '09:30': '9.30 am'
-                '10:45': '10.45 am'
-                '14:00': '2.00 pm'
-                '15:15': '3.15 pm'
-              separates: null
+              '09:30': '9.30 am'
+              '10:45': '10.45 am'
+              '14:00': '2.00 pm'
+              '15:15': '3.15 pm'
             Thursday: null
             Friday: null
             Saturday: null
             Sunday:
-              integrated:
-                '09:30': '9.30 am'
-                '10:45': '10.45 am'
-                '14:30': '2.30 pm'
-              separates: null
+              '09:30': '9.30 am'
+              '10:45': '10.45 am'
+              '14:30': '2.30 pm'
           virtual:
             Monday:
               '09:00': '9.00 am'
@@ -798,21 +822,15 @@ handlers:
             Monday: null
             Tuesday: null
             Wednesday:
-              integrated:
-                '10:00': '10.00 am'
-                '14:00': '2.00 pm'
-              separates: null
+              '10:00': '10.00 am'
+              '14:00': '2.00 pm'
             Thursday: null
             Friday:
-              integrated:
-                '10:00': '10.00 am'
-                '14:00': '2.00 pm'
-              separates: null
+              '10:00': '10.00 am'
+              '14:00': '2.00 pm'
             Saturday:
-              integrated:
-                '10:00': '10.00 am'
-                '14:00': '2.00 pm'
-              separates: null
+              '10:00': '10.00 am'
+              '14:00': '2.00 pm'
             Sunday: null
           virtual:
             Monday:

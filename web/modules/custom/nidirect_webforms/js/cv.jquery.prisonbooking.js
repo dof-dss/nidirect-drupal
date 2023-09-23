@@ -13,22 +13,59 @@
       const prisonVisitForm = once('prisonVisitForm', 'form.webform-submission-prison-visit-online-booking-form', context);
 
       let $prisonVisitOrderNumber = $(prisonVisitForm).find('input[name="visitor_order_number"]');
-      let visitTypes = Object.keys(drupalSettings.prisonVisitBooking.visit_type);
-      let visitPrisonIDs = Object.keys(drupalSettings.prisonVisitBooking.prisons);
+      let visitOrderVisitTypeKey = drupalSettings.prisonVisitBooking.booking_ref.visit_type_key;
+      let visitPrisons = drupalSettings.prisonVisitBooking.prisons;
+      let visitTypes = drupalSettings.prisonVisitBooking.visit_type;
       let visitAdvanceNotice = drupalSettings.prisonVisitBooking.visit_advance_notice;
       let visitBookingRefValidityPeriodDays = drupalSettings.prisonVisitBooking.booking_reference_validity_period_days;
-
+      let visitSlotsAvailable = drupalSettings.prisonVisitBooking.visit_slots;
+      let visitSequenceAffiliations = drupalSettings.prisonVisitBooking.visit_order_number_categories;
 
       $prisonVisitOrderNumber.rules( "add", {
-        validPrisonVisitBookingRef: [true, visitPrisonIDs, visitTypes, visitAdvanceNotice, visitBookingRefValidityPeriodDays]
+        validPrisonVisitBookingRef: [
+          true,
+          visitPrisons,
+          visitTypes,
+          visitAdvanceNotice,
+          visitBookingRefValidityPeriodDays,
+          visitSlotsAvailable,
+          visitSequenceAffiliations
+        ],
+        expiredVisitBookingRef: [
+          true,
+          visitPrisons,
+          visitTypes,
+          visitAdvanceNotice,
+          visitBookingRefValidityPeriodDays,
+          visitSlotsAvailable,
+          visitSequenceAffiliations
+        ]
       });
 
-      let visitSlotsAvailable = drupalSettings.prisonVisitBooking.visit_slots;
 
-      let strJSON = JSON.stringify(visitSlotsAvailable);
-      strJSON = JSON.stringify(visitSlotsAvailable, null, 4);
-      
-      console.log(strJSON);
+      const $weekSlots = $('[data-webform-key^="slots_week"]', prisonVisitForm);
+      if ($weekSlots.length === 1) {
+        $weekSlots.prop("open", true);
+        $('summary', $weekSlots)
+          .prop('aria-expanded', true)
+          .prop('aria-pressed', true);
+      }
+
+      const $timeSlots = $('input[type="checkbox"]', $weekSlots);
+      if ($timeSlots.length) {
+        let timeSlotLimit = (visitOrderVisitTypeKey === 'E') ? 5 : 3;
+        $('[data-webform-key^="slots_week"] input[type="checkbox"]', prisonVisitForm).on('change', function(e) {
+          let timeSlotCheckedCount = $timeSlots.filter(':checked').length;
+          if (timeSlotCheckedCount === timeSlotLimit) {
+            $timeSlots.filter(':not(:checked)').prop('disabled', true);
+          }
+          else if (timeSlotCheckedCount < timeSlotLimit) {
+            $timeSlots.filter(':not(:checked)').prop('disabled', false);
+          }
+        });
+      }
+
+
 
     }
   };
