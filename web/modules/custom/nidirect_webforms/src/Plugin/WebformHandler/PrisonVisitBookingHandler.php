@@ -101,6 +101,7 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
           // grouping element (e.g. container, section or details). The keys
           // must be slots_week_1, slots_week_2, etc.
           $form_slots_week = &$form['elements']['visit_preferred_day_and_time']['slots_week_' . $i];
+          $webform_submission_slots_week = $webform_submission->getWebform()->getElement('slots_week_' . $i, TRUE);
 
           if ($form_slots_week['#access'] = FALSE) {
             continue;
@@ -113,7 +114,10 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
           // Add week commencing date to container titles for each week.
           $form_slots_week_date = clone $visit_booking_week_start;
           $form_slots_week_date->modify('+' . ($i - 1) . 'weeks');
-          $form_slots_week['#title'] = str_replace('[DATE]', $form_slots_week_date->format('d F Y'), $form_slots_week['#title']);
+          $form_slots_week_title = str_replace('[DATE]', $form_slots_week_date->format('d F Y'), $form_slots_week['#title']);
+          $form_slots_week['#title'] = $form_slots_week_title;
+          $webform_submission_slots_week['#title'] = $form_slots_week_title;
+          $webform_submission->getWebform()->setElementProperties('slots_week_' . $i, $webform_submission_slots_week);
 
           // Get available slots.
           // TODO: get available slots from external json.
