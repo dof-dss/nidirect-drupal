@@ -11,17 +11,15 @@ archive: false
 id: proni_submit_an_enquiry
 title: 'PRONI - Submit an Enquiry'
 description: ''
-category: ''
+categories: {  }
 elements: |-
   your_query:
     '#type': fieldset
     '#title': 'Your query'
     textarea_query:
       '#type': textarea
-      '#title': 'Enter your query'
-      '#description': 'Plain text only (3,000 characters maximum)'
-      '#title_display': invisible
-      '#description_display': before
+      '#title': 'Please enter your query'
+      '#placeholder': 'Plain text only (3,000 characters maximum)'
       '#required': true
       '#required_error': 'You must fill in this field'
       '#counter_type': character
@@ -102,9 +100,6 @@ settings:
   form_access_denied_message: ''
   form_access_denied_attributes: {  }
   form_file_limit: ''
-  form_attributes: {  }
-  form_method: ''
-  form_action: ''
   share: false
   share_node: false
   share_theme_name: ''
@@ -197,6 +192,8 @@ settings:
   token_update: false
   token_delete: false
   serial_disabled: false
+  page_admin_theme: false
+  form_remote_addr: true
 access:
   create:
     roles:

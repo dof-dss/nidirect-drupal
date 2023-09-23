@@ -11,7 +11,7 @@ archive: false
 id: landlord_direct_payments
 title: 'Set up a direct payment of a tenant''s housing costs to a landlord'
 description: 'Set up a direct payment of a tenant&#39;s housing costs to a landlord'
-category: ''
+categories: {  }
 elements: |-
   form_reason:
     '#type': webform_wizard_page
@@ -176,9 +176,9 @@ elements: |-
         '#type': textfield
         '#title': 'Amount of rent tenant pays'
         '#maxlength': 15
-        '#size': 15
-        '#autocomplete': 'off'
-        '#input_mask': '''alias'': ''currency'', ''prefix'': ''£'', ''digitsOptional'': ''true'', ''placeholder'': '''', ''rightAlign'': ''false'''
+        '#size': 10
+        '#placeholder': £0.00
+        '#input_mask': '''alias'': ''currency'', ''prefix'': ''£'''
         '#required': true
         '#pattern': '^£?[0-9,]{0,10}\.?[0-9]{0,2}p?$'
         '#pattern_error': 'You must enter a valid amount in pounds sterling'
@@ -190,16 +190,17 @@ elements: |-
         '#type': textfield
         '#title': 'Total rent arrears'
         '#maxlength': 15
-        '#size': 15
+        '#size': 10
+        '#placeholder': £0.00
         '#autocomplete': 'off'
-        '#input_mask': '''alias'': ''currency'', ''prefix'': ''£'', ''digitsOptional'': ''true'', ''placeholder'': '''', ''rightAlign'': ''false'''
+        '#input_mask': '''alias'': ''currency'', ''prefix'': ''£'''
         '#required': true
         '#pattern': '^£?[0-9,]{0,10}\.?[0-9]{0,2}p?$'
         '#pattern_error': 'You must enter a valid amount in pounds sterling'
   declaration:
     '#type': processed_text
     '#display_on': view
-    '#text': |
+    '#text': |-
       <h2>Landlord declaration</h2>
 
       <p>By sending this application for a direct payment of Universal Credit, you declare:</p>
@@ -215,6 +216,7 @@ elements: |-
       	<li>Universal Credit might refuse your request for a direct payment of Universal Credit if you don’t provide all necessary information</li>
       	<li>you must tell Universal Credit immediately about any change in the tenant’s circumstances that could affect their housing or entitlement to Universal Credit</li>
       </ul>
+
     '#format': full_html
   extra_comments_for_pooh_bear:
     '#type': textfield
@@ -269,9 +271,6 @@ settings:
   form_access_denied_message: ''
   form_access_denied_attributes: {  }
   form_file_limit: ''
-  form_attributes: {  }
-  form_method: ''
-  form_action: ''
   share: false
   share_node: false
   share_theme_name: ''
@@ -362,6 +361,8 @@ settings:
   token_update: false
   token_delete: false
   serial_disabled: false
+  page_admin_theme: false
+  form_remote_addr: true
 access:
   create:
     roles:
@@ -435,7 +436,7 @@ handlers:
       sender_mail: ''
       sender_name: ''
       subject: 'Set up a direct payment of a tenant''s housing costs to a landlord'
-      body: |
+      body: |-
         Submitted on [webform_submission:created]<br />
         <br />
         Submitted values are:<br />

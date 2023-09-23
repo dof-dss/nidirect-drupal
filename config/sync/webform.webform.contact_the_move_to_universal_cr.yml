@@ -1,21 +1,24 @@
-uuid: 72288dc6-335a-498f-9708-55cc95309a8d
+uuid: 7b4a8081-e648-4d78-a4b0-f8a70e5a896e
 langcode: en
 status: open
 dependencies: {  }
 weight: 0
 open: null
 close: null
-uid: 1
+uid: 24
 template: false
 archive: false
-id: contact_the_make_the_call_team
-title: 'Contact the Make the Call team'
+id: contact_the_move_to_universal_cr
+title: 'Contact the Move to Universal Credit team'
 description: ''
 categories: {  }
 elements: |-
   intro:
     '#type': processed_text
-    '#text': '<p class="nodeSummary">You can check if you’re getting all the money, supports and services you’re entitled to by contacting the Make the Call team.</p><p>You can find out how&nbsp;personal information you submit to the Department for Communities'' Make the Call team when using this service will be handled by viewing its&nbsp;<a href="https://www.communities-ni.gov.uk/publications/supplementary-privacy-notices-dfc-business-areas">privacy notice</a>.</p>'
+    '#text': |-
+      <p class="nodeSummary"><span style="font-size:11pt"><span style="background:white"><span style="line-height:normal"><span style="font-family:Calibri,sans-serif"><b><span style="font-size:13.5pt"><span style="font-family:&quot;Lato&quot;,sans-serif"><span style="color:#1c1c1c">You can use this online form, only if you have received a Migration Notice letter telling you to move from your existing benefit or tax credits to Universal Credit.</span></span></span></b></span></span></span></span></p>
+
+      <p>You can find out how&nbsp;personal information you submit to the Department for Communities' Move to Universal Credit Team when using this service will be handled by viewing its&nbsp;<a href="https://www.communities-ni.gov.uk/publications/supplementary-privacy-notices-dfc-business-areas">privacy notice</a>.</p>
     '#format': full_html
   do_you_live_in_northern_ireland:
     '#type': radios
@@ -32,7 +35,6 @@ elements: |-
           value: 'No'
     '#text': |-
       <p class="info-notice">This service is only for people in Northern Ireland. If you live in Great Britain you should visit <a href="http://www.gov.uk">www.gov.uk</a> instead.</p>
-
     '#format': full_html
   can_use_a_phone:
     '#type': radios
@@ -59,38 +61,57 @@ elements: |-
       visible:
         ':input[name="can_use_a_phone"]':
           value: 'Yes'
-    '#text': '<p class="nodeSummary">Enter your details below and an advisor will call you back.</p>'
+    '#text': |-
+      <h2>Contact the Move to Universal Credit team</h2>
+
+      <p class="xl-text">Freephone&nbsp;0800&nbsp;012&nbsp;1331 or Textphone&nbsp;0800&nbsp;012&nbsp;1441<br />
+      <span class="large-text" style="display: block; margin-top: .5em">Textphone is available for deaf users, those with hearing loss and users with speech and communication needs. Video Relay Service is available for sign language users.</span></p>
     '#format': full_html
   your_details:
     '#type': fieldset
     '#title': 'Your details'
     '#states':
       visible:
-        - ':input[name="can_use_a_phone"]':
-            value: 'Yes'
-        - or
-        - ':input[name="can_use_a_phone"]':
-            value: 'No'
-    name:
+        ':input[name="can_use_a_phone"]':
+          value: 'No'
+    first_name:
       '#type': textfield
-      '#title': Name
+      '#title': 'First name'
       '#maxlength': 100
       '#autocomplete': name
       '#required': true
+    last_name:
+      '#type': textfield
+      '#title': 'Last name'
+      '#maxlength': 100
+      '#autocomplete': name
+      '#required': true
+    migration_notice_reference:
+      '#type': textfield
+      '#title': 'Migration Notice Reference'
+      '#description': 'Enter the 14 character Migration Notice Reference shown on your Migration Notice letter.'
+      '#description_display': before
+      '#maxlength': 16
+      '#size': 22
+      '#autocomplete': 'off'
+      '#input_mask': '&&&&-&&&&-&&&&'
+      '#required': true
+      '#required_error': 'Enter the Migration Notice Reference shown on your Migration Notice letter'
+      '#pattern': '[0-9A-Z]{4}\-[0-9A-Z]{4}\-[0-9A-Z]{4}'
+      '#pattern_error': 'Enter the Migration Notice Reference shown on your Migration Notice letter'
     phone_number:
       '#type': textfield
       '#title': 'Phone number'
+      '#maxlength': 20
+      '#size': 24
       '#autocomplete': tel
-      '#states':
-        visible:
-          ':input[name="can_use_a_phone"]':
-            value: 'Yes'
-        required:
-          ':input[name="can_use_a_phone"]':
-            value: 'Yes'
+      '#required': true
+      '#pattern': '^[0-9\(\) \+\-]{6,20}$'
+      '#pattern_error': 'Enter a valid telephone number'
     email_address:
       '#type': email
       '#title': 'Email address'
+      '#maxlength': 255
       '#autocomplete': email
       '#pattern': '[^@\s]+@[^@\s]+\.[^@\s]+'
       '#pattern_error': 'You must enter a valid email address, for example, name@example.com'
@@ -98,54 +119,6 @@ elements: |-
         visible:
           ':input[name="can_use_a_phone"]':
             value: 'No'
-        required:
-          ':input[name="can_use_a_phone"]':
-            value: 'No'
-  your_address:
-    '#type': fieldset
-    '#title': 'Your address'
-    '#required': true
-    '#states':
-      visible:
-        ':input[name="can_use_a_phone"]':
-          value: 'No'
-    address_line_1:
-      '#type': textfield
-      '#title': 'Address line 1'
-      '#maxlength': 100
-      '#placeholder': 'Address line 1'
-      '#autocomplete': address-line1
-      '#states':
-        required:
-          ':input[name="can_use_a_phone"]':
-            value: 'No'
-    address_line_2:
-      '#type': textfield
-      '#title': 'Address line 2'
-      '#title_display': invisible
-      '#maxlength': 100
-      '#placeholder': 'Address line 2'
-      '#autocomplete': address-line2
-      '#states':
-        required:
-          ':input[name="can_use_a_phone"]':
-            value: 'No'
-    address_county:
-      '#type': textfield
-      '#title': 'County (optional)'
-      '#title_display': invisible
-      '#maxlength': 50
-      '#size': 20
-      '#placeholder': 'County (optional)'
-    postcode:
-      '#type': textfield
-      '#title': Postcode
-      '#title_display': invisible
-      '#maxlength': 8
-      '#size': 8
-      '#placeholder': Postcode
-      '#autocomplete': postal-code
-      '#states':
         required:
           ':input[name="can_use_a_phone"]':
             value: 'No'
@@ -159,12 +132,12 @@ elements: |-
           value: 'No'
     explain_why_you_cannot_phone_text:
       '#type': textarea
-      '#title': 'Briefly explain why you cannot make contact by phone so arrangements to get in touch can be made'
-      '#description': 'Do not include your date of birth or National Insurance number.'
+      '#title': 'Briefly explain why you cannot make contact with the team by phone so arrangements to get in touch can be made'
+      '#description': 'Do not include your date of birth, National Insurance number or bank details.'
       '#title_display': before
       '#description_display': before
       '#required': true
-      '#required_error': 'You must explain why you cannot make contact by phone'
+      '#required_error': 'Briefly explain why you cannot make contact with the team by phone so arrangements to get in touch can be made'
       '#counter_type': character
       '#counter_minimum': 2
       '#counter_maximum': 750
@@ -184,7 +157,7 @@ elements: |-
         ':input[name="do_you_live_in_northern_ireland"]':
           value: 'Yes'
         ':input[name="can_use_a_phone"]':
-          checked: true
+          value: 'No'
     '#submit__label': Send
 css: ''
 javascript: ''
@@ -227,6 +200,9 @@ settings:
   form_access_denied_message: ''
   form_access_denied_attributes: {  }
   form_file_limit: ''
+  form_attributes: {  }
+  form_method: ''
+  form_action: ''
   share: false
   share_node: false
   share_theme_name: ''
@@ -270,6 +246,8 @@ settings:
   wizard_toggle: false
   wizard_toggle_show_label: ''
   wizard_toggle_hide_label: ''
+  wizard_page_type: container
+  wizard_page_title_tag: h2
   preview: 0
   preview_label: ''
   preview_title: ''
@@ -291,7 +269,7 @@ settings:
   confirmation_message: |-
     <h2>Thank you for your contact request</h2>
 
-    <p class="info-notice info-notice--success">A Make the Call&nbsp;benefit advisor will be in touch with you shortly.</p>
+    <p class="info-notice info-notice--success">We have sent a confirmation of your request to the email address you provided.</p>
   confirmation_attributes: {  }
   confirmation_back: false
   confirmation_back_label: ''
@@ -320,8 +298,6 @@ settings:
   token_update: false
   token_delete: false
   serial_disabled: false
-  page_admin_theme: false
-  form_remote_addr: true
 access:
   create:
     roles:
@@ -381,7 +357,7 @@ handlers:
     settings:
       states:
         - completed
-      to_mail: makethecall@dfcni.gov.uk
+      to_mail: muc.discoveryteam@dfcni.gov.uk
       to_options: {  }
       bcc_mail: ''
       bcc_options: {  }
@@ -389,18 +365,26 @@ handlers:
       cc_options: {  }
       from_mail: '[webform_submission:values:email_address:raw]'
       from_options: {  }
-      from_name: '[webform_submission:values:name:raw]'
+      from_name: '[webform_submission:values:full_name:raw]'
       reply_to: ''
       return_path: ''
       sender_mail: ''
       sender_name: ''
-      subject: 'Request a call back from nidirect.gov.uk'
+      subject: 'Contact the Move to Universal Credit Team'
       body: |-
-        <p>Submitted on [webform_submission:created:long]</p>
-        <p>Submitted values are:</p>
+        <p><strong>Submitted on</strong><br />
+        [webform_submission:created:long]</p>
+
+        <p><strong>Submitted values</strong></p>
+        <hr>
         [webform_submission:values]
       excluded_elements:
+        intro: intro
         do_you_live_in_northern_ireland: do_you_live_in_northern_ireland
+        ni_only_notice: ni_only_notice
+        no_phone_details: no_phone_details
+        phone_details: phone_details
+        extra_comments_for_pooh_bear: extra_comments_for_pooh_bear
       ignore_access: false
       exclude_empty: true
       exclude_empty_checkbox: false
@@ -408,7 +392,7 @@ handlers:
       html: true
       attachments: false
       twig: false
-      theme_name: ''
+      theme_name: stable
       parameters: {  }
       debug: false
   email_1:
@@ -435,19 +419,25 @@ handlers:
       return_path: ''
       sender_mail: ''
       sender_name: ''
-      subject: 'Make the Call - confirmation of contact request'
+      subject: 'Move to Universal Credit - confirmation of contact request'
       body: |-
-        Dear&nbsp;[webform_submission:values:your_details:name]<br />
-        &nbsp;<br />
-        Thank you for your call back contact request.&nbsp;<br />
-        <br />
-        A Make the Call Advisor will be in touch with you shortly within the next 3 days.<br />
-        &nbsp;<br />
-        Regards,<br />
-        Make the Call Team<br />
-        &nbsp;<br />
-        Please note: This email was been sent from a notification-only email address that can&rsquo;t accept replies. Please do not reply to this message.
-      excluded_elements: {  }
+        <p>Dear [webform_submission:values:first_name:raw],</p>
+        <p>Thank you for contacting  the Move to Universal Credit Team. We will be in touch with you within 3 working days.</p>
+        <p>Regards,<br /><br/>
+        The Move to Universal Credit Team</p>
+        <p><strong>Please note: This email was been sent from a notification-only email address that can&rsquo;t accept replies. Please do not reply to this message.</strong></p>
+        <hr>
+        <h2>You provided us with the following information</h2>
+
+        [webform_submission:values]
+      excluded_elements:
+        intro: intro
+        do_you_live_in_northern_ireland: do_you_live_in_northern_ireland
+        ni_only_notice: ni_only_notice
+        can_use_a_phone: can_use_a_phone
+        no_phone_details: no_phone_details
+        phone_details: phone_details
+        extra_comments_for_pooh_bear: extra_comments_for_pooh_bear
       ignore_access: false
       exclude_empty: true
       exclude_empty_checkbox: false
