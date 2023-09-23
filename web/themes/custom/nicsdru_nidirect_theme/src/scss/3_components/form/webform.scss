@@ -61,15 +61,16 @@
 
 .webform-options-display-buttons {
 
-  margin: .5em 0;
+  margin: 0;
+  display: inline-flex;
 
   .webform-options-display-buttons-wrapper {
-    margin: 0 .5em .5em 0;
+    margin: .5em .5em .5em 0;
   }
 
-  .form-type-radio,
-  .form-type-checkbox {
+  .form-item {
     padding: 0;
+    margin: 0;
 
     input:checked ~ label {
       background-color: $brand-primary-light;
@@ -78,8 +79,9 @@
   }
 
   label.webform-options-display-buttons-label {
+    display: inline-block;
+    height: auto;
     min-width: 5.5em;
-    padding: .5em;
     color: $text;
     border: 0;
     box-shadow: inset 0 0 0 1px $charcoal;
