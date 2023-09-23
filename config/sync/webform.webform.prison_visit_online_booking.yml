@@ -125,7 +125,6 @@ elements: |-
       visible:
         ':input[name="visitor_1_add_visitors"]':
           checked: true
-    '#format': container
     '#next_button_label': Next
     visitor_2__details:
       '#type': fieldset
@@ -185,41 +184,63 @@ elements: |-
           - btn
           - btn--primary
           - btn--block
+      '#format': fieldset
       monday_week_1:
         '#type': checkboxes
         '#title': Monday
         '#options': prison_visit_times
         '#options_display': buttons_horizontal
+        '#format': custom
+        '#format_html': '{{ value | date("g.i a") }}'
+        '#format_text': '{{ value | date("g.i a") }}'
       tuesday_week_1:
         '#type': checkboxes
         '#title': Tuesday
         '#options': prison_visit_times
         '#options_display': buttons_horizontal
+        '#format': custom
+        '#format_html': '{{ value | date("g.i a") }}'
+        '#format_text': '{{ value | date("g.i a") }}'
       wednesday_week_1:
         '#type': checkboxes
         '#title': Wednesday
         '#options': prison_visit_times
         '#options_display': buttons_horizontal
+        '#format': custom
+        '#format_html': '{{ value | date("g.i a") }}'
+        '#format_text': '{{ value | date("g.i a") }}'
       thursday_week_1:
         '#type': checkboxes
         '#title': Thursday
         '#options': prison_visit_times
         '#options_display': buttons_horizontal
+        '#format': custom
+        '#format_html': '{{ value | date("g.i a") }}'
+        '#format_text': '{{ value | date("g.i a") }}'
       friday_week_1:
         '#type': checkboxes
         '#title': Friday
         '#options': prison_visit_times
         '#options_display': buttons_horizontal
+        '#format': custom
+        '#format_html': '{{ value | date("g.i a") }}'
+        '#format_text': '{{ value | date("g.i a") }}'
       saturday_week_1:
         '#type': checkboxes
         '#title': Saturday
         '#options': prison_visit_times
         '#options_display': buttons_horizontal
+        '#format': custom
+        '#format_html': '{{ value | date("g.i a") }}'
+        '#format_text': '{{ value | date("g.i a") }}'
       sunday_week_1:
         '#type': checkboxes
         '#title': Sunday
         '#options': prison_visit_times
         '#options_display': buttons_horizontal
+        '#format': custom
+        '#format_html': '{{ value | date("g.i a") }}'
+        '#format_text': '{{ value | date("g.i a") }}'
     slots_week_2:
       '#type': details
       '#title': 'Week commencing [DATE]'
@@ -233,36 +254,57 @@ elements: |-
         '#title': Monday
         '#options': prison_visit_times
         '#options_display': buttons_horizontal
+        '#format': custom
+        '#format_html': '{{ value | date("g.i a") }}'
+        '#format_text': '{{ value | date("g.i a") }}'
       tuesday_week_2:
         '#type': checkboxes
         '#title': Tuesday
         '#options': prison_visit_times
         '#options_display': buttons_horizontal
+        '#format': custom
+        '#format_html': '{{ value | date("g.i a") }}'
+        '#format_text': '{{ value | date("g.i a") }}'
       wednesday_week_2:
         '#type': checkboxes
         '#title': Wednesday
         '#options': prison_visit_times
         '#options_display': buttons_horizontal
+        '#format': custom
+        '#format_html': '{{ value | date("g.i a") }}'
+        '#format_text': '{{ value | date("g.i a") }}'
       thursday_week_2:
         '#type': checkboxes
         '#title': Thursday
         '#options': prison_visit_times
         '#options_display': buttons_horizontal
+        '#format': custom
+        '#format_html': '{{ value | date("g.i a") }}'
+        '#format_text': '{{ value | date("g.i a") }}'
       friday_week_2:
         '#type': checkboxes
         '#title': Friday
         '#options': prison_visit_times
         '#options_display': buttons_horizontal
+        '#format': custom
+        '#format_html': '{{ value | date("g.i a") }}'
+        '#format_text': '{{ value | date("g.i a") }}'
       saturday_week_2:
         '#type': checkboxes
         '#title': Saturday
         '#options': prison_visit_times
         '#options_display': buttons_horizontal
+        '#format': custom
+        '#format_html': '{{ value | date("g.i a") }}'
+        '#format_text': '{{ value | date("g.i a") }}'
       sunday_week_2:
         '#type': checkboxes
         '#title': Sunday
         '#options': prison_visit_times
         '#options_display': buttons_horizontal
+        '#format': custom
+        '#format_html': '{{ value | date("g.i a") }}'
+        '#format_text': '{{ value | date("g.i a") }}'
     slots_week_3:
       '#type': details
       '#title': 'Week commencing [DATE]'
@@ -276,36 +318,57 @@ elements: |-
         '#title': Monday
         '#options': prison_visit_times
         '#options_display': buttons_horizontal
+        '#format': custom
+        '#format_html': '{{ value | date("g.i a") }}'
+        '#format_text': '{{ value | date("g.i a") }}'
       tuesday_week_3:
         '#type': checkboxes
         '#title': Tuesday
         '#options': prison_visit_times
         '#options_display': buttons_horizontal
+        '#format': custom
+        '#format_html': '{{ value | date("g.i a") }}'
+        '#format_text': '{{ value | date("g.i a") }}'
       wednesday_week_3:
         '#type': checkboxes
         '#title': Wednesday
         '#options': prison_visit_times
         '#options_display': buttons_horizontal
+        '#format': custom
+        '#format_html': '{{ value | date("g.i a") }}'
+        '#format_text': '{{ value | date("g.i a") }}'
       thursday_week_3:
         '#type': checkboxes
         '#title': Thursday
         '#options': prison_visit_times
         '#options_display': buttons_horizontal
+        '#format': custom
+        '#format_html': '{{ value | date("g.i a") }}'
+        '#format_text': '{{ value | date("g.i a") }}'
       friday_week_3:
         '#type': checkboxes
         '#title': Friday
         '#options': prison_visit_times
         '#options_display': buttons_horizontal
+        '#format': custom
+        '#format_html': '{{ value | date("g.i a") }}'
+        '#format_text': '{{ value | date("g.i a") }}'
       saturday_week_3:
         '#type': checkboxes
         '#title': Saturday
         '#options': prison_visit_times
         '#options_display': buttons_horizontal
+        '#format': custom
+        '#format_html': '{{ value | date("g.i a") }}'
+        '#format_text': '{{ value | date("g.i a") }}'
       sunday_week_3:
         '#type': checkboxes
         '#title': Sunday
         '#options': prison_visit_times
         '#options_display': buttons_horizontal
+        '#format': custom
+        '#format_html': '{{ value | date("g.i a") }}'
+        '#format_text': '{{ value | date("g.i a") }}'
     slots_week_4:
       '#type': details
       '#title': 'Week commencing [DATE]'
@@ -319,36 +382,57 @@ elements: |-
         '#title': Monday
         '#options': prison_visit_times
         '#options_display': buttons_horizontal
+        '#format': custom
+        '#format_html': '{{ value | date("g.i a") }}'
+        '#format_text': '{{ value | date("g.i a") }}'
       tuesday_week_4:
         '#type': checkboxes
         '#title': Tuesday
         '#options': prison_visit_times
         '#options_display': buttons_horizontal
+        '#format': custom
+        '#format_html': '{{ value | date("g.i a") }}'
+        '#format_text': '{{ value | date("g.i a") }}'
       wednesday_week_4:
         '#type': checkboxes
         '#title': Wednesday
         '#options': prison_visit_times
         '#options_display': buttons_horizontal
+        '#format': custom
+        '#format_html': '{{ value | date("g.i a") }}'
+        '#format_text': '{{ value | date("g.i a") }}'
       thursday_week_4:
         '#type': checkboxes
         '#title': Thursday
         '#options': prison_visit_times
         '#options_display': buttons_horizontal
+        '#format': custom
+        '#format_html': '{{ value | date("g.i a") }}'
+        '#format_text': '{{ value | date("g.i a") }}'
       friday_week_4:
         '#type': checkboxes
         '#title': Friday
         '#options': prison_visit_times
         '#options_display': buttons_horizontal
+        '#format': custom
+        '#format_html': '{{ value | date("g.i a") }}'
+        '#format_text': '{{ value | date("g.i a") }}'
       saturday_week_4:
         '#type': checkboxes
         '#title': Saturday
         '#options': prison_visit_times
         '#options_display': buttons_horizontal
+        '#format': custom
+        '#format_html': '{{ value | date("g.i a") }}'
+        '#format_text': '{{ value | date("g.i a") }}'
       sunday_week_4:
         '#type': checkboxes
         '#title': Sunday
         '#options': prison_visit_times
         '#options_display': buttons_horizontal
+        '#format': custom
+        '#format_html': '{{ value | date("g.i a") }}'
+        '#format_text': '{{ value | date("g.i a") }}'
   slot1_datetime:
     '#type': hidden
     '#title': SLOT1_DATETIME
