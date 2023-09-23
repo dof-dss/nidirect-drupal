@@ -277,6 +277,8 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
       $form_state->setValue('visitor_order_number', $booking_ref);
     }
 
+
+
   }
 
   /**
@@ -422,6 +424,7 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
           $count++;
           if ($count <= 5) {
             $form_state->setValue('slot' . $count . '_datetime', $slot);
+            $webform_submission->setElementData('slot' . $count . '_datetime', $slot);
           }
           else {
             exit();
