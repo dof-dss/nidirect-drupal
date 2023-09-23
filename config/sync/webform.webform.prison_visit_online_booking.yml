@@ -156,18 +156,24 @@ elements: |-
             <dt>Visit type</dt><dd>{{ data.prison_visit_type }}</dd>
             <dt>Visiting prisoner</dt><dd>{{ data.prisoner_id }}</dd>
           </dl>
-         
-          <p class="info-notice">
-            Choose up to 
-            {% if data.visitor_order_number | slice(2, 1) == 'E' %}
-              five
-            {% else %}
-              three
-            {% endif %}
-            time slots for your visit. &nbsp;We will try to book the first available&nbsp;slot.
-          </p>
           
         </div>
+    time_slot_restrictions:
+      '#type': webform_computed_twig
+      '#title': 'Time slot restrictions'
+      '#title_display': invisible
+      '#display_on': form
+      '#mode': html
+      '#template': |-
+        <p class="info-notice" role="alert" aria-live="polite">
+          Choose up to 
+          {% if data.visitor_order_number | slice(2, 1) == 'E' %}
+            five
+          {% else %}
+            three
+          {% endif %}
+          time slots for your visit. &nbsp;We will try to book the first available&nbsp;slot.
+        </p>
     slots_week_1:
       '#type': details
       '#title': 'Week commencing [DATE]'
@@ -463,6 +469,11 @@ settings:
     visitor_1_intro: visitor_1_intro
     visitor_1_special_needs: visitor_1_special_needs
     visitor_2_special_needs: visitor_2_special_needs
+    slot1_datetime: slot1_datetime
+    slot2_datetime: slot2_datetime
+    slot3_datetime: slot3_datetime
+    slot4_datetime: slot4_datetime
+    slot5_datetime: slot5_datetime
   preview_exclude_empty: true
   preview_exclude_empty_checkbox: true
   draft: none
@@ -577,10 +588,77 @@ handlers:
       sender_mail: ''
       sender_name: ''
       subject: OV_IN
-      body: '{"SUBMITTED_DATETIME":"[webform_submission:completed:custom:d/m/Y G:i]","VISIT_ORDER_NO":"[webform_submission:values:visitor_order_number]","INMATE_ID":"[webform_submission:values:prisoner_id]","SPECIAL_REQUIREMENTS":"","VISITOR_1_ID":"[webform_submission:values:visitor_1_id]","VISITOR_1_DOB":"[webform_submission:values:visitor_1_dob:custom:d/m/Y 00:00]","VISITOR_1_EMAIL":"[webform_submission:values:visitor_1_email]","VISITOR_1_PHONE":"[webform_submission:values:visitor_1_telephone]","VISITOR_2_ID":"[webform_submission:values:visitor_2_id]","VISITOR_2_DOB":"[webform_submission:values:visitor_2_dob:custom:d/m/Y 00:00]","VISITOR_3_ID":null,"VISITOR_3_DOB":null,"VISITOR_4_ID":null,"VISITOR_4_DOB":null,"VISITOR_5_ID":null,"VISITOR_5_DOB":null,"SLOT1_DATETIME":"03/08/2023 08:40","SLOT2_DATETIME":"02/08/2023 08:40","SLOT3_DATETIME":null}'
+      body: |-
+        {
+          "SUBMITTED_DATETIME":"[webform_submission:completed:custom:d/m/Y G:i]",
+          "VISIT_ORDER_NO":"[webform_submission:values:visitor_order_number]",
+          "INMATE_ID":"[webform_submission:values:prisoner_id]",
+          "SPECIAL_REQUIREMENTS":"",
+          "VISITOR_1_ID":"[webform_submission:values:visitor_1_id]",
+          "VISITOR_1_DOB":"[webform_submission:values:visitor_1_dob:custom:d/m/Y 00:00]",
+          "VISITOR_1_EMAIL":"[webform_submission:values:visitor_1_email]",
+          "VISITOR_1_PHONE":"[webform_submission:values:visitor_1_telephone]",
+          "VISITOR_2_ID":"[webform_submission:values:visitor_2_id]",
+          "VISITOR_2_DOB":"[webform_submission:values:visitor_2_dob:custom:d/m/Y 00:00]",
+          "VISITOR_3_ID":"[webform_submission:values:visitor_3_id]",
+          "VISITOR_3_DOB":"[webform_submission:values:visitor_3_dob:custom:d/m/Y 00:00]",
+          "VISITOR_4_ID":"[webform_submission:values:visitor_4_id]",
+          "VISITOR_4_DOB":"[webform_submission:values:visitor_4_dob:custom:d/m/Y 00:00]",
+          "VISITOR_5_ID":"[webform_submission:values:visitor_5_id]",
+          "VISITOR_5_DOB":"[webform_submission:values:visitor_5_dob:custom:d/m/Y 00:00]",
+          "VISITOR_6_ID":"[webform_submission:values:visitor_6_id]",
+          "VISITOR_6_DOB":"[webform_submission:values:visitor_6_dob:custom:d/m/Y 00:00]",
+          "SLOT1_DATETIME":"[webform_submission:values:slot1_datetime]",
+          "SLOT2_DATETIME":"[webform_submission:values:slot2_datetime]",
+          "SLOT3_DATETIME":"[webform_submission:values:slot3_datetime]",
+          "SLOT4_DATETIME":"[webform_submission:values:slot4_datetime]",
+          "SLOT5_DATETIME":"[webform_submission:values:slot5_datetime]"
+        }
       excluded_elements:
+        prison_visit_prison_name: prison_visit_prison_name
+        prison_visit_prison_name_key: prison_visit_prison_name_key
+        prison_visit_type: prison_visit_type
+        prison_visit_type_key: prison_visit_type_key
+        prison_visit_order_valid_from: prison_visit_order_valid_from
+        prison_visit_order_valid_to: prison_visit_order_valid_to
+        prison_visit_week_date_start: prison_visit_week_date_start
+        prison_visit_sequence: prison_visit_sequence
+        prison_visit_prisoner_category: prison_visit_prisoner_category
+        prison_visit_prisoner_subcategory: prison_visit_prisoner_subcategory
         visitor_1_intro: visitor_1_intro
-      ignore_access: false
+        visitor_1_special_needs: visitor_1_special_needs
+        visitor_1_add_visitors: visitor_1_add_visitors
+        visitor_2_special_needs: visitor_2_special_needs
+        visit_details: visit_details
+        monday_week_1: monday_week_1
+        tuesday_week_1: tuesday_week_1
+        wednesday_week_1: wednesday_week_1
+        thursday_week_1: thursday_week_1
+        friday_week_1: friday_week_1
+        saturday_week_1: saturday_week_1
+        sunday_week_1: sunday_week_1
+        monday_week_2: monday_week_2
+        tuesday_week_2: tuesday_week_2
+        wednesday_week_2: wednesday_week_2
+        thursday_week_2: thursday_week_2
+        friday_week_2: friday_week_2
+        saturday_week_2: saturday_week_2
+        sunday_week_2: sunday_week_2
+        monday_week_3: monday_week_3
+        tuesday_week_3: tuesday_week_3
+        wednesday_week_3: wednesday_week_3
+        thursday_week_3: thursday_week_3
+        friday_week_3: friday_week_3
+        saturday_week_3: saturday_week_3
+        sunday_week_3: sunday_week_3
+        monday_week_4: monday_week_4
+        tuesday_week_4: tuesday_week_4
+        wednesday_week_4: wednesday_week_4
+        thursday_week_4: thursday_week_4
+        friday_week_4: friday_week_4
+        saturday_week_4: saturday_week_4
+        sunday_week_4: sunday_week_4
+      ignore_access: true
       exclude_empty: true
       exclude_empty_checkbox: false
       exclude_attachments: false
