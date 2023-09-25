@@ -60,11 +60,16 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
    */
   public function alterForm(array &$form, FormStateInterface $form_state, WebformSubmissionInterface $webform_submission) {
 
-    $form['#attached']['drupalSettings']['prisonVisitBooking'] = $this->configuration;
+//    \Kint::$depth_limit = 3;
+//    kint($form);
+//    kint($form_state);
+//    kint($webform_submission);
 
     $booking_ref = $this->processBookingReference($form_state);
 
+    $form['#attached']['drupalSettings']['prisonVisitBooking'] = $this->configuration;
     $form['#attached']['drupalSettings']['prisonVisitBooking']['booking_ref'] = $booking_ref;
+
 
     if (!empty($booking_ref)) {
       $visit_type = $booking_ref['visit_type'];
@@ -125,6 +130,13 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
           // Loop through each day of config slots.
           foreach ($config_visit_slots as $day => $config_slots) {
             $form_slots_day = &$form_slots_week[strtolower($day) . '_week_' . $i];
+            $form_slots_day_title = $form_slots_day['#title'];
+            if ($day != 'Monday') {
+              $form_slots_week_date->modify('+1 day');
+            }
+            $form_slots_day_title .= ', ' . $form_slots_week_date->format('d F Y');
+
+            $form_slots_day['#title'] = $form_slots_day_title;
 
             // By default, disable access.
             $form_slots_day['#access'] = FALSE;
@@ -140,13 +152,14 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
             }
 
             if (!empty($config_slots)) {
+
+              $options = [];
+
               // Work out date to prefix option keys with.
               $key_date = clone $visit_booking_ref_valid_from;
               $key_date->setTimezone(new \DateTimeZone('Europe/London'));
               $key_date->modify('+' . ($i - 1) . ' weeks');
               $key_date->modify($day . ' this week');
-
-              $options = [];
 
               foreach ($config_time_slots as $key => $value) {
 
@@ -191,13 +204,13 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
                 }
 
                 if ($key_date_is_bookable) {
-                  // Make a new key containing full datetime.
-                  $new_key = $key_date->format('d/m/Y H:i');
+                  // Make a new key containing time in 24 hour format.
+                  $new_key = $key_date->format(\DateTime::ATOM);
                   $options[$new_key] = $value;
                 }
               }
 
-              // If we options to show...
+              // If have options to show...
               if (!empty($options)) {
                 $form_slots_day['#options'] = $options;
                 $form_slots_day['#access'] = TRUE;
@@ -419,22 +432,44 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
    */
   public function submitForm(array &$form, FormStateInterface $form_state, WebformSubmissionInterface $webform_submission) {
 
-    $form_values = $form_state->getValues();
-    $count = 0;
+    if ($form_state->isValidationComplete()) {
 
-    foreach ($form_values as $element_name => $element_values) {
-      if (str_contains($element_name, '_week_') && is_array($element_values)) {
-        foreach ($element_values as $slot) {
-          $count++;
-          if ($count <= 5) {
-            $form_state->setValue('slot' . $count . '_datetime', $slot);
-            $webform_submission->setElementData('slot' . $count . '_datetime', $slot);
-          }
-          else {
-            exit();
+      // Set 5 hidden elements that keep track of selected time slots.
+      // The hidden elements have keys like 'slot1_datetime', 'slot2_datetime',
+      // etc.
+
+      $form_values = $form_state->getValues();
+      $count = 0;
+
+      // Reset the hidden elements first.
+      for ($i = 1; $i <= 5; $i++) {
+        $form_state->setValue('slot' . $i . '_datetime', NULL);
+        $webform_submission->setElementData('slot' . $i . '_datetime', NULL);
+        $form_state->setValue('slot' . $i . '_pretty_datetime', NULL);
+        $webform_submission->setElementData('slot' . $i . '_pretty_datetime', NULL);
+      }
+
+      foreach ($form_values as $element_name => $element_values) {
+        // Time slots have keys like 'monday_week_1', 'tuesday_week_4', etc.
+        if (str_contains($element_name, '_week_') && is_array($element_values)) {
+          // Add up to 5 selected time slots to our hidden elements.
+          foreach ($element_values as $slot) {
+            $count++;
+            if ($count <= 5) {
+              $form_state->setValue('slot' . $count . '_datetime', $slot);
+              $webform_submission->setElementData('slot' . $count . '_datetime', $slot);
+
+              // "Pretty" slot dates and times for preview
+              if (!empty($slot)) {
+                $slot_datetime = new \DateTime($slot);
+                $form_state->setValue('slot' . $count . '_pretty_datetime', $slot_datetime->format('l, j F Y \a\t g.i a'));
+                $webform_submission->setElementData('slot' . $count . '_pretty_datetime', $slot_datetime->format('l, j F Y \a\t g.i a'));
+              }
+            }
           }
         }
       }
+
     }
 
   }
