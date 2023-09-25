@@ -20,6 +20,7 @@
       let visitBookingRefValidityPeriodDays = drupalSettings.prisonVisitBooking.booking_reference_validity_period_days;
       let visitSlotsAvailable = drupalSettings.prisonVisitBooking.visit_slots;
       let visitSequenceAffiliations = drupalSettings.prisonVisitBooking.visit_order_number_categories;
+      let visitBookingRefMaxAdvancedIssue = drupalSettings.prisonVisitBooking.visit_order_number_max_advance_issue;
 
       $prisonVisitOrderNumber.rules( "add", {
         validPrisonVisitBookingRef: [
@@ -31,14 +32,15 @@
           visitSlotsAvailable,
           visitSequenceAffiliations
         ],
-        expiredVisitBookingRef: [
+        validVisitBookingRefDate: [
           true,
           visitPrisons,
           visitTypes,
           visitAdvanceNotice,
           visitBookingRefValidityPeriodDays,
           visitSlotsAvailable,
-          visitSequenceAffiliations
+          visitSequenceAffiliations,
+          visitBookingRefMaxAdvancedIssue
         ]
       });
 

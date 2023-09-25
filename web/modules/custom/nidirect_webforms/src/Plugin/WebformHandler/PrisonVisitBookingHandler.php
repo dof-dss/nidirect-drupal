@@ -60,11 +60,6 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
    */
   public function alterForm(array &$form, FormStateInterface $form_state, WebformSubmissionInterface $webform_submission) {
 
-//    \Kint::$depth_limit = 3;
-//    kint($form);
-//    kint($form_state);
-//    kint($webform_submission);
-
     $booking_ref = $this->processBookingReference($form_state);
 
     $form['#attached']['drupalSettings']['prisonVisitBooking'] = $this->configuration;
@@ -173,7 +168,7 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
                   $key_date_is_bookable = FALSE;
                 }
 
-                if ($key_date <= $visit_earliest_booking_date) {
+                if ($key_date < $visit_earliest_booking_date) {
                   $key_date_is_bookable = FALSE;
                 }
 
@@ -286,6 +281,10 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
       $process_booking_ref_is_valid = FALSE;
       $error_message = $this->t('Visit reference number has expired.');
     }
+    elseif ($booking_ref_processed['visit_order_date'] < $booking_ref_processed['visit_earliest_booking_date']) {
+      $process_booking_ref_is_valid = FALSE;
+      $error_message = $this->t('Visit reference number is not recognised.');
+    }
 
     if ($process_booking_ref_is_valid !== TRUE) {
       $form_state->setErrorByName('visitor_order_number', $error_message);
@@ -359,14 +358,18 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
     $booking_ref_valid_to = clone $booking_ref_valid_from;
     $booking_ref_valid_to->modify('+' . $booking_ref_validity_period_days . ' days');
 
+    // Determine the maximum period of advance issue for a booking
+    // reference number. For example, a booking reference may be
+    // issued 4 weeks in advance of the valid from date for the
+    // refence.
+    $booking_ref_max_advance_issue = $this->configuration['visit_order_number_max_advance_issue'];
+
+    $visit_earliest_booking_date = clone $booking_ref_valid_from;
+    $visit_earliest_booking_date->modify('-' . $booking_ref_max_advance_issue);
+
     // Determine the advance notice required for a booking.
     // The advance notice required is dependent on the visit type.
     $visit_advance_notice = $this->configuration['visit_advance_notice'][$booking_ref_visit_type];
-
-    // Determine the earliest date for booking
-    // (current date plus the advance notice).
-    $visit_earliest_booking_date = clone $now;
-    $visit_earliest_booking_date->modify('+' . $visit_advance_notice);
 
     // Determine the latest date for booking
     // (booking reference valid to date minus the advance notice).

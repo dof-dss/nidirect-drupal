@@ -37,7 +37,7 @@
     return bookRefIsValid;
   }, `Visit reference number is not recognised.`);
 
-  $.validator.addMethod('expiredVisitBookingRef', function (value, element, params) {
+  $.validator.addMethod('validVisitBookingRefDate', function (value, element, params) {
 
     let bookRefIsValid = true;
 
@@ -48,6 +48,7 @@
           pvbSeq = parseInt(value.slice(8, 12)),
           pvbRefValidityDays = parseInt(params[4][pvbTypeID]),
           pvbAdvanceNoticeHours = parseInt(params[3][pvbTypeID]),
+          pvbRefMaxAdvanceIssueWeeks = parseInt(params[7]),
           pvbPrisonName = params[1][pvbID],
           pvbType = params[2][pvbTypeID],
           pvbIsIntegrated = (
@@ -76,20 +77,21 @@
     bookRefValidTo.setDate(bookRefValidFrom.getDate() + (pvbRefValidityDays - 1));
     bookRefValidTo.setHours(23, 59, 59); // Ensure valid till midnight.
 
-    // Latest date and time a booking can be made.
+    // Earliest and latest date and time a booking can be made.
     // Need to get available slots.
     const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
     let slotsAvailable = params[5][pvbPrisonName][pvbType];
     let timeSlotsAvailable = [];
-    let lastDay = null;
+    let firstTime = null;
     let lastTime = null;
+    let lastDay = null;
 
     // For each day's worth of available slots...
     Object.keys(slotsAvailable).forEach((day, index) => {
 
       if (slotsAvailable[day]) {
 
-        // Assume this day is the last day.
+        // Assume this is the last day.
         lastDay = day;
 
         // Are there integrated time slots?
@@ -137,7 +139,15 @@
     });
 
     // Last time slot is last of the available time slots
+    firstTime = timeSlotsAvailable[0];
     lastTime = timeSlotsAvailable[timeSlotsAvailable.length - 1];
+
+    // Latest date and time for booking the last time slot within the
+    // booking reference's validity period.
+    const earliestBookingDate = new Date();
+    earliestBookingDate.setTime(bookRefValidFrom.getTime());
+    earliestBookingDate.setDate(earliestBookingDate.getDate() - (7 * pvbRefMaxAdvanceIssueWeeks));
+    earliestBookingDate.setHours(parseInt(firstTime.slice(0,2)), parseInt(firstTime.slice(3,5)), 0);
 
     // Latest date and time for booking the last time slot within the
     // booking reference's validity period.
@@ -146,14 +156,19 @@
     latestBookingDate.setDate(latestBookingDate.getDate() - 7 + (days.indexOf(lastDay) + 1) - (pvbAdvanceNoticeHours / 24));
     latestBookingDate.setHours(parseInt(lastTime.slice(0,2)), parseInt(lastTime.slice(3,5)), 0);
 
-    if (today.getTime() > bookRefValidTo.getTime()) {
+    if (today.getTime() < earliestBookingDate.getTime()) {
       bookRefIsValid = false;
-      console.log(`Booking reference number has expired`);
+      console.log(`Visit reference number cannot be used until ${earliestBookingDate.toString()}.`);
     }
 
     if (today.getTime() > latestBookingDate.getTime()) {
       bookRefIsValid = false;
       console.log(`Advanced notice of ${pvbAdvanceNoticeHours} is required and cannot be met.`);
+    }
+
+    if (today.getTime() > bookRefValidTo.getTime()) {
+      bookRefIsValid = false;
+      console.log(`Booking reference number expired ${bookRefValidTo.toString()}`);
     }
 
     console.log(`######################################################`);
@@ -169,9 +184,10 @@
     console.log(`Seq affil 2? ${pvbIsAffiliationTwo}`);
     console.log(`Last bookable time slot: ${lastDay} ${lastTime}`);
     console.log(`Advance notice required (hours): ${pvbAdvanceNoticeHours}`);
+    console.log(`Earliest possible booking date: ${earliestBookingDate.toString()}`)
     console.log(`Latest possible booking date: ${latestBookingDate.toString()}`);
 
     return bookRefIsValid;
-  }, `Visit reference number has expired.`);
+  }, `Visit reference number is not recognised or has expired.`);
 
 })(jQuery);
