@@ -104,7 +104,7 @@ elements: |-
         '#description_display': before
         '#required': true
         '#required_error': 'Enter a valid date of birth'
-        '#format': short
+        '#format': d/m/Y
       visitor_1_email:
         '#type': webform_email_confirm
         '#title': 'Email address'
@@ -122,6 +122,7 @@ elements: |-
   additional_visitor_details:
     '#type': webform_wizard_page
     '#title': 'Additional visitor details'
+    '#format': container
     '#next_button_label': Next
     add_additional_visitors:
       '#type': radios
@@ -136,7 +137,7 @@ elements: |-
       '#title': 'How many additional visitors?'
       '#description': 'You can add up to 5 additional visitors'
       '#description_display': before
-      '#size': '3'
+      '#size': '5'
       '#placeholder': '0'
       '#required': true
       '#states':
@@ -144,7 +145,7 @@ elements: |-
           ':input[name="add_additional_visitors"]':
             value: 'yes'
       '#min': 0
-      '#max': 5
+      '#max': 4
       '#step': 1
     markup:
       '#type': webform_markup
@@ -174,7 +175,7 @@ elements: |-
         '#type': date
         '#title': 'Date of birth'
         '#required': true
-        '#format': short
+        '#format': d/m/Y
     visitor_3_details:
       '#type': fieldset
       '#title': 'Additional visitor two'
@@ -192,7 +193,7 @@ elements: |-
         '#type': date
         '#title': 'Date of birth'
         '#required': true
-        '#format': short
+        '#format': d/m/Y
     visitor_4_details:
       '#type': fieldset
       '#title': 'Additional visitor three'
@@ -210,7 +211,7 @@ elements: |-
         '#type': date
         '#title': 'Date of birth'
         '#required': true
-        '#format': short
+        '#format': d/m/Y
     visitor_5_details:
       '#type': fieldset
       '#title': 'Additional visitor four'
@@ -228,25 +229,7 @@ elements: |-
         '#type': date
         '#title': 'Date of birth'
         '#required': true
-        '#format': short
-    visitor_6_details:
-      '#type': fieldset
-      '#title': 'Additional visitor five'
-      '#required': true
-      '#states':
-        visible-slide:
-          ':input[name="number_additional_visitors"]':
-            value:
-              greater: '4'
-      visitor_6_id:
-        '#type': textfield
-        '#title': 'Visitor ID'
-        '#required': true
-      visitor_6_dob:
-        '#type': date
-        '#title': 'Date of birth'
-        '#required': true
-        '#format': short
+        '#format': d/m/Y
     save_details:
       '#type': fieldset
       '#title': 'Remember these visitor details?'
@@ -262,6 +245,7 @@ elements: |-
   special_requirements:
     '#type': webform_wizard_page
     '#title': 'Special requirements'
+    '#format': container
     '#prev_button_label': Previous
     '#next_button_label': Next
     do_you_or_any_other_visitors_have_any_special_requirements_:
@@ -719,6 +703,7 @@ settings:
     slot3_pretty_datetime: slot3_pretty_datetime
     slot4_pretty_datetime: slot4_pretty_datetime
     slot5_pretty_datetime: slot5_pretty_datetime
+    special_requirements_json: special_requirements_json
   preview_exclude_empty: true
   preview_exclude_empty_checkbox: true
   draft: none
@@ -839,27 +824,27 @@ handlers:
       body: |-
         <pre>
         {
-          "SUBMITTED_DATETIME":"[webform_submission:completed:custom:d/m/Y G:i]",
+          "SUBMITTED_DATETIME":"[webform_submission:completed:custom:d/m/Y H:i]",
           "VISIT_ORDER_NO":"[webform_submission:values:visitor_order_number]",
           "INMATE_ID":"[webform_submission:values:prisoner_id]",
           "SPECIAL_REQUIREMENTS":"[webform_submission:values:special_requirements_json]",
           "VISITOR_1_ID":"[webform_submission:values:visitor_1_id]",
-          "VISITOR_1_DOB":"[webform_submission:values:visitor_1_dob:custom:d/m/Y]",
+          "VISITOR_1_DOB":"[webform_submission:values:visitor_1_dob:d/m/Y]",
           "VISITOR_1_EMAIL":"[webform_submission:values:visitor_1_email]",
           "VISITOR_1_PHONE":"[webform_submission:values:visitor_1_telephone]",
           "VISITOR_2_ID":"[webform_submission:values:visitor_2_id]",
-          "VISITOR_2_DOB":"[webform_submission:values:visitor_2_dob:custom:d/m/Y]",
+          "VISITOR_2_DOB":"[webform_submission:values:visitor_2_dob:d/m/Y]",
           "VISITOR_3_ID":"[webform_submission:values:visitor_3_id]",
-          "VISITOR_3_DOB":"[webform_submission:values:visitor_3_dob:custom:d/m/Y]",
+          "VISITOR_3_DOB":"[webform_submission:values:visitor_3_dob:d/m/Y]",
           "VISITOR_4_ID":"[webform_submission:values:visitor_4_id]",
-          "VISITOR_4_DOB":"[webform_submission:values:visitor_4_dob:custom:d/m/Y]",
+          "VISITOR_4_DOB":"[webform_submission:values:visitor_4_dob:d/m/Y]",
           "VISITOR_5_ID":"[webform_submission:values:visitor_5_id]",
-          "VISITOR_5_DOB":"[webform_submission:values:visitor_5_dob:custom:d/m/Y]",
-          "SLOT1_DATETIME":"[webform_submission:values:slot1_datetime:custom:d/m/Y G:i]",
-          "SLOT2_DATETIME":"[webform_submission:values:slot2_datetime:custom:d/m/Y G:i]",
-          "SLOT3_DATETIME":"[webform_submission:values:slot3_datetime:custom:d/m/Y G:i]",
-          "SLOT4_DATETIME":"[webform_submission:values:slot4_datetime:custom:d/m/Y G:i]",
-          "SLOT5_DATETIME":"[webform_submission:values:slot5_datetime:custom:d/m/Y G:i]"
+          "VISITOR_5_DOB":"[webform_submission:values:visitor_5_dob:d/m/Y]",
+          "SLOT1_DATETIME":"[webform_submission:values:slot1_datetime:d/m/Y H:i]",
+          "SLOT2_DATETIME":"[webform_submission:values:slot2_datetime:d/m/Y H:i]",
+          "SLOT3_DATETIME":"[webform_submission:values:slot3_datetime:d/m/Y H:i]",
+          "SLOT4_DATETIME":"[webform_submission:values:slot4_datetime:d/m/Y H:i]",
+          "SLOT5_DATETIME":"[webform_submission:values:slot5_datetime:d/m/Y H:i]"
         }
         </pre>
       excluded_elements:
