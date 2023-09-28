@@ -214,7 +214,7 @@ class PrisonVisitBookingHandler extends WebformHandlerBase
 
                 if ($key_date_is_bookable) {
                   // Make a new key containing time in 24 hour format.
-                  $new_key = $key_date->format(\DateTime::ATOM);
+                  $new_key = $key_date->format('d/m/Y H:i');
                   $options[$new_key] = $value;
                 }
               }
