@@ -499,6 +499,34 @@ elements: |-
         '#title': Sunday
         '#options': prison_visit_times
         '#options_display': buttons_horizontal
+  slots_preferred:
+    '#type': webform_computed_twig
+    '#title': 'Your visit preferred dates and times'
+    '#display_on': view
+    '#template': |-
+      <h3>Preferred visit dates and times</h3>
+      <div class="webform-element">
+      <ul>
+        {% if data.slot1_pretty_datetime %}
+          <li>{{ data.slot1_pretty_datetime }}</li>
+        {% endif %}
+        {% if data.slot2_pretty_datetime %}
+          <li>{{ data.slot2_pretty_datetime }}</li>
+        {% endif %}
+        {% if data.slot3_pretty_datetime %}
+          <li>{{ data.slot3_pretty_datetime }}</li>
+        {% endif %}
+        {% if data.slot4_pretty_datetime %}
+          <li>{{ data.slot4_pretty_datetime }}</li>
+        {% endif %}
+        {% if data.slot5_pretty_datetime %}
+          <li>{{ data.slot5_pretty_datetime }}</li>
+        {% endif %}
+      </ul>
+      </div>
+      <p class="info-notice">
+        We will try to book the first available date and time from your list of preferred dates and times.
+      </p>
   slot1_datetime:
     '#type': hidden
     '#title': SLOT1_DATETIME
@@ -529,34 +557,9 @@ elements: |-
   slot5_pretty_datetime:
     '#type': hidden
     '#title': SLOT5_PRETTY_DATETIME
-  slots_preferred:
-    '#type': webform_computed_twig
-    '#title': 'Your visit preferred dates and times'
-    '#display_on': view
-    '#template': |-
-      <h3>Preferred visit dates and times</h3>
-      <div class="webform-element">
-      <ul>
-        {% if data.slot1_pretty_datetime %}
-          <li>{{ data.slot1_pretty_datetime }}</li>
-        {% endif %}
-        {% if data.slot2_pretty_datetime %}
-          <li>{{ data.slot2_pretty_datetime }}</li>
-        {% endif %}
-        {% if data.slot3_pretty_datetime %}
-          <li>{{ data.slot3_pretty_datetime }}</li>
-        {% endif %}
-        {% if data.slot4_pretty_datetime %}
-          <li>{{ data.slot4_pretty_datetime }}</li>
-        {% endif %}
-        {% if data.slot5_pretty_datetime %}
-          <li>{{ data.slot5_pretty_datetime }}</li>
-        {% endif %}
-      </ul>
-      </div>
-      <p class="info-notice">
-        We will try to book the first available date and time from your list of preferred dates and times.
-      </p>
+  special_requirements_json:
+    '#type': hidden
+    '#title': SPECIAL_REQUIREMENTS_JSON
   actions:
     '#type': webform_actions
     '#title': 'Submit button(s)'
@@ -833,7 +836,7 @@ handlers:
           "SUBMITTED_DATETIME":"[webform_submission:completed:custom:d/m/Y G:i]",
           "VISIT_ORDER_NO":"[webform_submission:values:visitor_order_number]",
           "INMATE_ID":"[webform_submission:values:prisoner_id]",
-          "SPECIAL_REQUIREMENTS":"[webform_submission:values:special_requirements_details]",
+          "SPECIAL_REQUIREMENTS":"[webform_submission:values:special_requirements_json]",
           "VISITOR_1_ID":"[webform_submission:values:visitor_1_id]",
           "VISITOR_1_DOB":"[webform_submission:values:visitor_1_dob:custom:d/m/Y]",
           "VISITOR_1_EMAIL":"[webform_submission:values:visitor_1_email]",

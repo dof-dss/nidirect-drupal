@@ -2,16 +2,15 @@
 
 namespace Drupal\nidirect_webforms\Plugin\WebformHandler;
 
+use Drupal\Component\Serialization\Json;
 use Drupal\Component\Utility\Html;
-use Drupal\Core\Ajax\AjaxResponse;
-use Drupal\Core\Ajax\InvokeCommand;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Datetime\DrupalDateTime;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\Core\Render\Element;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\datetime\Plugin\Field\FieldType\DateTimeItemInterface;
 use Drupal\webform\Plugin\WebformHandlerBase;
+use Drupal\webform\Utility\WebformFormHelper;
 use Drupal\webform\WebformInterface;
 use Drupal\webform\WebformSubmissionInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -26,10 +25,11 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *   description = @Translation("Does stuff with Prison Visit Booking."),
  *   cardinality = \Drupal\webform\Plugin\WebformHandlerInterface::CARDINALITY_SINGLE,
  *   results = \Drupal\webform\Plugin\WebformHandlerInterface::RESULTS_IGNORED,
- *   submission = \Drupal\webform\Plugin\WebformHandlerInterface::SUBMISSION_REQUIRED,
+ *   submission = \Drupal\webform\Plugin\WebformHandlerInterface::SUBMISSION_OPTIONAL,
  * )
  */
-class PrisonVisitBookingHandler extends WebformHandlerBase {
+class PrisonVisitBookingHandler extends WebformHandlerBase
+{
 
   use StringTranslationTrait;
 
@@ -39,18 +39,31 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
   protected $configFactory;
 
   /**
+   * @var \Symfony\Component\HttpFoundation\Request
+   */
+  protected $request;
+
+  /**
+   * @var \Symfony\Component\HttpFoundation\RequestStack
+   */
+  protected $requestStack;
+
+  /**
    * {@inheritdoc}
    */
-  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
+  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition)
+  {
     $instance = parent::create($container, $configuration, $plugin_id, $plugin_definition);
     $instance->configFactory = $container->get('config.factory');
+    $instance->request = $container->get('request_stack')->getCurrentRequest();
     return $instance;
   }
 
   /**
    * {@inheritdoc}
    */
-  public function defaultConfiguration() {
+  public function defaultConfiguration()
+  {
     return $this->configFactory->get('nidirect_webforms.prison_visit_booking.settings')->getRawData() ?? [];
   }
 
@@ -58,7 +71,8 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
    * {@inheritdoc}
    * @throws \Exception
    */
-  public function alterForm(array &$form, FormStateInterface $form_state, WebformSubmissionInterface $webform_submission) {
+  public function alterForm(array &$form, FormStateInterface $form_state, WebformSubmissionInterface $webform_submission)
+  {
 
     $booking_ref = $this->processBookingReference($form_state);
 
@@ -217,12 +231,28 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
       }
     }
 
+
+    // Set visitor form element values from session.
+    $session = $this->request->getSession();
+    $elements = WebformFormHelper::flattenElements($form);
+    $visitor_data = [];
+
+    foreach ($session->all() as $key => $value) {
+      if (str_starts_with($key, 'prison_visit_booking.visitor_') && !str_contains($key, 'visitor_order_number')) {
+        $form_key = explode(".", $key)[1];
+        $visitor_data[$form_key] = $value;
+        $elements[$form_key]['#default_value'] = $value;
+      }
+    }
+
+    $form_state->setValues($visitor_data);
   }
 
   /**
    * {@inheritdoc}
    */
-  public function validateForm(array &$form, FormStateInterface $form_state, WebformSubmissionInterface $webform_submission) {
+  public function validateForm(array &$form, FormStateInterface $form_state, WebformSubmissionInterface $webform_submission)
+  {
     $this->validateVisitBookingReference($form, $form_state);
     $this->validateVisitorOneDateOfBirth($form, $form_state);
   }
@@ -230,7 +260,8 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
   /**
    * Validate visit booking reference.
    */
-  private function validateVisitBookingReference(array &$form, FormStateInterface $form_state) {
+  private function validateVisitBookingReference(array &$form, FormStateInterface $form_state)
+  {
 
     $booking_ref = !empty($form_state->getValue('visitor_order_number')) ? $form_state->getValue('visitor_order_number') : NULL;
 
@@ -294,13 +325,13 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
     }
 
 
-
   }
 
   /**
    * Process booking reference.
    */
-  private function processBookingReference(FormStateInterface $form_state) {
+  private function processBookingReference(FormStateInterface $form_state)
+  {
 
     $booking_ref = !empty($form_state->getValue('visitor_order_number')) ? $form_state->getValue('visitor_order_number') : NULL;
 
@@ -313,11 +344,11 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
     // Extract various bits of the booking reference.
     $booking_ref_prison_identifier = substr($booking_ref, 0, 2);
     $booking_ref_visit_type = substr($booking_ref, 2, 1);
-    $booking_ref_week = (int) substr($booking_ref, 3, 2);
+    $booking_ref_week = (int)substr($booking_ref, 3, 2);
     $booking_ref_validity_period_days = $this->configuration['booking_reference_validity_period_days'][$booking_ref_visit_type];
-    $booking_ref_year = (int) substr($booking_ref, 5, 2);
-    $booking_ref_year_full = (int) DrupalDateTime::createFromFormat('y', $booking_ref_year)->format('Y');
-    $booking_ref_sequence = (int) substr($booking_ref, 8);
+    $booking_ref_year = (int)substr($booking_ref, 5, 2);
+    $booking_ref_year_full = (int)DrupalDateTime::createFromFormat('y', $booking_ref_year)->format('Y');
+    $booking_ref_sequence = (int)substr($booking_ref, 8);
 
     // Process prison identifier.
     if (array_key_exists($booking_ref_prison_identifier, $this->configuration['prisons'])) {
@@ -386,8 +417,7 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
       // Determine whether week date for the booking is for a future week or
       // current week.
       $booking_ref_processed['visit_booking_week_start'] = $booking_ref_valid_from;
-    }
-    else {
+    } else {
       $booking_ref_processed['visit_booking_week_start'] = $now_week_commence;
     }
 
@@ -416,7 +446,8 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
   /**
    * Validate visitor one DOB.
    */
-  private function validateVisitorOneDateOfBirth(array &$form, FormStateInterface $form_state) {
+  private function validateVisitorOneDateOfBirth(array &$form, FormStateInterface $form_state)
+  {
     $visitor_1_dob = !empty($form_state->getValue('visitor_1_dob')) ? $form_state->getValue('visitor_1_dob') : NULL;
 
     if (!empty($visitor_1_dob)) {
@@ -433,18 +464,22 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
   /**
    * {@inheritdoc}
    */
-  public function submitForm(array &$form, FormStateInterface $form_state, WebformSubmissionInterface $webform_submission) {
+  public function submitForm(array &$form, FormStateInterface $form_state, WebformSubmissionInterface $webform_submission)
+  {
 
     if ($form_state->isValidationComplete()) {
 
-      // Set 5 hidden elements that keep track of selected time slots.
-      // The hidden elements have keys like 'slot1_datetime', 'slot2_datetime',
-      // etc.
+      // Save some stuff in session if user requested it.
+      $session = $this->request->getSession();
 
-      $form_values = $form_state->getValues();
-      $count = 0;
+      if ($form_state->getValue('yes_remember_these_visitor_details') === 1) {
+        $session->set('prison_visit_booking.remember_settings', TRUE);
+      }
+      else {
+        $session->set('prison_visit_booking.remember_settings', FALSE);
+      }
 
-      // Reset the hidden elements first.
+      // Reset hidden elements keeping track of preferred time slots.
       for ($i = 1; $i <= 5; $i++) {
         $form_state->setValue('slot' . $i . '_datetime', NULL);
         $webform_submission->setElementData('slot' . $i . '_datetime', NULL);
@@ -452,9 +487,16 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
         $webform_submission->setElementData('slot' . $i . '_pretty_datetime', NULL);
       }
 
+      $form_values = $form_state->getValues();
+      $count = 0;
+
       foreach ($form_values as $element_name => $element_values) {
+
+        // Set hidden elements to keep track of selected time slots.
         // Time slots have keys like 'monday_week_1', 'tuesday_week_4', etc.
+
         if (str_contains($element_name, '_week_') && is_array($element_values)) {
+
           // Add up to 5 selected time slots to our hidden elements.
           foreach ($element_values as $slot) {
             $count++;
@@ -468,13 +510,32 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
                 $form_state->setValue('slot' . $count . '_pretty_datetime', $slot_datetime->format('l, j F Y \a\t g.i a'));
                 $webform_submission->setElementData('slot' . $count . '_pretty_datetime', $slot_datetime->format('l, j F Y \a\t g.i a'));
               }
+              else {
+                $form_state->setValue('slot' . $count . '_pretty_datetime', '');
+                $webform_submission->setElementData('slot' . $count . '_pretty_datetime', '');
+              }
             }
           }
         }
+
+        if (str_contains($element_name, 'special_requirements_details') && !empty($element_values)) {
+          $special_requirements = Json::encode($element_values);
+          $form_state->setValue('special_requirements_json', $special_requirements);
+          $webform_submission->setElementData('special_requirements_json', $special_requirements);
+        }
+
+        // Use session to remember visitor information.
+        if ($session->get('prison_visit_booking.remember_settings') === TRUE) {
+
+          if (str_starts_with($element_name, 'visitor_')) {
+            $session->set('prison_visit_booking.' . $element_name, $element_values);
+          }
+        }
+        else {
+          $session->remove('prison_visit_booking.' . $element_name);
+        }
       }
-
     }
-
   }
 
 }
