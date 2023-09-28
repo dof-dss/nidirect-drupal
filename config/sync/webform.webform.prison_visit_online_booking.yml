@@ -3,7 +3,11 @@ langcode: en
 status: open
 dependencies:
   module:
+    - antibot
     - nidirect_webforms
+third_party_settings:
+  antibot:
+    antibot: true
 weight: 0
 open: null
 close: null
@@ -45,32 +49,34 @@ elements: |-
   prison_visit_prisoner_subcategory:
     '#type': hidden
     '#title': prison_visit_prisoner_subcategory
-  prisoner_details_page:
+  booking_reference_prisoner_reference:
     '#type': webform_wizard_page
-    '#title': 'Prisoner details'
-    '#format': container
-    '#next_button_label': Next
-    prisoner_details:
-      '#type': fieldset
-      '#title': 'Prisoner details'
-      visitor_order_number:
-        '#type': textfield
-        '#title': 'Visit reference number'
-        '#maxlength': 12
-        '#size': 14
-        '#autocomplete': 'off'
-        '#input_mask': AAA9999-9999
-        '#required': true
-        '#pattern': '[A-Z]{3}[0-9]{4}\-[0-9]{4}'
-        '#pattern_error': 'Visit reference number is incorrect.'
-      prisoner_id:
-        '#type': textfield
-        '#title': 'Prisoner ID'
-        '#maxlength': 5
-        '#size': 6
-        '#autocomplete': 'off'
-        '#input_mask': A9999
-        '#required': true
+    '#title': 'Booking reference / prisoner reference'
+    booking_and_prisoner_reference_preamble:
+      '#type': webform_markup
+      '#markup': |-
+        <p class="info-notice" role="status">
+        To book a prison visit, you must have a visit reference number (or booking reference) and a prisoner ID for the prisoner you want to visit.  
+        </p>
+    visitor_order_number:
+      '#type': textfield
+      '#title': 'Visit reference number'
+      '#maxlength': 12
+      '#size': 14
+      '#autocomplete': 'off'
+      '#input_mask': AAA9999-9999
+      '#required': true
+      '#required_error': 'Visit reference number is required'
+      '#pattern': '[A-Z]{3}[0-9]{4}\-[0-9]{4}'
+      '#pattern_error': 'Visit reference number is incorrect.'
+    prisoner_id:
+      '#type': textfield
+      '#title': 'Prisoner ID'
+      '#maxlength': 5
+      '#size': 6
+      '#autocomplete': 'off'
+      '#input_mask': A9999
+      '#required': true
   visitor_details_page:
     '#type': webform_wizard_page
     '#title': 'Visitor details'
@@ -83,7 +89,7 @@ elements: |-
         '#type': webform_markup
         '#markup': |-
           <p class="info-notice" role="status">
-          Provide your details as the main visitor. &nbsp;There is an option at the end to add additional visitors to the same booking.
+          Provide your details as the main visitor. &nbsp;You'll be able to add additional visitors in the next step.
           </p>
       visitor_1_id:
         '#type': textfield
@@ -112,32 +118,170 @@ elements: |-
         '#description': 'Provide your telephone number in case we need to contact you about this booking.'
         '#description_display': before
         '#required': true
-      visitor_1_special_needs:
-        '#type': checkbox
-        '#title': 'Special requirements'
-      visitor_1_add_visitors:
-        '#type': checkbox
-        '#title': 'Add additional visitors'
   additional_visitor_details:
     '#type': webform_wizard_page
     '#title': 'Additional visitor details'
-    '#states':
-      visible:
-        ':input[name="visitor_1_add_visitors"]':
-          checked: true
     '#next_button_label': Next
+    add_additional_visitors:
+      '#type': radios
+      '#title': 'Do you want to add additional visitors?'
+      '#options':
+        'yes': 'Yes'
+        'no': 'No'
+      '#options_display': side_by_side
+      '#required': true
+    number_additional_visitors:
+      '#type': number
+      '#title': 'How many additional visitors?'
+      '#description': 'You can add up to 5 additional visitors'
+      '#description_display': before
+      '#size': '3'
+      '#placeholder': '0'
+      '#required': true
+      '#states':
+        visible:
+          ':input[name="add_additional_visitors"]':
+            value: 'yes'
+      '#min': 0
+      '#max': 5
+      '#step': 1
+    markup:
+      '#type': webform_markup
+      '#states':
+        visible-slide:
+          ':input[name="number_additional_visitors"]':
+            value:
+              greater: '0'
+      '#markup': |-
+        <p class="info-notice">
+        Ensure that the correct visitor number and date of birth is entered for each visitor.  Your booking request could be rejected if details entered here do not match details we hold on record.
+        </p>
     visitor_2__details:
       '#type': fieldset
-      '#title': 'Additional visitor details'
+      '#title': 'Additional visitor one'
+      '#required': true
+      '#states':
+        visible-slide:
+          ':input[name="number_additional_visitors"]':
+            value:
+              greater: '0'
       visitor_2_id:
         '#type': textfield
         '#title': 'Visitor ID'
+        '#required': true
       visitor_2_dob:
         '#type': date
         '#title': 'Date of birth'
-      visitor_2_special_needs:
+        '#required': true
+    visitor_3_details:
+      '#type': fieldset
+      '#title': 'Additional visitor two'
+      '#required': true
+      '#states':
+        visible-slide:
+          ':input[name="number_additional_visitors"]':
+            value:
+              greater: '1'
+      visitor_3_id:
+        '#type': textfield
+        '#title': 'Visitor ID'
+        '#required': true
+      visitor_3_dob:
+        '#type': date
+        '#title': 'Date of birth'
+        '#required': true
+    visitor_4_details:
+      '#type': fieldset
+      '#title': 'Additional visitor three'
+      '#required': true
+      '#states':
+        visible-slide:
+          ':input[name="number_additional_visitors"]':
+            value:
+              greater: '2'
+      visitor_4_id:
+        '#type': textfield
+        '#title': 'Visitor ID'
+        '#required': true
+      visitor_4_dob:
+        '#type': date
+        '#title': 'Date of birth'
+        '#required': true
+    visitor_5_details:
+      '#type': fieldset
+      '#title': 'Additional visitor four'
+      '#required': true
+      '#states':
+        visible-slide:
+          ':input[name="number_additional_visitors"]':
+            value:
+              greater: '3'
+      visitor_5_id:
+        '#type': textfield
+        '#title': 'Visitor ID'
+        '#required': true
+      visitor_5_dob:
+        '#type': date
+        '#title': 'Date of birth'
+        '#required': true
+    visitor_6_details:
+      '#type': fieldset
+      '#title': 'Additional visitor five'
+      '#required': true
+      '#states':
+        visible-slide:
+          ':input[name="number_additional_visitors"]':
+            value:
+              greater: '4'
+      visitor_6_id:
+        '#type': textfield
+        '#title': 'Visitor ID'
+        '#required': true
+      visitor_6_dob:
+        '#type': date
+        '#title': 'Date of birth'
+        '#required': true
+    save_details:
+      '#type': fieldset
+      '#title': 'Remember these visitor details?'
+      '#states':
+        visible:
+          ':input[name="number_additional_visitors"]':
+            value:
+              greater: '0'
+      '#format': container
+      yes_remember_these_visitor_details:
         '#type': checkbox
-        '#title': 'Special requirements'
+        '#title': 'Yes remember these visitor details'
+  special_requirements:
+    '#type': webform_wizard_page
+    '#title': 'Special requirements'
+    '#prev_button_label': Previous
+    '#next_button_label': Next
+    do_you_or_any_other_visitors_have_any_special_requirements_:
+      '#type': radios
+      '#title': 'Do you or any other visitors have any special requirements?'
+      '#description': 'For example, do any visitors require wheelchair access?'
+      '#description_display': before
+      '#options':
+        'yes': 'Yes'
+        'no': 'No'
+      '#options_display': side_by_side
+      '#required': true
+    special_requirements_details:
+      '#type': textarea
+      '#title': 'Tell us about any special requirements you or the other visitors may have'
+      '#maxlength': 1000
+      '#rows': 5
+      '#autocomplete': 'off'
+      '#required': true
+      '#counter_type': character
+      '#counter_minimum': 1
+      '#counter_maximum': 1000
+      '#states':
+        visible-slide:
+          ':input[name="do_you_or_any_other_visitors_have_any_special_requirements_"]':
+            value: 'yes'
   visit_preferred_day_and_time:
     '#type': webform_wizard_page
     '#title': 'Visit details'
@@ -434,7 +578,7 @@ settings:
   form_open_message: ''
   form_close_message: ''
   form_exception_message: ''
-  form_previous_submissions: true
+  form_previous_submissions: false
   form_confidential: false
   form_confidential_message: ''
   form_disable_remote_addr: false
@@ -523,8 +667,11 @@ settings:
     prison_visit_prisoner_category: prison_visit_prisoner_category
     prison_visit_prisoner_subcategory: prison_visit_prisoner_subcategory
     visitor_1_intro: visitor_1_intro
-    visitor_1_special_needs: visitor_1_special_needs
-    visitor_2_special_needs: visitor_2_special_needs
+    add_additional_visitors: add_additional_visitors
+    number_additional_visitors: number_additional_visitors
+    visitor_6_id: visitor_6_id
+    visitor_6_dob: visitor_6_dob
+    yes_remember_these_visitor_details: yes_remember_these_visitor_details
     monday_week_1: monday_week_1
     tuesday_week_1: tuesday_week_1
     wednesday_week_1: wednesday_week_1
@@ -574,11 +721,14 @@ settings:
   draft_pending_multiple_message: ''
   confirmation_type: page
   confirmation_url: ''
-  confirmation_title: ''
-  confirmation_message: ''
+  confirmation_title: 'Prison visit booking complete'
+  confirmation_message: |-
+    <p class="info-notice">
+    We will send you an email shortly to let you know whether your booking request has been successful.  Please allow up to 1 hour for this email to arrive.
+    </p>
   confirmation_attributes: {  }
   confirmation_back: true
-  confirmation_back_label: ''
+  confirmation_back_label: 'Book another prison visit'
   confirmation_back_attributes: {  }
   confirmation_exclude_query: false
   confirmation_exclude_token: false
@@ -678,31 +828,31 @@ handlers:
       sender_name: ''
       subject: OV_IN
       body: |-
+        <pre>
         {
           "SUBMITTED_DATETIME":"[webform_submission:completed:custom:d/m/Y G:i]",
           "VISIT_ORDER_NO":"[webform_submission:values:visitor_order_number]",
           "INMATE_ID":"[webform_submission:values:prisoner_id]",
-          "SPECIAL_REQUIREMENTS":"",
+          "SPECIAL_REQUIREMENTS":"[webform_submission:values:special_requirements_details]",
           "VISITOR_1_ID":"[webform_submission:values:visitor_1_id]",
-          "VISITOR_1_DOB":"[webform_submission:values:visitor_1_dob:custom:d/m/Y 00:00]",
+          "VISITOR_1_DOB":"[webform_submission:values:visitor_1_dob:custom:d/m/Y]",
           "VISITOR_1_EMAIL":"[webform_submission:values:visitor_1_email]",
           "VISITOR_1_PHONE":"[webform_submission:values:visitor_1_telephone]",
           "VISITOR_2_ID":"[webform_submission:values:visitor_2_id]",
-          "VISITOR_2_DOB":"[webform_submission:values:visitor_2_dob:custom:d/m/Y 00:00]",
+          "VISITOR_2_DOB":"[webform_submission:values:visitor_2_dob:custom:d/m/Y]",
           "VISITOR_3_ID":"[webform_submission:values:visitor_3_id]",
-          "VISITOR_3_DOB":"[webform_submission:values:visitor_3_dob:custom:d/m/Y 00:00]",
+          "VISITOR_3_DOB":"[webform_submission:values:visitor_3_dob:custom:d/m/Y]",
           "VISITOR_4_ID":"[webform_submission:values:visitor_4_id]",
-          "VISITOR_4_DOB":"[webform_submission:values:visitor_4_dob:custom:d/m/Y 00:00]",
+          "VISITOR_4_DOB":"[webform_submission:values:visitor_4_dob:custom:d/m/Y]",
           "VISITOR_5_ID":"[webform_submission:values:visitor_5_id]",
-          "VISITOR_5_DOB":"[webform_submission:values:visitor_5_dob:custom:d/m/Y 00:00]",
-          "VISITOR_6_ID":"[webform_submission:values:visitor_6_id]",
-          "VISITOR_6_DOB":"[webform_submission:values:visitor_6_dob:custom:d/m/Y 00:00]",
-          "SLOT1_DATETIME":"[webform_submission:values:slot1_datetime]",
-          "SLOT2_DATETIME":"[webform_submission:values:slot2_datetime]",
-          "SLOT3_DATETIME":"[webform_submission:values:slot3_datetime]",
-          "SLOT4_DATETIME":"[webform_submission:values:slot4_datetime]",
-          "SLOT5_DATETIME":"[webform_submission:values:slot5_datetime]"
+          "VISITOR_5_DOB":"[webform_submission:values:visitor_5_dob:custom:d/m/Y]",
+          "SLOT1_DATETIME":"[webform_submission:values:slot1_datetime:custom:d/m/Y G:i]",
+          "SLOT2_DATETIME":"[webform_submission:values:slot2_datetime:custom:d/m/Y G:i]",
+          "SLOT3_DATETIME":"[webform_submission:values:slot3_datetime:custom:d/m/Y G:i]",
+          "SLOT4_DATETIME":"[webform_submission:values:slot4_datetime:custom:d/m/Y G:i]",
+          "SLOT5_DATETIME":"[webform_submission:values:slot5_datetime:custom:d/m/Y G:i]"
         }
+        </pre>
       excluded_elements:
         prison_visit_prison_name: prison_visit_prison_name
         prison_visit_prison_name_key: prison_visit_prison_name_key
@@ -715,9 +865,6 @@ handlers:
         prison_visit_prisoner_category: prison_visit_prisoner_category
         prison_visit_prisoner_subcategory: prison_visit_prisoner_subcategory
         visitor_1_intro: visitor_1_intro
-        visitor_1_special_needs: visitor_1_special_needs
-        visitor_1_add_visitors: visitor_1_add_visitors
-        visitor_2_special_needs: visitor_2_special_needs
         visit_details: visit_details
         monday_week_1: monday_week_1
         tuesday_week_1: tuesday_week_1
@@ -751,10 +898,10 @@ handlers:
       exclude_empty: true
       exclude_empty_checkbox: false
       exclude_attachments: false
-      html: false
+      html: true
       attachments: false
       twig: false
-      theme_name: ''
+      theme_name: classy
       parameters: {  }
       debug: false
   prison_visit_booking:
