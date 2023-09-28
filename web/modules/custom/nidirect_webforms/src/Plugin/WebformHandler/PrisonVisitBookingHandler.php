@@ -481,8 +481,8 @@ class PrisonVisitBookingHandler extends WebformHandlerBase
 
       // Reset hidden elements keeping track of preferred time slots.
       for ($i = 1; $i <= 5; $i++) {
-        $form_state->setValue('slot' . $i . '_datetime', NULL);
-        $webform_submission->setElementData('slot' . $i . '_datetime', NULL);
+        $form_state->setValue('slot' . $i . '_datetime', '');
+        $webform_submission->setElementData('slot' . $i . '_datetime', '');
         $form_state->setValue('slot' . $i . '_pretty_datetime', NULL);
         $webform_submission->setElementData('slot' . $i . '_pretty_datetime', NULL);
       }
