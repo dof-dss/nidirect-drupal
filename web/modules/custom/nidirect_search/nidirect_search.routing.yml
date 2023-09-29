@@ -1,0 +1,31 @@
+entity.solr_elevated_id.collection:
+  path: '/admin/config/search/solr-elevated-id'
+  defaults:
+    _entity_list: 'solr_elevated_id'
+    _title: 'Solr elevated id configuration'
+  requirements:
+    _permission: 'administer search api'
+
+entity.solr_elevated_id.add_form:
+  path: '/admin/config/search/solr-elevated-id/add'
+  defaults:
+    _entity_form: 'solr_elevated_id.add'
+    _title: 'Add a Solr elevated ID'
+  requirements:
+    _permission: 'administer search api'
+
+entity.solr_elevated_id.edit_form:
+  path: '/admin/config/search/solr-elevated-id/{solr_elevated_id}'
+  defaults:
+    _entity_form: 'solr_elevated_id.edit'
+    _title: 'Edit a Solr elevated ID'
+  requirements:
+    _permission: 'administer search api'
+
+entity.solr_elevated_id.delete_form:
+  path: '/admin/config/search/solr-elevated-id/{solr_elevated_id}/delete'
+  defaults:
+    _entity_form: 'solr_elevated_id.delete'
+    _title: 'Delete a Solr elevated ID'
+  requirements:
+    _permission: 'administer search api'

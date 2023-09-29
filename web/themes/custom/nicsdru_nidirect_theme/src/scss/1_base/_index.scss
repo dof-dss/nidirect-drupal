@@ -1,0 +1,37 @@
+/*
+ * @file
+ * Helper partial to outline the order partials should be loaded in this section - used for reference & in the style guide.
+ */
+
+// Base
+//
+// Base rules are the defaults. They are almost exclusively single element selectors but it could include attribute
+// selectors, pseudo-class selectors, child selectors or sibling selectors. Essentially, a base style says that wherever
+// this element is on the page, it should look like this.
+//
+// The files in this section applies some default styling to HTML elements. Resets are based on normalize.css, a small
+// CSS file that provides better cross-browser consistency in the default styling of HTML elements. It’s a modern,
+// HTML5-ready, alternative to the traditional CSS reset. @see http://nicolasgallagher.com/about-normalize-css/
+//
+// Component classes can override these styles, but if no class applies a style to an HTML element, the styles will
+// outlined in this section of the guide will be the ones displayed.
+//
+// Weight: -10
+//
+// Style guide: base
+
+// Ensure any custom fonts get loaded first to minimize front-end performance impact.
+@import 'fonts';
+
+// Normalize-scss is broken into modular pieces to make it easier to edit.
+@import 'root';
+@import 'html5';
+@import 'links';
+@import 'headings';
+@import 'text';
+@import 'grouping';
+@import 'embedded';
+@import 'forms';
+@import '../3_components/form/form';
+@import 'tables';
+

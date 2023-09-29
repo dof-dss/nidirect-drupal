@@ -1,0 +1,29 @@
+/*
+ * @file
+ * Helper partial to outline the order layout files should be loaded - used for reference & in the style guide.
+ */
+
+// Layouts
+//
+// Layout rules divide the page into sections. Layouts hold one or more modules / components together.
+//
+// The layout styling for major parts of the page are created 'mobile-first' using the benefits of flexbox and cssgrid,
+// declaring appropriate fallback's where the technology is not widely enough implemented in currently used web
+// browsers. We utilise auto-prefixer to help in this regard to ensure that when prefixing for a declaration is required
+// for a particular vendor, that the developer need not be concerned with making sure this is done or conversely when a
+// prefix should no longer reasonably be required, that there are no additional rules added to the declaration.
+//
+// As NICS has comparatively few variations in layouts, therefore layouts can be covered with relatively little code.
+// This section of the styleguide is essentially broken into 2 main areas - common classes and utilities that are
+// required and used for layout, then there are a series of individual single, two & three column layouts. There are
+// some components which take the concepts of layout and extrapolate them further for the specific purposes of that
+// component, for example the header / footer.
+//
+// Weight: -8
+//
+// Style guide: layouts
+@import 'layouts-common';
+@import 'nics-1-col-layouts';
+@import 'nics-2-col-layouts';
+@import 'nics-3-col-layouts';
+

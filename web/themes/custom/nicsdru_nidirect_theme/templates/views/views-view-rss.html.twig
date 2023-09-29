@@ -1,0 +1,32 @@
+{#
+/**
+ * @file
+ * Template for feed displays that use the RSS style.
+ *
+ * Available variables:
+ * - link: The link to the feed (provided by core).
+ * - feed_url: The full link to the feed (the view path).
+ * - namespaces: The XML namespaces (added automatically).
+ * - title: The title of the feed (as set in the view).
+ * - description: The feed description (from feed settings).
+ * - langcode: The language encoding.
+ * - channel_elements: The formatted channel elements.
+ * - items: The feed items themselves.
+ *
+ * @see nicsdru_nidirect_preprocess_views_view_rss()
+ *
+ * @ingroup themeable
+ */
+#}
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0" xml:base="{{ feed_url }}"{{ namespaces }}>
+  <channel>
+    <title>{{ title }}</title>
+    <link>{{ feed_url }}</link>
+    <description>{{ description }}</description>
+    <language>{{ langcode }}</language>
+    <atom:link href="{{ feed_url }}" rel="self" type="application/rss+xml" />
+    {{ channel_elements }}
+    {{ items }}
+  </channel>
+</rss>

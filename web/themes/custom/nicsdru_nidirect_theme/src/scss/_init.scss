@@ -1,0 +1,63 @@
+// Initialization partial
+//
+// To make it easier to use all variables and mixins in any Sass file in this
+// project, each .scss file has a `@import 'init';` declaration. The _init.scss
+// file is in charge of importing all the other partials needed for the
+// project.
+//
+// The initialization partial is organized in this way:
+// - First we set any shared Sass variables.
+// - Next we import Sass modules.
+// - Last we define our custom functions and mixins for this project.
+//
+// Weight: 10
+//
+// Style guide: init
+
+// The following Sass functions/mixins are required to generate some variables'
+// values, so we load them first.
+@import '../../node_modules/breakpoint-sass/stylesheets/breakpoint';
+@import '../../node_modules/chroma-sass/sass/chroma/functions';
+
+@import 'init/colors';
+@import 'init/variables';
+@import 'init/typography';
+
+// 3rd party libraries
+//
+// The following sass modules are shared with all .scss files:
+// - [Breakpoint](http://breakpoint-sass.com/)
+// - [Chroma-sass](http://johnalbin.github.io/chroma/)
+// - [Compass vertical rhythm](http://compass-style.org/)
+// For compass we we only load vertical rhythm support
+// Note that this is loaded in standalone files that are developed for node sass further information can be found
+// @see https://github.com/Igosuki/compass-mixins
+//
+// Weight: -7
+//
+// Style guide: init.libraries
+@import '../../node_modules/chroma-sass/sass/chroma';
+@import '../../node_modules/chroma-sass/sass/chroma/kss';
+@import '../../node_modules/nicsdru_origins_theme/src/scss/init/compass-vr/compass';
+
+// Functions
+//
+// Custom functions used on this site. Custom functions are generally used across a number of NICS Drupal themes,
+// therefore import these from the nicsdru_origins_theme via a node_module set up for that theme.
+//
+// Weight: -5
+//
+// Style guide: init.functions
+@import '../../node_modules/nicsdru_origins_theme/src/scss/init/helpers/headings';
+@import '../../node_modules/nicsdru_origins_theme/src/scss/init/helpers/strip-unit';
+
+// Mixins
+//
+// Custom mixins used on this site.
+//
+// Weight: -6
+//
+// Style guide: init.mixins
+@import '../../node_modules/nicsdru_origins_theme/src/scss/init/visually-hidden/visually-hidden';
+@import '../../node_modules/nicsdru_origins_theme/src/scss/init/responsive-typo/resp-typo';
+@import 'init/links/links';

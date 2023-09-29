@@ -1,0 +1,25 @@
+/*
+ * @file
+ * Styling for Google Maps.
+ */
+@import '../../init';
+
+.gmap {
+  display: block;
+  height: 400px;
+  width: 100%;
+
+  // Ensure highly visible focus state for gmap links and buttons.
+  a,
+  button {
+    &:focus,
+    &:focus-visible {
+      outline: 3px solid rgb(77, 144, 254); // Outline color on maps.google.com.
+    }
+  }
+
+  // Fix issue with theme default link styles bleeding through to Google Map links.
+  a:focus {
+    background-color: transparent;
+  }
+}

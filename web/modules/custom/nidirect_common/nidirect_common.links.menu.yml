@@ -1,0 +1,60 @@
+nidirect.main.home:
+  title: 'Home'
+  route_name: <front>
+  menu_name: main
+  weight: 4
+nidirect.main.news:
+  title: 'News'
+  url: internal:/news
+  menu_name: main
+  weight: 5
+nidirect.main.contacts:
+  title: 'Contacts'
+  url: internal:/contacts
+  menu_name: main
+  weight: 6
+nidirect.main.help:
+  title: 'Help'
+  url: internal:/taxonomy/term/402
+  menu_name: main
+  weight: 7
+nidirect.main.feedback:
+  deriver: \Drupal\nidirect_common\Plugin\Derivative\NidirectFeedbackmenuLinkDerivative
+  class: \Drupal\nidirect_common\Plugin\Menu\NidirectFeedbackMenu
+nidirect.footer.copyright:
+  title: 'Crown copyright'
+  url: internal:/articles/crown-copyright
+  menu_name: footer
+  weight: 4
+nidirect.footer.terms_conditions:
+  title: 'Terms and conditions'
+  url: internal:/articles/terms-and-conditions
+  menu_name: footer
+  weight: 5
+nidirect.footer.privacy:
+  title: 'Privacy'
+  url: internal:/articles/nidirect-web-service-privacy-notice
+  menu_name: footer
+  weight: 6
+nidirect.footer.cookies:
+  title: 'Cookies'
+  url: internal:/articles/cookies
+  menu_name: footer
+  weight: 7
+
+nidirect.footer_related_sites.govuk:
+  title: 'gov.uk'
+  url: https://gov.uk
+  menu_name: footer-related-sites
+  weight: 4
+nidirect.footer_related_sites.nibusinessinfo:
+  title: 'nibusinessinfo.co.uk'
+  url: https://www.nibusinessinfo.co.uk
+  menu_name: footer-related-sites
+  weight: 5
+
+nidirect.admin_config:
+  title: 'NIDirect'
+  description: 'Manage NIDirect settings'
+  parent: system.admin_config
+  route_name: nidirect.admin_config

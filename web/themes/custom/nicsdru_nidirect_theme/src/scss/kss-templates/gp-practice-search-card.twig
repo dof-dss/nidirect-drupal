@@ -1,0 +1,42 @@
+{#
+/**
+ * @file
+ * Component for a breadcrumb trail.
+ *
+ * Variables:
+ * - modifier_class: [string] Classes to modify the default component styling.
+ * - heading: [string] Accessible heading.
+ * - breadcrumb: [array] The breadcrumb trail items. Each item is an object
+ *   containing:
+ *   - text: [string] Text of the item.
+ *   - url: [string] URL of the item (optional).
+ */
+#}
+<div class="ga-main card-deck border-bottom search-results search-results--gp-practice">
+  <article class="card">
+    <a href="#" rel="bookmark">
+      <h3 class="card__title">Name of Surgery / Practice</h3>
+      {% spaceless %}
+      <ul class="list--no-bullet list--inline list--gp-practice-members">
+        <li class="list-item">Dr J Bloggs</li>
+        <li class="list-item">Dr A N Other</li>
+      </ul>
+      {% endspaceless %}
+      {% spaceless %}
+        <p class="adr" translate="no">
+          <span class="street-address">Street address</span>
+          <span class="locality">Locality</span>
+          <span class="postal-code">Postcode</span>
+          <span class="country">Country</span>
+        </p>
+      {% endspaceless %}
+      <p class="visually-hidden">The surgery offers the following online services</p>
+      {% spaceless %}
+        <ul class="list--no-bullet list--inline list--gp-online-services">
+          <li class="list-item">Online Appointments</li>
+          <li class="list-item">Repeat prescriptions</li>
+        </ul>
+      {% endspaceless %}
+    </a>
+  </article>
+</div>

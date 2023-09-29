@@ -1,0 +1,260 @@
+<?php
+
+/**
+ * @file
+ * Contains nidirect_driving_instructors.module.
+ */
+
+use Drupal\Component\Utility\Html;
+use Drupal\Component\Utility\Xss;
+use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\Core\Url;
+use Drupal\node\NodeInterface;
+use Drupal\search_api\Query\QueryInterface;
+use Drupal\views\ViewExecutable;
+
+/**
+ * Implements hook_help().
+ */
+function nidirect_driving_instructors_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    // Main module help for the nidirect_driving_instructors module.
+    case 'help.page.nidirect_driving_instructors':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('Code and hooks for driving instructor nodes, edit form, search form and results') . '</p>';
+      return $output;
+
+    default:
+  }
+}
+
+/**
+ * Implements hook_form_alter().
+ */
+function nidirect_driving_instructors_form_alter(&$form, &$form_state, &$form_id) {
+  // Don't display the sort/order by options on the
+  // driving instructor exposed search form.
+  if ($form['#id'] == 'views-exposed-form-driving-instructors-driving-instructor-results') {
+    $form['sort_by']['#type'] = 'hidden';
+    $form['sort_order']['#type'] = 'hidden';
+
+    // Add some form help.
+    $help = [
+      '#theme' => 'item_list',
+      '#list_type' => 'ul',
+      '#items' => [
+        t('Enter your postcode to find instructors who work in your area'),
+        t('You can also find instructors by name or ADI/AMI number if you know it'),
+      ],
+    ];
+    $form['help'] = [
+      '#type' => 'item',
+      'content' => $help,
+    ];
+
+    // Add postcode placeholder example.
+    $form['search_api_fulltext']['#placeholder'] = t("e.g. 'BT1'");
+
+    // Hide exposed categories radios.
+    $form['categories']['#type'] = 'hidden';
+
+    // Add our own facet filters to select driving instruction categories.
+    // Load categories from taxonomy - we want the top level categories.
+    $terms = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadTree('drive_instr_categories', $parent = 0, $max_depth = 1);
+
+    // Build radio options.
+    $options['All'] = t('All');
+    foreach ($terms as $term) {
+      $options['categories:' . $term->tid] = t($term->name);
+    }
+
+    // Build the radios.
+    // See driving instructors facet source configuration (/admin/config/search/facets)
+    // for the correct filter key to use.
+    $form['f[0]'] = [
+      '#id' => Html::getUniqueId('edit-categories'),
+      '#type' => 'radios',
+      '#title' => t('Filter by type of tuition'),
+      '#title_display' => 'above',
+      '#options' => $options,
+      '#default_value' => 'All',
+      '#attributes' => [
+        'class' => ['search-options'],
+      ],
+    ];
+
+    // Reorder exposed search form fields.
+    $form['help']['#weight'] = 1;
+    $form['search_api_fulltext']['#weight'] = 2;
+    $form['actions']['#weight'] = 3;
+    $form['f[0]']['#weight'] = 4;
+
+    // Remove help and category radios on results page.
+    $inputs = $form_state->getUserInput();
+    if (!empty($inputs['search_api_fulltext'])) {
+      unset($form['help']);
+      unset($form['f[0]']);
+    }
+  }
+
+  // Adjustments to the driving instructor node add/edit form.
+  if (($form_id == "node_driving_instructor_form")
+    || ($form_id == "node_driving_instructor_edit_form")) {
+
+    // Display postcode checkboxes inline.
+    $form['field_di_areas']['#attributes']['class'][] = 'container-inline';
+
+    // Make title field readonly and set a placeholder.
+    if (empty($form['title']['widget'][0]['value']['#default_value'])) {
+      $form['title']['widget'][0]['value']['#default_value'] = ' ';
+    }
+    $form['title']['widget'][0]['value']['#description'] =
+      t('You cannot edit the title. It is created automatically from the first name, last name, and ADI number.');
+    $form['title']['#disabled'] = 'TRUE';
+    $form['#after_build'][] = 'nidirect_driving_instructors_after_build';
+  }
+}
+
+/**
+ * Driving instructor node form #after_build function.
+ *
+ * For usability on the driving instructor search page, instructors are
+ * displayed using two parent terms, driving instruction and motorcycle
+ * instruction. We don't want instructors ever to be tagged with these
+ * terms so we'll hide them from the list.
+ */
+function nidirect_driving_instructors_after_build($form, &$form_state) {
+  $categories = &$form['field_di_categories']['widget']['#options'];
+
+  foreach ($categories as $tid => $label) {
+    if (substr($label, 0, 1) != '-') {
+      unset($categories[$tid]);
+    }
+    else {
+      $categories[$tid] = substr($label, 1);
+    }
+  }
+  asort($categories);
+
+  return $form;
+}
+
+/**
+ * Implements hook_entity_presave().
+ */
+function nidirect_driving_instructors_entity_presave(EntityInterface $entity) {
+  // This will fire when nodes are created or edited.
+  if ($entity instanceof NodeInterface && $entity->bundle() === 'driving_instructor') {
+    // Construct the node title for driving instructors based
+    // on name and ADI number.
+    $forename = Xss::filter($entity->get('field_di_firstname')->value);
+    $surname = Xss::filter($entity->get('field_di_lastname')->value);
+    $adi = Xss::filter($entity->get('field_di_adi_no')->value);
+    $title = $forename . ' ' . $surname . ' (ADI No. ' . $adi . ')';
+    $entity->setTitle($title);
+  }
+}
+
+/**
+ * Implements hook_search_api_query_alter().
+ */
+function nidirect_driving_instructors_search_api_query_alter(QueryInterface $query) {
+  $display_plugin = $query->getDisplayPlugin();
+  if (!empty($display_plugin) && $display_plugin->getPluginDefinition()['view_display'] == "driving_instructor_results") {
+    $keys = $query->getKeys();
+
+    // If present remove the second part of any postcode entry as we only want
+    // to search against the first part of the postcode.
+    if ($keys) {
+      // Remove the second part of any postcode queries.
+      foreach ($keys as $id => $key) {
+        // Match inward codes.
+        if (preg_match('/^[0-9]{1}[a-z]{2}$/i', $key)) {
+          unset($keys[$id]);
+        }
+        // Match full codes with no spaces.
+        if (preg_match('/^bt.*([0-9]{1}[a-z]{2})/i', $key, $matches)) {
+          $keys[$id] = str_replace($matches[1], '', $key);
+        }
+      }
+      $query->keys($keys);
+    }
+  }
+}
+
+/**
+ * Implements hook_views_pre_render().
+ */
+function nidirect_driving_instructors_views_pre_render(ViewExecutable $view) {
+  if ($view->id() == 'driving_instructors' && $view->current_display == 'driving_instructor_results') {
+
+    // Hide 'no results' on initial View display.
+    if ($view->exposed_raw_input['search_api_fulltext'] == '') {
+      unset($view->empty['area']);
+    }
+
+    // Display singular or plural result count.
+    $item_count = $view->pager->total_items ?? 0;
+
+    $result_count = Drupal::translation()->formatPlural(
+      $view->pager->total_items,
+      '@number result',
+      '@number results', [
+        '@number' => $item_count,
+      ]
+    );
+
+    // Generate sort order link based on current URI parameters.
+    $uri = Drupal::request()->getUri();
+    if (preg_match('/sort_by=field_di_lastname/', $uri)) {
+      // If sorted by last name, change to sort by relevance.
+      $uri = str_replace('field_di_lastname', 'search_api_relevance', $uri);
+      $uri = str_replace('sort_order=ASC', 'sort_order=DESC', $uri);
+      $link_text = t('Sort by relevance');
+    }
+    elseif (preg_match('/sort_by=search_api_relevance/', $uri)) {
+      // If sorted by relevance, change to sort alphabetically.
+      $uri = str_replace('search_api_relevance', 'field_di_lastname', $uri);
+      $uri = str_replace('sort_order=DESC', 'sort_order=ASC', $uri);
+      $link_text = t('Sort alphabetically');
+    }
+    else {
+      // Set default sort to alphabetically.
+      $uri .= '&sort_by=field_di_lastname';
+      $link_text = t('Sort alphabetically');
+    }
+
+    if ($view->pager->total_items > 0) {
+      $view->attachment_before = [
+        'result_count' => [
+          '#type' => 'html_tag',
+          '#tag' => 'h2',
+          '#value' => $result_count,
+          'sort_by' => [
+            '#title' => $link_text,
+            '#type' => 'link',
+            '#url' => Url::fromUri($uri),
+            '#prefix' => '<span class="subtitle">',
+            '#suffix' => '</span>',
+          ],
+        ],
+      ];
+    }
+  }
+}
+
+/**
+ * Implements hook_preprocess_facets_item_list().
+ */
+function nidirect_driving_instructors_preprocess_facets_item_list(array &$variables) {
+  // Turn off JS from nidirect_common/link-manager.js which would otherwise break the facet links.
+  if (empty($variables['items'])) {
+    return;
+  }
+
+  foreach ($variables['items'] as $key => &$facet) {
+    $facet['value']['#attributes']['data-self-ref'] = 'false';
+  }
+}

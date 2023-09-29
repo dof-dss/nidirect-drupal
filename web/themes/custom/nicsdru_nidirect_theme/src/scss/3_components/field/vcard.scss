@@ -1,0 +1,70 @@
+/*
+ * @file
+ * Provides the layout styles for content output from field_summary for any entity.
+ */
+@import '../../init';
+
+.vcard {
+
+  &__item {
+    display: flex;
+    flex-flow: row wrap;
+    align-items: baseline;
+    margin: 0 0 .25em;
+
+    @include breakpoint($tab) {
+      margin: 0 0 .3334em;
+    }
+
+    .label-inline,
+    .title {
+      display: inline-block;
+      min-width: fit-content;
+
+      &::after {
+        content: ':';
+      }
+    }
+
+    .value,
+    .url {
+      margin: 0 .5em;
+    }
+
+    .supplementary {
+      @include adjust-font-size-to(14px);
+      order: 3;
+      flex: 1 0 50%;
+      color: $ash-grey;
+
+      @include breakpoint($tab) {
+        @include adjust-font-size-to(16px);
+      }
+    }
+  }
+
+  .email {
+    margin-top: 1.8rem;
+  }
+
+  a,
+  a:hover {
+    box-shadow: none;
+    text-decoration: underline;
+    text-underline-position: under;
+    // sass-lint:disable no-misspelled-properties
+    text-decoration-thickness: 1px;
+    // sass-lint:enable no-misspelled-properties
+  }
+
+  a:hover {
+    text-decoration-color: $brand-secondary;
+    // sass-lint:disable no-misspelled-properties
+    text-decoration-thickness: 2px;
+    // sass-lint:enable no-misspelled-properties
+  }
+
+  a[href^='tel:'] {
+    white-space: nowrap;
+  }
+}

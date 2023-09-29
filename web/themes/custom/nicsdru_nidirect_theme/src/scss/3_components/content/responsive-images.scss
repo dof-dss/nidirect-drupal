@@ -1,0 +1,221 @@
+/*
+ * @file
+ * Provides the styling for inline responsive images.
+ */
+@import '../../init';
+
+@mixin media-image-float {
+  /*
+   * Simple mixin to output CSS for floating inline, inline_expandable, portrait_float and
+   * portrait_float_expandable images.
+   */
+
+  // Media is full width by default.
+  width: 100%;
+  height: auto;
+
+  // Float media when display gets width enough ...
+  @include breakpoint($mob) {
+    clear: right;
+    float: right;
+    width: 48.3871%;
+    max-width: 300px;
+    margin-left: 1.8rem;
+  }
+}
+
+// The media-image wrapper wraps all responsive images.
+.media-image {
+  width: 100%;
+  position: relative;
+  margin: 1em 0 1.5em;
+
+  // It can act as a modal wrapper for full size expandable images.
+  &.thwooped-modal {
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 10000;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    background-color: rgba(0, 0, 0, .9);
+    text-align: center;
+
+    a.thwooper {
+      display: flex;
+      flex-flow: column nowrap;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      height: 100%;
+
+      img,
+      figure {
+        width: auto;
+        height: auto;
+        max-width: 100%;
+        max-height: 100%;
+      }
+    }
+  }
+
+  // Defaults for all images and figures.
+  img,
+  figure {
+    width: 100%;
+    height: auto;
+    margin: 0;
+  }
+
+  // Floated styles.
+  &[data-picture-mapping='inline'],
+  &[data-picture-mapping='portrait_float'] {
+
+    > figure,
+    > img {
+      @include media-image-float;
+    }
+  }
+
+  &[data-picture-mapping='inline_expandable'],
+  &[data-picture-mapping='portrait_float_expandable'] {
+
+    // Remove margin from .media-image wrapper. Margin is added to the .thwooper wrapped image instead.
+    margin: 0;
+
+    > .thwooper {
+      margin: 0 0 1.5em;
+
+      &:link,
+      &:focus,
+      &:hover,
+      &:active {
+        text-decoration: none;
+        background: transparent;
+        box-shadow: none;
+      }
+
+      > img,
+      > figure {
+        margin: 0;
+      }
+
+      @include breakpoint($mob) {
+        @include media-image-float;
+        animation: thwoop-shrink .3s;
+        animation-fill-mode: backwards;
+
+        &.thwooped {
+          margin: 0 0 1.5em;
+          width: 100%;
+          max-width: 100%;
+          animation: thwoop-expand .3s;
+          animation-fill-mode: forwards;
+        }
+      }
+    }
+  }
+
+  [data-picture-mapping='inline_xl_expandable'] ,
+  [data-picture-mapping='portrait_full_expandable']  {
+    img {
+      max-width: 960px;
+      max-height: 640px;
+      transition: max-width 1s, max-height 1s;
+    }
+  }
+
+  figure {
+
+    img {
+      display: block;
+      margin: 0;
+    }
+
+    figcaption {
+      display: block;
+      font-style: italic;
+      text-align: center;
+      padding: .5em;
+      background-color: $grey-lightest;
+      color: $text;
+    }
+  }
+}
+
+a.thwooper { // Added by JS after all expandable images - when clicked it adds "thwooped" class to img.
+  display: block;
+  position: relative;
+
+  &:link,
+  &:hover,
+  &:active,
+  &:visited {
+    background-color: transparent;
+    text-decoration: none;
+    box-shadow: none;
+    outline: none;
+  }
+
+  &::before {
+    content: '';
+    // Display is disabled by default and enabled within certain breakpoints
+    // depending on image style the thwooper is acting on.
+    display: block;
+    position: absolute;
+    margin: 0;
+    font-size: .1px;
+    line-height: 0;
+
+    width: 44px;
+    height: 44px;
+    padding: 4px;
+    right: 5px;
+    top: 5px;
+    z-index: 10;
+    background: rgba(0, 0, 0, .75) resolve('img-expand-icon-x2.png') 50% 50% no-repeat;
+    background-size: 24px 24px;
+    transition: top .5s, filter .5s;
+  }
+
+  &:focus::before,
+  &:hover::before {
+    outline: 2px solid rgba(255, 255, 255, .9);
+    border: 0;
+  }
+
+  // Swap to a shrink image when img is 'thwooped'.
+  &.thwooped::before {
+    background-image: resolve('img-shrink-icon-x2.png');
+    background-color: #ff4da9;
+  }
+}
+
+@keyframes thwoop-expand {
+  0% {
+    width: 48.3871%;
+    max-width: 300px;
+    margin-left: 1em;
+  }
+
+  100% {
+    width: 100%;
+    max-width: 100%;
+    margin-left: 0;
+  }
+}
+
+@keyframes thwoop-shrink {
+  0% {
+    width: 100%;
+    max-width: 100%;
+    margin-left: 0;
+  }
+
+  100% {
+    width: 48.3871%;
+    max-width: 300px;
+    margin-left: 1em;
+  }
+}

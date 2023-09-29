@@ -1,0 +1,11 @@
+services:
+  # Takes over from \Drupal\system\PathBasedBreadcrumbBuilder.
+  nidirect_taxonomy_navigator.breadcrumb:
+    class: Drupal\nidirect_taxonomy_navigator\TaxonomyAdminBreadcrumb
+    arguments: ['@router.request_context', '@access_manager', '@router', '@path_processor_manager', '@config.factory',  '@title_resolver', '@current_user', '@path.current', '@path.matcher', '%nidirect_taxonomy_navigator.matches%']
+    tags:
+      - { name: breadcrumb_builder, priority: 5000 }
+
+parameters:
+  nidirect_taxonomy_navigator.matches:
+    - entity.taxonomy_term.add_form

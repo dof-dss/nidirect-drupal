@@ -1,0 +1,25 @@
+{#
+/**
+ * @file
+ * Theme override to display a thin banner media image.
+ *
+ * Available variables:
+ * - name: Name of the media.
+ * - content: Media content.
+ *
+ * @see template_preprocess_media()
+ */
+#}
+{%
+  set classes = [
+  'media-image',
+  'banner',
+  'banner--thin'
+]
+%}
+<div{{ attributes.addClass(classes).setAttribute('role', 'presentation') }}>
+  {{ title_suffix.contextual_links }}
+  {% if content %}
+    {{ content }}
+  {% endif %}
+</div>

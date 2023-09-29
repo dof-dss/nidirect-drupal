@@ -1,0 +1,1069 @@
+/*
+ * @file
+ * Provides reset form styles for forms in layout builder.
+ */
+
+@import '../../init';
+@import 'button/button-defs';
+
+// The layout builder uses the frontend theme rather than an admin theme. This means admin UI componenets, normally
+// styled by the admin theme, need styled in the frontend - and this is complex and difficult.
+// See https://www.drupal.org/project/drupal/issues/2195695.
+//
+// There are contrib solutions to applying admin themes to layout builder admin UIs - but your frontend theme is still
+// in play - so you end up with a mishmash of frontend and admin themes both applying styling to forms.
+//
+// The styling here is an attempt to cater for styling of admin UI components in frontend code.  There are a number of
+// assumptions:
+//   - The Layout Builder Modal module is installed and configured to use the frontend theme.
+//   - The Media Library module is installed and used for adding any media to layout builder blocks.
+//
+// Major areas covered:
+//   - The layout builder interface itself (has form controls for saving the layout and setting moderation state, etc).
+//   - Block update and configure forms which are displayed in a model via the Layout Builder Modal module.
+//   - Media library forms appearing in modals.
+//   - Paragraphs multi-field entities with drag-and-drop to re-order display.
+//   - Some minimal styling of jquery ui components (NOTE: jquery ui may get removed in Drupal 9)
+//
+// TODO: break this file down into smaller partials.
+// TODO: remove dependencies and make as self-contained as possible.
+
+.layout-builder-form,
+.layout-builder-update-block,
+.layout-builder-configure-block,
+.media-library-wrapper form,
+.js-media-library-add-form,
+.media-form {
+
+  max-width: initial;
+
+  // Quick fix to stop "Please wait" displaying with the ajax throbber.  TODO: find a better fix.
+  .ajax-spinner__label {
+    @include visually-hidden;
+  }
+
+  > .form-wrapper {
+    margin: 1em 0;
+  }
+
+  .form-item {
+    padding: 0;
+    margin: 1em 0;
+
+    &.form-item-settings-admin-label {
+
+      // Displays the name of the block being edited - make it big like a title.
+      font-size: 24px;
+      line-height: 30px;
+      margin: .3334em 0 .5rem;
+      color: $brand-primary-dark;
+
+      label {
+        display: none;
+      }
+    }
+
+    &.form-item-settings-label-display {
+      // Tighten up the "display title" checkbox to the title field.
+      margin: 0;
+    }
+  }
+
+  fieldset.form-item {
+
+    margin: 1em 0;
+
+    legend {
+      font-size: 2rem;
+      line-height: 2.8rem;
+      margin: 0 0 .8rem;
+
+      @include breakpoint($tab, $no-query: true) {
+        font-size: 2.1rem;
+      }
+    }
+
+    .fieldset-wrapper {
+      background-color: #eff6fc;
+      padding: .5em;
+    }
+  }
+
+  .form-item .container-inline {
+    margin: 1em 0;
+  }
+
+  label {
+    font-weight: bold;
+    color: #444;
+    margin: 4px 0;
+  }
+
+  input + label {
+    font-weight: normal;
+    color: inherit;
+    margin: 0;
+  }
+
+  [type='text'],
+  [type='search'],
+  [type='tel'],
+  [type='url'],
+  [type='email'],
+  [type='password'],
+  [type='date'],
+  [type='time'],
+  [type='number'],
+  [type='file'],
+  textarea {
+    width: auto;
+  }
+
+  .form-text,
+  .form-tel {
+    margin: 0;
+  }
+
+  .description {
+    margin: .5em 0;
+  }
+
+  // More compact and plainer checkbox/radio options
+  .form-type-checkbox,
+  .form-type-radio {
+
+    @include breakpoint($tab) {
+      font-size: 1.6rem;
+    }
+
+    font-size: 1.4rem;
+
+    input {
+      margin: .5625em .5em;
+    }
+
+    label.option {
+      width: auto;
+      min-height: 3.6rem;
+      line-height: 1.5em;
+      padding-top: .7rem;
+      padding-bottom: .4rem;
+    }
+  }
+
+  // More compact selects.
+  select {
+    margin: 0;
+    display: unset;
+    height: 2em;
+    min-height: unset;
+    padding: 4px 30px 4px 10px;
+  }
+
+  // Reset Chosen select dropdown styles.
+  .chosen-container {
+    padding: 0;
+    border-width: 0;
+    background-image: none;
+    height: auto;
+  }
+
+  .chosen-search-input {
+    min-height: auto;
+  }
+
+    // All buttons smaller than usual except primary buttons.
+  .button:not(.button--primary) {
+    @include btn(small);
+  }
+
+  .dropbutton-widget .button {
+    color: $charcoal;
+  }
+
+  .button--primary {
+    @include btn(medium);
+    @include btn-color($btn-primary);
+  }
+
+  table {
+    width: 100%;
+
+    .form-checkbox {
+      position: static;
+      min-height: unset;
+      margin: 0;
+    }
+
+    th,
+    td {
+      font-size: 1.4rem;
+      vertical-align: middle;
+      padding: .8rem;
+      border-left: 0;
+      border-right: 0;
+      border-color: $grey-medium;
+      background-color: #fff;
+    }
+
+    td.views-field-thumbnail__target-id {
+      text-align: center;
+      width: 240px;
+      font-size: 0;
+      line-height: 0;
+    }
+
+    th {
+      background-color: $ash-grey;
+      color: #fff;
+      font-size: 1.6rem;
+      font-weight: bold;
+
+      > * {
+        color: #fff;
+      }
+
+      > .label {
+        font-weight: bold;
+      }
+
+      &.views-field-name {
+        width: 220px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    }
+  }
+
+  // Tables with draggable rows.
+  .tabledrag-toggle-weight {
+    @include btn--link-inline;
+    font-size: 1.4rem;
+  }
+
+  .tabledrag-changed-warning.messages--warning {
+    font-size: 15px;
+    padding-left: 48px;
+    background-size: 24px;
+    background-position: 12px 12px;
+
+    .tabledrag-changed {
+      display: none;
+    }
+  }
+
+  tr.draggable {
+
+    &.drag td {
+      opacity: .6667;
+    }
+
+    td {
+      padding: .5em;
+      border-top: 3px solid #fff;
+      border-bottom: 3px solid #fff;
+      background-color: $brand-primary-light;
+      vertical-align: top;
+
+      &.field-multiple-drag,
+      &.delta-order {
+        vertical-align: top;
+        text-align: center;
+        padding: 7px 0;
+
+        .form-item {
+          margin: 0;
+        }
+
+        .form-select {
+          margin: .5rem;
+        }
+      }
+    }
+
+    th.tabledrag-hide {
+      text-align: center;
+    }
+
+    a.tabledrag-handle {
+      display: inline-block;
+      float: none;
+      width: 36px;
+      height: 36px;
+      padding: 0;
+      margin: 1px 0 0 6px !important;
+      cursor: move;
+      text-decoration: none;
+
+      &:hover {
+        text-decoration: none;
+      }
+
+      .handle {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        background: url('/core/misc/icons/787878/move.svg') no-repeat center center;
+        background-size: 20px;
+
+      }
+
+      &:hover .handle,
+      &:focus .handle {
+        background-image: url('/core/misc/icons/000000/move.svg');
+      }
+    }
+
+    .tabledrag-changed {
+      display: block;
+      margin: 4px;
+      font-size: 40px;
+      line-height: 24px;
+      text-decoration: none;
+      color: $hc-red;
+    }
+  }
+
+  // Paragraphs module css overrides.
+  .paragraph-type-top {
+    align-items: center;
+    padding: 0;
+    background-color: $brand-primary-light;
+  }
+
+  .paragraph-type-title {
+    font-size: 1.6rem;
+    line-height: 1.5;
+    min-width: 150px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  .paragraphs-description {
+    font-size: 1.6rem;
+    line-height: 1.5;
+    color: $ash-grey;
+  }
+
+  .paragraphs-collapsed-description::after {
+    content: none;
+  }
+
+  .paragraphs-subform {
+
+    label,
+    .full-text {
+      font-size: 1.6rem;
+      line-height: 2.1rem;
+    }
+
+    .form-text {
+      height: 4rem;
+      min-height: 4rem;
+    }
+
+    .filter-wrapper {
+      margin-top: 0;
+      border: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      .filter-help {
+        order: 1;
+      }
+    }
+
+    .form-item {
+      margin: .5em 0;
+    }
+  }
+
+  .vertical-tabs__menu-item {
+    margin-bottom: 0;
+  }
+
+  .vertical-tabs__panes {
+    padding: 0 1em;
+  }
+}
+
+.layout-builder-form {
+
+  max-width: unset;
+  margin-top: 1.5em; // Get some separation from the breadcrumb.
+
+  // Change the order of display - use flex to achieve that.
+  display: flex;
+  flex-flow: column nowrap;
+
+  .container-inline {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  > .form-wrapper {
+    margin: 0;
+  }
+
+  .form-item {
+    margin: 0;
+  }
+
+  .form-actions {
+
+    // Displayed above the layout builder main area, it contains the save, discard buttons.
+    display: flex;
+    flex-flow: row wrap;
+    align-items: center;
+    margin: 0;
+    padding: .6rem;
+
+    background-color: #444;
+    color: #ddd;
+
+    // Small buttons.
+    .button {
+      @include btn(small);
+      margin: .6rem !important;
+
+      &--primary {
+        @include btn-color($btn-primary);
+      }
+
+      &:not(.button--primary) {
+        border-color: #ddd;
+        background-color: transparent;
+
+        &:hover {
+          background-color: #ddd;
+          color: #333;
+        }
+      }
+    }
+
+    // Small checkbox + label.
+    .form-type-checkbox {
+
+      margin: .6rem;
+
+      @include breakpoint($tab) {
+        font-size: 1.6rem;
+      }
+
+      font-size: 1.4rem;
+
+      label.option {
+        background-color: #444;
+        color: #fff;
+        box-shadow: none;
+        border: 0;
+        min-height: 3.6rem;
+        line-height: 3.6rem;
+        padding-top: 0;
+        padding-bottom: 0;
+      }
+    }
+
+  }
+
+  // Moderation state widget - normally not used in favour of the moderation sidebar.
+  // May get removed later - but we'll style it just in case.
+  .field--name-moderation-state {
+
+    background-color: #444;
+    color: #fff;
+    padding: 0 1.2rem 1.2rem;
+
+    * {
+      font-size: 16px;
+    }
+
+    label {
+      color: #ddd;
+
+      &::after {
+        content: ':';
+      }
+    }
+
+    .form-wrapper {
+      display: flex;
+      align-items: center;
+
+      .form-item {
+        margin: 0 1.5em 0 0;
+        line-height: 2.25em;
+      }
+
+      label {
+        margin-right: .5em;
+        font-weight: bold;
+        white-space: nowrap;
+      }
+
+      // Small select.
+      .form-select {
+        height: 2.25em;
+        min-height: 2.25em;
+        padding: .25em 2em .25em .25em;
+        margin: 0;
+      }
+    }
+  }
+
+  .layout-builder__message {
+
+    .container {
+      padding: 0;
+    }
+
+    .messages {
+      margin: 0;
+      border: 0;
+      background-size: 24px;
+      padding-left: 4.5rem;
+
+      &__item {
+        font-size: 1.6rem;
+        line-height: 2.4rem;
+      }
+    }
+  }
+}
+
+.layout-builder-update-block,
+.layout-builder-configure-block {
+
+  // Media library enabled fields
+  .media-library-widget {
+
+    // Wrapper for display of items from media library.
+    p.media-library-widget-empty-text {
+      margin: 0 0 .5em;
+      padding: .5em;
+      background-color: $charcoal;
+      color: #fff;
+      font-size: 1.6rem;
+    }
+
+    // Update widget button - hide it.
+    // @see https://www.drupal.org/project/drupal/issues/3121239.
+    [data-drupal-selector*='media-library-update-widget'] {
+      display: none;
+    }
+  }
+
+  // An item selected from media library - media to left, remove button to the right.
+  .media-library-item {
+    display: flex;
+    flex-flow: row wrap;
+    align-items: center;
+    outline: 0;
+
+    > * {
+      order: 1;
+    }
+
+    article {
+      @include responsive-typo-map($body-text);
+      position: relative;
+      width: auto;
+      order: 0;
+      margin: 0 .5em 0 0;
+
+      .field--name-thumbnail {
+        display: flex;
+        flex-flow: column nowrap;
+        align-items: center;
+        font-size: 0;
+        text-align: center;
+        background-color: #000;
+
+        img {
+          width: auto;
+          height: auto;
+          max-height: 150px;
+        }
+      }
+
+      .media-library-item__attributes {
+        position: absolute;
+        bottom: 0;
+        display: block;
+        width: 100%;
+        padding: 5px;
+        background: rgba(0, 0, 0, .5);
+        color: #fff;
+        font-size: 12px;
+
+        .media-library-item__name {
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          text-align: center;
+        }
+      }
+    }
+
+    // Edit link for media items
+    .media-library-edit__link {
+      all: inherit;
+      // sass-lint:disable mixins-before-declarations
+      @include btn(small);
+      // sass-lint:enable mixins-before-declarations
+      cursor: pointer;
+      margin-right: .5em;
+    }
+  }
+}
+
+.ui-dialog:not(.ui-dialog-off-canvas) {
+  z-index: 501; // Ensure the dialog overlays things properly.
+  max-width: 80%; // Fix for when it occasionally decides to go 100% width for some reason.
+
+  // Mini css reset for jquery ui components which seem to work/look better 16px base font size.
+  font-size: 1.6rem;
+  line-height: 1.5;
+  padding: 0;
+  border-radius: 0;
+
+  p,
+  li,
+  pre,
+  address,
+  blockquote,
+  dl,
+  div,
+  fieldset,
+  form,
+  table,
+  th,
+  td
+  input,
+  label {
+    font-size: 1em;
+    line-height: 1.5;
+  }
+
+  .ui-dialog-titlebar {
+    padding: .75em 1em;
+  }
+
+  .ui-button.ui-dialog-titlebar-close {
+    width: 30px;
+    height: 30px;
+    background-color: transparent;
+    border: 0;
+    margin: 0;
+    padding: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    right: 10px;
+
+    &:focus,
+    &:hover {
+      border: 0;
+      outline: 2px solid #f6f6f6;
+    }
+  }
+
+  .ui-icon.ui-icon-closethick {
+    background: transparent url('/core/misc/icons/ffffff/ex.svg') 0 0 no-repeat;
+  }
+
+  .ui-dialog-content {
+    padding: .5em 1em 1em;
+  }
+
+  .ui-dialog-buttonpane {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: .5em 1em;
+    background-color: #ddd;
+
+    &::before,
+    &::after {
+      content: none;
+    }
+
+    .ui-dialog-buttonset {
+      margin: 0 1em 0 0;
+    }
+  }
+}
+
+.ui-corner {
+
+  &-top,
+  &-bottom,
+  &-left,
+  &-right,
+  &-all,
+  &-tl,
+  &-tr,
+  &-bl,
+  &-br {
+    border-radius: 0;
+  }
+}
+
+.ui-widget-header {
+  background-color: #444;
+  color: #ddd;
+  border: 0;
+}
+
+
+
+
+.cke_dialog {
+  table[role='presentation'] tr td {
+    background-color: transparent;
+  }
+}
+
+.editor-linkit-dialog .ui-dialog-content {
+  // Fix bug where programmatic height set for dialog does not accommodate autocomplete drop-down.
+  min-height: 300px !important;
+}
+
+.js input.form-linkit-autocomplete {
+  background-image: none !important;
+}
+
+.linkit-result--title {
+  display: block;
+}
+
+.linkit-result--description:empty {
+  display: none;
+}
+
+.linkit-ui-autocomplete {
+  font-size: 1.4rem !important;
+  max-width: 500px;
+}
+
+.ui-autocomplete-input {
+  outline: 0;
+  border-color: $charcoal;
+}
+
+// Media library styling - GHUA.
+.media-library-wrapper {
+
+  width: 100%;
+
+  // Ensure this element snaps to the scroll-padding-block in the parent modal.
+  scroll-snap-align: start;
+
+  .media-library-menu {
+    display: flex;
+    list-style: none;
+    flex-flow: row nowrap;
+    margin: 0 -1em 1.5em;
+    padding: 1em;
+    box-shadow: 0 22px 12px -16px rgba(0, 0, 0, .2);
+
+    li {
+      margin: 0;
+      line-height: 16px;
+      height: 3.2rem;
+      line-height: 3.2rem;
+
+      a {
+        display: block;
+        height: 36px;
+        line-height: 36px;
+        padding: 2px 1.5em 0;
+        margin: 0 .5em;
+        background-color: transparent;
+        color: #0e6bb3;
+        text-decoration: underline;
+        outline: 0 !important;
+
+        &.active {
+          position: relative;
+          z-index: 1;
+          background-color: #444;
+          color: #ddd;
+          padding-top: 0;
+          text-decoration: none;
+        }
+      }
+    }
+  }
+
+  .js-media-library-view {
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: flex-end;
+
+    .view-header {
+      margin: .5em 0;
+      text-align: right; /* LTR */
+    }
+
+    .view-filters form {
+      display: flex;
+      align-items: flex-end;
+
+      > * {
+        white-space: nowrap;
+        font-size: 1.6rem;
+        margin: .5em .5em .5em 0;
+
+        &:last-child {
+          margin-right: 0;
+        }
+      }
+
+      label {
+        display: block;
+        margin: 0;
+        font-size: 1.4rem;
+      }
+
+      input {
+        margin: 0;
+        padding: 4px;
+        font-size: 1.4rem;
+        max-width: 200px;
+        min-height: 35px;
+      }
+
+      select {
+        display: inline-block;
+        height: auto;
+        padding: 4px 31px 4px 4px;
+        line-height: 1em;
+        min-height: 35px;
+        margin: 0;
+        font-size: 1.4rem;
+      }
+    }
+  }
+
+  .view-content {
+    flex: 0 0 100%;
+    margin-top: .25em;
+  }
+
+  .views-display-link {
+    margin: 0;
+    padding-left: 22px; /* LTR */
+    color: #333;
+    font-size: 15px;
+    line-height: 16px;
+
+    &.is-active {
+      font-weight: bold;
+
+      &:focus {
+        outline: 0;
+      }
+    }
+  }
+
+  .views-display-link-widget {
+    margin-right: 15px;
+    background: url('/core/misc/icons/333333/grid.svg') left 0 no-repeat; /* LTR */
+  }
+
+  .views-display-link-widget_table {
+    background: url('/core/misc/icons/333333/table.svg') left 0 no-repeat; /* LTR */
+  }
+
+  .js-media-library-views-form {
+    display: flex;
+    flex-flow: row wrap;
+    flex-basis: 100%;
+    justify-content: space-between;
+    width: calc(100% + 20px);
+    position: relative;
+    margin-left: -10px;
+
+    .media-library-item--grid {
+      position: relative;
+      width: 100%;
+      margin: 0;
+      padding: 10px;
+      font-size: 0;
+
+      @include breakpoint($phab) {
+        width: 50%;
+      }
+
+      @include breakpoint($tab) {
+        width: 33.3%;
+      }
+
+      @include breakpoint($lap) {
+        width: 25%;
+      }
+
+      &.media-library-item--disabled {
+        opacity: .5;
+      }
+
+      .js-click-to-select-checkbox .form-checkbox {
+        top: 14px;
+        left: 5px;
+        min-height: auto;
+        margin: 0;
+        visibility: hidden;
+
+        &:checked {
+          visibility: visible;
+        }
+      }
+
+      article {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        box-shadow: 0 5px 12px -3px rgba(0, 0, 0, .5);
+
+        .media-library-item__preview {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 100%;
+          height: 150px;
+          background-color: #444;
+          margin: 0;
+
+          .field--name-thumbnail {
+            text-align: center;
+          }
+
+          img {
+            display: inline-block;
+            width: auto;
+            height: auto;
+            max-height: 130px;
+            margin: 0;
+          }
+        }
+
+        .media-library-item__attributes {
+          position: absolute;
+          bottom: 0;
+          display: block;
+          width: 100%;
+          padding: 5px;
+          background: rgba(0, 0, 0, .5);
+          color: #fff;
+          font-size: 12px;
+
+          .media-library-item__name {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            text-align: center;
+          }
+        }
+      }
+    }
+
+    .form-actions {
+      flex-basis: 100%;
+    }
+  }
+}
+
+#media-library-add-form-wrapper {
+  /**
+   * Style the added media item container.
+   *
+   * The added media container receives screen reader focus since it is has the
+   * role 'listitem'. Since it is not an interactive element, it does not need
+   * an outline.
+   */
+
+  .media-library-add-form__added-media {
+    margin: 0;
+    padding: 0;
+    outline: 0;
+    list-style: none;
+  }
+
+  .media-library-add-form__media {
+    position: relative;
+    display: flex;
+    padding: 1em 0;
+    border-bottom: 1px solid #c0c0c0;
+    outline: 0;
+
+    &:first-child {
+      padding-top: 0;
+
+      .cancel[type='submit'] {
+        top: 5px;
+      }
+    }
+
+    &:last-child {
+      padding-bottom: 0;
+      border-bottom: 0;
+    }
+
+    [data-drupal-selector='edit-preview'] {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 240px;
+      margin-right: 20px; /* LTR */
+      background: $brand-primary-light;
+    }
+
+    .cancel[type='submit'] {
+      position: absolute;
+      top: 25px;
+      right: 6px; /* LTR */
+      width: auto;
+      min-width: auto;
+      margin: 0;
+      padding: 2px 20px 2px 2px; /* LTR */
+      text-transform: lowercase;
+      color: transparent;
+      border: 0;
+      border-radius: 0;
+      background: transparent url('/core/misc/icons/787878/ex.svg') right center no-repeat; /* LTR */
+      font-weight: normal;
+      line-height: 16px;
+
+      &:focus,
+      &.button:disabled,
+      &.button:disabled:active,
+      &.button:focus {
+        color: #787878;
+        border: 0;
+        background: transparent url('/core/misc/icons/787878/ex.svg') right center no-repeat; /* LTR */
+      }
+
+      &:hover,
+      &.button:hover {
+        color: #e00;
+        border: 0;
+        background-image: url('/core/misc/icons/ee0000/ex.svg'); /* LTR */
+        box-shadow: none;
+      }
+    }
+  }
+}
+
+#drupal-modal {
+  // Fix bug where content is scrolled up underneath the dialog's title bar when the dialog opens.
+  scroll-snap-type: y;
+  scroll-padding-block-start: 45px; // Approx the height of the dialog title bar.
+}
+

@@ -1,0 +1,74 @@
+/*
+ * @file
+ * Provides the styling for book navigation element.
+ */
+@import '../../init';
+
+.book-navigation {
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+  justify-content: space-between;
+  list-style: none;
+  width: 100%;
+  padding: .5em;
+  margin: 0;
+  background-color: $grey-lightest;
+
+  @include breakpoint($phab) {
+    flex-direction: row;
+  }
+
+  li {
+    margin: 0;
+    padding: 0;
+
+    a,
+    span {
+      @include link-state-style($link-body-no-visited);
+      display: inline-block;
+      position: relative;
+      padding: .5em;
+
+      .ico {
+        position: absolute;
+        top: calc(50% - .75em);
+        width: 1.5em;
+        height: 1.5em;
+        margin: 0;
+      }
+    }
+
+    &.page-previous {
+      flex: 40%;
+      text-align: left;
+
+      a {
+        padding-left: 2.5em;
+      }
+
+      .ico {
+        left: .5em;
+      }
+    }
+
+    &.page-next {
+      flex: 40%;
+      text-align: right;
+
+      a {
+        padding-right: 2.5em;
+      }
+
+      .ico {
+        right: .5em;
+      }
+    }
+
+    &.page-up {
+      flex: 20%;
+      padding: 0 1em;
+      text-align: center;
+    }
+  }
+}

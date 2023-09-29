@@ -1,0 +1,68 @@
+/*
+ * @file
+ * Provides the styling for quiz components.
+ */
+
+@import '../../init';
+
+// Quiz components
+//
+// Style guide: components.content.quizzes
+
+.quiz {
+
+  &-question {
+    color: $brand-primary-dark;
+
+    .subtitle {
+      @include responsive-typo-map($large-text);
+      display: block;
+      margin-top: 1.2rem;
+      color: $text;
+    }
+  }
+
+  &-feedback {
+
+    summary {
+      @include responsive-typo-map($body-text);
+      font-weight: bold;
+      border-bottom: 1px solid $grey-medium;
+      padding-bottom: .5em;
+
+      .user-answer {
+        display: inline-block;
+        color: #000;
+        font-weight: normal;
+        margin-right: .5em;
+
+        &::before {
+          content: 'Your answer:';
+          display: inline-block;
+          margin-right: .5em;
+          font-weight: bold;
+        }
+      }
+
+      .success,
+      .error {
+        display: inline-block;
+        white-space: nowrap;
+        padding: .3rem 0;
+        text-transform: uppercase;
+      }
+
+      .success {
+        color: $hc-green;
+      }
+
+      .error {
+        color: $hc-red;
+      }
+    }
+
+    summary + * {
+      margin-top: 1.8rem;
+    }
+  }
+}

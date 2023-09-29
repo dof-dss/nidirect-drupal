@@ -1,0 +1,925 @@
+uuid: 2b3be5ed-8d02-41fb-8e07-6a5c5d3468c3
+langcode: en
+status: open
+dependencies:
+  module:
+    - nidirect_webforms
+weight: 0
+open: null
+close: null
+uid: 28
+template: false
+archive: false
+id: prison_visit_online_booking
+title: 'Prison visit online booking'
+description: ''
+categories: {  }
+elements: |-
+  prison_visit_prison_name:
+    '#type': hidden
+    '#title': prison_visit_prison_name
+  prison_visit_prison_name_key:
+    '#type': hidden
+    '#title': prison_visit_prison_name_key
+  prison_visit_type:
+    '#type': hidden
+    '#title': prison_visit_type
+  prison_visit_type_key:
+    '#type': hidden
+    '#title': prison_visit_type_key
+  prison_visit_order_valid_from:
+    '#type': hidden
+    '#title': prison_visit_order_valid_from
+  prison_visit_order_valid_to:
+    '#type': hidden
+    '#title': prison_visit_order_valid_to
+  prison_visit_week_date_start:
+    '#type': hidden
+    '#title': prison_visit_week_date_start
+  prison_visit_sequence:
+    '#type': hidden
+    '#title': prison_visit_sequence
+  prison_visit_prisoner_category:
+    '#type': hidden
+    '#title': prison_visit_prisoner_category
+  prison_visit_prisoner_subcategory:
+    '#type': hidden
+    '#title': prison_visit_prisoner_subcategory
+  prisoner_details_page:
+    '#type': webform_wizard_page
+    '#title': 'Prisoner details'
+    '#next_button_label': Next
+    prisoner_details:
+      '#type': fieldset
+      '#title': 'Prisoner details'
+      visitor_order_number:
+        '#type': textfield
+        '#title': 'Visit reference number'
+        '#maxlength': 12
+        '#size': 14
+        '#autocomplete': 'off'
+        '#input_mask': AAA9999-9999
+        '#required': true
+        '#pattern': '[A-Z]{3}[0-9]{4}\-[0-9]{4}'
+        '#pattern_error': 'Visit reference number is incorrect.'
+      prisoner_id:
+        '#type': textfield
+        '#title': 'Prisoner ID'
+        '#maxlength': 5
+        '#size': 6
+        '#autocomplete': 'off'
+        '#input_mask': A9999
+        '#required': true
+  visit_preferred_day_and_time:
+    '#type': webform_wizard_page
+    '#title': 'Visit preferred day and time'
+    '#prev_button_label': Previous
+    '#next_button_label': Next
+    visit_details:
+      '#type': webform_computed_twig
+      '#title': 'Visit details'
+      '#title_display': invisible
+      '#states':
+        visible:
+          ':input[name="prisoner_id"]':
+            filled: true
+      '#mode': html
+      '#template': |-
+        <h2>{{ data.prison_visit_prison_name }}</h2>
+        <p>
+        <strong class="meta">
+        {{ data.prison_visit_type | title }}
+        {{ data.prison_visit_prisoner_category }}
+        {{ data.prison_visit_prisoner_subcategory }}
+        </strong>
+        </p>
+    slots_week_1:
+      '#type': details
+      '#title': 'Week commencing [DATE]'
+      '#open': true
+      '#summary_attributes':
+        class:
+          - btn
+          - btn--primary
+          - btn--block
+      monday_week_1:
+        '#type': checkboxes
+        '#title': Monday
+        '#options': prison_visit_times
+        '#options_display': buttons_horizontal
+      tuesday_week_1:
+        '#type': checkboxes
+        '#title': Tuesday
+        '#options': prison_visit_times
+        '#options_display': buttons_horizontal
+      wednesday_week_1:
+        '#type': checkboxes
+        '#title': Wednesday
+        '#options': prison_visit_times
+        '#options_display': buttons_horizontal
+      thursday_week_1:
+        '#type': checkboxes
+        '#title': Thursday
+        '#options': prison_visit_times
+        '#options_display': buttons_horizontal
+      friday_week_1:
+        '#type': checkboxes
+        '#title': Friday
+        '#options': prison_visit_times
+        '#options_display': buttons_horizontal
+      saturday_week_1:
+        '#type': checkboxes
+        '#title': Saturday
+        '#options': prison_visit_times
+        '#options_display': buttons_horizontal
+      sunday_week_1:
+        '#type': checkboxes
+        '#title': Sunday
+        '#options': prison_visit_times
+        '#options_display': buttons_horizontal
+    slots_week_2:
+      '#type': details
+      '#title': 'Week commencing [DATE]'
+      '#summary_attributes':
+        class:
+          - btn
+          - btn--primary
+          - btn--block
+      monday_week_2:
+        '#type': checkboxes
+        '#title': Monday
+        '#options': prison_visit_times
+        '#options_display': buttons_horizontal
+      tuesday_week_2:
+        '#type': checkboxes
+        '#title': Tuesday
+        '#options': prison_visit_times
+        '#options_display': buttons_horizontal
+      wednesday_week_2:
+        '#type': checkboxes
+        '#title': Wednesday
+        '#options': prison_visit_times
+        '#options_display': buttons_horizontal
+      thursday_week_2:
+        '#type': checkboxes
+        '#title': Thursday
+        '#options': prison_visit_times
+        '#options_display': buttons_horizontal
+      friday_week_2:
+        '#type': checkboxes
+        '#title': Friday
+        '#options': prison_visit_times
+        '#options_display': buttons_horizontal
+      saturday_week_2:
+        '#type': checkboxes
+        '#title': Saturday
+        '#options': prison_visit_times
+        '#options_display': buttons_horizontal
+      sunday_week_2:
+        '#type': checkboxes
+        '#title': Sunday
+        '#options': prison_visit_times
+        '#options_display': buttons_horizontal
+    slots_week_3:
+      '#type': details
+      '#title': 'Week commencing [DATE]'
+      '#summary_attributes':
+        class:
+          - btn
+          - btn--primary
+          - btn--block
+      monday_week_3:
+        '#type': checkboxes
+        '#title': Monday
+        '#options': prison_visit_times
+        '#options_display': buttons_horizontal
+      tuesday_week_3:
+        '#type': checkboxes
+        '#title': Tuesday
+        '#options': prison_visit_times
+        '#options_display': buttons_horizontal
+      wednesday_week_3:
+        '#type': checkboxes
+        '#title': Wednesday
+        '#options': prison_visit_times
+        '#options_display': buttons_horizontal
+      thursday_week_3:
+        '#type': checkboxes
+        '#title': Thursday
+        '#options': prison_visit_times
+        '#options_display': buttons_horizontal
+      friday_week_3:
+        '#type': checkboxes
+        '#title': Friday
+        '#options': prison_visit_times
+        '#options_display': buttons_horizontal
+      saturday_week_3:
+        '#type': checkboxes
+        '#title': Saturday
+        '#options': prison_visit_times
+        '#options_display': buttons_horizontal
+      sunday_week_3:
+        '#type': checkboxes
+        '#title': Sunday
+        '#options': prison_visit_times
+        '#options_display': buttons_horizontal
+    slots_week_4:
+      '#type': details
+      '#title': 'Week commencing [DATE]'
+      '#summary_attributes':
+        class:
+          - btn
+          - btn--primary
+          - btn--block
+      monday_week_4:
+        '#type': checkboxes
+        '#title': Monday
+        '#options': prison_visit_times
+        '#options_display': buttons_horizontal
+      tuesday_week_4:
+        '#type': checkboxes
+        '#title': Tuesday
+        '#options': prison_visit_times
+        '#options_display': buttons_horizontal
+      wednesday_week_4:
+        '#type': checkboxes
+        '#title': Wednesday
+        '#options': prison_visit_times
+        '#options_display': buttons_horizontal
+      thursday_week_4:
+        '#type': checkboxes
+        '#title': Thursday
+        '#options': prison_visit_times
+        '#options_display': buttons_horizontal
+      friday_week_4:
+        '#type': checkboxes
+        '#title': Friday
+        '#options': prison_visit_times
+        '#options_display': buttons_horizontal
+      saturday_week_4:
+        '#type': checkboxes
+        '#title': Saturday
+        '#options': prison_visit_times
+        '#options_display': buttons_horizontal
+      sunday_week_4:
+        '#type': checkboxes
+        '#title': Sunday
+        '#options': prison_visit_times
+        '#options_display': buttons_horizontal
+  visitor_details_page:
+    '#type': webform_wizard_page
+    '#title': 'Visitor details'
+    '#next_button_label': Next
+    visitor_1_details:
+      '#type': fieldset
+      '#title': 'Your details'
+      visitor_1_intro:
+        '#type': webform_markup
+        '#markup': '<p>Complete details on this page for the main visitor. There is an option at the end to add additional visitors to the same booking.</p><p>Note that: <ul><li> the date of birth must match what is held on record for the given visitor ID;</li><li>The mail address provided will be the address your booking confirmation is sent to;</li><li>A contact telephone is requested in order that the prison booking team can contact the visitor, should they need to discuss this booking.</li></ul></p>'
+      visitor_1_id:
+        '#type': textfield
+        '#title': 'Visitor ID'
+        '#autocomplete': 'off'
+        '#required': true
+        '#required_error': 'enter the visitor ID for the main visitor'
+      visitor_1_dob:
+        '#type': date
+        '#title': 'Date of birth'
+        '#required': true
+        '#required_error': 'Enter a valid date of birth'
+      visitor_1_email:
+        '#type': webform_email_confirm
+        '#title': 'Email address'
+        '#required': true
+        '#pattern': '[^@\s]+@[^@\s]+\.[^@\s]+'
+        '#pattern_error': 'Enter a valid email address'
+      visitor_1_telephone:
+        '#type': tel
+        '#title': 'Telephone number'
+        '#required': true
+      visitor_1_special_needs:
+        '#type': checkbox
+        '#title': 'Special requirements'
+      visitor_1_add_visitors:
+        '#type': checkbox
+        '#title': 'Add additional visitors'
+  additional_visitor_details:
+    '#type': webform_wizard_page
+    '#title': 'Additional visitor details'
+    '#states':
+      visible:
+        ':input[name="visitor_1_add_visitors"]':
+          checked: true
+    '#next_button_label': Next
+    visitor_2__details:
+      '#type': fieldset
+      '#title': 'Additional visitor details'
+      visitor_2_id:
+        '#type': textfield
+        '#title': 'Visitor ID'
+      visitor_2_dob:
+        '#type': date
+        '#title': 'Date of birth'
+      visitor_2_special_needs:
+        '#type': checkbox
+        '#title': 'Special requirements'
+css: ''
+javascript: ''
+settings:
+  ajax: false
+  ajax_scroll_top: form
+  ajax_progress_type: ''
+  ajax_effect: ''
+  ajax_speed: null
+  page: true
+  page_submit_path: ''
+  page_confirm_path: ''
+  page_theme_name: ''
+  form_title: source_entity_webform
+  form_submit_once: true
+  form_open_message: ''
+  form_close_message: ''
+  form_exception_message: ''
+  form_previous_submissions: true
+  form_confidential: false
+  form_confidential_message: ''
+  form_disable_remote_addr: false
+  form_convert_anonymous: false
+  form_prepopulate: false
+  form_prepopulate_source_entity: false
+  form_prepopulate_source_entity_required: false
+  form_prepopulate_source_entity_type: ''
+  form_unsaved: false
+  form_disable_back: true
+  form_submit_back: false
+  form_disable_autocomplete: false
+  form_novalidate: false
+  form_disable_inline_errors: false
+  form_required: false
+  form_autofocus: false
+  form_details_toggle: false
+  form_reset: false
+  form_access_denied: default
+  form_access_denied_title: ''
+  form_access_denied_message: ''
+  form_access_denied_attributes: {  }
+  form_file_limit: ''
+  form_attributes: {  }
+  form_method: ''
+  form_action: ''
+  share: false
+  share_node: false
+  share_theme_name: ''
+  share_title: true
+  share_page_body_attributes: {  }
+  submission_label: ''
+  submission_exception_message: ''
+  submission_locked_message: ''
+  submission_log: false
+  submission_excluded_elements: {  }
+  submission_exclude_empty: false
+  submission_exclude_empty_checkbox: false
+  submission_views: {  }
+  submission_views_replace: {  }
+  submission_user_columns: {  }
+  submission_user_duplicate: false
+  submission_access_denied: default
+  submission_access_denied_title: ''
+  submission_access_denied_message: ''
+  submission_access_denied_attributes: {  }
+  previous_submission_message: ''
+  previous_submissions_message: ''
+  autofill: false
+  autofill_message: ''
+  autofill_excluded_elements: {  }
+  wizard_progress_bar: false
+  wizard_progress_pages: false
+  wizard_progress_percentage: false
+  wizard_progress_link: false
+  wizard_progress_states: false
+  wizard_start_label: ''
+  wizard_preview_link: false
+  wizard_confirmation: true
+  wizard_confirmation_label: ''
+  wizard_auto_forward: true
+  wizard_auto_forward_hide_next_button: false
+  wizard_keyboard: true
+  wizard_track: ''
+  wizard_prev_button_label: ''
+  wizard_next_button_label: ''
+  wizard_toggle: false
+  wizard_toggle_show_label: ''
+  wizard_toggle_hide_label: ''
+  wizard_page_type: container
+  wizard_page_title_tag: h2
+  preview: 0
+  preview_label: ''
+  preview_title: ''
+  preview_message: ''
+  preview_attributes: {  }
+  preview_excluded_elements: {  }
+  preview_exclude_empty: true
+  preview_exclude_empty_checkbox: false
+  draft: none
+  draft_multiple: false
+  draft_auto_save: false
+  draft_saved_message: ''
+  draft_loaded_message: ''
+  draft_pending_single_message: ''
+  draft_pending_multiple_message: ''
+  confirmation_type: page
+  confirmation_url: ''
+  confirmation_title: ''
+  confirmation_message: ''
+  confirmation_attributes: {  }
+  confirmation_back: true
+  confirmation_back_label: ''
+  confirmation_back_attributes: {  }
+  confirmation_exclude_query: false
+  confirmation_exclude_token: false
+  confirmation_update: false
+  limit_total: null
+  limit_total_interval: null
+  limit_total_message: ''
+  limit_total_unique: false
+  limit_user: null
+  limit_user_interval: null
+  limit_user_message: ''
+  limit_user_unique: false
+  entity_limit_total: null
+  entity_limit_total_interval: null
+  entity_limit_user: null
+  entity_limit_user_interval: null
+  purge: none
+  purge_days: null
+  results_disabled: false
+  results_disabled_ignore: false
+  results_customize: false
+  token_view: false
+  token_update: false
+  token_delete: false
+  serial_disabled: false
+access:
+  create:
+    roles:
+      - anonymous
+      - authenticated
+    users: {  }
+    permissions: {  }
+  view_any:
+    roles: {  }
+    users: {  }
+    permissions: {  }
+  update_any:
+    roles: {  }
+    users: {  }
+    permissions: {  }
+  delete_any:
+    roles: {  }
+    users: {  }
+    permissions: {  }
+  purge_any:
+    roles: {  }
+    users: {  }
+    permissions: {  }
+  view_own:
+    roles: {  }
+    users: {  }
+    permissions: {  }
+  update_own:
+    roles: {  }
+    users: {  }
+    permissions: {  }
+  delete_own:
+    roles: {  }
+    users: {  }
+    permissions: {  }
+  administer:
+    roles: {  }
+    users: {  }
+    permissions: {  }
+  test:
+    roles: {  }
+    users: {  }
+    permissions: {  }
+  configuration:
+    roles: {  }
+    users: {  }
+    permissions: {  }
+handlers:
+  submission_email:
+    id: email
+    handler_id: submission_email
+    label: OV_IN
+    notes: ''
+    status: true
+    conditions: {  }
+    weight: 0
+    settings:
+      states:
+        - completed
+      to_mail: '[webform_submission:values:visitor_1_email:raw]'
+      to_options: {  }
+      bcc_mail: ''
+      bcc_options: {  }
+      cc_mail: ''
+      cc_options: {  }
+      from_mail: _default
+      from_options: {  }
+      from_name: _default
+      reply_to: ''
+      return_path: ''
+      sender_mail: ''
+      sender_name: ''
+      subject: OV_IN
+      body: '{"SUBMITTED_DATETIME":"[webform_submission:completed:custom:d/m/Y G:i]","VISIT_ORDER_NO":"[webform_submission:values:visitor_order_number]","INMATE_ID":"[webform_submission:values:prisoner_id]","SPECIAL_REQUIREMENTS":"","VISITOR_1_ID":"[webform_submission:values:visitor_1_id]","VISITOR_1_DOB":"[webform_submission:values:visitor_1_dob:custom:d/m/Y 00:00]","VISITOR_1_EMAIL":"[webform_submission:values:visitor_1_email]","VISITOR_1_PHONE":"[webform_submission:values:visitor_1_telephone]","VISITOR_2_ID":"[webform_submission:values:visitor_2_id]","VISITOR_2_DOB":"[webform_submission:values:visitor_2_dob:custom:d/m/Y 00:00]","VISITOR_3_ID":null,"VISITOR_3_DOB":null,"VISITOR_4_ID":null,"VISITOR_4_DOB":null,"VISITOR_5_ID":null,"VISITOR_5_DOB":null,"SLOT1_DATETIME":"03/08/2023 08:40","SLOT2_DATETIME":"02/08/2023 08:40","SLOT3_DATETIME":null}'
+      excluded_elements:
+        visitor_1_intro: visitor_1_intro
+      ignore_access: false
+      exclude_empty: true
+      exclude_empty_checkbox: false
+      exclude_attachments: false
+      html: false
+      attachments: false
+      twig: false
+      theme_name: ''
+      parameters: {  }
+      debug: false
+  prison_visit_booking:
+    id: prison_visit_booking
+    handler_id: prison_visit_booking
+    label: 'Prison Visit Booking'
+    notes: ''
+    status: true
+    conditions: {  }
+    weight: 0
+    settings:
+      prisons:
+        MY: Maghaberry
+        HW: 'Hydebank Wood'
+        MN: Magilligan
+      visit_order_number_length: 12
+      visit_order_number_categories:
+        integrated:
+          -
+            - 1
+            - 8999
+        separates:
+          -
+            - 9000
+            - 9499
+          -
+            - 9500
+            - 9999
+      visit_type:
+        F: face-to-face
+        V: virtual
+        E: enhanced
+      visit_advance_notice:
+        F: '24 hours'
+        V: '48 hours'
+        E: '24 hours'
+      booking_reference_validity_period_days:
+        F: 7
+        V: 7
+        E: 28
+      visit_slots:
+        Maghaberry:
+          face-to-face:
+            Monday: null
+            Tuesday:
+              integrated:
+                '09:15': '9.15 am'
+                '10:45': '10.45 am'
+                '14:15': '2.15 pm'
+                '15:30': '3.30 pm'
+              separates:
+                '10:30': '10.30 am'
+                '14:30': '2:30 pm'
+            Wednesday:
+              integrated:
+                '09:15': '9.15 am'
+                '10:45': '10.45 am'
+                '14:15': '2.15 pm'
+                '15:30': '3.30 pm'
+              separates:
+                '10:30': '10.30 am'
+                '14:30': '2:30 pm'
+            Thursday:
+              integrated:
+                '09:15': '9.15 am'
+                '10:45': '10.45 am'
+                '14:15': '2.15 pm'
+                '15:30': '3.30 pm'
+              separates:
+                '10:30': '10.30 am'
+                '14:30': '2:30 pm'
+            Friday: null
+            Saturday:
+              integrated:
+                '09:15': '9.15 am'
+                '10:45': '10.45 am'
+                '14:15': '2.15 pm'
+                '15:30': '3.30 pm'
+              separates:
+                '10:30': '10.30 am'
+                '14:30': '2:30 pm'
+            Sunday: null
+          virtual:
+            Monday:
+              '09:30': '9.30 am'
+              '10:00': '10.00 am'
+              '10:30': '10.30 am'
+              '11:00': '11.30 am'
+              '14:30': '2.30 pm'
+              '15:00': '3.00 pm'
+            Tuesday:
+              '09:30': '9.30 am'
+              '10:00': '10.00 am'
+              '10:30': '10.30 am'
+              '11:00': '11.30 am'
+              '14:30': '2.30 pm'
+              '15:00': '3.00 pm'
+            Wednesday:
+              '09:30': '9.30 am'
+              '10:00': '10.00 am'
+              '10:30': '10.30 am'
+              '11:00': '11.30 am'
+              '14:30': '2.30 pm'
+              '15:00': '3.00 pm'
+            Thursday:
+              '09:30': '9.30 am'
+              '10:00': '10.00 am'
+              '10:30': '10.30 am'
+              '11:00': '11.30 am'
+              '14:30': '2.30 pm'
+              '15:00': '3.00 pm'
+            Friday:
+              '09:30': '9.30 am'
+              '10:00': '10.00 am'
+              '10:30': '10.30 am'
+              '11:00': '11.30 am'
+              '14:30': '2.30 pm'
+              '15:00': '3.00 pm'
+            Saturday:
+              '09:30': '9.30 am'
+              '10:00': '10.00 am'
+              '10:30': '10.30 am'
+              '11:00': '11.30 am'
+              '14:30': '2.30 pm'
+              '15:00': '3.00 pm'
+            Sunday:
+              '09:30': '9.30 am'
+              '10:00': '10.00 am'
+              '10:30': '10.30 am'
+              '11:00': '11.30 am'
+              '14:30': '2.30 pm'
+              '15:00': '3.00 pm'
+          enhanced:
+            Monday: null
+            Tuesday:
+              integrated:
+                '09:15': '9.15 am'
+                '10:45': '10.45 am'
+                '14:15': '2.15 pm'
+                '15:30': '3.30 pm'
+              separates:
+                '10:30': '10.30 am'
+                '14:30': '2:30 pm'
+            Wednesday:
+              integrated:
+                '09:15': '9.15 am'
+                '10:45': '10.45 am'
+                '14:15': '2.15 pm'
+                '15:30': '3.30 pm'
+              separates:
+                '10:30': '10.30 am'
+                '14:30': '2:30 pm'
+            Thursday:
+              integrated:
+                '09:15': '9.15 am'
+                '10:45': '10.45 am'
+                '14:15': '2.15 pm'
+                '15:30': '3.30 pm'
+              separates:
+                '10:30': '10.30 am'
+                '14:30': '2:30 pm'
+            Friday: null
+            Saturday: null
+            Sunday: null
+        'Hydebank Wood':
+          face-to-face:
+            Monday: null
+            Tuesday:
+              integrated:
+                '09:30': '9.30 am'
+                '10:45': '10.45 am'
+                '14:00': '2.00 pm'
+                '15:15': '3.15 pm'
+              separates: null
+            Wednesday:
+              integrated:
+                '09:30': '9.30 am'
+                '10:45': '10.45 am'
+                '14:00': '2.00 pm'
+                '15:15': '3.15 pm'
+              separates: null
+            Thursday: null
+            Friday: null
+            Saturday: null
+            Sunday:
+              integrated:
+                '09:30': '9.30 am'
+                '10:45': '10.45 am'
+                '14:30': '2.30 pm'
+              separates: null
+          virtual:
+            Monday:
+              '09:00': '9.00 am'
+              '10:00': '10.00 am'
+              '11:00': '11.00 am'
+              '14:00': '2.00 pm'
+              '15:00': '3.00 pm'
+              '16:00': '4.00 pm'
+            Tuesday:
+              '09:00': '9.00 am'
+              '10:00': '10.00 am'
+              '11:00': '11.00 am'
+              '14:00': '2.00 pm'
+              '15:00': '3.00 pm'
+              '16:00': '4.00 pm'
+            Wednesday:
+              '09:00': '9.00 am'
+              '10:00': '10.00 am'
+              '11:00': '11.00 am'
+              '14:00': '2.00 pm'
+              '15:00': '3.00 pm'
+              '16:00': '4.00 pm'
+            Thursday:
+              '09:00': '9.00 am'
+              '10:00': '10.00 am'
+              '11:00': '11.00 am'
+              '14:00': '2.00 pm'
+              '15:00': '3.00 pm'
+              '16:00': '4.00 pm'
+            Friday:
+              '09:00': '9.00 am'
+              '10:00': '10.00 am'
+              '11:00': '11.00 am'
+              '14:00': '2.00 pm'
+              '15:00': '3.00 pm'
+              '16:00': '4.00 pm'
+            Saturday:
+              '09:30': '9.30 am'
+              '10:00': '10.00 am'
+              '10:30': '10.30 am'
+              '11:00': '11.00 am'
+              '11:30': '11.30 am'
+              '14:00': '2.00 pm'
+              '14:30': '2.30 pm'
+              '15:00': '3.00 pm'
+              '15:30': '3.30 pm'
+              '16:00': '4.00 pm'
+              '16:30': '4.30 pm'
+              '18:00': '6.00 pm'
+              '18:30': '6.30 pm'
+              '19:00': '7.00 pm'
+              '19:30': '7.30 pm'
+            Sunday:
+              '09:00': '9.00 am'
+              '10:00': '10.00 am'
+              '11:00': '11.30 am'
+              '14:00': '2.00 pm'
+              '15:00': '3.00 pm'
+              '16:00': '4.00 pm'
+          enhanced: null
+        Magilligan:
+          face-to-face:
+            Monday: null
+            Tuesday: null
+            Wednesday:
+              integrated:
+                '10:00': '10.00 am'
+                '14:00': '2.00 pm'
+              separates: null
+            Thursday: null
+            Friday:
+              integrated:
+                '10:00': '10.00 am'
+                '14:00': '2.00 pm'
+              separates: null
+            Saturday:
+              integrated:
+                '10:00': '10.00 am'
+                '14:00': '2.00 pm'
+              separates: null
+            Sunday: null
+          virtual:
+            Monday:
+              '08:30': '8.30 am'
+              '09:00': '9.00 am'
+              '09:30': '9.30 am'
+              '10:00': '10.00 am'
+              '10:30': '10.30 am'
+              '11:00': '11.00 am'
+              '11:30': '11:30 am'
+              '14:00': '2.00 pm'
+              '14:30': '2.30 pm'
+              '15:00': '3.00 pm'
+              '15:30': '3.30 pm'
+              '16:00': '4.00 pm'
+              '16:30': '4.30 pm'
+              '17:00': '5.00 pm'
+              '17:30': '5.30 pm'
+            Tuesday:
+              '08:30': '8.30 am'
+              '09:00': '9.00 am'
+              '09:30': '9.30 am'
+              '10:00': '10.00 am'
+              '10:30': '10.30 am'
+              '11:00': '11.00 am'
+              '11:30': '11:30 am'
+              '14:00': '2.00 pm'
+              '14:30': '2.30 pm'
+              '15:00': '3.00 pm'
+              '15:30': '3.30 pm'
+              '16:00': '4.00 pm'
+              '16:30': '4.30 pm'
+              '17:00': '5.00 pm'
+              '17:30': '5.30 pm'
+            Wednesday:
+              '08:30': '8.30 am'
+              '09:00': '9.00 am'
+              '09:30': '9.30 am'
+              '10:00': '10.00 am'
+              '10:30': '10.30 am'
+              '11:00': '11.00 am'
+              '11:30': '11:30 am'
+              '14:00': '2.00 pm'
+              '14:30': '2.30 pm'
+              '15:00': '3.00 pm'
+              '15:30': '3.30 pm'
+              '16:00': '4.00 pm'
+              '16:30': '4.30 pm'
+              '17:00': '5.00 pm'
+              '17:30': '5.30 pm'
+            Thursday:
+              '08:30': '8.30 am'
+              '09:00': '9.00 am'
+              '09:30': '9.30 am'
+              '10:00': '10.00 am'
+              '10:30': '10.30 am'
+              '11:00': '11.00 am'
+              '11:30': '11:30 am'
+              '14:00': '2.00 pm'
+              '14:30': '2.30 pm'
+              '15:00': '3.00 pm'
+              '15:30': '3.30 pm'
+              '16:00': '4.00 pm'
+              '16:30': '4.30 pm'
+              '17:00': '5.00 pm'
+              '17:30': '5.30 pm'
+            Friday:
+              '08:30': '8.30 am'
+              '09:00': '9.00 am'
+              '09:30': '9.30 am'
+              '10:00': '10.00 am'
+              '10:30': '10.30 am'
+              '11:00': '11.00 am'
+              '11:30': '11:30 am'
+              '14:00': '2.00 pm'
+              '14:30': '2.30 pm'
+              '15:00': '3.00 pm'
+              '15:30': '3.30 pm'
+              '16:00': '4.00 pm'
+              '16:30': '4.30 pm'
+              '17:00': '5.00 pm'
+              '17:30': '5.30 pm'
+            Saturday:
+              '09:00': '9.00 am'
+              '09:30': '9.30 am'
+              '10:00': '10.00 am'
+              '10:30': '10.30 am'
+              '11:00': '11.00 am'
+              '11:30': '11:30 am'
+              '14:00': '2.00 pm'
+              '14:30': '2.30 pm'
+              '15:00': '3.00 pm'
+              '15:30': '3.30 pm'
+              '16:00': '4.00 pm'
+              '16:30': '4.30 pm'
+            Sunday:
+              '09:00': '9.00 am'
+              '09:30': '9.30 am'
+              '10:00': '10.00 am'
+              '10:30': '10.30 am'
+              '11:00': '11.00 am'
+              '11:30': '11:30 am'
+              '14:00': '2.00 pm'
+              '14:30': '2.30 pm'
+              '15:00': '3.00 pm'
+              '15:30': '3.30 pm'
+              '16:00': '4.00 pm'
+              '16:30': '4.30 pm'
+          enhanced: null
+variants: {  }
