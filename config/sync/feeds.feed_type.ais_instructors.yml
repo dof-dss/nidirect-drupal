@@ -14,7 +14,6 @@ dependencies:
     - node.type.driving_instructor
   module:
     - feeds_ex
-    - feeds_fetcher_headers
     - feeds_log
     - feeds_tamper
     - node
@@ -45,25 +44,31 @@ third_party_settings:
         source: title
         weight: 0
         label: Hash
-      a7e28d62-d9e5-457d-88dd-fee735e0253b:
-        format: 'https://%s'
-        uuid: a7e28d62-d9e5-457d-88dd-fee735e0253b
-        plugin: sprintf
-        source: web_url
+      6d03e86e-2d61-4a94-9b78-ef68f69001b4:
+        default_value: published
+        only_if_empty: false
+        uuid: 6d03e86e-2d61-4a94-9b78-ef68f69001b4
+        plugin: default_value
+        source: moderation_state_published
         weight: 0
-        label: 'Add protocol'
+        label: 'Set to published'
+      3370ac02-9427-4c42-a885-17176509bdc6:
+        default_value: '1'
+        only_if_empty: false
+        uuid: 3370ac02-9427-4c42-a885-17176509bdc6
+        plugin: default_value
+        source: published
+        weight: 0
+        label: 'Set published to true'
 label: 'AIS instructors'
 id: ais_instructors
 description: 'Imports driving instructors'
 help: ''
 import_period: 86400
-fetcher: httpfetcherheaders
+fetcher: upload
 fetcher_configuration:
-  auto_detect_feeds: 0
-  use_pubsubhubbub: 0
-  always_download: 0
-  fallback_hub: ''
-  request_timeout: '30'
+  allowed_extensions: 'txt csv tsv xml opml json'
+  directory: 'private://feeds'
 parser: jsonpath
 parser_configuration:
   context:
@@ -157,6 +162,21 @@ custom_sources:
     label: web_url
     machine_name: web_url
     type: json
+  published:
+    value: published
+    label: published
+    machine_name: published
+    type: blank
+  moderation_state:
+    value: 'moderation state'
+    label: 'moderation state'
+    machine_name: moderation_state
+    type: blank
+  moderation_state_published:
+    value: 'moderation state published'
+    label: 'moderation state published'
+    machine_name: moderation_state_published
+    type: blank
 mappings:
   -
     target: field_di_adi_no
@@ -175,6 +195,7 @@ mappings:
       reference_by: name
       autocreate: 0
       autocreate_bundle: ni_postcodes
+      feeds_item: false
   -
     target: field_di_categories
     map:
@@ -184,6 +205,7 @@ mappings:
       reference_by: uuid
       autocreate: 0
       autocreate_bundle: drive_instr_categories
+      feeds_item: false
   -
     target: field_di_firstname
     map:
@@ -231,3 +253,16 @@ mappings:
       title: web_url
     settings:
       language: null
+  -
+    target: status
+    map:
+      value: published
+    settings:
+      language: null
+  -
+    target: moderation_state
+    map:
+      value: moderation_state_published
+    settings:
+      language: null
+    unique: {  }
