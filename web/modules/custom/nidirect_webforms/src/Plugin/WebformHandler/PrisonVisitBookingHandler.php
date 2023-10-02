@@ -575,7 +575,7 @@ class PrisonVisitBookingHandler extends WebformHandlerBase
           }
         }
 
-        if (str_contains($element_name, 'special_requirements_details') && !empty($element_values)) {
+        if (str_contains($element_name, 'special_requirements_details')) {
           $special_requirements = Json::encode($element_values);
           $form_state->setValue('special_requirements_json', $special_requirements);
           $webform_submission->setElementData('special_requirements_json', $special_requirements);
