@@ -54,7 +54,7 @@
       }
 
       const $timeSlots = $('input[type="checkbox"]', $weekSlots);
-      const timeSlotLimit = (visitOrderVisitTypeKey === 'E') ? 5 : 3;
+      const timeSlotLimit = (visitOrderVisitTypeKey === 'V') ? 5 : 3;
 
       disableCheckboxes($timeSlots, timeSlotLimit);
 
