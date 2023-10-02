@@ -559,14 +559,13 @@ class PrisonVisitBookingHandler extends WebformHandlerBase
             $count++;
             if ($count <= 5) {
               $slot_date = new \DateTime($slot);
-              $form_state->setValue('slot' . $count . '_datetime', $slot);
-              $webform_submission->setElementData('slot' . $count . '_datetime', $slot);
+              $form_state->setValue('slot' . $count . '_datetime', $slot_date->format('d/m/Y H:i'));
+              $webform_submission->setElementData('slot' . $count . '_datetime', $slot_date->format('d/m/Y H:i'));
 
               // "Pretty" slot dates and times for preview
               if (!empty($slot)) {
-                $slot_datetime = new \DateTime($slot);
-                $form_state->setValue('slot' . $count . '_pretty_datetime', $slot_datetime->format('l, j F Y \a\t g.i a'));
-                $webform_submission->setElementData('slot' . $count . '_pretty_datetime', $slot_datetime->format('l, j F Y \a\t g.i a'));
+                $form_state->setValue('slot' . $count . '_pretty_datetime', $slot_date->format('l, j F Y \a\t g.i a'));
+                $webform_submission->setElementData('slot' . $count . '_pretty_datetime', $slot_date->format('l, j F Y \a\t g.i a'));
               }
               else {
                 $form_state->setValue('slot' . $count . '_pretty_datetime', '');
