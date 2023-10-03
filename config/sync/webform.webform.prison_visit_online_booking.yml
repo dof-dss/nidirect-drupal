@@ -3,11 +3,7 @@ langcode: en
 status: open
 dependencies:
   module:
-    - antibot
     - nidirect_webforms
-third_party_settings:
-  antibot:
-    antibot: true
 weight: 0
 open: null
 close: null
@@ -94,9 +90,13 @@ elements: |-
       visitor_1_id:
         '#type': textfield
         '#title': 'Visitor ID'
+        '#maxlength': 6
+        '#size': 8
         '#autocomplete': 'off'
         '#required': true
-        '#required_error': 'enter the visitor ID for the main visitor'
+        '#required_error': 'Enter the visitor ID for the main visitor'
+        '#pattern': '[0-9]{6}'
+        '#pattern_error': 'Visitor ID is not recognised'
       visitor_1_dob:
         '#type': date
         '#title': 'Date of birth'
@@ -135,7 +135,7 @@ elements: |-
     number_additional_visitors:
       '#type': number
       '#title': 'How many additional visitors?'
-      '#description': 'You can add up to 5 additional visitors'
+      '#description': 'You can add up to 4 additional visitors'
       '#description_display': before
       '#size': '5'
       '#placeholder': '0'
@@ -161,7 +161,6 @@ elements: |-
     visitor_2__details:
       '#type': fieldset
       '#title': 'Additional visitor one'
-      '#required': true
       '#states':
         visible-slide:
           ':input[name="number_additional_visitors"]':
@@ -170,16 +169,18 @@ elements: |-
       visitor_2_id:
         '#type': textfield
         '#title': 'Visitor ID'
-        '#required': true
+        '#maxlength': 6
+        '#size': 8
+        '#required_error': 'Enter the visitor ID for this additional visitor'
+        '#pattern': '[0-9]{6}'
+        '#pattern_error': 'Visitor ID is not recognised'
       visitor_2_dob:
         '#type': date
         '#title': 'Date of birth'
-        '#required': true
         '#format': d/m/Y
     visitor_3_details:
       '#type': fieldset
       '#title': 'Additional visitor two'
-      '#required': true
       '#states':
         visible-slide:
           ':input[name="number_additional_visitors"]':
@@ -188,16 +189,18 @@ elements: |-
       visitor_3_id:
         '#type': textfield
         '#title': 'Visitor ID'
-        '#required': true
+        '#maxlength': 6
+        '#size': 8
+        '#required_error': 'Enter the visitor ID for this additional visitor'
+        '#pattern': '[0-9]{6}'
+        '#pattern_error': 'Visitor ID is not recognised'
       visitor_3_dob:
         '#type': date
         '#title': 'Date of birth'
-        '#required': true
         '#format': d/m/Y
     visitor_4_details:
       '#type': fieldset
       '#title': 'Additional visitor three'
-      '#required': true
       '#states':
         visible-slide:
           ':input[name="number_additional_visitors"]':
@@ -206,16 +209,18 @@ elements: |-
       visitor_4_id:
         '#type': textfield
         '#title': 'Visitor ID'
-        '#required': true
+        '#maxlength': 6
+        '#size': 8
+        '#required_error': 'Enter the visitor ID for this additional visitor'
+        '#pattern': '[0-9]{6}'
+        '#pattern_error': 'Visitor ID is not recognised'
       visitor_4_dob:
         '#type': date
         '#title': 'Date of birth'
-        '#required': true
         '#format': d/m/Y
     visitor_5_details:
       '#type': fieldset
       '#title': 'Additional visitor four'
-      '#required': true
       '#states':
         visible-slide:
           ':input[name="number_additional_visitors"]':
@@ -224,11 +229,14 @@ elements: |-
       visitor_5_id:
         '#type': textfield
         '#title': 'Visitor ID'
-        '#required': true
+        '#maxlength': 6
+        '#size': 8
+        '#required_error': 'Enter the visitor ID for this additional visitor'
+        '#pattern': '[0-9]{6}'
+        '#pattern_error': 'Visitor ID is not recognised'
       visitor_5_dob:
         '#type': date
         '#title': 'Date of birth'
-        '#required': true
         '#format': d/m/Y
     save_details:
       '#type': fieldset
@@ -238,14 +246,19 @@ elements: |-
           ':input[name="number_additional_visitors"]':
             value:
               greater: '0'
-      '#format': container
+      remember_settings_info:
+        '#type': webform_markup
+        '#markup': |-
+          <p class="info-notice">
+          Do not select this option if you're using a publicly accessible computer or a device shared with others.
+          </p>
       yes_remember_these_visitor_details:
         '#type': checkbox
         '#title': 'Yes remember these visitor details'
   special_requirements:
     '#type': webform_wizard_page
     '#title': 'Special requirements'
-    '#format': container
+    '#format': fieldset
     '#prev_button_label': Previous
     '#next_button_label': Next
     do_you_or_any_other_visitors_have_any_special_requirements_:
@@ -306,7 +319,7 @@ elements: |-
       '#template': |-
         <p class="info-notice" role="alert" aria-live="polite">
           Choose up to 
-          {% if data.visitor_order_number | slice(2, 1) == 'E' %}
+          {% if data.visitor_order_number | slice(2, 1) == 'V' %}
             five
           {% else %}
             three
@@ -554,7 +567,14 @@ elements: |-
     '#type': webform_actions
     '#title': 'Submit button(s)'
     '#submit__label': 'Book prison visit'
-css: '.form-item-visit-details {}'
+css: |-
+  .webform-preview .webform-submission-data .webform-element {
+      margin-top: 1em;
+  }
+
+  .webform-preview fieldset {
+    margin: 2em 0;
+  }
 javascript: ''
 settings:
   ajax: false
@@ -662,9 +682,6 @@ settings:
     visitor_1_intro: visitor_1_intro
     add_additional_visitors: add_additional_visitors
     number_additional_visitors: number_additional_visitors
-    visitor_6_id: visitor_6_id
-    visitor_6_dob: visitor_6_dob
-    yes_remember_these_visitor_details: yes_remember_these_visitor_details
     monday_week_1: monday_week_1
     tuesday_week_1: tuesday_week_1
     wednesday_week_1: wednesday_week_1
@@ -796,108 +813,6 @@ access:
     users: {  }
     permissions: {  }
 handlers:
-  submission_email:
-    id: email
-    handler_id: submission_email
-    label: OV_IN
-    notes: ''
-    status: true
-    conditions: {  }
-    weight: 0
-    settings:
-      states:
-        - completed
-      to_mail: '[webform_submission:values:visitor_1_email:raw]'
-      to_options: {  }
-      bcc_mail: ''
-      bcc_options: {  }
-      cc_mail: ''
-      cc_options: {  }
-      from_mail: _default
-      from_options: {  }
-      from_name: _default
-      reply_to: ''
-      return_path: ''
-      sender_mail: ''
-      sender_name: ''
-      subject: OV_IN
-      body: |-
-        <pre>
-        {
-          "SUBMITTED_DATETIME":"[webform_submission:completed:custom:d/m/Y H:i]",
-          "VISIT_ORDER_NO":"[webform_submission:values:visitor_order_number]",
-          "INMATE_ID":"[webform_submission:values:prisoner_id]",
-          "SPECIAL_REQUIREMENTS":"[webform_submission:values:special_requirements_json]",
-          "VISITOR_1_ID":"[webform_submission:values:visitor_1_id]",
-          "VISITOR_1_DOB":"[webform_submission:values:visitor_1_dob:d/m/Y]",
-          "VISITOR_1_EMAIL":"[webform_submission:values:visitor_1_email]",
-          "VISITOR_1_PHONE":"[webform_submission:values:visitor_1_telephone]",
-          "VISITOR_2_ID":"[webform_submission:values:visitor_2_id]",
-          "VISITOR_2_DOB":"[webform_submission:values:visitor_2_dob:d/m/Y]",
-          "VISITOR_3_ID":"[webform_submission:values:visitor_3_id]",
-          "VISITOR_3_DOB":"[webform_submission:values:visitor_3_dob:d/m/Y]",
-          "VISITOR_4_ID":"[webform_submission:values:visitor_4_id]",
-          "VISITOR_4_DOB":"[webform_submission:values:visitor_4_dob:d/m/Y]",
-          "VISITOR_5_ID":"[webform_submission:values:visitor_5_id]",
-          "VISITOR_5_DOB":"[webform_submission:values:visitor_5_dob:d/m/Y]",
-          "SLOT1_DATETIME":"[webform_submission:values:slot1_datetime:d/m/Y H:i]",
-          "SLOT2_DATETIME":"[webform_submission:values:slot2_datetime:d/m/Y H:i]",
-          "SLOT3_DATETIME":"[webform_submission:values:slot3_datetime:d/m/Y H:i]",
-          "SLOT4_DATETIME":"[webform_submission:values:slot4_datetime:d/m/Y H:i]",
-          "SLOT5_DATETIME":"[webform_submission:values:slot5_datetime:d/m/Y H:i]"
-        }
-        </pre>
-      excluded_elements:
-        prison_visit_prison_name: prison_visit_prison_name
-        prison_visit_prison_name_key: prison_visit_prison_name_key
-        prison_visit_type: prison_visit_type
-        prison_visit_type_key: prison_visit_type_key
-        prison_visit_order_valid_from: prison_visit_order_valid_from
-        prison_visit_order_valid_to: prison_visit_order_valid_to
-        prison_visit_week_date_start: prison_visit_week_date_start
-        prison_visit_sequence: prison_visit_sequence
-        prison_visit_prisoner_category: prison_visit_prisoner_category
-        prison_visit_prisoner_subcategory: prison_visit_prisoner_subcategory
-        visitor_1_intro: visitor_1_intro
-        visit_details: visit_details
-        monday_week_1: monday_week_1
-        tuesday_week_1: tuesday_week_1
-        wednesday_week_1: wednesday_week_1
-        thursday_week_1: thursday_week_1
-        friday_week_1: friday_week_1
-        saturday_week_1: saturday_week_1
-        sunday_week_1: sunday_week_1
-        monday_week_2: monday_week_2
-        tuesday_week_2: tuesday_week_2
-        wednesday_week_2: wednesday_week_2
-        thursday_week_2: thursday_week_2
-        friday_week_2: friday_week_2
-        saturday_week_2: saturday_week_2
-        sunday_week_2: sunday_week_2
-        monday_week_3: monday_week_3
-        tuesday_week_3: tuesday_week_3
-        wednesday_week_3: wednesday_week_3
-        thursday_week_3: thursday_week_3
-        friday_week_3: friday_week_3
-        saturday_week_3: saturday_week_3
-        sunday_week_3: sunday_week_3
-        monday_week_4: monday_week_4
-        tuesday_week_4: tuesday_week_4
-        wednesday_week_4: wednesday_week_4
-        thursday_week_4: thursday_week_4
-        friday_week_4: friday_week_4
-        saturday_week_4: saturday_week_4
-        sunday_week_4: sunday_week_4
-      ignore_access: true
-      exclude_empty: true
-      exclude_empty_checkbox: false
-      exclude_attachments: false
-      html: true
-      attachments: false
-      twig: false
-      theme_name: classy
-      parameters: {  }
-      debug: false
   prison_visit_booking:
     id: prison_visit_booking
     handler_id: prison_visit_booking
@@ -1264,4 +1179,204 @@ handlers:
               '16:00': '4.00 pm'
               '16:30': '4.30 pm'
           enhanced: null
+  ov_in_plain:
+    id: email
+    handler_id: ov_in_plain
+    label: OV_IN
+    notes: ''
+    status: true
+    conditions: {  }
+    weight: 2
+    settings:
+      states:
+        - completed
+      to_mail: peter.caughey@justice-ni.gov.uk
+      to_options: {  }
+      bcc_mail: ''
+      bcc_options: {  }
+      cc_mail: '[webform_submission:values:visitor_1_email:raw]'
+      cc_options: {  }
+      from_mail: _default
+      from_options: {  }
+      from_name: _default
+      reply_to: ''
+      return_path: ''
+      sender_mail: ''
+      sender_name: ''
+      subject: OV_IN
+      body: |-
+        {
+        "SUBMITTED_DATETIME": "[webform_submission:completed:prison_visit_booking_datetime]",
+        "VISIT_ORDER_NO": "[webform_submission:values:visitor_order_number]",
+        "INMATE_ID": "[webform_submission:values:prisoner_id]",
+        "SPECIAL_REQUIREMENTS": [webform_submission:values:special_requirements_json],
+        "VISITOR_1_ID": "[webform_submission:values:visitor_1_id]",
+        "VISITOR_1_DOB": "[webform_submission:values:visitor_1_dob:prison_visit_booking_datetime]",
+        "VISITOR_1_EMAIL": "[webform_submission:values:visitor_1_email]",
+        "VISITOR_1_PHONE": "[webform_submission:values:visitor_1_telephone]",
+        "VISITOR_2_ID": "[webform_submission:values:visitor_2_id]",
+        "VISITOR_2_DOB": "[webform_submission:values:visitor_2_dob:prison_visit_booking_datetime]",
+        "VISITOR_3_ID": "[webform_submission:values:visitor_3_id]",
+        "VISITOR_3_DOB": "[webform_submission:values:visitor_3_dob:prison_visit_booking_datetime]",
+        "VISITOR_4_ID": "[webform_submission:values:visitor_4_id]",
+        "VISITOR_4_DOB": "[webform_submission:values:visitor_4_dob:prison_visit_booking_datetime]",
+        "VISITOR_5_ID": "[webform_submission:values:visitor_5_id]",
+        "VISITOR_5_DOB": "[webform_submission:values:visitor_5_dob:prison_visit_booking_datetime]",
+        "SLOT1_DATETIME": "[webform_submission:values:slot1_datetime]",
+        "SLOT2_DATETIME": "[webform_submission:values:slot2_datetime]",
+        "SLOT3_DATETIME": "[webform_submission:values:slot3_datetime]",
+        "SLOT4_DATETIME": "[webform_submission:values:slot4_datetime]",
+        "SLOT5_DATETIME": "[webform_submission:values:slot5_datetime]"
+        }
+      excluded_elements:
+        prison_visit_prison_name: prison_visit_prison_name
+        prison_visit_prison_name_key: prison_visit_prison_name_key
+        prison_visit_type: prison_visit_type
+        prison_visit_type_key: prison_visit_type_key
+        prison_visit_order_valid_from: prison_visit_order_valid_from
+        prison_visit_order_valid_to: prison_visit_order_valid_to
+        prison_visit_week_date_start: prison_visit_week_date_start
+        prison_visit_sequence: prison_visit_sequence
+        prison_visit_prisoner_category: prison_visit_prisoner_category
+        prison_visit_prisoner_subcategory: prison_visit_prisoner_subcategory
+        visitor_1_intro: visitor_1_intro
+        visit_details: visit_details
+        monday_week_1: monday_week_1
+        tuesday_week_1: tuesday_week_1
+        wednesday_week_1: wednesday_week_1
+        thursday_week_1: thursday_week_1
+        friday_week_1: friday_week_1
+        saturday_week_1: saturday_week_1
+        sunday_week_1: sunday_week_1
+        monday_week_2: monday_week_2
+        tuesday_week_2: tuesday_week_2
+        wednesday_week_2: wednesday_week_2
+        thursday_week_2: thursday_week_2
+        friday_week_2: friday_week_2
+        saturday_week_2: saturday_week_2
+        sunday_week_2: sunday_week_2
+        monday_week_3: monday_week_3
+        tuesday_week_3: tuesday_week_3
+        wednesday_week_3: wednesday_week_3
+        thursday_week_3: thursday_week_3
+        friday_week_3: friday_week_3
+        saturday_week_3: saturday_week_3
+        sunday_week_3: sunday_week_3
+        monday_week_4: monday_week_4
+        tuesday_week_4: tuesday_week_4
+        wednesday_week_4: wednesday_week_4
+        thursday_week_4: thursday_week_4
+        friday_week_4: friday_week_4
+        saturday_week_4: saturday_week_4
+        sunday_week_4: sunday_week_4
+      ignore_access: true
+      exclude_empty: true
+      exclude_empty_checkbox: false
+      exclude_attachments: false
+      html: false
+      attachments: false
+      twig: false
+      theme_name: ''
+      parameters: {  }
+      debug: false
+  ov_in_plain_json_encoded:
+    id: email
+    handler_id: ov_in_plain_json_encoded
+    label: OV_IN
+    notes: ''
+    status: false
+    conditions: {  }
+    weight: 3
+    settings:
+      states:
+        - completed
+      to_mail: peter.caughey@justice-ni.gov.uk
+      to_options: {  }
+      bcc_mail: '[webform_submission:values:visitor_1_email:raw]'
+      bcc_options: {  }
+      cc_mail: ''
+      cc_options: {  }
+      from_mail: _default
+      from_options: {  }
+      from_name: _default
+      reply_to: ''
+      return_path: ''
+      sender_mail: ''
+      sender_name: ''
+      subject: OV_IN
+      body: |-
+        {
+        "SUBMITTED_DATETIME": "[webform_submission:completed:prison_visit_booking_datetime]",
+        "VISIT_ORDER_NO": "[webform_submission:values:visitor_order_number]",
+        "INMATE_ID": "[webform_submission:values:prisoner_id]",
+        "SPECIAL_REQUIREMENTS": [webform_submission:values:special_requirements_json],
+        "VISITOR_1_ID": "[webform_submission:values:visitor_1_id]",
+        "VISITOR_1_DOB": "[webform_submission:values:visitor_1_dob:prison_visit_booking_datetime]",
+        "VISITOR_1_EMAIL": "[webform_submission:values:visitor_1_email]",
+        "VISITOR_1_PHONE": "[webform_submission:values:visitor_1_telephone]",
+        "VISITOR_2_ID": "[webform_submission:values:visitor_2_id]",
+        "VISITOR_2_DOB": "[webform_submission:values:visitor_2_dob:prison_visit_booking_datetime]",
+        "VISITOR_3_ID": "[webform_submission:values:visitor_3_id]",
+        "VISITOR_3_DOB": "[webform_submission:values:visitor_3_dob:prison_visit_booking_datetime]",
+        "VISITOR_4_ID": "[webform_submission:values:visitor_4_id]",
+        "VISITOR_4_DOB": "[webform_submission:values:visitor_4_dob:prison_visit_booking_datetime]",
+        "VISITOR_5_ID": "[webform_submission:values:visitor_5_id]",
+        "VISITOR_5_DOB": "[webform_submission:values:visitor_5_dob:prison_visit_booking_datetime]",
+        "SLOT1_DATETIME": "[webform_submission:values:slot1_datetime]",
+        "SLOT2_DATETIME": "[webform_submission:values:slot2_datetime]",
+        "SLOT3_DATETIME": "[webform_submission:values:slot3_datetime]",
+        "SLOT4_DATETIME": "[webform_submission:values:slot4_datetime]",
+        "SLOT5_DATETIME": "[webform_submission:values:slot5_datetime]"
+        }
+      excluded_elements:
+        prison_visit_prison_name: prison_visit_prison_name
+        prison_visit_prison_name_key: prison_visit_prison_name_key
+        prison_visit_type: prison_visit_type
+        prison_visit_type_key: prison_visit_type_key
+        prison_visit_order_valid_from: prison_visit_order_valid_from
+        prison_visit_order_valid_to: prison_visit_order_valid_to
+        prison_visit_week_date_start: prison_visit_week_date_start
+        prison_visit_sequence: prison_visit_sequence
+        prison_visit_prisoner_category: prison_visit_prisoner_category
+        prison_visit_prisoner_subcategory: prison_visit_prisoner_subcategory
+        visitor_1_intro: visitor_1_intro
+        visit_details: visit_details
+        monday_week_1: monday_week_1
+        tuesday_week_1: tuesday_week_1
+        wednesday_week_1: wednesday_week_1
+        thursday_week_1: thursday_week_1
+        friday_week_1: friday_week_1
+        saturday_week_1: saturday_week_1
+        sunday_week_1: sunday_week_1
+        monday_week_2: monday_week_2
+        tuesday_week_2: tuesday_week_2
+        wednesday_week_2: wednesday_week_2
+        thursday_week_2: thursday_week_2
+        friday_week_2: friday_week_2
+        saturday_week_2: saturday_week_2
+        sunday_week_2: sunday_week_2
+        monday_week_3: monday_week_3
+        tuesday_week_3: tuesday_week_3
+        wednesday_week_3: wednesday_week_3
+        thursday_week_3: thursday_week_3
+        friday_week_3: friday_week_3
+        saturday_week_3: saturday_week_3
+        sunday_week_3: sunday_week_3
+        monday_week_4: monday_week_4
+        tuesday_week_4: tuesday_week_4
+        wednesday_week_4: wednesday_week_4
+        thursday_week_4: thursday_week_4
+        friday_week_4: friday_week_4
+        saturday_week_4: saturday_week_4
+        sunday_week_4: sunday_week_4
+      ignore_access: true
+      exclude_empty: true
+      exclude_empty_checkbox: false
+      exclude_attachments: false
+      html: false
+      attachments: false
+      twig: false
+      theme_name: ''
+      parameters: {  }
+      debug: false
 variants: {  }
