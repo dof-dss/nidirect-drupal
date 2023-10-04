@@ -39,12 +39,14 @@ main form {
     margin: 0;
   }
 
-  &--error-message.error,
-  &--error-message .error {
+  &--error-message {
     @extend %error-bubble;
 
-    @at-root .container-inline & {
-      @extend %error-bubble--floating-below;
+    @at-root {
+      .container-inline &,
+      .webform-options-display-side-by-side & {
+        @extend %error-bubble--floating-below;
+      }
     }
   }
 }
@@ -240,6 +242,10 @@ textarea {
   }
 }
 
+[type='date'] {
+  appearance: none;
+}
+
 [type='file'] {
   padding: .4rem !important;
   font-size: 1.6rem !important;
@@ -302,20 +308,19 @@ textarea,
   margin: .5em .5em .5em 0;
   padding: 0 33% 0 0; // Right padding makes room for error bubbles.
 
-  .container-inline & {
+  .container-inline &,
+  .webform-options-display-side-by-side & {
     display: inline-block;
     width: auto;
     padding: 0;
 
-    .form-item--error-message.error,
-    .form-item--error-message .error {
+    .form-item--error-message {
       @extend %error-bubble--floating-below;
     }
   }
 
   // Error bubbles sit to the right of radio/checkbox options.
-  .form-item--error-message.error,
-  .form-item--error-message .error {
+  .form-item--error-message {
     @extend %error-bubble--floating-right;
   }
 }
