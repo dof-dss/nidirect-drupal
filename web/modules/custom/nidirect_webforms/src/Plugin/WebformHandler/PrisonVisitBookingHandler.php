@@ -8,12 +8,15 @@ use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Datetime\DrupalDateTime;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
+use Drupal\Core\TempStore\PrivateTempStoreFactory;
 use Drupal\datetime\Plugin\Field\FieldType\DateTimeItemInterface;
 use Drupal\webform\Plugin\WebformHandlerBase;
 use Drupal\webform\Utility\WebformFormHelper;
 use Drupal\webform\WebformInterface;
 use Drupal\webform\WebformSubmissionInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
  * Prison Visit Booking Webform Handler.
@@ -34,19 +37,24 @@ class PrisonVisitBookingHandler extends WebformHandlerBase
   use StringTranslationTrait;
 
   /**
-   * @var \Drupal\Core\Config\ConfigFactoryInterface
+   * @var ConfigFactoryInterface
    */
   protected $configFactory;
 
   /**
-   * @var \Symfony\Component\HttpFoundation\Request
+   * @var Request
    */
   protected $request;
 
   /**
-   * @var \Symfony\Component\HttpFoundation\RequestStack
+   * @var RequestStack
    */
   protected $requestStack;
+
+  /**
+   * @var PrivateTempStoreFactory
+   */
+  private $tempStoreFactory;
 
   /**
    * {@inheritdoc}
@@ -56,6 +64,7 @@ class PrisonVisitBookingHandler extends WebformHandlerBase
     $instance = parent::create($container, $configuration, $plugin_id, $plugin_definition);
     $instance->configFactory = $container->get('config.factory');
     $instance->request = $container->get('request_stack')->getCurrentRequest();
+    $instance->tempStoreFactory = $container->get('tempstore.private');
     return $instance;
   }
 
@@ -73,15 +82,19 @@ class PrisonVisitBookingHandler extends WebformHandlerBase
    */
   public function alterForm(array &$form, FormStateInterface $form_state, WebformSubmissionInterface $webform_submission)
   {
-
+    $page = $form_state->get('current_page');
+    $elements = WebformFormHelper::flattenElements($form);
     $booking_ref = $this->processBookingReference($form_state);
     $available_slots = $this->getAvailableSlots($form_state);
+    $tempstore = $this->tempStoreFactory->get('nidirect_webforms.prison_visit_booking');
+    $visitor_data = $tempstore->get('visitor_data');
 
     $form['#attached']['drupalSettings']['prisonVisitBooking'] = $this->configuration;
     $form['#attached']['drupalSettings']['prisonVisitBooking']['booking_ref'] = $booking_ref;
 
-
-    if (!empty($booking_ref)) {
+    // Filter time slots shown to user.
+    if ($page === 'visit_preferred_day_and_time' && !empty($booking_ref))
+    {
       $visit_type = $booking_ref['visit_type'];
       $visit_type_key = $booking_ref['visit_type_key'];
       $visit_prison = $booking_ref['prison_name'];
@@ -97,34 +110,25 @@ class PrisonVisitBookingHandler extends WebformHandlerBase
       $visit_latest_booking_date = $booking_ref['visit_latest_booking_date'];
       $visit_booking_week_start = $booking_ref['visit_booking_week_start'];
 
-      if ($visit_booking_ref_valid_from < $visit_booking_week_start) {
+      if ($visit_booking_ref_valid_from < $visit_booking_week_start)
+      {
         $visit_booking_ref_valid_from = $visit_booking_week_start;
       }
 
-//      kint(
-//        $visit_order_date,
-//        $visit_earliest_date,
-//        $visit_booking_ref_valid_from,
-//        $visit_booking_ref_valid_to,
-//        $visit_advance_booking_earliest_date,
-//        $visit_latest_booking_date,
-//        $visit_booking_week_start,
-//        $available_slots
-//      );
-
-
-      if (!empty($available_slots)) {
+      if (!empty($available_slots))
+      {
 
         // Alter form slots to correspond with available slots.
-
-        for ($i = 4; $i >= 1; $i--) {
+        for ($i = 4; $i >= 1; $i--)
+        {
 
           // Form slots for each week.
           $form_slots_week = &$form['elements']['visit_preferred_day_and_time']['slots_week_' . $i];
 
           $webform_submission_slots_week = $webform_submission->getWebform()->getElement('slots_week_' . $i, TRUE);
 
-          if ($form_slots_week['#access'] = FALSE) {
+          if ($form_slots_week['#access'] = FALSE)
+          {
             continue;
           }
 
@@ -144,8 +148,8 @@ class PrisonVisitBookingHandler extends WebformHandlerBase
           // Loop through form slots for each day.
           $days_of_week = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
 
-          for ($j = 1; $j <= 7; $j++) {
-
+          for ($j = 1; $j <= 7; $j++)
+          {
             $day = $days_of_week[$j-1];
             $form_slots_day_date = clone $form_slots_week_date;
             $form_slots_day = &$form_slots_week[$day . '_week_' . $i];
@@ -161,59 +165,70 @@ class PrisonVisitBookingHandler extends WebformHandlerBase
             $form_slots_day['#options'] = [];
 
             // Create the bookable options and add to the form.
-            foreach ($available_slots as $available_slot) {
-
+            foreach ($available_slots as $available_slot)
+            {
               // Determine if this slot is bookable.
               $slot_is_bookable = TRUE;
 
-              if ($available_slot < $visit_booking_week_start) {
+              if ($available_slot < $visit_booking_week_start)
+              {
                 $slot_is_bookable = FALSE;
               }
 
-              if ($available_slot > $visit_booking_ref_valid_to) {
+              if ($available_slot > $visit_booking_ref_valid_to)
+              {
                 $slot_is_bookable = FALSE;
               }
 
-              if ($available_slot < $visit_order_date) {
+              if ($available_slot < $visit_order_date)
+              {
                 $slot_is_bookable = FALSE;
               }
 
-              if ($available_slot < $visit_earliest_date ) {
+              if ($available_slot < $visit_earliest_date )
+              {
                 $slot_is_bookable = FALSE;
               }
 
-              if ($visit_type === 'face-to-face' && $visit_prisoner_category === 'separates') {
-
+              if ($visit_type === 'face-to-face' && $visit_prisoner_category === 'separates')
+              {
                 // Separates get am or pm timeslots depending on
                 // week number parity.
 
                 $week_number = $available_slot->format('W');
                 $hour = $available_slot->format('H');
 
-                if ($week_number % 2 === 0) {
-                  if ($visit_prisoner_subcategory === 0 && $hour <= 12) {
+                if ($week_number % 2 === 0)
+                {
+                  if ($visit_prisoner_subcategory === 0 && $hour <= 12)
+                  {
                     $slot_is_bookable = FALSE;
                   }
-                  elseif ($visit_prisoner_subcategory === 1 && $hour > 12) {
+                  elseif ($visit_prisoner_subcategory === 1 && $hour > 12)
+                  {
                     $slot_is_bookable = FALSE;
                   }
                 }
                 else {
-                  if ($visit_prisoner_subcategory === 0 && $hour > 12) {
+                  if ($visit_prisoner_subcategory === 0 && $hour > 12)
+                  {
                     $slot_is_bookable = FALSE;
                   }
-                  elseif ($visit_prisoner_subcategory === 1 && $hour <= 12) {
+                  elseif ($visit_prisoner_subcategory === 1 && $hour <= 12)
+                  {
                     $slot_is_bookable = FALSE;
                   }
                 }
               }
 
-              if ($slot_is_bookable && $available_slot->format('Y-m-d') === $form_slots_day_date->format('Y-m-d')) {
+              if ($slot_is_bookable && $available_slot->format('Y-m-d') === $form_slots_day_date->format('Y-m-d'))
+              {
                 $form_slots_day['#options'][$available_slot->format(DATE_ATOM)] = $available_slot->format('H:i');
               }
             }
 
-            if (!empty($form_slots_day['#options'])) {
+            if (!empty($form_slots_day['#options']))
+            {
               $form_slots_day['#access'] = TRUE;
               $form_slots_week['#access'] = TRUE;
             }
@@ -223,21 +238,38 @@ class PrisonVisitBookingHandler extends WebformHandlerBase
       }
     }
 
+    // Deal with remembered additional visitors.
+    $elements['msg_existing_additional_visitors']['#access'] = FALSE;
+    if (!empty($visitor_data) && $page === 'additional_visitors')
+    {
+      $visitor_data_is_valid = TRUE;
 
-    // Set visitor form element values from session.
-    $session = $this->request->getSession();
-    $elements = WebformFormHelper::flattenElements($form);
-    $visitor_data = [];
+      if (empty($visitor_data['visitor_1_id']) || $visitor_data['visitor_1_id'] !== $form_state->getValue('visitor_1_id'))
+      {
+        $visitor_data_is_valid = FALSE;
+      }
+      elseif ($visitor_data['additional_visitors_remember'] === 'no')
+      {
+        $visitor_data_is_valid = FALSE;
+      }
 
-    foreach ($session->all() as $key => $value) {
-      if (str_starts_with($key, 'prison_visit_booking.visitor_') && !str_contains($key, 'visitor_order_number')) {
-        $form_key = explode(".", $key)[1];
-        $visitor_data[$form_key] = $value;
-        $elements[$form_key]['#default_value'] = $value;
+      $elements['msg_existing_additional_visitors']['#access'] = $visitor_data_is_valid;
+
+      if ($visitor_data_is_valid)
+      {
+        // Retrieve existing visitor data.
+        foreach ($visitor_data as $key => $value)
+        {
+          $form_state->setValue($key, $value);
+          $elements[$key]['#default_value'] = $value;
+        }
+      }
+      else
+      {
+        // Remove all visitor data.
+        $tempstore->delete('visitor_data');
       }
     }
-
-    $form_state->setValues($visitor_data);
   }
 
   /**
@@ -258,18 +290,21 @@ class PrisonVisitBookingHandler extends WebformHandlerBase
     $booking_ref = !empty($form_state->getValue('visitor_order_number')) ? $form_state->getValue('visitor_order_number') : NULL;
 
     // Basic validation with early return.
-    if (empty($booking_ref)) {
+    if (empty($booking_ref))
+    {
       $form_state->setErrorByName('visitor_order_number', $this->t('Visit reference number is required'));
       return;
     }
-    elseif (strlen($booking_ref) !== $this->configuration['visit_order_number_length']) {
+    elseif (strlen($booking_ref) !== $this->configuration['visit_order_number_length'])
+    {
       $form_state->setErrorByName('visitor_order_number', $this->t('Visit reference number must contain 12 characters'));
       return;
     }
 
     // Get processed version of the booking reference.
     $booking_ref_processed = $form_state->getValue('booking_ref_processed');
-    if (empty($booking_ref_processed)) {
+    if (empty($booking_ref_processed))
+    {
       $booking_ref_processed = $this->processBookingReference($form_state);
     }
 
@@ -278,8 +313,10 @@ class PrisonVisitBookingHandler extends WebformHandlerBase
 
     // If any of the processed booking reference values are missing,
     // it's invalid.
-    foreach ($booking_ref_processed as $key => $value) {
-      if (!isset($value)) {
+    foreach ($booking_ref_processed as $key => $value)
+    {
+      if (!isset($value))
+      {
         $process_booking_ref_is_valid = FALSE;
       }
     }
@@ -287,7 +324,8 @@ class PrisonVisitBookingHandler extends WebformHandlerBase
     // Check prison name and visit type are a valid combination.
     $prison_name = $booking_ref_processed['prison_name'];
     $visit_type = $booking_ref_processed['visit_type'];
-    if (empty($this->configuration['visit_slots'][$prison_name][$visit_type])) {
+    if (empty($this->configuration['visit_slots'][$prison_name][$visit_type]))
+    {
       $process_booking_ref_is_valid = FALSE;
     }
     else {
@@ -296,20 +334,24 @@ class PrisonVisitBookingHandler extends WebformHandlerBase
     }
 
     // Check date and year portions.
-    if ($booking_ref_processed['visit_order_date'] > $booking_ref_processed['visit_order_valid_to']) {
+    if ($booking_ref_processed['visit_order_date'] > $booking_ref_processed['visit_order_valid_to'])
+    {
       $process_booking_ref_is_valid = FALSE;
       $error_message = $this->t('Visit reference number has expired.');
     }
-    elseif ($booking_ref_processed['visit_order_date'] > $booking_ref_processed['visit_latest_booking_date']) {
+    elseif ($booking_ref_processed['visit_order_date'] > $booking_ref_processed['visit_latest_booking_date'])
+    {
       $process_booking_ref_is_valid = FALSE;
       $error_message = $this->t('Visit reference number has expired.');
     }
-    elseif ($booking_ref_processed['visit_order_date'] < $booking_ref_processed['visit_advance_booking_earliest_date']) {
+    elseif ($booking_ref_processed['visit_order_date'] < $booking_ref_processed['visit_advance_booking_earliest_date'])
+    {
       $process_booking_ref_is_valid = FALSE;
       $error_message = $this->t('Visit reference number is not recognised.');
     }
 
-    if ($process_booking_ref_is_valid !== TRUE) {
+    if ($process_booking_ref_is_valid !== TRUE)
+    {
       $form_state->setErrorByName('visitor_order_number', $error_message);
     }
     else {
@@ -327,7 +369,8 @@ class PrisonVisitBookingHandler extends WebformHandlerBase
 
     $booking_ref = !empty($form_state->getValue('visitor_order_number')) ? $form_state->getValue('visitor_order_number') : NULL;
 
-    if (empty($booking_ref)) {
+    if (empty($booking_ref))
+    {
       return [];
     }
 
@@ -342,33 +385,40 @@ class PrisonVisitBookingHandler extends WebformHandlerBase
     $booking_ref_sequence = (int)substr($booking_ref, 8);
 
     // Process prison identifier.
-    if (array_key_exists($booking_ref_prison_identifier, $this->configuration['prisons'])) {
+    if (array_key_exists($booking_ref_prison_identifier, $this->configuration['prisons']))
+    {
       $booking_ref_processed['prison_key'] = $booking_ref_prison_identifier;
       $booking_ref_processed['prison_name'] = $this->configuration['prisons'][$booking_ref_prison_identifier];
     }
 
     // Process visit type.
-    if (array_key_exists($booking_ref_visit_type, $this->configuration['visit_type'])) {
+    if (array_key_exists($booking_ref_visit_type, $this->configuration['visit_type']))
+    {
       $booking_ref_processed['visit_type_key'] = $booking_ref_visit_type;
       $booking_ref_processed['visit_type'] = $this->configuration['visit_type'][$booking_ref_visit_type];
 
       // The "E" visit type (enhanced) is synonymous with the 'F' type
       // and so is face-to-face and has same time slots.
-      if ($booking_ref_visit_type === 'E') {
+      if ($booking_ref_visit_type === 'E')
+      {
         $booking_ref_processed['visit_type'] = $this->configuration['visit_type']['F'];
       }
     }
 
     // Determine prisoner category and subcategory from booking reference
     // sequence number.
-    if ($booking_ref_sequence > 0 && $booking_ref_sequence < 9999) {
+    if ($booking_ref_sequence > 0 && $booking_ref_sequence < 9999)
+    {
 
       $booking_ref_processed['visit_sequence'] = $booking_ref_sequence;
       $prisoner_categories = $this->configuration['visit_order_number_categories'];
 
-      foreach ($prisoner_categories as $category_key => $category_value) {
-        foreach ($category_value as $subcategory_key => $subcategory_value) {
-          if ($booking_ref_sequence >= $subcategory_value[0] && $booking_ref_sequence <= $subcategory_value[1]) {
+      foreach ($prisoner_categories as $category_key => $category_value)
+      {
+        foreach ($category_value as $subcategory_key => $subcategory_value)
+        {
+          if ($booking_ref_sequence >= $subcategory_value[0] && $booking_ref_sequence <= $subcategory_value[1])
+          {
             $booking_ref_processed['prisoner_category'] = $category_key;
             $booking_ref_processed['prisoner_subcategory'] = $subcategory_key;
           }
@@ -376,7 +426,8 @@ class PrisonVisitBookingHandler extends WebformHandlerBase
       }
     }
 
-    if (!empty($booking_ref_processed['prison_name']) && !empty($booking_ref_processed['visit_type'])) {
+    if (!empty($booking_ref_processed['prison_name']) && !empty($booking_ref_processed['visit_type']))
+    {
 
       // Extract some bits from config.
       $booking_ref_validity_period_days = $this->configuration['booking_reference_validity_period_days'][$booking_ref_visit_type];
@@ -431,7 +482,8 @@ class PrisonVisitBookingHandler extends WebformHandlerBase
       $booking_ref_processed['visit_advance_booking_earliest_date'] = $booking_ref_max_advanced_issue_date;
       $booking_ref_processed['visit_latest_booking_date'] = $visit_latest_booking_date;
 
-      if ($now < $booking_ref_valid_from) {
+      if ($now < $booking_ref_valid_from)
+      {
         // Determine whether week date for the booking is for a future week or
         // current week.
         $booking_ref_processed['visit_booking_week_start'] = $booking_ref_valid_from;
@@ -448,7 +500,8 @@ class PrisonVisitBookingHandler extends WebformHandlerBase
   /**
    * Get available slots for a given prison, visit type and prisoner category.
    */
-  private function getAvailableSlots(FormStateInterface $form_state) {
+  private function getAvailableSlots(FormStateInterface $form_state)
+  {
 
     $booking_ref = $form_state->getValue('booking_ref_processed');
 
@@ -456,7 +509,8 @@ class PrisonVisitBookingHandler extends WebformHandlerBase
     $visit_type = $booking_ref['visit_type'];
     $prisoner_category = $booking_ref['prisoner_category'];
 
-    if (empty($prison_name) || empty($visit_type) || empty($prisoner_category)) {
+    if (empty($prison_name) || empty($visit_type) || empty($prisoner_category))
+    {
       return [];
     }
 
@@ -468,17 +522,21 @@ class PrisonVisitBookingHandler extends WebformHandlerBase
     $valid_period = $booking_ref['booking_ref_validity_period_days'];
     $valid_period_weeks = $valid_period / 7;
 
-    for ($i = 0; $i < $valid_period_weeks; $i++) {
+    for ($i = 0; $i < $valid_period_weeks; $i++)
+    {
 
       $slot_date = clone $valid_from;
       $slot_date->modify('+' . $i . ' weeks');
 
-      foreach ($visit_slots as $day => $values) {
+      foreach ($visit_slots as $day => $values)
+      {
 
-        if (!empty($values)) {
+        if (!empty($values))
+        {
 
           $day_slots = $values;
-          if (array_key_exists($prisoner_category, $values)) {
+          if (array_key_exists($prisoner_category, $values))
+          {
             $day_slots = $values[$prisoner_category];
           }
 
@@ -488,7 +546,8 @@ class PrisonVisitBookingHandler extends WebformHandlerBase
 
           $slot_date->setISODate($year, $week, $day);
 
-          foreach ($day_slots as $time => $pretty_time) {
+          foreach ($day_slots as $time => $pretty_time)
+          {
             $time_parts = date_parse($time);
             $slot_date->setTime($time_parts['hour'], $time_parts['minute']);
             $available_slots[] = clone $slot_date;
@@ -507,12 +566,14 @@ class PrisonVisitBookingHandler extends WebformHandlerBase
   {
     $visitor_1_dob = !empty($form_state->getValue('visitor_1_dob')) ? $form_state->getValue('visitor_1_dob') : NULL;
 
-    if (!empty($visitor_1_dob)) {
+    if (!empty($visitor_1_dob))
+    {
       $today = new \DateTime('now', new \DateTimeZone(DateTimeItemInterface::STORAGE_TIMEZONE));
       $today->setTime(0, 0, 0);
 
       $birthday = new \DateTime($visitor_1_dob);
-      if ($today->diff($birthday)->y < 18) {
+      if ($today->diff($birthday)->y < 18)
+      {
         $form_state->setErrorByName('visitor_1_dob', $this->t('You must be at least 18 years old to book a prison visit.'));
       }
     }
@@ -523,18 +584,12 @@ class PrisonVisitBookingHandler extends WebformHandlerBase
    */
   public function submitForm(array &$form, FormStateInterface $form_state, WebformSubmissionInterface $webform_submission)
   {
+    if ($form_state->isValidationComplete() && $form_state->get('current_page') === 'webform_preview')
+    {
 
-    if ($form_state->isValidationComplete()) {
-
-      // Save some stuff in session if user requested it.
-      $session = $this->request->getSession();
-
-      if ($form_state->getValue('yes_remember_these_visitor_details') === 1) {
-        $session->set('prison_visit_booking.remember_settings', TRUE);
-      }
-      else {
-        $session->set('prison_visit_booking.remember_settings', FALSE);
-      }
+      $tempstore = $this->tempStoreFactory->get('nidirect_webforms.prison_visit_booking');
+      $remember_visitors = $form_state->getValue('additional_visitors_remember') === 'yes' ?? FALSE;
+      $visitor_data = [];
 
       // Reset hidden elements keeping track of preferred time slots.
       for ($i = 1; $i <= 5; $i++) {
@@ -547,15 +602,15 @@ class PrisonVisitBookingHandler extends WebformHandlerBase
       $form_values = $form_state->getValues();
       $count = 0;
 
-      foreach ($form_values as $element_name => $element_values) {
+      foreach ($form_values as $element_name => $element_value) {
 
         // Set hidden elements to keep track of selected time slots.
         // Time slots have keys like 'monday_week_1', 'tuesday_week_4', etc.
 
-        if (str_contains($element_name, '_week_') && is_array($element_values)) {
+        if (str_contains($element_name, '_week_') && is_array($element_value)) {
 
           // Add up to 5 selected time slots to our hidden elements.
-          foreach ($element_values as $slot) {
+          foreach ($element_value as $slot) {
             $count++;
             if ($count <= 5) {
               $slot_date = new \DateTime($slot);
@@ -566,8 +621,7 @@ class PrisonVisitBookingHandler extends WebformHandlerBase
               if (!empty($slot)) {
                 $form_state->setValue('slot' . $count . '_pretty_datetime', $slot_date->format('l, j F Y \a\t g.i a'));
                 $webform_submission->setElementData('slot' . $count . '_pretty_datetime', $slot_date->format('l, j F Y \a\t g.i a'));
-              }
-              else {
+              } else {
                 $form_state->setValue('slot' . $count . '_pretty_datetime', '');
                 $webform_submission->setElementData('slot' . $count . '_pretty_datetime', '');
               }
@@ -575,23 +629,20 @@ class PrisonVisitBookingHandler extends WebformHandlerBase
           }
         }
 
+        // Special requirements textarea needs to be encoded for JSON.
         if (str_contains($element_name, 'special_requirements_details')) {
-          $special_requirements = Json::encode($element_values);
+          $special_requirements = Json::encode($element_value);
           $form_state->setValue('special_requirements_json', $special_requirements);
           $webform_submission->setElementData('special_requirements_json', $special_requirements);
         }
 
-        // Use session to remember visitor information.
-        if ($session->get('prison_visit_booking.remember_settings') === TRUE) {
-
-          if (str_starts_with($element_name, 'visitor_')) {
-            $session->set('prison_visit_booking.' . $element_name, $element_values);
-          }
-        }
-        else {
-          $session->remove('prison_visit_booking.' . $element_name);
+        // Capture non-sensitive visitor data in session temp store.
+        if ($remember_visitors && ($element_name === 'visitor_1_id' || str_starts_with($element_name, 'additional_visitor'))) {
+          $visitor_data[$element_name] = $element_value;
         }
       }
+
+      $tempstore->set('visitor_data', $visitor_data);
     }
   }
 
