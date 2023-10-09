@@ -190,7 +190,7 @@ class PrisonVisitBookingHandler extends WebformHandlerBase
                 $slot_is_bookable = FALSE;
               }
 
-              if ($visit_type === 'face-to-face' && $visit_prisoner_category === 'separates')
+              if ($visit_prison === 'maghaberry' && $visit_type === 'face-to-face' && $visit_prisoner_category === 'separates')
               {
                 // Separates get am or pm timeslots depending on
                 // week number parity.

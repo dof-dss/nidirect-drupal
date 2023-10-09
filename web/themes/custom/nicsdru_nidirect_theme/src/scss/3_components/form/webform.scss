@@ -41,6 +41,9 @@
 /* webform radios and checkboxes displayed inline are wrapped with this class */
 .webform-options-display-side-by-side {
 
+  display: flex;
+  flex-flow: row wrap;
+
   // webform css adds unwanted margin on child labels
   label {
     margin: 0;
@@ -49,6 +52,7 @@
   .form-item {
     display: inline-block;
     width: auto;
+    margin: .5em .5em 0 0;
     padding: 0;
 
     &--error-message .error {

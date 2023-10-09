@@ -51,10 +51,9 @@ main form {
   }
 }
 
-form > .form-item,
-.form-wrapper > .form-item {
+form .form-item {
   padding: 0;
-  margin: 2em 0;
+  margin: .5em 0;
 
   &.form-type-processed-text {
     margin: 0;
@@ -125,7 +124,6 @@ form > .form-wrapper > section {
   }
 
   .form-type-processed-text > * {
-
     margin: 1em 0;
   }
 }
@@ -412,4 +410,34 @@ input[type='checkbox'],
   }
 }
 
+details {
+
+  padding: 0 0 1em;
+
+  summary {
+    @include btn--block;
+    @include btn-color($btn-primary, #fff);
+    appearance: none;
+    position: relative;
+    margin-bottom: 1em;
+    padding: .5em .5em .5em 3em;
+    text-align: left;
+
+    &::after {
+      content: '';
+      display: inline-block;
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 3em;
+      height: 100%;
+      background: transparent resolve('arrow_forward_white.svg') center center / 1.5em no-repeat;
+      transition: transform .2s ease;
+    }
+  }
+
+  &[open] summary::after {
+    transform: rotate(90deg);
+  }
+}
 

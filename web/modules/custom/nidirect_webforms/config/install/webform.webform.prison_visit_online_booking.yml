@@ -59,20 +59,28 @@ elements: |-
       '#title': 'Visit reference number'
       '#maxlength': 12
       '#size': 14
+      '#placeholder': AAA9999-9999
       '#autocomplete': 'off'
       '#input_mask': AAA9999-9999
       '#required': true
       '#required_error': 'Visit reference number is required'
       '#pattern': '[A-Z]{3}[0-9]{4}\-[0-9]{4}'
       '#pattern_error': 'Visit reference number is incorrect.'
+      '#attributes':
+        data-inputmask-placeholder: '  '
     prisoner_id:
       '#type': textfield
       '#title': 'Prisoner ID'
       '#maxlength': 5
       '#size': 6
+      '#placeholder': A9999
       '#autocomplete': 'off'
-      '#input_mask': A9999
+      '#input_mask': 'A9[9][9][9]'
       '#required': true
+      '#pattern': '[A-H][0-9]{1,4}'
+      '#pattern_error': 'Prisoner ID is not recognised'
+      '#attributes':
+        data-inputmask-placeholder: ' '
   visitor_details_page:
     '#type': webform_wizard_page
     '#title': 'Visitor details'
@@ -90,8 +98,11 @@ elements: |-
       visitor_1_id:
         '#type': textfield
         '#title': 'Visitor ID'
+        '#description': 'Enter your 6 digit visitor ID number.'
+        '#description_display': before
         '#maxlength': 6
         '#size': 8
+        '#placeholder': '000000'
         '#autocomplete': 'off'
         '#required': true
         '#required_error': 'Enter the visitor ID for the main visitor'
@@ -110,16 +121,25 @@ elements: |-
         '#title': 'Email address'
         '#description': 'We will use this email address to notify you if your booking is successful.'
         '#description_display': before
+        '#autocomplete': 'off'
         '#required': true
         '#pattern': '[^@\s]+@[^@\s]+\.[^@\s]+'
         '#pattern_error': 'Enter a valid email address'
         '#flexbox': '0'
       visitor_1_telephone:
-        '#type': tel
+        '#type': textfield
         '#title': 'Telephone number'
         '#description': 'Provide your telephone number in case we need to contact you about this booking.'
         '#description_display': before
+        '#maxlength': 20
+        '#size': 22
+        '#autocomplete': 'off'
+        '#input_mask': '999[ ]99[ ]99[ ]9[ ]999'
         '#required': true
+        '#pattern': '^[\+0-9\s\-\(\)]+$'
+        '#pattern_error': 'Enter a valid telephone or mobile number'
+        '#attributes':
+          data-inputmask-placeholder: ' '
   additional_visitors:
     '#type': webform_wizard_page
     '#title': 'Additional visitors'
@@ -137,6 +157,7 @@ elements: |-
     add_additional_visitors:
       '#type': radios
       '#title': 'Do you want to add additional visitors?'
+      '#description': 'You can add up to four additional visitors'
       '#description_display': before
       '#options':
         'yes': 'Yes'
@@ -159,57 +180,67 @@ elements: |-
         '#type': webform_markup
         '#markup': |-
           <p class="info-notice">
-          You must enter the correct visitor ID and date of birth for each visitor.  Your booking request could be rejected if details entered here do not match details we hold on record.
+          Enter the correct visitor ID and date of birth for each additional visitor. If visitor details entered here do not match those we hold on record, they will not be included in the booking.
           </p>
       additional_visitor_1_details:
-        '#type': fieldset
-        '#title': 'Additional visitor one'
+        '#type': details
+        '#title': 'Enter details for additional visitor 1'
         '#states_clear': false
         additional_visitor_1_id:
           '#type': textfield
           '#title': 'Visitor ID'
           '#title_display': inline
+          '#description_display': before
           '#maxlength': 6
           '#size': 10
+          '#placeholder': '000000'
+          '#autocomplete': 'off'
           '#pattern': '[0-9]{6}'
-          '#pattern_error': 'Visitor ID is not recognised'
+          '#pattern_error': 'Visitor ID must be a 6 digit number'
           '#states_clear': false
           '#label_attributes':
             style: 'min-width: 7em; display: inline-block'
+            aria-label: 'Additional visitor one visitor ID'
         additional_visitor_1_dob:
           '#type': date
           '#title': 'Date of birth'
           '#title_display': inline
           '#states_clear': false
-          '#format': d/m/Y
           '#label_attributes':
             style: 'min-width: 7em; display: inline-block'
+            aria-label: 'Additional visitor one date of birth'
+          '#format': d/m/Y
       additional_visitor_2_details:
-        '#type': fieldset
-        '#title': 'Additional visitor two'
+        '#type': details
+        '#title': 'Enter details for additional visitor 2 (optional)'
         '#states_clear': false
         additional_visitor_2_id:
           '#type': textfield
           '#title': 'Visitor ID'
           '#title_display': inline
+          '#description_display': before
           '#maxlength': 6
           '#size': 10
+          '#placeholder': '000000'
+          '#autocomplete': 'off'
           '#pattern': '[0-9]{6}'
-          '#pattern_error': 'Visitor ID is not recognised'
+          '#pattern_error': 'Visitor ID must be a 6 digit number'
           '#states_clear': false
           '#label_attributes':
             style: 'min-width: 7em; display: inline-block'
+            aria-label: 'Additional visitor one visitor ID'
         additional_visitor_2_dob:
           '#type': date
           '#title': 'Date of birth'
           '#title_display': inline
           '#states_clear': false
-          '#format': d/m/Y
           '#label_attributes':
             style: 'min-width: 7em; display: inline-block'
+            aria-label: 'Additional visitor two date of birth'
+          '#format': d/m/Y
       additional_visitor_3_details:
-        '#type': fieldset
-        '#title': 'Additional visitor three'
+        '#type': details
+        '#title': 'Enter details for additional visitor 3 (optional)'
         '#states_clear': false
         additional_visitor_3_id:
           '#type': textfield
@@ -217,22 +248,26 @@ elements: |-
           '#title_display': inline
           '#maxlength': 6
           '#size': 10
+          '#placeholder': '000000'
+          '#autocomplete': 'off'
           '#pattern': '[0-9]{6}'
-          '#pattern_error': 'Visitor ID is not recognised'
+          '#pattern_error': 'Visitor ID must be a 6 digit number'
           '#states_clear': false
           '#label_attributes':
             style: 'min-width: 7em; display: inline-block'
+            aria-label: 'Additional visitor three visitor ID'
         additional_visitor_3_dob:
           '#type': date
           '#title': 'Date of birth'
           '#title_display': inline
           '#states_clear': false
-          '#format': d/m/Y
           '#label_attributes':
             style: 'min-width: 7em; display: inline-block'
+            aria-label: 'Additional visitor three date of birth'
+          '#format': d/m/Y
       additional_visitor_4_details:
-        '#type': fieldset
-        '#title': 'Additional visitor four'
+        '#type': details
+        '#title': 'Enter details for additional visitor 4 (optional)'
         '#states_clear': false
         additional_visitor_4_id:
           '#type': textfield
@@ -240,19 +275,23 @@ elements: |-
           '#title_display': inline
           '#maxlength': 6
           '#size': 10
+          '#placeholder': '000000'
+          '#autocomplete': 'off'
           '#pattern': '[0-9]{6}'
           '#pattern_error': 'Visitor ID is not recognised'
           '#states_clear': false
           '#label_attributes':
             style: 'min-width: 7em; display: inline-block'
+            aria-label: 'Additional visitor four visitor ID'
         additional_visitor_4_dob:
           '#type': date
           '#title': 'Date of birth'
           '#title_display': inline
           '#states_clear': false
-          '#format': d/m/Y
           '#label_attributes':
             style: 'min-width: 7em; display: inline-block'
+            aria-label: 'Additional visitor four date of birth'
+          '#format': d/m/Y
       additional_visitor_save_details:
         '#type': fieldset
         '#title': 'Remember these additional visitors?'
@@ -867,14 +906,14 @@ handlers:
         "VISITOR_1_DOB": "[webform_submission:values:visitor_1_dob:prison_visit_booking_datetime]",
         "VISITOR_1_EMAIL": "[webform_submission:values:visitor_1_email]",
         "VISITOR_1_PHONE": "[webform_submission:values:visitor_1_telephone]",
-        "VISITOR_2_ID": "[webform_submission:values:visitor_2_id]",
-        "VISITOR_2_DOB": "[webform_submission:values:visitor_2_dob:prison_visit_booking_datetime]",
-        "VISITOR_3_ID": "[webform_submission:values:visitor_3_id]",
-        "VISITOR_3_DOB": "[webform_submission:values:visitor_3_dob:prison_visit_booking_datetime]",
-        "VISITOR_4_ID": "[webform_submission:values:visitor_4_id]",
-        "VISITOR_4_DOB": "[webform_submission:values:visitor_4_dob:prison_visit_booking_datetime]",
-        "VISITOR_5_ID": "[webform_submission:values:visitor_5_id]",
-        "VISITOR_5_DOB": "[webform_submission:values:visitor_5_dob:prison_visit_booking_datetime]",
+        "VISITOR_2_ID": "[webform_submission:values:additional_visitor_1_id]",
+        "VISITOR_2_DOB": "[webform_submission:values:additional_visitor_1_dob:prison_visit_booking_datetime]",
+        "VISITOR_3_ID": "[webform_submission:values:additional_visitor_2_id]",
+        "VISITOR_3_DOB": "[webform_submission:values:additional_visitor_2_dob:prison_visit_booking_datetime]",
+        "VISITOR_4_ID": "[webform_submission:values:additional_visitor_3_id]",
+        "VISITOR_4_DOB": "[webform_submission:values:additional_visitor_3_dob:prison_visit_booking_datetime]",
+        "VISITOR_5_ID": "[webform_submission:values:additional_visitor_4_id]",
+        "VISITOR_5_DOB": "[webform_submission:values:additional_visitor_4_dob:prison_visit_booking_datetime]",
         "SLOT1_DATETIME": "[webform_submission:values:slot1_datetime]",
         "SLOT2_DATETIME": "[webform_submission:values:slot2_datetime]",
         "SLOT3_DATETIME": "[webform_submission:values:slot3_datetime]",
@@ -1390,4 +1429,104 @@ handlers:
               '16:00': '4.00 pm'
               '16:30': '4.30 pm'
           enhanced: null
+  ov_in_plain_test:
+    id: email
+    handler_id: ov_in_plain_test
+    label: OV_IN
+    notes: ''
+    status: false
+    conditions: {  }
+    weight: 3
+    settings:
+      states:
+        - completed
+      to_mail: neil.blair@finance-ni.gov.uk
+      to_options: {  }
+      bcc_mail: ''
+      bcc_options: {  }
+      cc_mail: '[webform_submission:values:visitor_1_email:raw]'
+      cc_options: {  }
+      from_mail: _default
+      from_options: {  }
+      from_name: _default
+      reply_to: ''
+      return_path: ''
+      sender_mail: ''
+      sender_name: ''
+      subject: OV_IN
+      body: |-
+        {
+        "SUBMITTED_DATETIME": "[webform_submission:completed:prison_visit_booking_datetime]",
+        "VISIT_ORDER_NO": "[webform_submission:values:visitor_order_number]",
+        "INMATE_ID": "[webform_submission:values:prisoner_id]",
+        "SPECIAL_REQUIREMENTS": [webform_submission:values:special_requirements_json],
+        "VISITOR_1_ID": "[webform_submission:values:visitor_1_id]",
+        "VISITOR_1_DOB": "[webform_submission:values:visitor_1_dob:prison_visit_booking_datetime]",
+        "VISITOR_1_EMAIL": "[webform_submission:values:visitor_1_email]",
+        "VISITOR_1_PHONE": "[webform_submission:values:visitor_1_telephone]",
+        "VISITOR_2_ID": "[webform_submission:values:additional_visitor_1_id]",
+        "VISITOR_2_DOB": "[webform_submission:values:additional_visitor_1_dob:prison_visit_booking_datetime]",
+        "VISITOR_3_ID": "[webform_submission:values:additional_visitor_2_id]",
+        "VISITOR_3_DOB": "[webform_submission:values:additional_visitor_2_dob:prison_visit_booking_datetime]",
+        "VISITOR_4_ID": "[webform_submission:values:additional_visitor_3_id]",
+        "VISITOR_4_DOB": "[webform_submission:values:additional_visitor_3_dob:prison_visit_booking_datetime]",
+        "VISITOR_5_ID": "[webform_submission:values:additional_visitor_4_id]",
+        "VISITOR_5_DOB": "[webform_submission:values:additional_visitor_4_dob:prison_visit_booking_datetime]",
+        "SLOT1_DATETIME": "[webform_submission:values:slot1_datetime]",
+        "SLOT2_DATETIME": "[webform_submission:values:slot2_datetime]",
+        "SLOT3_DATETIME": "[webform_submission:values:slot3_datetime]",
+        "SLOT4_DATETIME": "[webform_submission:values:slot4_datetime]",
+        "SLOT5_DATETIME": "[webform_submission:values:slot5_datetime]"
+        }
+      excluded_elements:
+        prison_visit_prison_name: prison_visit_prison_name
+        prison_visit_prison_name_key: prison_visit_prison_name_key
+        prison_visit_type: prison_visit_type
+        prison_visit_type_key: prison_visit_type_key
+        prison_visit_order_valid_from: prison_visit_order_valid_from
+        prison_visit_order_valid_to: prison_visit_order_valid_to
+        prison_visit_week_date_start: prison_visit_week_date_start
+        prison_visit_sequence: prison_visit_sequence
+        prison_visit_prisoner_category: prison_visit_prisoner_category
+        prison_visit_prisoner_subcategory: prison_visit_prisoner_subcategory
+        visitor_1_intro: visitor_1_intro
+        visit_details: visit_details
+        monday_week_1: monday_week_1
+        tuesday_week_1: tuesday_week_1
+        wednesday_week_1: wednesday_week_1
+        thursday_week_1: thursday_week_1
+        friday_week_1: friday_week_1
+        saturday_week_1: saturday_week_1
+        sunday_week_1: sunday_week_1
+        monday_week_2: monday_week_2
+        tuesday_week_2: tuesday_week_2
+        wednesday_week_2: wednesday_week_2
+        thursday_week_2: thursday_week_2
+        friday_week_2: friday_week_2
+        saturday_week_2: saturday_week_2
+        sunday_week_2: sunday_week_2
+        monday_week_3: monday_week_3
+        tuesday_week_3: tuesday_week_3
+        wednesday_week_3: wednesday_week_3
+        thursday_week_3: thursday_week_3
+        friday_week_3: friday_week_3
+        saturday_week_3: saturday_week_3
+        sunday_week_3: sunday_week_3
+        monday_week_4: monday_week_4
+        tuesday_week_4: tuesday_week_4
+        wednesday_week_4: wednesday_week_4
+        thursday_week_4: thursday_week_4
+        friday_week_4: friday_week_4
+        saturday_week_4: saturday_week_4
+        sunday_week_4: sunday_week_4
+      ignore_access: true
+      exclude_empty: true
+      exclude_empty_checkbox: false
+      exclude_attachments: false
+      html: false
+      attachments: false
+      twig: false
+      theme_name: ''
+      parameters: {  }
+      debug: false
 variants: {  }
