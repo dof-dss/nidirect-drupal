@@ -52,14 +52,15 @@ elements: |-
       '#type': webform_markup
       '#markup': |-
         <p class="info-notice" role="status">
-        To book a prison visit, you must have a visit reference number (or booking reference) and a prisoner ID for the prisoner you want to visit.  
+        To book a prison visit, you will need a visit reference number (or booking reference) and a prisoner ID for the prisoner you want to visit.  
         </p>
     visitor_order_number:
       '#type': textfield
       '#title': 'Visit reference number'
+      '#description': 'For example, AAA9999-9999'
+      '#description_display': before
       '#maxlength': 12
       '#size': 14
-      '#placeholder': AAA9999-9999
       '#autocomplete': 'off'
       '#input_mask': AAA9999-9999
       '#required': true
@@ -68,12 +69,14 @@ elements: |-
       '#pattern_error': 'Visit reference number is incorrect.'
       '#attributes':
         data-inputmask-placeholder: '  '
+      '#data-tippy-arrow': false
     prisoner_id:
       '#type': textfield
       '#title': 'Prisoner ID'
+      '#description': 'For example, A9999'
+      '#description_display': before
       '#maxlength': 5
       '#size': 6
-      '#placeholder': A9999
       '#autocomplete': 'off'
       '#input_mask': 'A9[9][9][9]'
       '#required': true
@@ -84,7 +87,6 @@ elements: |-
   visitor_details_page:
     '#type': webform_wizard_page
     '#title': 'Visitor details'
-    '#format': container
     '#next_button_label': Next
     visitor_1_details:
       '#type': fieldset
@@ -144,7 +146,6 @@ elements: |-
     '#type': webform_wizard_page
     '#title': 'Additional visitors'
     '#states_clear': false
-    '#format': fieldset
     msg_existing_additional_visitors:
       '#type': webform_markup
       '#markup': |-
@@ -297,9 +298,9 @@ elements: |-
         '#title': 'Remember these additional visitors?'
         '#states':
           visible:
-            ':input[name="additional_visitors_number"]':
-              value:
-                greater: '0'
+            ':input[name="additional_visitor_1_id"]':
+              filled: true
+        '#format': details
         remember_settings_info:
           '#type': webform_markup
           '#markup': |-
@@ -318,7 +319,6 @@ elements: |-
   special_requirements:
     '#type': webform_wizard_page
     '#title': 'Special requirements'
-    '#format': fieldset
     '#prev_button_label': Previous
     '#next_button_label': Next
     do_you_or_any_other_visitors_have_any_special_requirements_:
@@ -378,13 +378,13 @@ elements: |-
       '#mode': html
       '#template': |-
         <p class="info-notice" role="alert" aria-live="polite">
-          Choose up to 
+          Choose your preferred time slot for this visit. &nbsp;You can choose up to 
           {% if data.visitor_order_number | slice(2, 1) == 'V' %}
             five
           {% else %}
             three
           {% endif %}
-          time slots for your visit. &nbsp;We will try to book the first available&nbsp;slot.
+          time slots. &nbsp;We will try to book the first of your chosen time slots that is available.
         </p>
     slots_week_1:
       '#type': details
@@ -562,34 +562,34 @@ elements: |-
         '#title': Sunday
         '#options': prison_visit_times
         '#options_display': buttons_horizontal
-  slots_preferred:
-    '#type': webform_computed_twig
-    '#title': 'Your visit preferred dates and times'
-    '#display_on': view
-    '#template': |-
-      <h3>Preferred visit dates and times</h3>
-      <div class="webform-element">
-      <ul>
-        {% if data.slot1_pretty_datetime %}
-          <li>{{ data.slot1_pretty_datetime }}</li>
-        {% endif %}
-        {% if data.slot2_pretty_datetime %}
-          <li>{{ data.slot2_pretty_datetime }}</li>
-        {% endif %}
-        {% if data.slot3_pretty_datetime %}
-          <li>{{ data.slot3_pretty_datetime }}</li>
-        {% endif %}
-        {% if data.slot4_pretty_datetime %}
-          <li>{{ data.slot4_pretty_datetime }}</li>
-        {% endif %}
-        {% if data.slot5_pretty_datetime %}
-          <li>{{ data.slot5_pretty_datetime }}</li>
-        {% endif %}
-      </ul>
-      </div>
-      <p class="info-notice">
-        We will try to book the first available date and time from your list of preferred dates and times.
-      </p>
+    slots_preferred:
+      '#type': webform_computed_twig
+      '#title': 'Your visit preferred dates and times'
+      '#display_on': view
+      '#template': |-
+        <h3>Preferred visit dates and times</h3>
+        <div class="webform-element">
+        <ul>
+          {% if data.slot1_pretty_datetime %}
+            <li>{{ data.slot1_pretty_datetime }}</li>
+          {% endif %}
+          {% if data.slot2_pretty_datetime %}
+            <li>{{ data.slot2_pretty_datetime }}</li>
+          {% endif %}
+          {% if data.slot3_pretty_datetime %}
+            <li>{{ data.slot3_pretty_datetime }}</li>
+          {% endif %}
+          {% if data.slot4_pretty_datetime %}
+            <li>{{ data.slot4_pretty_datetime }}</li>
+          {% endif %}
+          {% if data.slot5_pretty_datetime %}
+            <li>{{ data.slot5_pretty_datetime }}</li>
+          {% endif %}
+        </ul>
+        </div>
+        <p class="info-notice">
+          We will try to book the first available date and time from your list of preferred dates and times.
+        </p>
   slot1_datetime:
     '#type': hidden
     '#title': SLOT1_DATETIME
