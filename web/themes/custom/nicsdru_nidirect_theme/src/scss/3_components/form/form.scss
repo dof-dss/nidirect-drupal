@@ -53,7 +53,7 @@ main form {
 
 form .form-item {
   padding: 0;
-  margin: .5em 0;
+  margin: 1em 0;
 
   &.form-type-processed-text {
     margin: 0;
@@ -433,6 +433,10 @@ details {
       height: 100%;
       background: transparent resolve('arrow_forward_white.svg') center center / 1.5em no-repeat;
       transition: transform .2s ease;
+    }
+
+    &:focus {
+      outline: 3px solid #000;
     }
   }
 
