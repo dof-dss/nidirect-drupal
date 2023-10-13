@@ -16,6 +16,28 @@ use Drupal\node\Entity\Node;
 use Drupal\node\NodeInterface;
 
 /**
+ * Implements hook_preprocess_form_element().
+ */
+function nicsdru_nidirect_theme_preprocess_form_element(&$variables) {
+
+  $element = $variables['element'];
+
+  // Associate input element descriptions with the input itself
+  // using aria-describedby.
+  // TODO: add this to origins theme?
+
+  if ($element['#input'] === TRUE && !empty($element['#description'])) {
+    $description = &$element['#description'];
+
+    if (empty($description['#attributes']['id'])) {
+      $description['#attributes']['id'] = $element['#id'] . '-description';
+    }
+
+    $element['#attributes']['aria-describedby'] = $description['#attributes']['id'];
+  }
+}
+
+/**
  * Implements hook_preprocess_html().
  */
 function nicsdru_nidirect_theme_preprocess_html(array &$variables) {
