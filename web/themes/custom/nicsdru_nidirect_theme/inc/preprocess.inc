@@ -26,10 +26,10 @@ function nicsdru_nidirect_theme_preprocess_form_element(&$variables) {
   // using aria-describedby.
   // TODO: add this to origins theme?
 
-  if ($element['#input'] === TRUE && !empty($element['#description'])) {
+  if (!empty($element['#webform_key']) && !empty($element['#input']) && $element['#input'] === TRUE && !empty($element['#description'])) {
     $description = &$element['#description'];
 
-    if (empty($description['#attributes']['id'])) {
+    if (!isset($description['#attributes']['id'])) {
       $description['#attributes']['id'] = $element['#id'] . '-description';
     }
 
