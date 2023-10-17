@@ -98,15 +98,15 @@ class PrisonVisitBookingHandler extends WebformHandlerBase
    */
   public function alterForm(array &$form, FormStateInterface $form_state, WebformSubmissionInterface $webform_submission)
   {
+    $this->booking_reference = $form_state->get('booking_reference_processed');
     $form['#attached']['drupalSettings']['prisonVisitBooking'] = $this->configuration;
     $form['#attached']['drupalSettings']['prisonVisitBooking']['booking_ref'] = $this->booking_reference;
 
     $page = $form_state->get('current_page');
 
     // Show available time slots in the form.
-    if ($page === 'visit_preferred_day_and_time')
+    if ($page === 'visit_preferred_day_and_time' && !empty($this->booking_reference))
     {
-      $this->booking_reference = $form_state->get('booking_reference_processed');
       $available_slots = $this->booking_reference['available_slots'];
 
       // Determine dates
