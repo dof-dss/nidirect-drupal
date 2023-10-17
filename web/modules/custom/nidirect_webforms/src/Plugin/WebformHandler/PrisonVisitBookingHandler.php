@@ -106,11 +106,7 @@ class PrisonVisitBookingHandler extends WebformHandlerBase
     // Show available time slots in the form.
     if ($page === 'visit_preferred_day_and_time')
     {
-      // Need a valid booking reference.
-      if (empty($this->booking_reference)) {
-        $this->validateForm($form, $form_state, $webform_submission);
-      }
-
+      $this->booking_reference = $form_state->get('booking_reference_processed');
       $available_slots = $this->booking_reference['available_slots'];
 
       // Determine dates
@@ -273,7 +269,7 @@ class PrisonVisitBookingHandler extends WebformHandlerBase
     {
       $this->booking_reference['prison_id'] = $prison_id;
       $this->booking_reference['prison_name'] = $this->configuration['prisons'][$prison_id];
-      $form_state->setValue('prison_visit_prison_name', $this->booking_reference['prison_name']);
+      $form_state->setValue('prison_name', $this->booking_reference['prison_name']);
     }
     else
     {
@@ -293,7 +289,7 @@ class PrisonVisitBookingHandler extends WebformHandlerBase
         $this->booking_reference['visit_type'] = $this->configuration['visit_type']['F'];
       }
 
-      $form_state->setValue('prison_visit_type', $this->booking_reference['visit_type']);
+      $form_state->setValue('visit_type', $this->booking_reference['visit_type']);
     }
     else
     {
@@ -441,7 +437,7 @@ class PrisonVisitBookingHandler extends WebformHandlerBase
     }
     else {
       $form_state->setValue('visitor_order_number', $booking_ref);
-      $form_state->setValue('booking_reference_processed', $this->booking_reference);
+      $form_state->set('booking_reference_processed', $this->booking_reference);
     }
 
   }
