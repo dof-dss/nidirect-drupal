@@ -1,116 +1,97 @@
 uuid: 2714c275-7af9-4bfd-a52c-69c9f939ee69
 langcode: en
 status: true
-dependencies: {  }
+dependencies:
+  config:
+    - filter.format.basic_html
+    - media.type.audio
+    - media.type.document
+    - media.type.image
+    - media.type.remote_video
+    - media.type.video
+    - node.type.application
+    - node.type.article
+    - node.type.contact
+    - node.type.embargoed_publication
+    - node.type.external_link
+    - node.type.link
+    - node.type.news
+    - node.type.publication
+    - taxonomy.vocabulary.site_themes
+    - workflows.workflow.nics_editorial_workflow
+  module:
+    - content_moderation
+    - entity_browser
+    - file
+    - filter
+    - flag
+    - media
+    - moderation_sidebar
+    - node
+    - scheduled_transitions
+    - system
+    - taxonomy
+    - taxonomy_access_fix
+    - toolbar
+    - tour
+    - whatlinkshere
 id: author_user
 label: 'author user'
 weight: 3
 is_admin: null
 permissions:
-  - 'access administration menu'
   - 'access administration pages'
-  - 'access audio_entity_browser entity browser pages'
-  - 'access ckeditor link'
   - 'access content overview'
-  - 'access document_entity_browser entity browser pages'
   - 'access location_browser entity browser pages'
   - 'access media overview'
-  - 'access media_entity_browser entity browser pages'
-  - 'access remote_video_browser entity browser pages'
   - 'access taxonomy overview'
   - 'access toolbar'
   - 'access tour'
-  - 'add media from remote sources'
   - 'add scheduled transitions node application'
   - 'add scheduled transitions node article'
   - 'add scheduled transitions node contact'
   - 'add scheduled transitions node embargoed_publication'
   - 'add scheduled transitions node news'
   - 'add scheduled transitions node publication'
-  - 'clear mas_rss_feeds feeds'
   - 'create application content'
   - 'create article content'
   - 'create audio media'
-  - 'create book content'
-  - 'create consultation content'
   - 'create contact content'
-  - 'create department_management content'
   - 'create document media'
   - 'create embargoed_publication content'
   - 'create external_link content'
-  - 'create files'
-  - 'create gallery content'
   - 'create image media'
-  - 'create irish_news content'
   - 'create link content'
-  - 'create mas_rss content'
   - 'create news content'
-  - 'create profile content'
   - 'create publication content'
-  - 'create recipe content'
   - 'create remote_video media'
   - 'create terms in site_themes'
-  - 'create umbrella_body content'
   - 'create video media'
-  - 'download any audio files'
-  - 'download any document files'
-  - 'download any image files'
-  - 'download any video files'
-  - 'download own audio files'
-  - 'download own document files'
-  - 'download own image files'
-  - 'download own video files'
+  - 'delete own files'
   - 'edit any application content'
   - 'edit any article content'
-  - 'edit any book content'
-  - 'edit any consultation content'
   - 'edit any contact content'
-  - 'edit any department_management content'
-  - 'edit any document files'
   - 'edit any embargoed_publication content'
   - 'edit any external_link content'
-  - 'edit any gallery content'
   - 'edit any image media'
-  - 'edit any irish_news content'
   - 'edit any link content'
-  - 'edit any mas_rss content'
   - 'edit any news content'
-  - 'edit any profile content'
   - 'edit any publication content'
-  - 'edit any recipe content'
-  - 'edit any umbrella_body content'
   - 'edit own application content'
   - 'edit own article content'
-  - 'edit own audio files'
   - 'edit own audio media'
-  - 'edit own book content'
-  - 'edit own consultation content'
   - 'edit own contact content'
-  - 'edit own department_management content'
-  - 'edit own document files'
   - 'edit own document media'
   - 'edit own embargoed_publication content'
   - 'edit own external_link content'
-  - 'edit own gallery content'
-  - 'edit own image files'
   - 'edit own image media'
-  - 'edit own irish_news content'
   - 'edit own link content'
-  - 'edit own mas_rss content'
   - 'edit own news content'
-  - 'edit own profile content'
   - 'edit own publication content'
-  - 'edit own recipe content'
   - 'edit own remote_video media'
-  - 'edit own umbrella_body content'
-  - 'edit own video files'
   - 'edit own video media'
-  - 'edit terms in 1'
   - 'edit terms in site_themes'
   - 'flag application_unavailable'
-  - 'import mas_rss_feeds feeds'
-  - 'moderate content from draft to needs_review'
-  - 'moderate content from needs_review to draft'
   - 'reschedule scheduled transitions node application'
   - 'reschedule scheduled transitions node article'
   - 'reschedule scheduled transitions node contact'
@@ -123,26 +104,16 @@ permissions:
   - 'revert embargoed_publication revisions'
   - 'revert external_link revisions'
   - 'revert link revisions'
-  - 'revert mas_rss revisions'
   - 'revert news revisions'
   - 'revert publication revisions'
-  - 'unlock mas_rss_feeds feeds'
-  - 'use editorial transition create_new_draft'
-  - 'use editorial transition reject'
-  - 'use editorial transition submit_for_review'
-  - 'use media wysiwyg'
+  - 'select terms in site_themes'
   - 'use moderation sidebar'
   - 'use nics_editorial_workflow transition create_new_draft'
   - 'use nics_editorial_workflow transition draft_of_published'
   - 'use nics_editorial_workflow transition reject'
   - 'use nics_editorial_workflow transition submit_for_review'
   - 'use text format basic_html'
-  - 'use text format filtered_html'
-  - 'use text format filtered_html_with_no_images'
-  - 'use workbench_moderation my drafts tab'
-  - 'use workbench_moderation needs review tab'
   - 'view all revisions'
-  - 'view all unpublished content'
   - 'view any unpublished content'
   - 'view application revisions'
   - 'view article revisions'
@@ -151,11 +122,10 @@ permissions:
   - 'view embargoed_publication revisions'
   - 'view external_link revisions'
   - 'view link revisions'
-  - 'view mas_rss revisions'
   - 'view news revisions'
-  - 'view own files'
   - 'view own unpublished content'
   - 'view own unpublished media'
   - 'view publication revisions'
+  - 'view term names in site_themes'
   - 'view terms in site_themes'
   - 'view the administration theme'
