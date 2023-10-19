@@ -98,6 +98,7 @@ class PrisonVisitBookingHandler extends WebformHandlerBase
    */
   public function alterForm(array &$form, FormStateInterface $form_state, WebformSubmissionInterface $webform_submission)
   {
+    $elements = WebformFormHelper::flattenElements($form);
     $this->booking_reference = $form_state->get('booking_reference_processed');
     $form['#attached']['drupalSettings']['prisonVisitBooking'] = $this->configuration;
     $form['#attached']['drupalSettings']['prisonVisitBooking']['booking_ref'] = $this->booking_reference;
@@ -186,7 +187,6 @@ class PrisonVisitBookingHandler extends WebformHandlerBase
     }
 
     // Deal with remembered additional visitors.
-    $elements = WebformFormHelper::flattenElements($form);
     $elements['msg_existing_additional_visitors']['#access'] = FALSE;
 
     $tempstore = $this->tempStoreFactory->get('nidirect_webforms.prison_visit_booking');
@@ -238,7 +238,9 @@ class PrisonVisitBookingHandler extends WebformHandlerBase
    */
   private function validateVisitBookingReference(array &$form, FormStateInterface $form_state)
   {
+    $elements = WebformFormHelper::flattenElements($form);
     $booking_ref = !empty($form_state->getValue('visitor_order_number')) ? $form_state->getValue('visitor_order_number') : NULL;
+    $booking_ref_element = $elements['visitor_order_number'];
 
     // Basic validation with early return.
     if (empty($booking_ref))
@@ -422,7 +424,14 @@ class PrisonVisitBookingHandler extends WebformHandlerBase
         $available_slots = $this->getAvailableSlots();
         if (empty($available_slots)) {
           $booking_reference_valid = FALSE;
-          $error_message = $this->t('There are no remaining time slots for this visit reference number.');
+          $error_message = 'There are no remaining time slots for visit reference number ';
+          $error_message .= $this->t(
+            '<a href="@visit-reference-number-url">@visit-reference-number</a>',
+            [
+              '@visit-reference-number-url' => '#' . $booking_ref_element['#id'],
+              '@visit-reference-number' => $booking_ref_element['#value'],
+            ]
+          );
         }
         else
         {
