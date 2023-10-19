@@ -677,8 +677,13 @@ class PrisonVisitBookingHandler extends WebformHandlerBase
         }
 
         // Capture non-sensitive visitor data in session temp store.
-        if ($remember_visitors && ($element_name === 'visitor_1_id' || str_starts_with($element_name, 'additional_visitor'))) {
-          $visitor_data[$element_name] = $element_value;
+        if ($remember_visitors) {
+          if ($element_name === 'visitor_1_id' ||
+              str_starts_with($element_name, 'additional_visitor') ||
+              str_starts_with($element_name, 'visitor_special_requirements'))
+          {
+            $visitor_data[$element_name] = $element_value;
+          }
         }
       }
 
