@@ -465,6 +465,7 @@ class PrisonVisitBookingHandler extends WebformHandlerBase
 
     $prison_id = $this->booking_reference['prison_id'];
     $visit_type = $this->booking_reference['visit_type'];
+    $visit_type_id = $this->booking_reference['visit_type_id'];
     $prisoner_category = $this->booking_reference['prisoner_category'];
     $prisoner_subcategory = $this->booking_reference['prisoner_subcategory'];
 
@@ -563,7 +564,11 @@ class PrisonVisitBookingHandler extends WebformHandlerBase
       {
         $slot_is_bookable = FALSE;
       }
-
+      // Enhanced visits cannot be booked on Saturday or Sunday.
+      elseif ($visit_type_id === 'E' && ($slot->format('D') === 'Sat' || $slot->format('D') === 'Sun'))
+      {
+        $slot_is_bookable = FALSE;
+      }
 
       if ($slot_is_bookable === FALSE)
       {
