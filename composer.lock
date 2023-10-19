@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "6e6ebd060723c57ad2220d23bd20dc82",
+    "content-hash": "f570a90ab42339adc74febd73853757c",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -3608,26 +3608,29 @@
         },
         {
             "name": "drupal/embed",
-            "version": "1.6.0",
+            "version": "1.7.0",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/embed.git",
-                "reference": "8.x-1.6"
+                "reference": "8.x-1.7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/embed-8.x-1.6.zip",
-                "reference": "8.x-1.6",
-                "shasum": "6d2964775c3228d122cd61904786b3640fa83045"
+                "url": "https://ftp.drupal.org/files/projects/embed-8.x-1.7.zip",
+                "reference": "8.x-1.7",
+                "shasum": "b7ca4264be51038f947d26b6725fc0446b224f60"
             },
             "require": {
                 "drupal/core": "^9.3 | ^10"
             },
+            "require-dev": {
+                "drupal/ckeditor": "*"
+            },
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "8.x-1.6",
-                    "datestamp": "1661298150",
+                    "version": "8.x-1.7",
+                    "datestamp": "1697642867",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -5654,6 +5657,68 @@
                 "source": "https://git.drupalcode.org/project/metatag",
                 "issues": "https://www.drupal.org/project/issues/metatag",
                 "docs": "https://www.drupal.org/docs/8/modules/metatag"
+            }
+        },
+        {
+            "name": "drupal/migrate_plus",
+            "version": "dev-6.0.x",
+            "source": {
+                "type": "git",
+                "url": "https://git.drupalcode.org/project/migrate_plus.git",
+                "reference": "ddb444ee1f4c50fa55e78c1f6fa2040cfa2af821"
+            },
+            "require": {
+                "drupal/core": ">=9.1",
+                "php": ">=7.4"
+            },
+            "require-dev": {
+                "drupal/migrate_example_advanced_setup": "*",
+                "drupal/migrate_example_setup": "*"
+            },
+            "suggest": {
+                "ext-soap": "*",
+                "sainsburys/guzzle-oauth2-plugin": "3.0 required for the OAuth2 authentication plugin"
+            },
+            "type": "drupal-module",
+            "extra": {
+                "branch-alias": {
+                    "dev-6.0.x": "6.0.x-dev"
+                },
+                "drupal": {
+                    "version": "6.0.1+4-dev",
+                    "datestamp": "1689603591",
+                    "security-coverage": {
+                        "status": "not-covered",
+                        "message": "Dev releases are not covered by Drupal security advisories."
+                    }
+                }
+            },
+            "notification-url": "https://packages.drupal.org/8/downloads",
+            "license": [
+                "GPL-2.0-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "Mike Ryan",
+                    "homepage": "https://www.drupal.org/u/mikeryan",
+                    "role": "Maintainer"
+                },
+                {
+                    "name": "Lucas Hedding",
+                    "homepage": "https://www.drupal.org/u/heddn",
+                    "role": "Maintainer"
+                },
+                {
+                    "name": "mikeryan",
+                    "homepage": "https://www.drupal.org/user/4420"
+                }
+            ],
+            "description": "Enhancements to core migration support.",
+            "homepage": "https://www.drupal.org/project/migrate_plus",
+            "support": {
+                "source": "https://git.drupalcode.org/project/migrate_plus",
+                "issues": "https://www.drupal.org/project/issues/migrate_plus",
+                "slack": "#migrate"
             }
         },
         {
@@ -16564,6 +16629,7 @@
         "drupal/file_delete_ui": 15,
         "drupal/flag": 20,
         "drupal/layout_builder_modal": 15,
+        "drupal/migrate_plus": 20,
         "drupal/search_api_location": 15,
         "drupal/shs": 5,
         "drupal/ultimate_cron": 15,
