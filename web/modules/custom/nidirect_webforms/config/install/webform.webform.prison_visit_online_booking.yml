@@ -263,35 +263,10 @@ elements: |-
             style: 'min-width: 7em; display: inline-block'
             aria-label: 'Additional visitor four date of birth'
           '#format': d/m/Y
-      additional_visitor_save_details:
-        '#type': fieldset
-        '#title': 'Remember these additional visitors?'
-        '#states':
-          visible:
-            ':input[name="additional_visitor_1_id"]':
-              filled: true
-        '#format': details
-        remember_settings_info:
-          '#type': webform_markup
-          '#markup': |-
-            <p class="info-notice">
-            Select <strong>No</strong> if you're using a publicly accessible computer or a device shared with others.
-            </p>
-        additional_visitors_remember:
-          '#type': radios
-          '#title': 'Do you want to remember additional visitor details?'
-          '#title_display': invisible
-          '#options':
-            'yes': 'Yes'
-            'no': 'No'
-          '#options_display': side_by_side
-          '#required': true
-  special_requirements:
+  visitor_special_requirements:
     '#type': webform_wizard_page
-    '#title': 'Special requirements'
-    '#prev_button_label': Previous
-    '#next_button_label': Next
-    do_you_or_any_other_visitors_have_any_special_requirements_:
+    '#title': 'Visitor special requirements'
+    visitor_special_requirements_choice:
       '#type': radios
       '#title': 'Do you or any other visitors have any special requirements?'
       '#description': 'For example, do any visitors require wheelchair access?'
@@ -301,7 +276,7 @@ elements: |-
         'no': 'No'
       '#options_display': side_by_side
       '#required': true
-    special_requirements_details:
+    visitor_special_requirements_details:
       '#type': textarea
       '#title': 'Tell us about any special requirements you or the other visitors may have'
       '#maxlength': 1000
@@ -313,8 +288,38 @@ elements: |-
       '#counter_maximum': 1000
       '#states':
         visible-slide:
-          ':input[name="do_you_or_any_other_visitors_have_any_special_requirements_"]':
+          ':input[name="visitor_special_requirements_choice"]':
             value: 'yes'
+  remember_settings:
+    '#type': webform_wizard_page
+    '#title': 'Remember settings'
+    '#format': container
+    additional_visitor_save_details:
+      '#type': fieldset
+      '#title': 'Remember visitor details?'
+      '#description_display': before
+      '#states':
+        visible:
+          ':input[name="additional_visitor_1_id"]':
+            filled: true
+      '#format': details
+      remember_settings_info:
+        '#type': webform_markup
+        '#markup': |-
+          <p>Visitor details can be remembered for up to one week on your device.</p>
+
+          <p class="info-notice">
+          Select <strong>No</strong> if you're using a publicly accessible computer or a device shared with others.
+          </p>
+      additional_visitors_remember:
+        '#type': radios
+        '#title': 'Do you want to remember additional visitor details?'
+        '#title_display': invisible
+        '#options':
+          'yes': 'Yes'
+          'no': 'No'
+        '#options_display': side_by_side
+        '#required': true
   visit_preferred_day_and_time:
     '#type': webform_wizard_page
     '#title': 'Visit details'
@@ -623,7 +628,7 @@ settings:
   ajax_scroll_top: form
   ajax_progress_type: throbber
   ajax_effect: fade
-  ajax_speed: 500
+  ajax_speed: null
   page: true
   page_submit_path: ''
   page_confirm_path: ''
