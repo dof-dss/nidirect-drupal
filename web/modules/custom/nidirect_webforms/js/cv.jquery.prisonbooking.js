@@ -8,40 +8,40 @@
   Drupal.behaviors.prisonVisit = {
     attach: function (context, settings) {
 
-      const prisonVisitForm = once('prisonVisitForm', 'form.webform-submission-prison-visit-online-booking-form', context);
+      const pvForm = once('pvForm', 'form.webform-submission-prison-visit-online-booking-form', context);
+      const $pvbRef = $(pvForm).find('input[name="visitor_order_number"]');
 
-      const $prisonVisitOrderNumber = $(prisonVisitForm).find('input[name="visitor_order_number"]');
-      const visitPrisons = settings.prisonVisitBooking.prisons;
-      const visitTypes = settings.prisonVisitBooking.visit_type;
-      const visitAdvanceNotice = settings.prisonVisitBooking.visit_advance_notice;
-      const visitBookingRefValidityPeriodDays = settings.prisonVisitBooking.booking_reference_validity_period_days;
-      const visitBookingRefMaxAdvancedIssue = settings.prisonVisitBooking.visit_order_number_max_advance_issue;
+      const pvPrisons = settings.prisonVisitBooking.prisons;
+      const pvTypes = settings.prisonVisitBooking.visit_type;
+      const pvNotice = settings.prisonVisitBooking.visit_advance_notice;
+      const pvbRefValidity = settings.prisonVisitBooking.booking_reference_validity_period_days;
+      const pvbRefMaxAdvancedIssue = settings.prisonVisitBooking.visit_order_number_max_advance_issue;
 
-      let visitTypeId = 'F';
+      let pvTypeId = 'F';
       if (settings.prisonVisitBooking['booking_ref'] !== null) {
-        visitTypeId = settings.prisonVisitBooking.booking_ref.visit_type_id;
+        pvTypeId = settings.prisonVisitBooking.booking_ref.visit_type_id;
       }
 
-      $prisonVisitOrderNumber.rules( "add", {
+      $pvbRef.rules( "add", {
         validPrisonVisitBookingRef: [
           true,
-          visitPrisons,
-          visitTypes,
-          visitAdvanceNotice,
-          visitBookingRefValidityPeriodDays,
+          pvPrisons,
+          pvTypes,
+          pvNotice,
+          pvbRefValidity,
         ],
         validVisitBookingRefDate: [
           true,
-          visitPrisons,
-          visitTypes,
-          visitAdvanceNotice,
-          visitBookingRefValidityPeriodDays,
-          visitBookingRefMaxAdvancedIssue
+          pvPrisons,
+          pvTypes,
+          pvNotice,
+          pvbRefValidity,
+          pvbRefMaxAdvancedIssue
         ]
       });
 
       const $weekSlots = $(once('prisonVisitSlots', '[data-webform-key^="slots_week"]', context));
-      const timeSlotLimit = (visitTypeId === 'V') ? 5 : 3;
+      const timeSlotLimit = (pvTypeId === 'V') ? 5 : 3;
 
       if ($weekSlots.length === 1) {
         $weekSlots.prop("open", true);
