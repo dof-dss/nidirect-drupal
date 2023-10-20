@@ -94,8 +94,22 @@
 }
 
 .webform-submission-form {
-  .form-submit:not(:first-child) {
-    margin-left: 1.5em;
+
+  .form-actions {
+    .ajax-spinner {
+      position: absolute;
+      left: 50%;
+      top: 100%;
+      transform: translateX(-50%);
+    }
+  }
+
+  .form-submit {
+    margin: 0 1em 1em 0;
+
+    &:last-child {
+      margin-right: 0;
+    }
   }
 
   .banner {
