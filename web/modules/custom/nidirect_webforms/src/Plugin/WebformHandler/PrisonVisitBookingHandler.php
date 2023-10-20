@@ -170,7 +170,7 @@ class PrisonVisitBookingHandler extends WebformHandlerBase
             foreach ($available_slots as $available_slot)
             {
               if ($available_slot->format('Y-m-d') === $form_slots_day_date->format('Y-m-d')) {
-                $form_slots_day['#options'][$available_slot->format(DATE_ATOM)] = $available_slot->format('H:i');
+                $form_slots_day['#options'][$available_slot->format(DATE_ATOM)] = $available_slot->format('g.i a');
               }
             }
 
