@@ -51,7 +51,7 @@
         confirmationDialog.showModal();
       }
 
-      $(context).find('#views-exposed-form-gp-practices-find-a-gp').once('gp-location-search').each(function () {
+      $(once('gp-location-search', '#views-exposed-form-gp-practices-find-a-gp', context)).each(function () {
 
         let $searchForm = $(this);
         let querystring = new URLSearchParams(window.location.search);
