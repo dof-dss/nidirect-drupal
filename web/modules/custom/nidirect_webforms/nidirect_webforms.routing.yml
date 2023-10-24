@@ -1,0 +1,8 @@
+nidirect_webforms.prison_visit_booking_json_api:
+  path: '/api/prison-visit-booking-json'
+  defaults:
+    _controller: 'Drupal\nidirect_webforms\Controller\PrisonVisitBookingJsonApiController::renderApi'
+    _title: 'Prison Visit Booking JSON api'
+  methods:  [GET, POST]
+  requirements:
+    _access: 'TRUE'
