@@ -3,12 +3,8 @@
 namespace Drupal\nidirect_common\Commands;
 
 use Drupal\Core\Database\Database;
-use Drupal\Core\Database\Driver\mysql\Connection;
-use Drupal\Core\Entity\EntityTypeManagerInterface;
-use Drupal\Core\Queue\QueueFactory;
 use Drupal\path_alias\AliasManager;
 use Drush\Commands\DrushCommands;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Replaces references to node/xxx within fields with the path alias.

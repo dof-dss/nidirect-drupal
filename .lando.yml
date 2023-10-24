@@ -26,6 +26,8 @@ services:
     scanner: false
     build_as_root:
       - /app/.lando/scripts/appserver_build.sh
+      - curl -sL https://deb.nodesource.com/setup_14.x | bash -
+      - apt-get install -y nodejs
     overrides:
       environment:
         # Support debugging CLI with XDEBUG.
@@ -51,6 +53,8 @@ services:
     hogfrom:
       - appserver
 tooling:
+  node:
+    service: appserver
   xdebug-on:
     service: appserver
     description: Enable xdebug

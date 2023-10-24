@@ -96,6 +96,7 @@ class WeatherStationEntityForm extends EntityForm {
     // Check all weather station entities for a matching postcode.
     $ids = $this->entityTypeManager->getStorage('weather_station')->getQuery()
       ->condition('id', $id, '<>')
+      ->accessCheck(TRUE)
       ->execute();
     $stations = $this->entityTypeManager->getStorage('weather_station')->loadMultiple($ids);
 

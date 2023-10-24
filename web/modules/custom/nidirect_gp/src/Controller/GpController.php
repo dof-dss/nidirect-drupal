@@ -5,6 +5,7 @@ namespace Drupal\nidirect_gp\Controller;
 use Drupal\Component\Utility\Xss;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Datetime\DateFormatterInterface;
+use Drupal\Core\Entity\RevisionableStorageInterface;
 use Drupal\Core\Link;
 use Drupal\Core\Url;
 use Drupal\nidirect_gp\Entity\GpInterface;
@@ -53,6 +54,7 @@ class GpController extends ControllerBase {
    *   An array suitable for drupal_render().
    */
   public function revisionShow($gp_revision) {
+
     $gp = $this->entityTypeManager()->getStorage('gp')->loadRevision($gp_revision);
     $view_builder = $this->entityTypeManager()->getViewBuilder('gp');
 

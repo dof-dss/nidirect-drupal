@@ -323,8 +323,6 @@ function nidirect_common_field_widget_single_element_telephone_plus_widget_form_
     ];
   }
 
-  ksm($element);
-
   // Fetch the stored Title field value.
   $telephone_title = $context['items']->get($context['delta'])->get('telephone_title')->getValue();
 
