@@ -20,8 +20,7 @@
         // @codingStandardsIgnoreStart
         const distance = drupalSettings.nidirect.gpSearch.maxDistance ?? 10;
         // @codingStandardsIgnoreEnd
-        let url = '/services/gp-practices?lat=' + lat + '&lng=' + lng + '&proximity=' + distance;
-        window.location.href = url;
+        window.location.href = '/services/gp-practices?lat=' + lat + '&lng=' + lng + '&proximity=' + distance;
       }
 
       // Callback function for geolocation errors.
