@@ -1,8 +1,8 @@
 <h2>Results for BT{{ postcode }}</h2>
-<p>The most recent Cold Weather Payment scheme ran from {{ period_start|date("jS F Y") }} to {{ period_end|date("jS F Y") }}.</p> 
+<p>The most recent Cold Weather Payment scheme ran from {{ period_start|date("jS F Y") }} to {{ period_end|date("jS F Y") }}.</p>
 
 {% if payments|length > 0 %}
-  <p><strong>{{ payments|length|localizednumber('spellout')|capitalize }}</strong> Cold Weather {{ payments|length > 1 ? 'payments were' : 'payment was' }} 
+  <p><strong>{{ payments|length|format_number(style='spellout')|capitalize }}</strong> Cold Weather {{ payments|length > 1 ? 'payments were' : 'payment was' }}
   triggered in the <strong>BT{{ postcode|capitalize }}</strong> postcode area for the following periods of cold weather:
   <ul>
     {% for payment in payments %}
@@ -10,5 +10,5 @@
     {% endfor %}
   </ul>
 {% else %}
-  <p>No Cold Weather Payments were triggered in the <strong>BT{{ postcode|capitalize }}</strong> postcode area. 
+  <p>No Cold Weather Payments were triggered in the <strong>BT{{ postcode|capitalize }}</strong> postcode area.
 {% endif %}
