@@ -188,6 +188,7 @@ class PrisonVisitBookingHandler extends WebformHandlerBase
 
     // Deal with remembered additional visitors.
     $elements['msg_existing_additional_visitors']['#access'] = FALSE;
+    $elements['msg_additional_visitors']['#access'] = FALSE;
 
     $tempstore = $this->tempStoreFactory->get('nidirect_webforms.prison_visit_booking');
     $visitor_data = $tempstore->get('visitor_data');
@@ -205,10 +206,9 @@ class PrisonVisitBookingHandler extends WebformHandlerBase
         $visitor_data_is_valid = FALSE;
       }
 
-      $elements['msg_existing_additional_visitors']['#access'] = $visitor_data_is_valid;
+      if ($visitor_data_is_valid) {
+        $elements['msg_existing_additional_visitors']['#access'] = TRUE;
 
-      if ($visitor_data_is_valid)
-      {
         // Retrieve existing visitor data.
         foreach ($visitor_data as $key => $value)
         {
@@ -218,6 +218,8 @@ class PrisonVisitBookingHandler extends WebformHandlerBase
       }
       else
       {
+        $elements['msg_additional_visitors']['#access'] = TRUE;
+
         // Remove all visitor data.
         $tempstore->delete('visitor_data');
       }
@@ -688,6 +690,61 @@ class PrisonVisitBookingHandler extends WebformHandlerBase
       }
 
       $tempstore->set('visitor_data', $visitor_data);
+
+      // Set additional visitors for submission.
+      // The form accommodates two additional adults and five
+      // additional children. However, the total number of
+      // additional visitors that can be submitted is four.
+
+      // Reset secure value elements (bit like hidden elements)
+      // keeping track of additional visitors. There are 5
+      // to allow 5 additional visitors in future.
+
+      for ($i = 1; $i <= 5; $i++) {
+        $form_state->setValue('av' . $i . '_id', '');
+        $form_state->setValue('av' . $i . '_dob', '');
+        $webform_submission->setElementData('av' . $i . '_id', '');
+        $webform_submission->setElementData('av' . $i . '_dob', '');
+      }
+
+      // Get additional visitors.
+      $additional_visitors = [];
+      $num_adults = $form_values['additional_visitor_adult_number'];
+      $num_children = $form_values['additional_visitor_child_number'];
+
+      for ($i = 1; $i <= $num_adults; $i++) {
+
+        $av_id = $form_values['additional_visitor_adult_' . $i .'_id'];
+        $av_dob = $form_values['additional_visitor_adult_' . $i .'_dob'];
+
+        if (!empty($av_id) && !empty($av_dob)) {
+          $additional_visitors[] = [
+            'id' => $av_id,
+            'dob' => $av_dob
+          ];
+        }
+      }
+
+      for ($i = 1; $i <= $num_children; $i++) {
+
+        $av_id = $form_values['additional_visitor_child_' . $i .'_id'];
+        $av_dob = $form_values['additional_visitor_child_' . $i .'_dob'];
+
+        if (!empty($av_id) && !empty($av_dob)) {
+          $additional_visitors[] = [
+            'id' => $av_id,
+            'dob' => $av_dob
+          ];
+        }
+      }
+
+      // Set secure value elements for submission.
+      foreach ($additional_visitors as $key => $value) {
+        $form_state->setValue('av' . $key + 1 . '_id', $value['id']);
+        $form_state->setValue('av' . $key + 1 . '_dob', $value['dob']);
+        $webform_submission->setElementData('av' . $key + 1 . '_id', $value['id']);
+        $webform_submission->setElementData('av' . $key + 1 . '_dob', $value['dob']);
+      }
     }
   }
 
