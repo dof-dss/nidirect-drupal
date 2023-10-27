@@ -114,154 +114,365 @@ elements: |-
   additional_visitors:
     '#type': webform_wizard_page
     '#title': 'Additional visitors'
-    '#states_clear': false
-    msg_existing_additional_visitors:
-      '#type': webform_markup
-      '#markup': |-
-        <div role="status">
-        <h2 class="legend">Additional visitors</h2>
-        <p class="info-notice">
-        Existing details of additional visitors from a previous booking have been found.
-        </p>
-        </div>
-    add_additional_visitors:
-      '#type': radios
-      '#title': 'Do you want to add additional visitors?'
-      '#description': 'You can add up to four additional visitors'
-      '#description_display': before
-      '#options':
-        'yes': 'Yes'
-        'no': 'No'
-      '#options_display': side_by_side
-      '#required': true
-  additional_visitor_details:
-    '#type': webform_wizard_page
-    '#title': 'Additional visitor details'
-    '#states':
-      visible:
-        ':input[name="add_additional_visitors"]':
-          value: 'yes'
-    '#states_clear': false
-    '#format': container
-    '#next_button_label': Next
-    additional_visitor_details_container:
-      '#type': container
-      additional_visitors_new:
+    additional_visitors_fieldset:
+      '#type': fieldset
+      '#title': 'Additional visitors'
+      '#format': container
+      msg_existing_additional_visitors:
         '#type': webform_markup
         '#markup': |-
-          <p class="info-notice">
-          Enter the correct visitor ID and date of birth for each additional visitor. If visitor details entered here do not match those we hold on record, they will not be included in the booking.
+          <p class="info-notice" role="status">
+          Existing details of additional visitors from a previous booking have been found.
           </p>
-      additional_visitor_1_details:
-        '#type': details
-        '#title': 'Enter details for additional visitor 1'
-        '#states_clear': false
-        additional_visitor_1_id:
-          '#type': textfield
-          '#title': 'Visitor ID'
-          '#title_display': inline
-          '#description_display': before
-          '#maxlength': 6
-          '#size': 10
-          '#placeholder': '000000'
-          '#autocomplete': 'off'
-          '#pattern': '[0-9]{6}'
-          '#pattern_error': 'Visitor ID must be a 6 digit number'
-          '#states_clear': false
-          '#label_attributes':
-            style: 'min-width: 7em; display: inline-block'
-            aria-label: 'Additional visitor one visitor ID'
-        additional_visitor_1_dob:
-          '#type': date
-          '#title': 'Date of birth'
-          '#title_display': inline
-          '#states_clear': false
-          '#label_attributes':
-            style: 'min-width: 7em; display: inline-block'
-            aria-label: 'Additional visitor one date of birth'
-          '#format': d/m/Y
-      additional_visitor_2_details:
-        '#type': details
-        '#title': 'Enter details for additional visitor 2 (optional)'
-        '#states_clear': false
-        additional_visitor_2_id:
-          '#type': textfield
-          '#title': 'Visitor ID'
-          '#title_display': inline
-          '#description_display': before
-          '#maxlength': 6
-          '#size': 10
-          '#placeholder': '000000'
-          '#autocomplete': 'off'
-          '#pattern': '[0-9]{6}'
-          '#pattern_error': 'Visitor ID must be a 6 digit number'
-          '#states_clear': false
-          '#label_attributes':
-            style: 'min-width: 7em; display: inline-block'
-            aria-label: 'Additional visitor one visitor ID'
-        additional_visitor_2_dob:
-          '#type': date
-          '#title': 'Date of birth'
-          '#title_display': inline
-          '#states_clear': false
-          '#label_attributes':
-            style: 'min-width: 7em; display: inline-block'
-            aria-label: 'Additional visitor two date of birth'
-          '#format': d/m/Y
-      additional_visitor_3_details:
-        '#type': details
-        '#title': 'Enter details for additional visitor 3 (optional)'
-        '#states_clear': false
-        additional_visitor_3_id:
-          '#type': textfield
-          '#title': 'Visitor ID'
-          '#title_display': inline
-          '#maxlength': 6
-          '#size': 10
-          '#placeholder': '000000'
-          '#autocomplete': 'off'
-          '#pattern': '[0-9]{6}'
-          '#pattern_error': 'Visitor ID must be a 6 digit number'
-          '#states_clear': false
-          '#label_attributes':
-            style: 'min-width: 7em; display: inline-block'
-            aria-label: 'Additional visitor three visitor ID'
-        additional_visitor_3_dob:
-          '#type': date
-          '#title': 'Date of birth'
-          '#title_display': inline
-          '#states_clear': false
-          '#label_attributes':
-            style: 'min-width: 7em; display: inline-block'
-            aria-label: 'Additional visitor three date of birth'
-          '#format': d/m/Y
-      additional_visitor_4_details:
-        '#type': details
-        '#title': 'Enter details for additional visitor 4 (optional)'
-        '#states_clear': false
-        additional_visitor_4_id:
-          '#type': textfield
-          '#title': 'Visitor ID'
-          '#title_display': inline
-          '#maxlength': 6
-          '#size': 10
-          '#placeholder': '000000'
-          '#autocomplete': 'off'
-          '#pattern': '[0-9]{6}'
-          '#pattern_error': 'Visitor ID is not recognised'
-          '#states_clear': false
-          '#label_attributes':
-            style: 'min-width: 7em; display: inline-block'
-            aria-label: 'Additional visitor four visitor ID'
-        additional_visitor_4_dob:
-          '#type': date
-          '#title': 'Date of birth'
-          '#title_display': inline
-          '#states_clear': false
-          '#label_attributes':
-            style: 'min-width: 7em; display: inline-block'
-            aria-label: 'Additional visitor four date of birth'
-          '#format': d/m/Y
+      msg_additional_visitors:
+        '#type': webform_markup
+        '#markup': |-
+          <p role="status" class="info-notice">
+          You can add up to 4 additional visitors.  The maximum number of adults you can add is 2.  The maximum number of children you can add ranges from 2 to 4, depending on how many adults you have added.
+          </p>
+      additional_visitors_add:
+        '#type': radios
+        '#title': 'Do you want to add additional visitors?'
+        '#description_display': before
+        '#options':
+          'yes': 'Yes'
+          'no': 'No'
+        '#options_display': side_by_side
+        '#required': true
+      additional_visitor_adult_number:
+        '#type': select
+        '#title': 'How many additional adults?'
+        '#options':
+          - '0'
+          - '1'
+          - '2'
+        '#empty_option': Select
+        '#states':
+          visible:
+            ':input[name="additional_visitors_add"]':
+              value: 'yes'
+          required:
+            ':input[name="additional_visitors_add"]':
+              value: 'yes'
+      additional_visitor_child_number:
+        '#type': select
+        '#title': 'How many additional children?'
+        '#options':
+          - '0'
+          - '1'
+          - '2'
+          - '3'
+          - '4'
+        '#empty_option': Select
+        '#states':
+          visible:
+            ':input[name="additional_visitor_adult_number"]':
+              filled: true
+            ':input[name="additional_visitors_add"]':
+              value: 'yes'
+          required:
+            ':input[name="additional_visitors_add"]':
+              value: 'yes'
+  additional_visitor_adult_details:
+    '#type': webform_wizard_page
+    '#title': 'Additional adult visitors'
+    '#states':
+      visible:
+        ':input[name="additional_visitors_add"]':
+          value: 'yes'
+        ':input[name="additional_visitor_adult_number"]':
+          value:
+            greater: '0'
+    '#format': container
+    additional_visitors_adult:
+      '#type': webform_markup
+      '#markup': |-
+        <p class="info-notice">
+        Enter the correct visitor ID and date of birth for each additional adult visitor. If visitor details entered here do not match those we hold on record, they will not be included in the booking.
+        </p>
+    additional_visitor_adult_1_details:
+      '#type': details
+      '#title': 'Enter details for additional adult 1'
+      additional_visitor_adult_1_id:
+        '#type': textfield
+        '#title': 'Visitor ID'
+        '#title_display': inline
+        '#description_display': before
+        '#maxlength': 6
+        '#size': 10
+        '#placeholder': '000000'
+        '#autocomplete': 'off'
+        '#pattern': '[0-9]{6}'
+        '#pattern_error': 'Visitor ID must be a 6 digit number'
+        '#states':
+          required:
+            ':input[name="additional_visitor_adult_number"]':
+              value:
+                greater: '0'
+        '#label_attributes':
+          style: 'min-width: 7em; display: inline-block'
+          aria-label: 'Additional visitor one visitor ID'
+      additional_visitor_adult_1_dob:
+        '#type': date
+        '#title': 'Date of birth'
+        '#title_display': inline
+        '#states':
+          required:
+            ':input[name="additional_visitor_adult_number"]':
+              value:
+                greater: '0'
+        '#label_attributes':
+          style: 'min-width: 7em; display: inline-block'
+          aria-label: 'Additional visitor one date of birth'
+        '#format': d/m/Y
+        '#date_date_max': '-18 years'
+    additional_visitor_adult_2_details:
+      '#type': details
+      '#title': 'Enter details for additional adult 2'
+      '#states':
+        visible:
+          ':input[name="additional_visitor_adult_number"]':
+            value:
+              greater: '1'
+      additional_visitor_adult_2_id:
+        '#type': textfield
+        '#title': 'Visitor ID'
+        '#title_display': inline
+        '#description_display': before
+        '#maxlength': 6
+        '#size': 10
+        '#placeholder': '000000'
+        '#autocomplete': 'off'
+        '#pattern': '[0-9]{6}'
+        '#pattern_error': 'Visitor ID must be a 6 digit number'
+        '#states':
+          required:
+            ':input[name="additional_visitor_adult_number"]':
+              value:
+                greater: '1'
+        '#label_attributes':
+          style: 'min-width: 7em; display: inline-block'
+          aria-label: 'Additional visitor one visitor ID'
+      additional_visitor_adult_2_dob:
+        '#type': date
+        '#title': 'Date of birth'
+        '#title_display': inline
+        '#states':
+          required:
+            ':input[name="additional_visitor_adult_number"]':
+              value:
+                greater: '1'
+        '#label_attributes':
+          style: 'min-width: 7em; display: inline-block'
+          aria-label: 'Additional visitor two date of birth'
+        '#format': d/m/Y
+  additional_visitor_child_details:
+    '#type': webform_wizard_page
+    '#title': 'Additional child visitors'
+    '#states':
+      visible:
+        ':input[name="additional_visitors_add"]':
+          value: 'yes'
+        ':input[name="additional_visitor_child_number"]':
+          value:
+            greater: '0'
+    '#format': container
+    additional_visitors_child:
+      '#type': webform_markup
+      '#markup': |-
+        <p class="info-notice">
+        Enter the correct visitor ID and date of birth for each additional child visitor. If visitor details entered here do not match those we hold on record, they will not be included in the booking.
+        </p>
+    additional_visitor_child_1_details:
+      '#type': details
+      '#title': 'Enter details for additional child 1'
+      additional_visitor_child_1_id:
+        '#type': textfield
+        '#title': 'Visitor ID'
+        '#title_display': inline
+        '#maxlength': 6
+        '#size': 10
+        '#placeholder': '000000'
+        '#autocomplete': 'off'
+        '#pattern': '[0-9]{6}'
+        '#pattern_error': 'Visitor ID must be a 6 digit number'
+        '#states':
+          required:
+            ':input[name="additional_visitor_child_number"]':
+              value:
+                greater: '0'
+        '#label_attributes':
+          style: 'min-width: 7em; display: inline-block'
+          aria-label: 'Additional visitor three visitor ID'
+      additional_visitor_child_1_dob:
+        '#type': date
+        '#title': 'Date of birth'
+        '#title_display': inline
+        '#states':
+          required:
+            ':input[name="additional_visitor_child_number"]':
+              value:
+                greater: '0'
+        '#label_attributes':
+          style: 'min-width: 7em; display: inline-block'
+          aria-label: 'Additional visitor three date of birth'
+        '#format': d/m/Y
+    additional_visitor_child_2_details:
+      '#type': details
+      '#title': 'Enter details for additional child 2'
+      '#states':
+        visible:
+          ':input[name="additional_visitor_child_number"]':
+            value:
+              greater: '1'
+      additional_visitor_child_2_id:
+        '#type': textfield
+        '#title': 'Visitor ID'
+        '#title_display': inline
+        '#maxlength': 6
+        '#size': 10
+        '#placeholder': '000000'
+        '#autocomplete': 'off'
+        '#pattern': '[0-9]{6}'
+        '#pattern_error': 'Visitor ID is not recognised'
+        '#states':
+          required:
+            ':input[name="additional_visitor_child_number"]':
+              value:
+                greater: '1'
+        '#label_attributes':
+          style: 'min-width: 7em; display: inline-block'
+          aria-label: 'Additional visitor four visitor ID'
+      additional_visitor_child_2_dob:
+        '#type': date
+        '#title': 'Date of birth'
+        '#title_display': inline
+        '#states':
+          required:
+            ':input[name="additional_visitor_child_number"]':
+              value:
+                greater: '1'
+        '#label_attributes':
+          style: 'min-width: 7em; display: inline-block'
+          aria-label: 'Additional visitor four date of birth'
+        '#format': d/m/Y
+    additional_visitor_child_3_details:
+      '#type': details
+      '#title': 'Enter details for additional child 3'
+      '#states':
+        visible:
+          ':input[name="additional_visitor_child_number"]':
+            value:
+              greater: '2'
+      additional_visitor_child_3_id:
+        '#type': textfield
+        '#title': 'Visitor ID'
+        '#title_display': inline
+        '#maxlength': 6
+        '#size': 10
+        '#placeholder': '000000'
+        '#autocomplete': 'off'
+        '#pattern': '[0-9]{6}'
+        '#pattern_error': 'Visitor ID is not recognised'
+        '#states':
+          required:
+            ':input[name="additional_visitor_child_number"]':
+              value:
+                greater: '2'
+        '#label_attributes':
+          style: 'min-width: 7em; display: inline-block'
+          aria-label: 'Additional visitor four visitor ID'
+      additional_visitor_child_3_dob:
+        '#type': date
+        '#title': 'Date of birth'
+        '#title_display': inline
+        '#states':
+          required:
+            ':input[name="additional_visitor_child_number"]':
+              value:
+                greater: '2'
+        '#label_attributes':
+          style: 'min-width: 7em; display: inline-block'
+          aria-label: 'Additional visitor four date of birth'
+        '#format': d/m/Y
+    additional_visitor_child_4_details:
+      '#type': details
+      '#title': 'Enter details for additional child 4'
+      '#states':
+        visible:
+          ':input[name="additional_visitor_child_number"]':
+            value:
+              greater: '3'
+      additional_visitor_child_4_id:
+        '#type': textfield
+        '#title': 'Visitor ID'
+        '#title_display': inline
+        '#maxlength': 6
+        '#size': 10
+        '#placeholder': '000000'
+        '#autocomplete': 'off'
+        '#pattern': '[0-9]{6}'
+        '#pattern_error': 'Visitor ID is not recognised'
+        '#states':
+          required:
+            ':input[name="additional_visitor_child_number"]':
+              value:
+                greater: '3'
+        '#label_attributes':
+          style: 'min-width: 7em; display: inline-block'
+          aria-label: 'Additional visitor four visitor ID'
+      additional_visitor_child_4_dob:
+        '#type': date
+        '#title': 'Date of birth'
+        '#title_display': inline
+        '#states':
+          required:
+            ':input[name="additional_visitor_child_number"]':
+              value:
+                greater: '3'
+        '#label_attributes':
+          style: 'min-width: 7em; display: inline-block'
+          aria-label: 'Additional visitor four date of birth'
+        '#format': d/m/Y
+    additional_visitor_child_5_details:
+      '#type': details
+      '#title': 'Enter details for additional child 5'
+      '#states':
+        visible:
+          ':input[name="additional_visitor_child_number"]':
+            value:
+              greater: '4'
+      additional_visitor_child_5_id:
+        '#type': textfield
+        '#title': 'Visitor ID'
+        '#title_display': inline
+        '#maxlength': 6
+        '#size': 10
+        '#placeholder': '000000'
+        '#autocomplete': 'off'
+        '#pattern': '[0-9]{6}'
+        '#pattern_error': 'Visitor ID is not recognised'
+        '#states':
+          required:
+            ':input[name="additional_visitor_child_number"]':
+              value:
+                greater: '4'
+        '#label_attributes':
+          style: 'min-width: 7em; display: inline-block'
+          aria-label: 'Additional visitor four visitor ID'
+      additional_visitor_child_5_dob:
+        '#type': date
+        '#title': 'Date of birth'
+        '#title_display': inline
+        '#states':
+          required:
+            ':input[name="additional_visitor_child_number"]':
+              value:
+                greater: '4'
+        '#label_attributes':
+          style: 'min-width: 7em; display: inline-block'
+          aria-label: 'Additional visitor four date of birth'
+        '#format': d/m/Y
   visitor_special_requirements:
     '#type': webform_wizard_page
     '#title': 'Visitor special requirements'
@@ -299,8 +510,13 @@ elements: |-
       '#description_display': before
       '#states':
         visible:
-          ':input[name="additional_visitor_1_id"]':
-            filled: true
+          - ':input[name="additional_visitor_adult_number"]':
+              value:
+                greater: '0'
+          - or
+          - ':input[name="additional_visitor_child_number"]':
+              value:
+                greater: '0'
       '#format': details
       remember_settings_info:
         '#type': webform_markup
@@ -609,18 +825,41 @@ elements: |-
   special_requirements_json:
     '#type': hidden
     '#title': SPECIAL_REQUIREMENTS_JSON
+  av1_id:
+    '#type': value
+    '#title': AV1_ID
+  av1_dob:
+    '#type': value
+    '#title': AV1_DOB
+  av2_id:
+    '#type': value
+    '#title': AV2_ID
+  av2_dob:
+    '#type': value
+    '#title': AV2_DOB
+  av3_id:
+    '#type': value
+    '#title': AV3_ID
+  av3_dob:
+    '#type': value
+    '#title': AV3_DOB
+  av4_id:
+    '#type': value
+    '#title': AV4_ID
+  av4_dob:
+    '#type': value
+    '#title': AV4_DOB
+  av5_id:
+    '#type': value
+    '#title': AV5_ID
+  av5_dob:
+    '#type': value
+    '#title': AV5_DOB
   actions:
     '#type': webform_actions
     '#title': 'Submit button(s)'
     '#submit__label': 'Book prison visit'
-css: |-
-  .webform-preview .webform-submission-data .webform-element {
-      margin-top: 1em;
-  }
-
-  .webform-preview fieldset {
-    margin: 2em 0;
-  }
+css: ''
 javascript: ''
 settings:
   ajax: true
@@ -715,6 +954,9 @@ settings:
   preview_message: ''
   preview_attributes: {  }
   preview_excluded_elements:
+    visitor_1_intro: visitor_1_intro
+    msg_existing_additional_visitors: msg_existing_additional_visitors
+    msg_additional_visitors: msg_additional_visitors
     prison_name: prison_name
     visit_type: visit_type
     booking_reference_processed: booking_reference_processed
@@ -746,7 +988,6 @@ settings:
     friday_week_4: friday_week_4
     saturday_week_4: saturday_week_4
     sunday_week_4: sunday_week_4
-    visitor_1_intro: visitor_1_intro
     slot1_datetime: slot1_datetime
     slot2_datetime: slot2_datetime
     slot3_datetime: slot3_datetime
@@ -758,6 +999,16 @@ settings:
     slot4_pretty_datetime: slot4_pretty_datetime
     slot5_pretty_datetime: slot5_pretty_datetime
     special_requirements_json: special_requirements_json
+    av1_id: av1_id
+    av1_dob: av1_dob
+    av2_id: av2_id
+    av2_dob: av2_dob
+    av3_id: av3_id
+    av3_dob: av3_dob
+    av4_id: av4_id
+    av4_dob: av4_dob
+    av5_id: av5_id
+    av5_dob: av5_dob
   preview_exclude_empty: true
   preview_exclude_empty_checkbox: true
   draft: none
@@ -885,14 +1136,14 @@ handlers:
         "VISITOR_1_DOB": "[webform_submission:values:visitor_1_dob:prison_visit_booking_datetime]",
         "VISITOR_1_EMAIL": "[webform_submission:values:visitor_1_email]",
         "VISITOR_1_PHONE": "[webform_submission:values:visitor_1_telephone]",
-        "VISITOR_2_ID": "[webform_submission:values:additional_visitor_1_id]",
-        "VISITOR_2_DOB": "[webform_submission:values:additional_visitor_1_dob:prison_visit_booking_datetime]",
-        "VISITOR_3_ID": "[webform_submission:values:additional_visitor_2_id]",
-        "VISITOR_3_DOB": "[webform_submission:values:additional_visitor_2_dob:prison_visit_booking_datetime]",
-        "VISITOR_4_ID": "[webform_submission:values:additional_visitor_3_id]",
-        "VISITOR_4_DOB": "[webform_submission:values:additional_visitor_3_dob:prison_visit_booking_datetime]",
-        "VISITOR_5_ID": "[webform_submission:values:additional_visitor_4_id]",
-        "VISITOR_5_DOB": "[webform_submission:values:additional_visitor_4_dob:prison_visit_booking_datetime]",
+        "VISITOR_2_ID": "[webform_submission:values:av1_id]",
+        "VISITOR_2_DOB": "[webform_submission:values:av1_dob:prison_visit_booking_datetime]",
+        "VISITOR_3_ID": "[webform_submission:values:av2_id]",
+        "VISITOR_3_DOB": "[webform_submission:values:av2_dob:prison_visit_booking_datetime]",
+        "VISITOR_4_ID": "[webform_submission:values:av3_id]",
+        "VISITOR_4_DOB": "[webform_submission:values:av3_dob:prison_visit_booking_datetime]",
+        "VISITOR_5_ID": "[webform_submission:values:av4_id]",
+        "VISITOR_5_DOB": "[webform_submission:values:av4_dob:prison_visit_booking_datetime]",
         "SLOT1_DATETIME": "[webform_submission:values:slot1_datetime]",
         "SLOT2_DATETIME": "[webform_submission:values:slot2_datetime]",
         "SLOT3_DATETIME": "[webform_submission:values:slot3_datetime]",
@@ -900,16 +1151,6 @@ handlers:
         "SLOT5_DATETIME": "[webform_submission:values:slot5_datetime]"
         }
       excluded_elements:
-        prison_visit_prison_name: prison_visit_prison_name
-        prison_visit_prison_name_key: prison_visit_prison_name_key
-        prison_visit_type: prison_visit_type
-        prison_visit_type_key: prison_visit_type_key
-        prison_visit_order_valid_from: prison_visit_order_valid_from
-        prison_visit_order_valid_to: prison_visit_order_valid_to
-        prison_visit_week_date_start: prison_visit_week_date_start
-        prison_visit_sequence: prison_visit_sequence
-        prison_visit_prisoner_category: prison_visit_prisoner_category
-        prison_visit_prisoner_subcategory: prison_visit_prisoner_subcategory
         visitor_1_intro: visitor_1_intro
         visit_details: visit_details
         monday_week_1: monday_week_1
