@@ -233,6 +233,7 @@ class PrisonVisitBookingHandler extends WebformHandlerBase
   {
     $this->validateVisitBookingReference($form, $form_state);
     $this->validateVisitorOneDateOfBirth($form, $form_state);
+    $this->validateSlotPicked($form, $form_state);
   }
 
   /**
@@ -623,6 +624,33 @@ class PrisonVisitBookingHandler extends WebformHandlerBase
       {
         $form_state->setErrorByName('visitor_1_dob', $this->t('You must be at least 18 years old to book a prison visit.'));
       }
+    }
+  }
+
+  /**
+   * Validate visitor one DOB.
+   */
+  private function validateSlotPicked(array &$form, FormStateInterface $form_state)
+  {
+    if ($form_state->get('current_page') !== 'visit_preferred_day_and_time') {
+      return;
+    }
+
+    $slotPicked = FALSE;
+
+    $form_values = array_filter($form_state->getValues(), function($key) {
+      return str_contains($key, '_week_');
+    }, ARRAY_FILTER_USE_KEY);
+
+    foreach ($form_values as $element_name => $element_value) {
+      if (is_array($element_value) && !empty($element_value)) {
+        $slotPicked = TRUE;
+        break;
+      }
+    }
+
+    if ($slotPicked === FALSE) {
+      $form_state->setErrorByName('slots_week_1', $this->t('You did not choose a time slot for your visit.'));
     }
   }
 
