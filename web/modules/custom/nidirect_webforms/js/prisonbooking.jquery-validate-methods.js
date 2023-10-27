@@ -107,4 +107,23 @@
     return bookRefIsValid;
   }, `Visit reference number is not recognised or has expired.`);
 
+  $.validator.addMethod("minAge", function(value, element, param) {
+    return this.optional(element) || getAge(value) >= param[1];
+  }, $.validator.format("Age must be {1} or over"));
+
+  $.validator.addMethod("maxAge", function(value, element, param) {
+    return this.optional(element) || getAge(value) < param[1];
+  }, $.validator.format("Age must be less than {1}"));
+
+  function getAge(dateString) {
+    const today = new Date();
+    const birthDate = new Date(dateString);
+    let age = today.getFullYear() - birthDate.getFullYear();
+    let m = today.getMonth() - birthDate.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+    }
+    return age;
+  }
+
 })(jQuery);
