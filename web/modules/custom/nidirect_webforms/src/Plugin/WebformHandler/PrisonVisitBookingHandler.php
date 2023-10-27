@@ -511,11 +511,16 @@ class PrisonVisitBookingHandler extends WebformHandlerBase
       // Build a key to get the right slots depending on prison and prisoner category.
       $visit_slots_key = $prison_id;
 
-      if ($prisoner_category === 'integrated') {
+      if ($prison_id === 'MY' && $prisoner_category === 'integrated') {
         $visit_slots_key .= '_INT';
       }
-      elseif ($prisoner_category === 'separates') {
-        $visit_slots_key .= '_AFILL_' . $prisoner_subcategory;
+
+      if ($prisoner_category === 'separates' && ($prison_id === 'MY' || $prison_id === 'HW')) {
+        $visit_slots_key .= '_AFILL';
+
+        if ($prison_id === 'MY') {
+          $visit_slots_key .= '_' . $prisoner_subcategory;
+        }
       }
 
       $visit_slots = $visit_slots[$visit_slots_key];
