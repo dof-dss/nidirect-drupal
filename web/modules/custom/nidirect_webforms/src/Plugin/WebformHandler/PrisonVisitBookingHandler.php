@@ -693,18 +693,16 @@ class PrisonVisitBookingHandler extends WebformHandlerBase
 
       // Set additional visitors for submission.
       // The form accommodates two additional adults and five
-      // additional children. However, the total number of
-      // additional visitors that can be submitted is four.
+      // additional children.
 
       // Reset secure value elements (bit like hidden elements)
-      // keeping track of additional visitors. There are 5
-      // to allow 5 additional visitors in future.
+      // keeping track of additional visitors.
 
       for ($i = 1; $i <= 5; $i++) {
         $form_state->setValue('av' . $i . '_id', '');
-        $form_state->setValue('av' . $i . '_dob', '');
+        $form_state->setValue('av' . $i . '_dob', NULL);
         $webform_submission->setElementData('av' . $i . '_id', '');
-        $webform_submission->setElementData('av' . $i . '_dob', '');
+        $webform_submission->setElementData('av' . $i . '_dob', NULL);
       }
 
       // Get additional visitors.
@@ -715,12 +713,12 @@ class PrisonVisitBookingHandler extends WebformHandlerBase
       for ($i = 1; $i <= $num_adults; $i++) {
 
         $av_id = $form_values['additional_visitor_adult_' . $i .'_id'];
-        $av_dob = $form_values['additional_visitor_adult_' . $i .'_dob'];
+        $av_dob = new \DateTime($form_values['additional_visitor_adult_' . $i .'_dob']);
 
         if (!empty($av_id) && !empty($av_dob)) {
           $additional_visitors[] = [
             'id' => $av_id,
-            'dob' => $av_dob
+            'dob' => $av_dob->format('d/m/Y H:i')
           ];
         }
       }
@@ -728,12 +726,12 @@ class PrisonVisitBookingHandler extends WebformHandlerBase
       for ($i = 1; $i <= $num_children; $i++) {
 
         $av_id = $form_values['additional_visitor_child_' . $i .'_id'];
-        $av_dob = $form_values['additional_visitor_child_' . $i .'_dob'];
+        $av_dob = new \DateTime($form_values['additional_visitor_child_' . $i .'_dob']);
 
         if (!empty($av_id) && !empty($av_dob)) {
           $additional_visitors[] = [
             'id' => $av_id,
-            'dob' => $av_dob
+            'dob' => $av_dob->format('d/m/Y H:i')
           ];
         }
       }
