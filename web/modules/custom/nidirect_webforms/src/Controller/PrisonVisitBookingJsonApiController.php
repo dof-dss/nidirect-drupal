@@ -91,7 +91,10 @@ class PrisonVisitBookingJsonApiController extends ControllerBase {
     $content = $this->request->getContent();
 
     if (!empty($content)) {
+      $now = new \DateTime('now');
+      $expire = $now->modify('+1 week');
       $data = json_decode($content, TRUE);
+      \Drupal::cache()->set('prison_visit_slots_data', $data, $expire->getTimestamp());
     }
 
     return $data;
