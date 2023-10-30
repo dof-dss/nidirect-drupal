@@ -197,11 +197,14 @@ class PrisonVisitBookingHandler extends WebformHandlerBase
     {
       $visitor_data_is_valid = TRUE;
 
-      if (empty($visitor_data['visitor_1_id']) || $visitor_data['visitor_1_id'] !== $form_state->getValue('visitor_1_id'))
+      if ($visitor_data['additional_visitors_remember'] === 'no')
       {
         $visitor_data_is_valid = FALSE;
       }
-      elseif ($visitor_data['additional_visitors_remember'] === 'no')
+      elseif (empty($visitor_data['visitor_1_id']) || empty($visitor_data['visitor_1_dob'])) {
+        $visitor_data_is_valid = FALSE;
+      }
+      elseif ($visitor_data['visitor_1_id'] !== $form_state->getValue('visitor_1_id') || $visitor_data['visitor_1_dob'] !== $form_state->getValue('visitor_1_dob'))
       {
         $visitor_data_is_valid = FALSE;
       }
@@ -222,7 +225,20 @@ class PrisonVisitBookingHandler extends WebformHandlerBase
 
         // Remove all visitor data.
         $tempstore->delete('visitor_data');
+
+        // Reset form state for additional visitors.
+        foreach ($visitor_data as $key => $value)
+        {
+          if (str_starts_with($key, 'additional_visitor')) {
+            $form_state->setValue($key, $value);
+            $elements[$key]['#default_value'] = '';
+          }
+        }
       }
+    }
+    else
+    {
+      $elements['msg_additional_visitors']['#access'] = TRUE;
     }
   }
 
@@ -234,6 +250,132 @@ class PrisonVisitBookingHandler extends WebformHandlerBase
     $this->validateVisitBookingReference($form, $form_state);
     $this->validateVisitorOneDateOfBirth($form, $form_state);
     $this->validateSlotPicked($form, $form_state);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function submitForm(array &$form, FormStateInterface $form_state, WebformSubmissionInterface $webform_submission)
+  {
+    if ($form_state->isValidationComplete() && $form_state->get('current_page') === 'webform_preview')
+    {
+
+      $tempstore = $this->tempStoreFactory->get('nidirect_webforms.prison_visit_booking');
+      $remember_visitors = $form_state->getValue('additional_visitors_remember') === 'yes' ?? FALSE;
+      $visitor_data = [];
+
+      // Reset hidden elements keeping track of preferred time slots.
+      for ($i = 1; $i <= 5; $i++) {
+        $form_state->setValue('slot' . $i . '_datetime', '');
+        $webform_submission->setElementData('slot' . $i . '_datetime', '');
+        $form_state->setValue('slot' . $i . '_pretty_datetime', NULL);
+        $webform_submission->setElementData('slot' . $i . '_pretty_datetime', NULL);
+      }
+
+      $form_values = $form_state->getValues();
+      $count = 0;
+
+      foreach ($form_values as $element_name => $element_value) {
+
+        // Set hidden elements to keep track of selected time slots.
+        // Time slots have keys like 'monday_week_1', 'tuesday_week_4', etc.
+
+        if (str_contains($element_name, '_week_') && is_array($element_value)) {
+
+          // Add up to 5 selected time slots to our hidden elements.
+          foreach ($element_value as $slot) {
+            $count++;
+            if ($count <= 5) {
+              $slot_date = new \DateTime($slot);
+              $form_state->setValue('slot' . $count . '_datetime', $slot_date->format('d/m/Y H:i'));
+              $webform_submission->setElementData('slot' . $count . '_datetime', $slot_date->format('d/m/Y H:i'));
+
+              // "Pretty" slot dates and times for preview
+              if (!empty($slot)) {
+                $form_state->setValue('slot' . $count . '_pretty_datetime', $slot_date->format('l, j F Y \a\t g.i a'));
+                $webform_submission->setElementData('slot' . $count . '_pretty_datetime', $slot_date->format('l, j F Y \a\t g.i a'));
+              } else {
+                $form_state->setValue('slot' . $count . '_pretty_datetime', '');
+                $webform_submission->setElementData('slot' . $count . '_pretty_datetime', '');
+              }
+            }
+          }
+        }
+
+        // Special requirements textarea needs to be encoded for JSON.
+        if (str_contains($element_name, 'special_requirements_details')) {
+          $special_requirements = Json::encode($element_value);
+          $form_state->setValue('special_requirements_json', $special_requirements);
+          $webform_submission->setElementData('special_requirements_json', $special_requirements);
+        }
+
+        // Capture non-sensitive visitor data in session temp store.
+        if ($remember_visitors) {
+          if ($element_name === 'visitor_1_id' ||
+              $element_name === 'visitor_1_dob' ||
+              str_starts_with($element_name, 'additional_visitor') ||
+              str_starts_with($element_name, 'visitor_special_requirements'))
+          {
+            $visitor_data[$element_name] = $element_value;
+          }
+        }
+      }
+
+      $tempstore->set('visitor_data', $visitor_data);
+
+      // Set additional visitors for submission.
+      // The form accommodates two additional adults and five
+      // additional children.
+
+      // Reset secure value elements (bit like hidden elements)
+      // keeping track of additional visitors.
+
+      for ($i = 1; $i <= 5; $i++) {
+        $form_state->setValue('av' . $i . '_id', '');
+        $form_state->setValue('av' . $i . '_dob', NULL);
+        $webform_submission->setElementData('av' . $i . '_id', '');
+        $webform_submission->setElementData('av' . $i . '_dob', NULL);
+      }
+
+      // Get additional visitors.
+      $additional_visitors = [];
+      $num_adults = $form_values['additional_visitor_adult_number'];
+      $num_children = $form_values['additional_visitor_child_number'];
+
+      for ($i = 1; $i <= $num_adults; $i++) {
+
+        $av_id = $form_values['additional_visitor_adult_' . $i .'_id'];
+        $av_dob = new \DateTime($form_values['additional_visitor_adult_' . $i .'_dob']);
+
+        if (!empty($av_id) && !empty($av_dob)) {
+          $additional_visitors[] = [
+            'id' => $av_id,
+            'dob' => $av_dob->format('d/m/Y H:i')
+          ];
+        }
+      }
+
+      for ($i = 1; $i <= $num_children; $i++) {
+
+        $av_id = $form_values['additional_visitor_child_' . $i .'_id'];
+        $av_dob = new \DateTime($form_values['additional_visitor_child_' . $i .'_dob']);
+
+        if (!empty($av_id) && !empty($av_dob)) {
+          $additional_visitors[] = [
+            'id' => $av_id,
+            'dob' => $av_dob->format('d/m/Y H:i')
+          ];
+        }
+      }
+
+      // Set secure value elements for submission.
+      foreach ($additional_visitors as $key => $value) {
+        $form_state->setValue('av' . $key + 1 . '_id', $value['id']);
+        $form_state->setValue('av' . $key + 1 . '_dob', $value['dob']);
+        $webform_submission->setElementData('av' . $key + 1 . '_id', $value['id']);
+        $webform_submission->setElementData('av' . $key + 1 . '_dob', $value['dob']);
+      }
+    }
   }
 
   /**
@@ -402,7 +544,7 @@ class PrisonVisitBookingHandler extends WebformHandlerBase
         $error_message = $this->t('Visit reference number is not recognised.');
       }
       else
-      // Booking reference
+        // Booking reference
       {
         // Booking reference week and year is good.
         // Keep track of all the key dates.
@@ -455,159 +597,6 @@ class PrisonVisitBookingHandler extends WebformHandlerBase
   }
 
   /**
-   * Get available slots for a given prison, visit type and prisoner category.
-   */
-  private function getAvailableSlots()
-  {
-    // Need a valid booking reference to get available slots.
-    if (empty($this->booking_reference)) {
-      return [];
-    }
-
-    $available_slots = [];
-
-    $prison_id = $this->booking_reference['prison_id'];
-    $visit_type = $this->booking_reference['visit_type'];
-    $visit_type_id = $this->booking_reference['visit_type_id'];
-    $prisoner_category = $this->booking_reference['prisoner_category'];
-    $prisoner_subcategory = $this->booking_reference['prisoner_subcategory'];
-
-    $date = $this->booking_reference['date'];
-    $date_visit_earliest = $this->booking_reference['date_visit_earliest'];
-    $date_visit_latest = $this->booking_reference['date_visit_latest'];
-    $date_valid_from = $this->booking_reference['date_valid_from'];
-    $date_valid_to = $this->booking_reference['date_valid_to'];
-    $date_visit_week_start = $this->booking_reference['date_visit_week_start'];
-
-    if ($date_valid_from < $date_visit_week_start)
-    {
-      $date_valid_from = $date_visit_week_start;
-    }
-
-    // Face-to-face visit slots are retrieved from external JSON file.
-    if ($visit_type === 'face-to-face') {
-
-      // Get data as associative array from the external webservice.
-      $uri = $this->configuration['visit_slots_uri'];
-
-      if ($json_data = $this->fetchExternalData($uri)) {
-        // Cache in case external fetch fails in future.
-        \Drupal::cache()->set('prison_visit_json_data', $json_data);
-      }
-      else
-      {
-        // Get data from cache.
-        $cache = \Drupal::cache()->get('prison_visit_json_data');
-        $json_data = $cache->data;
-      }
-
-      if (!empty($json_data)) {
-        $visit_slots = json_decode($json_data, TRUE);
-      }
-      else
-      {
-        $visit_slots = $this->configuration['visit_slots']['face-to-face'];
-      }
-
-      // Build a key to get the right slots depending on prison and prisoner category.
-      $visit_slots_key = $prison_id;
-
-      if ($prison_id === 'MY' && $prisoner_category === 'integrated') {
-        $visit_slots_key .= '_INT';
-      }
-
-      if ($prisoner_category === 'separates' && ($prison_id === 'MY' || $prison_id === 'HW')) {
-        $visit_slots_key .= '_AFILL';
-
-        if ($prison_id === 'MY') {
-          $visit_slots_key .= '_' . $prisoner_subcategory;
-        }
-      }
-
-      $visit_slots = $visit_slots[$visit_slots_key];
-
-      foreach ($visit_slots as $slot) {
-        // Slot date is in dd/mm/yyyy format. Alter to make it dd-mm-yyyy.
-        $slot_parsed = str_replace('/', '-', $slot);
-        $slot_datetime = new \DateTime($slot_parsed);
-
-        $available_slots[] = $slot_datetime;
-      }
-
-    }
-    // Virtual slots are retrieved from config.
-    elseif ($visit_type === 'virtual')
-    {
-      $visit_slots = $this->configuration['visit_slots']['virtual'][$prison_id];
-
-      foreach ($visit_slots as $slot)
-      {
-        $slot_p = date_parse($slot);
-        $slot_date_adjusted = new \DateTime($slot);
-        $slot_date_adjusted->setISODate($date_valid_from->format('Y'), $date_valid_from->format('W'), $slot_p['day']);
-        $slot_date_adjusted->setTime($slot_p['hour'], $slot_p['minute'], $slot_p['second']);
-        $available_slots[] = $slot_date_adjusted;
-      }
-    }
-
-    // Discard slots that are not bookable.
-    foreach ($available_slots as $slot_key => $slot)
-    {
-      // Determine if this slot is bookable.
-      $slot_is_bookable = TRUE;
-
-      if ($slot < $date)
-      {
-        $slot_is_bookable = FALSE;
-      }
-      elseif ($slot < $date_visit_earliest )
-      {
-        $slot_is_bookable = FALSE;
-      }
-      elseif ($slot < $date_visit_week_start)
-      {
-        $slot_is_bookable = FALSE;
-      }
-      elseif ($slot > $date_valid_to)
-      {
-        $slot_is_bookable = FALSE;
-      }
-      // Enhanced visits cannot be booked on Saturday or Sunday.
-      elseif ($visit_type_id === 'E' && ($slot->format('D') === 'Sat' || $slot->format('D') === 'Sun'))
-      {
-        $slot_is_bookable = FALSE;
-      }
-
-      if ($slot_is_bookable === FALSE)
-      {
-        unset($available_slots[$slot_key]);
-      }
-    }
-
-    $this->booking_reference['available_slots'] = $available_slots;
-
-    return $available_slots;
-  }
-
-
-  /**
-   * Get external data using http client.
-   */
-  private function fetchExternalData($uri) {
-    $method = 'GET';
-    try {
-      $response = $this->httpClient->request($method, $uri, ['connect_timeout' => 6, 'timeout' => 10]);
-      $code = $response->getStatusCode();
-      if ($code == 200) {
-        return $response->getBody()->getContents();
-      }
-    }
-    catch(RequestException $e) {
-      watchdog_exception('prison_visits', $e);
-    }
-  }
-
-  /**
    * Validate visitor one DOB.
    */
   private function validateVisitorOneDateOfBirth(array &$form, FormStateInterface $form_state)
@@ -655,128 +644,168 @@ class PrisonVisitBookingHandler extends WebformHandlerBase
   }
 
   /**
-   * {@inheritdoc}
+   * Get available slots for a given prison, visit type and prisoner category.
    */
-  public function submitForm(array &$form, FormStateInterface $form_state, WebformSubmissionInterface $webform_submission)
+  private function getAvailableSlots()
   {
-    if ($form_state->isValidationComplete() && $form_state->get('current_page') === 'webform_preview')
+    // Need a valid booking reference to get available slots.
+    if (empty($this->booking_reference)) {
+      return [];
+    }
+
+    $available_slots = [];
+
+    $prison_id = $this->booking_reference['prison_id'];
+    $visit_type = $this->booking_reference['visit_type'];
+    $visit_type_id = $this->booking_reference['visit_type_id'];
+    $prisoner_category = $this->booking_reference['prisoner_category'];
+    $prisoner_subcategory = $this->booking_reference['prisoner_subcategory'];
+
+    $date = $this->booking_reference['date'];
+    $date_visit_earliest = $this->booking_reference['date_visit_earliest'];
+    $date_visit_latest = $this->booking_reference['date_visit_latest'];
+    $date_valid_from = $this->booking_reference['date_valid_from'];
+    $date_valid_to = $this->booking_reference['date_valid_to'];
+    $date_visit_week_start = $this->booking_reference['date_visit_week_start'];
+
+    if ($date_valid_from < $date_visit_week_start)
     {
+      $date_valid_from = $date_visit_week_start;
+    }
 
-      $tempstore = $this->tempStoreFactory->get('nidirect_webforms.prison_visit_booking');
-      $remember_visitors = $form_state->getValue('additional_visitors_remember') === 'yes' ?? FALSE;
-      $visitor_data = [];
+    // Get face-to-face visit slots.
+    if ($visit_type === 'face-to-face') {
 
-      // Reset hidden elements keeping track of preferred time slots.
-      for ($i = 1; $i <= 5; $i++) {
-        $form_state->setValue('slot' . $i . '_datetime', '');
-        $webform_submission->setElementData('slot' . $i . '_datetime', '');
-        $form_state->setValue('slot' . $i . '_pretty_datetime', NULL);
-        $webform_submission->setElementData('slot' . $i . '_pretty_datetime', NULL);
+      // Face-to-face slots are retrieved from external data in cache
+      // (see PrisonVisitBookingJsonApiController.php). If there is no
+      // cached data, fallback to using slots from config.
+
+      $visit_slots_cache = \Drupal::cache()->get('prison_visit_slots_data');
+      $visit_slots_cache_is_from_config = FALSE;
+
+      if (empty($visit_slots_cache))
+      {
+        // Fallback to using config slots.
+        $visit_slots = $this->configuration['visit_slots']['face-to-face'];
+        $this->getLogger()->warning('prison_visit_slots_data cache is empty. Using config instead.');
+        $visit_slots_cache_is_from_config = TRUE;
       }
+      else
+      {
+        // There is cached data.
+        $visit_slots = $visit_slots_cache->data;
 
-      $form_values = $form_state->getValues();
-      $count = 0;
+        // Check when created.
+        $visit_slots_created =  new \DateTime('now');
+        $visit_slots_created->setTimestamp($visit_slots_cache->created);
 
-      foreach ($form_values as $element_name => $element_value) {
-
-        // Set hidden elements to keep track of selected time slots.
-        // Time slots have keys like 'monday_week_1', 'tuesday_week_4', etc.
-
-        if (str_contains($element_name, '_week_') && is_array($element_value)) {
-
-          // Add up to 5 selected time slots to our hidden elements.
-          foreach ($element_value as $slot) {
-            $count++;
-            if ($count <= 5) {
-              $slot_date = new \DateTime($slot);
-              $form_state->setValue('slot' . $count . '_datetime', $slot_date->format('d/m/Y H:i'));
-              $webform_submission->setElementData('slot' . $count . '_datetime', $slot_date->format('d/m/Y H:i'));
-
-              // "Pretty" slot dates and times for preview
-              if (!empty($slot)) {
-                $form_state->setValue('slot' . $count . '_pretty_datetime', $slot_date->format('l, j F Y \a\t g.i a'));
-                $webform_submission->setElementData('slot' . $count . '_pretty_datetime', $slot_date->format('l, j F Y \a\t g.i a'));
-              } else {
-                $form_state->setValue('slot' . $count . '_pretty_datetime', '');
-                $webform_submission->setElementData('slot' . $count . '_pretty_datetime', '');
-              }
-            }
-          }
+        // Log a warning when cached data more than 24 hours old.
+        if ($date->diff($visit_slots_created)->h >= 24) {
+          $this->getLogger()->warning('prison_visit_slots_data cache data has not been updated in last 24 hours.');
         }
-
-        // Special requirements textarea needs to be encoded for JSON.
-        if (str_contains($element_name, 'special_requirements_details')) {
-          $special_requirements = Json::encode($element_value);
-          $form_state->setValue('special_requirements_json', $special_requirements);
-          $webform_submission->setElementData('special_requirements_json', $special_requirements);
-        }
-
-        // Capture non-sensitive visitor data in session temp store.
-        if ($remember_visitors) {
-          if ($element_name === 'visitor_1_id' ||
-              str_starts_with($element_name, 'additional_visitor') ||
-              str_starts_with($element_name, 'visitor_special_requirements'))
-          {
-            $visitor_data[$element_name] = $element_value;
-          }
+        // Log when cached data more than 1 hour old.
+        elseif ($date->diff($visit_slots_created)->h >= 1) {
+          $this->getLogger()->info('prison_visit_slots_data cache data has not been updated in last hour.');
         }
       }
 
-      $tempstore->set('visitor_data', $visitor_data);
+      // Build a key to get the right slots depending on prison and prisoner category.
+      $visit_slots_key = $prison_id;
 
-      // Set additional visitors for submission.
-      // The form accommodates two additional adults and five
-      // additional children.
-
-      // Reset secure value elements (bit like hidden elements)
-      // keeping track of additional visitors.
-
-      for ($i = 1; $i <= 5; $i++) {
-        $form_state->setValue('av' . $i . '_id', '');
-        $form_state->setValue('av' . $i . '_dob', NULL);
-        $webform_submission->setElementData('av' . $i . '_id', '');
-        $webform_submission->setElementData('av' . $i . '_dob', NULL);
+      if ($prison_id === 'MY' && $prisoner_category === 'integrated') {
+        $visit_slots_key .= '_INT';
       }
 
-      // Get additional visitors.
-      $additional_visitors = [];
-      $num_adults = $form_values['additional_visitor_adult_number'];
-      $num_children = $form_values['additional_visitor_child_number'];
+      if ($prisoner_category === 'separates' && ($prison_id === 'MY' || $prison_id === 'HW')) {
+        $visit_slots_key .= '_AFILL';
 
-      for ($i = 1; $i <= $num_adults; $i++) {
-
-        $av_id = $form_values['additional_visitor_adult_' . $i .'_id'];
-        $av_dob = new \DateTime($form_values['additional_visitor_adult_' . $i .'_dob']);
-
-        if (!empty($av_id) && !empty($av_dob)) {
-          $additional_visitors[] = [
-            'id' => $av_id,
-            'dob' => $av_dob->format('d/m/Y H:i')
-          ];
+        if ($prison_id === 'MY') {
+          $visit_slots_key .= '_' . $prisoner_subcategory;
         }
       }
 
-      for ($i = 1; $i <= $num_children; $i++) {
+      $visit_slots = $visit_slots[$visit_slots_key];
 
-        $av_id = $form_values['additional_visitor_child_' . $i .'_id'];
-        $av_dob = new \DateTime($form_values['additional_visitor_child_' . $i .'_dob']);
-
-        if (!empty($av_id) && !empty($av_dob)) {
-          $additional_visitors[] = [
-            'id' => $av_id,
-            'dob' => $av_dob->format('d/m/Y H:i')
-          ];
-        }
+      if ($visit_slots_cache_is_from_config) {
+        // Slots from config have old placeholder dates that need updated.
+        $available_slots = $this->updateConfigVisitSlotDates($visit_slots, $date_valid_from);
       }
+      else
+      {
+        // Slots from cached json have dates dd/mm/yyyy format. Alter to make it dd-mm-yyyy.
+        foreach ($visit_slots as $slot) {
 
-      // Set secure value elements for submission.
-      foreach ($additional_visitors as $key => $value) {
-        $form_state->setValue('av' . $key + 1 . '_id', $value['id']);
-        $form_state->setValue('av' . $key + 1 . '_dob', $value['dob']);
-        $webform_submission->setElementData('av' . $key + 1 . '_id', $value['id']);
-        $webform_submission->setElementData('av' . $key + 1 . '_dob', $value['dob']);
+          $slot_parsed = str_replace('/', '-', $slot);
+          $slot_datetime = new \DateTime($slot_parsed);
+
+          $available_slots[] = $slot_datetime;
+        }
       }
     }
+    // Virtual slots are retrieved from config.
+    elseif ($visit_type === 'virtual')
+    {
+      $visit_slots = $this->configuration['visit_slots']['virtual'][$prison_id];
+      // Slots from config have old placeholder dates that need updated.
+      $available_slots = $this->updateConfigVisitSlotDates($visit_slots, $date_valid_from);
+    }
+
+    // Discard slots that are not bookable.
+    foreach ($available_slots as $slot_key => $slot)
+    {
+      // Determine if this slot is bookable.
+      $slot_is_bookable = TRUE;
+
+      if ($slot < $date)
+      {
+        $slot_is_bookable = FALSE;
+      }
+      elseif ($slot < $date_visit_earliest )
+      {
+        $slot_is_bookable = FALSE;
+      }
+      elseif ($slot < $date_visit_week_start)
+      {
+        $slot_is_bookable = FALSE;
+      }
+      elseif ($slot > $date_valid_to)
+      {
+        $slot_is_bookable = FALSE;
+      }
+      // Enhanced visits cannot be booked on Saturday or Sunday.
+      elseif ($visit_type_id === 'E' && ($slot->format('D') === 'Sat' || $slot->format('D') === 'Sun'))
+      {
+        $slot_is_bookable = FALSE;
+      }
+
+      if ($slot_is_bookable === FALSE)
+      {
+        unset($available_slots[$slot_key]);
+      }
+    }
+
+    $this->booking_reference['available_slots'] = $available_slots;
+
+    return $available_slots;
+  }
+
+  /**
+   * Take an array of config visit slots and update the slot dates.
+   */
+  private function updateConfigVisitSlotDates($visit_slots, $date)
+  {
+    $updated_slots = [];
+
+    foreach ($visit_slots as $slot)
+    {
+      $slot_p = date_parse($slot);
+      $slot_date_adjusted = new \DateTime($slot);
+      $slot_date_adjusted->setISODate($date->format('Y'), $date->format('W'), $slot_p['day']);
+      $slot_date_adjusted->setTime($slot_p['hour'], $slot_p['minute'], $slot_p['second']);
+      $updated_slots[] = $slot_date_adjusted;
+    }
+
+    return $updated_slots;
   }
 
 }
