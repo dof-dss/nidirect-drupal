@@ -239,17 +239,6 @@ function nicsdru_nidirect_theme_preprocess_page(array &$variables) {
           ];
           break;
 
-        case 'health_condition':
-          // Render Health Conditions search block.
-          $variables['page']['sidebar_second'][] = Helpers::blockContent('exposedformhealth_conditionssearch_sidebar_2');
-
-          // Render Health Conditions AtoZ block.
-          $variables['page']['sidebar_second'][] = Helpers::blockContent('healthconditionsatoz_sidebar_2');
-
-          // Render Health Conditions Related block.
-          $variables['page']['sidebar_second'][] = Helpers::blockContent('healthconditionsrelatedconditions');
-          break;
-
         default:
           break;
       }
