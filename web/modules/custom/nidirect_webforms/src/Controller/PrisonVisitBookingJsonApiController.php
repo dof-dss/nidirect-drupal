@@ -2,6 +2,7 @@
 
 namespace Drupal\nidirect_webforms\Controller;
 
+use Drupal\Core\Cache\CacheBackendInterface;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Controller\ControllerBase;
 use GuzzleHttp\ClientInterface;
@@ -37,14 +38,22 @@ class PrisonVisitBookingJsonApiController extends ControllerBase {
   protected $requestStack;
 
   /**
+   * @var CacheBackendInterface
+   */
+  protected $cache;
+
+  /**
    * @param ConfigFactoryInterface $configFactory
    * @param ClientInterface $httpClient
+   * @param Request $request
+   * @param CacheBackendInterface $cache
    */
 
-  public function __construct(ConfigFactoryInterface $configFactory, ClientInterface $httpClient, Request $request) {
+  public function __construct(ConfigFactoryInterface $configFactory, ClientInterface $httpClient, Request $request, CacheBackendInterface $cache) {
     $this->configFactory = $configFactory;
     $this->httpClient = $httpClient;
     $this->request = $request;
+    $this->cache = $cache;
   }
 
   /**
@@ -60,6 +69,7 @@ class PrisonVisitBookingJsonApiController extends ControllerBase {
       $container->get('config.factory'),
       $container->get('http_client'),
       $container->get('request_stack')->getCurrentRequest(),
+      $container->get('cache.default'),
     );
   }
 
@@ -68,11 +78,12 @@ class PrisonVisitBookingJsonApiController extends ControllerBase {
    */
   public function renderApi() {
 
-    $data = $this->getPostedJsonData();
+    $data = $this->cacheJsonData();
 
     $response = new JsonResponse();
 
-    if (!empty($data)) {
+    if (!empty($data))
+    {
       $response->setData($data)->setStatusCode(200);
     }
     else
@@ -86,35 +97,28 @@ class PrisonVisitBookingJsonApiController extends ControllerBase {
   /**
    * A helper function to get posted json data.
    */
-  public function getPostedJsonData() {
+  public function cacheJsonData()
+  {
     $data = [];
     $content = $this->request->getContent();
 
-    if (!empty($content)) {
+    if (!empty($content))
+    {
       $now = new \DateTime('now');
       $expire = $now->modify('+1 week');
-      $data = json_decode($content, TRUE);
-      \Drupal::cache()->set('prison_visit_slots_data', $data, $expire->getTimestamp());
+
+      if ($data = json_decode($content, TRUE))
+      {
+        $this->cache->set('prison_visit_slots_data', $data, $expire->getTimestamp());
+        $this->getLogger('prison_visits')->debug('prison_visit_slots_data cache update success.');
+      }
+      else
+      {
+        $this->getLogger('prison_visits')->error('prison_visit_slots_data cache update failure.');
+      }
     }
 
     return $data;
-  }
-
-  /**
-   * Get external data using http client.
-   */
-  private function fetchExternalData($uri) {
-    $method = 'GET';
-    try {
-      $response = $this->httpClient->request($method, $uri, ['connect_timeout' => 6, 'timeout' => 10]);
-      $code = $response->getStatusCode();
-      if ($code == 200) {
-        return $response->getBody()->getContents();
-      }
-    }
-    catch(RequestException $e) {
-      watchdog_exception('prison_visits', $e);
-    }
   }
 
 }
