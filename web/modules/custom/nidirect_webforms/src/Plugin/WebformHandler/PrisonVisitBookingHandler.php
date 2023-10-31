@@ -694,18 +694,15 @@ class PrisonVisitBookingHandler extends WebformHandlerBase
       {
         // There is cached data.
         $visit_slots = $visit_slots_cache->data;
+        $visit_slots_cache_timestamp = (int) $visit_slots_cache->created;
 
         // Check when created.
         $visit_slots_created =  new \DateTime('now');
-        $visit_slots_created->setTimestamp($visit_slots_cache->created);
+        $visit_slots_created->setTimestamp($visit_slots_cache_timestamp);
 
         // Log a warning when cached data more than 24 hours old.
         if ($date->diff($visit_slots_created)->h >= 24) {
           $this->getLogger()->warning('prison_visit_slots_data cache data has not been updated in last 24 hours.');
-        }
-        // Log when cached data more than 1 hour old.
-        elseif ($date->diff($visit_slots_created)->h >= 1) {
-          $this->getLogger()->info('prison_visit_slots_data cache data has not been updated in last hour.');
         }
       }
 
