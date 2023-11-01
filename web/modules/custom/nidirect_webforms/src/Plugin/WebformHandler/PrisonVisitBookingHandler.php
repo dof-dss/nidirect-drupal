@@ -684,8 +684,7 @@ class PrisonVisitBookingHandler extends WebformHandlerBase
       // (see PrisonVisitBookingJsonApiController.php). If there is no
       // cached data, fallback to using slots from config.
 
-      //$visit_slots_cache = \Drupal::cache()->get('prison_visit_slots_data');
-      $visit_slots_cache = [];
+      $visit_slots_cache = \Drupal::cache()->get('prison_visit_slots_data');
       $visit_slots_cache_is_from_config = FALSE;
 
       if (empty($visit_slots_cache))
