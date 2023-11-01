@@ -443,12 +443,6 @@ class PrisonVisitBookingHandler extends WebformHandlerBase
       $booking_reference_valid = FALSE;
     }
 
-    // Valid visit type and prison id combo.
-    // Only Maghaberry supports enhanced type (E).
-    if ($visit_type_id === 'E' && $prison_id !== 'MY') {
-      $booking_reference_valid = FALSE;
-    }
-
     // Valid sequence number.
     if ($visit_sequence > 0 && $visit_sequence < 9999)
     {
@@ -680,7 +674,8 @@ class PrisonVisitBookingHandler extends WebformHandlerBase
       // (see PrisonVisitBookingJsonApiController.php). If there is no
       // cached data, fallback to using slots from config.
 
-      $visit_slots_cache = \Drupal::cache()->get('prison_visit_slots_data');
+      //$visit_slots_cache = \Drupal::cache()->get('prison_visit_slots_data');
+      $visit_slots_cache = [];
       $visit_slots_cache_is_from_config = FALSE;
 
       if (empty($visit_slots_cache))
@@ -789,7 +784,7 @@ class PrisonVisitBookingHandler extends WebformHandlerBase
   /**
    * Take an array of config visit slots and update the slot dates.
    */
-  private function updateConfigVisitSlotDates($visit_slots, $date)
+  private function updateConfigVisitSlotDates(array $visit_slots, \DateTime $date)
   {
     $updated_slots = [];
 
