@@ -190,11 +190,17 @@ function nicsdru_nidirect_theme_preprocess_page(array &$variables) {
     case 'entity.node.preview':
     case 'entity.node.revision':
     case 'entity.node.latest':
-      $node_id = \Drupal::routeMatch()->getRawParameter('node');
-      $node = Node::load($node_id);
 
-      if ($node === NULL) {
-        $node = \Drupal::routeMatch()->getParameter('node_preview');
+      $node = $variables['node'];
+
+      if (empty($node)) {
+        $node_id = \Drupal::routeMatch()->getRawParameter('node');
+
+        $node = Node::load($node_id);
+
+        if ($node === NULL) {
+          $node = \Drupal::routeMatch()->getParameter('node_preview');
+        }
       }
 
       $node_type = $node->getType();
