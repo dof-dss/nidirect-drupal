@@ -117,7 +117,7 @@ class PrisonVisitBookingHandler extends WebformHandlerBase
 
       if ($visit_booking_ref_valid_from < $visit_booking_week_start)
       {
-        $visit_booking_ref_valid_from = $visit_booking_week_start;
+        $visit_booking_ref_valid_from = clone $visit_booking_week_start;
       }
 
       if (!empty($available_slots))
@@ -677,11 +677,6 @@ class PrisonVisitBookingHandler extends WebformHandlerBase
     $date_valid_to = $this->booking_reference['date_valid_to'];
     $date_visit_week_start = $this->booking_reference['date_visit_week_start'];
 
-    if ($date_valid_from < $date_visit_week_start)
-    {
-      $date_valid_from = $date_visit_week_start;
-    }
-
     // Get face-to-face visit slots.
     if ($visit_type === 'face-to-face') {
 
@@ -735,7 +730,7 @@ class PrisonVisitBookingHandler extends WebformHandlerBase
 
       if ($visit_slots_cache_is_from_config) {
         // Slots from config have old placeholder dates that need updated.
-        $available_slots = $this->updateConfigVisitSlotDates($visit_slots, $date_valid_from);
+        $available_slots = $this->updateConfigVisitSlotDates($visit_slots);
       }
       else
       {
@@ -753,8 +748,9 @@ class PrisonVisitBookingHandler extends WebformHandlerBase
     elseif ($visit_type === 'virtual')
     {
       $visit_slots = $this->configuration['visit_slots']['virtual'][$prison_id];
+
       // Slots from config have old placeholder dates that need updated.
-      $available_slots = $this->updateConfigVisitSlotDates($visit_slots, $date_valid_from);
+      $available_slots = $this->updateConfigVisitSlotDates($visit_slots);
     }
 
     // Discard slots that are not bookable.
@@ -799,17 +795,26 @@ class PrisonVisitBookingHandler extends WebformHandlerBase
   /**
    * Take an array of config visit slots and update the slot dates.
    */
-  private function updateConfigVisitSlotDates(array $visit_slots, \DateTime $date)
+  private function updateConfigVisitSlotDates(array $visit_slots)
   {
     $updated_slots = [];
+    $date = clone $this->booking_reference['date_valid_from'];
+    $validity_weeks = $this->booking_reference['validity_period_days'] / 7;
 
-    foreach ($visit_slots as $slot)
+    for ($i = 0; $i < $validity_weeks; $i++)
     {
-      $slot_p = date_parse($slot);
-      $slot_date_adjusted = new \DateTime($slot);
-      $slot_date_adjusted->setISODate($date->format('Y'), $date->format('W'), $slot_p['day']);
-      $slot_date_adjusted->setTime($slot_p['hour'], $slot_p['minute'], $slot_p['second']);
-      $updated_slots[] = $slot_date_adjusted;
+      if ($i > 0) {
+        $date->modify('+1 week');
+      }
+
+      foreach ($visit_slots as $slot)
+      {
+        $slot_p = date_parse($slot);
+        $slot_date_adjusted = new \DateTime($slot);
+        $slot_date_adjusted->setISODate($date->format('Y'), $date->format('W'), $slot_p['day']);
+        $slot_date_adjusted->setTime($slot_p['hour'], $slot_p['minute'], $slot_p['second']);
+        $updated_slots[] = $slot_date_adjusted;
+      }
     }
 
     return $updated_slots;
