@@ -4,6 +4,7 @@ namespace Drupal\nidirect_webforms\Plugin\WebformHandler;
 
 use Drupal\Component\Serialization\Json;
 use Drupal\Component\Utility\Html;
+use Drupal\Component\Utility\Xss;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Datetime\DrupalDateTime;
 use Drupal\Core\Form\FormStateInterface;
@@ -247,9 +248,20 @@ class PrisonVisitBookingHandler extends WebformHandlerBase
    */
   public function validateForm(array &$form, FormStateInterface $form_state, WebformSubmissionInterface $webform_submission)
   {
-    $this->validateVisitBookingReference($form, $form_state);
-    $this->validateVisitorOneDateOfBirth($form, $form_state);
-    $this->validateSlotPicked($form, $form_state);
+    $page = $form_state->get('current_page');
+
+    if ($page === 'booking_reference_prisoner_reference') {
+      $this->validateVisitBookingReference($form, $form_state);
+    }
+
+    if ($page === 'visitor_special_requirements') {
+      $error_msg = $this->t('Details of special requirements must be plain text.');
+      $this->validatePlainText('visitor_special_requirements_details', $error_msg, $form, $form_state);
+    }
+
+    if ($page === 'visit_preferred_day_and_time') {
+      $this->validateSlotPicked($form, $form_state);
+    }
   }
 
   /**
@@ -591,21 +603,24 @@ class PrisonVisitBookingHandler extends WebformHandlerBase
   }
 
   /**
-   * Validate visitor one DOB.
+   * Validate textareas contain plain text (no html).
    */
-  private function validateVisitorOneDateOfBirth(array &$form, FormStateInterface $form_state)
+  private function validatePlainText(string $element_name, string $error_msg, array &$form, FormStateInterface $form_state)
   {
-    $visitor_1_dob = !empty($form_state->getValue('visitor_1_dob')) ? $form_state->getValue('visitor_1_dob') : NULL;
+    $elements = WebformFormHelper::flattenElements($form);
+    $element = $elements[$element_name] ?? NULL;
 
-    if (!empty($visitor_1_dob))
-    {
-      $today = new \DateTime('now', new \DateTimeZone(DateTimeItemInterface::STORAGE_TIMEZONE));
-      $today->setTime(0, 0, 0);
+    if (!empty($element)) {
 
-      $birthday = new \DateTime($visitor_1_dob);
-      if ($today->diff($birthday)->y < 18)
-      {
-        $form_state->setErrorByName('visitor_1_dob', $this->t('You must be at least 18 years old to book a prison visit.'));
+      if (empty($error_msg)) {
+        $error_msg = $this->t(
+          '@title must contain plain text only.',
+          ['@title' => $element['#title']]
+        );
+      }
+
+      if ($element['#value'] != strip_tags($element['#value'])) {
+        $form_state->setErrorByName($element['#name'], $error_msg);
       }
     }
   }
