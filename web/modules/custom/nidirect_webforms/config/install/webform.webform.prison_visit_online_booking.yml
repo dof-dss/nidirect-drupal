@@ -193,6 +193,7 @@ elements: |-
     additional_visitor_adult_1_details:
       '#type': details
       '#title': 'Enter details for additional adult 1'
+      '#open': true
       additional_visitor_adult_1_id:
         '#type': textfield
         '#title': 'Visitor ID'
@@ -229,6 +230,7 @@ elements: |-
     additional_visitor_adult_2_details:
       '#type': details
       '#title': 'Enter details for additional adult 2'
+      '#open': true
       '#states':
         visible:
           ':input[name="additional_visitor_adult_number"]':
@@ -286,6 +288,7 @@ elements: |-
     additional_visitor_child_1_details:
       '#type': details
       '#title': 'Enter details for additional child 1'
+      '#open': true
       additional_visitor_child_1_id:
         '#type': textfield
         '#title': 'Visitor ID'
@@ -320,6 +323,7 @@ elements: |-
     additional_visitor_child_2_details:
       '#type': details
       '#title': 'Enter details for additional child 2'
+      '#open': true
       '#states':
         visible:
           ':input[name="additional_visitor_child_number"]':
@@ -359,6 +363,7 @@ elements: |-
     additional_visitor_child_3_details:
       '#type': details
       '#title': 'Enter details for additional child 3'
+      '#open': true
       '#states':
         visible:
           ':input[name="additional_visitor_child_number"]':
@@ -398,6 +403,7 @@ elements: |-
     additional_visitor_child_4_details:
       '#type': details
       '#title': 'Enter details for additional child 4'
+      '#open': true
       '#states':
         visible:
           ':input[name="additional_visitor_child_number"]':
@@ -437,6 +443,7 @@ elements: |-
     additional_visitor_child_5_details:
       '#type': details
       '#title': 'Enter details for additional child 5'
+      '#open': true
       '#states':
         visible:
           ':input[name="additional_visitor_child_number"]':
@@ -489,6 +496,8 @@ elements: |-
     visitor_special_requirements_details:
       '#type': textarea
       '#title': 'Tell us about any special requirements you or the other visitors may have'
+      '#description': 'Use plain text only.'
+      '#description_display': before
       '#maxlength': 1000
       '#rows': 5
       '#autocomplete': 'off'
@@ -503,20 +512,15 @@ elements: |-
   remember_settings:
     '#type': webform_wizard_page
     '#title': 'Remember settings'
+    '#states':
+      visible:
+        ':input[name="additional_visitors_add"]':
+          value: 'yes'
     '#format': container
     additional_visitor_save_details:
       '#type': fieldset
       '#title': 'Remember visitor details?'
       '#description_display': before
-      '#states':
-        visible:
-          - ':input[name="additional_visitor_adult_number"]':
-              value:
-                greater: '0'
-          - or
-          - ':input[name="additional_visitor_child_number"]':
-              value:
-                greater: '0'
       '#format': details
       remember_settings_info:
         '#type': webform_markup
@@ -591,6 +595,7 @@ elements: |-
     slots_week_1:
       '#type': details
       '#title': 'Week commencing [DATE]'
+      '#open': true
       '#summary_attributes':
         class:
           - btn
@@ -866,7 +871,7 @@ settings:
   ajax_scroll_top: form
   ajax_progress_type: throbber
   ajax_effect: fade
-  ajax_speed: null
+  ajax_speed: 500
   page: true
   page_submit_path: ''
   page_confirm_path: ''
