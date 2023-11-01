@@ -9,7 +9,7 @@
   Drupal.behaviors.nicsdruAccordions = {
     attach: function attach (context) {
 
-      $('.accordion', context).once('nicsdruAccordions').each(function(index) {
+      $(once('nicsdruAccordions', '.accordion', context)).each(function(index) {
 
         // Need to know if this accordion has a visible title (H2)
         var acc_title_visible = ($(this).find('.accordion-heading').length)? true : false;

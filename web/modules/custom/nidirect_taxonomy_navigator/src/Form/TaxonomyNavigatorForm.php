@@ -94,7 +94,7 @@ class TaxonomyNavigatorForm extends FormBase {
       '#title' => $this
         ->t('Term search'),
       '#attributes' => [
-        'class' => 'container-inline',
+        'class' => ['container-inline'],
       ],
     ];
 

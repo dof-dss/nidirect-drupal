@@ -11,7 +11,7 @@ archive: false
 id: universal_credit_payments
 title: 'Universal Credit payments'
 description: 'Help tool: who to contact about money taken off Universal Credit payment'
-category: ''
+categories: {  }
 elements: |-
   question_1:
     '#type': webform_wizard_page
@@ -109,7 +109,7 @@ elements: |-
         visible:
           ':input[name="what_do_you_need_help_with_"]':
             value: 'Benefit overpayment, Social Fund, Tax credits'
-      '#text': |
+      '#text': |-
         <h2>Benefit overpayment, Social Fund, Tax Credits</h2>
         
         <p>Talk to&nbsp;Debt Management about benefit overpayment, Social Fund and Tax Credits.</p>
@@ -131,7 +131,7 @@ elements: |-
         visible:
           ':input[name="what_do_you_need_help_with_"]':
             value: 'Hardship payment recovery'
-      '#text': |
+      '#text': |-
         <h2>Hardship payment recovery</h2>
         
         <p>Sign into your online Universal Credit account and write a message in your journal.</p>
@@ -155,7 +155,7 @@ elements: |-
             value: 'Advance payment'
           ':input[name="advance_payment_what_is_your_enquiry_about_"]':
             value: 'How much I owe in total'
-      '#text': |
+      '#text': |-
         <h2>Advance payment — how much I owe in total</h2>
         
         <p>The quickest way to find this out is to sign into your online Universal Credit account and look in the ‘Advances’ section.</p>
@@ -181,7 +181,7 @@ elements: |-
             value: 'Advance payment'
           ':input[name="advance_payment_what_is_your_enquiry_about_"]':
             value: 'How much I pay every month'
-      '#text': |
+      '#text': |-
         <h2>Advance payment — how much I pay every month</h2>
         
         <p>The quickest way to find this out is to sign into your online Universal Credit account and look in the ‘Advances’ section.&nbsp; You can also find this information in your statement.&nbsp; Look in the "Statement" section.</p>
@@ -207,7 +207,7 @@ elements: |-
             value: 'Advance payment'
           ':input[name="advance_payment_what_is_your_enquiry_about_"]':
             value: 'I want to make a one-off payment'
-      '#text': |
+      '#text': |-
         <h2>Advance payment — I want to make one-off payment</h2>
         
         <p>To make a payment you need to call Debt Management.</p>
@@ -231,7 +231,7 @@ elements: |-
             value: 'Advance payment'
           ':input[name="advance_payment_what_is_your_enquiry_about_"]':
             value: 'I want to pause payments'
-      '#text': |
+      '#text': |-
         <h2>Advance payment — I want to pause repayments</h2>
         
         <p>If you’re struggling to pay your advance, you may be able to pause your repayment for up to 3 months. This is only available in exceptional circumstances.</p>
@@ -257,7 +257,7 @@ elements: |-
             value: 'Universal Credit overpayment'
           ':input[name="universal_credit_overpayment_what_is_your_enquiry_about_"]':
             value: 'Overpayment purpose'
-      '#text': |
+      '#text': |-
         <h2>Universal Credit overpayment - I want to know what the overpayment was for</h2>
         
         <p>The quickest way to find this out is to sign into your online Universal Credit account. Go to your journal and find the overpayment letter containing this information.</p>
@@ -283,7 +283,7 @@ elements: |-
             value: 'Universal Credit overpayment'
           ':input[name="universal_credit_overpayment_what_is_your_enquiry_about_"]':
             value: 'How much left to pay'
-      '#text': |
+      '#text': |-
         <h2>Universal Credit overpayment - how much I have left to pay</h2>
         
         <p>Call Debt Management to find out how much you have left to pay.</p>
@@ -307,7 +307,7 @@ elements: |-
             value: 'Universal Credit overpayment'
           ':input[name="universal_credit_overpayment_what_is_your_enquiry_about_"]':
             value: 'One off payment'
-      '#text': |
+      '#text': |-
         <h2>Universal Credit overpayment - I want to make a one-off payment</h2>
         
         <p>To make a payment you need to call Debt Management.</p>
@@ -331,7 +331,7 @@ elements: |-
             value: 'Third party deduction'
           ':input[name="third_party_deductions"]':
             value: 'What money was taken off for'
-      '#text': |
+      '#text': |-
         <h2>Third party deduction&nbsp;— I want to know what the money was taken off for</h2>
         
         <p>The quickest way to find this out is to sign into your online Universal Credit account. Go to your journal and find the third party deduction letter containing this information.</p>
@@ -355,7 +355,7 @@ elements: |-
             value: 'Third party deduction'
           ':input[name="third_party_deductions"]':
             value: 'How much owed'
-      '#text': |
+      '#text': |-
         <h2>Third party deduction&nbsp;— how much do I owe in total</h2>
         
         <p>If you have only been paying off the debt through your benefit deductions, you should sign into your Universal Credit account and send us a message using your journal.</p>
@@ -381,7 +381,7 @@ elements: |-
             value: 'Third party deduction'
           ':input[name="third_party_deductions"]':
             value: 'How much paid monthly'
-      '#text': |
+      '#text': |-
         <h2>Third party deduction - how much I pay every month</h2>
         
         <p>Money can be taken off your Universal Credit payment to pay your debts for:</p>
@@ -414,7 +414,7 @@ elements: |-
             value: 'Third party deduction'
           ':input[name="third_party_deductions"]':
             value: 'One of payment'
-      '#text': |
+      '#text': |-
         <h2>Third party deduction – I want to make a one-off payment</h2>
         
         <p>Money can be taken off your Universal Credit payment to pay your debts for:</p>
@@ -524,6 +524,8 @@ settings:
   wizard_toggle: true
   wizard_toggle_show_label: ''
   wizard_toggle_hide_label: ''
+  wizard_page_type: container
+  wizard_page_title_tag: h2
   preview: 0
   preview_label: ''
   preview_title: ''

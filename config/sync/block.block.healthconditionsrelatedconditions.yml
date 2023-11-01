@@ -5,6 +5,7 @@ dependencies:
   module:
     - nidirect_health_conditions
     - node
+    - system
   theme:
     - nicsdru_nidirect_theme
 id: healthconditionsrelatedconditions
@@ -20,9 +21,13 @@ settings:
   provider: nidirect_health_conditions
 visibility:
   node_type:
-    id: node_type
+    id: 'entity_bundle:node'
     negate: false
     context_mapping:
       node: '@node.node_route_context:node'
     bundles:
       health_condition: health_condition
+  request_path:
+    id: request_path
+    negate: true
+    pages: '/node/preview/*'

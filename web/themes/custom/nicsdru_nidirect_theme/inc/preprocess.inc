@@ -190,11 +190,17 @@ function nicsdru_nidirect_theme_preprocess_page(array &$variables) {
     case 'entity.node.preview':
     case 'entity.node.revision':
     case 'entity.node.latest':
-      $node_id = \Drupal::routeMatch()->getRawParameter('node');
-      $node = Node::load($node_id);
 
-      if ($node === NULL) {
-        $node = \Drupal::routeMatch()->getParameter('node_preview');
+      $node = $variables['node'];
+
+      if (empty($node)) {
+        $node_id = \Drupal::routeMatch()->getRawParameter('node');
+
+        $node = Node::load($node_id);
+
+        if ($node === NULL) {
+          $node = \Drupal::routeMatch()->getParameter('node_preview');
+        }
       }
 
       $node_type = $node->getType();
@@ -239,15 +245,19 @@ function nicsdru_nidirect_theme_preprocess_page(array &$variables) {
           ];
           break;
 
-        case 'health_condition':
-          // Render Health Conditions search block.
-          $variables['page']['sidebar_second'][] = Helpers::blockContent('exposedformhealth_conditionssearch_sidebar_2');
+          case 'health_condition':
+            // Supposedly fixed https://www.drupal.org/project/drupal/issues/2890758
+            // but these blocks do no render properly, sometimes not at all and sometimes
+            // they duplicate. We now exclude the preview path for the block config and inject here.
 
-          // Render Health Conditions AtoZ block.
-          $variables['page']['sidebar_second'][] = Helpers::blockContent('healthconditionsatoz_sidebar_2');
+            // Render Health Conditions search block.
+            $variables['page']['sidebar_second'][] = Helpers::blockContent('exposedformhealth_conditionssearch_sidebar_2');
 
-          // Render Health Conditions Related block.
-          $variables['page']['sidebar_second'][] = Helpers::blockContent('healthconditionsrelatedconditions');
+            // Render Health Conditions AtoZ block.
+            $variables['page']['sidebar_second'][] = Helpers::blockContent('healthconditionsatoz_sidebar_2');
+
+            // Render Health Conditions Related block.
+            $variables['page']['sidebar_second'][] = Helpers::blockContent('healthconditionsrelatedconditions');
           break;
 
         default:
