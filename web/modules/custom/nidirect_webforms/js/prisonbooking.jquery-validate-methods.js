@@ -115,6 +115,10 @@
     return this.optional(element) || getAge(value) < param[1];
   }, $.validator.format("Age must be less than {1}"));
 
+  $.validator.addMethod("noHtml", function(value, element) {
+    return this.optional(element) || value === value.replace(/(<([^>]+)>)/gi, "");
+  }, "Text must be plain text only");
+
   function getAge(dateString) {
     const today = new Date();
     const birthDate = new Date(dateString);

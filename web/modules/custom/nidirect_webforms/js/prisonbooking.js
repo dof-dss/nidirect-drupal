@@ -134,6 +134,14 @@
           $('option').not(':disabled').last().prop('selected', true);
         }
       });
+
+
+      $(once('pvTextAreas', 'textarea', context)).each(function() {
+        $(this).rules("add", {
+          noHtml: true
+        });
+      });
+
     }
   };
 
