@@ -1,0 +1,150 @@
+// sass-lint:disable indentation, no-color-keywords
+
+// Colors
+//
+// Use the `color()` function to add colors to CSS properties. To learn more,
+// [read the Chroma documentation](http://johnalbin.github.io/chroma/).
+//
+// Markup: chroma.twig
+//
+// Weight: -8
+//
+// Style guide: init.colors
+
+// Define the default color scheme's color names.
+$chroma: define-default-color-scheme('branding', 'The site\'s main colors. Can be used to define colors in other color schemes.');
+
+$chroma: add-colors((
+  black:                  #000,
+  offblack:               #1c1c1c,
+  charcoal:               #333,
+  ash-grey:               #666,
+  'grey':                 #949494, // replaces #999 for 3:1 contrast with white
+  grey-dark:              #4d4d4d,
+  grey-light:             #e8e7e7,
+  grey-lightest:          #f0f0f0,
+  grey-medium:            #cdcdcd,
+  white:                  #fff,
+  offwhite:               #f3f8fc,
+
+  'orange':               #db6304, // 3.62:1 with white
+  hc-orange:              #bf5803, // 4.55:1 with white
+  'red':                  #df522d, // 3.9:1 with white
+  dark-red:               #b63a1b, // 4.53:1 with light-pink
+  hc-red:                 #d1431f, // 4.63:1 with white
+  light-pink:             #ffdae0, // 4.53:1 with dark-red
+  'green':                #3fa940, // 3:1 with white
+  hc-green:               #048a05, // 4.5:1 with white
+  'blue':                 #0a78cd, // 4.58:1 with white
+  hc-blue:                #0a78cd, // 4.58:1 with white
+  steel-blue:             #4478b8, // 4.54:1 with white
+  prussian-blue:          #154365, // 8:1 with grey-medium, 12.73:1 with white
+  tangaroa:               #041e34,
+
+  brand-primary:          #00aae5,
+  brand-primary-dark:     #076cba, // 5.43:1 with white
+  brand-primary-medium:   #0a78cd, // 4.5:1 with white
+  brand-primary-light:    #cee4f6,
+  brand-primary-lighter:  #e4f0fa,
+  brand-primary-lightest: #f3f8fc,
+
+  brand-secondary:        #0b1951, // 3:1 with brand-primary-dark
+  brand-secondary-dark:   #333,
+
+  brand-tertiary:         #db6304, // 3.62:1 with white
+));
+
+// Define color names for functional uses.
+$chroma: define-color-scheme('functional', 'Colors used by functional parts of the design.');
+$chroma: add-colors('functional', (
+  // Colors used in the main content area.
+  text:                   'offblack',
+  headings:               #19315a,
+  meta:                   'grey-dark',
+
+  link:                   #0e6bb3,
+  link-visited:           #5e60b5,
+  link-hover:             'link',
+  link-active:            'hc-red',
+  link-focus:             'link',
+
+  border:                 'grey-light',
+
+  button:                 'ash-grey',
+  button-disabled:        'grey-light',
+  button-action:          'hc-green',
+  button-primary:         'blue',
+  button-secondary:       'prussian-blue',
+  button-warning:         'hc-orange',
+  button-danger:          'hc-red',
+
+  mark-bg:                #ff0,
+  error:                  'dark-red',
+  error-bg:               'light-pink',
+));
+
+$chroma-active-scheme: 'functional';
+
+$black: color('black');
+$charcoal: color(charcoal);
+$ash-grey: color(ash-grey);
+$grey: color('grey');
+$grey-dark: color(grey-dark);
+$grey-light: color(grey-light);
+$grey-lightest: color(grey-lightest);
+$grey-medium: color(grey-medium);
+$orange: color('orange');
+$hc-orange: color(hc-orange);
+$red: color('red');
+$dark-red: color('dark-red');
+$hc-red: color(hc-red);
+$light-pink: color(light-pink);
+$green: color('green');
+$hc-green: color(hc-green);
+$blue: color('blue');
+$hc-blue: color(hc-blue);
+$steel-blue: color(steel-blue);
+$prussian-blue: color(prussian-blue);
+$tangaroa: color(tangaroa);
+$white: color('white');
+$offwhite: color(offwhite);
+
+$brand-primary: color(brand-primary);
+$brand-primary-dark: color(brand-primary-dark);
+$brand-primary-medium: color(brand-primary-medium);
+$brand-primary-light: color(brand-primary-light);
+$brand-primary-lighter: color(brand-primary-lighter);
+$brand-primary-lightest: color(brand-primary-lightest);
+
+$brand-secondary: color(brand-secondary);
+$brand-secondary-dark: color(brand-secondary-dark);
+
+$brand-tertiary: color(brand-tertiary);
+
+$text: color('text');
+$headings: color(headings);
+$meta: color('grey-dark');
+
+$link: color(link);
+$link-visited: color(link-visited);
+$link-focus: color(link-focus);
+$link-hover: color(link-hover);
+$link-active: color(link-active);
+
+
+$border: color('border');
+
+$btn: color('button');
+$btn-disabled: color(button-disabled);
+$btn-action: color(button-action);
+$btn-success: color(button-action);
+$btn-primary: color(button-primary);
+$btn-secondary: color(button-secondary);
+$btn-warning: color(button-warning);
+$btn-danger: color(button-danger);
+
+$mark-bg: color(mark-bg);
+$error: color(error);
+$error-bg: color(error-bg);
+
+$table-border-color: color(ash-grey);

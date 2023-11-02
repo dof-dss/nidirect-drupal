@@ -1,0 +1,451 @@
+uuid: 7b4a8081-e648-4d78-a4b0-f8a70e5a896e
+langcode: en
+status: open
+dependencies: {  }
+weight: 0
+open: null
+close: null
+uid: 24
+template: false
+archive: false
+id: contact_the_move_to_universal_cr
+title: 'Contact the Move to Universal Credit team'
+description: ''
+categories: {  }
+elements: |-
+  intro:
+    '#type': processed_text
+    '#text': |-
+      <p class="nodeSummary" role="status">You can use this online form, only if you have received a Migration Notice letter telling you to move from your existing benefit or tax credits to Universal Credit.</p>
+
+      <p>You can find out how&nbsp;personal information you submit to the Department for Communities' Move to Universal Credit Team when using this service will be handled by viewing its&nbsp;<a href="https://www.communities-ni.gov.uk/publications/supplementary-privacy-notices-dfc-business-areas">privacy notice</a>.</p>
+    '#format': full_html
+  do_you_live_in_northern_ireland:
+    '#type': radios
+    '#title': 'Do you live in Northern Ireland?'
+    '#options': yes_no
+    '#options_display': side_by_side
+    '#required': true
+    '#required_error': 'You must choose one of these options'
+  ni_only_notice:
+    '#type': processed_text
+    '#states':
+      visible:
+        ':input[name="do_you_live_in_northern_ireland"]':
+          value: 'No'
+    '#text': |-
+      <p class="info-notice">This service is only for people in Northern Ireland. If you live in Great Britain you should visit <a href="http://www.gov.uk">www.gov.uk</a> instead.</p>
+    '#format': full_html
+  can_use_a_phone:
+    '#type': radios
+    '#title': 'Can you use a phone or can someone use a phone on your behalf?'
+    '#options': yes_no
+    '#options_display': side_by_side
+    '#required': true
+    '#required_error': 'You must choose one of these options'
+    '#states':
+      visible:
+        ':input[name="do_you_live_in_northern_ireland"]':
+          value: 'Yes'
+  no_phone_details:
+    '#type': processed_text
+    '#states':
+      visible:
+        ':input[name="can_use_a_phone"]':
+          value: 'No'
+    '#text': '<p class="nodeSummary">If you can’t use a phone due to a language, speech or hearing difficulty, complete the sections below .</p>'
+    '#format': full_html
+  phone_details:
+    '#type': processed_text
+    '#states':
+      visible:
+        ':input[name="can_use_a_phone"]':
+          value: 'Yes'
+    '#text': |-
+      <h2>Contact the Move to Universal Credit team</h2>
+
+      <p class="xl-text">Freephone&nbsp;0800&nbsp;012&nbsp;1331 or Textphone&nbsp;0800&nbsp;012&nbsp;1441<br />
+      <span class="large-text" style="display: block; margin-top: .5em">Textphone is available for deaf users, those with hearing loss and users with speech and communication needs. Video Relay Service is available for sign language users.</span></p>
+    '#format': full_html
+  your_details:
+    '#type': fieldset
+    '#title': 'Your details'
+    '#states':
+      visible:
+        ':input[name="can_use_a_phone"]':
+          value: 'No'
+    first_name:
+      '#type': textfield
+      '#title': 'First name'
+      '#maxlength': 100
+      '#autocomplete': name
+      '#required': true
+    last_name:
+      '#type': textfield
+      '#title': 'Last name'
+      '#maxlength': 100
+      '#autocomplete': name
+      '#required': true
+    migration_notice_reference:
+      '#type': textfield
+      '#title': 'Migration Notice Reference'
+      '#description': 'Enter the 14 character Migration Notice Reference shown on your Migration Notice letter.'
+      '#description_display': before
+      '#maxlength': 16
+      '#size': 22
+      '#autocomplete': 'off'
+      '#input_mask': '&&&&-&&&&-&&&&'
+      '#required': true
+      '#required_error': 'Enter the Migration Notice Reference shown on your Migration Notice letter'
+      '#pattern': '[0-9A-Z]{4}\-[0-9A-Z]{4}\-[0-9A-Z]{4}'
+      '#pattern_error': 'Enter the Migration Notice Reference shown on your Migration Notice letter'
+    phone_number:
+      '#type': textfield
+      '#title': 'Phone number'
+      '#maxlength': 20
+      '#size': 24
+      '#autocomplete': tel
+      '#required': true
+      '#pattern': '^[0-9\(\) \+\-]{6,20}$'
+      '#pattern_error': 'Enter a valid telephone number'
+    email_address:
+      '#type': email
+      '#title': 'Email address'
+      '#maxlength': 255
+      '#autocomplete': email
+      '#pattern': '[^@\s]+@[^@\s]+\.[^@\s]+'
+      '#pattern_error': 'You must enter a valid email address, for example, name@example.com'
+      '#states':
+        visible:
+          ':input[name="can_use_a_phone"]':
+            value: 'No'
+        required:
+          ':input[name="can_use_a_phone"]':
+            value: 'No'
+  explain_why_you_cannot_phone:
+    '#type': fieldset
+    '#title': 'Explain why you cannot phone'
+    '#required': true
+    '#states':
+      visible:
+        ':input[name="can_use_a_phone"]':
+          value: 'No'
+    explain_why_you_cannot_phone_text:
+      '#type': textarea
+      '#title': 'Briefly explain why you cannot make contact with the team by phone so arrangements to get in touch can be made'
+      '#description': 'Do not include your date of birth, National Insurance number or bank details.'
+      '#title_display': before
+      '#description_display': before
+      '#required': true
+      '#required_error': 'Briefly explain why you cannot make contact with the team by phone so arrangements to get in touch can be made'
+      '#counter_type': character
+      '#counter_minimum': 2
+      '#counter_maximum': 750
+  extra_comments_for_pooh_bear:
+    '#type': textfield
+    '#title': 'Extra comments (optional)'
+    '#pattern': '^(?![\s\S])'
+    '#pattern_error': 'There was a problem with the extra comments you have provided'
+    '#wrapper_attributes':
+      class:
+        - for-pooh-bear
+  actions:
+    '#type': webform_actions
+    '#title': 'Submit button(s)'
+    '#states':
+      visible:
+        ':input[name="do_you_live_in_northern_ireland"]':
+          value: 'Yes'
+        ':input[name="can_use_a_phone"]':
+          value: 'No'
+    '#submit__label': Send
+css: ''
+javascript: ''
+settings:
+  ajax: false
+  ajax_scroll_top: form
+  ajax_progress_type: ''
+  ajax_effect: ''
+  ajax_speed: null
+  page: true
+  page_submit_path: ''
+  page_confirm_path: ''
+  page_theme_name: ''
+  form_title: source_entity_webform
+  form_submit_once: false
+  form_open_message: ''
+  form_close_message: ''
+  form_exception_message: ''
+  form_previous_submissions: true
+  form_confidential: false
+  form_confidential_message: ''
+  form_disable_remote_addr: false
+  form_convert_anonymous: false
+  form_prepopulate: false
+  form_prepopulate_source_entity: false
+  form_prepopulate_source_entity_required: false
+  form_prepopulate_source_entity_type: ''
+  form_unsaved: false
+  form_disable_back: false
+  form_submit_back: false
+  form_disable_autocomplete: false
+  form_novalidate: false
+  form_disable_inline_errors: false
+  form_required: false
+  form_autofocus: false
+  form_details_toggle: false
+  form_reset: false
+  form_access_denied: default
+  form_access_denied_title: ''
+  form_access_denied_message: ''
+  form_access_denied_attributes: {  }
+  form_file_limit: ''
+  form_attributes: {  }
+  form_method: ''
+  form_action: ''
+  share: false
+  share_node: false
+  share_theme_name: ''
+  share_title: true
+  share_page_body_attributes: {  }
+  submission_label: ''
+  submission_exception_message: ''
+  submission_locked_message: ''
+  submission_log: false
+  submission_excluded_elements: {  }
+  submission_exclude_empty: false
+  submission_exclude_empty_checkbox: false
+  submission_views: {  }
+  submission_views_replace: {  }
+  submission_user_columns: {  }
+  submission_user_duplicate: false
+  submission_access_denied: default
+  submission_access_denied_title: ''
+  submission_access_denied_message: ''
+  submission_access_denied_attributes: {  }
+  previous_submission_message: ''
+  previous_submissions_message: ''
+  autofill: false
+  autofill_message: ''
+  autofill_excluded_elements: {  }
+  wizard_progress_bar: false
+  wizard_progress_pages: false
+  wizard_progress_percentage: false
+  wizard_progress_link: false
+  wizard_progress_states: false
+  wizard_start_label: ''
+  wizard_preview_link: false
+  wizard_confirmation: true
+  wizard_confirmation_label: ''
+  wizard_auto_forward: true
+  wizard_auto_forward_hide_next_button: false
+  wizard_keyboard: true
+  wizard_track: ''
+  wizard_prev_button_label: ''
+  wizard_next_button_label: ''
+  wizard_toggle: false
+  wizard_toggle_show_label: ''
+  wizard_toggle_hide_label: ''
+  wizard_page_type: container
+  wizard_page_title_tag: h2
+  preview: 0
+  preview_label: ''
+  preview_title: ''
+  preview_message: ''
+  preview_attributes: {  }
+  preview_excluded_elements: {  }
+  preview_exclude_empty: true
+  preview_exclude_empty_checkbox: false
+  draft: none
+  draft_multiple: false
+  draft_auto_save: false
+  draft_saved_message: ''
+  draft_loaded_message: ''
+  draft_pending_single_message: ''
+  draft_pending_multiple_message: ''
+  confirmation_type: page
+  confirmation_url: ''
+  confirmation_title: ''
+  confirmation_message: |-
+    <h2>Thank you for your contact request</h2>
+
+    <p class="info-notice info-notice--success">We have sent a confirmation of your request to the email address you provided.</p>
+  confirmation_attributes: {  }
+  confirmation_back: false
+  confirmation_back_label: ''
+  confirmation_back_attributes: {  }
+  confirmation_exclude_query: false
+  confirmation_exclude_token: false
+  confirmation_update: false
+  limit_total: null
+  limit_total_interval: null
+  limit_total_message: ''
+  limit_total_unique: false
+  limit_user: null
+  limit_user_interval: null
+  limit_user_message: ''
+  limit_user_unique: false
+  entity_limit_total: null
+  entity_limit_total_interval: null
+  entity_limit_user: null
+  entity_limit_user_interval: null
+  purge: none
+  purge_days: null
+  results_disabled: true
+  results_disabled_ignore: false
+  results_customize: false
+  token_view: false
+  token_update: false
+  token_delete: false
+  serial_disabled: false
+access:
+  create:
+    roles:
+      - anonymous
+      - authenticated
+    users: {  }
+    permissions: {  }
+  view_any:
+    roles: {  }
+    users: {  }
+    permissions: {  }
+  update_any:
+    roles: {  }
+    users: {  }
+    permissions: {  }
+  delete_any:
+    roles: {  }
+    users: {  }
+    permissions: {  }
+  purge_any:
+    roles: {  }
+    users: {  }
+    permissions: {  }
+  view_own:
+    roles: {  }
+    users: {  }
+    permissions: {  }
+  update_own:
+    roles: {  }
+    users: {  }
+    permissions: {  }
+  delete_own:
+    roles: {  }
+    users: {  }
+    permissions: {  }
+  administer:
+    roles: {  }
+    users: {  }
+    permissions: {  }
+  test:
+    roles: {  }
+    users: {  }
+    permissions: {  }
+  configuration:
+    roles: {  }
+    users: {  }
+    permissions: {  }
+handlers:
+  email:
+    id: email
+    handler_id: email
+    label: Email
+    notes: ''
+    status: true
+    conditions: {  }
+    weight: 0
+    settings:
+      states:
+        - completed
+      to_mail: muc.discoveryteam@dfcni.gov.uk
+      to_options: {  }
+      bcc_mail: ''
+      bcc_options: {  }
+      cc_mail: ''
+      cc_options: {  }
+      from_mail: '[webform_submission:values:email_address:raw]'
+      from_options: {  }
+      from_name: '[webform_submission:values:full_name:raw]'
+      reply_to: ''
+      return_path: ''
+      sender_mail: ''
+      sender_name: ''
+      subject: 'Contact the Move to Universal Credit Team'
+      body: |-
+        <p><strong>Submitted on</strong><br />
+        [webform_submission:created:long]</p>
+
+        <p><strong>Submitted values</strong></p>
+        <hr>
+        [webform_submission:values]
+      excluded_elements:
+        intro: intro
+        do_you_live_in_northern_ireland: do_you_live_in_northern_ireland
+        ni_only_notice: ni_only_notice
+        no_phone_details: no_phone_details
+        phone_details: phone_details
+        extra_comments_for_pooh_bear: extra_comments_for_pooh_bear
+      ignore_access: false
+      exclude_empty: true
+      exclude_empty_checkbox: false
+      exclude_attachments: false
+      html: true
+      attachments: false
+      twig: false
+      theme_name: stable
+      parameters: {  }
+      debug: false
+  email_1:
+    id: email
+    handler_id: email_1
+    label: 'Copy for visitor'
+    notes: ''
+    status: true
+    conditions: {  }
+    weight: 0
+    settings:
+      states:
+        - completed
+      to_mail: '[webform_submission:values:email_address:raw]'
+      to_options: {  }
+      bcc_mail: ''
+      bcc_options: {  }
+      cc_mail: ''
+      cc_options: {  }
+      from_mail: noreply@nidirect.gov.uk
+      from_options: {  }
+      from_name: noreply@nidirect.gov.uk
+      reply_to: ''
+      return_path: ''
+      sender_mail: ''
+      sender_name: ''
+      subject: 'Move to Universal Credit - confirmation of contact request'
+      body: |-
+        <p>Dear [webform_submission:values:first_name:raw],</p>
+        <p>Thank you for contacting  the Move to Universal Credit Team. We will be in touch with you within 3 working days.</p>
+        <p>Regards,<br /><br/>
+        The Move to Universal Credit Team</p>
+        <p><strong>Please note: This email was been sent from a notification-only email address that can&rsquo;t accept replies. Please do not reply to this message.</strong></p>
+        <hr>
+        <h2>You provided us with the following information</h2>
+
+        [webform_submission:values]
+      excluded_elements:
+        intro: intro
+        do_you_live_in_northern_ireland: do_you_live_in_northern_ireland
+        ni_only_notice: ni_only_notice
+        can_use_a_phone: can_use_a_phone
+        no_phone_details: no_phone_details
+        phone_details: phone_details
+        extra_comments_for_pooh_bear: extra_comments_for_pooh_bear
+      ignore_access: false
+      exclude_empty: true
+      exclude_empty_checkbox: false
+      exclude_attachments: false
+      html: true
+      attachments: false
+      twig: false
+      theme_name: ''
+      parameters: {  }
+      debug: false
+variants: {  }

@@ -1,0 +1,126 @@
+@mixin link-state-style ($link-map: $link-basic) {
+
+  // Process a map of link properties and values that should be applied for various link states
+  //
+  // Each map key is a CSS property (e.g. color, background-color, text-decoration, etc).
+  // Each map value is either:
+  //   - single value which acts as the default applied to all link states
+  //   - a map of individual values for each state (default, visited, focus, hover and active link states).
+  //
+  // For example - to create basic link style (similar to browser defaults) you could define a map as follows ...
+  //
+  // $link-basic: (
+  //  color: (
+  //    default: #00e,
+  //    visited: #551A8B,
+  //    focus: #00e,
+  //    hover: #00e,
+  //    active: #e00
+  //  ),
+  //  background-color: transparent,
+  //  text-decoration: underline,
+  //  outline: (
+  //    default: 0,
+  //    visited: 0,
+  //    focus: '1px dotted',
+  //    hover: 0,
+  //    active: 0
+  //  )
+  // );
+  //
+  // Then apply to links in your scss like this:
+  //
+  // a {
+  //   @include link-state-style($link-basic);
+  // }
+
+  // We will be storing rules for various states in their own maps.
+  $default: ();
+  $visited: ();
+  $focus: ();
+  $hover: ();
+  $active: ();
+
+  // Process the $link-map to separate out rules for various states into their own maps.
+  @each $property, $state-values in $link-map {
+
+    @if type-of($state-values) == 'map' {
+
+      // The property has a map of values for each link state.
+      // Where visited, focus, hover and active states have not been defined, use the default in its place.
+
+      $default: map-merge($default, ($property: map-get($state-values, 'default')));
+
+      @if map-has-key($state-values, 'visited') {
+        $visited: map-merge($visited, ($property: map-get($state-values, 'visited')));
+      }
+      @else {
+        $visited: map-merge($visited, ($property: map-get($state-values, 'default')));
+      }
+
+      @if map-has-key($state-values, 'focus') {
+        $focus: map-merge($focus, ($property: map-get($state-values, 'focus')));
+      }
+      @else {
+        $focus: map-merge($focus, ($property: map-get($state-values, 'default')));
+      }
+
+      @if map-has-key($state-values, 'hover') {
+        $hover: map-merge($hover, ($property: map-get($state-values, 'hover')));
+      }
+      @else {
+        $hover: map-merge($hover, ($property: map-get($state-values, 'default')));
+      }
+
+      @if map-has-key($state-values, 'active') {
+        $active: map-merge($active, ($property: map-get($state-values, 'active')));
+      }
+      @else {
+        $active: map-merge($active, ($property: map-get($state-values, 'default')));
+      }
+    }
+    @else {
+      // The property has one value that acts as the default for all link states.
+      @if ($state-values != null) {
+        $default: map-merge($default, ($property: $state-values));
+        $visited: map-merge($visited, ($property: $state-values));
+        $focus: map-merge($focus, ($property: $state-values));
+        $hover: map-merge($hover, ($property: $state-values));
+        $active: map-merge($active, ($property: $state-values));
+      }
+    }
+  }
+
+  // Consolidate maps containing rules for individual states into one big map.
+  $link-styles: ();
+  $link-styles: (
+    default: $default,
+    visited: $visited,
+    focus: $focus,
+    hover: $hover,
+    active: $active
+  );
+
+  // Output all the link styles.
+  @each $state, $styles in $link-styles {
+    @if $state == 'default' {
+      // Styles are output in the root a element.
+      @each $property, $value in $styles {
+        @if $value != null {
+          #{$property}: #{$value};
+        }
+      }
+    }
+    @else {
+      // Styles are output in appropriate state selectors - and equivalent classes too.
+      &:#{$state},
+      &.#{$state} {
+        @each $property, $value in $styles {
+          @if $value != null {
+            #{$property}: #{$value};
+          }
+        }
+      }
+    }
+  }
+}

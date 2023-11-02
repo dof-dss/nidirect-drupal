@@ -1,0 +1,72 @@
+name: NIDirect
+type: theme
+description: 'Drupal 8 theme for nidirect site'
+package: NICS
+core_version_requirement: ^8.8 || ^9 || ^10
+libraries:
+  - nicsdru_nidirect_theme/nidirect-global-styles
+  - nicsdru_nidirect_theme/nidirect-specific-styles
+  - nicsdru_nidirect_theme/nidirect-accordions
+
+ckeditor_stylesheets:
+  - //fonts.googleapis.com/css?family=Lato
+  - css/1_base/root.css
+  - css/1_base/html5.css
+  - css/1_base/headings.css
+  - css/1_base/grouping.css
+  - css/1_base/links.css
+  - css/1_base/tables.css
+  - css/1_base/text.css
+  - css/3_components/ckeditor.css
+  - css/3_components/field/field-summary.css
+  - css/3_components/content/icons-messages.css
+  - css/3_components/content/lists.css
+  - css/3_components/content/responsive-images.css
+  - css/3_components/content/responsive-images-ckeditor.css
+  - css/3_components/content/text.css
+  - css/3_components/content/video.css
+  - css/3_components/form/buttons.css
+
+libraries-override:
+  origins_common/in-page-navigation:
+    js:
+      js/in_page_navigation.js : js/in_page_navigation.js
+  nicsdru_origins_theme/global-styling:
+    css:
+      theme:
+        css/3_components/navigation/pager.css: false
+  webform/webform.element.counter:
+    css:
+      component:
+        css/webform.element.counter.css: false
+  eu_cookie_compliance/eu_cookie_compliance_bare:
+    css:
+      state:
+        css/eu_cookie_compliance.bare.css: css/4_state/block/eu-cookie-compliance.css
+  layout_builder/drupal.layout_builder:
+    css:
+      theme:
+        css/layout-builder.css: css/3_components/form/layout-builder-form.css
+  sitewide_alert/init:
+    css:
+      theme:
+        css/sitewide_alert.css: css/3_components/content/site-wide-alerts.css
+
+
+base theme: nicsdru_origins_theme
+
+regions:
+  header: 'Header'
+  primary_menu: 'Primary menu'
+  page_top: 'Page top'
+  page_bottom: 'Page bottom'
+  breadcrumb: 'Breadcrumb'
+  highlighted: 'Highlighted'
+  help: 'Help'
+  top_banner: 'Banner top'
+  content: 'Content'
+  sidebar_first: 'First sidebar'
+  sidebar_second: 'Sidebar second'
+  bottom_banner: 'Page bottom'
+  feedback: 'Feedback'
+  footer: 'Footer'

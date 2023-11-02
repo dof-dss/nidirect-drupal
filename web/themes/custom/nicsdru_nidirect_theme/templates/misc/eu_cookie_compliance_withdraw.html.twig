@@ -1,0 +1,31 @@
+{#
+/**
+ * @file
+ * This is a template file for the cookie consent withdraw button.
+ *
+ * When overriding this template it is important to note that jQuery will use
+ * the following classes to assign actions to the button:
+ *
+ * eu-cookie-withdraw-button - withdraw button
+ * eu-cookie-withdraw-tab - tab that reveals the withdraw interface
+ *
+ * Variables available:
+ * - message: Contains the text that will be displayed within the banner.
+ * - withdraw_tab_button_label: Label for the tab that sits at the window edge.
+ * - withdraw_action_button_label: Label for the withdraw button.
+ */
+#}
+{% set btn_attributes = create_attribute() %}
+{% set btn_classes = ['btn', 'btn--primary', 'eu-cookie-withdraw-button'] %}
+{% set btn_attributes = btn_attributes.addClass(btn_classes).setAttribute('type', 'button') %}
+<button type="button" class="eu-cookie-withdraw-tab" aria-controls="eu-cookie-dialog" aria-expanded="false">{{ withdraw_tab_button_label }}</button>
+<div id="eu-cookie-dialog" class="eu-cookie-withdraw-banner" role="alertdialog" aria-labelledby="popup-text">
+  <div class="container grid popup-content info eu-cookie-compliance-message">
+    <div id="popup-text" class="eu-cookie-compliance-message">
+      {{ message }}
+    </div>
+    <div id="popup-buttons" class="eu-cookie-compliance-buttons">
+      <button{{ btn_attributes.addClass(primary_button_class) }}>{{ withdraw_action_button_label }}</button>
+    </div>
+  </div>
+</div>

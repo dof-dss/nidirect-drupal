@@ -1,0 +1,743 @@
+<?php
+
+/**
+ * @file
+ * Contains nidirect_landing_pages.module.
+ */
+
+use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Language\Language;
+use Drupal\Core\Link;
+use Drupal\Core\StringTranslation\TranslatableMarkup;
+use Drupal\Core\Url;
+use Drupal\node\Entity\Node;
+use Drupal\node\NodeInterface;
+use Drupal\paragraphs\Entity\Paragraph;
+use Drupal\redirect\Entity\Redirect;
+use Drupal\taxonomy\Entity\Term;
+
+/**
+ * Implements hook_entity_insert().
+ */
+function nidirect_landing_pages_entity_insert(EntityInterface $entity) {
+
+  // Create a redirect from the taxonomy term when a landing page is created
+  // if a subtheme has been selected and the node is published.
+  if (nidirect_landing_pages_is_node_with_subtheme_value($entity) && $entity->isPublished()) {
+    nidirect_landing_pages_create_theme_to_landing_page_redirect($entity);
+  }
+}
+
+/**
+ * Implements hook_entity_update().
+ */
+function nidirect_landing_pages_entity_update(EntityInterface $entity) {
+
+  // Update theme redirect when default revision is published or
+  // remove the theme redirect if (not published and) it is a default revision.
+  if (nidirect_landing_pages_is_node_with_subtheme_value($entity)) {
+    if ($entity->isPublished()) {
+      // Update is publishing the page - remove and re-create theme redirect.
+      nidirect_landing_pages_delete_theme_to_landing_page_redirect($entity->original);
+      nidirect_landing_pages_create_theme_to_landing_page_redirect($entity);
+    }
+    elseif ($entity->isDefaultRevision()) {
+      // Un-published default revision - remove theme redirect.
+      nidirect_landing_pages_delete_theme_to_landing_page_redirect($entity->original);
+    }
+  }
+}
+
+/**
+ * Implements hook_page_attachments().
+ */
+function nidirect_landing_pages_page_attachments(array &$attachments) {
+  // Add landing page js if we are creating or editing
+  // a landing page node.
+  $this_route = \Drupal::routeMatch()->getRouteName();
+  if ($this_route == 'layout_builder.overrides.node.view') {
+    $attachments['#attached']['library'][] = 'nidirect_landing_pages/lb_config_teasers';
+  }
+  // Only show manual override checkbox if there is a teaser block
+  // and it has been populated.
+  $node = \Drupal::routeMatch()->getParameter('node');
+  if (!empty($node)) {
+    if (isset($node->layout_builder__layout)) {
+      $layout = $node->layout_builder__layout;
+      foreach ($layout->getSections() as $section) {
+        foreach ($section->getComponents() as $component) {
+          if ($component->getPluginId() == 'inline_block:article_teasers_by_topic') {
+            // The block is there and has been saved, so enable the
+            // manual override checkbox.
+            $attachments['#attached']['library'][] = 'nidirect_landing_pages/lb_config_update_teasers_css';
+          }
+        }
+      }
+    }
+  }
+}
+
+/**
+ * Implements hook_ENTITY_TYPE_form_alter().
+ */
+function nidirect_landing_pages_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+  // Add description to theme/subtheme field for landing pages.
+  if (($form_id == 'node_landing_page_form') || ($form_id == 'node_landing_page_edit_form')) {
+    if (isset($form['field_subtheme'])) {
+      $msg = "Note that the theme/subtheme that you choose here will be overridden by this landing page. <br/>";
+      $msg .= "As an example, if you select 'Motoring / Road Safety' here then when you visit the page at ";
+      $msg .= "/information-and-services/motoring there will be a link to this page labelled 'Road Safety'.";
+      $form['field_subtheme']['widget']['#description'] = $msg;
+    }
+    // Add a validate handler to detect any duplicates.
+    $form['#validate'][] = 'nidirect_landing_pages_form_validate';
+  }
+
+  if ($form_id === 'layout_builder_add_block' || $form_id === 'layout_builder_update_block') {
+
+    // Add process callback that will allow us to alter block form element rendering.
+    if (!empty($form['settings']['block_form'])) {
+      $form['settings']['block_form']['#process'][] = 'nidirect_landing_pages_block_form_alter';
+    }
+
+    // Depending on block name, set the title and hide it or prevent authors hiding it.
+    if (!empty($form['settings']['block_form']['#block'])) {
+      $block_name = $form['settings']['block_form']['#block']->bundle();
+      switch ($block_name) {
+        case 'banner_deep':
+        case 'card_contact':
+        case 'card_deck_plain':
+        case 'video':
+        case 'text':
+          // The title defaults to the block type name and is not displayed.
+          $form['settings']['label']['#default_value'] = $block_name;
+          $form['settings']['label']['#type'] = 'hidden';
+          $form['settings']['label_display']['#default_value'] = FALSE;
+          $form['settings']['label_display']['#access'] = FALSE;
+          break;
+
+        case 'card_standard':
+        case 'card_wide':
+        case 'card_plain':
+          // The title must be displayed.
+          $form['settings']['label_display']['#default_value'] = TRUE;
+          $form['settings']['label_display']['#access'] = FALSE;
+          break;
+
+      }
+    }
+  }
+
+  // Hide the listing fields as they may now only be edited in layout builder.
+  if (($form_id == 'node_landing_page_form') || ($form_id == 'node_landing_page_edit_form')) {
+    $form['field_manually_control_listing']['#access'] = FALSE;
+    $form['field_listing']['#access'] = FALSE;
+  }
+}
+
+/**
+ * Process callback for landing page custom block forms.
+ */
+function nidirect_landing_pages_block_form_alter(array $element, FormStateInterface $form_state) {
+
+  if (!empty($element['#block']) && $element['#block']->bundle() === 'card_contact') {
+    // Remove container-inline class from the telephone plus fieldsets.
+    if (!empty($element['field_telephone']) && !empty($element['field_telephone']['widget'])) {
+      $classes = &$element['field_telephone']['widget'][0]['#attributes']['class'];
+      $classes = array_filter($classes, function ($e) {
+        return $e != 'container-inline';
+      });
+    }
+  }
+
+  // Change teaser fields to a textarea.
+  if (!empty($element['field_teaser']) && !empty($element['field_teaser']['widget'])) {
+    $element['field_teaser']['widget'][0]['value']['#type'] = 'textarea';
+    $element['field_teaser']['widget'][0]['value']['#attributes']['rows'] = 3;
+    $element['field_teaser']['widget'][0]['value']['#attributes']['cols'] = 60;
+  }
+
+  return $element;
+}
+
+/**
+ * Implements hook_field_widget_multivalue_form_alter().
+ */
+function nidirect_landing_pages_field_widget_multivalue_form_alter(array &$elements, $form_state, array $context) {
+  // Change field_teaser in card_plain to use a textarea.
+  $field_definition = $context['items']->getFieldDefinition();
+  if ($field_definition->getTargetBundle() == "card_plain" && $field_definition->getName() == 'field_teaser') {
+    $elements[0]['value']['#type'] = 'textarea';
+    $elements[0]['value']['#attributes']['rows'] = 3;
+    $elements[0]['value']['#attributes']['cols'] = 60;
+  }
+}
+
+/**
+ * Implements hook_element_info_alter().
+ */
+function nidirect_landing_pages_element_info_alter(array &$info) {
+  if (!empty($info['text_format'])) {
+    $info['text_format']['#process'][] = 'nidirect_landing_pages_process_format';
+  }
+}
+
+/**
+ * Callback for processing text format element.
+ */
+function nidirect_landing_pages_process_format($element) {
+  // If we're on the layout builder custom block config route
+  // and we don't possess high level administrator permission
+  // then hide the basic_html option in favour of the landing_page_html
+  // format which is a slightly tailored text format.
+  $lb_routes = [
+    'layout_builder.update_block',
+    'layout_builder.add_block',
+  ];
+
+  if (in_array(\Drupal::routeMatch()->getRouteName(), $lb_routes) &&
+    \Drupal::currentUser()->hasPermission('use text format full_html') === FALSE) {
+
+    unset($element['format']['format']['#options']['basic_html']);
+    $element['format']['format']['#default_value'] = 'layout_builder_html';
+  }
+
+  return $element;
+}
+
+/**
+ * Implements hook_entity_presave().
+ */
+function nidirect_landing_pages_entity_presave(EntityInterface $entity) {
+  // This will fire when nodes are created or edited.
+  if ($entity->getEntityTypeId() === 'block_content') {
+    /** @var \Drupal\block_content\BlockContentInterface $entity */
+    if ($entity->hasField('field_manually_control_listing')) {
+      $manual_field = $entity->get('field_manually_control_listing');
+      if ($manual_field->getValue()[0]['value'] == 0) {
+        // Update the list of teasers on every save if manual
+        // control has not been selected.
+        $results = [];
+
+        $node = \Drupal::routeMatch()->getParameter('node');
+        if ($node instanceof NodeInterface && !empty($node->field_subtheme->target_id)) {
+          // Get a list of article teasers by term.
+          if (!empty($node->id())) {
+            $results = nidirect_landing_pages_retrieve_article_teasers_by_term($node->field_subtheme->target_id, $node->id());
+          }
+          if (!empty(!empty($node->field_subtheme->target_id))) {
+            $results += nidirect_landing_pages_retrieve_article_teasers_by_topic($node->field_subtheme->target_id);
+          }
+        }
+        // Sort entries alphabetically (regardless of type).
+        ksort($results);
+        $paras = [];
+        foreach ($results as $result) {
+          $paras[] = $result;
+        }
+        $entity->field_article_teasers = $paras;
+      }
+    }
+  }
+}
+
+/**
+ * Utility function to retrieve 'articles by term' view.
+ */
+function nidirect_landing_pages_retrieve_article_teasers_by_term(int $tid, int $current_nid) {
+  // Render the 'articles by term' view and process the results.
+  $results = [];
+  $articles_view = views_embed_view('articles_by_term', 'article_teasers_by_term_embed', $tid, $tid);
+  \Drupal::service('renderer')->renderRoot($articles_view);
+  foreach ($articles_view['view_build']['#view']->result as $row) {
+    $this_result = [];
+    // Exclude the current page from the list.
+    if ($row->nid == $current_nid) {
+      continue;
+    }
+    // This will be a link to an article.
+    $paragraph = Paragraph::create([
+      'type' => 'article_teaser',
+      'langcode' => 'en',
+      'field_article' => ['target_id' => $row->nid],
+    ]);
+    $paragraph->save();
+    $this_result = [
+      'target_id' => $paragraph->id(),
+      'target_revision_id' => $paragraph->getRevisionId(),
+    ];
+
+    // Place in an array keyed by lower case title (for sorting).
+    $title = strtolower($row->_entity->getTitle());
+    // Remove HTML.
+    $title = strip_tags($title);
+    // Now remove non-alpha chars.
+    $title = preg_replace('/[^a-z0-9 ]/i', '', $title);
+    $results[$title] = $this_result;
+  }
+  return $results;
+}
+
+/**
+ * Utility function to retrieve 'site subtopics' view.
+ */
+function nidirect_landing_pages_retrieve_article_teasers_by_topic(int $tid) {
+  // Render the 'site subtopics' view and process the results.
+  $results = [];
+  $articles_view = views_embed_view('site_subtopics', 'subtopic_teasers_by_topic_embed', $tid, $tid);
+  \Drupal::service('renderer')->renderRoot($articles_view);
+  foreach ($articles_view['view_build']['#view']->result as $row) {
+    $this_result = [];
+    // This will be a link to a taxonomy term.
+    $paragraph = Paragraph::create([
+      'type' => 'term_teaser',
+      'langcode' => 'en',
+      'field_term' => ['target_id' => $row->tid],
+    ]);
+    $paragraph->save();
+    $this_result = [
+      'target_id' => $paragraph->id(),
+      'target_revision_id' => $paragraph->getRevisionId(),
+    ];
+    // Place in an array keyed by lower case title (for sorting).
+    $title = strtolower($row->_entity->getName());
+    // Remove HTML.
+    $title = strip_tags($title);
+    // Now remove non-alpha chars.
+    $title = preg_replace('/[^a-z0-9 ]/i', '', $title);
+    $results[$title] = $this_result;
+  }
+  return $results;
+}
+
+/**
+ * Validation handler for landing page node forms.
+ *
+ * Checks whether there is already a landing page associated with
+ * the theme selected.
+ *
+ * @param array $form
+ *   The form array.
+ * @param \Drupal\Core\Form\FormStateInterface $form_state
+ *   The form state collection.
+ *
+ * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
+ * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
+ */
+function nidirect_landing_pages_form_validate(array &$form, FormStateInterface $form_state) {
+  $theme_selected = $form_state->getValue('field_subtheme')[0]['target_id'];
+
+  // Retrieve current node (if we are editing).
+  $current_node = \Drupal::routeMatch()->getParameter('node');
+
+  $query = \Drupal::entityTypeManager()->getStorage('node')->getQuery();
+  $query->condition('type', 'landing_page', '=');
+  if (!empty($current_node)) {
+    // Exclude current node.
+    $query->condition('nid', $current_node->id(), '!=');
+  }
+  $query->condition('field_subtheme', $theme_selected, '=');
+  // We are only worried about published nodes.
+  $query->condition('status', 1);
+  $result = $query->accessCheck(TRUE)->execute();
+
+  if (!empty($result)) {
+    $term = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->load($theme_selected);
+    $node = \Drupal::entityTypeManager()->getStorage('node')->load(array_pop($result));
+    $link = Link::createFromRoute($node->label(), 'entity.node.edit_form', ['node' => $node->id()])->toRenderable();
+
+    $message = new TranslatableMarkup("There is already a landing page node (@landing_page) associated with '@term_name'", [
+      '@landing_page' => \Drupal::service('renderer')->render($link),
+      '@term_name' => $term->label(),
+    ]);
+    $form_state->setErrorByName('field_subtheme', $message);
+  }
+}
+
+/**
+ * Re-use checks for landing page node with valid theme field selection.
+ *
+ * @param \Drupal\Core\Entity\EntityInterface $entity
+ *   The entity to evaluate.
+ *
+ * @return bool
+ *   TRUE if it is a landing page with theme field value, otherwise FALSE.
+ */
+function nidirect_landing_pages_is_node_with_subtheme_value(EntityInterface &$entity) {
+  if ($entity instanceof Node == FALSE) {
+    return FALSE;
+  }
+
+  $has_subtheme_value = $entity->hasField('field_subtheme') && !empty($entity->get('field_subtheme')->getString());
+
+  // Chain logic conditions: if one condition fails any remaining checks are
+  // skipped and the expression returns FALSE.
+  return ($entity->bundle() == 'landing_page' && $has_subtheme_value);
+}
+
+/**
+ * Detect whether a redirect already exists.
+ *
+ * @param string $source_path
+ *   The source path.
+ *
+ * @return string
+ *   Redirect URL if found, empty string if not.
+ */
+function nidirect_landing_pages_get_redirect_url(string $source_path) {
+  $redirect = \Drupal::service('redirect.repository')->findBySourcePath($source_path);
+  $redirect_url = '';
+
+  if (!empty(($redirect))) {
+    $redirect = array_pop($redirect);
+    $redirect_url = $redirect->getRedirectUrl()->toString();
+  }
+
+  return $redirect_url;
+}
+
+/**
+ * Landing page checks.
+ *
+ * - Whether there is already a landing page associated with the theme selected.
+ * - Create a redirect or warn user if there is a landing page for this theme.
+ *
+ * @param \Drupal\Core\Entity\EntityInterface $entity
+ *   The landing page node entity.
+ */
+function nidirect_landing_pages_create_theme_to_landing_page_redirect(EntityInterface $entity) {
+  /** @var \Drupal\node\NodeInterface $entity */
+  // Determine the theme path that will be the redirect source.
+  $subtheme_tid = $entity->get('field_subtheme')->getString();
+  $taxonomy_term_path = 'taxonomy/term/' . $subtheme_tid;
+
+  // Create a theme redirect if there is no existing redirect
+  // where the theme path is the redirect source.
+  $redirect_url = nidirect_landing_pages_get_redirect_url($taxonomy_term_path);
+  if (empty($redirect_url)) {
+    Redirect::create([
+      'redirect_source' => $taxonomy_term_path,
+      'redirect_redirect' => 'internal:/node/' . $entity->id(),
+      'language' => Language::LANGCODE_NOT_SPECIFIED,
+      'status_code' => '301',
+    ])->save();
+  }
+  else {
+    // Just check that the existing redirect is not for the current node.
+    $current_node = \Drupal::routeMatch()->getParameter('node');
+    if (!empty($current_node)) {
+      $this_alias = \Drupal::service('path_alias.manager')->getAliasByPath('/node/' . $current_node->id());
+      if ($this_alias == $redirect_url) {
+        // Redirect is for the current node, do not error.
+        return;
+      }
+    }
+
+    // Notify the user that a redirect could not be created.
+    \Drupal::messenger()->addWarning(t('A redirect from the theme taxonomy page to this content was not created,
+        because there are already one or more redirects used for the theme taxonomy page.'));
+
+    // Add a convenience link for users who can administer redirects.
+    if (\Drupal::currentUser()->hasPermission('administer redirects')) {
+      $link = Link::createFromRoute('review existing redirects', 'redirect.list', [], [
+        'query' => ['text' => $taxonomy_term_path],
+      ])->toString();
+
+      \Drupal::messenger()->addWarning(new TranslatableMarkup(
+          "You can @link to remove any unwanted redirects.", ["@link" => $link])
+      );
+    }
+  }
+}
+
+/**
+ * Deletes a theme to landing page redirect.
+ *
+ * @param \Drupal\Core\Entity\EntityInterface $entity
+ *   The landing page node.
+ */
+function nidirect_landing_pages_delete_theme_to_landing_page_redirect(EntityInterface $entity) {
+  /** @var \Drupal\node\NodeInterface $entity */
+
+  $redirect_repository = \Drupal::service('redirect.repository');
+
+  // The redirect to delete must have a source path that matches
+  // the path of the theme taxonomy term for the landing page and
+  // a destination path that matches the landing page node path.
+  $subtheme_tid = $entity->get('field_subtheme')->getString();
+  $source_path = '/taxonomy/term/' . $subtheme_tid;
+  $destination_path[] = 'internal:/node/' . $entity->id();
+
+  // Get all redirects whose destination is the landing page.
+  $redirects = $redirect_repository->findByDestinationUri($destination_path);
+  foreach ($redirects as $redirect) {
+    // Delete the redirect if its source is landing page theme path.
+    if ($redirect->getSourceUrl() == $source_path) {
+      $redirect->delete();
+    }
+  }
+}
+
+/**
+ * Implements hook_preprocess_block().
+ */
+function nidirect_landing_pages_preprocess_block(array &$variables) {
+  // Preprocess the article teasers by topic block.
+  if ($variables['plugin_id'] == 'inline_block:article_teasers_by_topic') {
+    nidirect_landing_pages_render_article_teasers_block($variables);
+  }
+}
+
+/**
+ * Implements hook_theme_suggestions_HOOK_alter().
+ */
+function nidirect_landing_pages_theme_suggestions_block_alter(array &$suggestions, array $variables) {
+  if (!empty($variables['elements']['content']['#block_content'])) {
+    $bundle = $variables['elements']['content']['#block_content']->bundle();
+
+    // Theme suggestion for custom nested card types.
+    if ($bundle === 'card_nested_standard' || $bundle === 'card_nested_wide') {
+      array_unshift($suggestions, 'block__inline_block__nested_card');
+    }
+  }
+}
+
+/**
+ * Utility function to render article teasers block.
+ */
+function nidirect_landing_pages_render_article_teasers_block(array &$variables) {
+  $manual_control_field = $variables['content']['#block_content']->get('field_manually_control_listing');
+  if (isset($manual_control_field) && $manual_control_field->getValue()[0]['value']) {
+    // Manual control has been taken, so just render the
+    // chosen teasers in the chosen order.
+    nidirect_landing_pages_render_article_teasers_manual_control($variables);
+  }
+  else {
+    // No manual control, so re-generate the list of teasers here.
+    nidirect_landing_pages_render_article_teasers_auto($variables);
+  }
+}
+
+/**
+ * Utility function to render teasers automatically.
+ */
+function nidirect_landing_pages_render_article_teasers_auto(array &$variables) {
+  $cache_tags = [];
+  $results = [];
+  $node = \Drupal::routeMatch()->getParameter('node');
+  if (empty($node)) {
+    // If we are in layout builder, we may have to extract the nid from the url.
+    $page_url = \Drupal::request()->getRequestUri();
+    $matches = [];
+    if (preg_match('/node.([0-9]*)/', $page_url, $matches)) {
+      if (count($matches) > 1) {
+        $nid = $matches[1];
+        if (!empty($nid)) {
+          $node = Node::load($nid);
+        }
+      }
+    }
+  }
+  if ($node instanceof NodeInterface && !empty($node->field_subtheme->target_id)) {
+    // Add custom cache tag for taxonomy term listing.
+    $cache_tags[] = 'taxonomy_term_list:' . $node->field_subtheme->target_id;
+    // Get a list of article teasers by term.
+    if (!empty($node->id())) {
+      $results = nidirect_landing_pages_render_article_teasers_by_term($node->field_subtheme->target_id, $node->id(), $cache_tags);
+    }
+    // Add in a list of article teasers by topic.
+    $results += nidirect_landing_pages_render_article_teasers_by_topic($node->field_subtheme->target_id, $cache_tags);
+    // Sort entries alphabetically (regardless of type).
+    ksort($results);
+    // Remove 'key' that was used internally.
+    foreach ($results as $key => $val) {
+      unset($results[$key]['key']);
+    }
+  }
+  $variables['teasers'] = $results;
+  $variables['#cache'] = [
+    'tags' => $cache_tags,
+  ];
+}
+
+/**
+ * Utility function to render teasers under manual control.
+ */
+function nidirect_landing_pages_render_article_teasers_manual_control(array &$variables) {
+  $cache_tags = [];
+  $teaser_list = $variables['content']['#block_content']->get('field_article_teasers');
+  $teasers = [];
+  foreach ($teaser_list as $teaser) {
+    $paragraph_id = $teaser->get('target_id')->getValue();
+    $paragraph = Paragraph::load($paragraph_id);
+    $this_teaser = [];
+    $paragraph_type = $paragraph->getType();
+    if ($paragraph_type == 'article_teaser') {
+      // Load up the article node and extract display details.
+      $this_teaser = nidirect_landing_pages_render_article_teaser($paragraph, $cache_tags);
+    }
+    elseif ($paragraph_type == 'term_teaser') {
+      // Load up the taxonomy term and extract display details.
+      $this_teaser = nidirect_landing_pages_render_term_teaser($paragraph, $cache_tags);
+    }
+    $teasers[] = $this_teaser;
+  }
+  $variables['teasers'] = $teasers;
+  $variables['#cache'] = [
+    'tags' => $cache_tags,
+  ];
+}
+
+/**
+ * Utility function to render one article teaser.
+ */
+function nidirect_landing_pages_render_article_teaser(Paragraph $paragraph, array &$cache_tags) {
+  $this_teaser = [];
+  $article = $paragraph->get('field_article');
+  $nid = $article->getValue()[0]['target_id'];
+  // Add cache tag for this article.
+  $cache_tags[] = 'node:' . $nid;
+  $node = Node::load($nid);
+  if (!empty($node)) {
+    $this_teaser['title_link'] = [
+      '#type' => 'link',
+      '#title' => $node->getTitle(),
+      '#url' => Url::fromRoute('entity.node.canonical', ['node' => $nid]),
+    ];
+    $this_teaser['more_link'] = [
+      '#type' => 'link',
+      '#title' => '... ' . t('more'),
+      '#url' => Url::fromRoute('entity.node.canonical', ['node' => $nid]),
+    ];
+    $this_teaser['summary_text'] = '';
+    if ($node->hasField('field_summary')) {
+      $this_teaser['summary_text'] = ['#markup' => $node->get('field_summary')->getValue()[0]['value']];
+    }
+  }
+  return $this_teaser;
+}
+
+/**
+ * Utility function to render one term teaser.
+ */
+function nidirect_landing_pages_render_term_teaser(Paragraph $paragraph, array &$cache_tags) {
+  $this_teaser = [];
+  $term_field = $paragraph->get('field_term');
+  $tid = $term_field->getValue()[0]['target_id'];
+  $term = Term::load($tid);
+  // Add cache tag for this term.
+  $cache_tags[] = 'taxonomy_term:' . $tid;
+  if (!empty($term)) {
+    $this_teaser['title_link'] = [
+      '#type' => 'link',
+      '#title' => $term->getName(),
+      '#url' => Url::fromRoute('entity.taxonomy_term.canonical', ['taxonomy_term' => $tid]),
+    ];
+    $this_teaser['more_link'] = [
+      '#type' => 'link',
+      '#title' => '... ' . t('more'),
+      '#url' => Url::fromRoute('entity.taxonomy_term.canonical', ['taxonomy_term' => $tid]),
+    ];
+    $this_teaser['summary_text'] = ['#markup' => $term->get('field_teaser')->getValue()[0]['value']];
+  }
+  return $this_teaser;
+}
+
+/**
+ * Utility function to render 'articles by term' view.
+ */
+function nidirect_landing_pages_render_article_teasers_by_term(int $tid, int $current_nid, array &$cache_tags) {
+  // Render the 'articles by term' view and process the results.
+  $results = [];
+
+  $related_content_manager = \Drupal::service('nidirect_related_content.manager');
+
+  $content = $related_content_manager->getNodes()->forTheme($tid)->excludingCurrentTheme()->asArray();
+
+  foreach ($content as $row) {
+    $this_result = [];
+
+    // This will be a link to an article.
+    $this_result['title_link'] = [
+      '#type' => 'link',
+      '#title' => $row['title'],
+      '#url' => $row['url'],
+    ];
+    $this_result['more_link'] = [
+      '#type' => 'link',
+      '#title' => '... ' . t('more'),
+      '#url' => $row['url'],
+    ];
+
+    $this_result['summary_text'] = ['#markup' => $row->entity->field_summary->value];
+    $this_result['key'] = 'a:' . $row['entity']->id();
+    // Place in an array keyed by lower case title (for sorting).
+    $title = strtolower($row['title']);
+    // Remove HTML.
+    $title = strip_tags($title);
+    // Now remove non-alpha chars.
+    $title = preg_replace('/[^a-z0-9 ]/i', '', $title);
+    $results[$title] = $this_result;
+    // Add cache tag for each article.
+    $cache_tags[] = 'node:' . $row['entity']->id();
+  }
+  return $results;
+}
+
+/**
+ * Utility function to render 'site subtopics' view.
+ */
+function nidirect_landing_pages_render_article_teasers_by_topic(int $tid, array &$cache_tags) {
+  // Render the 'site subtopics' view and process the results.
+  $results = [];
+
+  $related_content_manager = \Drupal::service('nidirect_related_content.manager');
+
+  $content = $related_content_manager->getSubThemes()->forTheme($tid)->excludingCurrentTheme()->asArray();
+
+  foreach ($content as $row) {
+    $thisresult = [];
+    // This will be a link to a taxonomy term.
+    $thisresult['title_link'] = [
+      '#type' => 'link',
+      '#title' => $row['title'],
+      '#url' => $row['url'],
+    ];
+    $thisresult['more_link'] = [
+      '#type' => 'link',
+      '#title' => '... ' . t('more'),
+      '#url' => $row['url'],
+    ];
+    $thisresult['summary_text'] = ['#markup' => $row['entity']->field_teaser->value];
+    $thisresult['key'] = 't:' . $row['entity']->id();
+    // Place in an array keyed by lower case title (for sorting).
+    $title = strtolower($row['title']);
+    // Remove HTML.
+    $title = strip_tags($title);
+    // Now remove non-alpha chars.
+    $title = preg_replace('/[^a-z0-9 ]/i', '', $title);
+    $results[$title] = $thisresult;
+    // Add cache tag for each listed term.
+    $cache_tags[] = 'taxonomy_term:' . $row['entity']->id();
+  }
+  return $results;
+}
+
+/**
+ * Implements template_preprocess_book_navigation().
+ */
+function nidirect_landing_pages_preprocess_book_navigation(&$variables) {
+  $node = \Drupal::routeMatch()->getParameter('node');
+
+  if ($node instanceof NodeInterface && $node->bundle() == 'landing_page') {
+
+    // Hide book navigation on landing pages that are the first page of a book.
+    if ($node->book && $node->book['depth'] == 1) {
+      // Remove list of book contents.
+      unset($variables['tree']);
+      // Hide previous/next book links.
+      $variables['has_links'] = FALSE;
+    }
+  }
+}

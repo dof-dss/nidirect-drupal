@@ -1,0 +1,486 @@
+// Variables
+//
+// Set variables for this site. These can be overridden in the scss code later.
+//
+// Weight: -9
+//
+// Style guide: init.variables
+
+/* Vertical rhythm presets =========================================== */
+// The font size set on the root html element.
+$base-font-size: 10px;
+
+// The base line height determines the basic unit of vertical rhythm.
+$base-line-height: 6px;
+
+// The length unit in which to output vertical rhythm values.
+// Supported values: px, em, rem.
+$rhythm-unit: 'rem';
+
+// Whether to output fallback values in px when using rem as the rhythm-unit.
+$rem-with-px-fallback: false;
+
+// Round the line height to the nearest half line height instead of the nearest integral line height.
+$round-to-nearest-half-line: true;
+
+/* Set the base images folder */
+// The relative path from the build directory, css/, to
+// the source directory, images/
+$image-url-path-to-source: '../' !default;
+// The relative path from the root sass directory to where your components usually lie.
+$image-url-subdirectory: 'images' !default;
+
+/* Layout ============================================================ */
+$max-grid-width: 980px;
+$max-content-width: 720px; // Apply to content in a single column.
+$grid-gap: 24px;
+$grid-gap-lg: 28px;
+$total-columns: 940; // yep - 940
+$article-max-width: 620px;
+$aside-max-width: 292px;
+$article-grid-max-width: 620fr;
+$aside-grid-max-width: 292fr;
+$article-float-max-width: 65.958%; // of 940 = 620
+$aside-float-max-width: 31.064%; // of 940 = 292
+
+/* Breakpoints ======================================================== */
+$mob: 480px;
+$phab: 600px;
+$tab: 768px;
+$lap: 980px;
+$desk: 1382px;
+
+$grid-breakpoints: (
+  xs: 0,
+  sm: $mob,
+  md: $phab,
+  lg: $tab,
+  xl: $lap,
+  xxl: $desk,
+) !default;
+
+// The amount lists, blockquotes and comments are indented.
+$indent-amount: 1.8rem;
+
+// Set the width of child grid items in the .header
+// The first child will typically be the site branding wrapper, additional items (typically just the main search form)
+// can be controlled with this variable which only becomes applicable @breakpoint $tab (768px).
+$header-template-columns: auto 400px !default;
+
+// Map out CSS properties for link states (:visited, :focus, :hover, :active) for different types of link.
+// Maps defined here are passed to the @mixin link-state-styles (see init/links/_links.scss) like so:
+//
+// a {
+//   @include link-state-style($link-base);
+// }
+//
+// The main reason for mapping out link state styles in this way is to gather together all the link state styles used
+// across the site in a single place. This hopefully makes it easier to configure links styles to comply with
+// design requirements and with WCAG colour contrast and state indicator requirements.
+//
+
+$link-base: (
+  // Base styling for all links.
+  // Maps for specific types of links may want/need to override styles configured here.
+  color: (
+    default: $link,
+    visited: $link-visited,
+    focus: #fff,
+    hover: $link,
+    active: $link-active
+  ),
+  background-color: (
+    default: transparent,
+    visited: null,
+    focus: $link,
+    hover: transparent,
+    active: null
+  ),
+  text-decoration: (
+    default: underline,
+    focus: none,
+  ),
+  text-decoration-color: (
+    hover: #{$charcoal},
+  ),
+  text-decoration-thickness: (
+    default: 1px,
+    hover: 2px,
+  ),
+  text-underline-offset: 3px,
+  outline: (
+    default: 0,
+    focus: '2px solid #{$link}',
+  ),
+  outline-offset: 0
+);
+
+$link-site-logo: (
+  color: transparent,
+  background-color: transparent,
+  text-decoration: none,
+  outline: (
+    default: 0,
+    focus: '.3rem dashed #{$grey}',
+    hover: '.3rem dashed #{$grey}',
+    active: '.3rem dashed #{$grey-dark}',
+  ),
+  font-size: 0
+);
+
+$link-site-logo-alt: (
+  display: inline-block,
+  color: transparent,
+  background-color: transparent,
+  text-decoration: none,
+  outline: (
+    default: 0,
+    focus: '.3rem dashed #{$grey}',
+    hover: '.9rem solid #fff',
+    active: '.9rem solid #fff',
+  ),
+  outline-offset: (
+    focus: 1.2rem,
+    hover: 0
+  ),
+  box-shadow: (
+    hover: '0 11px 0 0 #{$grey-dark}',
+    active: '0 12px 0 0 #{$charcoal}',
+  ),
+  font-size: 0
+);
+
+$link-main-menu: (
+  color: '#fff',
+  background-color: (
+    default: transparent,
+    active: color(brand-primary-dark),
+  ),
+  text-decoration: none,
+  box-shadow: (
+    default: none,
+    active: 'inset 8px 0 0 0 #{color(brand-secondary)}'
+  ),
+  outline: (
+    default: 0,
+    visited: 0,
+    focus: '3px solid #fff',
+    hover: '3px solid #fff',
+  ),
+  outline-offset: -8px,
+  transition: 'outline-color .3s'
+);
+
+$link-main-menu-horizontal: (
+  box-shadow: (
+    active: 'inset 0 -7px 0 0 #{color(brand-secondary)}'
+  )
+);
+
+$link-main-menu-social: (
+  outline: (
+    default: '0 solid transparent',
+    focus: '3px solid #fff',
+    hover: '3px solid #fff',
+    active: 0
+  ),
+  transition: 'outline-color .3s',
+  text-decoration: none
+);
+
+$link-footer: (
+  color: (
+    default: $link,
+    focus: #fff,
+    active: $link-active
+  ),
+  background-color: (
+    default: transparent,
+    focus: $charcoal,
+  ),
+  text-decoration: (
+    default: none,
+    hover: underline,
+  ),
+  text-decoration-color: (
+    hover: $brand-secondary,
+  ),
+  text-underline-offset: 3px,
+  outline: (
+    default: 0,
+    focus: '3px solid #{$charcoal}',
+  ),
+  outline-offset: (
+    default: null,
+    focus: 0,
+  )
+);
+
+$link-body-no-visited: (
+  color: (
+    default: $link,
+    focus: #fff,
+    active: $link-active
+  ),
+  background-color: (
+    default: transparent,
+    focus: $link,
+  ),
+  text-decoration: (
+    default: underline,
+    focus: none,
+  ),
+  text-decoration-color: (
+    hover: #{$charcoal},
+  ),
+  text-decoration-thickness: (
+    default: 1px,
+    hover: 2px,
+  ),
+  text-underline-offset: 3px,
+  outline: (
+    default: 0,
+    focus: '2px solid #{$link}',
+  ),
+  outline-offset: 0
+);
+
+$link-sub-menu: (
+  color: (
+    default: $link,
+    visited: $link,
+    focus: #fff,
+    hover: #fff,
+    active: #fff
+  ),
+  background-color: (
+    default: null,
+    visited: null,
+    focus: $grey-dark,
+    hover: $grey-dark,
+    active: #000
+  ),
+  text-decoration: none,
+  outline: (
+    default: null,
+    visited: null,
+    focus: '5px solid #{color(grey-dark)}',
+    hover: '5px solid #{color(grey-dark)}',
+    active: '5px solid #000'
+  ),
+  outline-offset: 0
+);
+
+$link-az-menu: (
+  color: (
+    default: $link,
+    hover: #fff,
+    active: $charcoal
+  ),
+  background-color: (
+    default: transparent,
+    hover:  color(brand-primary-dark),
+    active: color(brand-primary-light)
+  ),
+  text-decoration: 'none',
+  border: '1px solid #{$brand-primary-medium}',
+  outline: (
+    default: '0 solid transparent',
+    focus: '4px solid #{$link}',
+  ),
+  outline-offset: -1px,
+  transition: 'background-color .25s, outline-color .25s',
+  z-index: (
+    default: 0,
+    focus: 1
+  ),
+  position: relative
+);
+
+$link-pager: (
+  color: (
+    default: $link,
+    hover: #fff,
+    active: $charcoal
+  ),
+  background-color: (
+    default: transparent,
+    hover: color(brand-primary-dark),
+    active: color(brand-primary-light)
+  ),
+  text-decoration: 'none',
+  border: '1px solid #{$brand-primary-medium} !important',
+  outline: (
+    default: '0 solid transparent',
+    focus: '4px solid #{$link}',
+  ),
+  outline-offset: -1px,
+  transition: 'background-color .25s, outline-color .25s',
+  z-index: (
+    default: 0,
+    focus: 1,
+  ),
+  position: relative
+);
+
+$link-accordion-heading: (
+  // Accordion link headings are display block or inline-block. Link states changing the border thickness affect the
+  // the layout and make the headings jump. So we fake a bottom border with box-shadow instead.
+  box-shadow: (
+    default: '0 1px 0 0 #{$link}',
+    visited: null,
+    focus: '0 0 0 3px #{$link}',
+    hover: '0 2px 0 0 #{$brand-secondary}',
+    active: '0 2px 0 0 #{$link-active}'
+  ),
+  outline: 0,
+  text-decoration: 'none',
+);
+
+$link-skip: (
+  color: (
+    default: #fff
+  ),
+  background-color: (
+    default: $charcoal
+  ),
+  text-decoration: (
+    default: none,
+  ),
+  outline: 3px solid #ff0,
+  outline-offset: -6px,
+  opacity: (
+    default: 0,
+    hover: 1,
+    focus: 1
+  ),
+  transition: 'opacity .25s'
+);
+
+$link-facet-btn: (
+  border-top: (
+    default: '2px solid #fff'
+  ),
+  border-bottom: (
+    default: '2px solid #fff'
+  ),
+);
+
+$link-site-wide-alert: (
+  color: (
+    default: #fff,
+  ),
+  background-color: (
+    default: transparent,
+  ),
+  text-decoration: (
+    default: underline,
+    focus: none,
+  ),
+  text-decoration-color: (
+    default: #fff,
+  ),
+  text-decoration-thickness: (
+    default: 1px,
+    hover: 2px,
+  ),
+  text-underline-offset: 3px,
+  outline: (
+    default: 0,
+    focus: '3px solid #fff',
+  ),
+  outline-offset: 6px
+);
+
+$link-cookie-notice: (
+  color: (
+    default: $brand-primary,
+    focus: $link,
+    active: $link-active
+  ),
+  background-color: (
+    default: transparent,
+    focus: #fff,
+  ),
+  text-decoration: (
+    default: underline,
+    focus: none,
+  ),
+  text-decoration-color: (
+    focus: #{$link},
+    hover: #{$brand-primary},
+  ),
+  text-decoration-thickness: (
+    default: 1px,
+    focus: 2px,
+    hover: 2px,
+  ),
+  text-underline-offset: 3px,
+  outline: (
+    default: 0,
+    focus: '2px solid #fff',
+  ),
+  outline-offset: 0
+);
+
+$link-page-bottom: (
+  color: (
+    default: #fff,
+  ),
+  background-color: (
+    default: $steel-blue,
+    hover: darken($steel-blue, 5%),
+  ),
+  text-decoration: (
+    default: underline,
+  ),
+  text-decoration-color: (
+    hover: #fff,
+  ),
+  text-decoration-thickness: (
+    default: 1px,
+    hover: 2px,
+  ),
+  text-underline-offset: 3px,
+  outline: (
+    default: 0,
+    focus: '3px solid #{$charcoal}',
+  ),
+  z-index: (
+    default: 1,
+    focus: 2,
+  ),
+);
+
+$link-card--contact: (
+  color: (
+    default: #fff,
+    focus: $link,
+    hover: #fff,
+    active: #fff,
+  ),
+  background-color: (
+    default: transparent,
+    focus: #fff,
+    hover: transparent,
+    active: transparent,
+  ),
+  text-decoration: (
+    default: underline,
+    focus: none,
+    hover: underline,
+  ),
+  text-decoration-color: (
+    default: #fff,
+  ),
+  text-decoration-thickness: (
+    default: 1px,
+    hover: 2px,
+  ),
+  text-underline-offset: 3px,
+  outline: (
+    default: 0,
+    focus: '2px solid #fff',
+  ),
+  outline-offset: 0
+);

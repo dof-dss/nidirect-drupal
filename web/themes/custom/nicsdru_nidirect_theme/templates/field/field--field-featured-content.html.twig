@@ -1,0 +1,18 @@
+{#
+/**
+ * @file
+ * Theme implementation for the field_featured_content entity reference field.
+ * This is normally intended to act as a transparent container for the feature
+ * nodes rendering inside it.
+ *
+ * @see template_preprocess_field()
+ *
+ * @ingroup themeable
+ */
+#}
+{% set classes = ['card-deck', 'card-deck--list-to-x3'] %}
+<div{{ attributes.addClass(classes) }}>
+{% for item in items %}
+  {{ item.content }}
+{% endfor %}
+</div>

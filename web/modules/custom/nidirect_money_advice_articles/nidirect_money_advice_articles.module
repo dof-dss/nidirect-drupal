@@ -1,0 +1,36 @@
+<?php
+
+/**
+ * @file
+ * Contains nidirect_money_advice_articles.module.
+ */
+
+use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\migrate\MigrateExecutable;
+use Drupal\migrate\MigrateMessage;
+
+/**
+ * Implements hook_help().
+ */
+function nidirect_money_advice_articles_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    // Main module help for the nidirect_money_advice_articles module.
+    case 'help.page.nidirect_money_advice_articles':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('Import Money Advice Service RSS feed into articles.') . '</p>';
+      return $output;
+
+    default:
+  }
+}
+
+/**
+ * Cron callback to start migration import.
+ * @throws \Drupal\migrate\MigrateException
+ */
+function nidirect_money_advice_articles_import() {
+  $migration = \Drupal::service('plugin.manager.migration')->createInstance('money_advice_service_rss_articles');
+  $executable = new MigrateExecutable($migration, new MigrateMessage());
+  $executable->import();
+}

@@ -1,0 +1,316 @@
+<?php
+
+/**
+ * @file
+ * Install, update, uninstall & requirements hooks for NIDirect common module.
+ */
+
+use Drupal\Core\Database\Database;
+use Drupal\Core\Link;
+use Drupal\field\Entity\FieldConfig;
+use Drupal\field\Entity\FieldStorageConfig;
+use Drupal\user\Entity\User;
+use Drupal\user\UserInterface;
+
+/**
+ * Implements hook_install().
+ *
+ * Perform actions to set up the site for this module.
+ */
+function nidirect_common_install() {
+  // Create some test users for the Nightwatch tests that will come along later.
+  $name_list = [
+    '_news_super' => 'news_supervisor',
+    '_gp_author' => 'gp_author_user',
+    '_gp_super' => 'gp_supervisor_user',
+    '_apps' => 'apps_user',
+    '_hc_author' => 'health_condition_author_user',
+    '_hc_super' => 'health_condition_supervisor_user',
+    '_driving_super' => 'driving_instructor_supervisor_user',
+  ];
+  foreach ($name_list as $name => $role) {
+    // Add prefix from environment var.
+    $prefix = getenv('NW_TEST_USER_PREFIX');
+    $password = getenv('TEST_PASS');
+    // If prefix not set, do not create users.
+    if (empty($prefix) || empty($password)) {
+      \Drupal::logger('nidirect_common')->error(
+        'No test users created, prefix and password environment vars must be set.');
+      return;
+    }
+    $name = $prefix . $name;
+    $user = user_load_by_name($name);
+    if (empty($user)) {
+      \Drupal::logger('nidirect_common')->notice(t('Creating user @name', ['@name' => $name]));
+      $user = User::create([
+        'name' => $name,
+        'mail' => $name . '@localhost',
+        'status' => 1,
+        'pass' => $password,
+        'roles' => [$role, 'authenticated'],
+      ]);
+      $user->save();
+    }
+    else {
+      \Drupal::logger('nidirect_common')->notice(
+        'Did not create user @name as already exists.', ['@name' => $name]);
+    }
+  }
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function nidirect_common_uninstall() {
+  // Delete any users created in hook_install.
+  $name_list = [
+    '_news_super' => 'news_supervisor',
+    '_gp_author' => 'gp_author_user',
+    '_gp_super' => 'gp_supervisor_user',
+    '_apps' => 'apps_user',
+    '_hc_author' => 'health_condition_author_user',
+    '_hc_super' => 'health_condition_supervisor_user',
+    '_driving_super' => 'driving_instructor_supervisor_user',
+  ];
+  foreach ($name_list as $name => $role) {
+    // Add prefix from environment var.
+    $prefix = getenv('NW_TEST_USER_PREFIX');
+    $name = $prefix . $name;
+    /** @var \Drupal\user\UserInterface $user */
+    $user = user_load_by_name($name);
+    if (!$user instanceof UserInterface) {
+      \Drupal::logger('nidirect_common')->notice(t('Deleting user @name', ['@name' => $name]));
+      $user->delete();
+    }
+  }
+}
+
+/**
+ * {@inheritdoc}
+ *
+ * Implements hook_requirements().
+ */
+function nidirect_common_requirements($phase) {
+  $requirements = [];
+
+  if ($phase === 'runtime') {
+    $telephone_nids = _check_telephone_field_values();
+
+    if (!empty($telephone_nids)) {
+      $requirements['nidirect_common']['title'] = t('NIDirect');
+      $requirements['nidirect_common']['value'] = t('The following nodes have problematic telephone numbers which may prevent the page from displaying.');
+      foreach ($telephone_nids as $telephone_nid) {
+        $link = Link::createFromRoute($telephone_nid, 'entity.node.canonical', ['node' => $telephone_nid])->toRenderable();
+        $link['#suffix'] = ', ';
+        $links[] = $link;
+      }
+      $requirements['nidirect_common']['description'] = \Drupal::service('renderer')->renderPlain($links);
+      $requirements['nidirect_common']['severity'] = REQUIREMENT_ERROR;
+    }
+  }
+
+  return $requirements;
+}
+
+/**
+ * Implementations of hook_update_N().
+ */
+
+/**
+ * Convert field_summary to plain text long.
+ */
+function nidirect_common_update_8001() {
+  $database = \Drupal::database();
+
+  // Fetch the existing summary field data for injecting later.
+  $summary_data = $database->select('node__field_summary', 'n')
+    ->fields('n', [
+      'bundle',
+      'deleted',
+      'entity_id',
+      'revision_id',
+      'langcode',
+      'delta',
+      'field_summary_value',
+    ])
+    ->execute()
+    ->fetchAllAssoc('entity_id');
+
+  // Remove markup from summary field values.
+  foreach ($summary_data as $id => $data) {
+    $summary_data[$id]->field_summary_value = strip_tags($data->field_summary_value);
+  }
+
+  $field_storage = FieldStorageConfig::loadByName('node', 'field_summary');
+
+  // Retrieve and update summary field storage.
+  $summary_field_storage = $field_storage->toArray();
+  $summary_field_storage['type'] = 'string_long';
+  $summary_field_storage['settings'] = [];
+
+  // Retrieve and update summary field config for each node type.
+  foreach ($field_storage->getBundles() as $id => $label) {
+    $field = FieldConfig::loadByName('node', $id, 'field_summary');
+    /** @var \Drupal\field\FieldConfigInterface $field */
+    $field_config = $field->toArray() ?? [];
+
+    if (empty($field_config['field_type'])) {
+      continue;
+    }
+
+    if ($field_config['field_type'] === 'text_long') {
+      // Change the field type from text_long to string_long.
+      $field_config['field_type'] = 'string_long';
+      // Reset the settings configuration, this will be updated from the yml.
+      $field_config['settings'] = [];
+      $node_summary_fields[] = $field_config;
+    }
+  }
+
+  // Nothing to update, exit.
+  if (empty($node_summary_fields)) {
+    return;
+  }
+
+  // Delete the existing summary field storage and purge any existing data.
+  $field_storage->delete();
+  field_purge_batch(100);
+
+  // Create storage for summary field.
+  $summary_field_storage = FieldStorageConfig::create($summary_field_storage);
+  $summary_field_storage->save();
+
+  // Create new summary fields for each node type.
+  foreach ($node_summary_fields as $field) {
+    $field_config = FieldConfig::create($field);
+    $field_config->save();
+  }
+
+  // Inject existing dummary data into new fields.
+  if (!empty($summary_data)) {
+    foreach ($summary_data as $row) {
+      $database->insert('node__field_summary')
+        ->fields((array) $row)
+        ->execute();
+    }
+  }
+
+  // Add the updated field to the Form Display mode.
+  foreach ($node_summary_fields as $node_summary_field) {
+    \Drupal::entityTypeManager()
+      ->getStorage('entity_form_display')
+      ->load('node.' . $node_summary_field['bundle'] . '.default')
+      ->setComponent('field_summary', [
+        'weight' => 4,
+        'type' => 'string_textarea',
+        'settings' => [],
+      ])->save();
+  }
+}
+
+/**
+ * Update paragraph and term teaser max length.
+ */
+function nidirect_common_update_8002() {
+  $original_data = [];
+  $database = \Drupal::database();
+
+  $tables = [
+    'paragraph__field_teaser',
+    'paragraph_revision__field_teaser',
+    'taxonomy_term__field_teaser',
+    'taxonomy_term_revision__field_teaser',
+    'node__field_teaser',
+    'node_revision__field_teaser',
+  ];
+
+  $fields = [
+    'paragraph.field_teaser',
+    'taxonomy_term.field_teaser',
+    'node.field_teaser',
+  ];
+
+  // Store the original data for each table so we can restore it
+  // after updating the field definition.
+  foreach ($tables as $table) {
+    $original_data[$table] = $database->select($table)->fields($table)
+      ->execute()
+      ->fetchAll(PDO::FETCH_ASSOC);
+
+    $database->truncate($table)->execute();
+  }
+
+  // Fetch the existing field definition, update with the new config and update
+  // the existing field storage.
+  foreach ($fields as $field) {
+    $teaser_field = \Drupal::entityTypeManager()->getStorage('field_storage_config')->load($field);
+
+    $new_teaser_field = $teaser_field->toArray();
+    $new_teaser_field['settings']['max_length'] = 255;
+
+    $new_teaser_field = FieldStorageConfig::create($new_teaser_field);
+    if (!empty($new_teaser_field->original)) {
+      $new_teaser_field->original = $new_teaser_field;
+      $new_teaser_field->enforceIsNew(FALSE);
+
+      $new_teaser_field->save();
+    }
+  }
+
+  // Restore the original data.
+  foreach ($tables as $table) {
+    $insert_query = $database
+      ->insert($table)
+      ->fields(array_keys(end($original_data[$table])));
+    foreach ($original_data[$table] as $row) {
+      $insert_query->values(array_values($row));
+    }
+    $insert_query->execute();
+  }
+}
+
+/**
+ * Remove Telephone lookup entity.
+ */
+function nidirect_common_update_8003() {
+  $telephone_lookup_bundle = \Drupal::entityTypeManager()->getStorage('node_type')->load('telephone_lookup');
+
+  if ($telephone_lookup_bundle) {
+    $telephone_lookup_bundle->delete();
+  }
+}
+
+
+/**
+ * Create the Easy Google Analytics Counter Page_Views column if not present.
+ */
+function nidirect_common_update_8004() {
+  $schema = Database::getConnection()->schema();
+
+  if (!$schema->fieldExists('node_field_data', 'page_views')) {
+    $page_views_column = [
+      'type' => 'int',
+      'description' => "The google analytics page views of node.",
+    ];
+    $schema->addField(
+      'node_field_data',
+      'page_views',
+      $page_views_column
+    );
+  }
+}
+
+/**
+ * Return a list of nids with problematic telephone numbers.
+ */
+function _check_telephone_field_values() {
+  // Query the telephone field for numbers with alpha characters as these
+  // will raise an error when trying to process and generate a tel: protocol
+  // link on the page.
+  $database = \Drupal::database();
+  $query = $database->query("SELECT entity_id FROM {node__field_telephone} WHERE field_telephone_telephone_number REGEXP '[a-z]'");
+  $results = $query->fetchCol(0);
+
+  return $results;
+
+}

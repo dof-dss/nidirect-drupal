@@ -1,0 +1,92 @@
+<?php
+
+/**
+ * @file
+ * Contains nidirect_cold_weather_payments.module.
+ */
+
+use Drupal\Core\Cache\Cache;
+use Drupal\Core\Render\BubbleableMetadata;
+use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\nidirect_cold_weather_payments\Form\ColdWeatherPaymentCheckerForm;
+use Drupal\node\NodeInterface;
+
+/**
+ * Implements hook_help().
+ */
+function nidirect_cold_weather_payments_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    // Main module help for the nidirect_cold_weather_payments module.
+    case 'help.page.nidirect_cold_weather_payments':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('Displays information about Cold Weather Payment Scheme payments and dates for a postcode.') . '</p>';
+      return $output;
+
+    default:
+  }
+}
+
+/**
+ * Implements hook_token_info().
+ */
+function nidirect_cold_weather_payments_token_info() {
+  $types['nidirect'] = ['name' => 'NI Direct'];
+
+  $tokens['cwp_checker'] = [
+    'name' => t('Cold Weather Payment checker'),
+    'description' => t('Displays Cold Weather Payment checker form.'),
+  ];
+
+  return [
+    'types' => $types,
+    'tokens' => ['nidirect' => $tokens],
+  ];
+}
+
+/**
+ * Implements hook_tokens().
+ */
+function nidirect_cold_weather_payments_tokens($type, $tokens, array $data, array $options, BubbleableMetadata $bubbleable_metadata) {
+  $replacements = [];
+
+  if ($type == 'nidirect') {
+    foreach ($tokens as $name => $original) {
+      switch ($name) {
+        case 'cwp_checker':
+          $output = \Drupal::formBuilder()->getForm(ColdWeatherPaymentCheckerForm::class);
+          $replacements[$original] = \Drupal::service('renderer')->render($output);
+          break;
+      }
+    }
+  }
+  return $replacements;
+}
+
+/**
+ * Implements hook_theme().
+ */
+function nidirect_cold_weather_payments_theme($existing, $type, $theme, $path) {
+  return [
+    'cwp_search_result' => [
+      'variables' => [
+        'postcode' => NULL,
+        'period_start' => NULL,
+        'period_end' => NULL,
+        'payments' => NULL,
+      ],
+    ],
+  ];
+}
+
+/**
+ * Implements hook_node_presave().
+ */
+function nidirect_cold_weather_payments_node_presave(NodeInterface $node) {
+  if ($node->bundle() === 'cold_weather_payment') {
+    // Annoyingly this is the only way to flush the caches for CWP ajaxresponses
+    // Although we are including the node:id tag for the original CWP content
+    // this never gets flushed from the cache when this node is updated.
+    Cache::invalidateTags(['config:rest.resource.cold_weather_payment_resource']);
+  }
+}

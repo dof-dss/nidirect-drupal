@@ -1,0 +1,165 @@
+<?php
+
+/**
+ * @file
+ * Contains nidirect_hospital_waiting_times.module.
+ */
+
+use Drupal\Core\Cache\Cache;
+use Drupal\Core\Cache\CacheBackendInterface;
+use Drupal\Core\Render\BubbleableMetadata;
+use Drupal\Core\Routing\RouteMatchInterface;
+
+/**
+ * Implements hook_help().
+ */
+function nidirect_hospital_waiting_times_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    // Main module help for the nidirect_hospital_waiting_times module.
+    case 'help.page.nidirect_hospital_waiting_times':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('Fetch and display hospital waiting times') . '</p>';
+      return $output;
+
+    default:
+  }
+}
+
+/**
+ * Implements hook_token_info().
+ */
+function nidirect_hospital_waiting_times_token_info() {
+  $types['nidirect'] = ['name' => 'NI Direct'];
+
+  $tokens['hospital_emergency_waiting_times'] = [
+    'name' => t('Hospital emergency department waiting times'),
+    'description' => t('Displays average hospital emergency department waiting times.'),
+  ];
+
+  return [
+    'types' => $types,
+    'tokens' => ['nidirect' => $tokens],
+  ];
+}
+
+/**
+ * Implements hook_tokens().
+ */
+function nidirect_hospital_waiting_times_tokens($type, $tokens, array $data, array $options, BubbleableMetadata $bubbleable_metadata) {
+  $replacements = [];
+
+  if ($type == 'nidirect') {
+    foreach ($tokens as $name => $original) {
+      switch ($name) {
+        case 'hospital_emergency_waiting_times':
+          $output = nidirect_hospital_waiting_times_render_times();
+          $replacements[$original] = \Drupal::service('renderer')->render($output);
+          break;
+      }
+    }
+  }
+  return $replacements;
+}
+
+/**
+ * Implements hook_theme().
+ */
+function nidirect_hospital_waiting_times_theme() {
+  return [
+    'nidirect_hospital_waiting_times' => [
+      'render element' => 'children',
+      'variables' => [
+        'hospitals' => NULL,
+        'updated' => NULL,
+      ],
+    ],
+  ];
+}
+
+/**
+ * Generate and return render array for hospital waiting times.
+ *
+ * @return array
+ *   render array
+ */
+function nidirect_hospital_waiting_times_render_times($attempts = 0) {
+  $data = NULL;
+  $updated = NULL;
+  $cache = \Drupal::cache();
+
+  $cache_data = $cache->get('hospital_emergency_waiting_times');
+
+  // Attempt to fetch and cache the feed data 3 times before quitting.
+  if (!$cache_data && $attempts < 3) {
+    nidirect_hospital_waiting_times_update_cache();
+    nidirect_hospital_waiting_times_render_times(++$attempts);
+  }
+
+  // We have data, update the twig vars.
+  if ($cache_data && $cache_data->data) {
+    $data = $cache_data->data;
+    $updated = date('Y-m-d H:i:s', (int) $cache_data->created);
+  }
+
+  return [
+    '#theme' => 'nidirect_hospital_waiting_times',
+    '#hospitals' => $data,
+    '#updated' => $updated,
+    '#cache' => [
+      'tags' => [
+        'hospital_waiting_times'
+      ],
+    ],
+  ];
+}
+
+/**
+ * Fetch and return waiting times data from feed.
+ *
+ * @return array|null
+ *   data array of hospital information.
+ */
+function nidirect_hospital_waiting_times_fetch_feed_data() {
+  $data = NULL;
+  $client = \Drupal::service('http_client');
+  $config = \Drupal::config('nidirect_hospital_waiting_times.settings');
+  $url = $config->get('data_source_url');
+
+  try {
+    $response = $client->get($url);
+
+    if ($response->getStatusCode() == 200) {
+      $xml_string = $response->getBody()->getContents();
+      $xml_doc = simplexml_load_string($xml_string);
+
+      $data = [];
+      foreach ($xml_doc->EDrow as $hospital) {
+        $data[] = [
+          'name' => (string) $hospital->{'EDName'},
+          'type' => (string) $hospital->{'EDType'},
+          'wait' => (string) $hospital->{'AverageWait'},
+          'hours' => (string) $hospital->{'EDHours'},
+        ];
+      }
+    }
+  }
+  catch (Exception $e) {
+    \Drupal::logger('nidirect_hospital_waiting_times')->error($e);
+  }
+
+  return $data;
+}
+
+/**
+ * Updates cache if data is returned from the feed.
+ */
+function nidirect_hospital_waiting_times_update_cache() {
+  $data = nidirect_hospital_waiting_times_fetch_feed_data();
+
+  if (!is_null($data)) {
+    $cache = \Drupal::cache();
+    Cache::invalidateTags(['hospital_waiting_times']);
+    $cache->set('hospital_emergency_waiting_times', $data, CacheBackendInterface::CACHE_PERMANENT);
+  }
+}

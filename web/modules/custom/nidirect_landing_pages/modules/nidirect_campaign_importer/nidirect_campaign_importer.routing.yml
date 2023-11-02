@@ -1,0 +1,18 @@
+nidirect_campaign_importer.dashboard:
+  path: '/nidirect-campaign-importer/dashboard'
+  defaults:
+    _title: 'Campaign importer dashboard'
+    _controller: '\Drupal\nidirect_campaign_importer\Controller\CampaignImporterDashboardController::build'
+  requirements:
+    _permission: 'administer campaign importer'
+  options:
+    _admin_route: TRUE
+nidirect_campaign_importer.creator:
+  path: '/nidirect-campaign-importer/creator/{nid}'
+  defaults:
+    _title: 'Create campaign/landing page'
+    _controller: '\Drupal\nidirect_campaign_importer\Controller\CampaignImporterImportController::build'
+  requirements:
+    _permission: 'administer campaign importer'
+  options:
+    _admin_route: TRUE

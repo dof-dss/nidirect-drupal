@@ -1,0 +1,15 @@
+{% set classes = ['card-deck', 'card-deck--list-to-x2'] %}
+{% if content %}
+  <div {{ attributes.addClass(classes) }}>
+    {% if content.one %}
+      <section{{ region_attributes.one }}>
+        {{ content.one }}
+      </section>
+    {% endif %}
+    {% if content.two %}
+      <section{{ region_attributes.two }}>
+        {{ content.two }}
+      </section>
+    {% endif %}
+  </div>
+{% endif %}

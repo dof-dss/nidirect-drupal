@@ -1,0 +1,23 @@
+<div id="emergency-department-average-waiting-times">
+  {% if hospitals|length > 0 %}
+  <p>Last updated: {{ updated|date('g.i a, l j F Y') }}.</p>
+  <table>
+    <tbody>
+      <tr>
+        <th>Hospital/Unit</th>
+        <th>Opening hours</th>
+        <th>Average waiting time to be seen</th>
+      </tr>
+      {% for hospital in hospitals %}
+      <tr>
+        <td>{{ hospital.name }} - {{ hospital.type }}</td>
+        <td>{{ hospital.hours }}</td>
+        <td>{{ hospital.wait }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <p>Sorry, we are unable to display the hospital waiting times.</p>
+  {% endif %}
+</div>

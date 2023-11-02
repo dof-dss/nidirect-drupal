@@ -1,0 +1,320 @@
+<?php
+
+/**
+ * @file
+ * Contains nidirect_contacts.module.
+ */
+
+use Drupal\Component\Utility\Html;
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Link;
+use Drupal\Core\Url;
+use Drupal\views\Plugin\views\query\QueryPluginBase;
+use Drupal\views\ViewExecutable;
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function nidirect_contacts_form_views_exposed_form_alter(&$form, FormStateInterface $form_state) {
+  if ($form['#id'] == 'views-exposed-form-contacts-contact-search') {
+    // Make sort options invisible, but because the view embed filters are
+    // defined as exposed, we still get to use URL parameters despite having no
+    // visible form elements.
+    hide($form['sort_by']);
+    hide($form['sort_order']);
+    // Add an extra class if this is a search results page.
+    $user_input = $form_state->getUserInput();
+    if (!empty($user_input) && !empty($user_input['query_contacts_az'])) {
+      $form['#attributes']['class'][] = 'search-form--contacts';
+    }
+  }
+
+  if ($form['#id'] == 'views-exposed-form-contacts-a-z-contacts-by-letter') {
+    $form['#action'] = \Drupal::service('router.route_provider')->getRouteByName('nidirect_contacts.default')->getPath();
+  }
+}
+
+/**
+ * Implements hook_views_query_alter().
+ */
+function nidirect_contacts_views_query_alter(ViewExecutable $view, QueryPluginBase $query) {
+  if ($view->id() === 'contacts_a_z' && $view->current_display === 'contacts_by_letter') {
+    /** @var \Drupal\views\Plugin\views\query\Sql $query */
+    // The search letter is passed in via a Contextual argument against the
+    // title field.
+    $letter = $query->where[0]['conditions'][0]['value'];
+
+    // Alter the SQL query on the node title field.
+    $query->where[1]['conditions'][0]['value'] = $letter . '%';
+    $query->where[1]['conditions'][0]['operator'] = 'LIKE';
+
+    // And apply the same for the supplementary title field.
+    $query->where[2]['conditions'][0]['value'] = $letter . '%';
+    $query->where[2]['conditions'][0]['operator'] = 'LIKE';
+
+    // Remove the contextual argument to prevent the creation of an 'AND' clause
+    // in the final SQL.
+    unset($query->where[0]);
+  }
+}
+
+/**
+ * Implements hook_preprocess_views_view().
+ */
+function nidirect_contacts_preprocess_views_view(&$variables) {
+  if (!preg_match('/^contacts/', $variables['id'])) {
+    return;
+  }
+
+  if (!in_array($variables['display_id'], [
+    'contact_search',
+    'contacts_by_letter',
+  ])) {
+    return;
+  }
+
+  $q = \Drupal::request()->query->all();
+  $route_name = \Drupal::routeMatch()->getRouteName();
+
+  // Reset link - link text depends on whether we are using the a-z or the search.
+  $reset_link_text = ($route_name == 'nidirect_contacts.letter') ? 'show search | reset a-z' : 'new search | show a-z';
+
+  // Add 'data-self-ref' so that these self referencing links are not removed.
+  $options = [
+    'attributes' => [
+      'data-self-ref' => ['false'],
+    ],
+  ];
+
+  $reset_link = Link::createFromRoute($reset_link_text, 'nidirect_contacts.default', [], $options);
+
+  // Add reset link if search has been conducted or viewing a-z.
+  if (!empty($q) || $route_name == 'nidirect_contacts.letter') {
+    $variables['links']['reset_link'] = $reset_link->toRenderable();
+  }
+
+  // If we are looking at the A-Z ...
+  if ($route_name == 'nidirect_contacts.letter') {
+
+    // Add a-z block.
+    $az_block = \Drupal::service('plugin.manager.block')->createInstance('contact_az_block', []);
+    $variables['header']['az'] = $az_block->build();
+
+    // Add result count to letter search.
+    if ($variables['view']->total_rows > 0) {
+      $variables['row_count'] = \Drupal::translation()->formatPlural(
+        $variables['view']->total_rows,
+        '@count result',
+        '@count results',
+        ['@count' => $variables['view']->total_rows]
+      );
+    }
+  }
+
+  // If we are looking at contacts search results ...
+  if ($route_name == 'nidirect_contacts.default' && !empty($q['query_contacts_az'])) {
+
+    // Hide the search input label.
+    $variables['exposed']['query_contacts_az']['#title_display'] = 'invisible';
+
+    // Generate results heading containing results count and sort options.
+    // Need a unique id for the results heading.
+    $results_header_id = Html::getUniqueId('results-heading');
+
+    // Sort option links based on current URI parameters.
+    // Sort alphabetically link options.
+    $title_options = [
+      'query' => [
+        'sort_by' => 'title',
+        'sort_order' => 'ASC',
+        'query_contacts_az' => $q['query_contacts_az'],
+      ],
+      'fragment' => $results_header_id,
+    ];
+
+    // Sort by relevance options.
+    $relevance_options = [
+      'query' => [
+        'sort_by' => 'search_api_relevance',
+        'sort_order' => 'DESC',
+        'query_contacts_az' => $q['query_contacts_az'],
+      ],
+      'fragment' => $results_header_id,
+    ];
+
+    // Determine which sort is currently active.
+    // Default is to set to relevance.
+    $active_sort = $q['sort_by'] ?? 'search_api_relevance';
+
+    // Set the sort options render array.
+    $sort_options = [
+      '#type' => 'container',
+      '#attributes' => [
+        'class' => [
+          'subtitle view-sort-options',
+        ],
+      ],
+    ];
+
+    if ($active_sort === 'title') {
+      $sort_options['sort_label'] = [
+        '#type' => 'html_tag',
+        '#tag' => 'span',
+        '#value' => t('sorted alphabetically'),
+        '#attributes' => [
+          'class' => ['label-inline'],
+        ],
+      ];
+      $sort_options['sort_link'] = [
+        '#type' => 'link',
+        '#title' => 'sort by relevance',
+        '#url' => Url::fromRoute('nidirect_contacts.default', [], $relevance_options),
+        '#attributes' => [
+          'data-self-ref' => ['false'],
+        ],
+      ];
+    }
+    elseif ($active_sort === 'search_api_relevance') {
+      $sort_options['sort_label'] = [
+        '#type' => 'html_tag',
+        '#tag' => 'span',
+        '#value' => t('sorted by relevance'),
+        '#attributes' => [
+          'class' => ['label-inline'],
+        ],
+      ];
+      $sort_options['sort_link'] = [
+        '#type' => 'link',
+        '#title' => 'sort alphabetically',
+        '#url' => Url::fromRoute('nidirect_contacts.default', [], $title_options),
+        '#attributes' => [
+          'data-self-ref' => ['false'],
+        ],
+      ];
+    }
+
+    // Add the results heading with result count and sort options.
+    $variables['header']['result'] = [
+      '#type' => 'html_tag',
+      '#tag' => 'h2',
+      '#attributes' => [
+        'id' => $results_header_id,
+        'class' => ['view--count'],
+      ],
+      '#value' => \Drupal::translation()->formatPlural(
+        $variables['view']->total_rows,
+        '@count result',
+        '@count results',
+        ['@count' => $variables['view']->total_rows]
+      ),
+    ];
+
+    // Add in the sort options if more than one result.
+    if ($variables['view']->total_rows > 1) {
+      $variables['header']['result']['sort_options'] = $sort_options;
+    }
+  }
+}
+
+/**
+ * Implements hook_preprocess_node().
+ */
+function nidirect_contacts_preprocess_node(&$variables) {
+  $field_address = &$variables['content']['field_address'];
+  $field_location = &$variables['content']['field_location'];
+
+  if (empty($field_address)) {
+    return;
+  }
+
+  if (empty($field_address[0]['#address_format'])) {
+    return;
+  }
+
+  $required_fields = $field_address[0]['#address_format']->getRequiredFields();
+
+  // If the address field values don't have any of the required field values,
+  // hide the location field.
+  $has_value = FALSE;
+  foreach ($required_fields as $field_id) {
+    $field_id = nidirect_contacts_camel_to_underscore($field_id, '_');
+    if (!empty($field_address[0][$field_id]['#value'])) {
+      $has_value = TRUE;
+    }
+  }
+
+  if ($has_value == FALSE) {
+    hide($field_location);
+    hide($field_address);
+  }
+}
+
+/**
+ * Implements hook_views_pre_render().
+ */
+function nidirect_contacts_views_pre_render(ViewExecutable $view) {
+  if ($view->id() == 'contacts_a_z' && $view->current_display) {
+    $search_letter = $view->args[0];
+
+    $results = &$view->result;
+    foreach ($results as $key => &$result) {
+      /** @var \Drupal\views\ResultRow $result */
+      // If the current result doesn't start with the search letter it's been
+      // added to the results because we have a match with the Supplementary
+      // contact. Extract that Supplementary title and replace the entity
+      // result title. We also update the node_field_data_title so we can
+      // extract an array of titles for sorting the results.
+      if (strtolower(substr($result->node_field_data_title ?? '', 0, 1)) !== $search_letter) {
+        /** @var \Drupal\node\NodeInterface $entity */
+        $entity = $result->_entity;
+        $supplementary_contact = $entity->get('field_supplementary_contact');
+        $node_title = $supplementary_contact->getString();
+
+        // Ignore next phpstan error; no appropriate setting function
+        // on the public properties the ResultRow object contains.
+
+        // @phpstan-ignore-next-line.
+        $result->node_field_data_title = $node_title;
+
+        /** @var \Drupal\node\NodeInterface $node */
+        $node = $result->_entity;
+        $node->setTitle($node_title);
+      }
+    }
+
+    // Alphabetically sort the updated results on the node_field_data_title.
+    // SORT_ASC is case sensitive to we need to normalise the result array
+    // before sorting to get the desired effect.
+    $results_lowercase = array_map('strtolower', array_column($results, 'node_field_data_title'));
+    array_multisort($results_lowercase, SORT_ASC, $results);
+
+    // Views also needs the ResultRow index property updated to assist with
+    // rendering. Unclear why it can't rely on the natural array order but
+    // without this you see nodes with supplementary titles use their
+    // entity title in the sort sequence, which we don't want here.
+    // Updating that index property gets the sequence in step with the
+    // preprocessed title values above.
+    foreach ($results as $key => &$result) {
+      $result->index = $key;
+    }
+
+    $view->result = $results;
+  }
+}
+
+/**
+ * Convenience function to juggle camel case ids from AddressFormat.php
+ * to snake case ids which match up with field ids.
+ *
+ * Reference: https://stackoverflow.com/questions/40514051/using-preg-replace-to-convert-camelcase-to-snake-case.
+ * @param string $input_string
+ *   The input string.
+ * @param string $separator
+ *   Underscore character (defaults to '-').
+ * @return string
+ *   A parsed/replaced string.
+ */
+function nidirect_contacts_camel_to_underscore(string $input_string, string $separator = "-") {
+  return strtolower(preg_replace(
+    '/(?<=\d)(?=[A-Za-z])|(?<=[A-Za-z])(?=\d)|(?<=[a-z])(?=[A-Z])/', $separator, $input_string));
+}

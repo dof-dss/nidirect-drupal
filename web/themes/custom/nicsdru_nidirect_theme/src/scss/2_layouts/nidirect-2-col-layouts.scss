@@ -1,0 +1,92 @@
+/*
+ * @file
+ * Provides the layout styles for nidirect front page and theme taxonomy term pages.
+ */
+
+@import '../init';
+
+// Front page layout / theme page layout
+//
+// The front page and theme taxonomy pages have similar layout.
+//
+// Markup: ../kss-templates/layouts-nidirect-2-col.twig
+//
+// Weight: -6
+//
+// Style guide: layouts.nidirect-two-column
+
+.layout--front,
+.layout--theme-term {
+
+  // IE fix.
+  @media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
+    grid-template-columns: 1fr;
+    grid-template-rows: repeat(2, min-content);
+    grid-row-gap: 0;
+  }
+
+  @include breakpoint($tab) {
+    // 620 + 20 + 300 = 940
+    grid-template-columns: 620fr 300fr;
+    grid-template-rows: auto;
+    grid-gap: 0 20px;
+  }
+}
+
+.section {
+
+  &--info-services h2 {
+    margin-top: 0;
+  }
+
+  &--info-services,
+  &--popular {
+    padding-bottom: 1.5em;
+  }
+
+  &--popular {
+    background-color: $grey-light;
+    padding: 2em 15px 0;
+    border-top: 5px solid color(brand-primary-medium);
+
+    @include breakpoint($phab) {
+      display: grid;
+      grid-gap: 0 1.5em;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: repeat(2, min-content); // IE fix. Fixes autoplacement issue with weather button.
+    }
+    @include breakpoint($tab) {
+      display: block;
+      margin-top: -5px; // Tucks the top border under the top nav when breadcrumb is not displayed.
+
+      // When there is a breadcrumb, adjust .section--popular margin and padding.
+      @at-root .breadcrumb ~ .layout--theme-term & {
+        margin-top: 4.2rem;
+        padding-top: 1.5em;
+      }
+    }
+  }
+
+  &--featured {
+
+    h2 {
+      padding: 3.6rem 0 2.8rem;
+      margin: 0;
+      border-top: 10px solid color(brand-primary-medium);
+    }
+
+    > .contextual {
+      top: auto;
+      right: -32px;
+    }
+
+    &-highlights {
+      margin-top: 2em;
+      margin-bottom: 2em;
+
+      > .contextual {
+        right: -52px;
+      }
+    }
+  }
+}

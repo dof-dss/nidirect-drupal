@@ -1,36 +1,45 @@
 uuid: fd831ef7-518d-4f77-a251-c6580aa9f1df
 langcode: en
 status: true
-dependencies: {  }
+dependencies:
+  config:
+    - filter.format.basic_html
+    - node.type.news
+    - workflows.workflow.nics_editorial_workflow
+  module:
+    - content_moderation
+    - entity_browser
+    - file
+    - filter
+    - moderation_sidebar
+    - node
+    - scheduled_transitions
+    - system
+    - toolbar
+    - tour
 id: news_supervisor
 label: 'news supervisor'
 weight: 5
 is_admin: null
 permissions:
-  - 'access audio_entity_browser entity browser pages'
   - 'access content overview'
-  - 'access document_entity_browser entity browser pages'
   - 'access location_browser entity browser pages'
-  - 'access media_entity_browser entity browser pages'
-  - 'access remote_video_browser entity browser pages'
   - 'access toolbar'
   - 'access tour'
   - 'add scheduled transitions node news'
   - 'create news content'
   - 'delete any news content'
   - 'delete news revisions'
+  - 'delete own files'
   - 'delete own news content'
   - 'edit any news content'
   - 'edit own news content'
   - 'reschedule scheduled transitions node news'
   - 'revert news revisions'
-  - 'schedule publishing of nodes'
-  - 'use editorial transition create_new_draft'
   - 'use moderation sidebar'
   - 'use nics_editorial_workflow transition create_new_draft'
   - 'use text format basic_html'
   - 'view news revisions'
   - 'view own unpublished content'
-  - 'view scheduled content'
   - 'view scheduled transitions node news'
   - 'view the administration theme'

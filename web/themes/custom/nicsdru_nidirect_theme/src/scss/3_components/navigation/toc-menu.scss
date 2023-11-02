@@ -1,0 +1,61 @@
+/*
+ * @file
+ * Provides the styling for toc-menu from Origins.
+ */
+@import '../../init';
+
+// TOC menus
+//
+// The TOC (Table of Contents) component provides a list of links to heading 2s in the current page contents.
+//
+// Style guide: components.navigation.toc-menu
+
+.toc-menu {
+
+  background: transparent;
+  border-top: 1px solid #999;
+  border-bottom: 1px solid #999;
+  margin: 1em 0 1.5em;
+  padding: 0;
+
+  .skip-link {
+    margin: 1em 0;
+  }
+
+  .menu-title {
+    @include responsive-typo-map($body-text);
+    font-weight: bold;
+    margin: 1em 0 .5em;
+  }
+
+  .nav {
+    &-menu {
+      margin: 1em 0 2.1rem;
+    }
+
+    // applied to the menu li
+    &-item {
+      @include responsive-typo-map($body-text);
+      position: relative;
+      list-style: none;
+      padding: 0 1rem .5em 1.5rem;
+
+      &:last-child {
+        padding-bottom: 0;
+      }
+
+      &::before {
+        content: '-';
+        position: absolute;
+        left: 0;
+        top: 0;
+      }
+
+      a {
+        @include link-state-style($link-sub-menu);
+        display: inline-block;
+        width: 100%;
+      }
+    }
+  }
+}
