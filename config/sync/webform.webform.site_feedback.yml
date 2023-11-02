@@ -11,14 +11,14 @@ archive: false
 id: site_feedback
 title: 'Site feedback'
 description: ''
-category: ''
+categories: {  }
 elements: |-
   page_introduction:
     '#type': webform_wizard_page
     '#title': page_introduction
     important_information:
       '#type': processed_text
-      '#text': |
+      '#text': |-
         <p class="nodeSummary">nidirect is the government information and services website for people living in Northern Ireland.</p>
 
         <h2>Before you start</h2>
@@ -127,7 +127,7 @@ elements: |-
         visible:
           ':input[name="do_you_wish_to_report_an_issue_or_make_a_comment"]':
             value: angling
-      '#text': |
+      '#text': |-
         <h2>What to do next</h2>
 
         <p>Comments or queries about angling can be emailed to <a href="mailto:anglingcorrespondence@daera-ni.gov.uk ">anglingcorrespondence@daera-ni.gov.uk&nbsp;</a></p>
@@ -138,7 +138,7 @@ elements: |-
         visible:
           ':input[name="do_you_wish_to_report_an_issue_or_make_a_comment"]':
             value: benefits
-      '#text': |
+      '#text': |-
         <h2>What to do next</h2>
 
         <p>If you have a comment or query about benefits, you will need to contact the government department&nbsp;or&nbsp;agency which handles that benefit.&nbsp; Contacts for common benefits are listed below.</p>
@@ -212,7 +212,7 @@ elements: |-
         visible:
           ':input[name="do_you_wish_to_report_an_issue_or_make_a_comment"]':
             value: covid_19
-      '#text': |
+      '#text': |-
         <h2>What to do next</h2>
 
         <p>If you can’t find the information you’re looking for in the&nbsp;<a data-entity-substitution="canonical" data-entity-type="taxonomy_term" data-entity-uuid="5097be11-ccd8-48bb-96c6-58b23c9466da" href="/information-and-services/health-and-wellbeing/coronavirus-covid-19">Coronavirus (COVID-19) section</a>, then for queries about:</p>
@@ -233,7 +233,7 @@ elements: |-
         visible:
           ':input[name="do_you_wish_to_report_an_issue_or_make_a_comment"]':
             value: covid_19_certificate
-      '#text': |
+      '#text': |-
         <h2>What to do next</h2>
 
         <p>For queries about your identity check, email <a href="mailto:nida@nidirect.gov.uk">nida@nidirect.gov.uk</a> and for queries about your certificate, email <a href="mailto:covidcertni@hscni.net">covidcertni@hscni.net</a>.</p>
@@ -285,7 +285,7 @@ elements: |-
         visible:
           ':input[name="do_you_wish_to_report_an_issue_or_make_a_comment"]':
             value: high_street_voucher
-      '#text': |
+      '#text': |-
         <h2>What to do next</h2>
 
         <p>For queries about the High Street Spend Local Scheme,&nbsp; email&nbsp;<a href="mailto:HSSS.mail@economy-ni.gov.uk">HSSS.mail@economy-ni.gov.uk</a>.</p>
@@ -304,7 +304,7 @@ elements: |-
         visible:
           ':input[name="do_you_wish_to_report_an_issue_or_make_a_comment"]':
             value: 'nidirect account'
-      '#text': |
+      '#text': |-
         <h2>What to do next</h2>
 
         <p>For queries about your identity check, email&nbsp;<a href="mailto:nida@nidirect.gov.uk">nida@nidirect.gov.uk</a>.</p>
@@ -464,6 +464,8 @@ settings:
   wizard_toggle: true
   wizard_toggle_show_label: ''
   wizard_toggle_hide_label: ''
+  wizard_page_type: container
+  wizard_page_title_tag: h2
   preview: 0
   preview_label: ''
   preview_title: ''

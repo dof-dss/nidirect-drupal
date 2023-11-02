@@ -1,0 +1,55 @@
+@import '../../init';
+
+.layout-header--logo {
+  margin: 2.4rem auto;
+  max-width: 375px;
+  max-height: 5.5rem;
+  padding: 0 15px;
+
+  @include breakpoint($mob) {
+    padding: 0;
+  }
+
+  @include breakpoint($tab) {
+    width: auto;
+    max-width: none;
+    margin: 0;
+  }
+
+  a {
+    @include link-state-style($link-site-logo);
+    display: inline-block;
+    outline-offset: .6rem;
+
+    @include breakpoint($mob) {
+      outline-offset: 1.2rem;
+    }
+  }
+}
+
+.site-logo {
+  height: 5.5rem; // temporary - might change for bilingual logo
+}
+
+// IE fix.
+@media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
+  .layout-header--logo a {
+    // IE does not support outline-offset. So fake it with a pseudo element.
+    position: relative;
+    outline: none !important;
+
+    &::after {
+      content: '';
+      display: block;
+      width: calc(100% + 24px);
+      height: calc(100% + 24px);
+      position: absolute;
+      left: -12px;
+      top: -12px;
+    }
+
+    &:focus::after {
+      border: 3px dashed $grey;
+    }
+  }
+}

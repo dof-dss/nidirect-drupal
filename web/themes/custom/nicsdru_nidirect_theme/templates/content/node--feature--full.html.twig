@@ -1,0 +1,39 @@
+{#
+/**
+ * @file
+ * Theme override to display a feature node in full display mode.
+ * Only editors see a feature node in full display mode when viewing the node after editing.
+ */
+#}
+{% set wrapper_classes = [
+  'grid',
+  'card-deck',
+  'card-deck--features']
+%}
+{% set section_classes = [
+  'card',
+  'card--featured']
+%}
+{% if page %}
+  <h2>Featured item (for display in featured content lists)</h2>
+{% endif %}
+<div {{ attributes.addClass(wrapper_classes) }}>
+  <section {{ attributes.removeAttribute('role').addClass(section_classes).removeClass(['grid', 'card-deck', 'card-deck--features']) }}>
+    <a class="card__link" href="{{ content.field_link_url[0]['#url']|render }}">
+      {{ content.field_photo }}
+      <div class="card__content">
+        {{ title_prefix }}
+        <h3{{ title_attributes.addClass('card__title') }}>
+          {{ label }}
+        </h3>
+        {{ title_suffix }}
+        {% if content.field_teaser %}
+          <p>
+            {{ content.field_teaser | field_value }}
+          </p>
+        {% endif %}
+      </div>
+    </a>
+  </section>
+</div>
+{{ content | without('field_photo', 'field_link_url', 'field_teaser') }}

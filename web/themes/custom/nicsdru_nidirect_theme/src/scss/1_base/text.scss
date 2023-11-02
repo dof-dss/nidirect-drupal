@@ -1,0 +1,276 @@
+/*
+ * @file
+ * Sets out the base behaviour of text elements.
+ */
+@import '../init';
+
+// Text-level semantics
+//
+// The elements in this section give semantics to inline text.
+//
+// Weight: -6
+//
+// Style guide: base.text
+
+// Body copy
+//
+// The default `font-size` and `line-height` properties are applied to the `<body>` element and all paragraphs.
+// In addition, `<p>` (paragraphs) receive a top and bottom margin.
+//
+// Markup: kss-templates/grouping-p.twig
+//
+// Style guide: base.text.p
+
+p,
+pre {
+  @include responsive-typo-map($normal-text);
+}
+
+// Tighten lists up closer to the preceding paragraph.
+p + ul,
+p + ol {
+  margin-top: -1.2rem;
+}
+
+// Abbreviation / Acronym
+//
+// The `<abbr>` element makes the meanings of abbreviations and acronyms visible
+// on hover.
+//
+// Markup: kss-templates/text-abbr.twig
+//
+// Style guide: base.text.abbr
+
+abbr[title] {
+  @media print {
+    // Add visible title after abbreviations.
+    &::after {
+      content: ' (' attr(title) ')';
+    }
+  }
+}
+
+// Bold
+//
+// The `<strong>` element or the `<b>` element is for emphasizing a snippet of
+// text with a heavier font-weight.
+//
+// Feel free to use `<b>` in HTML5. `<b>` is meant to highlight words or phrases
+// without conveying additional importance.
+//
+// Markup: kss-templates/text-b.twig
+//
+// Weight: -1
+//
+// Style guide: base.text.b
+b,
+strong {
+  font-weight: bolder;
+}
+
+// Cite
+//
+// The `<cite>` element represents a reference to a creative work.
+//
+// Markup: kss-templates/text-cite.twig
+//
+// Style guide: base.text.cite
+
+//cite {
+  // Add your styles.
+//}
+
+// Code
+//
+// The `<code>` element represents a fragment of computer code. The `<var>`
+// element represents a variable. The `<samp>` element represents (sample)
+// output from a program or computing system. The `<kbd>` element represents
+// user input (typically keyboard input.)
+//
+// Markup: kss-templates/text-code.twig
+//
+// Style guide: base.text.code
+
+%monospace,
+code,
+kbd,
+samp,
+var {
+  // Correct the inheritance and scaling of font size in all browsers.
+  // The font-family value ends with ", serif".
+  @include adjust-font-size-to($base-font-size);
+  font-family: $font-monospace; // The value of $font-monospace ends with ', serif'.
+}
+
+// Deleted text
+//
+// The `<del>` element indicates blocks of text that have been deleted.
+//
+// Markup: kss-templates/text-del.twig
+//
+// Style guide: base.text.del
+
+//del {
+  // Add your styles.
+//}
+
+// Definition
+//
+// The `<dfn>` element represents the defining instance of a term.
+//
+// Markup: kss-templates/text-dfn.twig
+//
+// Style guide: base.text.dfn
+
+dfn {
+  // Add the correct font style in Android <4.4.
+  font-style: italic;
+}
+
+// Italics
+//
+// The `<em>` element or the `<i>` element is used for emphasizing a snippet of
+// text with italics.
+//
+// Feel free to use `<i>` element in HTML5. `<i>` is meant to convey voice,
+// technical terms, etc.
+//
+// Markup: kss-templates/text-i.twig
+//
+// Weight: -1
+//
+// Style guide: base.text.i
+
+//i,
+//em {
+//  // Add your styles.
+//}
+
+// Inserted text
+//
+// The `<ins>` element indicates additions to the document.
+//
+// Markup: kss-templates/text-ins.twig
+//
+// Style guide: base.text.ins
+
+//ins {
+//  // Add your styles.
+//}
+
+// Marked text
+//
+// The `<mark>` element highlights a run of text due to its relevance in another
+// context.
+//
+// Markup: kss-templates/text-mark.twig
+//
+// Style guide: base.text.mark
+
+mark {
+  // Add the correct background and color in IE <10.
+  background-color: color(mark-bg);
+  color: color(white);
+}
+
+// Quote
+//
+// The `<q>` element represents an inline quote from another source. Longer
+// quotes should use the `<blockquote>` element.
+//
+// Markup: kss-templates/text-q.twig
+//
+// Style guide: base.text.q
+
+q {
+  // set consistent quote types
+  quotes: '\201C' '\201D' '\2018' '\2019';
+}
+
+// Strikethrough text
+//
+// The `<s>` element indicates blocks of text that are no longer relevant.
+//
+// Markup: kss-templates/text-s.twig
+//
+// Style guide: base.text.s
+
+//s {
+//  // Add your styles.
+//}
+
+// Small text
+//
+// For de-emphasizing inline or blocks of text, use the `<small>` element to set
+// text at 80% the size of the parent.
+//
+// Markup: kss-templates/text-small.twig
+//
+// Style guide: base.text.small
+
+// Superscript / Subscript
+//
+// The `<sup>` element represents a superscript and the `<sub>` element
+// represents a subscript.
+//
+// Markup: kss-templates/text-sub.twig
+//
+// Style guide: base.text.sub
+
+sub,
+sup {
+  // Prevent `sub` and `sup` elements from affecting the line height in
+  // all browsers.
+  @include adjust-font-size-to(14px);
+}
+
+sub {
+  vertical-align: super;
+}
+
+sup {
+  vertical-align: sub;
+}
+
+// Underlined text
+//
+// To underline text use the `<u>` element. Not recommended since underlines are
+// used by web browsers to style hyperlinks.
+//
+// Markup: kss-templates/text-u.twig
+//
+// Style guide: base.text.u
+
+//u {
+//  // Add your styles.
+//}
+
+// Address text
+//
+// The address element represents contact information for a person, people or organization. It should include physical
+// and/or digital location/contact information and a means of identifying a person(s) or organization the information
+// pertains to.
+//
+// See https://www.w3.org/TR/html52/grouping-content.html#the-address-element.
+//
+// Markup: kss-templates/text-address.twig
+//
+// Style guide: base.text.address
+
+address {
+  @include responsive-typo-map($normal-text);
+  margin: 1em 0 1.5em;
+  font-weight: normal;
+  font-style: normal;
+  color: $charcoal;
+
+  &:not(.vcard) {
+    padding: .5em 1em;
+    border-left: .3334em solid $grey-light;
+  }
+
+  & > *:first-child {
+    margin-top: 0;
+  }
+}
+

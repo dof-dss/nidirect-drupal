@@ -1,0 +1,4 @@
+services:
+  nidirect_news.news:
+    class: Drupal\nidirect_news\Controller\NewsListingController
+    arguments: ['@entity_type.manager', '@plugin.manager.block', '@request_stack', '@nidirect_common.views_metatags_manager']

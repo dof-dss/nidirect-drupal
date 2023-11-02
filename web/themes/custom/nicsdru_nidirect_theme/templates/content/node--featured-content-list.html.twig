@@ -1,0 +1,15 @@
+{#
+/**
+ * @file
+ * Theme override to display a featured content list. This is a template
+ * candidate for all view modes so may need splitting if the content type
+ * uses further view modes in the future.
+ *
+ * @see template_preprocess_node()
+#}
+{% if show_title %}
+  {{ drupal_block('page_title_block', wrapper=false) }}
+{% endif %}
+{{ title_prefix }}
+{{ title_suffix }}
+{{ content }}

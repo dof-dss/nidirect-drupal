@@ -1,0 +1,78 @@
+/*
+ * @file
+ * Sets out the base behaviour of heading elements.
+ */
+@import '../init';
+
+// Headings
+//
+// All HTML headings, `<h1>` through `<h6>`, are available. `%h1` through `%h6`
+// classes are also available, for when you want to match the font styling of a
+// heading but still want your text to be displayed inline.
+//
+// Markup: kss-templates/headings-h.twig
+//
+// weight: -7
+//
+// Style guide: base.headings
+
+// Address variable `h1` font-size and margin within `section` and `article`
+// contexts in Firefox 4+, Safari, and Chrome.
+
+#{headings()} {
+  font-weight: normal;
+
+  strong,
+  b {
+    font-weight: normal;
+  }
+}
+
+h1,
+%h1 {
+  @include responsive-typo-map($h1-text);
+  color: color(headings);
+
+  @include breakpoint($tab, $no-query: true) {
+    font-weight: 700;
+  }
+
+  .subtitle {
+    @include responsive-typo-map($xl-text);
+    display: inline-block;
+    font-weight: normal;
+
+    &::before {
+      content: ' \2014  ';
+    }
+  }
+}
+
+h2,
+%h2 {
+  @include responsive-typo-map($h2-text);
+  color: color(brand-secondary);
+}
+
+h3,
+%h3 {
+  @include responsive-typo-map($h3-text);
+}
+
+h4,
+%h4 {
+  @include responsive-typo-map($h4-text);
+  color: color(grey-dark);
+}
+
+h5,
+%h5 {
+  @include responsive-typo-map($h5-text);
+  font-weight: 700;
+}
+
+h6,
+%h6 {
+  @include responsive-typo-map($h6-text);
+  font-style: italic;
+}

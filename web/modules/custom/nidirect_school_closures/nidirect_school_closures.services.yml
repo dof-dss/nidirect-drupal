@@ -1,0 +1,11 @@
+services:
+  nidirect_school_closures.source.default:
+    alias: nidirect_school_closures.source.cskschools
+  nidirect_school_closures.source.cskschools:
+    class: Drupal\nidirect_school_closures\Service\C2kschoolsSchoolClosuresService
+    arguments: ['@http_client', '@cache.default', '@config.factory', '@logger.factory']
+  nidirect_school_closures.http_headers_subscriber:
+    class: Drupal\nidirect_school_closures\EventSubscriber\HttpHeadersSubscriber
+    arguments: ['@current_route_match', '@config.factory']
+    tags:
+      - { name: event_subscriber }

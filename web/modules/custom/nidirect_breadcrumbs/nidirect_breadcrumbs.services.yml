@@ -1,0 +1,98 @@
+services:
+  nidirect_breadcrumbs.breadcrumb.node.themes:
+    class: Drupal\nidirect_breadcrumbs\NodeThemesBreadcrumb
+    arguments: ['@entity_type.manager', '@book.manager']
+    tags:
+      - { name: breadcrumb_builder, priority: 5000 }
+
+  nidirect_breadcrumbs.breadcrumb.taxonomy_term.themes:
+    class: Drupal\nidirect_breadcrumbs\TaxonomyTermThemesBreadcrumb
+    arguments: ['@entity_type.manager']
+    tags:
+      - { name: breadcrumb_builder, priority: 5000 }
+
+  nidirect_breadcrumbs.breadcrumb.contact:
+    class: Drupal\nidirect_breadcrumbs\ContactBreadcrumb
+    arguments: ['@entity_type.manager']
+    tags:
+      - { name: breadcrumb_builder, priority: 5000 }
+
+  nidirect_breadcrumbs.breadcrumb.govt_contact:
+    class: Drupal\nidirect_breadcrumbs\GovernmentContactBreadcrumb
+    arguments: ['%breadcrumb.contacts_govt.matches%', '@request_stack']
+    tags:
+      - { name: breadcrumb_builder, priority: 5000 }
+
+  nidirect_breadcrumbs.breadcrumb.driving_instructors:
+    class: Drupal\nidirect_breadcrumbs\DrivingInstructorsBreadcrumb
+    arguments: ['%breadcrumb.driving_instructors.matches%', '@entity_type.manager']
+    tags:
+      - { name: breadcrumb_builder, priority: 5000 }
+
+  nidirect_breadcrumbs.breadcrumb.gp_practice:
+    class: Drupal\nidirect_breadcrumbs\GpPracticeBreadcrumb
+    arguments: ['@entity_type.manager']
+    tags:
+      - { name: breadcrumb_builder, priority: 5000 }
+
+  nidirect_breadcrumbs.breadcrumb.health_condition:
+    class: Drupal\nidirect_breadcrumbs\HealthConditionBreadcrumb
+    arguments: ['@entity_type.manager']
+    tags:
+      - { name: breadcrumb_builder, priority: 5000 }
+
+  nidirect_breadcrumbs.breadcrumb.news:
+    class: Drupal\nidirect_breadcrumbs\NewsBreadcrumb
+    arguments: ['@entity_type.manager']
+    tags:
+      - { name: breadcrumb_builder, priority: 5000 }
+
+  nidirect_breadcrumbs.breadcrumb.landingpages:
+    class: Drupal\nidirect_breadcrumbs\LandingPageBreadcrumb
+    arguments: ['@entity_type.manager']
+    tags:
+      - { name: breadcrumb_builder, priority: 5001 }
+
+  nidirect_breadcrumbs.breadcrumb.search:
+    class: Drupal\nidirect_breadcrumbs\SearchBreadcrumb
+    arguments: ['%breadcrumb.search.matches%']
+    tags:
+      - { name: breadcrumb_builder, priority: 5000 }
+
+  nidirect_breadcrumbs.breadcrumb.schoolclosures:
+    class: Drupal\nidirect_breadcrumbs\SchoolClosuresBreadcrumb
+    arguments: ['%breadcrumb.schoolclosures.matches%', '@request_stack']
+    tags:
+      - { name: breadcrumb_builder, priority: 5000 }
+
+  nidirect_breadcrumbs.breadcrumb.null_breadcrumb:
+    class: Drupal\nidirect_breadcrumbs\NullBreadcrumb
+    arguments: ['%breadcrumb.nullbreadcrumb.matches%', '@request_stack']
+    tags:
+      - { name: breadcrumb_builder, priority: 4999 }
+
+parameters:
+  breadcrumb.search.matches:
+    - view.search.search_page
+    - view.publications.search_page
+  breadcrumb.schoolclosures.matches:
+    - /services/school-closures
+  breadcrumb.driving_instructors.matches:
+    - view.driving_instructors.driving_instructor_results
+  breadcrumb.contacts_govt.matches:
+    - /contacts/government-departments-in-northern-ireland
+    - /contacts/local-councils-in-northern-ireland
+  breadcrumb.nullbreadcrumb.matches:
+    - nidirect_news.news_listing
+    - entity.user.canonical
+    - user.register
+    - user.login
+    - user.logout
+    - user.pass
+    - user.reset
+    - user.reset.login
+    - nidirect_contacts.default
+    - nidirect_contacts.letter
+    - entity.webform.canonical
+    - entity.webform.confirmation
+    - entity.node.webform.confirmation

@@ -56,9 +56,8 @@ commands:
       - run:
           name: Switch dof-dss packages to HEAD on develelopment branch
           command: |
-            composer require dof-dss/nidirect-site-modules:dev-development \
-              dof-dss/nidirect-d8-test-install-profile:dev-development dof-dss/nicsdru_origins_theme:dev-development \
-                dof-dss/nicsdru_origins_modules:dev-development dof-dss/nicsdru_nidirect_theme:dev-development
+            composer require dof-dss/nicsdru_origins_theme:dev-10.x-dev \
+                             dof-dss/nicsdru_origins_modules:dev-10.x-dev
   hosts_keyscan:
     description: "Keyscan for hosts that require SSH access"
     steps:

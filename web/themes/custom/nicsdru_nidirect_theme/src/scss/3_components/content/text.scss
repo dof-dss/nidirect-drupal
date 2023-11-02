@@ -1,0 +1,31 @@
+/*
+ * @file
+ * Provides text styling classes used in content areas.
+ */
+@import '../../init';
+
+.small-text {
+  @include responsive-typo-map($small-text);
+}
+
+.large-text {
+  @include responsive-typo-map($large-text);
+}
+
+.xl-text {
+  @include responsive-typo-map($xl-text);
+}
+
+.xxl-text {
+  @include responsive-typo-map($xxl-text);
+}
+
+.text-block {
+  margin: 0;
+  padding: 0;
+
+  // This class is added to all blocks in layout builder and adds unwanted padding.
+  &.layout-builder-block {
+    padding: 0;
+  }
+}

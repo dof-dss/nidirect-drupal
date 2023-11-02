@@ -1,0 +1,418 @@
+<?php
+
+/**
+ * @file
+ * Contains nidirect_gp.module.
+ */
+
+use Drupal\Component\Utility\Xss;
+use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\layout_builder\Entity\LayoutBuilderEntityViewDisplay;
+use Drupal\node\NodeInterface;
+use Drupal\views\Plugin\views\query\QueryPluginBase;
+use Drupal\views\ViewExecutable;
+use Drupal\views\Views;
+
+/**
+ * Implements hook_help().
+ */
+function nidirect_gp_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    // Main module help for the nidirect_gp module.
+    case 'help.page.nidirect_gp':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('NI Direct GP') . '</p>';
+      return $output;
+
+    default:
+  }
+}
+
+/**
+ * Implements hook_theme().
+ */
+function nidirect_gp_theme() {
+  return [
+    'nidirect_gp' => [
+      'render element' => 'children',
+    ],
+  ];
+}
+
+/**
+ * Implements hook_ENTITY_TYPE_view().
+ */
+function nidirect_gp_node_view(array &$build, EntityInterface $entity, LayoutBuilderEntityViewDisplay $display, $view_mode) {
+  // Check for the presence of a 'gp_names' field in the node display.
+  if (array_key_exists('gp_names', $display->getComponents())) {
+    $gp_names = [];
+
+    /** @var \Drupal\node\NodeInterface $entity */
+    // Lead GP.
+    if (!empty($entity->get('field_gp_practice_lead')->referencedEntities())) {
+      $gp = $entity->get('field_gp_practice_lead')->referencedEntities()[0];
+      $gp_names[] = $gp->label();
+    }
+
+    // Member GPs.
+    if (!empty($entity->get('field_gp_practice_member')->referencedEntities())) {
+      foreach ($entity->get('field_gp_practice_member')->referencedEntities() as $index => $gp) {
+        $gp_names[] = $gp->label();
+      }
+    }
+
+    foreach ($gp_names as $gp) {
+      $build['gp_names'][] = [
+        '#type' => 'html_tag',
+        '#tag' => 'span',
+        '#value' => $gp,
+      ];
+    }
+  }
+}
+
+/**
+ * Implements hook_preprocess_node().
+ */
+function nidirect_gp_preprocess_node(&$variables) {
+  if ($variables['node']->bundle() == 'gp_practice' && $variables['view_mode'] == 'search_result') {
+    // Prune a trailing '#weight' item key in the GP names array which is added
+    // By something after hook_entity_type_view() above.
+    if (!empty($variables['content']['gp_names']) && array_key_exists('#weight', $variables['content']['gp_names'])) {
+      unset($variables['content']['gp_names']['#weight']);
+    }
+  }
+}
+
+/**
+ * Implements hook_entity_extra_field_info().
+ */
+function nidirect_gp_entity_extra_field_info() {
+  $extra['node']['gp_practice']['display']['gp_names'] = [
+    'label' => t('GP names'),
+    'description' => t('List of GP names, lead GP listed first.'),
+    'weight' => 0,
+  ];
+
+  return $extra;
+}
+
+/**
+ * Implements hook_form_alter().
+ */
+function nidirect_gp_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+
+  // Process GP Practices View form.
+  if ($form['#id'] == 'views-exposed-form-gp-practices-find-a-gp') {
+    $form['categories']['#attributes']['class'][] = 'container-inline';
+    $form['#attached']['library'][] = 'nidirect_gp/gp_location_search';
+  }
+
+  // Special processing for GP Practice title on node edit/add forms.
+  if (preg_match('/^node_gp_practice_(edit_)*form$/', $form_id)) {
+    // Make title field readonly and set a placeholder.
+    if (empty($form['title']['widget'][0]['value']['#default_value'])) {
+      $form['title']['widget'][0]['value']['#default_value'] = ' ';
+    }
+    $form['title']['widget'][0]['value']['#description'] =
+      t('You cannot edit the title. It is created automatically from the practice name and surgery name.');
+    $form['title']['#disabled'] = 'TRUE';
+
+    // Hide the Prescriptions URL title as we will use a default.
+    $form['field_gp_prescriptions']['widget']['0']['title']['#type'] = 'hidden';
+
+    // Hide the Appointments URL title as we will use a default.
+    $form['field_gp_appointments']['widget']['0']['title']['#type'] = 'hidden';
+
+    // Add a validator.
+    array_unshift($form['#validate'], 'nidirect_gp_gp_practice_form_validate');
+    // Prepend a submit callback.
+    array_unshift($form['#submit'], 'nidirect_gp_gp_practice_form_submit');
+  }
+}
+
+/**
+ * Implements hook_form_BASE_FORM_ID_alter().
+ */
+function nidirect_gp_form_gp_form_alter(&$form, &$form_state, $form_id) {
+
+  // Add ajax callback to check for unique GP cypher value.
+  $form['cypher']['widget'][0]['value']['#ajax'] = [
+    'callback' => 'nidirect_gp_unique_cypher',
+    'event' => 'change',
+    'wrapper' => 'cypher-unique',
+    'progress' => [
+      'type' => 'throbber',
+      'message' => t('Checking a GP with that cypher exists'),
+    ],
+  ];
+
+  $form['cypher_unique'] = [
+    '#type' => 'html_tag',
+    '#tag' => 'div',
+    '#attributes' => [
+      'id' => 'cypher-unique',
+    ],
+    '#weight' => $form['cypher']['#weight'],
+  ];
+}
+
+/**
+ * AJAX callback for checking unique GP cypher.
+ */
+function nidirect_gp_unique_cypher(array &$form, FormStateInterface $form_state) {
+  $cypher = $form_state->getValue('cypher')[0]['value'];
+  $excludes = [];
+
+  if (\Drupal::routeMatch()->getRouteName() !== 'entity.gp.add_form') {
+    $excludes[] = \Drupal::routeMatch()->getParameter('gp')->id();
+  }
+
+  if (!empty($cypher) &&
+    \Drupal::service('nidirect_gp.unique_cypher')->isCypherUnique($cypher, $excludes) == FALSE) {
+
+    $message = t("A GP entry with the cypher '@cypher' exists. A GP must have a unique cypher.", [
+      '@cypher' => $cypher,
+    ]);
+
+    $render = $form['cypher_unique'];
+    $render['#attributes']['class'] = 'form-item--error-message';
+    $render['#value'] = '<strong>' . $message . '</strong>';
+  }
+  else {
+    $render = $form['cypher_unique'];
+  }
+
+  return $render;
+}
+
+/**
+ * Utility function to handle GP Practice validation.
+ */
+function nidirect_gp_gp_practice_form_validate(&$form, FormStateInterface $form_state) {
+  // If neither a practice name nor a surgery name is provided,
+  // go back to the form.
+  $practiceName = $form_state->getValue('field_gp_practice_name')[0]['value'];
+  $surgeryName = $form_state->getValue('field_gp_surgery_name')[0]['value'];
+  if (empty($practiceName) && empty($surgeryName)) {
+    $form_state->setErrorByName(
+      'field_gp_practice_name',
+      t('You must provide a surgery name, a practice name, or both. Both cannot be left blank.')
+    );
+  }
+}
+
+/**
+ * Submit callback for GP Practice node form.
+ */
+function nidirect_gp_gp_practice_form_submit(&$form, FormStateInterface $form_state) {
+  foreach (['field_gp_prescriptions', 'field_gp_appointments'] as $field_id) {
+    // If we have URL values for specific fields, set a fixed text value.
+    $field = $form_state->getValue($field_id);
+
+    if (empty(reset($field['uri']))) {
+      // Skip items with blank URI values.
+      continue;
+    }
+
+    // If we have a URI value then we want to use fixed labels for the link
+    // text on these fields.
+    if ($field_id == 'field_gp_prescriptions') {
+      $field[0]['title'] = t('Repeat prescriptions');
+    }
+
+    if ($field_id == 'field_gp_appointments') {
+      $field[0]['title'] = t('Online appointments');
+    }
+
+    $form_state->setValue($field_id, $field);
+  }
+}
+
+/**
+ * Implements hook_entity_presave().
+ */
+function nidirect_gp_entity_presave(EntityInterface $entity) {
+  // This will fire when nodes are created or edited.
+  if ($entity instanceof NodeInterface && $entity->bundle() === 'gp_practice') {
+    // Construct the title.
+    $practice = Xss::filter($entity->get('field_gp_practice_name')->value);
+    $surgery = Xss::filter($entity->get('field_gp_surgery_name')->value);
+    $title = nidirect_gp_build_gp_practice_title($practice, $surgery);
+    $entity->setTitle($title);
+  }
+}
+
+/**
+ * Implements hook_views_pre_render().
+ */
+function nidirect_gp_views_pre_render(ViewExecutable $view) {
+  if (preg_match('/^gp_practices/', $view->id()) && !empty($view->header['area'])) {
+    $item_count = $view->pager->total_items ?? 0;
+    // Display custom header to show singular/plural result(s) label.
+    $view->header['area']->options['content']['value'] = \Drupal::translation()->formatPlural(
+      $item_count,
+      '@count GP practice',
+      '@count GP practices',
+      ['@count' => $item_count]
+    );
+  }
+}
+
+/**
+ * Implements hook_preprocess_views_view_field().
+ */
+function nidirect_gp_preprocess_views_view_field(&$variables) {
+  // Override the field output for GP Practice List view. We do this so we can
+  // lookup and inject the GP cypher into the practice members list.
+  if ($variables['view']->id() === 'gp_practice_list' && $variables['view']->current_display === 'gp_practice_list_page' && $variables['field']->field === 'field_gp_practice_member') {
+    $gp_ids = $variables['field']->getValue($variables['row']);
+    $gps = \Drupal::entityTypeManager()->getStorage('gp')->loadMultiple($gp_ids);
+
+    $list_items = [];
+
+    foreach ($gps as $gp) {
+      /** @var \Drupal\nidirect_gp\Entity\GpInterface $gp */
+      $list_items[$gp->id()]['#markup'] = $gp->getDisplayName() . " [" . $gp->getCypher() . "] " . $gp->toLink('Edit')->toString();
+    }
+
+    $item_list = [
+      '#theme' => 'item_list',
+      '#items' => $list_items,
+    ];
+
+    $variables['output'] = \Drupal::service('renderer')->render($item_list);
+  }
+}
+
+/**
+ * Utility function to handle GP Practice submit.
+ */
+function nidirect_gp_build_gp_practice_title($practiceName = '', $surgeryName = '') {
+  /*
+  For GP Practice nodes, the node title is a combination of the
+  practice name and the surgery
+  name, e.g. Dr. Jekyll & Partners - Hyde Park Surgery.
+  One or other can be blank but not both.
+
+  There are four permutations:
+  1. Both provided
+  2. practiceName provided, surgeryName not provided
+  3. practiceName not provided, surgeryName provided
+  4. Neither provided
+   */
+
+  $title = '';
+  // 1. Both provided.
+  if ($practiceName != '' && $surgeryName != '') {
+    $title = $surgeryName . ' - ' . $practiceName;
+  }
+  // 2. practiceName provided, surgeryName not provided.
+  if ($practiceName != '' && $surgeryName == '') {
+    $title = $practiceName;
+  }
+  // 3. practiceName not provided, surgeryName provided.
+  if ($practiceName == '' && $surgeryName != '') {
+    $title = $surgeryName;
+  }
+  // 4. Neither provided - this generates an error that
+  // will be caught by validation.
+  // Re-encode &amp; to just &.
+  $title = str_replace('&amp;', '&', $title);
+
+  return $title;
+}
+
+/**
+ * Implements hook_views_query_alter().
+ */
+function nidirect_gp_views_query_alter(ViewExecutable $view, QueryPluginBase $query) {
+  // Alter the view code for GP Practice Lists if being sorted on the
+  // 'Online appointments' or 'Online prescriptions' fields.
+  // This is necessary because Drupal 8 Views does not seem to handle the case
+  // of sorting on a 'link' field as it does not build the join correctly
+  // and just errors on the 'unknown' field that appears in the 'orderby'.
+  if ($view->id() == 'gp_practice_list') {
+    $query_order = $query->orderby ?? NULL;
+
+    if (!empty($query_order) && !empty($query_order[0]) && !empty($query_order[0]['field'])) {
+      if ($query_order[0]['field'] === 'unknown') {
+        // Decide whether we are sorting by the 'Online appointments' column or
+        // by 'Online precriptions'.
+        $join_table = NULL;
+        $view_input = $view->getExposedInput();
+        if (!empty($view_input['order'])) {
+          if ($view_input['order'] == 'nothing') {
+            // We are sorting by 'Online appointments'.
+            $join_table = 'node__field_gp_appointments';
+          }
+          elseif ($view_input['order'] == 'nothing_1') {
+            // We are sorting by 'Online prescriptions'.
+            $join_table = 'node__field_gp_prescriptions';
+          }
+          else {
+            return;
+          }
+        }
+        $configuration = [
+          'type'       => 'LEFT',
+          'table'      => $join_table,
+          'field'      => 'entity_id',
+          'left_table' => 'node_field_data',
+          'left_field' => 'nid',
+          'operator'   => '=',
+        ];
+        // Add a join to the appropriate table, note
+        // that it is a 'left' join as it is not essential that there
+        // is an entry in the joined table for each practice.
+        $join_obj = Views::pluginManager('join')
+          ->createInstance('standard', $configuration);
+
+        /** @var \Drupal\views\Plugin\views\query\Sql $query */
+        $query->addRelationship($join_table, $join_obj, 'node_field_data');
+        // Replace the 'unknown' field in the query 'orderby' with the
+        // correct field.
+        if ($join_table == 'node__field_gp_appointments') {
+          $query->orderby[0]['field'] = $join_table . '.field_gp_appointments_uri';
+        }
+        elseif ($join_table == 'node__field_gp_prescriptions') {
+          $query->orderby[0]['field'] = $join_table . '.field_gp_prescriptions_uri';
+        }
+      }
+    }
+  }
+}
+
+/**
+ * Implements hook_config_ignore_settings_alter().
+ */
+function nidirect_gp_config_ignore_settings_alter(array &$settings) {
+  // This hook is called just before config is imported (as long as this module
+  // and the 'config import' module are installed) and is even invoked when there
+  // are no config changes to import.
+  // The code in GeocoderApiKeyUpdate will then ensure that the Google Maps
+  // API key is overwritten during config import.
+  $config_update_service = \Drupal::service('nidirect_common.update_config_from_environment');
+  $config_update_service->updateApiKey('geocoder.geocoder_provider.googlemaps', 'apiKey', 'GOOGLE_MAP_API_SERVER_KEY');
+}
+
+/**
+ * Implements hook_geocode_address_string_alter().
+ */
+function nidirect_gp_geocode_address_string_alter(&$address_string) {
+  // Our geocoder config has a general region restriction set to 'eu' which
+  // allows us to geocode address strings in IE as well as UK. However,
+  // partial postcodes can be too ambiguous to geocode to the UK so sometimes
+  // return null. If we used a 'uk' specific geocoding region in config this doesn't happen.
+  // However, we can't do that as that would exclude IE addresses... but what we can do
+  // is use our postcode extractor service to detect a full or partial UK postcode and if
+  // we get a match, add a regional hint to the end of the address string to give it the
+  // extra context needed to successfully geocode.
+  $matches = \Drupal::service('nidirect.postcode_extractor')->getPostCode($address_string);
+  if (!empty($matches)) {
+    $address_string .= ', uk';
+  }
+}

@@ -1,0 +1,45 @@
+<?php
+
+/**
+ * @file
+ * Contains nidirect_news.module.
+ */
+
+use Drupal\Core\Link;
+use Drupal\Core\Url;
+use Drupal\taxonomy\TermInterface;
+use Drupal\views\ViewExecutable;
+
+/**
+ * Implements hook_preprocess_field().
+ */
+function nidirect_news_preprocess_field(array &$variables) {
+  $entity_type = $variables['entity_type'];
+  $bundle = $variables['element']['#bundle'];
+  $field_name = $variables['field_name'];
+  $view_mode = $variables['element']['#view_mode'];
+
+  if ($field_name != 'field_published_date') {
+    return;
+  }
+
+  if ($entity_type != 'node' || $bundle != 'news' || $view_mode != 'full') {
+    return;
+  }
+
+  // Adjust the title in full display mode to match present site value.
+  $variables['label'] = t('Date published');
+}
+
+/**
+ * Implements hook_views_pre_build().
+ */
+function nidirect_news_views_pre_build(ViewExecutable $view) {
+  if ($view->id() == 'news' && $view->current_display == 'latest_news_block') {
+    $exclude_nids = \Drupal::service('nidirect_news.news')->getFeaturedNewsIds();
+
+    if (!empty($exclude_nids)) {
+      $view->setArguments([implode(',', $exclude_nids)]);
+    }
+  }
+}

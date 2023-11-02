@@ -1,13 +1,13 @@
 # Override any general project config via a .lando.local.yml file
 # See https://docs.lando.dev/core/v3/#override-file for details.
 name: nidirect
-recipe: drupal9
+recipe: drupal10
 env_file:
   - .env
 config:
   webroot: web
   php: '8.1'
-  composer_version: '2.0.7'
+  composer_version: '2.5.8'
   via: apache:2.4
   database: mariadb:10.5
   # https://docs.lando.dev/config/drupal9.html#using-drush
@@ -26,6 +26,8 @@ services:
     scanner: false
     build_as_root:
       - /app/.lando/scripts/appserver_build.sh
+      - curl -sL https://deb.nodesource.com/setup_14.x | bash -
+      - apt-get install -y nodejs
     overrides:
       environment:
         # Support debugging CLI with XDEBUG.
@@ -51,6 +53,8 @@ services:
     hogfrom:
       - appserver
 tooling:
+  node:
+    service: appserver
   xdebug-on:
     service: appserver
     description: Enable xdebug

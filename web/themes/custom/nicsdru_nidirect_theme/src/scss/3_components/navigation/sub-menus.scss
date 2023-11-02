@@ -1,0 +1,92 @@
+/*
+ * @file
+ * Provides the styling for menus other than the main menu on the site.
+ */
+@import '../../init';
+
+// Sub menus
+//
+// The sub menus component provides some base styling for lists of navigational links that may or may not be contained
+// in a `<nav>` tag. There are some modifiers commonly applied to these menus to meet specific design concepts, for
+// example a list of related content or a list of book contents.
+//
+// Style guide: components.navigation.sub-menus
+
+.sub-menu {
+
+  margin: 1.5em 0;
+
+  &:first-child {
+    margin: 0;
+  }
+
+  .menu-title { // TODO: should be .sub-menu__title?
+    @include adjust-font-size-to(24px, 5);
+    margin: 0 0 2.1rem;
+
+    &--large {
+      @include adjust-font-size-to(28px, 6);
+      font-weight: normal;
+    }
+  }
+
+  .nav { // TODO: should be .sub-menu__nav?
+    &-menu {
+      margin-top: 0;
+      margin-bottom: 2.7rem;
+    }
+
+    // applied to the menu li
+    &-item {
+      position: relative;
+      list-style: none;
+      padding: 0 1rem .5em 1.5rem;
+
+      &::before {
+        content: '-';
+        position: absolute;
+        left: 0;
+        top: 0;
+      }
+    }
+
+    // applied to menu links
+    &-menu a,
+    &-link {
+      @include link-state-style($link-sub-menu);
+      display: inline-block;
+      width: 100%;
+    }
+  }
+
+  &--related {
+    border-top: 5px solid color(brand-primary-medium);
+    padding: 1.5em 10px .5em;
+    background-color: color(brand-primary-lightest);
+  }
+
+  &--widget {
+    border-top: 5px solid color(brand-primary-medium);
+    padding: 1.5em 10px .5em;
+    background-color: transparent;
+  }
+
+  &--sibling {
+    margin-top: 0;
+    padding: 0 10px .5em;
+    background-color: transparent;
+  }
+
+  &--book {
+    padding: 1.5em 0 0;
+    border-top: 5px solid color(brand-primary-medium);
+
+    // Force book nav to be full width of the page layout.
+    width: calc(100vw - 30px);
+    max-width: 940px;
+
+    @include breakpoint($tab) {
+      width: calc(100vw - 40px);
+    }
+  }
+}

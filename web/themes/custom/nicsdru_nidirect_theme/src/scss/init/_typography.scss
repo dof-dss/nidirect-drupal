@@ -1,0 +1,148 @@
+// Font faces, stacks and sizes.
+//
+// Font styling and line heights are controlled by the several variables that
+// used by mixins like adjust-font-size-to().
+// These variable and mixins are documented in [Compass](http://compass-style.org/reference/compass/typography/vertical_rhythm/).
+// We also use a custom mixin responsive-typo-map() to make responsive typography much more manageable using sass maps.
+// We import Google fonts in the head of the document and set the base family to be
+// 'Open Sans', sans-serif
+//
+// Style guide: init.variables.typography
+// The default font family.
+$base-font-family: 'Lato', 'Open Sans', sans-serif;
+$font-monospace:   'Courier New', 'DejaVu Sans Mono', monospace, sans-serif;;
+
+// The font sizes for h1-h6.
+$h1-font-size: 4 * $base-font-size;
+$h2-font-size: 2.8 * $base-font-size;
+$h3-font-size: 2.4 * $base-font-size;
+$h4-font-size: 1.8 * $base-font-size;
+$h5-font-size: 1.8 * $base-font-size;
+$h6-font-size: 1.8 * $base-font-size;
+$p-font-size: 1.8 * $base-font-size;
+
+$body-text: (
+  null: (16px, 1.5),
+  lg: 18px,
+  //xxl: 20px,
+);
+
+$small-text: (
+  null: (1.5rem, 1.4),
+  lg: (1.6rem, 1.5),
+  //xxl: (1.7rem, 1.7647),
+);
+
+$breadcrumb-text: (
+  null: (14px, 2.4rem, 1.2rem 0 2rem 2px),
+  sm: (null, null, 1.6rem 0 2.4rem),
+  lg: (null, 2.7rem, 2.1rem 0 2.7rem),
+  //xxl: (16px, 3rem, 2rem 0 3rem)
+);
+
+$normal-text: (
+  null: (16px, 1.5, 1em 0 1.5em),
+  md: (null, null, 1em 0 1.5em),
+  lg: 18px,
+  //xxl: 20px,
+);
+
+$large-text: (
+  null: (18px, 1.5),
+  md: (20px, 1.5),
+  //lg: (21px, 1.4286),
+  //xl: (24px, 1.3334)
+);
+
+$xl-text: (
+  null: (20px, 1.4),
+  md: (22px, 1.4546),
+  lg: (24px, 1.5),
+  //xl: (28px, 1.2857)
+);
+
+$xxl-text: (
+  null: (24px, 1.3334),
+  lg: (27px, 1.3334),
+  xl: (30px, 1.3334)
+);
+
+$h1-text: (
+  null: (28px, 3.2rem, 1.6rem 0 2.1rem),
+  md: (30px, 3.6rem, 2.4rem 0 2.1rem),
+  lg: (32px, 3.9rem, 2.7rem 0 2.7rem),
+  xl: (32px, 3.9rem, 3rem 0 2.7rem),
+  //xxl: (36px, 4.5rem, 4rem 0 3rem)
+);
+
+$h2-text: (
+  null: (24px, 3.2rem, 3.2rem 0 1.6rem),
+  lg: (28px, 3.6rem, 3.6rem 0 1.8rem),
+  //xxl: (30px, 4rem, 4rem 0 2rem)
+);
+
+$h3-text: (
+  null: (21px, 2.4rem, 3.2rem 0 1.2rem),
+  lg: (24px, 3rem, 3.6rem 0 1.8rem),
+  //xxl: (25px, 3rem, 4rem 0 2rem)
+);
+
+$h4-text: (
+  null: (18px, 2.4rem, 3.2rem 0 1.2rem),
+  lg: (21px, 2.7rem, 3.6rem 0 1.8rem),
+  //xxl: (24px, 3rem, 4rem 0 2rem)
+);
+
+$h5-text: (
+  null: (16px, 2.4rem, 3.2rem 0 1.2rem),
+  lg: (18px, 2.7rem, 3.6rem 0 1.8rem),
+  //xxl: (20px, 3rem, 4rem 0 2rem)
+);
+
+$h6-text: (
+  null: (16px, 2.4rem, 3.2rem 0 1.2rem),
+  lg: (18px, 2.7rem, 3.6rem 0 1.8rem),
+  //xxl: (20px, 3rem, 4rem 0 2rem)
+);
+
+$card-title: (
+  null: (22px, 1.364),
+);
+
+$btn-small: (
+  null: (1.4rem, 2.2rem),
+  lg: (1.6rem, 2.4rem)
+);
+
+$btn-default: (
+  null: (1.6rem, 2.4rem),
+  lg: (1.8rem, 2.7rem)
+);
+
+$btn-medium: (
+  null: (1.8rem, 2.4rem),
+  lg: (2.1rem, 3rem)
+);
+
+$btn-large: (
+  null: (2.1rem, 2.8rem),
+  lg: (2.4rem, 3.6rem)
+);
+
+$form-legend: (
+  null: (21px, 2.4rem, 0 0 .2rem),
+  lg: (24px, 3rem, 0 0 .3rem),
+  //xxl: (28px, 3rem, 0 0 2rem)
+);
+
+$form-legend-plain: (
+  null: (1.6rem, 1.5, 0),
+  md: (1.8rem, 1.5, 0),
+);
+
+$landing-page-summary: (
+  null: (20px, 1.4, 2.4rem 0 3.2rem),
+  md: (22px, 1.4546),
+  lg: (26px, 1.3846, 3rem 0 3.6rem),
+  xl: (30px, 1.3, 4.5rem 0 4.5rem)
+);

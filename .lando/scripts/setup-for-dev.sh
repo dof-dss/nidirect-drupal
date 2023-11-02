@@ -4,10 +4,6 @@
 
 lando_green "Cloning development repositories";
 
-lando_pink "Cloning Custom Modules"
-rm -rf /app/web/modules/custom
-git clone git@github.com:dof-dss/nidirect-site-modules.git /app/web/modules/custom
-
 lando_yellow "Cloning Origins Modules"
 rm -rf /app/web/modules/origins
 git clone git@github.com:dof-dss/nicsdru_origins_modules.git /app/web/modules/origins
@@ -15,9 +11,5 @@ git clone git@github.com:dof-dss/nicsdru_origins_modules.git /app/web/modules/or
 lando_pink "Cloning Origins Theme"
 rm -rf /app/web/themes/custom/nicsdru_origins_theme
 git clone git@github.com:dof-dss/nicsdru_origins_theme.git /app/web/themes/custom/nicsdru_origins_theme
-
-lando_blue "Cloning NIDirect Theme"
-rm -rf /app/web/themes/custom/nicsdru_nidirect_theme
-git clone git@github.com:dof-dss/nicsdru_nidirect_theme.git /app/web/themes/custom/nicsdru_nidirect_theme
 
 lando_green "Go develop!";

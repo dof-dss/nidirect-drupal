@@ -1,0 +1,46 @@
+/*
+ * @file
+ * Resets and creates defaults for root html elements.
+ */
+
+@import '../init';
+
+// sass-lint:disable no-vendor-prefixes
+
+// Root
+//
+// The HTML root component contains the doctype, HTML element, HEAD element and BODY element. It also contains the CSS
+// for those elements and the `*` universal selector.
+// An example file for the standard markup is included for completeness, however it is not render in the style guide.
+// Otherwise, the style guide will have multiple HTML and BODY elements.
+//
+// weight: -10
+//
+// Style guide: base.root
+
+// Use the saner border-box model for all elements.
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  font-family: $base-font-family; /* 1 */
+  font-size: 100% * ($base-font-size / 16px); /* 3 */
+  line-height: 1.5;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: subpixel-antialiased; // more subtle on larger fonts, makes smaller fonts more substantial.
+  // On short pages, we want any background gradients to fill the entire height
+  // of the browser.
+  min-height: 100%;
+}
+
+body {
+  @include responsive-typo-map($body-text);
+  color: color(text);
+  background-color: #fff;
+  // Remove default margin and padding.
+  margin: 0;
+  padding: 0;
+}

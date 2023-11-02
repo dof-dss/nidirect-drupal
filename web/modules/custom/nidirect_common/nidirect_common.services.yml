@@ -1,0 +1,17 @@
+services:
+  nidirect_common.invalidate_taxonomy_list_cache_tags:
+    class: Drupal\nidirect_common\InvalidateTaxonomyListCacheTags
+    arguments: ['@cache_tags.invalidator', '@entity_type.manager']
+  nidirect_common.update_config_from_environment:
+    class: Drupal\nidirect_common\UpdateConfigFromEnvironment
+    arguments: ['@config.factory']
+  linkit.suggestion_manager:
+    class: Drupal\nidirect_common\LinkitSuggestionManager
+    arguments: ['@request_stack']
+  nidirect_common.route_subscriber:
+    class: Drupal\nidirect_common\Routing\RouteSubscriber
+    tags:
+      - { name: event_subscriber }
+  nidirect_common.views_metatags_manager:
+    class: Drupal\nidirect_common\ViewsMetatagManager
+    arguments: ['@entity_type.manager', '@plugin.manager.metatag.tag']
