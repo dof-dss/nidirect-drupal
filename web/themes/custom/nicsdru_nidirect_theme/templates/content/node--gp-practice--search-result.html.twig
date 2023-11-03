@@ -84,16 +84,18 @@
 <a href="{{ url }}" rel="bookmark"><h3{{ title_attributes.addClass('card__title') }}>{{- label -}}</h3></a>
 {{- title_suffix -}}
 {% if content.field_gp_practice_lead %}
-  {% spaceless %}
+  {% apply spaceless %}
     <ul class="list--no-bullet list--inline list--gp-practice-members">
       {% if content.field_gp_practice_lead[0] %}
         <li class="list-item">{{- content.field_gp_practice_lead[0]['#plain_text'] -}}</li>
       {% endif %}
-      {% for key, item in content.field_gp_practice_member if key|first != '#' %}
+      {% for key, item in content.field_gp_practice_member %}
+        {% if key|first != '#' %}
         <li class="list-item">{{ item }}</li>
+        {% endif %}
       {% endfor %}
     </ul>
-  {% endspaceless %}
+  {% endapply  %}
 {% endif %}
 {% set address_field %}
   {{- content|without(
@@ -102,13 +104,13 @@
     'field_gp_prescriptions',
     'field_gp_appointments') -}}
 {% endset %}
-{% spaceless %}
+{% apply spaceless %}
   {{ address_field|striptags('<p><span>')|raw }}
-{% endspaceless %}
+{% endapply  %}
 
 {% if online_service or repeat_prescriptions %}
   <p class="visually-hidden">{{ "The practice offers the following online services"|t }}</p>
-  {% spaceless %}
+  {% apply spaceless %}
     <ul class="list--no-bullet list--inline list--gp-online-services">
       {% if online_service %}
         <li class="list-item">{{ online_service }}</li>
@@ -117,6 +119,6 @@
         <li class="list-item">{{ repeat_prescriptions }}</li>
       {% endif %}
     </ul>
-  {% endspaceless %}
+  {% endapply  %}
 {% endif %}
 

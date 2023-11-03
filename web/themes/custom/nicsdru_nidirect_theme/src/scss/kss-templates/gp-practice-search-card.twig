@@ -16,27 +16,27 @@
   <article class="card">
     <a href="#" rel="bookmark">
       <h3 class="card__title">Name of Surgery / Practice</h3>
-      {% spaceless %}
+      {% apply spaceless %}
       <ul class="list--no-bullet list--inline list--gp-practice-members">
         <li class="list-item">Dr J Bloggs</li>
         <li class="list-item">Dr A N Other</li>
       </ul>
-      {% endspaceless %}
-      {% spaceless %}
+      {% endapply  %}
+      {% apply spaceless %}
         <p class="adr" translate="no">
           <span class="street-address">Street address</span>
           <span class="locality">Locality</span>
           <span class="postal-code">Postcode</span>
           <span class="country">Country</span>
         </p>
-      {% endspaceless %}
+      {% endapply  %}
       <p class="visually-hidden">The surgery offers the following online services</p>
-      {% spaceless %}
+      {% apply spaceless %}
         <ul class="list--no-bullet list--inline list--gp-online-services">
           <li class="list-item">Online Appointments</li>
           <li class="list-item">Repeat prescriptions</li>
         </ul>
-      {% endspaceless %}
+      {% endapply  %}
     </a>
   </article>
 </div>
