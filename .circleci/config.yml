@@ -220,11 +220,6 @@ jobs:
             platform sync data -p $PLATFORM_PROJECT -e $EDGE_BUILD_BRANCH -y
           when: on_fail
       - run:
-          name: Turn off fastly module to allow for cleaner config import
-          command: |
-            platform environment:drush pmu fastly -y -p $PLATFORM_PROJECT -e $EDGE_BUILD_BRANCH
-          when: always
-      - run:
           name: Refresh configuration as our db will contain active prod config after sync operation
           command: |
             platform environment:drush cim -y -p $PLATFORM_PROJECT -e $EDGE_BUILD_BRANCH
