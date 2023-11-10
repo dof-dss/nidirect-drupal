@@ -34,9 +34,9 @@ elements: |-
       '#autocomplete': 'off'
       '#input_mask': AAA9999-9999
       '#required': true
-      '#required_error': 'Visit reference number is required'
+      '#required_error': 'Enter a visit reference number'
       '#pattern': '[A-Z]{3}[0-9]{4}-[0-9]{4}'
-      '#pattern_error': 'Visit reference number is incorrect.'
+      '#pattern_error': 'Visit reference number is not recognised'
       '#attributes':
         data-inputmask-placeholder: '  '
       '#data-tippy-arrow': false
@@ -50,6 +50,7 @@ elements: |-
       '#autocomplete': 'off'
       '#input_mask': 'A9[9][9][9]'
       '#required': true
+      '#required_error': 'Enter the prisoner ID of the prisoner you will be visiting'
       '#pattern': '[A-H][0-9]{1,4}'
       '#pattern_error': 'Prisoner ID is not recognised'
       '#attributes':
@@ -63,6 +64,11 @@ elements: |-
       '#title': 'Your details'
       visitor_1_intro:
         '#type': webform_markup
+        '#states':
+          visible:
+            ':input[name="visitor_order_number"]':
+              value:
+                '!pattern': '^[A-Z]{2}V[0-9]{4}-[0-9]{4}'
         '#markup': |-
           <p class="info-notice" role="status">
           Provide your details as the main visitor. &nbsp;You'll be able to add additional visitors in the next step.
@@ -77,7 +83,7 @@ elements: |-
         '#placeholder': '000000'
         '#autocomplete': 'off'
         '#required': true
-        '#required_error': 'Enter the visitor ID for the main visitor'
+        '#required_error': 'Enter your visitor ID'
         '#pattern': '[0-9]{6}'
         '#pattern_error': 'Visitor ID is not recognised'
       visitor_1_dob:
@@ -86,7 +92,7 @@ elements: |-
         '#description': 'Your date of birth must match the one we have on record for you.'
         '#description_display': before
         '#required': true
-        '#required_error': 'Enter a valid date of birth'
+        '#required_error': 'Enter your date of birth'
         '#format': d/m/Y
       visitor_1_email:
         '#type': webform_email_confirm
@@ -95,18 +101,20 @@ elements: |-
         '#description_display': before
         '#autocomplete': 'off'
         '#required': true
+        '#required_error': 'Enter your email address'
         '#pattern': '[^@\s]+@[^@\s]+\.[^@\s]+'
         '#pattern_error': 'Enter a valid email address'
         '#flexbox': '0'
       visitor_1_telephone:
         '#type': textfield
         '#title': 'Telephone number'
-        '#description': 'Provide your telephone number in case we need to contact you about this booking.'
+        '#description': 'Provide your telephone or mobile number in case we need to contact you about this booking.'
         '#description_display': before
         '#maxlength': 20
         '#size': 22
         '#autocomplete': 'off'
         '#required': true
+        '#required_error': 'Enter your telephone or mobile number'
         '#pattern': '^[\+0-9\s\-\(\)]+$'
         '#pattern_error': 'Enter a valid telephone or mobile number'
         '#attributes':
@@ -114,6 +122,11 @@ elements: |-
   additional_visitors:
     '#type': webform_wizard_page
     '#title': 'Additional visitors'
+    '#states':
+      invisible:
+        ':input[name="visitor_order_number"]':
+          value:
+            pattern: '^[A-Z]{2}V[0-9]{4}-[0-9]{4}'
     additional_visitors_fieldset:
       '#type': fieldset
       '#title': 'Additional visitors'
@@ -139,6 +152,7 @@ elements: |-
           'no': 'No'
         '#options_display': side_by_side
         '#required': true
+        '#required_error': 'Select yes or no, do you want to add additional visitors?'
       additional_visitor_adult_number:
         '#type': select
         '#title': 'How many additional adults?'
@@ -147,6 +161,7 @@ elements: |-
           - '1'
           - '2'
         '#empty_option': Select
+        '#required_error': 'You must select the number of additional adult visitors'
         '#states':
           visible:
             ':input[name="additional_visitors_add"]':
@@ -164,6 +179,7 @@ elements: |-
           - '3'
           - '4'
         '#empty_option': Select
+        '#required_error': 'You must select the number of additional child visitors'
         '#states':
           visible:
             ':input[name="additional_visitor_adult_number"]':
@@ -205,6 +221,7 @@ elements: |-
         '#autocomplete': 'off'
         '#pattern': '[0-9]{6}'
         '#pattern_error': 'Visitor ID must be a 6 digit number'
+        '#required_error': 'Enter the visitor ID for additional adult 1'
         '#states':
           required:
             ':input[name="additional_visitor_adult_number"]':
@@ -217,6 +234,7 @@ elements: |-
         '#type': date
         '#title': 'Date of birth'
         '#title_display': inline
+        '#required_error': 'Enter the date of birth for additional adult 1'
         '#states':
           required:
             ':input[name="additional_visitor_adult_number"]':
@@ -247,6 +265,7 @@ elements: |-
         '#autocomplete': 'off'
         '#pattern': '[0-9]{6}'
         '#pattern_error': 'Visitor ID must be a 6 digit number'
+        '#required_error': 'Enter the visitor ID for additional adult 2'
         '#states':
           required:
             ':input[name="additional_visitor_adult_number"]':
@@ -259,6 +278,7 @@ elements: |-
         '#type': date
         '#title': 'Date of birth'
         '#title_display': inline
+        '#required_error': 'Enter the date of birth for additional adult 2'
         '#states':
           required:
             ':input[name="additional_visitor_adult_number"]':
@@ -299,6 +319,7 @@ elements: |-
         '#autocomplete': 'off'
         '#pattern': '[0-9]{6}'
         '#pattern_error': 'Visitor ID must be a 6 digit number'
+        '#required_error': 'Enter the visitor ID for additional child 1'
         '#states':
           required:
             ':input[name="additional_visitor_child_number"]':
@@ -311,6 +332,7 @@ elements: |-
         '#type': date
         '#title': 'Date of birth'
         '#title_display': inline
+        '#required_error': 'Enter the date of birth for additional child 1'
         '#states':
           required:
             ':input[name="additional_visitor_child_number"]':
@@ -339,6 +361,7 @@ elements: |-
         '#autocomplete': 'off'
         '#pattern': '[0-9]{6}'
         '#pattern_error': 'Visitor ID is not recognised'
+        '#required_error': 'Enter the visitor ID for additional child 2'
         '#states':
           required:
             ':input[name="additional_visitor_child_number"]':
@@ -351,6 +374,7 @@ elements: |-
         '#type': date
         '#title': 'Date of birth'
         '#title_display': inline
+        '#required_error': 'Enter the date of birth for additional child 2'
         '#states':
           required:
             ':input[name="additional_visitor_child_number"]':
@@ -379,6 +403,7 @@ elements: |-
         '#autocomplete': 'off'
         '#pattern': '[0-9]{6}'
         '#pattern_error': 'Visitor ID is not recognised'
+        '#required_error': 'Enter the visitor ID for additional child 3'
         '#states':
           required:
             ':input[name="additional_visitor_child_number"]':
@@ -391,6 +416,7 @@ elements: |-
         '#type': date
         '#title': 'Date of birth'
         '#title_display': inline
+        '#required_error': 'Enter the date of birth for additional child 3'
         '#states':
           required:
             ':input[name="additional_visitor_child_number"]':
@@ -419,6 +445,7 @@ elements: |-
         '#autocomplete': 'off'
         '#pattern': '[0-9]{6}'
         '#pattern_error': 'Visitor ID is not recognised'
+        '#required_error': 'Enter the visitor ID for additional child 4'
         '#states':
           required:
             ':input[name="additional_visitor_child_number"]':
@@ -431,6 +458,7 @@ elements: |-
         '#type': date
         '#title': 'Date of birth'
         '#title_display': inline
+        '#required_error': 'Enter the date of birth for additional child 4'
         '#states':
           required:
             ':input[name="additional_visitor_child_number"]':
@@ -459,6 +487,7 @@ elements: |-
         '#autocomplete': 'off'
         '#pattern': '[0-9]{6}'
         '#pattern_error': 'Visitor ID is not recognised'
+        '#required_error': 'Enter the visitor ID for additional child 5'
         '#states':
           required:
             ':input[name="additional_visitor_child_number"]':
@@ -471,6 +500,7 @@ elements: |-
         '#type': date
         '#title': 'Date of birth'
         '#title_display': inline
+        '#required_error': 'Enter the date of birth for additional child 5'
         '#states':
           required:
             ':input[name="additional_visitor_child_number"]':
@@ -483,6 +513,11 @@ elements: |-
   visitor_special_requirements:
     '#type': webform_wizard_page
     '#title': 'Visitor special requirements'
+    '#states':
+      invisible:
+        ':input[name="visitor_order_number"]':
+          value:
+            pattern: '^[A-Z]{2}V[0-9]{4}-[0-9]{4}'
     visitor_special_requirements_choice:
       '#type': radios
       '#title': 'Do you or any other visitors have any special requirements?'
@@ -493,15 +528,17 @@ elements: |-
         'no': 'No'
       '#options_display': side_by_side
       '#required': true
+      '#required_error': 'Select yes or no, do you or any other visitors have any special requirements?'
     visitor_special_requirements_details:
       '#type': textarea
-      '#title': 'Tell us about any special requirements you or the other visitors may have'
+      '#title': 'Tell us about any special requirements you or any other visitors may have'
       '#description': 'Use plain text only.'
       '#description_display': before
       '#maxlength': 1000
       '#rows': 5
       '#autocomplete': 'off'
       '#required': true
+      '#required_error': 'Enter details of any special requirements you or any other visitors may have'
       '#counter_type': character
       '#counter_minimum': 1
       '#counter_maximum': 1000
@@ -532,13 +569,14 @@ elements: |-
           </p>
       additional_visitors_remember:
         '#type': radios
-        '#title': 'Do you want to remember additional visitor details?'
+        '#title': 'Do you want additional visitor details to be remembered?'
         '#title_display': invisible
         '#options':
           'yes': 'Yes'
           'no': 'No'
         '#options_display': side_by_side
         '#required': true
+        '#required_error': 'Select yes or no, do you want additional visitor details to be remembered?'
   visit_preferred_day_and_time:
     '#type': webform_wizard_page
     '#title': 'Visit details'
@@ -570,7 +608,7 @@ elements: |-
 
             <dl>
                 <dt>Prison</dt><dd>{{ data.prison_name }}</dd>
-                <dt>Visit type</dt><dd>{{ data.visit_type }}</dd>
+                <dt>Visit type</dt><dd>{{ data.visit_type | title }}</dd>
                 <dt>Visiting prisoner</dt><dd>{{ data.prisoner_id }}</dd>
             </dl>
 
@@ -776,23 +814,43 @@ elements: |-
       '#template': |-
         <h3>Preferred visit dates and times</h3>
         <div class="webform-element">
-        <ul>
-          {% if data.slot1_pretty_datetime %}
-            <li>{{ data.slot1_pretty_datetime }}</li>
-          {% endif %}
-          {% if data.slot2_pretty_datetime %}
-            <li>{{ data.slot2_pretty_datetime }}</li>
-          {% endif %}
-          {% if data.slot3_pretty_datetime %}
-            <li>{{ data.slot3_pretty_datetime }}</li>
-          {% endif %}
-          {% if data.slot4_pretty_datetime %}
-            <li>{{ data.slot4_pretty_datetime }}</li>
-          {% endif %}
-          {% if data.slot5_pretty_datetime %}
-            <li>{{ data.slot5_pretty_datetime }}</li>
-          {% endif %}
-        </ul>
+        <ol class="list--ordered-bullet">
+            {% if data.slot1_datetime %}
+            <li>
+                <time datetime="{{ data.slot1_datetime }}">
+                    {{ data.slot1_datetime | date('g.i a \\o\\n l, j F Y') }}
+                </time>
+            </li>
+            {% endif %}
+            {% if data.slot2_datetime %}
+            <li>
+                <time datetime="{{ data.slot2_datetime }}">
+                    {{ data.slot2_datetime | date('g.i a \\o\\n l, j F Y') }}
+                </time>
+            </li>
+            {% endif %}
+            {% if data.slot3_datetime %}
+            <li>
+                <time datetime="{{ data.slot3_datetime }}">
+                    {{ data.slot3_datetime | date('g.i a \\o\\n l, j F Y') }}
+                </time>
+            </li>
+            {% endif %}
+            {% if data.slot4_datetime %}
+            <li>
+                <time datetime="{{ data.slot4_datetime }}">
+                    {{ data.slot4_datetime | date('g.i a \\o\\n l, j F Y') }}
+                </time>
+            </li>
+            {% endif %}
+            {% if data.slot5_datetime %}
+            <li>
+                <time datetime="{{ data.slot5_datetime }}">
+                    {{ data.slot5_datetime | date('g.i a \\o\\n l, j F Y') }}
+                </time>
+            </li>
+            {% endif %}
+        </ol>
         </div>
         <p class="info-notice">
           We will try to book the first available date and time from your list of preferred dates and times.
@@ -812,21 +870,21 @@ elements: |-
   slot5_datetime:
     '#type': hidden
     '#title': SLOT5_DATETIME
-  slot1_pretty_datetime:
+  slot1_datetime_submission:
     '#type': hidden
-    '#title': SLOT1_PRETTY_DATETIME
-  slot2_pretty_datetime:
+    '#title': SLOT1_DATETIME_SUBMISSION
+  slot2_datetime_submission:
     '#type': hidden
-    '#title': SLOT2_PRETTY_DATETIME
-  slot3_pretty_datetime:
+    '#title': SLOT2_DATETIME_SUBMISSION
+  slot3_datetime_submission:
     '#type': hidden
-    '#title': SLOT3_PRETTY_DATETIME
-  slot4_pretty_datetime:
+    '#title': SLOT3_DATETIME_SUBMISSION
+  slot4_datetime_submission:
     '#type': hidden
-    '#title': SLOT4_PRETTY_DATETIME
-  slot5_pretty_datetime:
+    '#title': SLOT4_DATETIME_SUBMISSION
+  slot5_datetime_submission:
     '#type': hidden
-    '#title': SLOT5_PRETTY_DATETIME
+    '#title': SLOT5_DATETIME_SUBMISSION
   special_requirements_json:
     '#type': hidden
     '#title': SPECIAL_REQUIREMENTS_JSON
@@ -1003,6 +1061,11 @@ settings:
     slot3_pretty_datetime: slot3_pretty_datetime
     slot4_pretty_datetime: slot4_pretty_datetime
     slot5_pretty_datetime: slot5_pretty_datetime
+    slot1_datetime_submission: slot1_datetime_submission
+    slot2_datetime_submission: slot2_datetime_submission
+    slot3_datetime_submission: slot3_datetime_submission
+    slot4_datetime_submission: slot4_datetime_submission
+    slot5_datetime_submission: slot5_datetime_submission
     special_requirements_json: special_requirements_json
     av1_id: av1_id
     av1_dob: av1_dob
@@ -1149,11 +1212,11 @@ handlers:
         "VISITOR_4_DOB": "[webform_submission:values:av3_dob]",
         "VISITOR_5_ID": "[webform_submission:values:av4_id]",
         "VISITOR_5_DOB": "[webform_submission:values:av4_dob]",
-        "SLOT1_DATETIME": "[webform_submission:values:slot1_datetime]",
-        "SLOT2_DATETIME": "[webform_submission:values:slot2_datetime]",
-        "SLOT3_DATETIME": "[webform_submission:values:slot3_datetime]",
-        "SLOT4_DATETIME": "[webform_submission:values:slot4_datetime]",
-        "SLOT5_DATETIME": "[webform_submission:values:slot5_datetime]"
+        "SLOT1_DATETIME": "[webform_submission:values:slot1_datetime_submission]",
+        "SLOT2_DATETIME": "[webform_submission:values:slot2_datetime_submission]",
+        "SLOT3_DATETIME": "[webform_submission:values:slot3_datetime_submission]",
+        "SLOT4_DATETIME": "[webform_submission:values:slot4_datetime_submission]",
+        "SLOT5_DATETIME": "[webform_submission:values:slot5_datetime_submission]"
         }
       excluded_elements:
         visitor_1_intro: visitor_1_intro
@@ -1472,4 +1535,323 @@ handlers:
             - '07-01-1973 15:00'
             - '07-01-1973 16:00'
       visit_slots_uri: 'https://gist.githubusercontent.com/dof-dss-eddwebdev/57ea797b76466f4036654e4242da82bb/raw/eb8eb122149add828bfad5179811ec77a4a90187/prism-slots.json'
+      visit_slots_legacy:
+        Maghaberry:
+          face-to-face:
+            Monday: null
+            Tuesday: null
+            Wednesday:
+              integrated:
+                '09:15': '9.15 am'
+                '10:45': '10.45 am'
+                '14:15': '2.15 pm'
+                '15:30': '3.30 pm'
+              separates:
+                '10:30': '10.30 am'
+                '14:30': '2:30 pm'
+            Thursday:
+              integrated:
+                '09:15': '9.15 am'
+                '10:45': '10.45 am'
+                '14:15': '2.15 pm'
+                '15:30': '3.30 pm'
+              separates:
+                '10:30': '10.30 am'
+                '14:30': '2:30 pm'
+            Friday: null
+            Saturday:
+              integrated:
+                '09:15': '9.15 am'
+                '10:45': '10.45 am'
+                '14:15': '2.15 pm'
+                '15:30': '3.30 pm'
+              separates:
+                '10:30': '10.30 am'
+                '14:30': '2:30 pm'
+            Sunday: null
+          virtual:
+            Monday:
+              '09:30': '9.30 am'
+              '10:00': '10.00 am'
+              '10:30': '10.30 am'
+              '11:00': '11.30 am'
+              '14:30': '2.30 pm'
+              '15:00': '3.00 pm'
+            Tuesday:
+              '09:30': '9.30 am'
+              '10:00': '10.00 am'
+              '10:30': '10.30 am'
+              '11:00': '11.30 am'
+              '14:30': '2.30 pm'
+              '15:00': '3.00 pm'
+            Wednesday:
+              '09:30': '9.30 am'
+              '10:00': '10.00 am'
+              '10:30': '10.30 am'
+              '11:00': '11.30 am'
+              '14:30': '2.30 pm'
+              '15:00': '3.00 pm'
+            Thursday:
+              '09:30': '9.30 am'
+              '10:00': '10.00 am'
+              '10:30': '10.30 am'
+              '11:00': '11.30 am'
+              '14:30': '2.30 pm'
+              '15:00': '3.00 pm'
+            Friday:
+              '09:30': '9.30 am'
+              '10:00': '10.00 am'
+              '10:30': '10.30 am'
+              '11:00': '11.30 am'
+              '14:30': '2.30 pm'
+              '15:00': '3.00 pm'
+            Saturday:
+              '09:30': '9.30 am'
+              '10:00': '10.00 am'
+              '10:30': '10.30 am'
+              '11:00': '11.30 am'
+              '14:30': '2.30 pm'
+              '15:00': '3.00 pm'
+            Sunday:
+              '09:30': '9.30 am'
+              '10:00': '10.00 am'
+              '10:30': '10.30 am'
+              '11:00': '11.30 am'
+              '14:30': '2.30 pm'
+              '15:00': '3.00 pm'
+          enhanced:
+            Monday: null
+            Tuesday:
+              integrated:
+                '09:15': '9.15 am'
+                '10:45': '10.45 am'
+                '14:15': '2.15 pm'
+                '15:30': '3.30 pm'
+              separates:
+                '10:30': '10.30 am'
+                '14:30': '2:30 pm'
+            Wednesday:
+              integrated:
+                '09:15': '9.15 am'
+                '10:45': '10.45 am'
+                '14:15': '2.15 pm'
+                '15:30': '3.30 pm'
+              separates:
+                '10:30': '10.30 am'
+                '14:30': '2:30 pm'
+            Thursday:
+              integrated:
+                '09:15': '9.15 am'
+                '10:45': '10.45 am'
+                '14:15': '2.15 pm'
+                '15:30': '3.30 pm'
+              separates:
+                '10:30': '10.30 am'
+                '14:30': '2:30 pm'
+            Friday: null
+            Saturday: null
+            Sunday: null
+        'Hydebank Wood':
+          face-to-face:
+            Monday: null
+            Tuesday:
+              '09:30': '9.30 am'
+              '10:45': '10.45 am'
+              '14:00': '2.00 pm'
+              '15:15': '3.15 pm'
+            Wednesday:
+              '09:30': '9.30 am'
+              '10:45': '10.45 am'
+              '14:00': '2.00 pm'
+              '15:15': '3.15 pm'
+            Thursday: null
+            Friday: null
+            Saturday: null
+            Sunday:
+              '09:30': '9.30 am'
+              '10:45': '10.45 am'
+              '14:30': '2.30 pm'
+          virtual:
+            Monday:
+              '09:00': '9.00 am'
+              '10:00': '10.00 am'
+              '11:00': '11.00 am'
+              '14:00': '2.00 pm'
+              '15:00': '3.00 pm'
+              '16:00': '4.00 pm'
+            Tuesday:
+              '09:00': '9.00 am'
+              '10:00': '10.00 am'
+              '11:00': '11.00 am'
+              '14:00': '2.00 pm'
+              '15:00': '3.00 pm'
+              '16:00': '4.00 pm'
+            Wednesday:
+              '09:00': '9.00 am'
+              '10:00': '10.00 am'
+              '11:00': '11.00 am'
+              '14:00': '2.00 pm'
+              '15:00': '3.00 pm'
+              '16:00': '4.00 pm'
+            Thursday:
+              '09:00': '9.00 am'
+              '10:00': '10.00 am'
+              '11:00': '11.00 am'
+              '14:00': '2.00 pm'
+              '15:00': '3.00 pm'
+              '16:00': '4.00 pm'
+            Friday:
+              '09:00': '9.00 am'
+              '10:00': '10.00 am'
+              '11:00': '11.00 am'
+              '14:00': '2.00 pm'
+              '15:00': '3.00 pm'
+              '16:00': '4.00 pm'
+            Saturday:
+              '09:30': '9.30 am'
+              '10:00': '10.00 am'
+              '10:30': '10.30 am'
+              '11:00': '11.00 am'
+              '11:30': '11.30 am'
+              '14:00': '2.00 pm'
+              '14:30': '2.30 pm'
+              '15:00': '3.00 pm'
+              '15:30': '3.30 pm'
+              '16:00': '4.00 pm'
+              '16:30': '4.30 pm'
+              '18:00': '6.00 pm'
+              '18:30': '6.30 pm'
+              '19:00': '7.00 pm'
+              '19:30': '7.30 pm'
+            Sunday:
+              '09:00': '9.00 am'
+              '10:00': '10.00 am'
+              '11:00': '11.30 am'
+              '14:00': '2.00 pm'
+              '15:00': '3.00 pm'
+              '16:00': '4.00 pm'
+          enhanced: null
+        Magilligan:
+          face-to-face:
+            Monday: null
+            Tuesday: null
+            Wednesday:
+              '10:00': '10.00 am'
+              '14:00': '2.00 pm'
+            Thursday: null
+            Friday:
+              '10:00': '10.00 am'
+              '14:00': '2.00 pm'
+            Saturday:
+              '10:00': '10.00 am'
+              '14:00': '2.00 pm'
+            Sunday: null
+          virtual:
+            Monday:
+              '08:30': '8.30 am'
+              '09:00': '9.00 am'
+              '09:30': '9.30 am'
+              '10:00': '10.00 am'
+              '10:30': '10.30 am'
+              '11:00': '11.00 am'
+              '11:30': '11:30 am'
+              '14:00': '2.00 pm'
+              '14:30': '2.30 pm'
+              '15:00': '3.00 pm'
+              '15:30': '3.30 pm'
+              '16:00': '4.00 pm'
+              '16:30': '4.30 pm'
+              '17:00': '5.00 pm'
+              '17:30': '5.30 pm'
+            Tuesday:
+              '08:30': '8.30 am'
+              '09:00': '9.00 am'
+              '09:30': '9.30 am'
+              '10:00': '10.00 am'
+              '10:30': '10.30 am'
+              '11:00': '11.00 am'
+              '11:30': '11:30 am'
+              '14:00': '2.00 pm'
+              '14:30': '2.30 pm'
+              '15:00': '3.00 pm'
+              '15:30': '3.30 pm'
+              '16:00': '4.00 pm'
+              '16:30': '4.30 pm'
+              '17:00': '5.00 pm'
+              '17:30': '5.30 pm'
+            Wednesday:
+              '08:30': '8.30 am'
+              '09:00': '9.00 am'
+              '09:30': '9.30 am'
+              '10:00': '10.00 am'
+              '10:30': '10.30 am'
+              '11:00': '11.00 am'
+              '11:30': '11:30 am'
+              '14:00': '2.00 pm'
+              '14:30': '2.30 pm'
+              '15:00': '3.00 pm'
+              '15:30': '3.30 pm'
+              '16:00': '4.00 pm'
+              '16:30': '4.30 pm'
+              '17:00': '5.00 pm'
+              '17:30': '5.30 pm'
+            Thursday:
+              '08:30': '8.30 am'
+              '09:00': '9.00 am'
+              '09:30': '9.30 am'
+              '10:00': '10.00 am'
+              '10:30': '10.30 am'
+              '11:00': '11.00 am'
+              '11:30': '11:30 am'
+              '14:00': '2.00 pm'
+              '14:30': '2.30 pm'
+              '15:00': '3.00 pm'
+              '15:30': '3.30 pm'
+              '16:00': '4.00 pm'
+              '16:30': '4.30 pm'
+              '17:00': '5.00 pm'
+              '17:30': '5.30 pm'
+            Friday:
+              '08:30': '8.30 am'
+              '09:00': '9.00 am'
+              '09:30': '9.30 am'
+              '10:00': '10.00 am'
+              '10:30': '10.30 am'
+              '11:00': '11.00 am'
+              '11:30': '11:30 am'
+              '14:00': '2.00 pm'
+              '14:30': '2.30 pm'
+              '15:00': '3.00 pm'
+              '15:30': '3.30 pm'
+              '16:00': '4.00 pm'
+              '16:30': '4.30 pm'
+              '17:00': '5.00 pm'
+              '17:30': '5.30 pm'
+            Saturday:
+              '09:00': '9.00 am'
+              '09:30': '9.30 am'
+              '10:00': '10.00 am'
+              '10:30': '10.30 am'
+              '11:00': '11.00 am'
+              '11:30': '11:30 am'
+              '14:00': '2.00 pm'
+              '14:30': '2.30 pm'
+              '15:00': '3.00 pm'
+              '15:30': '3.30 pm'
+              '16:00': '4.00 pm'
+              '16:30': '4.30 pm'
+            Sunday:
+              '09:00': '9.00 am'
+              '09:30': '9.30 am'
+              '10:00': '10.00 am'
+              '10:30': '10.30 am'
+              '11:00': '11.00 am'
+              '11:30': '11:30 am'
+              '14:00': '2.00 pm'
+              '14:30': '2.30 pm'
+              '15:00': '3.00 pm'
+              '15:30': '3.30 pm'
+              '16:00': '4.00 pm'
+              '16:30': '4.30 pm'
+          enhanced: null
 variants: {  }
