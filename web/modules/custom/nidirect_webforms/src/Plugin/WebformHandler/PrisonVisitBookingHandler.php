@@ -224,6 +224,7 @@ class PrisonVisitBookingHandler extends WebformHandlerBase
       {
         $elements['msg_additional_visitors']['#access'] = TRUE;
 
+        // @TODO - do not remove all visitor data?
         // Remove all visitor data.
         $tempstore->delete('visitor_data');
 
@@ -275,45 +276,10 @@ class PrisonVisitBookingHandler extends WebformHandlerBase
       $tempstore = $this->tempStoreFactory->get('nidirect_webforms.prison_visit_booking');
       $remember_visitors = $form_state->getValue('additional_visitors_remember') === 'yes' ?? FALSE;
       $visitor_data = [];
-
-      // Reset hidden elements keeping track of preferred time slots.
-      for ($i = 1; $i <= 5; $i++) {
-        $form_state->setValue('slot' . $i . '_datetime', '');
-        $webform_submission->setElementData('slot' . $i . '_datetime', '');
-        $form_state->setValue('slot' . $i . '_pretty_datetime', NULL);
-        $webform_submission->setElementData('slot' . $i . '_pretty_datetime', NULL);
-      }
-
       $form_values = $form_state->getValues();
-      $count = 0;
 
-      foreach ($form_values as $element_name => $element_value) {
-
-        // Set hidden elements to keep track of selected time slots.
-        // Time slots have keys like 'monday_week_1', 'tuesday_week_4', etc.
-
-        if (str_contains($element_name, '_week_') && is_array($element_value)) {
-
-          // Add up to 5 selected time slots to our hidden elements.
-          foreach ($element_value as $slot) {
-            $count++;
-            if ($count <= 5) {
-              $slot_date = new \DateTime($slot);
-              $form_state->setValue('slot' . $count . '_datetime', $slot_date->format('d/m/Y H:i'));
-              $webform_submission->setElementData('slot' . $count . '_datetime', $slot_date->format('d/m/Y H:i'));
-
-              // "Pretty" slot dates and times for preview
-              if (!empty($slot)) {
-                $form_state->setValue('slot' . $count . '_pretty_datetime', $slot_date->format('l, j F Y \a\t g.i a'));
-                $webform_submission->setElementData('slot' . $count . '_pretty_datetime', $slot_date->format('l, j F Y \a\t g.i a'));
-              } else {
-                $form_state->setValue('slot' . $count . '_pretty_datetime', '');
-                $webform_submission->setElementData('slot' . $count . '_pretty_datetime', '');
-              }
-            }
-          }
-        }
-
+      foreach ($form_values as $element_name => $element_value)
+      {
         // Special requirements textarea needs to be encoded for JSON.
         if (str_contains($element_name, 'special_requirements_details')) {
           $special_requirements = Json::encode($element_value);
@@ -386,6 +352,23 @@ class PrisonVisitBookingHandler extends WebformHandlerBase
         $form_state->setValue('av' . $key + 1 . '_dob', $value['dob']);
         $webform_submission->setElementData('av' . $key + 1 . '_id', $value['id']);
         $webform_submission->setElementData('av' . $key + 1 . '_dob', $value['dob']);
+      }
+
+      // Set preferred time slots in correct date format for submission.
+      for ($i = 1; $i <= 5; $i++)
+      {
+        if ($slot_value = $form_state->getValue('slot' . $i . '_datetime'))
+        {
+          $slot_date = new \DateTime($slot_value);
+          $slot_date_submission = $slot_date->format('d/m/Y H:i');
+          $form_state->setValue('slot' . $i . '_datetime_submission', $slot_date_submission);
+          $webform_submission->setElementData('slot' . $i . '_datetime_submission', $slot_date_submission);
+        }
+        else
+        {
+          $form_state->setValue('slot' . $i . '_datetime_submission', null);
+          $webform_submission->setElementData('slot' . $i . '_datetime_submission', null);
+        }
       }
     }
   }
