@@ -114,6 +114,10 @@
           return bookRefIsValid;
         }, `Visit reference number is not recognised or has expired.`);
 
+        $.validator.addMethod("uniqueVisitorId", function(value, element, params) {
+          return this.optional(element) || isUniqueVisitorId(params[1], value) === true;
+        }, $.validator.format("Visitor ID has already been entered"));
+
         $.validator.addMethod("minAge", function(value, element, param) {
           return this.optional(element) || getAge(value) >= param[1];
         }, $.validator.format("Age must be {1} or over"));
@@ -125,6 +129,29 @@
         $.validator.addMethod("noHtml", function(value, element) {
           return this.optional(element) || value === value.replace(/(<([^>]+)>)/gi, "");
         }, "Text must be plain text only");
+
+
+        function isUniqueVisitorId(visitorIds = {}, visitorId) {
+
+          let isUnique = true;
+
+          if (Object.keys(visitorIds).length && Object.values(visitorIds).includes(visitorId) === true) {
+            console.log(`Visitor id ${visitorId} entered in a previous step`);
+            isUnique = false;
+          }
+
+          let count = 0;
+          $('[name*="visitor_"][name$="_id"]').each(function() {
+            if ($(this).val() === visitorId) count++;
+          });
+
+          if (count > 1) {
+            console.log(`Visitor id ${visitorId} entered in the present step.`);
+            isUnique = false;
+          }
+
+          return isUnique;
+        }
 
         function getAge(dateString) {
           const today = new Date();
@@ -138,7 +165,6 @@
         }
 
       });
-
 
       // Apply jquery validation methods once to individual elements
       // which might be loaded in via ajax.
@@ -183,6 +209,17 @@
           }
         });
       }
+
+      // Visitor ID validation rules.
+      const $pvVisitorIds =  settings.prisonVisitBooking.visitorIds ?? {};
+      $(once('pvVisitorIds', '[name*="visitor_"][name$="_id"]', context)).each(function() {
+        $(this).rules("add", {
+          uniqueVisitorId: [true, $pvVisitorIds],
+          messages: {
+            minAge: "Visitor ID has already been entered"
+          }
+        });
+      });
 
       // Adult visitor dates of birth validation rules.
       const pvAdultDobSelectors = '[name="additional_visitor_adult_1_dob"], [name="additional_visitor_adult_2_dob"]';
