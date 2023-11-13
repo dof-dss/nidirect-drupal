@@ -18,37 +18,42 @@ use Symfony\Component\HttpFoundation\RequestStack;
 class PrisonVisitBookingJsonApiController extends ControllerBase {
 
   /**
-   * @var ConfigFactoryInterface
+   * @var \Drupal\Core\Config\ConfigFactoryInterface
    */
   protected $configFactory;
 
   /**
-   * @var ClientInterface
+   * @var \GuzzleHttp\ClientInterface
    */
-  protected $httpClient;
+  protected ClientInterface $httpClient;
 
   /**
-   * @var Request
+   * @var \Symfony\Component\HttpFoundation\Request
    */
   protected $request;
 
   /**
-   * @var RequestStack
+   * @var \Symfony\Component\HttpFoundation\RequestStack
    */
   protected $requestStack;
 
   /**
-   * @var CacheBackendInterface
+   * @var \Drupal\Core\Cache\CacheBackendInterface
    */
   protected $cache;
 
   /**
-   * @param ConfigFactoryInterface $configFactory
-   * @param ClientInterface $httpClient
-   * @param Request $request
-   * @param CacheBackendInterface $cache
+   * Constructs a PrisonVisitBookingJsonApiController object.
+   *
+   * @param \Drupal\Core\Config\ConfigFactoryInterface $configFactory
+   * A config factory instance.
+   * @param \GuzzleHttp\ClientInterface $httpClient
+   * A http client instance.
+   * @param \Symfony\Component\HttpFoundation\Request $request
+   * A request instance.
+   * @param \Drupal\Core\Cache\CacheBackendInterface $cache
+   * A cache instance.
    */
-
   public function __construct(ConfigFactoryInterface $configFactory, ClientInterface $httpClient, Request $request, CacheBackendInterface $cache) {
     $this->configFactory = $configFactory;
     $this->httpClient = $httpClient;
@@ -82,12 +87,10 @@ class PrisonVisitBookingJsonApiController extends ControllerBase {
 
     $response = new JsonResponse();
 
-    if (!empty($data))
-    {
+    if (!empty($data)) {
       $response->setData($data)->setStatusCode(200);
     }
-    else
-    {
+    else {
       $response->setStatusCode(204);
     }
 
@@ -97,23 +100,19 @@ class PrisonVisitBookingJsonApiController extends ControllerBase {
   /**
    * A helper function to get posted json data.
    */
-  public function cacheJsonData()
-  {
+  public function cacheJsonData() {
     $data = [];
     $content = $this->request->getContent();
 
-    if (!empty($content))
-    {
+    if (!empty($content)) {
       $now = new \DateTime('now');
       $expire = $now->modify('+1 week');
 
-      if ($data = json_decode($content, TRUE))
-      {
+      if ($data = json_decode($content, TRUE)) {
         $this->cache->set('prison_visit_slots_data', $data, $expire->getTimestamp());
         $this->getLogger('prison_visits')->debug('prison_visit_slots_data cache update success.');
       }
-      else
-      {
+      else {
         $this->getLogger('prison_visits')->error('prison_visit_slots_data cache update failure.');
       }
     }
