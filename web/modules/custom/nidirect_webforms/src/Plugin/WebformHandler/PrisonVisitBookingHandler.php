@@ -107,7 +107,7 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
     // clientside checking for duplicate IDs, pass any visitor IDs
     // added so far to clientside.
     if ($page === 'additional_visitor_adult_details' || $page === 'additional_visitor_child_details') {
-      $visitorIds = array_filter($form_state->getValues(), function($v, $k) {
+      $visitorIds = array_filter($form_state->getValues(), function ($v, $k) {
         return str_contains($k, 'visitor_') && str_ends_with($k, '_id') && is_numeric($v);
       }, ARRAY_FILTER_USE_BOTH);
 
@@ -313,8 +313,10 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
 
       for ($i = 1; $i <= $num_adults; $i++) {
 
-        $av_id = $form_values['additional_visitor_adult_' . $i .'_id'];
-        $av_dob = new \DateTime($form_values['additional_visitor_adult_' . $i .'_dob']);
+        $av_id = $form_values['additional_visitor_adult_' . $i .'_id'] ?? NULL;
+        if (!empty($form_values['additional_visitor_adult_' . $i .'_dob'])) {
+          $av_dob = new \DateTime($form_values['additional_visitor_adult_' . $i .'_dob']);
+        }
 
         if (!empty($av_id) && !empty($av_dob)) {
           $additional_visitors[] = [
@@ -326,8 +328,10 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
 
       for ($i = 1; $i <= $num_children; $i++) {
 
-        $av_id = $form_values['additional_visitor_child_' . $i .'_id'];
-        $av_dob = new \DateTime($form_values['additional_visitor_child_' . $i .'_dob']);
+        $av_id = $form_values['additional_visitor_child_' . $i .'_id'] ?? NULL;
+        if (!empty($form_values['additional_visitor_child_' . $i .'_dob'])) {
+          $av_dob = new \DateTime($form_values['additional_visitor_child_' . $i .'_dob']);
+        }
 
         if (!empty($av_id) && !empty($av_dob)) {
           $additional_visitors[] = [
@@ -339,10 +343,10 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
 
       // Set secure value elements for submission.
       foreach ($additional_visitors as $key => $value) {
-        $form_state->setValue('av' . $key + 1 . '_id', $value['id']);
-        $form_state->setValue('av' . $key + 1 . '_dob', $value['dob']);
-        $webform_submission->setElementData('av' . $key + 1 . '_id', $value['id']);
-        $webform_submission->setElementData('av' . $key + 1 . '_dob', $value['dob']);
+        $form_state->setValue('av' . ($key + 1) . '_id', $value['id']);
+        $form_state->setValue('av' . ($key + 1) . '_dob', $value['dob']);
+        $webform_submission->setElementData('av' . ($key + 1) . '_id', $value['id']);
+        $webform_submission->setElementData('av' . ($key + 1) . '_dob', $value['dob']);
       }
 
       // Set preferred time slots in correct date format for submission.
@@ -354,8 +358,8 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
           $webform_submission->setElementData('slot' . $i . '_datetime_submission', $slot_date_submission);
         }
         else {
-          $form_state->setValue('slot' . $i . '_datetime_submission', null);
-          $webform_submission->setElementData('slot' . $i . '_datetime_submission', null);
+          $form_state->setValue('slot' . $i . '_datetime_submission', NULL);
+          $webform_submission->setElementData('slot' . $i . '_datetime_submission', NULL);
         }
       }
     }
@@ -387,10 +391,10 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
     // Extract various bits of the booking reference.
     $prison_id = substr($booking_ref, 0, 2);
     $visit_type_id = substr($booking_ref, 2, 1);
-    $visit_week = (int)substr($booking_ref, 3, 2);
-    $visit_year = (int)substr($booking_ref, 5, 2);
-    $visit_year_full = (int)DrupalDateTime::createFromFormat('y', $visit_year)->format('Y');
-    $visit_sequence = (int)substr($booking_ref, 8);
+    $visit_week = (int) substr($booking_ref, 3, 2);
+    $visit_year = (int) substr($booking_ref, 5, 2);
+    $visit_year_full = (int) DrupalDateTime::createFromFormat('y', $visit_year)->format('Y');
+    $visit_sequence = (int) substr($booking_ref, 8);
 
     // Valid prison id.
     if (array_key_exists($prison_id, $this->configuration['prisons'])) {
@@ -559,7 +563,7 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
 
     if ($form_state->get('current_page') === 'additional_visitor_adult_details') {
       // Get all additional adult visitor ids.
-      $visitorIds = array_filter($form_state->getValues(), function($k) {
+      $visitorIds = array_filter($form_state->getValues(), function ($k) {
         return str_contains($k, 'additional_visitor_adult_') && str_ends_with($k, '_id');
       }, ARRAY_FILTER_USE_KEY);
 
@@ -569,7 +573,7 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
     }
     else {
       // Get all additional visitor IDs.
-      $visitorIds = array_filter($form_state->getValues(), function($k) {
+      $visitorIds = array_filter($form_state->getValues(), function ($k) {
         return str_contains($k, 'visitor_') && str_ends_with($k, '_id');
       }, ARRAY_FILTER_USE_KEY);
     }
@@ -677,7 +681,7 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
         $visit_slots_cache_timestamp = (int) $visit_slots_cache->created;
 
         // Check when created.
-        $visit_slots_created =  new \DateTime('now');
+        $visit_slots_created = new \DateTime('now');
         $visit_slots_created->setTimestamp($visit_slots_cache_timestamp);
 
         // Log a warning when cached data more than 24 hours old.
