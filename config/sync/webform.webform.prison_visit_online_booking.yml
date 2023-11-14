@@ -1095,11 +1095,11 @@ settings:
   draft_loaded_message: ''
   draft_pending_single_message: ''
   draft_pending_multiple_message: ''
-  confirmation_type: page
+  confirmation_type: inline
   confirmation_url: ''
   confirmation_title: 'Prison visit booking complete'
   confirmation_message: |-
-    <p class="info-notice">
+    <p class="info-notice" role="status">
     We will send you an email shortly to let you know whether your booking request has been successful.  Please allow up to 1 hour for this email to arrive.
     </p>
   confirmation_attributes: {  }
@@ -1123,7 +1123,7 @@ settings:
   entity_limit_user_interval: null
   purge: none
   purge_days: null
-  results_disabled: false
+  results_disabled: true
   results_disabled_ignore: false
   results_customize: false
   token_view: false
@@ -1189,11 +1189,11 @@ handlers:
     settings:
       states:
         - completed
-      to_mail: peter.caughey@justice-ni.gov.uk
+      to_mail: PRISMTESTVisitsBooking@justice-ni.gov.uk
       to_options: {  }
       bcc_mail: ''
       bcc_options: {  }
-      cc_mail: '[webform_submission:values:visitor_1_email:raw]'
+      cc_mail: ''
       cc_options: {  }
       from_mail: _default
       from_options: {  }
