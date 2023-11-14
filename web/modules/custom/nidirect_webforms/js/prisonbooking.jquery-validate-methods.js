@@ -115,7 +115,7 @@
         }, `Visit reference number is not recognised or has expired.`);
 
         $.validator.addMethod("uniqueVisitorId", function(value, element, params) {
-          return this.optional(element) || isUniqueVisitorId(params[1], value) === true;
+          return this.optional(element) || isUniqueVisitorId(params[1], value, element) === true;
         }, $.validator.format("Visitor ID has already been entered"));
 
         $.validator.addMethod("minAge", function(value, element, param) {
@@ -131,24 +131,28 @@
         }, "Text must be plain text only");
 
 
-        function isUniqueVisitorId(visitorIds = {}, visitorId) {
+        function isUniqueVisitorId(existingIds = {}, visitorId, visitorElement) {
 
           let isUnique = true;
 
-          if (Object.keys(visitorIds).length && Object.values(visitorIds).includes(visitorId) === true) {
-            console.log(`Visitor id ${visitorId} entered in a previous step`);
-            isUnique = false;
+          // Check against adult visitor ids.
+          for (const [key, value] of Object.entries(existingIds)) {
+            const visitorElementName = $(visitorElement).attr('name');
+            if (value === visitorId && key !== visitorElementName) {
+              console.log(`${key} already using ${visitorId}.`);
+              isUnique = false;
+            }
           }
 
-          let count = 0;
+          // Check against child visitor ids within the present step.
           $('[name*="visitor_"][name$="_id"]').each(function() {
-            if ($(this).val() === visitorId) count++;
+            let key = $(this).attr('name');
+            let value = $(this).val();
+            if (value === visitorId && key !== $(visitorElement).attr('name')) {
+              isUnique = false;
+              console.log(`${key} already using ${visitorId}.`);
+            }
           });
-
-          if (count > 1) {
-            console.log(`Visitor id ${visitorId} entered in the present step.`);
-            isUnique = false;
-          }
 
           return isUnique;
         }
@@ -210,13 +214,24 @@
         });
       }
 
-      // Visitor ID validation rules.
-      const $pvVisitorIds =  settings.prisonVisitBooking.visitorIds ?? {};
-      $(once('pvVisitorIds', '[name*="visitor_"][name$="_id"]', context)).each(function() {
+      // Adult Visitor ID validation rules.
+      const pvVisitorOneId =  settings.prisonVisitBooking.visitorOneId ?? {};
+      $(once('pvAdultIds', '[name*="additional_visitor_adult"][name$="_id"]', context)).each(function() {
         $(this).rules("add", {
-          uniqueVisitorId: [true, $pvVisitorIds],
+          uniqueVisitorId: [true, pvVisitorOneId],
           messages: {
-            minAge: "Visitor ID has already been entered"
+            uniqueVisitorId: "Visitor ID has already been entered"
+          }
+        });
+      });
+
+      // Child Visitor ID validation rules.
+      const pvAdultVisitorIds =  settings.prisonVisitBooking.adultVisitorIds ?? {};
+      $(once('pvChildIds', '[name*="additional_visitor_child"][name$="_id"]', context)).each(function() {
+        $(this).rules("add", {
+          uniqueVisitorId: [true, pvAdultVisitorIds],
+          messages: {
+            uniqueVisitorId: "Visitor ID has already been entered"
           }
         });
       });
