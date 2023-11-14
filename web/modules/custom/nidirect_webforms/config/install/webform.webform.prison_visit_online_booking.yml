@@ -203,9 +203,12 @@ elements: |-
     additional_visitors_adult:
       '#type': webform_markup
       '#markup': |-
+        <div role="status">
+        <h2 class="legend">Additional adult visitors</h2>
         <p class="info-notice">
         Enter the correct visitor ID and date of birth for each additional adult visitor. If visitor details entered here do not match those we hold on record, they will not be included in the booking.
         </p>
+        </div>
     additional_visitor_adult_1_details:
       '#type': details
       '#title': 'Enter details for additional adult 1'
@@ -302,9 +305,12 @@ elements: |-
     additional_visitors_child:
       '#type': webform_markup
       '#markup': |-
+        <div role="status">
+        <h2 class="legend">Additional child visitors</h2>
         <p class="info-notice">
         Enter the correct visitor ID and date of birth for each additional child visitor. If visitor details entered here do not match those we hold on record, they will not be included in the booking.
         </p>
+        </div>
     additional_visitor_child_1_details:
       '#type': details
       '#title': 'Enter details for additional child 1'
@@ -562,11 +568,13 @@ elements: |-
       remember_settings_info:
         '#type': webform_markup
         '#markup': |-
+          <div role="status">
           <p>Visitor details can be remembered for up to one week on your device.</p>
 
           <p class="info-notice">
           Select <strong>No</strong> if you're using a publicly accessible computer or a device shared with others.
           </p>
+          </div>
       additional_visitors_remember:
         '#type': radios
         '#title': 'Do you want additional visitor details to be remembered?'
@@ -621,15 +629,21 @@ elements: |-
       '#display_on': form
       '#mode': html
       '#template': |-
-        <p class="info-notice" role="alert" aria-live="polite">
-          Choose your preferred time slot for this visit. &nbsp;You can choose up to
-          {% if data.visitor_order_number | slice(2, 1) == 'V' %}
-            five
-          {% else %}
-            three
-          {% endif %}
-          time slots. &nbsp;We will try to book the first of your chosen time slots that is available.
-        </p>
+        <div role="alert" aria-live="polite">
+
+            <h2 class="legend">Choose your preferred time slot for this visit</h2>
+
+            <p class="info-notice">
+                You can choose up to
+                {% if data.visitor_order_number | slice(2, 1) == 'V' %}
+                    five
+                {% else %}
+                    three
+                {% endif %}
+                time slots. &nbsp;We will try to book the first of your chosen time slots that is available.
+            </p>
+
+        </div>
     slots_week_1:
       '#type': details
       '#title': 'Week commencing [DATE]'
@@ -1014,7 +1028,7 @@ settings:
   preview: 2
   preview_label: Confirmation
   preview_title: 'Confirm prison visit'
-  preview_message: ''
+  preview_message: 'Review the information you have provided and select “Book prison visit” if it is correct.'
   preview_attributes: {  }
   preview_excluded_elements:
     visitor_1_intro: visitor_1_intro
@@ -1056,11 +1070,6 @@ settings:
     slot3_datetime: slot3_datetime
     slot4_datetime: slot4_datetime
     slot5_datetime: slot5_datetime
-    slot1_pretty_datetime: slot1_pretty_datetime
-    slot2_pretty_datetime: slot2_pretty_datetime
-    slot3_pretty_datetime: slot3_pretty_datetime
-    slot4_pretty_datetime: slot4_pretty_datetime
-    slot5_pretty_datetime: slot5_pretty_datetime
     slot1_datetime_submission: slot1_datetime_submission
     slot2_datetime_submission: slot2_datetime_submission
     slot3_datetime_submission: slot3_datetime_submission
