@@ -114,16 +114,14 @@ form > .form-wrapper > section {
     margin: 1em 0 0;
   }
 
-  > legend,
-  > .legend,
-  > h2 {
+  legend,
+  h2 {
     @include responsive-typo-map($form-legend);
     color: $brand-primary-dark;
     font-weight: normal;
   }
 
-  // Plain and nested fieldset legends / section titles.
- .legend--plain,
+  // Nested fieldset legends / section titles.
   fieldset legend,
   section h2 {
     @include responsive-typo-map($form-legend-plain);
@@ -132,6 +130,17 @@ form > .form-wrapper > section {
 
   .form-type-processed-text > * {
     margin: 1em 0;
+  }
+}
+
+form .legend {
+  @include responsive-typo-map($form-legend);
+  color: $brand-primary-dark;
+  font-weight: normal;
+
+  &--plain {
+    @include responsive-typo-map($form-legend-plain);
+    color: $text;
   }
 }
 
@@ -386,6 +395,25 @@ input[type='checkbox'],
     @include breakpoint($tab, $no-query: true) {
       min-height: 2.5em;
       padding: .5em 1em .5em 3.6rem;
+    }
+
+    .rank {
+      position: absolute;
+      font-size: 1.4rem;
+      line-height: 2.4rem;
+      width: 2em;
+      height: 2em;
+      right: -.5em;
+      top: -.75em;
+      text-align: center;
+      border: .2rem solid #fff;
+      border-radius: 50%;
+      background-color: $charcoal;
+      color: #fff;
+
+      &:empty {
+        display: none;
+      }
     }
   }
 
