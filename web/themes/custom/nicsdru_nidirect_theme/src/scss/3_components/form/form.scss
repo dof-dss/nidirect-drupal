@@ -114,16 +114,14 @@ form > .form-wrapper > section {
     margin: 1em 0 0;
   }
 
-  > legend,
-  > .legend,
-  > h2 {
+  legend,
+  h2 {
     @include responsive-typo-map($form-legend);
     color: $brand-primary-dark;
     font-weight: normal;
   }
 
-  // Plain and nested fieldset legends / section titles.
- .legend--plain,
+  // Nested fieldset legends / section titles.
   fieldset legend,
   section h2 {
     @include responsive-typo-map($form-legend-plain);
@@ -132,6 +130,17 @@ form > .form-wrapper > section {
 
   .form-type-processed-text > * {
     margin: 1em 0;
+  }
+}
+
+form .legend {
+  @include responsive-typo-map($form-legend);
+  color: $brand-primary-dark;
+  font-weight: normal;
+
+  &--plain {
+    @include responsive-typo-map($form-legend-plain);
+    color: $text;
   }
 }
 

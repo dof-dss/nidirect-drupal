@@ -53,15 +53,21 @@
         display: inline-block;
         content: counter(item);
 
-        font-size: 1.4rem;
+        font-size: 1.2rem;
         line-height: 2.4rem;
-        min-width: 2.8rem;
-        min-height: 2.8rem;
-        padding: .2rem;
+        min-width: 2.4rem;
+        min-height: 2.4rem;
         text-align: center;
         border-radius: 50%;
         background-color: $charcoal;
         color: #fff;
+
+        @include breakpoint($tab) {
+          font-size: 1.4rem;
+          line-height: 2.7rem;
+          min-width: 2.7rem;
+          min-height: 2.7rem;
+        }
       }
     }
   }
