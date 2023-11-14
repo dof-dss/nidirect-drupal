@@ -54,8 +54,8 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
   protected $requestStack;
 
   /**
-  * @var \GuzzleHttp\ClientInterface
-  */
+   * @var \GuzzleHttp\ClientInterface
+   */
   protected $httpClient;
 
   /**
@@ -346,9 +346,9 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
 
       for ($i = 1; $i <= $num_children; $i++) {
 
-        $av_id = $form_values['additional_visitor_child_' . $i .'_id'] ?? NULL;
-        if (!empty($form_values['additional_visitor_child_' . $i .'_dob'])) {
-          $av_dob = new \DateTime($form_values['additional_visitor_child_' . $i .'_dob']);
+        $av_id = $form_values['additional_visitor_child_' . $i . '_id'] ?? NULL;
+        if (!empty($form_values['additional_visitor_child_' . $i . '_dob'])) {
+          $av_dob = new \DateTime($form_values['additional_visitor_child_' . $i . '_dob']);
         }
 
         if (!empty($av_id) && !empty($av_dob)) {
