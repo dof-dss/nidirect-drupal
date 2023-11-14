@@ -46,13 +46,13 @@ class PrisonVisitBookingJsonApiController extends ControllerBase {
    * Constructs a PrisonVisitBookingJsonApiController object.
    *
    * @param \Drupal\Core\Config\ConfigFactoryInterface $configFactory
-   * A config factory instance.
+   *   A config factory instance.
    * @param \GuzzleHttp\ClientInterface $httpClient
-   * A http client instance.
+   *   A http client instance.
    * @param \Symfony\Component\HttpFoundation\Request $request
-   * A request instance.
+   *   A request instance.
    * @param \Drupal\Core\Cache\CacheBackendInterface $cache
-   * A cache instance.
+   *   A cache instance.
    */
   public function __construct(ConfigFactoryInterface $configFactory, ClientInterface $httpClient, Request $request, CacheBackendInterface $cache) {
     $this->configFactory = $configFactory;
