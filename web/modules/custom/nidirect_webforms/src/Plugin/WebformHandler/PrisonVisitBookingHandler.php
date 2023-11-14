@@ -106,12 +106,22 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
     // Visitor IDs are entered in separate wizard steps. To enable
     // clientside checking for duplicate IDs, pass any visitor IDs
     // added so far to clientside.
-    if ($page === 'additional_visitor_adult_details' || $page === 'additional_visitor_child_details') {
-      $visitorIds = array_filter($form_state->getValues(), function ($v, $k) {
-        return str_contains($k, 'visitor_') && str_ends_with($k, '_id') && is_numeric($v);
+
+    if ($page === 'additional_visitor_adult_details' && $visitor_1_id = $form_state->getValue('visitor_1_id')) {
+      // Pass the main visitor ID to clientside to enable additional
+      // adult visitor ids to be checked against it.
+      $form['#attached']['drupalSettings']['prisonVisitBooking']['visitorOneId'] = ['visitor_1_id' => $visitor_1_id];
+    }
+    elseif ($page === 'additional_visitor_child_details') {
+      // Pass all adult visitor ids to clientside to validate
+      // child visitor ids.
+      $adultVisitorIds = array_filter($form_state->getValues(), function ($v, $k) {
+        return ($k === 'visitor_1_id' || (str_contains($k, 'additional_visitor_adult_') && str_ends_with($k, '_id'))) && is_numeric($v);
       }, ARRAY_FILTER_USE_BOTH);
 
-      $form['#attached']['drupalSettings']['prisonVisitBooking']['visitorIds'] = $visitorIds;
+      if (!empty($adultVisitorIds)) {
+        $form['#attached']['drupalSettings']['prisonVisitBooking']['adultVisitorIds'] = $adultVisitorIds;
+      }
     }
 
     // Show available time slots in the form.
@@ -563,25 +573,21 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
 
     if ($form_state->get('current_page') === 'additional_visitor_adult_details') {
       // Get all additional adult visitor ids.
-      $visitorIds = array_filter($form_state->getValues(), function ($k) {
-        return str_contains($k, 'additional_visitor_adult_') && str_ends_with($k, '_id');
-      }, ARRAY_FILTER_USE_KEY);
-
-      // And also visitor 1 (also an adult)...
-      $visitor_1_id = $form_state->getValue('visitor_1_id');
-      $visitorIds[] = $visitor_1_id;
+      $visitorIds = array_filter($form_state->getValues(), function ($v, $k) {
+        return ($k === 'visitor_1_id' || (str_contains($k, 'additional_visitor_adult_') && str_ends_with($k, '_id'))) && is_numeric($v);
+      }, ARRAY_FILTER_USE_BOTH);
     }
     else {
       // Get all additional visitor IDs.
-      $visitorIds = array_filter($form_state->getValues(), function ($k) {
-        return str_contains($k, 'visitor_') && str_ends_with($k, '_id');
-      }, ARRAY_FILTER_USE_KEY);
+      $visitorIds = array_filter($form_state->getValues(), function ($v, $k) {
+        return str_contains($k, 'visitor_') && str_ends_with($k, '_id') && is_numeric($v);
+      }, ARRAY_FILTER_USE_BOTH);
     }
 
-    $additionalVisitorIdCounts = array_count_values($visitorIds);
+    $visitorIdCounts = array_count_values($visitorIds);
 
     foreach ($visitorIds as $key => $value) {
-      if (!empty($value) && isset($additionalVisitorIdCounts[$value]) && $additionalVisitorIdCounts[$value] > 1) {
+      if (!empty($value) && isset($visitorIdCounts[$value]) && $visitorIdCounts[$value] > 1) {
         $form_state->setErrorByName($key, $this->t('Visitor ID has already been entered.'));
       }
     }
