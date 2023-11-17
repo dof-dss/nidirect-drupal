@@ -24,10 +24,16 @@ compose:
 services:
   appserver:
     scanner: false
+    environment:
+      # Set node compilation flag to allow arm64 and x86 chipset compilation.
+      CPPFLAGS: "-DPNG_ARM_NEON_OPT=0"
+      # node version set here will be used by the nvm installer script.
+      NODE_VERSION: 14.21.3
     build_as_root:
       - /app/.lando/scripts/appserver_build.sh
-      - curl -sL https://deb.nodesource.com/setup_14.x | bash -
-      - apt-get install -y nodejs
+    run:
+      - touch ~/.bashrc
+      - curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.5/install.sh | bash
     overrides:
       environment:
         # Support debugging CLI with XDEBUG.
