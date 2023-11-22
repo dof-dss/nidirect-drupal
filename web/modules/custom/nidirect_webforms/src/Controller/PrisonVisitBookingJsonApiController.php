@@ -128,7 +128,7 @@ class PrisonVisitBookingJsonApiController extends ControllerBase {
     $allowed_tokens = explode(',', getenv('PRISON_VISITS_API_PERMITTED_TOKENS'));
     $allowed_tokens = array_map('trim', $allowed_tokens);
 
-    if (empty($allowed_ip_addresses) || empty($allowed_tokens)) {
+    if (!$allowed_ip_addresses || !$allowed_tokens) {
       $this->getLogger('prison_visits')->warning('One or more environment variables are missing: PRISON_VISITS_API_PERMITTED_IPS, PRISON_VISITS_API_PERMITTED_TOKENS');
     }
 
