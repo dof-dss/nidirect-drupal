@@ -132,11 +132,8 @@ class PrisonVisitBookingJsonApiController extends ControllerBase {
       $this->getLogger('prison_visits')->warning('One or more environment variables are missing: PRISON_VISITS_API_PERMITTED_IPS, PRISON_VISITS_API_PERMITTED_TOKENS');
     }
 
-    // Is client ip a private (local) ip?
-    $client_ip_is_private = empty(filter_var($client_ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE));
-
     // Is ip and token allowed?
-    $ip_is_allowed = !empty($client_ip) && in_array($client_ip, $allowed_ip_addresses) || $client_ip_is_private;
+    $ip_is_allowed = !empty($client_ip) && in_array($client_ip, $allowed_ip_addresses);
     $token_is_allowed = !empty($client_token) && in_array($client_token, $allowed_tokens);
 
     // Return a session if the request passes the validation.
