@@ -101,3 +101,82 @@
     margin: 3em 0;
   }
 }
+
+.webform-submission-prison-visit-online-booking-form {
+
+  input#edit-visitor-order-number,
+  input#edit-prisoner-id {
+    letter-spacing: .1em;
+    max-width: none;
+  }
+
+  input#edit-visitor-order-number {
+    width: 10.5em;
+  }
+
+  input#edit-prisoner-id {
+    width: 5em;
+  }
+
+  details[data-webform-key^='slots_week'] {
+
+    fieldset {
+      margin: 0 .75em 1em;
+
+      span.fieldset-legend {
+        @include responsive-typo-map($large-text);
+      }
+    }
+
+  }
+
+  .visit-details dl {
+    display: grid;
+    grid-template-columns: 9em auto;
+
+    @include breakpoint($phab) {
+      display: flex;
+      flex-flow: column wrap;
+      justify-content: flex-start;
+      max-height: 5.5em;
+    }
+
+    @include breakpoint($tab) {
+      flex-flow: row wrap;
+    }
+
+    dt,
+    dd {
+      padding: .25em .5em;
+      margin: 0 .25em 0 0;
+
+      @include breakpoint($tab) {
+        max-width: fit-content;
+        padding: .3334em .5em;
+      }
+    }
+
+    dt {
+      font-weight: bold;
+      background-color: $brand-primary-lighter;
+    }
+
+    dd {
+      margin-right: .5em;
+    }
+  }
+
+  .webform-preview {
+
+    .webform-element.webform-element-type-webform-computed-twig {
+      margin: 0;
+      padding: 0;
+      background: #fff;
+
+      label {
+        display: none;
+      }
+    }
+  }
+
+}

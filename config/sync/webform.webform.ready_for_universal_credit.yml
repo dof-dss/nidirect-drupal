@@ -53,7 +53,8 @@ elements: |-
         <p>By answering the following five questions you will know if there are important changes you need to make and get advice on how to get ready for Universal Credit.</p>
 
         <p>This will take about five minutes.</p>
-      '#format': basic_html
+
+      '#format': full_html
   question_1_page:
     '#type': webform_wizard_page
     '#title': 'Question 1'
@@ -79,6 +80,7 @@ elements: |-
       '#options':
         yes_bank_building_society_account: 'Yes, I use a current or basic account with a bank or building society'
         yes_credit_union_account: 'Yes, I use a credit union account'
+        yes_post_office_card_account: 'Yes, I use a Post Office card account'
         no_prepaid_card: 'No, I use a prepaid card'
         no_have_account_prefer_not_to_use: 'No, I have an account but prefer not to use it'
         no_account: 'No, I don’t have an account'
@@ -143,6 +145,7 @@ elements: |-
       '#type': processed_text
       '#text': |-
         <p>Please review the advice below for each of the five questions you have answered to see if you are ready for Universal Credit.</p>
+
       '#format': full_html
     question_1_feedback:
       '#type': processed_text
@@ -152,6 +155,7 @@ elements: |-
         <p>Do you need help using the internet or a computer (for example, claiming benefits online using a computer)?</p>
 
         <p>Your answer: [webform_submission:values:do_you_need_help_using_the_internet_or_a_computer_for_example_cl:format]</p>
+
       '#format': full_html
     getting_online:
       '#type': processed_text
@@ -176,6 +180,7 @@ elements: |-
         <p>If you don't have access to a computer or the internet, ask for advice at your local <a href="/node/2739">Jobs &amp; Benefits office</a> when you first claim Universal Credit. If you are a library member you can use their computers free of charge. &nbsp;</p>
 
         <p>If you are concerned about Internet security, visit nidirect’s <a href="/taxonomy/term/419">Discover the Internet section</a> or the <a href="http://www.getsafeonline.org/protecting-yourself/">Get Safe Online website</a> for information and advice.</p>
+
       '#format': full_html
     make_your_claim_online:
       '#type': processed_text
@@ -196,6 +201,7 @@ elements: |-
         <p>Do you use an account to manage your money?</p>
 
         <p>Your answer: [webform_submission:values:do_you_use_an_account_to_manage_your_money_:format]</p>
+
       '#format': basic_html
     account_for_payment:
       '#type': processed_text
@@ -212,6 +218,7 @@ elements: |-
         <p>If you're eligible for Universal Credit, it will be paid into your bank or building society account. You can also use your account to set up automated monthly payments for rent and bills.</p>
 
         <p>If you have a partner, Universal Credit will normally make one payment for both of you into one account.</p>
+
       '#format': full_html
     account_for_payment_post_office_card_account:
       '#type': processed_text
@@ -225,9 +232,10 @@ elements: |-
       '#text': |-
         <h3>Account for payment</h3>
 
-        <p>The Post Office card account service will end in November 2022. You must arrange for your payments to be paid into a bank, building society or suitable credit union account before this date.</p>
+        <p>If you're eligible for Universal Credit, you can receive it through your Post Office card account. However, you can't use a Post Office card account to set up automated payments for rent and bills - you should think about opening a basic bank or building society account that offers automated payments.</p>
 
         <p>If you have a partner, Universal Credit will normally make one payment for both of you into one account.</p>
+
       '#format': full_html
     account_for_payment_warning:
       '#type': processed_text
@@ -246,6 +254,7 @@ elements: |-
         <p>If you have a partner, Universal Credit will normally make one payment for both of you into one account.</p>
 
         <p>Find out about <a href="/node/2030">choosing a current account to receive Universal Credit</a>.</p>
+
       '#format': full_html
     check_you_account_is_suitable:
       '#type': processed_text
@@ -264,6 +273,7 @@ elements: |-
         <p>If you have a partner, Universal Credit will normally make one payment for both of you into one account.</p>
 
         <p>Find out about <a href="/node/2030">choosing a current account to receive Universal Credit</a>.</p>
+
       '#format': full_html
     you_will_need_to_set_up_an_account:
       '#type': processed_text
@@ -288,6 +298,7 @@ elements: |-
         <p>If you have a partner, Universal Credit will normally make one payment for both of you into one account.</p>
 
         <p>Find out about <a href="/node/2030">choosing a current account to receive Universal Credit </a>.</p>
+
       '#format': full_html
     question_3_feedback:
       '#type': processed_text
@@ -297,6 +308,7 @@ elements: |-
         <p>How often are you paid (from work, tax credits or other benefits)?</p>
 
         <p>Your answer: [webform_submission:values:how_often_are_you_paid_from_work_tax_credits_or_other_benefits_:format]</p>
+
       '#format': basic_html
     budgetting_a_twice_a_month_payment:
       '#type': processed_text
@@ -314,7 +326,8 @@ elements: |-
 
         <p>You will have to pay bills and expenses out of your Universal Credit payment so before claiming Universal Credit, think about how you will plan your budget around it.</p>
 
-        <p>nidirect has advice about <a data-entity-substitution="canonical" data-entity-type="taxonomy_term" data-entity-uuid="27776a49-41b7-492d-947e-564677967bd8" href="/information-and-services/benefits-and-money/managing-money">managing your money</a>.</p>
+        <p>nidirect has advice about <a href="/node/4779">managing your money</a>.</p>
+
       '#format': full_html
     budgetting_a_twice_a_month_payment_warn:
       '#type': processed_text
@@ -347,7 +360,8 @@ elements: |-
 
         <p>You will have to pay bills and expenses out of your Universal Credit payment so before claiming Universal Credit, think about how you will plan your budget around it.</p>
 
-        <p>nidirect has advice about <a data-entity-substitution="canonical" data-entity-type="taxonomy_term" data-entity-uuid="27776a49-41b7-492d-947e-564677967bd8" href="/information-and-services/benefits-and-money/managing-money">managing your money</a>.</p>
+        <p>nidirect has advice about <a href="/node/4779">managing your money</a>.</p>
+
       '#format': full_html
     question_4_feedback:
       '#type': processed_text
@@ -357,6 +371,7 @@ elements: |-
         <p>Do you pay rent, is your rent paid on your behalf, or do you have a mortgage?</p>
 
         <p>Your answer: [webform_submission:values:do_you_pay_rent_is_your_rent_paid_on_your_behalf_or_do_you_have_:format]</p>
+
       '#format': basic_html
     your_housing_costs_rent:
       '#type': processed_text
@@ -387,6 +402,7 @@ elements: |-
         <p>Your Universal Credit payment may include a ‘Housing Element’ if you are renting a property. This will be paid directly to your landlord.&nbsp; However, you will be able to opt out of direct payments, subject to certain conditions.</p>
 
         <p>Your Universal Credit ‘Housing Element’ may not cover all of your rent and you will be responsible for covering any shortfall. Paying the shortfall should be your top priority.</p>
+
       '#format': full_html
     your_housing_costs_mortgage:
       '#type': processed_text
@@ -405,6 +421,7 @@ elements: |-
         <p>Your Universal Credit payment may include ‘Support for Mortgage Interest’ if you own your own home. This will be paid directly to your mortgage lender.&nbsp; However, you will be able to opt out of direct payments, subject to certain conditions.</p>
 
         <p>The rules around ‘Support for Mortgage Interest’ are changing.&nbsp; Payments will be made as a loan and must be paid back.&nbsp; This support will be based on a set rate of interest applied to your outstanding qualifying mortgage and paid directly to your mortgage lender.&nbsp; However, once you or your partner begins to receive earned income, the ‘Support for Mortgage Interest’ will stop.</p>
+
       '#format': full_html
     your_housing_costs_mortgage_paid_via_housing_benefit:
       '#type': processed_text
@@ -421,6 +438,7 @@ elements: |-
         <p>Your Universal Credit payment may include ‘Support for Mortgage Interest’ if you own your own home. This will be paid directly to your mortgage lender.&nbsp; However, you will be able to opt out of direct payments, subject to certain conditions.</p>
 
         <p>The rules around ‘Support for Mortgage Interest’ are changing.&nbsp; Payments will be made as a loan and must be paid back.&nbsp; This support will be based on a set rate of interest applied to your outstanding qualifying mortgage and paid directly to your mortgage lender.&nbsp; However, once you or your partner begins to receive earned income, the ‘Support for Mortgage Interest’ will stop.</p>
+
       '#format': full_html
     no_housing_costs:
       '#type': processed_text
@@ -435,6 +453,7 @@ elements: |-
         <h3>No housing costs</h3>
 
         <p>Your Universal Credit payment will not include financial support for housing costs.</p>
+
       '#format': full_html
     question_5_feedback:
       '#type': processed_text
@@ -444,6 +463,7 @@ elements: |-
         <p>Are you married and living together or do you live with a partner?</p>
 
         <p>Your answer: [webform_submission:values:are_you_married_and_living_together_or_do_you_live_with_a_partne:format]</p>
+
       '#format': basic_html
     one_payment:
       '#type': processed_text
@@ -475,9 +495,7 @@ elements: |-
       '#text': |-
         <h2>Help and advice</h2>
 
-        <p>When you claim Universal Credit, any benefits or tax credits it replaces will stop.&nbsp; If you are considering a move to Universal Credit from another benefit, you can <a data-entity-substitution="canonical" data-entity-type="node" data-entity-uuid="c1824061-6db9-4aed-9401-d652997eaeae" href="/articles/who-can-claim-universal-credit">check your eligibility</a>&nbsp;and seek independent advice before making your claim.</p>
-
-        <p>You can contact:</p>
+        <p>If you would like independent help and advice you can visit any independent advice office or contact:</p>
 
         <ul>
         	<li><span><span><span><span><a href="/contacts/contacts-az/advice-ni"><span><span><span>AdviceNI</span></span></span></a></span></span></span></span></li>
@@ -486,10 +504,6 @@ elements: |-
         	<li><span><span><span><a href="/contacts/money-advice-service"><span><span><span><span>Money Helper</span></span></span></span></a></span></span></span></li>
         </ul>
 
-        <p>You can also use a <a data-entity-substitution="canonical" data-entity-type="node" data-entity-uuid="f9c938b4-d2b8-4858-be93-231e9e8e16a3" href="/services/benefits-calculator">benefit calculator</a>&nbsp;to check how much you may get.</p>
-
-        <p>Find out more about Universal Credit at the following link:<br />
-        <a href="/campaigns/universal-credit">Universal Credit</a></p>
       '#format': full_html
   actions:
     '#type': webform_actions
@@ -516,7 +530,7 @@ settings:
   form_previous_submissions: false
   form_confidential: false
   form_confidential_message: ''
-  form_disable_remote_addr: false
+  form_disable_remote_addr: true
   form_convert_anonymous: false
   form_prepopulate: false
   form_prepopulate_source_entity: false
@@ -537,9 +551,6 @@ settings:
   form_access_denied_message: ''
   form_access_denied_attributes: {  }
   form_file_limit: ''
-  form_attributes: {  }
-  form_method: ''
-  form_action: ''
   share: false
   share_node: false
   share_theme_name: ''
@@ -632,6 +643,8 @@ settings:
   token_update: false
   token_delete: false
   serial_disabled: false
+  page_admin_theme: false
+  form_remote_addr: true
 access:
   create:
     roles:

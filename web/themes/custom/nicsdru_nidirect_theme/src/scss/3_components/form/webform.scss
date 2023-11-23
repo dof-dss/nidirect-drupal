@@ -41,6 +41,9 @@
 /* webform radios and checkboxes displayed inline are wrapped with this class */
 .webform-options-display-side-by-side {
 
+  display: flex;
+  flex-flow: row wrap;
+
   // webform css adds unwanted margin on child labels
   label {
     margin: 0;
@@ -49,6 +52,7 @@
   .form-item {
     display: inline-block;
     width: auto;
+    margin: .5em .5em 0 0;
     padding: 0;
 
     &--error-message .error {
@@ -61,15 +65,16 @@
 
 .webform-options-display-buttons {
 
-  margin: .5em 0;
+  margin: 0;
+  display: inline-flex;
 
   .webform-options-display-buttons-wrapper {
-    margin: 0 .5em .5em 0;
+    margin: .5em .5em .5em 0;
   }
 
-  .form-type-radio,
-  .form-type-checkbox {
+  .form-item {
     padding: 0;
+    margin: 0;
 
     input:checked ~ label {
       background-color: $brand-primary-light;
@@ -78,8 +83,9 @@
   }
 
   label.webform-options-display-buttons-label {
+    display: inline-block;
+    height: auto;
     min-width: 5.5em;
-    padding: .5em;
     color: $text;
     border: 0;
     box-shadow: inset 0 0 0 1px $charcoal;
@@ -88,8 +94,22 @@
 }
 
 .webform-submission-form {
-  .form-submit:not(:first-child) {
-    margin-left: 1.5em;
+
+  .form-actions {
+    .ajax-spinner {
+      position: absolute;
+      left: 50%;
+      top: 100%;
+      transform: translateX(-50%);
+    }
+  }
+
+  .form-submit {
+    margin: 0 1em 1em 0;
+
+    &:last-child {
+      margin-right: 0;
+    }
   }
 
   .banner {
@@ -104,7 +124,7 @@
 .webform-preview .webform-submission-data {
 
   > .webform-container {
-    margin: 2.5em 0 2em;
+    margin: 1em 0;
   }
 
   > .form-item {
@@ -125,12 +145,12 @@
     }
   }
 
-  details {
-    summary {
-      @include responsive-typo-map($h2-text);
-      color: color(brand-secondary);
-    }
-  }
+  //details {
+  //  summary {
+  //    @include responsive-typo-map($h2-text);
+  //    color: color(brand-secondary);
+  //  }
+  //}
 }
 
 input[type='submit'].webform-button--submit {
