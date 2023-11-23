@@ -141,14 +141,6 @@ class PrisonVisitBookingJsonApiController extends ControllerBase {
       return TRUE;
     }
 
-    if (!$ip_is_allowed) {
-      $this->getLogger('prison_visits')->warning('client_ip is not allowed. @allowed_ips ', ['allowed_ips' => $allowed_ip_addresses]);
-    }
-
-    if (!$token_is_allowed) {
-      $this->getLogger('prison_visits')->warning('client_token is not allowed. @allowed_tokens ', ['allowed_tokens' => $allowed_tokens]);
-    }
-
     return FALSE;
   }
 
