@@ -30,6 +30,11 @@ class RouteSubscriber extends RouteSubscriberBase {
     if ($route = $collection->get('editor.media_dialog')) {
       $route->setDefault('_title', 'Override media properties');
     }
+
+    if ($route = $collection->get('node.add_page')) {
+      $route->setDefault('_controller', '\Drupal\nidirect_common\Controller\AddPageController::addPage');
+    }
+
   }
 
 }
