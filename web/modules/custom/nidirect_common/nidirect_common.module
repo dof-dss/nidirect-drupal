@@ -13,6 +13,7 @@ use Drupal\Component\Serialization\Json;
 use Drupal\Core\Block\BlockPluginInterface;
 use Drupal\Core\Cache\Cache;
 use Drupal\Core\Datetime\DrupalDateTime;
+use Drupal\Core\Entity\ContentEntityType;
 use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Form\FormStateInterface;
@@ -21,6 +22,7 @@ use Drupal\Core\Render\Markup;
 use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\Core\Url;
 use Drupal\node\Entity\Node;
+use Drupal\node\Entity\NodeType;
 use Drupal\node\NodeInterface;
 use Drupal\redirect\Entity\Redirect;
 use Drupal\taxonomy\Entity\Term;
@@ -714,5 +716,58 @@ function nidirect_common_moderation_sidebar_alter(array &$build, EntityInterface
   // Solution provided by: https://www.drupal.org/project/moderation_sidebar/issues/3130572
   if (isset($build["actions"]['secondary']["entity.node.canonical"]["#url"])) {
     $build["actions"]['secondary']["entity.node.canonical"]["#url"] = Url::fromRoute('entity.node.canonical', ['node' => $entity->id()]);
+  }
+}
+
+
+/**
+ * Implements hook_theme().
+ */
+function nidirect_common_theme() {
+  return [
+    'content_add_list' => [
+      'variables' => ['content' => NULL],
+    ],
+  ];
+}
+
+/**
+ * Prepares variables for list of available node type templates.
+ *
+ * Default template: node-add-list.html.twig.
+ *
+ * @param array $variables
+ *   An associative array containing:
+ *   - content: An array of content types.
+ *
+ * @see \Drupal\node\Controller\NodeController::addPage()
+ */
+function template_preprocess_content_add_list(&$variables) {
+  $variables['types'] = [];
+  if (!empty($variables['content'])) {
+    foreach ($variables['content'] as $type) {
+
+      if ($type instanceof NodeType) {
+        $variables['types'][$type->id()] = [
+          'type' => $type->id(),
+          'add_link' => Link::fromTextAndUrl($type->label(), Url::fromRoute('node.add', ['node_type' => $type->id()]))->toString(),
+          'description' => [
+            '#markup' => $type->getDescription(),
+          ],
+        ];
+      }
+      elseif ($type instanceof ContentEntityType) {
+        $variables['types'][$type->id()] = [
+          'type' => $type->id(),
+          'add_link' => Link::fromTextAndUrl($type->getLabel(), Url::fromUserInput($type->get('links')['add-form'])),
+          'description' => [
+            '#markup' => t('Add new @type content.', ['@type' => $type->getLabel()]),
+          ],
+        ];
+      }
+
+
+
+    }
   }
 }

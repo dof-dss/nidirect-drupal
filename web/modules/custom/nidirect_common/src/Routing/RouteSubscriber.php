@@ -32,7 +32,7 @@ class RouteSubscriber extends RouteSubscriberBase {
     }
 
     if ($route = $collection->get('node.add_page')) {
-      $route->setDefault('_controller', '\Drupal\nidirect_common\Controller\AddPageController::addPage');
+      $route->setDefault('_controller', '\Drupal\nidirect_common\Controller\AddContentPageController::addContentList');
     }
 
   }
