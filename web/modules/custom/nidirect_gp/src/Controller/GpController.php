@@ -5,6 +5,7 @@ namespace Drupal\nidirect_gp\Controller;
 use Drupal\Component\Utility\Xss;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Datetime\DateFormatterInterface;
+use Drupal\Core\Entity\RevisionableStorageInterface;
 use Drupal\Core\Link;
 use Drupal\Core\Url;
 use Drupal\nidirect_gp\Entity\GpInterface;
@@ -53,6 +54,7 @@ class GpController extends ControllerBase {
    *   An array suitable for drupal_render().
    */
   public function revisionShow($gp_revision) {
+    // @phpstan-ignore-next-line
     $gp = $this->entityTypeManager()->getStorage('gp')->loadRevision($gp_revision);
     $view_builder = $this->entityTypeManager()->getViewBuilder('gp');
 
@@ -70,6 +72,7 @@ class GpController extends ControllerBase {
    */
   public function revisionPageTitle(int $gp_revision) {
     /** @var \Drupal\nidirect_gp\Entity\Gp $gp */
+    // @phpstan-ignore-next-line
     $gp = $this->entityTypeManager()->getStorage('gp')->loadRevision($gp_revision);
 
     return $this->t('Revision of %title from %date', [
@@ -113,6 +116,7 @@ class GpController extends ControllerBase {
 
     foreach (array_reverse($vids) as $vid) {
       /** @var \Drupal\nidirect_gp\Entity\Gp $revision */
+      // @phpstan-ignore-next-line
       $revision = $gp_storage->loadRevision($vid);
       // Only show revisions that are affected by the language that is being
       // displayed.
@@ -140,7 +144,7 @@ class GpController extends ControllerBase {
             '#type' => 'inline_template',
             '#template' => '{% trans %}{{ date }} by {{ username }}{% endtrans %}{% if message %}<p class="revision-log">{{ message }}</p>{% endif %}',
             '#context' => [
-              'date' => $link,
+              'date' => $link->toString(),
               'username' => \Drupal::service('renderer')->renderPlain($username),
               'message' => [
                 '#markup' => $revision->getRevisionLogMessage(),

@@ -1,13 +1,13 @@
 # Override any general project config via a .lando.local.yml file
 # See https://docs.lando.dev/core/v3/#override-file for details.
 name: nidirect
-recipe: drupal9
+recipe: drupal10
 env_file:
   - .env
 config:
   webroot: web
   php: '8.1'
-  composer_version: '2.0.7'
+  composer_version: '2.5.8'
   via: apache:2.4
   database: mariadb:10.5
   # https://docs.lando.dev/config/drupal9.html#using-drush
@@ -24,8 +24,16 @@ compose:
 services:
   appserver:
     scanner: false
+    environment:
+      # Set node compilation flag to allow arm64 and x86 chipset compilation.
+      CPPFLAGS: "-DPNG_ARM_NEON_OPT=0"
+      # node version set here will be used by the nvm installer script.
+      NODE_VERSION: 14.21.3
     build_as_root:
       - /app/.lando/scripts/appserver_build.sh
+    run:
+      - touch ~/.bashrc
+      - curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.5/install.sh | bash
     overrides:
       environment:
         # Support debugging CLI with XDEBUG.
@@ -40,17 +48,19 @@ services:
     config:
         server: .lando/config/redis.conf
   solr:
-    type: solr:7
+    type: solr:8.11
     portforward: true
     core: default
     config:
-      dir: .lando/config/solr/7.x/default
+      dir: .lando/config/solr/
   mailhog:
     type: mailhog
     portforward: true
     hogfrom:
       - appserver
 tooling:
+  node:
+    service: appserver
   xdebug-on:
     service: appserver
     description: Enable xdebug
@@ -82,7 +92,7 @@ tooling:
   phpcs:
     description: Run PHPCS checks against all custom Drupal code, e.g. 'lando phpcs'
     service: appserver
-    cmd: /app/phpcs.sh "/app" "/app/web/modules/origins /app/web/modules/custom /app/web/themes/custom /app/web/profiles/custom"
+    cmd: /app/phpcs.sh "/app" "/app/web/modules/origins /app/web/modules/custom /app/web/themes/custom"
   drck:
     description: Run drupal-check for Drupal 9 compatibility e.g. 'lando drck ./'
     service: appserver

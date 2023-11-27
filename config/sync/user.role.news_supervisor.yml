@@ -1,36 +1,72 @@
 uuid: fd831ef7-518d-4f77-a251-c6580aa9f1df
 langcode: en
 status: true
-dependencies: {  }
+dependencies:
+  config:
+    - filter.format.basic_html
+    - media.type.audio
+    - media.type.document
+    - media.type.image
+    - media.type.remote_video
+    - media.type.video
+    - node.type.news
+    - workflows.workflow.nics_editorial_workflow
+  module:
+    - content_moderation
+    - entity_browser
+    - file
+    - filter
+    - media
+    - moderation_sidebar
+    - node
+    - scheduled_transitions
+    - system
+    - toolbar
+    - tour
 id: news_supervisor
 label: 'news supervisor'
 weight: 5
 is_admin: null
 permissions:
-  - 'access audio_entity_browser entity browser pages'
   - 'access content overview'
-  - 'access document_entity_browser entity browser pages'
   - 'access location_browser entity browser pages'
-  - 'access media_entity_browser entity browser pages'
-  - 'access remote_video_browser entity browser pages'
+  - 'access media overview'
   - 'access toolbar'
   - 'access tour'
   - 'add scheduled transitions node news'
+  - 'create audio media'
+  - 'create document media'
+  - 'create image media'
+  - 'create media'
   - 'create news content'
+  - 'create remote_video media'
+  - 'create video media'
+  - 'delete any audio media'
+  - 'delete any document media'
+  - 'delete any image media'
+  - 'delete any media'
   - 'delete any news content'
+  - 'delete any remote_video media'
+  - 'delete any video media'
   - 'delete news revisions'
+  - 'delete own files'
   - 'delete own news content'
+  - 'edit any audio media'
+  - 'edit any document media'
+  - 'edit any image media'
   - 'edit any news content'
+  - 'edit any remote_video media'
+  - 'edit any video media'
   - 'edit own news content'
   - 'reschedule scheduled transitions node news'
   - 'revert news revisions'
-  - 'schedule publishing of nodes'
-  - 'use editorial transition create_new_draft'
+  - 'update any media'
   - 'use moderation sidebar'
   - 'use nics_editorial_workflow transition create_new_draft'
   - 'use text format basic_html'
+  - 'view all media revisions'
   - 'view news revisions'
   - 'view own unpublished content'
-  - 'view scheduled content'
+  - 'view own unpublished media'
   - 'view scheduled transitions node news'
   - 'view the administration theme'

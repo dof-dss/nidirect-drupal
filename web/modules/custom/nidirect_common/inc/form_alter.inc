@@ -252,13 +252,12 @@ function nidirect_common_form_node_form_alter(&$form, FormStateInterface $form_s
 }
 
 /**
- * Implements hook_field_widget_WIDGET_TYPE_form_alter().
+ * Implements hook_field_widget_single_element_WIDGET_TYPE_form_alter().
  *
  * Overrides the default Telephone Plus widget to provide a
  * default list of title options.
  */
-function nidirect_common_field_widget_telephone_plus_widget_form_alter(&$element, FormStateInterface $form_state, $context) {
-
+function nidirect_common_field_widget_single_element_telephone_plus_widget_form_alter(&$element, FormStateInterface $form_state, $context) {
   // Set a limited number of phone title options for driving instructors.
   if ($element['#bundle'] === 'driving_instructor') {
     $telephone_predefined = [

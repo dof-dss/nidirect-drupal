@@ -16,7 +16,6 @@ dependencies:
     - field.storage.node.field_hc_primary_symptom_3
     - field.storage.node.field_hc_primary_symptom_4
     - field.storage.node.field_hc_secondary_symptoms
-    - field.storage.node.field_index_letter
     - field.storage.node.field_location
     - field.storage.node.field_published_date
     - field.storage.node.field_site_themes
@@ -38,6 +37,7 @@ third_party_settings:
     finalize: false
     commit_before_finalize: false
     commit_after_finalize: false
+    debug_finalize: false
     highlighter:
       maxAnalyzedChars: 51200
       fragmenter: gap
@@ -74,8 +74,9 @@ third_party_settings:
     multilingual:
       limit_to_content_language: false
       include_language_independent: true
-      specific_languages: {  }
       use_language_undefined_as_fallback_language: false
+      specific_languages:
+        en: '0'
       use_universal_collation: false
 id: default_content
 name: 'Default content'
@@ -160,7 +161,7 @@ field_settings:
     datasource_id: 'entity:node'
     property_path: 'field_hc_body_location:entity:field_term_hc_synonyms'
     type: text
-    boost: !!float 8
+    boost: 8.0
     dependencies:
       config:
         - field.storage.node.field_hc_body_location
@@ -172,7 +173,7 @@ field_settings:
     datasource_id: 'entity:node'
     property_path: 'field_hc_body_system:entity:field_term_hc_synonyms'
     type: text
-    boost: !!float 8
+    boost: 8.0
     dependencies:
       config:
         - field.storage.node.field_hc_body_system
@@ -192,7 +193,7 @@ field_settings:
     datasource_id: 'entity:node'
     property_path: 'field_hc_condition_type:entity:name'
     type: text
-    boost: !!float 21
+    boost: 21.0
     dependencies:
       config:
         - field.storage.node.field_hc_condition_type
@@ -203,7 +204,7 @@ field_settings:
     datasource_id: 'entity:node'
     property_path: 'field_hc_condition_type:entity:field_term_hc_synonyms'
     type: text
-    boost: !!float 8
+    boost: 8.0
     dependencies:
       config:
         - field.storage.node.field_hc_condition_type
@@ -215,7 +216,7 @@ field_settings:
     datasource_id: 'entity:node'
     property_path: 'field_hc_primary_symptom_1:entity:field_term_hc_synonyms'
     type: text
-    boost: !!float 8
+    boost: 8.0
     dependencies:
       config:
         - field.storage.node.field_hc_primary_symptom_1
@@ -227,7 +228,7 @@ field_settings:
     datasource_id: 'entity:node'
     property_path: 'field_hc_primary_symptom_2:entity:field_term_hc_synonyms'
     type: text
-    boost: !!float 8
+    boost: 8.0
     dependencies:
       config:
         - field.storage.node.field_hc_primary_symptom_2
@@ -239,7 +240,7 @@ field_settings:
     datasource_id: 'entity:node'
     property_path: 'field_hc_primary_symptom_3:entity:field_term_hc_synonyms'
     type: text
-    boost: !!float 8
+    boost: 8.0
     dependencies:
       config:
         - field.storage.node.field_hc_primary_symptom_3
@@ -251,7 +252,7 @@ field_settings:
     datasource_id: 'entity:node'
     property_path: 'field_hc_primary_symptom_4:entity:field_term_hc_synonyms'
     type: text
-    boost: !!float 8
+    boost: 8.0
     dependencies:
       config:
         - field.storage.node.field_hc_primary_symptom_4
@@ -263,21 +264,13 @@ field_settings:
     datasource_id: 'entity:node'
     property_path: 'field_hc_secondary_symptoms:entity:field_term_hc_synonyms'
     type: text
-    boost: !!float 8
+    boost: 8.0
     dependencies:
       config:
         - field.storage.node.field_hc_secondary_symptoms
         - field.storage.taxonomy_term.field_term_hc_synonyms
       module:
         - taxonomy
-  field_index_letter:
-    label: 'Index under'
-    datasource_id: 'entity:node'
-    property_path: field_index_letter
-    type: string
-    dependencies:
-      config:
-        - field.storage.node.field_index_letter
   field_location:
     label: Location
     datasource_id: 'entity:node'
@@ -411,7 +404,7 @@ field_settings:
     datasource_id: 'entity:node'
     property_path: 'field_hc_body_location:entity:name'
     type: text
-    boost: !!float 21
+    boost: 21.0
     dependencies:
       config:
         - field.storage.node.field_hc_body_location
@@ -447,6 +440,27 @@ field_settings:
           news: ''
           page: full
           publication: ''
+  rendered_item_spellcheck:
+    label: 'Rendered HTML for spellcheck'
+    property_path: rendered_item
+    type: solr_text_spellcheck
+    configuration:
+      roles:
+        - anonymous
+      view_mode:
+        'entity:gp':
+          gp: default
+        'entity:node':
+          application: full
+          article: full
+          contact: full
+          embargoed_publication: full
+          gp_practice: full
+          health_condition: full
+          landing_page: full
+          news: full
+          page: full
+          publication: full
   status:
     label: Published
     datasource_id: 'entity:node'
@@ -460,7 +474,7 @@ field_settings:
     datasource_id: 'entity:node'
     property_path: title
     type: text
-    boost: !!float 21
+    boost: 21.0
     dependencies:
       module:
         - node
@@ -505,7 +519,10 @@ datasource_settings:
 processor_settings:
   add_url: {  }
   aggregated_field: {  }
+  auto_aggregated_fulltext_field: {  }
+  custom_value: {  }
   entity_status: {  }
+  entity_type: {  }
   html_filter:
     weights:
       preprocess_index: -15
@@ -527,8 +544,6 @@ processor_settings:
       - field_hc_primary_symptom_3_synonyms
       - field_hc_primary_symptom_4_synonyms
       - field_hc_secondary_symptoms_synonyms
-      - field_index_letter
-      - field_location
       - field_summary
       - first_name
       - first_name_1
@@ -541,6 +556,7 @@ processor_settings:
       - name
       - postal_code
       - rendered_item
+      - rendered_item_spellcheck
       - title
       - type
     title: false
@@ -564,4 +580,5 @@ tracker_settings:
 options:
   cron_limit: 50
   index_directly: true
+  track_changes_in_references: true
 server: solr_default

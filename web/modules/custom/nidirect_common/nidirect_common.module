@@ -399,6 +399,12 @@ function nidirect_common_retrieve_hierarchical_field(EntityInterface $entity, st
  * Implements hook_clientside_validation_should_validate().
  */
 function nidirect_common_clientside_validation_should_validate($element, FormStateInterface $form_state, $form_id) {
+  // This works but looks odd, ideally this hook should have been called _should_not_validate() as this makes
+  // about as much sense as a sunroof on a submarine.
+  if (str_ends_with($form_id, 'scheduled_transitions_add_form_form')) {
+    return TRUE;
+  }
+
   // Turn off clientside validation jquery functionality on anything that isn't
   // a webform form.
   // Also see: nidirect_common_page_attachments_alter.
@@ -698,5 +704,15 @@ function nidirect_common_whatlinkshere_report_alter(array &$data) {
 
     $redirects_elements['redirects'] = $redirects_data;
     $data += $redirects_elements;
+  }
+}
+
+/**
+ * Implements hook_moderation_sidebar_alter().
+ */
+function nidirect_common_moderation_sidebar_alter(array &$build, EntityInterface $entity) {
+  // Solution provided by: https://www.drupal.org/project/moderation_sidebar/issues/3130572
+  if (isset($build["actions"]['secondary']["entity.node.canonical"]["#url"])) {
+    $build["actions"]['secondary']["entity.node.canonical"]["#url"] = Url::fromRoute('entity.node.canonical', ['node' => $entity->id()]);
   }
 }

@@ -9,7 +9,7 @@
   Drupal.behaviors.nicsdruSectionFeedback = {
     attach: function attach (context) {
 
-      $('#section-feedback', context).once('nicsdruSectionFeedback').each(function() {
+      $(once('nicsdruSectionFeedback', '#section-feedback', context)).each(function() {
 
         var $feedback_heading = $('#section-feedback__heading');
         var $feedback_form = $('#section-feedback__form');

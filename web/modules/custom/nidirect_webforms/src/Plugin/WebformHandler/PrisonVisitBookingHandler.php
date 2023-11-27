@@ -11,6 +11,8 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\Core\TempStore\PrivateTempStoreFactory;
 use Drupal\datetime\Plugin\Field\FieldType\DateTimeItemInterface;
+use Drupal\file\Entity\File;
+use Drupal\file\FileInterface;
 use Drupal\webform\Plugin\WebformHandlerBase;
 use Drupal\webform\Utility\WebformFormHelper;
 use Drupal\webform\WebformInterface;
@@ -97,6 +99,7 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
   public function alterForm(array &$form, FormStateInterface $form_state, WebformSubmissionInterface $webform_submission) {
 
     $elements = WebformFormHelper::flattenElements($form);
+
     $this->bookingReference = $form_state->get('booking_reference_processed');
     $form['#attached']['drupalSettings']['prisonVisitBooking'] = $this->configuration;
     $form['#attached']['drupalSettings']['prisonVisitBooking']['booking_ref'] = $this->bookingReference;
@@ -679,18 +682,14 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
 
       // Face-to-face slots are retrieved from external data in cache
       // (see PrisonVisitBookingJsonApiController.php). If there is no
-      // cached data, fallback to using slots from config.
+      // cached data, fallback to using slots from file and, failing
+      // that use slots from config.
 
       $visit_slots_cache = \Drupal::cache()->get('prison_visit_slots_data');
       $visit_slots_cache_is_from_config = FALSE;
 
-      if (empty($visit_slots_cache)) {
-        // Fallback to using config slots.
-        $visit_slots = $this->configuration['visit_slots']['face-to-face'];
-        $this->getLogger()->warning('prison_visit_slots_data cache is empty. Using config instead.');
-        $visit_slots_cache_is_from_config = TRUE;
-      }
-      else {
+      if (!empty($visit_slots_cache)) {
+
         // There is cached data.
         $visit_slots = $visit_slots_cache->data;
         $visit_slots_cache_timestamp = (int) $visit_slots_cache->created;
@@ -702,6 +701,29 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
         // Log a warning when cached data more than 24 hours old.
         if ($date->diff($visit_slots_created)->h >= 24) {
           $this->getLogger()->warning('prison_visit_slots_data cache data has not been updated in last 24 hours.');
+        }
+
+      }
+      else {
+
+        // No data in cache, so try file instead. Every time the
+        // external service posts data to prison visits api controller,
+        // data is stored in cache and written to file.
+
+        $file_uri = 'private://nidirect_webforms/prison_visit_slots_data.json';
+        $file_contents = @file_get_contents($file_uri);
+
+        if (!empty($file_contents)) {
+          $visit_slots = json_decode($file_contents, TRUE);
+          $this->getLogger()->info('prison_visit_slots_data cache is empty. Using @file instead.', ['file' => $file_uri]);
+        }
+        else {
+          // Last fallback position - use config slots.
+          $visit_slots = $this->configuration['visit_slots']['face-to-face'];
+          $this->getLogger()->warning('prison_visit_slots_data cache is empty. Using config instead.');
+
+          // Flag these slots come from cache.
+          $visit_slots_cache_is_from_config = TRUE;
         }
       }
 

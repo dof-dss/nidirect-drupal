@@ -14,7 +14,7 @@
 
       // Toggles the display of links within a card with multiple
       // field_link values.
-      $('.card--multilink', context).once('nicsdruAccordions').each(function(index) {
+      $(once('nicsdruAccordions', '.card--multilink', context)).each(function(index) {
         var links_wrapper = $(this).find('.card__links');
 
         // Show/hide event handler.

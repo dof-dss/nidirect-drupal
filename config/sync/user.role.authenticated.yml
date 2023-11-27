@@ -5,8 +5,15 @@ dependencies:
   config:
     - filter.format.basic_html
     - rest.resource.cold_weather_payment_resource
+    - taxonomy.vocabulary.drive_instr_categories
+    - taxonomy.vocabulary.hc_info_sources
+    - taxonomy.vocabulary.hc_symptoms
+    - taxonomy.vocabulary.landing_pages_contact_card_colou
+    - taxonomy.vocabulary.ni_postcodes
+    - taxonomy.vocabulary.site_themes
   module:
     - content_moderation
+    - file
     - filter
     - media
     - nidirect_gp
@@ -24,32 +31,31 @@ label: 'authenticated user'
 weight: 1
 is_admin: false
 permissions:
-  - 'access administration menu'
   - 'access administration pages'
   - 'access content'
-  - 'access media browser'
-  - 'access workbench'
-  - 'diff view changes'
+  - 'delete own files'
   - 'notify of path changes'
-  - 'opt-in or out of google analytics tracking'
   - 'restful get cold_weather_payment_resource'
-  - 'revert revisions'
-  - 'use pasteformat'
+  - 'select terms in drive_instr_categories'
+  - 'select terms in hc_info_sources'
+  - 'select terms in hc_symptoms'
+  - 'select terms in landing_pages_contact_card_colou'
+  - 'select terms in ni_postcodes'
+  - 'select terms in site_themes'
   - 'use search_api_autocomplete for contacts'
   - 'use search_api_autocomplete for search'
   - 'use text format basic_html'
-  - 'use text format filtered_html'
-  - 'use text format filtered_html_with_no_images'
-  - use_search_api_live_results
   - 'view content references'
-  - 'view files'
   - 'view latest version'
   - 'view media'
-  - 'view moderation history'
-  - 'view moderation messages'
   - 'view published gp entities'
   - 'view published sitewide alert entities'
-  - 'view revisions'
+  - 'view term names in drive_instr_categories'
+  - 'view term names in hc_info_sources'
+  - 'view term names in hc_symptoms'
+  - 'view term names in landing_pages_contact_card_colou'
+  - 'view term names in ni_postcodes'
+  - 'view term names in site_themes'
   - 'view terms in drive_instr_categories'
   - 'view terms in hc_info_sources'
   - 'view terms in hc_symptoms'
