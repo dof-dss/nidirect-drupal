@@ -11,11 +11,16 @@ entity_type: node
 bundle: gp_practice
 label: 'Lead GP'
 description: 'Choose the lead GP for this practice from the list of all GPs'
-required: true
+required: false
 translatable: false
 default_value: {  }
 default_value_callback: ''
 settings:
   handler: 'default:gp'
-  handler_settings: {  }
+  handler_settings:
+    target_bundles: null
+    sort:
+      field: _none
+      direction: ASC
+    auto_create: false
 field_type: entity_reference
