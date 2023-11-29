@@ -1,0 +1,10 @@
+nidirect_gp.gp_search:
+  path: '/services/gp-practices'
+  defaults:
+    _controller: '\Drupal\nidirect_gp\Controller\GpSearchController::handleSearchRequest'
+    _title_callback: '\Drupal\nidirect_gp\Controller\GpSearchController::getTitle'
+  requirements:
+    _permission: 'access content'
+    search_api_views_fulltext: ^(\w)+
+nidirect_gp.gp.add:
+  path: '/node/add/gp'

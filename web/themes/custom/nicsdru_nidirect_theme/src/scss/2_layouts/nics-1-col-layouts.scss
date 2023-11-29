@@ -1,0 +1,34 @@
+/*
+ * @file
+ * Provides the layout styles for common nics 2 column layouts.
+ */
+
+@import '../init';
+
+// One Column layouts
+//
+// .layout--main-only - A one column layout where ga-main is the only column and is full width.
+// .layout--main-limited - A one column layout where ga-main is again the only column - but its width is limited to
+//                         prevent very long lines of text.  Useful for text heavy pages with no sidebar.
+//
+// Markup: ../kss-templates/layouts-nics-1-col.twig
+//
+// Weight: -6
+//
+// Style guide: layouts.one-column
+.layout {
+
+  &--main {
+
+    .ga-main {
+      width: 100%;
+    }
+  }
+
+  &--main-limited {
+
+    .ga-main {
+      max-width: $max-content-width;
+    }
+  }
+}

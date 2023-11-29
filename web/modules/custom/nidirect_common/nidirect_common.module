@@ -1,0 +1,718 @@
+<?php
+
+/**
+ * @file
+ * Contains nidirect_common.module.
+ *
+ * Contains functions that don't fall under any of the other site specific
+ * modules. Related functions, often hooks, are grouped under
+ * include (inc/) files and required in this file.
+ */
+
+use Drupal\Component\Serialization\Json;
+use Drupal\Core\Block\BlockPluginInterface;
+use Drupal\Core\Cache\Cache;
+use Drupal\Core\Datetime\DrupalDateTime;
+use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
+use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Link;
+use Drupal\Core\Render\Markup;
+use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\Core\Url;
+use Drupal\node\Entity\Node;
+use Drupal\node\NodeInterface;
+use Drupal\redirect\Entity\Redirect;
+use Drupal\taxonomy\Entity\Term;
+use Drupal\taxonomy\TermInterface;
+use Drupal\views\ViewExecutable;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+
+require_once __DIR__ . '/inc/form_alter.inc';
+require_once __DIR__ . '/inc/preprocess.inc';
+
+/**
+ * Implements hook_help().
+ */
+function nidirect_common_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    // Main module help for the nidirect_common module.
+    case 'help.page.nidirect_common':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('Common site wide functions') . '</p>';
+      return $output;
+
+    default:
+  }
+}
+
+/**
+ * Implements hook_cron().
+ */
+function nidirect_common_cron() {
+  // Process anything in the 'audit_date_updates' queue which was
+  // populated by the PostMigrationCommands::updateAuditDates command.
+  $queue = \Drupal::service('queue')->get('audit_date_updates');
+  $today = date('Y-m-d', \Drupal::time()->getCurrentTime());
+  // Process the whole queue.
+  while ($item = $queue->claimItem()) {
+    \Drupal::logger('nidirect-common')->notice(
+      'Found @count audit updates to process', ['@count' => $queue->numberOfItems()]
+    );
+    $nid_list_obj = $item->data ?? NULL;
+    if (!empty($nid_list_obj) && !empty($nid_list_obj->nids)) {
+      // Convert comma separated list of nids into an array.
+      $nids = explode(",", $nid_list_obj->nids);
+      // Load all nodes at once.
+      $nodes = Node::loadMultiple($nids);
+      foreach ($nodes as $node) {
+        // Double check that auditing is enabled for this content type.
+        if ($node->hasField('field_next_audit_due')) {
+          // Just set next audit date to today as will show in 'needs audit'
+          // report if next audit date is today or earlier.
+          $node->set('field_next_audit_due', $today);
+          $node->save();
+        }
+      }
+    }
+    $queue->deleteItem($item);
+    \Drupal::logger('nidirect-common')->notice(
+      'One item processed from audit date queue'
+    );
+  }
+}
+
+/**
+ * Implements hook_entity_presave().
+ */
+function nidirect_common_entity_presave(EntityInterface $entity) {
+  // This will fire when nodes are created or edited.
+  if ($entity instanceof NodeInterface) {
+    /*
+     * Programmatically sets the field_top_level_theme based on
+     * the parent taxonomy tids of the field_subtheme value.
+     */
+    if ($entity->hasField('field_top_level_theme') && !empty($entity->get('field_subtheme')->getString())) {
+      $subtheme_tid = $entity->get('field_subtheme')->getString();
+
+      $taxonomy = \Drupal::service('entity_type.manager')->getStorage('taxonomy_term');
+      $parent_terms = $taxonomy->loadAllParents($subtheme_tid);
+
+      // Check we have a parent term and set as top level term.
+      if (!empty($parent_terms)) {
+        $root_term = array_pop($parent_terms);
+        $entity->set('field_top_level_theme', $root_term);
+      }
+    }
+  }
+}
+
+/**
+ * Implements hook_views_pre_render().
+ */
+function nidirect_common_views_pre_render(ViewExecutable $view) {
+  if ($view->id() === 'publications' && $view->current_display === 'search_page') {
+    if (!empty($view->header['area'])) {
+      $item_count = $view->pager->total_items ?? 0;
+      // Generate the header content to show N publication(s).
+      $view->header['area']->options['content']['value'] = \Drupal::translation()->formatPlural(
+        $item_count,
+        '@count publication',
+        '@count publications',
+        ['@count' => $item_count]
+      );
+    }
+  }
+}
+
+/**
+ * Implements hook_ENTITY_TYPE_view().
+ */
+function nidirect_common_node_view(array &$build, EntityInterface $entity, EntityViewDisplayInterface $display, $view_mode) {
+  /** @var \Drupal\node\NodeInterface $entity */
+  // Override misleading layout builder notice.
+  if ($entity->bundle() === 'landing_page') {
+    // (Layout builder is only used on landing pages for now, this
+    // may be expanded to other content types later.)
+    $messages = \Drupal::messenger()->messagesByType('status');
+    // Retrieve all status messages and delete them.
+    \Drupal::messenger()->deleteByType('status');
+    foreach ($messages as $message) {
+      $message_text = $message->jsonSerialize();
+      if ($message_text == 'The layout override has been saved.') {
+        // Change text of this message.
+        $link_object = Link::createFromRoute($entity->getTitle(),
+          'entity.node.canonical',
+          ['node' => $entity->id()],
+          ['attributes' => ['rel' => 'nofollow']]);
+        $message_text = t('Landing page <em class="placeholder">@link</em> has been updated.', ['@link' => $link_object->toString()]);
+      }
+      // Add the status message back in.
+      $newmarkup = Markup::create($message_text);
+      \Drupal::messenger()->addMessage($newmarkup);
+    }
+  }
+
+  if ($entity->bundle() == 'publication' && $view_mode == 'search_result') {
+    $build['field_published_date']['#title'] = t('Published');
+  }
+
+  // If we don't have the administer content permission,
+  // 301 redirect requests to a 'feature' node's
+  // canonical path to the front page as these are not intended
+  // to be viewed as standalone content.
+  if (\Drupal::routeMatch()->getRouteName() == 'entity.node.canonical'
+    && $entity->bundle() == 'feature'
+      && \Drupal::currentUser()->hasPermission('administer nodes') == FALSE) {
+
+    $response = new RedirectResponse(\Drupal::urlGenerator()->generateFromRoute('<front>'), 301);
+    $response->send();
+  }
+}
+
+/**
+ * Implements hook_ENTITY_TYPE_presave().
+ *
+ * Invalidate taxonomy cache tags after node save.
+ */
+function nidirect_common_node_presave(EntityInterface $entity) {
+  /** @var \Drupal\node\NodeInterface $entity */
+  // Check that the node is published.
+  if ($entity->get('status')->value) {
+    $cache_service = \Drupal::service('nidirect_common.invalidate_taxonomy_list_cache_tags');
+    $cache_service->invalidateForEntity($entity);
+  }
+}
+
+/**
+ * Implements hook_ENTITY_TYPE_delete().
+ *
+ * Invalidate taxonomy cache tags after node deletion.
+ */
+function nidirect_common_node_delete(EntityInterface $entity) {
+  $cache_service = \Drupal::service('nidirect_common.invalidate_taxonomy_list_cache_tags');
+  $cache_service->invalidateForEntity($entity);
+}
+
+/**
+ * Implements hook_ENTITY_TYPE_presave() for taxonomy_term entities.
+ */
+function nidirect_common_taxonomy_term_presave(EntityInterface $entity) {
+  /** @var \Drupal\taxonomy\TermInterface $entity */
+  // Invalidate 'taxonomy_term_list' custom cache tag for the
+  // parent when a new taxonomy term is created.
+  if ($entity->get('vid')->target_id ?? '' === 'site_themes') {
+    if ($entity->isNewRevision()) {
+      $parent = $entity->get('parent')->target_id;
+      if ($parent) {
+        Cache::invalidateTags(['taxonomy_term_list:' . $parent]);
+      }
+    }
+  }
+}
+
+/**
+ * Form validation handler for publication dates.
+ */
+function nidirect_common_validate_publication_date(&$form, FormStateInterface $form_state) {
+  // Temporarily store all form errors.
+  $form_errors = $form_state->getErrors();
+
+  // Clear the form errors.
+  $form_state->clearErrors();
+
+  $date_fields = [
+    'field_published_date',
+    'field_last_review_date',
+    'field_next_review_date',
+    'field_cwp_payments_period',
+    'publish_on',
+    'unpublish_on',
+  ];
+
+  // Now loop through and re-apply all form error messages that
+  // don't involve the specified date fields.
+  foreach ($form_errors as $name => $error_message) {
+    if (preg_match('/^[a-z_]+/', $name, $matches)) {
+      $field_name = $matches[0];
+      if (in_array($field_name, $date_fields)) {
+        continue;
+      }
+    }
+    $form_state->setErrorByName($name, $error_message);
+  }
+
+  foreach ($date_fields as $date_field) {
+    nidirect_common_validate_date_field($form_state, $date_field);
+  }
+}
+
+/**
+ * Utility function to validate dates.
+ */
+function nidirect_common_validate_date_field(&$form_state, $date_field) {
+  // Now validate the date and raise an error
+  // if it is invalid.
+  $dt = $form_state->getValue($date_field);
+  if (!empty($dt)) {
+    if (preg_match('/_period$/', $date_field)) {
+      // Process a date range.
+      //
+      // Start date.
+      $date = $dt[0]['value'];
+      if (!($date instanceof DrupalDateTime) || $date->hasErrors()) {
+        // Generate error to override the erroneous core error.
+        $form_state->setErrorByName($date_field . '][0][value', t('Start date is invalid. Please enter a date in the format dd/mm/yyyy'));
+      }
+      // End date.
+      $date = $dt[0]['end_value'];
+      if (!($date instanceof DrupalDateTime) || $date->hasErrors()) {
+        // Generate error to override the erroneous core error.
+        $form_state->setErrorByName($date_field . '][0][end_value', t('End date is invalid. Please enter a date in the format dd/mm/yyyy'));
+      }
+    }
+    else {
+      // Process a single date.
+      $date = $dt[0]['value'];
+      if (!empty($date)) {
+        if (!($date instanceof DrupalDateTime) || $date->hasErrors()) {
+          // Generate error to override the erroneous core error.
+          if (preg_match('/publish_on$/', $date_field)) {
+            $form_state->setErrorByName($date_field, t('Date is invalid. Please enter a date in the format dd/mm/yyyy hh:mm:ss'));
+          }
+          else {
+            $form_state->setErrorByName($date_field, t('Date is invalid. Please enter a date in the format dd/mm/yyyy'));
+          }
+        }
+      }
+    }
+  }
+}
+
+/**
+ * Form validation handler for telephone fields.
+ */
+function nidirect_common_validate_telephone(&$form, FormStateInterface $form_state) {
+  $telephones = $form_state->getValues()['field_telephone'];
+
+  foreach ($telephones as $index => $telephone) {
+    // Prevent processing of the 'add more' widget.
+    if (is_numeric($index)) {
+      $number = $telephone['telephone_container']['telephone_number'];
+      // Verify that the number doesn't contain alphabetic characters with
+      // some exceptions: (,),.,+,-.
+      if (!empty($number) && preg_match('/[^\d\s+().-]/m', $number)) {
+        $form_state->setErrorByName('field_telephone][' . $index . '][telephone_container][telephone_number', t('Telephone number invalid.'));
+      }
+    }
+  }
+}
+
+/**
+ * Implements hook_shs_js_settings_alter().
+ */
+function nidirect_common_shs_js_settings_alter(&$settings_shs, $bundle, $field_name) {
+  $settings_shs['settings']['anyLabel'] = '- ' . t('None') . ' -';
+}
+
+/**
+ * Returns a value for a field using ancestorial lookup.
+ *
+ * @param Drupal\Core\Entity\EntityInterface $entity
+ *   Node or Term entity.
+ * @param string $field
+ *   Machine name of the field to lookup.
+ *
+ * @return \Drupal\Core\Field\Plugin\Field\FieldType\EntityReferenceItem|null
+ *   Value for the field, it there is one.
+ */
+function nidirect_common_retrieve_hierarchical_field(EntityInterface $entity, string $field) {
+  /** @var \Drupal\Core\Entity\FieldableEntityInterface $entity */
+  $field_value = NULL;
+
+  // Fetch the image banner if the current entity has one.
+  if ($entity->hasField($field) && !$entity->get($field)->isEmpty()) {
+    $field_value = $entity->get($field)->first();
+  }
+
+  // If banner is empty and we are dealing with a node, load the theme term
+  // for that node. Exclude landing page nodes because they display their
+  // own banner. If we're dealing with a term, assign directly.
+  // Finally try to extract a banner image from the term.
+  if (empty($field_value)) {
+    $term = NULL;
+
+    if ($entity instanceof Node && $entity->hasField('field_subtheme') && $entity->bundle() !== 'landing_page') {
+      $term = $entity->get('field_subtheme')->entity ?? NULL;
+
+      if (empty($term)) {
+        return NULL;
+      }
+    }
+    elseif ($entity instanceof Term) {
+      $term = $entity;
+    }
+
+    if ($term instanceof TermInterface) {
+      if ($term->hasField($field) && !$term->get($field)->isEmpty()) {
+        $field_value = $term->get($field)->first();
+      }
+    }
+  }
+
+  // If we still don't have a banner image, try the parent and grandparent
+  // terms for images.
+  if (empty($field_value) && !empty($term)) {
+    // This issue https://www.drupal.org/node/2019905
+    // prevents us from using ->loadParents() as we won't
+    // retrieve the root term.
+    $ancestors = array_values(\Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadAllParents($term->id()));
+
+    if (!empty($ancestors)) {
+
+      // Remove the current term from the list of ancestors if the current
+      // entity is a taxonomy term.
+      if (\Drupal::routeMatch()->getParameter('taxonomy_term')) {
+        array_shift($ancestors);
+      }
+
+      // Navigate to 2 ancestor terms.
+      for ($i = 0; $i < 2; $i++) {
+        if (array_key_exists($i, $ancestors)) {
+          if ($ancestors[$i]->hasField($field) && !$ancestors[$i]->get($field)->isEmpty()) {
+            $field_value = $ancestors[$i]->get($field)->first();
+
+            if ($field_value) {
+              break;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  return $field_value;
+}
+
+/**
+ * Implements hook_clientside_validation_should_validate().
+ */
+function nidirect_common_clientside_validation_should_validate($element, FormStateInterface $form_state, $form_id) {
+  // This works but looks odd, ideally this hook should have been called _should_not_validate() as this makes
+  // about as much sense as a sunroof on a submarine.
+  if (str_ends_with($form_id, 'scheduled_transitions_add_form_form')) {
+    return TRUE;
+  }
+
+  // Turn off clientside validation jquery functionality on anything that isn't
+  // a webform form.
+  // Also see: nidirect_common_page_attachments_alter.
+  // nidirect_common_form_BASE_FORM_ID_alter hooks where similar adjustments
+  // have been needed to work around clientside_validation module.
+  if (!preg_match('/^webform_/', $form_id)) {
+    return FALSE;
+  }
+}
+
+/**
+ * Implements hook_form_BASE_FORM_ID_alter().
+ */
+function nidirect_common_form_system_performance_settings_alter(&$form, FormStateInterface $form_state, $form_id) {
+  // Http_cache_control contrib module 'Surrogate max age' options.
+  // These control how long Fastly will cache a page (by setting the
+  // Surrogate-Control header). We want additional options to cache pages for
+  // longer periods than 1 day.
+  if (!empty($form['surrogate']['surrogate_maxage'])) {
+    $form['surrogate']['surrogate_maxage']['#options'] += [
+      604800 => t("1 week")->render(),
+      2628000 => t("1 month")->render(),
+      7884000 => t("3 months")->render(),
+      15768000 => t("6 months")->render(),
+      31536000 => t("1 year")->render(),
+    ];
+
+    // Make it clear that this has been done.
+    $form['surrogate']['surrogate_maxage']['#suffix'] = t("<i>@suffix</i>",
+      ['@suffix' => "HTTP_cache_control contrib module settings have been customised here to enable surrogate max age of up to 1 year"]);
+  }
+}
+
+/**
+ * Implements hook_page_attachments_alter().
+ */
+function nidirect_common_page_attachments_alter(array &$attachments) {
+  // Turn off clientside_validation on selected routes. Usually due to
+  // interference with other AJAX related features, eg: Media Library.
+  $routes = [
+    'entity.node.edit_form',
+    'entity.media.edit_form',
+    'node.add',
+    'media.add',
+    'layout_builder.overrides.node.view',
+  ];
+
+  if (in_array(\Drupal::routeMatch()->getRouteName(), $routes)) {
+    // 1 == Yes, 2 == No.
+    // See ClientsideValidationjQuerySettingsForm::buildForm().
+    $attachments['#attached']['drupalSettings']['clientside_validation_jquery']['validate_all_ajax_forms'] = 2;
+  }
+}
+
+/**
+ * Implements hook_block_build_alter().
+ *
+ * Use this hook to disable placeholders using the Drupal 8
+ * lazy builder API. This allows for more dynamically rendered
+ * page components but can make it impossible for theme template
+ * checks to assess whether a variable is empty or not.
+ *
+ * See https://www.drupal.org/node/953034.
+ */
+function nidirect_common_block_build_alter(array &$build, BlockPluginInterface $block) {
+  $disable_lazyload_blocks = [
+    'views_block:popular_content-pop_by_term',
+  ];
+
+  if (in_array($block->getPluginId(), $disable_lazyload_blocks)) {
+    $build['#create_placeholder'] = FALSE;
+  }
+}
+
+/**
+ * Implements hook_toolbar_alter().
+ */
+function nidirect_common_toolbar_alter(&$items) {
+  if (\Drupal::currentUser()->hasPermission('administer blocks') === FALSE) {
+    // Hide the toolbar for users without the 'administer blocks' permission
+    // except for the frontpage or layout builder for landing pages where
+    // editors can use the contextual links to edit content.
+    $is_front = \Drupal::service('path.matcher')->isFrontPage();
+    $current_path = \Drupal::service('path.current')->getPath();
+    $current_alias = \Drupal::service('path_alias.manager')->getAliasByPath($current_path);
+    $is_layout_builder = \Drupal::service('path.matcher')->matchPath($current_alias, '*/layout');
+    $node = \Drupal::routeMatch()->getParameter('node');
+
+    if ($is_front || ($node instanceof NodeInterface && $node->bundle() == 'landing_page' && $is_layout_builder)) {
+      return;
+    }
+
+    unset($items['contextual']);
+  }
+}
+
+/**
+ * Implements custom taxonomy term validation.
+ */
+function nidirect_common_taxonomy_term_validate(&$form, FormStateInterface $form_state) {
+  // If the parent field is not an array then make it an array (this
+  // may have happened if the parent dropdown for taxaonomy terms has
+  // been changed to single select rather than multiple).
+  if (!is_array($form_state->getValue('parent'))) {
+    $form_state->setValue('parent', [$form_state->getValue('parent')]);
+  }
+}
+
+/**
+ * Implements hook_views_pre_view().
+ */
+function nidirect_common_views_pre_view(ViewExecutable $view) {
+  // Code here to check for invalid publications.
+  // Previously, invalid urls such as '/publications/somethingbad' would
+  // show the publications search page rather than showing the 404
+  // 'not found' page. This code corrects that problem.
+  $alias = \Drupal::request()->getRequestUri();
+  // Get the true Drupal path for the current alias.
+  $path = \Drupal::service('path_alias.manager')->getPathByAlias($alias);
+  // If the Drupal path does not lead us to a node and is in the
+  // format '/publications/....' then it cannot be related to
+  // the publications search and we should return a
+  // 404 'page not found' response.
+  if (!preg_match('/node\/(\d+)/', $path, $matches)
+    && (preg_match('|^\/publications\/|', $alias))) {
+    // Retrieve the system 404 path.
+    $url_404 = Url::fromRoute('system.404')->toString();
+    $response = new RedirectResponse($url_404);
+    $response->send();
+  }
+}
+
+/**
+ * Implements hook_page_attachments().
+ */
+function nidirect_common_page_attachments(array &$page) {
+  // Add translation help library to the translation help page.
+  $path_current = \Drupal::service('path.current')->getPath();
+  $translation_help_path = \Drupal::service('path_alias.manager')->getPathByAlias('/articles/translation-help');
+
+  if ($path_current === $translation_help_path) {
+    $page['#attached']['library'][] = 'nidirect_common/translation_help';
+  }
+
+  $route_params = \Drupal::routeMatch()->getParameters()->all();
+
+  // Create a datalayer object containing 'theme' custom directives for GTM.
+  if (isset($route_params['node']) || isset($route_params['taxonomy_term'])) {
+
+    // Fetch a term from a node subtheme field or taxonomy entity.
+    if (!empty($route_params['node']) && is_object($route_params['node']) && $route_params['node']->hasField('field_subtheme')) {
+      $term = $route_params['node']->field_subtheme->entity;
+    }
+    elseif (!empty($route_params['taxonomy_term'])) {
+      $term = $route_params['taxonomy_term'];
+    }
+    else {
+      return;
+    }
+
+    if ($term instanceof TermInterface && $term->bundle() === 'site_themes') {
+
+      // Get all ancestors for the current term.
+      $ancestors = \Drupal::service('entity_type.manager')->getStorage("taxonomy_term")->loadAllParents($term->id());
+
+      // Get the term labels.
+      foreach ($ancestors as $term) {
+        $all_themes[] = $term->label();
+      }
+
+      $datalayer_values = [];
+      if (!empty($all_themes)) {
+        // Reverse order of themes.
+        $all_themes = array_reverse($all_themes);
+
+        // Set dimension1 to be the top-level parent theme - e.g. "Motoring".
+        $datalayer_values['theme'] = array_shift($all_themes);
+
+        // Set dimension2 to contain all the remaining sub-themes.
+        // We trim the dimension value to 150 chars to prevent issues with GTM.
+        $datalayer_values['all-themes'] = substr(implode(',', $all_themes), 0, 150);
+      }
+
+      // Inject the datalayer script before the Google Tag Manager script.
+      $page['#attached']['html_head'][] = [
+        [
+          '#type' => 'html_tag',
+          '#tag' => 'script',
+          '#value' => 'window.dataLayer = window.dataLayer || []; window.dataLayer.push(' . Json::encode($datalayer_values) . ');',
+        ],
+        'datalayer-js',
+      ];
+    }
+  }
+}
+
+/**
+ * Implements hook_preprocess_node().
+ */
+function nidirect_common_preprocess_node(array &$variables) {
+
+  $node = $variables['node'];
+
+  if (isset($node) && method_exists($node, 'bundle')) {
+    // Fix for application pages to prevent Google Translate altering the green
+    // button link URL (We don't want applications opening in Google Translate).
+    if ($node->bundle() === 'application') {
+      $variables['#attached']['library'][] = 'nidirect_common/application_links';
+    }
+  }
+
+}
+
+/**
+ * Implements hook_easy_google_analytics_counter_query_alter().
+ */
+function nidirect_common_easy_google_analytics_counter_query_alter(array &$query) {
+  $query['dimensionFilterClauses'] = [
+    'filters' => [
+      'dimension_name' => 'ga:pagepath',
+      'operator' => 'REGEXP',
+      'expressions' => '^\/(articles|campaigns|services|news|conditions)\/.*',
+    ],
+  ];
+}
+
+/**
+ * Implements hook_whatlinkshere_report_alter().
+ */
+function nidirect_common_whatlinkshere_report_alter(array &$data) {
+  $data['content_heading'] = [
+    '#type' => 'html_tag',
+    '#tag' => 'h2',
+    '#value' => t('Content linking here'),
+    '#weight' => -1,
+  ];
+
+  // Gather list of redirects pointing to this path.
+  $entity_type = 'node';
+  $entity_id = \Drupal::routeMatch()->getParameter($entity_type);
+  $destination_uri = 'internal:/' . $entity_type . '/' . $entity_id;
+
+  // Try other entity types if there's no node id parameter.
+  if (empty($entity_id)) {
+    $entity_type = 'taxonomy_term';
+    $entity_id = \Drupal::routeMatch()->getParameter($entity_type);
+    $destination_uri = 'internal:/taxonomy/term/' . $entity_id;
+  }
+  if (empty($entity_id)) {
+    $entity_type = 'media';
+    $entity_id = \Drupal::routeMatch()->getParameter($entity_type);
+  }
+
+  if (empty($entity_id)) {
+    // Unrecognised entity type, exit safely.
+    return;
+  }
+
+  $redirects = \Drupal::service('redirect.repository')->findByDestinationUri([$destination_uri]);
+
+  if (!empty($redirects)) {
+    $redirects_elements = [
+      'redirects_heading' => [
+        '#type' => 'html_tag',
+        '#tag' => 'h2',
+        '#value' => t('Redirects linking here'),
+      ],
+    ];
+
+    $rows = [];
+
+    foreach ($redirects as $id => $redirect) {
+      if ($redirect instanceof Redirect === FALSE) {
+        continue;
+      }
+
+      $rows[$id]['source'] = $redirect->getSourceUrl();
+      $rows[$id]['tasks'] = Link::createFromRoute(
+        t('Edit'),
+        'entity.redirect.edit_form',
+        ['redirect' => $id]
+      );
+    }
+
+    $redirects_data = [
+      '#type' => 'table',
+      '#header' => [
+        'source' => [
+          'data' => t('Source'),
+        ],
+        'tasks' => [
+          'data' => t('Tasks'),
+        ],
+      ],
+      '#rows' => $rows,
+    ];
+
+    $redirects_elements['redirects'] = $redirects_data;
+    $data += $redirects_elements;
+  }
+}
+
+/**
+ * Implements hook_moderation_sidebar_alter().
+ */
+function nidirect_common_moderation_sidebar_alter(array &$build, EntityInterface $entity) {
+  // Solution provided by: https://www.drupal.org/project/moderation_sidebar/issues/3130572
+  if (isset($build["actions"]['secondary']["entity.node.canonical"]["#url"])) {
+    $build["actions"]['secondary']["entity.node.canonical"]["#url"] = Url::fromRoute('entity.node.canonical', ['node' => $entity->id()]);
+  }
+}

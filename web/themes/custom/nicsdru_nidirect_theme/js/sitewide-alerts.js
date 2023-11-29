@@ -1,0 +1,1 @@
+(function($,Drupal){Drupal.behaviors.nidirectSitewideAlerts={attach:function attach(context){$("body").on("DOMSubtreeModified","#sitewide-alert",function(){$("#sitewide-alert").find(".sitewide-alert").removeAttr("role")});$("#sitewide-alert",context).attr({role:"region","aria-roledescription":"Site wide messages","aria-live":"polite","aria-atomic":"true"})}}})(jQuery,Drupal);

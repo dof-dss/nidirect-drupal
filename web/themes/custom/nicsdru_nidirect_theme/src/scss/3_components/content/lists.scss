@@ -1,0 +1,44 @@
+/*
+ * @file
+ * Provides the styling for list components.
+ */
+@import '../../init';
+
+.list {
+  &--no-bullet {
+    list-style: none;
+    padding: 0;
+  }
+
+  &--inline li {
+    display: inline-block;
+    padding-right: .334em;
+    white-space: nowrap;
+  }
+
+  &--checklist {
+    li {
+      color: $grey-dark;
+      background: transparent resolve('status.svg') no-repeat left / 16px 16px;
+      margin-bottom: 0;
+      margin-right: 4px;
+      padding-left: 21px;
+
+      @include breakpoint($mob, $no-query: true) {
+        background-size: 18px 18px;
+        margin-right: 7px;
+        padding-left: 24px;
+      }
+
+      @include breakpoint($phab, $no-query: true) {
+        background-size: 19px 19px;
+        margin-right: 9px;
+      }
+    }
+  }
+}
+
+.split-list {
+  columns: 2;
+  column-gap: 3.6rem;
+}

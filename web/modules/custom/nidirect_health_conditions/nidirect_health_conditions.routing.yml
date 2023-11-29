@@ -1,0 +1,10 @@
+
+nidirect_health_conditions.letter:
+  path: '/services/health-conditions-a-z/letter/{letter}'
+  defaults:
+    _controller: '\Drupal\nidirect_health_conditions\Controller\HealthConditionsListingController::filterByLetter'
+    _title: 'Health conditions A to Z'
+    route_type: health_conditions_letter
+  requirements:
+    _permission: 'access content'
+    letter: '[a-z|A-Z]{1}'

@@ -1,0 +1,56 @@
+@import '../../init';
+
+.section-feedback {
+
+  &__form {
+
+    form {
+      max-width: $max-content-width;
+    }
+
+    .js & {
+      display: none;
+    }
+
+    &.expanded {
+      display: block;
+      animation: fade-in 1s;
+    }
+  }
+
+  &__heading {
+    width: 100%;
+    padding: 0;
+    margin: 0;
+    font-size: 1em;
+    line-height: 1.5;
+
+    @include breakpoint($tab) {
+      width: 50%;
+    }
+  }
+
+  &__toggle {
+    @include link-state-style($link-page-bottom);
+
+    // IE fix.
+    // IE doesn't support fiddling with underline widths and colours - just add a standard underline.
+    @media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
+      text-decoration: underline;
+    }
+
+    display: block;
+    position: relative;
+    width: 100%;
+    border: 0;
+    padding: 1rem 15px;
+    margin: 0;
+    font-size: inherit;
+    line-height: inherit;
+    text-align: left;
+
+    @include breakpoint($tab) {
+      padding: .5em 20px;
+    }
+  }
+}

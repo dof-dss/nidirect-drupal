@@ -1,0 +1,52 @@
+/*
+ * @file
+ * Provides the layout styles for the header area.
+ */
+
+@import '../../init';
+
+// Layouts - header
+//
+// The layout styling for major parts of the page  are created 'mobile-first' using the benefits of flexbox and cssgrid,
+// declaring appropriate fallback's where the technology is not widely enough implemented in currently used web
+// browsers. We utilise auto-prefixer to help in this regard to ensure that when prefixing for a declaration is required
+// for a particular vendor that the developer need not be concerned with making sure this is done.
+//
+// As NICS has comparatively few variations in layouts, therefore layouts can be covered with relatively little code.
+// This section of the styleguide is essentially broken into 2 main areas - common classes and utilities that are
+// required and used for layout, then there are a series of individual layouts.
+//
+// Weight: 0
+//
+// Style guide: layouts.header
+
+.header {
+  display: grid;
+  grid-gap: 0;
+  grid-template-columns: 1fr;
+  grid-template-rows: 12.6rem 6.5rem;
+  align-items: center;
+  justify-content: space-between;
+
+  // IE fix.
+  // IE does not support align-items on parent grid container - but does support align-self on grid items.
+  > * {
+    align-self: center;
+  }
+
+  @include breakpoint($phab) {
+    grid-template-rows: 13.5rem 6.5rem;
+  }
+
+  @include breakpoint($tab) {
+    grid-template-columns: 45% 42.56%;
+    grid-template-rows: 15.3rem;
+    margin: 0 auto;
+    max-width: $max-grid-width;
+    padding: 0 20px;
+
+    // IE fix.
+    // IE does not support justify-content: space-between. So we need a grid gap.
+    grid-gap: 12.44%;
+  }
+}

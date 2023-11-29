@@ -1,0 +1,36 @@
+{#
+/**
+ * @file
+ * Default theme implementation to webform confirmation.
+ *
+ * Available variables:
+ * - progress: Progress bar.
+ * - message: Confirmation message.
+ * - back_url: URL to the previous webform submission.
+ *
+ * @see template_preprocess_webform_confirmation()
+ *
+ * @ingroup themeable
+ */
+#}
+
+{{ attach_library('webform/webform.confirmation') }}
+{{ drupal_block('page_title_block', wrapper=false) }}
+
+{% if progress %}
+  {{ progress }}
+{% endif %}
+
+<div{{ attributes.addClass(['webform-confirmation', 'ga-main']) }}>
+
+  {% if message %}
+    <div class="webform-confirmation__message">{{ message }}</div>
+  {% endif %}
+
+  {% if back %}
+  <div class="webform-confirmation__back">
+    <a class="btn btn--large btn--secondary btn--left" href="{{ back_url }}" rel="prev"{{ back_attributes }}>{{ back_label }}</a>
+  </div>
+  {% endif %}
+
+</div>

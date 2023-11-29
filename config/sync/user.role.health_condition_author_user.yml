@@ -1,22 +1,41 @@
 uuid: 78dcb090-3c7f-450a-b4c0-32906aabc5a4
 langcode: en
 status: true
-dependencies: {  }
+dependencies:
+  config:
+    - filter.format.basic_html
+    - media.type.audio
+    - media.type.document
+    - media.type.image
+    - media.type.remote_video
+    - media.type.video
+    - node.type.health_condition
+    - node.type.health_condition_alternative
+    - workflows.workflow.nics_editorial_workflow
+  module:
+    - content_moderation
+    - entity_browser
+    - file
+    - filter
+    - media
+    - moderation_sidebar
+    - node
+    - origins_workflow
+    - scheduled_transitions
+    - system
+    - toolbar
+    - tour
+    - whatlinkshere
 id: health_condition_author_user
 label: 'health condition author user'
 weight: 31
 is_admin: null
 permissions:
-  - 'access audio_entity_browser entity browser pages'
   - 'access content overview'
-  - 'access document_entity_browser entity browser pages'
   - 'access location_browser entity browser pages'
   - 'access media overview'
-  - 'access media_entity_browser entity browser pages'
-  - 'access remote_video_browser entity browser pages'
   - 'access toolbar'
   - 'access tour'
-  - 'add media from remote sources'
   - 'add scheduled transitions node health_condition'
   - 'audit content'
   - 'create audio media'
@@ -28,6 +47,7 @@ permissions:
   - 'create video media'
   - 'delete any health_condition_alternative content'
   - 'delete health_condition_alternative revisions'
+  - 'delete own files'
   - 'delete own health_condition_alternative content'
   - 'edit any health_condition content'
   - 'edit own audio media'
@@ -37,25 +57,15 @@ permissions:
   - 'edit own image media'
   - 'edit own remote_video media'
   - 'edit own video media'
-  - 'flag content_audit'
-  - 'moderate content from draft to needs_review'
-  - 'moderate content from needs_review to draft'
   - 'reschedule scheduled transitions node health_condition'
   - 'revert health_condition revisions'
   - 'revert health_condition_alternative revisions'
-  - 'unflag content_audit'
-  - 'use editorial transition create_new_draft'
-  - 'use editorial transition reject'
-  - 'use editorial transition submit_for_review'
-  - 'use media wysiwyg'
   - 'use moderation sidebar'
   - 'use nics_editorial_workflow transition create_new_draft'
   - 'use nics_editorial_workflow transition draft_of_published'
   - 'use nics_editorial_workflow transition reject'
   - 'use nics_editorial_workflow transition submit_for_review'
   - 'use text format basic_html'
-  - 'use workbench_moderation my drafts tab'
-  - 'use workbench_moderation needs review tab'
   - 'view content references'
   - 'view health_condition revisions'
   - 'view health_condition_alternative revisions'

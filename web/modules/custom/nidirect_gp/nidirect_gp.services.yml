@@ -1,0 +1,27 @@
+services:
+  geocoder.api.key.event_subscriber:
+    class: Drupal\nidirect_gp\EventSubscriber\GeocoderApiKeyUpdate
+    arguments: ['@nidirect_common.update_config_from_environment']
+    tags:
+      - { name: event_subscriber }
+  nidirect.postcode_extractor:
+    class: Drupal\nidirect_gp\PostcodeExtractor
+    arguments: ['%postcode_matches.uk%', '@request_stack', '@form_builder']
+  nidirect_gp.gp_route_subscriber:
+    class: Drupal\nidirect_gp\Routing\GpAutocompleteRouteSubscriber
+    tags:
+      - { name: event_subscriber }
+  nidirect_gp.gp_autocomplete_matcher:
+    class: Drupal\nidirect_gp\GpAutocompleteMatcher
+    arguments: [ '@plugin.manager.entity_reference_selection', '@entity_type.manager']
+  nidirect_gp.unique_cypher:
+    class: Drupal\nidirect_gp\GpUniqueCypher
+    arguments: [ '@entity_type.manager' ]
+
+parameters:
+  nidirect_gp.geocoding_service: googlemaps
+  nidirect_gp.proximity_max_distance: 10
+
+  # Regex sourced/tweaked from https://andrewwburns.com/2018/04/10/uk-postcode-validation-regex/.
+  # Accepts formats such as: SW1, SW1A, SW1A1AA, SW1A 1AA
+  postcode_matches.uk: '^(([A-Z][0-9]{1,2})|(([A-Z][A-HJ-Y][0-9]{1,2})|(([A-Z][0-9][A-Z])|([A-Z][A-HJ-Y][0-9]?[A-Z]))))((\s?)([0-9][A-Z]{2})?)$'

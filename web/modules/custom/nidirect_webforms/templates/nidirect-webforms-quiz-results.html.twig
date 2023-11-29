@@ -1,0 +1,29 @@
+{% set result_classes = [
+  passed ? 'info-notice info-notice--large info-notice--success' : 'info-notice info-notice--large info-notice--error'
+]
+%}
+<div >
+  {% if introduction %}
+  <div class="quiz-introduction page-summary">
+    {{ introduction }}
+  </div>
+  {% endif %}
+  {% if result %}
+  <div {{ attributes.addClass(result_classes) }}>
+    {{ result }}
+  </div>
+  {%  endif %}
+  {% if display_score %}
+    <h3>{% trans %}You scored {{ score }} out of {{ max_score }}{% endtrans %}</h3>
+    {% if pass_score > 0 %}
+      <span>({% trans %}the pass mark is {{ pass_score }} or above{% endtrans %})</span>
+    {% endif %}
+  {% endif %}
+  {% if display_feedback %}
+    <div class="feedback-introduction">
+      {{ feedback_introduction }}
+    </div>
+    <h2>{% trans %}Summary and feedback{% endtrans %}</h2>
+    {{ feedback }}
+  {% endif %}
+</div>

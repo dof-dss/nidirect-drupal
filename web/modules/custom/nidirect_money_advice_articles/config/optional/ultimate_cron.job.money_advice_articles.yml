@@ -1,0 +1,28 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - nidirect_money_advice_articles
+title: 'Import Money Advice Service articles.'
+id: money_advice_articles
+module: nidirect_money_advice_articles
+callback: nidirect_money_advice_articles_import
+scheduler:
+  id: crontab
+  configuration:
+    rules:
+      - '0 06 * * *'
+launcher:
+  id: serial
+  configuration:
+    timeouts:
+      lock_timeout: 3600
+      max_execution_time: 3600
+    launcher:
+      max_threads: 1
+logger:
+  id: database
+  configuration:
+    method: '3'
+    expire: 1209600
+    retain: 1000

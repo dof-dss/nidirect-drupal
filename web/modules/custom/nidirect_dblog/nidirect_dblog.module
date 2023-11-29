@@ -1,0 +1,83 @@
+<?php
+
+/**
+ * @file
+ * Contains nidirect_dblog.module.
+ *
+ * Contains dblog overrides.
+ */
+
+use Drupal\Core\Entity\EntityInterface;
+use Drupal\redirect\Entity\Redirect;
+
+/**
+ * Implements hook_entity_delete().
+ *
+ * Log redirect deletion to watchdog.
+ */
+function nidirect_dblog_entity_delete(EntityInterface $entity) {
+  // Are we deleting a redirect entity ?
+  if ($entity instanceof Redirect) {
+    // Extract the redirect destination details from the
+    // string in the format 'internal:/node/nnnn'.
+    $destination = $entity->getRedirect()['uri'];
+    $destination = str_replace(["internal:", "entity:"], "", $destination);
+    $nid = str_replace("/node/", "", $destination);
+
+    if (!str_starts_with($destination, '/')) {
+      $destination = "/" . $destination;
+    }
+
+    // Get the node alias for extra info.
+    $alias = \Drupal::service('path_alias.manager')->getAliasByPath($destination);
+    // Get the redirect source.
+    /** @var \Drupal\redirect\Plugin\Field\FieldType\RedirectSourceItem $redirect_source */
+    $redirect_source = $entity->get('redirect_source')->get(0);
+    $source = $redirect_source->getUrl()->toString();
+
+    // Track the current user.
+    $username = \Drupal::currentUser()->getAccountName();
+    $message = t("Redirect from @source to @alias (nid @nid) deleted by @username",
+      [
+        '@source' => $source,
+        '@alias' => $alias,
+        '@nid' => $nid,
+        '@username' => $username
+      ]);
+    \Drupal::logger('redirect_deletion')->notice($message);
+  }
+}
+
+/**
+ * Implements hook_cron().
+ *
+ * Controls the size of the log table, paring it to 'dblog_row_limit' messages,
+ * (this overrides the dblog_cron processing).
+ */
+function nidirect_dblog_cron() {
+  // Cleanup the watchdog table.
+  $row_limit = \Drupal::config('dblog.settings')->get('row_limit');
+
+  // For row limit n, get the wid of the nth row in descending wid order.
+  // Counting the most recent n rows avoids issues with wid number sequences,
+  // e.g. auto_increment value > 1 or rows deleted directly from the table.
+  if ($row_limit > 0) {
+    $connection = \Drupal::database();
+    $min_row = $connection->select('watchdog', 'w')
+      ->fields('w', ['wid'])
+      ->orderBy('wid', 'DESC')
+      ->range($row_limit - 1, 1)
+      ->execute()->fetchField();
+
+    // Delete all table entries older than the nth row, if nth row was found,
+    // but never delete 'content' or 'redirect_deletion' entries as we need
+    // to keep a track of these.
+    if ($min_row) {
+      $connection->delete('watchdog')
+        ->condition('wid', $min_row, '<')
+        ->condition('type', 'redirect_deletion', '<>')
+        ->condition('type', 'content', '<>')
+        ->execute();
+    }
+  }
+}

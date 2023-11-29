@@ -1,0 +1,34 @@
+<?php
+
+/**
+ * @file
+ * Contains nidirect_errorpages.module.
+ */
+
+/**
+ * Implements hook_theme_suggestions_HOOK_alter().
+ *
+ * Introduce template suggestions based on HTTP 40x response code.
+ */
+function nidirect_errorpages_theme_suggestions_page_alter(array &$suggestions, array $variables) {
+  $route_name = \Drupal::routeMatch()->getRouteName();
+  switch ($route_name) {
+    case 'system.401':
+      // Unauthorized Access.
+      $error = 401;
+      break;
+
+    case 'system.403':
+      // Access Denied.
+      $error = 403;
+      break;
+
+    case 'system.404':
+      // Page Not Found.
+      $error = 404;
+      break;
+  }
+  if (isset($error)) {
+    $suggestions[] = 'page__' . $error;
+  }
+}

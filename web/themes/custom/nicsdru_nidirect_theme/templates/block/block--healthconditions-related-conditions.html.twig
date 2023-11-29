@@ -1,0 +1,28 @@
+{#
+/**
+* @file
+* Block template for exposed filter form attached to Health conditions search / A to Z.
+#}
+{%
+set classes = [
+  'block',
+  'block-' ~ configuration.provider|clean_class,
+  'block-' ~ plugin_id|clean_class,
+  'sub-menu',
+  'sub-menu--related',
+]
+%}
+<div{{ attributes.addClass(classes) }}>
+{% if label %}
+<h2{{ title_attributes.addClass('menu-title') }}>{{ label }}</h2>
+{% endif %}
+{% block content %}
+  {% if content_attributes is not empty %}
+    <div{{ content_attributes }}>
+      {{ content }}
+    </div>
+  {% else %}
+    {{ content }}
+  {% endif %}
+{% endblock %}
+</div>
