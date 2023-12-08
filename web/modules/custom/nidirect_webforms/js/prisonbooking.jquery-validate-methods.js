@@ -102,11 +102,11 @@
 
         $.validator.addMethod("minAge", function(value, element, param) {
           return this.optional(element) || getAge(value) >= param[1];
-        }, $.validator.format("Age must be {1} or over"));
+        }, $.validator.format("Age must be {1} years old or over"));
 
         $.validator.addMethod("maxAge", function(value, element, param) {
-          return this.optional(element) || getAge(value) < param[1];
-        }, $.validator.format("Age must be less than {1}"));
+          return this.optional(element) || getAge(value) <= param[1];
+        }, $.validator.format("Age must be no more than {1} years old"));
 
         $.validator.addMethod("noHtml", function(value, element) {
           return this.optional(element) || value === value.replace(/(<([^>]+)>)/gi, "");
@@ -239,7 +239,7 @@
       $(once('pvChildDobs', pvChildDobSelectors, context)).each(function() {
         $(this).rules("add", {
           minAge: [true, 0],
-          maxAge: [true, 18],
+          maxAge: [true, 17],
           messages: {
             minAge: "Date of birth cannot be greater than today's date",
             maxAge: "Child visitor must be under 18 years of age"
