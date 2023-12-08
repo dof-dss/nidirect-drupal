@@ -15,31 +15,42 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 /**
- * Implementing our example JSON api.
+ * JSON API controller for receiving available
+ * visit timeslots for prisons.
  */
 class PrisonVisitBookingJsonApiController extends ControllerBase {
 
   /**
+   * The configuration factory.
+   *
    * @var \Drupal\Core\Config\ConfigFactoryInterface
    */
   protected $configFactory;
 
   /**
+   * The HTTP client.
+   *
    * @var \GuzzleHttp\ClientInterface
    */
   protected ClientInterface $httpClient;
 
   /**
+   * The current request.
+   *
    * @var \Symfony\Component\HttpFoundation\Request
    */
   protected $request;
 
   /**
+   * The request stack symfony instance.
+   *
    * @var \Symfony\Component\HttpFoundation\RequestStack
    */
   protected $requestStack;
 
   /**
+   * The cache backend.
+   *
    * @var \Drupal\Core\Cache\CacheBackendInterface
    */
   protected $cache;
