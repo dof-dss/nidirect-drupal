@@ -96,13 +96,13 @@ class PrisonVisitBookingJsonApiController extends ControllerBase {
       // Get cached json data.
       $data = $this->cacheJsonData();
 
-      if (empty($data)) {
-        // Return "204 No Content" response.
-        $response->setContent('No Content')->setStatusCode(204);
-      }
-      else {
+      if ($data) {
         // Return data and 200 OK.
         $response->setData($data)->setStatusCode(200);
+      }
+      else {
+        // Return "400 Bad Request" response.
+        $response->setContent('Bad Request')->setStatusCode(400);
       }
     }
 
@@ -167,7 +167,8 @@ class PrisonVisitBookingJsonApiController extends ControllerBase {
 
       // If content can be json decoded, write the decoded data to
       // cache and the json content to a file.
-      if ($data = json_decode($content, TRUE)) {
+      $data = json_decode($content, TRUE);
+      if (!empty($data) && json_last_error() === JSON_ERROR_NONE) {
 
         // Write data to cache.
         $this->cache->set('prison_visit_slots_data', $data, $expire->getTimestamp());
@@ -206,7 +207,7 @@ class PrisonVisitBookingJsonApiController extends ControllerBase {
         $this->getLogger('prison_visits')->info('prison_visit_slots_data saved to ' . $filepath);
       }
       else {
-        $this->getLogger('prison_visits')->error('prison_visit_slots_data update failure.');
+        $this->getLogger('prison_visits')->error('prison_visit_slots_data update failure. JSON could not be decoded: @error', ['@error' => json_last_error_msg()]);
       }
     }
 
