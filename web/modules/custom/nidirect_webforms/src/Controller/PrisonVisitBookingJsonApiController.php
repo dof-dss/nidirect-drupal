@@ -128,8 +128,15 @@ class PrisonVisitBookingJsonApiController extends ControllerBase {
     $allowed_tokens = explode(',', getenv('PRISON_VISITS_API_PERMITTED_TOKENS'));
     $allowed_tokens = array_map('trim', $allowed_tokens);
 
-    if (!$allowed_ip_addresses || !$allowed_tokens) {
-      $this->getLogger('prison_visits')->warning('One or more environment variables are missing: PRISON_VISITS_API_PERMITTED_IPS, PRISON_VISITS_API_PERMITTED_TOKENS');
+    if ((!$allowed_ip_addresses || !$allowed_tokens) && empty($this->cache->get('prison_visits_api_env_missing_error_logged'))) {
+      $msg = 'One or more environment variables are missing: PRISON_VISITS_API_PERMITTED_IPS, PRISON_VISITS_API_PERMITTED_TOKENS';
+      $this->getLogger('prison_visits')->warning($msg);
+      $this->cache->set('prison_visits_api_env_missing_error_logged', $msg, CacheBackendInterface::CACHE_PERMANENT);
+    }
+    elseif ($allowed_ip_addresses && $allowed_tokens) {
+      // Environment variables retrieved ok.
+      // We can delete the cached error.
+      $this->cache->delete('prison_visits_api_env_missing_error_logged');
     }
 
     // Is ip and token allowed?
