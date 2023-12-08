@@ -23,21 +23,17 @@
 
           if (Object.keys(params[1]).includes(pvbID) !== true) {
             bookRefIsValid = false;
-            console.log(`pvbID ${pvbID} is not a valid identifier`);
           }
 
           if (Object.keys(params[2]).includes(pvbTypeID) !== true) {
             bookRefIsValid = false;
-            console.log(`pvbType ${pvbTypeID} is not a valid type identifier`);
           }
 
           // Validate order number week and year.
           if (pvbWeek < 1 || pvbWeek > 53) {
             bookRefIsValid = false;
-            console.log(`pvbWeek ${pvbWeek} is not in range 1-53`);
           } else if (pvbYear < 1 || pvbYear > 99) {
             bookRefIsValid = false;
-            console.log(`pvbYear ${pvbYear} is not in range 01-99`);
           }
 
           return bookRefIsValid;
@@ -87,29 +83,15 @@
 
           if (today.getTime() < earliestBookingDate.getTime()) {
             bookRefIsValid = false;
-            console.log(`Visit reference number cannot be used until ${earliestBookingDate.toString()}.`);
           }
 
           if (today.getTime() > latestBookingDate.getTime()) {
             bookRefIsValid = false;
-            console.log(`Advanced notice of ${pvbAdvanceNoticeHours} is required and cannot be met.`);
           }
 
           if (today.getTime() > bookRefValidTo.getTime()) {
             bookRefIsValid = false;
-            console.log(`Booking reference number expired ${bookRefValidTo.toString()}`);
           }
-
-          console.log(`######################################################`);
-          console.log(`Prison: ${pvbPrisonName}`);
-          console.log(`Visit type: ${pvbType}`);
-          console.log(`Booking date: ${today.toString()}`);
-          console.log(`Booking ref validity period (days): ${pvbRefValidityDays}`);
-          console.log(`Booking ref valid from: ${bookRefValidFrom.toString()}`);
-          console.log(`Booking ref valid to: ${bookRefValidTo.toString()}`);
-          console.log(`Advance notice required (hours): ${pvbAdvanceNoticeHours}`);
-          console.log(`Earliest possible booking date: ${earliestBookingDate.toString()}`)
-          console.log(`Latest possible booking date: ${latestBookingDate.toString()}`);
 
           return bookRefIsValid;
         }, `Visit reference number is not recognised or has expired.`);
@@ -139,7 +121,6 @@
           for (const [key, value] of Object.entries(existingIds)) {
             const visitorElementName = $(visitorElement).attr('name');
             if (value === visitorId && key !== visitorElementName) {
-              console.log(`${key} already using ${visitorId}.`);
               isUnique = false;
             }
           }
@@ -150,7 +131,6 @@
             let value = $(this).val();
             if (value === visitorId && key !== $(visitorElement).attr('name')) {
               isUnique = false;
-              console.log(`${key} already using ${visitorId}.`);
             }
           });
 
