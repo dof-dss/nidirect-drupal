@@ -51,7 +51,7 @@ elements: |-
       '#input_mask': 'A9[9][9][9]'
       '#required': true
       '#required_error': 'Enter the prisoner ID of the prisoner you will be visiting'
-      '#pattern': '[A-H][0-9]{1,4}'
+      '#pattern': '[A-FH][0-9]{1,4}'
       '#pattern_error': 'Prisoner ID is not recognised'
       '#attributes':
         data-inputmask-placeholder: ' '
@@ -969,7 +969,7 @@ settings:
   form_submit_back: false
   form_disable_autocomplete: false
   form_novalidate: false
-  form_disable_inline_errors: false
+  form_disable_inline_errors: true
   form_required: false
   form_autofocus: false
   form_details_toggle: false
@@ -1180,96 +1180,6 @@ access:
     users: {  }
     permissions: {  }
 handlers:
-  ov_in_plain:
-    id: email
-    handler_id: ov_in_plain
-    label: OV_IN
-    notes: ''
-    status: true
-    conditions: {  }
-    weight: 2
-    settings:
-      states:
-        - completed
-      to_mail: PRISMTESTVisitsBooking@justice-ni.gov.uk
-      to_options: {  }
-      bcc_mail: ''
-      bcc_options: {  }
-      cc_mail: ''
-      cc_options: {  }
-      from_mail: _default
-      from_options: {  }
-      from_name: _default
-      reply_to: ''
-      return_path: ''
-      sender_mail: ''
-      sender_name: ''
-      subject: OV_IN
-      body: |-
-        {
-        "SUBMITTED_DATETIME": "[webform_submission:completed:prison_visit_booking_datetime]",
-        "VISIT_ORDER_NO": "[webform_submission:values:visitor_order_number]",
-        "INMATE_ID": "[webform_submission:values:prisoner_id]",
-        "SPECIAL_REQUIREMENTS": [webform_submission:values:special_requirements_json],
-        "VISITOR_1_ID": "[webform_submission:values:visitor_1_id]",
-        "VISITOR_1_DOB": "[webform_submission:values:visitor_1_dob:prison_visit_booking_datetime]",
-        "VISITOR_1_EMAIL": "[webform_submission:values:visitor_1_email]",
-        "VISITOR_1_PHONE": "[webform_submission:values:visitor_1_telephone]",
-        "VISITOR_2_ID": "[webform_submission:values:av1_id]",
-        "VISITOR_2_DOB": "[webform_submission:values:av1_dob]",
-        "VISITOR_3_ID": "[webform_submission:values:av2_id]",
-        "VISITOR_3_DOB": "[webform_submission:values:av2_dob]",
-        "VISITOR_4_ID": "[webform_submission:values:av3_id]",
-        "VISITOR_4_DOB": "[webform_submission:values:av3_dob]",
-        "VISITOR_5_ID": "[webform_submission:values:av4_id]",
-        "VISITOR_5_DOB": "[webform_submission:values:av4_dob]",
-        "SLOT1_DATETIME": "[webform_submission:values:slot1_datetime_submission]",
-        "SLOT2_DATETIME": "[webform_submission:values:slot2_datetime_submission]",
-        "SLOT3_DATETIME": "[webform_submission:values:slot3_datetime_submission]",
-        "SLOT4_DATETIME": "[webform_submission:values:slot4_datetime_submission]",
-        "SLOT5_DATETIME": "[webform_submission:values:slot5_datetime_submission]"
-        }
-      excluded_elements:
-        visitor_1_intro: visitor_1_intro
-        visit_details: visit_details
-        monday_week_1: monday_week_1
-        tuesday_week_1: tuesday_week_1
-        wednesday_week_1: wednesday_week_1
-        thursday_week_1: thursday_week_1
-        friday_week_1: friday_week_1
-        saturday_week_1: saturday_week_1
-        sunday_week_1: sunday_week_1
-        monday_week_2: monday_week_2
-        tuesday_week_2: tuesday_week_2
-        wednesday_week_2: wednesday_week_2
-        thursday_week_2: thursday_week_2
-        friday_week_2: friday_week_2
-        saturday_week_2: saturday_week_2
-        sunday_week_2: sunday_week_2
-        monday_week_3: monday_week_3
-        tuesday_week_3: tuesday_week_3
-        wednesday_week_3: wednesday_week_3
-        thursday_week_3: thursday_week_3
-        friday_week_3: friday_week_3
-        saturday_week_3: saturday_week_3
-        sunday_week_3: sunday_week_3
-        monday_week_4: monday_week_4
-        tuesday_week_4: tuesday_week_4
-        wednesday_week_4: wednesday_week_4
-        thursday_week_4: thursday_week_4
-        friday_week_4: friday_week_4
-        saturday_week_4: saturday_week_4
-        sunday_week_4: sunday_week_4
-      ignore_access: true
-      exclude_empty: true
-      exclude_empty_checkbox: false
-      exclude_attachments: false
-      html: false
-      attachments: false
-      twig: false
-      theme_name: ''
-      parameters: {  }
-      debug: false
   prison_visit_booking:
     id: prison_visit_booking
     handler_id: prison_visit_booking
@@ -1580,4 +1490,94 @@ handlers:
             - '07-01-1973 15:00'
             - '07-01-1973 16:00'
       visit_slots_uri: 'https://gist.githubusercontent.com/dof-dss-eddwebdev/57ea797b76466f4036654e4242da82bb/raw/eb8eb122149add828bfad5179811ec77a4a90187/prism-slots.json'
+  ov_in_plain:
+    id: email
+    handler_id: ov_in_plain
+    label: OV_IN
+    notes: ''
+    status: true
+    conditions: {  }
+    weight: 2
+    settings:
+      states:
+        - completed
+      to_mail: PRISMTESTVisitsBooking@justice-ni.gov.uk
+      to_options: {  }
+      bcc_mail: ''
+      bcc_options: {  }
+      cc_mail: ''
+      cc_options: {  }
+      from_mail: _default
+      from_options: {  }
+      from_name: _default
+      reply_to: ''
+      return_path: ''
+      sender_mail: ''
+      sender_name: ''
+      subject: OV_IN
+      body: |-
+        {
+        "SUBMITTED_DATETIME": "[webform_submission:completed:prison_visit_booking_datetime]",
+        "VISIT_ORDER_NO": "[webform_submission:values:visitor_order_number]",
+        "INMATE_ID": "[webform_submission:values:prisoner_id]",
+        "SPECIAL_REQUIREMENTS": [webform_submission:values:special_requirements_json],
+        "VISITOR_1_ID": "[webform_submission:values:visitor_1_id]",
+        "VISITOR_1_DOB": "[webform_submission:values:visitor_1_dob:prison_visit_booking_datetime]",
+        "VISITOR_1_EMAIL": "[webform_submission:values:visitor_1_email]",
+        "VISITOR_1_PHONE": "[webform_submission:values:visitor_1_telephone]",
+        "VISITOR_2_ID": "[webform_submission:values:av1_id]",
+        "VISITOR_2_DOB": "[webform_submission:values:av1_dob]",
+        "VISITOR_3_ID": "[webform_submission:values:av2_id]",
+        "VISITOR_3_DOB": "[webform_submission:values:av2_dob]",
+        "VISITOR_4_ID": "[webform_submission:values:av3_id]",
+        "VISITOR_4_DOB": "[webform_submission:values:av3_dob]",
+        "VISITOR_5_ID": "[webform_submission:values:av4_id]",
+        "VISITOR_5_DOB": "[webform_submission:values:av4_dob]",
+        "SLOT1_DATETIME": "[webform_submission:values:slot1_datetime_submission]",
+        "SLOT2_DATETIME": "[webform_submission:values:slot2_datetime_submission]",
+        "SLOT3_DATETIME": "[webform_submission:values:slot3_datetime_submission]",
+        "SLOT4_DATETIME": "[webform_submission:values:slot4_datetime_submission]",
+        "SLOT5_DATETIME": "[webform_submission:values:slot5_datetime_submission]"
+        }
+      excluded_elements:
+        visitor_1_intro: visitor_1_intro
+        visit_details: visit_details
+        monday_week_1: monday_week_1
+        tuesday_week_1: tuesday_week_1
+        wednesday_week_1: wednesday_week_1
+        thursday_week_1: thursday_week_1
+        friday_week_1: friday_week_1
+        saturday_week_1: saturday_week_1
+        sunday_week_1: sunday_week_1
+        monday_week_2: monday_week_2
+        tuesday_week_2: tuesday_week_2
+        wednesday_week_2: wednesday_week_2
+        thursday_week_2: thursday_week_2
+        friday_week_2: friday_week_2
+        saturday_week_2: saturday_week_2
+        sunday_week_2: sunday_week_2
+        monday_week_3: monday_week_3
+        tuesday_week_3: tuesday_week_3
+        wednesday_week_3: wednesday_week_3
+        thursday_week_3: thursday_week_3
+        friday_week_3: friday_week_3
+        saturday_week_3: saturday_week_3
+        sunday_week_3: sunday_week_3
+        monday_week_4: monday_week_4
+        tuesday_week_4: tuesday_week_4
+        wednesday_week_4: wednesday_week_4
+        thursday_week_4: thursday_week_4
+        friday_week_4: friday_week_4
+        saturday_week_4: saturday_week_4
+        sunday_week_4: sunday_week_4
+      ignore_access: true
+      exclude_empty: true
+      exclude_empty_checkbox: false
+      exclude_attachments: false
+      html: false
+      attachments: false
+      twig: false
+      theme_name: ''
+      parameters: {  }
+      debug: false
 variants: {  }
