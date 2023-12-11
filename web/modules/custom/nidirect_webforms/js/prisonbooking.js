@@ -8,6 +8,12 @@
   Drupal.behaviors.prisonVisit = {
     attach: function (context, settings) {
 
+      // Temp fix for ajax errors that hang around
+      // even after the error has gone away. 
+      if (Drupal.AjaxError.messages) {
+        Drupal.AjaxError.messages.clear();
+      }
+
       // The number of additional adult visitors determines
       // the number of additional child visitors.
       const $additionalAdults = $(once('prisonVisitAdditionalAdults', '[name="additional_visitor_adult_number"]', context));
