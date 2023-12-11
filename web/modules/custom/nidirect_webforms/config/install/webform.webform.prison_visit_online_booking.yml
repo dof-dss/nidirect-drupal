@@ -51,7 +51,7 @@ elements: |-
       '#input_mask': 'A9[9][9][9]'
       '#required': true
       '#required_error': 'Enter the prisoner ID of the prisoner you will be visiting'
-      '#pattern': '[A-H][0-9]{1,4}'
+      '#pattern': '[A-FH][0-9]{1,4}'
       '#pattern_error': 'Prisoner ID is not recognised'
       '#attributes':
         data-inputmask-placeholder: ' '
@@ -953,7 +953,7 @@ settings:
   form_title: source_entity_webform
   form_submit_once: true
   form_open_message: ''
-  form_close_message: ''
+  form_close_message: 'The prison visit booking service is currently closed.'
   form_exception_message: ''
   form_previous_submissions: false
   form_confidential: false
@@ -969,7 +969,7 @@ settings:
   form_submit_back: false
   form_disable_autocomplete: false
   form_novalidate: false
-  form_disable_inline_errors: false
+  form_disable_inline_errors: true
   form_required: false
   form_autofocus: false
   form_details_toggle: false
@@ -1297,6 +1297,10 @@ handlers:
           -
             - 9500
             - 9999
+      visit_type_time_slot_limit:
+        F: 3
+        V: 5
+        E: 3
       visit_type:
         F: face-to-face
         V: virtual

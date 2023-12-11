@@ -10,7 +10,6 @@
 
       // The number of additional adult visitors determines
       // the number of additional child visitors.
-
       const $additionalAdults = $(once('prisonVisitAdditionalAdults', '[name="additional_visitor_adult_number"]', context));
       const $additionalChildren = $(once('prisonVisitAdditionalChildren', '[name="additional_visitor_child_number"]', context));
 
@@ -65,20 +64,23 @@
       $timeSlots.attr('aria-controls', 'timeslots-announce');
 
       let preferredSlots = [];
-      let pvTypeId = 'F';
-      let timeSlotLimit = 3;
+
+      // Default visit type is 'F' for face to face.
+      let pvTypeId =  'F';
+      // By default, user can choose 3 timeslots.
+      let pvTimeSlotLimit = 3;
+
+      // Get visit type from the booking reference and get
+      // the timeslot limit for that visit type from settings.
+      if (settings.prisonVisitBooking['booking_ref'] !== null) {
+        pvTypeId = settings.prisonVisitBooking.booking_ref.visit_type_id;
+        pvTimeSlotLimit = settings.prisonVisitBooking.visit_type_time_slot_limit[pvTypeId];
+      }
 
       if ($timeSlots.length) {
 
-        // Determine the time slot limit. By default it's 3,
-        // but for virtual visits it's 5.
-        if (settings.prisonVisitBooking['booking_ref'] !== null) {
-          pvTypeId = settings.prisonVisitBooking.booking_ref.visit_type_id;
-          timeSlotLimit = (pvTypeId === 'V') ? 5 : 3;
-        }
-
         // Call function to disable checkboxes if time slot limit reached.
-        disableCheckboxes($timeSlots, timeSlotLimit);
+        disableCheckboxes($timeSlots, pvTimeSlotLimit);
 
         // Prep timeslots to show preference rank.
         $timeSlots.each(function() {
@@ -113,7 +115,7 @@
         $timeSlots.on('change', function(e) {
 
           // Disable checkboxes if time slot limit reached.
-          disableCheckboxes($timeSlots, timeSlotLimit);
+          disableCheckboxes($timeSlots, pvTimeSlotLimit);
 
           // Update slot rank.
           let slotId = $(this).prop('id');
@@ -167,7 +169,7 @@
 
       function updatePreferredStatus() {
 
-        if (preferredSlots.length < timeSlotLimit) {
+        if (preferredSlots.length < pvTimeSlotLimit) {
           $('#timeslots-announce-title').html('You have selected ' + preferredSlots.length + ' time slots');
         } else {
           $('#timeslots-announce-title').html('You have selected a maximum of ' + preferredSlots.length + ' time slots');

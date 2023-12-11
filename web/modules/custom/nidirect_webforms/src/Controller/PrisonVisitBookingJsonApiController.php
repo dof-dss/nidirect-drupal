@@ -15,31 +15,42 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 /**
- * Implementing our example JSON api.
+ * JSON API controller for receiving available
+ * visit timeslots for prisons.
  */
 class PrisonVisitBookingJsonApiController extends ControllerBase {
 
   /**
+   * The configuration factory.
+   *
    * @var \Drupal\Core\Config\ConfigFactoryInterface
    */
   protected $configFactory;
 
   /**
+   * The HTTP client.
+   *
    * @var \GuzzleHttp\ClientInterface
    */
   protected ClientInterface $httpClient;
 
   /**
+   * The current request.
+   *
    * @var \Symfony\Component\HttpFoundation\Request
    */
   protected $request;
 
   /**
+   * The request stack symfony instance.
+   *
    * @var \Symfony\Component\HttpFoundation\RequestStack
    */
   protected $requestStack;
 
   /**
+   * The cache backend.
+   *
    * @var \Drupal\Core\Cache\CacheBackendInterface
    */
   protected $cache;
@@ -96,13 +107,13 @@ class PrisonVisitBookingJsonApiController extends ControllerBase {
       // Get cached json data.
       $data = $this->cacheJsonData();
 
-      if (empty($data)) {
-        // Return "204 No Content" response.
-        $response->setContent('No Content')->setStatusCode(204);
-      }
-      else {
+      if ($data) {
         // Return data and 200 OK.
         $response->setData($data)->setStatusCode(200);
+      }
+      else {
+        // Return "400 Bad Request" response.
+        $response->setContent('Bad Request')->setStatusCode(400);
       }
     }
 
@@ -128,8 +139,15 @@ class PrisonVisitBookingJsonApiController extends ControllerBase {
     $allowed_tokens = explode(',', getenv('PRISON_VISITS_API_PERMITTED_TOKENS'));
     $allowed_tokens = array_map('trim', $allowed_tokens);
 
-    if (!$allowed_ip_addresses || !$allowed_tokens) {
-      $this->getLogger('prison_visits')->warning('One or more environment variables are missing: PRISON_VISITS_API_PERMITTED_IPS, PRISON_VISITS_API_PERMITTED_TOKENS');
+    if ((!$allowed_ip_addresses || !$allowed_tokens) && empty($this->cache->get('prison_visits_api_env_missing_error_logged'))) {
+      $msg = 'One or more environment variables are missing: PRISON_VISITS_API_PERMITTED_IPS, PRISON_VISITS_API_PERMITTED_TOKENS';
+      $this->getLogger('prison_visits')->warning($msg);
+      $this->cache->set('prison_visits_api_env_missing_error_logged', $msg, CacheBackendInterface::CACHE_PERMANENT);
+    }
+    elseif ($allowed_ip_addresses && $allowed_tokens) {
+      // Environment variables retrieved ok.
+      // We can delete the cached error.
+      $this->cache->delete('prison_visits_api_env_missing_error_logged');
     }
 
     // Is ip and token allowed?
@@ -167,7 +185,8 @@ class PrisonVisitBookingJsonApiController extends ControllerBase {
 
       // If content can be json decoded, write the decoded data to
       // cache and the json content to a file.
-      if ($data = json_decode($content, TRUE)) {
+      $data = json_decode($content, TRUE);
+      if (!empty($data) && json_last_error() === JSON_ERROR_NONE) {
 
         // Write data to cache.
         $this->cache->set('prison_visit_slots_data', $data, $expire->getTimestamp());
@@ -206,7 +225,7 @@ class PrisonVisitBookingJsonApiController extends ControllerBase {
         $this->getLogger('prison_visits')->info('prison_visit_slots_data saved to ' . $filepath);
       }
       else {
-        $this->getLogger('prison_visits')->error('prison_visit_slots_data update failure.');
+        $this->getLogger('prison_visits')->error('prison_visit_slots_data update failure. JSON could not be decoded: @error', ['@error' => json_last_error_msg()]);
       }
     }
 
