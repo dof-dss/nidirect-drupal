@@ -133,6 +133,9 @@ function nidirect_webforms_form_alter(&$form, FormStateInterface $form_state, $f
           ->addFormProtection($form, $form_state, $options);
       }
     }
+
+    // Add js to deal with Drupal.AjaxError messages.
+    $form['#attached']['library'][] = 'nidirect_webforms/webform_ajax_errors.js';
   }
 
   if (preg_match('/webform_submission_prison_visit/', $form_id)) {
