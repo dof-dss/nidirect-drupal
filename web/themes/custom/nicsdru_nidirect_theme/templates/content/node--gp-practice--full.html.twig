@@ -81,8 +81,10 @@
       {% if content.field_gp_practice_lead[0] %}
         <li class="list-item">{{ content.field_gp_practice_lead[0]['#plain_text'] }}</li>
       {% endif %}
-      {% for key, item in content.field_gp_practice_member if key|first != '#' %}
+      {% for key, item in content.field_gp_practice_member %}
+        {% if key|first != '#' %}
         <li class="list-item">{{ item }}</li>
+        {% endif %}
       {% endfor %}
     </ul>
   {% endif %}

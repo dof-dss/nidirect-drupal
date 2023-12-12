@@ -11,7 +11,7 @@ archive: false
 id: report_legal_aid_fraud
 title: 'Report legal aid fraud'
 description: ''
-category: ''
+categories: {  }
 elements: |-
   prequisites:
     '#type': webform_wizard_page
@@ -20,7 +20,7 @@ elements: |-
     '#next_button_label': Continue
     from_ni:
       '#type': processed_text
-      '#text': |
+      '#text': |-
         <div class="info-notice">
         <h2>Applies only to Northern Ireland</h2>
 
@@ -807,6 +807,8 @@ settings:
   wizard_toggle: true
   wizard_toggle_show_label: ''
   wizard_toggle_hide_label: ''
+  wizard_page_type: container
+  wizard_page_title_tag: h2
   preview: 2
   preview_label: ''
   preview_title: ''

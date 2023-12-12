@@ -1,7 +1,29 @@
 uuid: a3db4fff-7af0-4952-9308-b33c68640c82
 langcode: en
 status: true
-dependencies: {  }
+dependencies:
+  config:
+    - filter.format.basic_html
+    - media.type.audio
+    - media.type.document
+    - media.type.image
+    - media.type.remote_video
+    - media.type.video
+    - node.type.gp_practice
+    - workflows.workflow.nics_editorial_workflow
+  module:
+    - content_moderation
+    - file
+    - filter
+    - media
+    - moderation_sidebar
+    - nidirect_gp
+    - node
+    - redirect
+    - scheduled_transitions
+    - system
+    - toolbar
+    - tour
 id: gp_supervisor_user
 label: 'gp supervisor user'
 weight: 4
@@ -12,67 +34,31 @@ permissions:
   - 'access toolbar'
   - 'access tour'
   - 'add gp entities'
-  - 'add media from remote sources'
   - 'add scheduled transitions node gp_practice'
   - 'administer gp entities'
   - 'administer redirects'
   - 'create audio media'
   - 'create document media'
-  - 'create files'
   - 'create gp_practice content'
   - 'create image media'
-  - 'create nidirect_gp content'
-  - 'create nidirect_gp_practice content'
   - 'create remote_video media'
   - 'create video media'
   - 'delete all gp revisions'
   - 'delete any gp_practice content'
-  - 'delete any nidirect_gp content'
-  - 'delete any nidirect_gp_practice content'
   - 'delete gp entities'
   - 'delete gp_practice revisions'
+  - 'delete own files'
   - 'delete own gp_practice content'
-  - 'delete own nidirect_gp content'
-  - 'delete own nidirect_gp_practice content'
-  - 'download any audio files'
-  - 'download any document files'
-  - 'download any image files'
-  - 'download any video files'
-  - 'download own audio files'
-  - 'download own document files'
-  - 'download own image files'
-  - 'download own video files'
-  - 'edit any document files'
   - 'edit any gp_practice content'
-  - 'edit any nidirect_gp content'
-  - 'edit any nidirect_gp_practice content'
   - 'edit gp entities'
-  - 'edit own audio files'
   - 'edit own audio media'
-  - 'edit own document files'
   - 'edit own document media'
   - 'edit own gp_practice content'
-  - 'edit own image files'
   - 'edit own image media'
-  - 'edit own nidirect_gp content'
-  - 'edit own nidirect_gp_practice content'
   - 'edit own remote_video media'
-  - 'edit own video files'
   - 'edit own video media'
-  - 'moderate content from draft to needs_review'
-  - 'moderate content from needs_review to draft'
-  - 'moderate content from needs_review to published'
-  - 'moderate content from published to needs_review'
   - 'reschedule scheduled transitions node gp_practice'
   - 'revert gp_practice revisions'
-  - 'schedule publishing of nodes'
-  - 'schedule revisions'
-  - 'use editorial transition create_new_draft'
-  - 'use editorial transition publish'
-  - 'use editorial transition reject'
-  - 'use editorial transition submit_for_review'
-  - 'use editorial transition unpublish'
-  - 'use media wysiwyg'
   - 'use moderation sidebar'
   - 'use nics_editorial_workflow transition archive'
   - 'use nics_editorial_workflow transition create_new_draft'
@@ -82,16 +68,12 @@ permissions:
   - 'use nics_editorial_workflow transition restore'
   - 'use nics_editorial_workflow transition restore_to_draft'
   - 'use nics_editorial_workflow transition submit_for_review'
-  - 'use nics_editorial_workflow transition unpublish'
   - 'use text format basic_html'
-  - 'use workbench_moderation my drafts tab'
-  - 'use workbench_moderation needs review tab'
   - 'view all gp revisions'
+  - 'view any unpublished content'
   - 'view gp_practice revisions'
-  - 'view own files'
   - 'view own unpublished content'
   - 'view own unpublished media'
-  - 'view scheduled content'
   - 'view scheduled transitions node gp_practice'
   - 'view the administration theme'
   - 'view unpublished gp entities'

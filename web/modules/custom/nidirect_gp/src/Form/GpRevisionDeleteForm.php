@@ -117,6 +117,7 @@ class GpRevisionDeleteForm extends ConfirmFormBase {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state, $gp_revision = NULL) {
+    // @phpstan-ignore-next-line
     $this->revision = $this->entityStorage->loadRevision($gp_revision);
     $form = parent::buildForm($form, $form_state);
 
@@ -127,6 +128,7 @@ class GpRevisionDeleteForm extends ConfirmFormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
+    // @phpstan-ignore-next-line
     $this->entityStorage->deleteRevision($this->revision->getRevisionId());
 
     $this->logger('content')->notice('GP: deleted %title revision %revision.', [

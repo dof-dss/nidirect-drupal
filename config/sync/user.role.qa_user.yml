@@ -3,11 +3,12 @@ langcode: en
 status: true
 dependencies:
   module:
+    - file
     - system
 id: qa_user
 label: 'QA user'
 weight: 34
 is_admin: null
 permissions:
+  - 'delete own files'
   - 'view the administration theme'
-  - 'manage qa accounts'

@@ -36,6 +36,41 @@
       }
     }
   }
+
+  &--ordered-bullet {
+    list-style: none;
+    counter-reset: item;
+
+    > li {
+      counter-increment: item;
+      position: relative;
+      padding-left: 2em;
+      min-height: 1.5em;
+
+      &:before {
+        position: absolute;
+        left: 0;
+        display: inline-block;
+        content: counter(item);
+
+        font-size: 1.2rem;
+        line-height: 2.4rem;
+        min-width: 2.4rem;
+        min-height: 2.4rem;
+        text-align: center;
+        border-radius: 50%;
+        background-color: $charcoal;
+        color: #fff;
+
+        @include breakpoint($tab) {
+          font-size: 1.4rem;
+          line-height: 2.7rem;
+          min-width: 2.7rem;
+          min-height: 2.7rem;
+        }
+      }
+    }
+  }
 }
 
 .split-list {

@@ -38,7 +38,7 @@ function nidirect_search_preprocess_search_api_spellcheck_did_you_mean(&$variabl
     $variables['link']->setText(str_replace(',', '', $link_text));
 
     $link_url = $variables['link']->getUrl();
-    $link_url_query = $link_url->getRouteParameters()[$query_parameter];
+    $link_url_query = $link_url->getOption('query')[$query_parameter];
 
     $link_url->setRouteParameter($query_parameter, str_replace(',', '', $link_url_query));
     $link_url->setOptions([

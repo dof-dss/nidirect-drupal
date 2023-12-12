@@ -8,5 +8,9 @@ parameters:
     debug: false
     cache: true
 services:
+  twig/intl-extra:
+    class: \Twig\Extra\Intl\IntlExtension
+    tags:
+      - { name: twig.extension }
   cache.backend.null:
     class: Drupal\Core\Cache\NullBackendFactory

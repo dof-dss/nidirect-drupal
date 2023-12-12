@@ -8,9 +8,7 @@
 
   Drupal.behaviors.appLinksNoTranslate = {
     attach: function (context, settings) {
-      let $app_link = $("a.call-to-action");
-
-      $app_link.once('app-links-no-translate').each(function() {
+      $(once('app-links-no-translate', 'a.call-to-action', context)).each(function() {
         let apphref = this.href;
         $(this)
           .attr("data-nid-app", apphref.substring(apphref.lastIndexOf("https://")))

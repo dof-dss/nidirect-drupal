@@ -19,7 +19,7 @@
       if (translateReferrer.length && translateReferrer.indexOf(document.location.origin) !== -1) {
         // Replace the 'u' parameter in Google Translate links with the referrer.
         // TODO: use URL and URLSearchParams objects for cleaner replacement (when IE11 support is discontinued).
-        $('a[href^="https://translate.google.com"]', context).once('translation-help-links').each(function () {
+        $(once('translation-help-links', 'a[href^="https://translate.google.com"]', context)).each(function () {
           let thisHref = $(this).attr('href');
           // Replace existing 'u' param with one containing the referrer.
           thisHref = thisHref.replace(/&u=[^&#]*/, '&u=' + encodeURIComponent(translateReferrer));
