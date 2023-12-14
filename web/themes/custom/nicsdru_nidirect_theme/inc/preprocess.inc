@@ -16,6 +16,28 @@ use Drupal\node\Entity\Node;
 use Drupal\node\NodeInterface;
 
 /**
+ * Implements hook_preprocess_form_element().
+ */
+function nicsdru_nidirect_theme_preprocess_form_element(&$variables) {
+
+  $element = $variables['element'];
+
+  // Associate input element descriptions with the input itself
+  // using aria-describedby.
+  // TODO: add this to origins theme?
+
+  if (!empty($element['#webform_key']) && !empty($element['#input']) && $element['#input'] === TRUE && !empty($element['#description'])) {
+    $description = &$element['#description'];
+
+    if (!isset($description['#attributes']['id'])) {
+      $description['#attributes']['id'] = $element['#id'] . '-description';
+    }
+
+    $element['#attributes']['aria-describedby'] = $description['#attributes']['id'];
+  }
+}
+
+/**
  * Implements hook_preprocess_html().
  */
 function nicsdru_nidirect_theme_preprocess_html(array &$variables) {
@@ -245,19 +267,19 @@ function nicsdru_nidirect_theme_preprocess_page(array &$variables) {
           ];
           break;
 
-          case 'health_condition':
-            // Supposedly fixed https://www.drupal.org/project/drupal/issues/2890758
-            // but these blocks do no render properly, sometimes not at all and sometimes
-            // they duplicate. We now exclude the preview path for the block config and inject here.
+        case 'health_condition':
+          // Supposedly fixed https://www.drupal.org/project/drupal/issues/2890758
+          // but these blocks do no render properly, sometimes not at all and sometimes
+          // they duplicate. We now exclude the preview path for the block config and inject here.
 
-            // Render Health Conditions search block.
-            $variables['page']['sidebar_second'][] = Helpers::blockContent('exposedformhealth_conditionssearch_sidebar_2');
+          // Render Health Conditions search block.
+          $variables['page']['sidebar_second'][] = Helpers::blockContent('exposedformhealth_conditionssearch_sidebar_2');
 
-            // Render Health Conditions AtoZ block.
-            $variables['page']['sidebar_second'][] = Helpers::blockContent('healthconditionsatoz_sidebar_2');
+          // Render Health Conditions AtoZ block.
+          $variables['page']['sidebar_second'][] = Helpers::blockContent('healthconditionsatoz_sidebar_2');
 
-            // Render Health Conditions Related block.
-            $variables['page']['sidebar_second'][] = Helpers::blockContent('healthconditionsrelatedconditions');
+          // Render Health Conditions Related block.
+          $variables['page']['sidebar_second'][] = Helpers::blockContent('healthconditionsrelatedconditions');
           break;
 
         default:

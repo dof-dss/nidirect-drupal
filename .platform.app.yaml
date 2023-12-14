@@ -24,7 +24,6 @@ runtime:
   # Enable the redis extension so Drupal can communicate with the Redis cache.
   extensions:
     - apcu
-    - newrelic
     - redis
   # Sizing hints.
   sizing_hints:
@@ -37,7 +36,7 @@ runtime:
 # to the application in the PLATFORM_RELATIONSHIPS variable. The right-hand
 # side is in the form `:`.
 relationships:
-  solr: 'solr:solr'
+  solr: 'solr_8_11:solr'
   redis: "redis:redis"
   #  For MariaDB, the endpoint does not change whether you used the mysql or mariadb service type.
   database: 'db:admin'

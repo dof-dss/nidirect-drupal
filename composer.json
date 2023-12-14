@@ -58,7 +58,6 @@
         "drupal/chosen": "^3.0",
         "drupal/chosen_lib": "^3.0",
         "drupal/ckeditor": "^1.0",
-        "drupal/classy": "^1.0",
         "drupal/clientside_validation": "^4.0",
         "drupal/config_filter": "^2.5",
         "drupal/config_ignore": "^2.1",
@@ -109,7 +108,7 @@
         "drupal/paragraphs": "^1.8",
         "drupal/pathauto": "^1.12",
         "drupal/permissions_filter": "^1.2",
-        "drupal/redirect": "^1.5",
+        "drupal/redirect": "^1.9",
         "drupal/redis": "^1.5",
         "drupal/scheduled_transitions": "^2.1",
         "drupal/scheduler": "^1.4",
@@ -189,6 +188,9 @@
             "drupal/address": {
                 "Allow to set a list of preferred countries": "https://www.drupal.org/files/issues/2019-11-11/2626982-37.preferred_countries.patch"
             },
+            "drupal/antibot": {
+                "Antibot blocks multistep webform submission if user fails to move mouse pointer": "https://www.drupal.org/files/issues/2023-12-06/antibot-issue-3406484-2.patch"
+            },
             "drupal/cookie_content_blocker": {
                 "Disable XSS for tag settings to allow HTML output": "https://gist.githubusercontent.com/omahm/eb99bc8278b57798a7d82bf06c27b8d1/raw/d9d75e06300a102b072dd8166f82ec381f211b9d/cookie_content_blocker_disable_xss"
             },
@@ -196,7 +198,8 @@
                 "[IGNORE] Composer-friendly patches for filename sanitation while #2492171 awaits #3032390 (https://www.drupal.org/project/drupal/issues/2492171#comment-14173724)": "https://www.drupal.org/files/issues/2023-08-28/2492171-404.patch",
                 "Cannot save unpublished versions of published content for users without manage book privileges": "https://www.drupal.org/files/issues/2022-12-14/2918537-92.patch",
                 "Layout builder fails to assign inline block access dependencies for the overrides section storage on entities with pending revisions": "https://www.drupal.org/files/issues/2021-03-22/3047022-71.patch",
-                "Remove invalid iframe attributes from oembed field formatter": "https://www.drupal.org/files/issues/2019-07-31/remove-iframe-attributes-3071446-4.patch"
+                "Remove invalid iframe attributes from oembed field formatter": "https://www.drupal.org/files/issues/2019-07-31/remove-iframe-attributes-3071446-4.patch",
+                "Determine if there is a better message for AJAX errors": "https://www.drupal.org/files/issues/2023-12-11/core-ajax-error-3349901-2.patch"
             },
             "drupal/devel": {
                 "Brings back the Available Methods & Properties tabs for Kint dumps — Issue #221": "https://raw.githubusercontent.com/politsin/snipets/master/patch/kint.patch"
@@ -228,13 +231,15 @@
                 "Cache Expiration doesn't follow Drupal conventions #2877893": "https://www.drupal.org/files/issues/fix-ttl-logic-2877893-1.patch"
             },
             "drupal/redirect": {
-                "URL redirects listing only displays operations": "https://www.drupal.org/files/issues/2019-04-05/redirects_list_builder-3031125-9-d8.patch",
                 "Add URL Redirects tab to taxonomy term edit form": "https://www.drupal.org/files/issues/2021-03-26/redirect_provide_redirect_tab_on_taxonomy_terms_3205896.patch",
                 "Fix ajax error when creating redirects": "https://www.drupal.org/files/issues/2020-12-14/validation-issue-3057250-29.patch",
                 "Empty query params on source cause TypeError": "https://www.drupal.org/files/issues/2022-10-25/3315928-7-redirect-empty-source-query-options.patch"
             },
             "drupal/scheduled_transitions": {
-                "No scheduled revisions appear for migrated nodes": "https://www.drupal.org/files/issues/2021-11-01/scheduled_transitions_base_language_3091006_2x.patch"
+                "Add pagination to target revision candidates list": "https://www.drupal.org/files/issues/2023-11-20/3241497-12.patch"
+            },
+            "drupal/ultimate_cron": {
+                "Apply entityQuery accessCheck CR #3334805": "https://www.drupal.org/files/issues/2023-10-31/ultime-cron-entity-query-3334805-5.patch"
             }
         },
         "composer-exit-on-patch-failure": true,
