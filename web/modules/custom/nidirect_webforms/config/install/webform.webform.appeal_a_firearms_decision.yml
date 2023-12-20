@@ -305,6 +305,19 @@ javascript: |-
               $errMsg.text('The notification date must be within the last month.');
           }
       });
+    
+      // Alter date of birth validation message.
+      $(once('dobValidation', '#edit-date-of-birth')).each(function () {
+          const today = new Date();
+          const minDate = new Date();
+          const dateOfBirth = new Date($(this).val());
+          const $errMsg = $(this).next('.form-item--error-message');
+          minDate.setYear(minDate.getYear() - 1);
+         
+          if (dateOfBirth > minDate) {
+              $errMsg.text('You must be at least 18 years old.');
+          }
+      });
 
   })(jQuery, Drupal, once);
 settings:
