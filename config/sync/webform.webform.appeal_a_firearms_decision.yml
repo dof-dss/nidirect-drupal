@@ -530,66 +530,30 @@ handlers:
       from_mail: _default
       from_options: {  }
       from_name: _default
-      reply_to: noreply@nidirect.gov.uk
+      reply_to: '[webform_submission:values:email:raw]'
       return_path: ''
       sender_mail: ''
       sender_name: ''
-      subject: 'Appeal a firearms decision'
+      subject: 'Appeal a firearms decision form submission'
       body: |-
         <div style="font-family: sans-serif; font-size: small; max-width: 60em; padding: 1em;">
-            <div role="banner" style="padding: 0 0 1em; margin: 0 0 1em; border-bottom: 1px solid; text-align: center;">
-                <img src="https://www.justice-ni.gov.uk/profiles/nicsprofile/themes/nigovcorporate/images/logos/justice/doj-logo-x2.png" style="width: 300px; height: auto;" alt="Department of Justice" />
-
-                <h1>Notice of Appeal</h1>
-                <p>Article 74 of the Firearms (NI) Order 2004</p>
-                <p>
-                    Firearms (Northern Ireland) Order 2004<br>
-                    Firearms (Appeals and Applications) Regulations Northern Ireland) 2005
-                </p>
-            </div>
 
             <div role="main" style="font-size: medium; padding: 0 0 1em; margin: 0 0 1em; border-bottom: 1px solid;">
-                <p style="text-align: right">
+                <p>
+                  Submitted: 
                   <time datetime="[webform_submission:created]">
-                   [webform_submission:created:medium_date]
+                   [webform_submission:created]
                   </time>
                 </p>
-                <p>
-                    Dear {{ data.title }} {{ data.last_name }},
-                </p>
-                <p>
-                You have submitted an appeal under <em>Article 74 of the Firearms (NI) Order 2004</em> against the Chief Constable’s decision to refuse/revoke your firearms certificate. The details you have submitted are shown below.
-                </p>
-
+                
                 [webform_submission:values]
+                
             </div>
-
-            <div role="footer" style="font-size: medium">
-                <p>
-                    We will reply to your appeal within X days of receiving your submission.
-                </p>
-
-                <p>
-                    Regards,<br><br>
-                    Firearms &amp; Explosives Branch (FEB)
-                </p>
-
-                <address>
-                    Department of Justice<br>
-                    Room B4.22<br>
-                    Castle Buildings<br>
-                    Stormont Estate<br>
-                    BELFAST<br>
-                    BT4 3SG<br>
-                    <br>
-                    Email: <a href="mailto:FEB@justice-ni.gov.uk">FEB@justice-ni.gov.uk</a>
-                </address>
-                <p>
-                    <strong>Do not reply to this email.</strong> This email was sent from an email address that cannot accept replies.
-                </p>
-            </div>
+            
         </div>
       excluded_elements:
+        notification_info: notification_info
+        previous_address_preamble: previous_address_preamble
         preview_message: preview_message
       ignore_access: false
       exclude_empty: true
