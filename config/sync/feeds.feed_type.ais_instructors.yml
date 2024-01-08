@@ -86,6 +86,8 @@ processor_configuration:
   update_existing: 2
   update_non_existent: _delete
   skip_hash_check: false
+  skip_validation: false
+  skip_validation_types: {  }
   authorize: false
   revision: false
   expire: 86400
@@ -177,6 +179,21 @@ custom_sources:
     label: 'moderation state published'
     machine_name: moderation_state_published
     type: blank
+  telephone_ext:
+    value: telephone_ext
+    label: telephone_ext
+    machine_name: telephone_ext
+    type: blank
+  telephone_supplementary:
+    value: telephone_supplementary
+    label: telephone_supplementary
+    machine_name: telephone_supplementary
+    type: blank
+  telephone_int_display:
+    value: telephone_int_display
+    label: telephone_int_display
+    machine_name: telephone_int_display
+    type: blank
 mappings:
   -
     target: field_di_adi_no
@@ -236,17 +253,6 @@ mappings:
       defuse: false
     unique: {  }
   -
-    target: field_telephone
-    map:
-      telephone_title: telephone_title
-      country_code: telephone_country_code
-      telephone_number: telephone_number
-      telephone_extension: extension
-      telephone_supplementary: supplementary
-      display_international_number: ''
-    settings:
-      language: null
-  -
     target: field_link_url
     map:
       uri: web_url
@@ -266,3 +272,14 @@ mappings:
     settings:
       language: null
     unique: {  }
+  -
+    target: field_telephone
+    map:
+      telephone_title: telephone_title
+      country_code: telephone_country_code
+      telephone_number: telephone_number
+      telephone_extension: telephone_ext
+      telephone_supplementary: telephone_supplementary
+      display_international_number: telephone_int_display
+    settings:
+      language: null
