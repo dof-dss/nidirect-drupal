@@ -238,10 +238,23 @@
   }
 
   &__item {
-    @include adjust-font-size-to(18px);
 
-    &:first-child {
-      margin-top: 0;
+    @at-root body:not(.user-logged-in) & {
+      font-size: inherit;
+      line-height: inherit;
+
+      > * {
+        font-size: inherit;
+        line-height: inherit;
+
+        &:first-child {
+          margin-top: 0;
+        }
+
+        &:last-child {
+          margin-bottom: 0;
+        }
+      }
     }
   }
 }
