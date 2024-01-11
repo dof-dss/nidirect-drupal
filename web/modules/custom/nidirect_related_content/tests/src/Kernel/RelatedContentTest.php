@@ -57,7 +57,7 @@ class RelatedContentTest extends ViewsKernelTestBase {
    *
    * @var array
    */
-  public static $modules = [
+  protected static $modules = [
     'nidirect_related_content',
     'taxonomy',
     'node',
