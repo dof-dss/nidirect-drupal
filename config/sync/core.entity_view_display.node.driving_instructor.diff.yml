@@ -4,6 +4,7 @@ status: true
 dependencies:
   config:
     - core.entity_view_mode.node.diff
+    - field.field.node.driving_instructor.feeds_item
     - field.field.node.driving_instructor.field_di_adi_no
     - field.field.node.driving_instructor.field_di_areas
     - field.field.node.driving_instructor.field_di_categories
@@ -93,14 +94,16 @@ content:
     weight: 6
     region: content
   field_telephone:
-    type: telephone_plus_link
-    label: inline
+    type: telephone_plus
+    label: above
     settings:
+      link: true
       vcard: true
     third_party_settings: {  }
-    weight: 4
+    weight: 9
     region: content
 hidden:
+  feeds_item: true
   field_meta_tags: true
   langcode: true
   links: true
