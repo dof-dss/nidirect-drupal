@@ -31,7 +31,7 @@ class C2kschoolsSchoolClosuresServiceTest extends KernelTestBase {
    *
    * @var array
    */
-  public static $modules = [
+  protected static $modules = [
     'nidirect_school_closures',
   ];
 
