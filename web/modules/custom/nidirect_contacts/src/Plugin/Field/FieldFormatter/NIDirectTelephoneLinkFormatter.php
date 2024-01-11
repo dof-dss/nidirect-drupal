@@ -3,7 +3,7 @@
 namespace Drupal\nidirect_contacts\Plugin\Field\FieldFormatter;
 
 use Drupal\Core\Field\FieldItemListInterface;
-use Drupal\telephone_plus\Plugin\Field\FieldFormatter\TelephonePlusLinkFormatter;
+use Drupal\telephone_plus\Plugin\Field\FieldFormatter\TelephonePlusFieldFormatter;
 
 /**
  * Plugin extending the 'telephone_plus_link' formatter.
@@ -21,7 +21,7 @@ use Drupal\telephone_plus\Plugin\Field\FieldFormatter\TelephonePlusLinkFormatter
  *   }
  * )
  */
-class NIDirectTelephoneLinkFormatter extends TelephonePlusLinkFormatter {
+class NIDirectTelephoneLinkFormatter extends TelephonePlusFieldFormatter {
 
   /**
    * {@inheritdoc}
@@ -34,8 +34,8 @@ class NIDirectTelephoneLinkFormatter extends TelephonePlusLinkFormatter {
     $formatting_chars = [' ', '+'];
 
     foreach ($items as $item) {
-      /** @var \Drupal\Core\Field\Plugin\Field\FieldType\StringItem $item */
-      $telephone_value = $item->telephone_number ?? '';
+
+      $telephone_value = $item->get("telephone_number")->getString() ?? '';
       $unformatted_field_number = str_replace($formatting_chars, '', $telephone_value);
       // Match international and textphone numbers to replace the default
       // formatting provided by the libphonenumber library.
@@ -46,8 +46,8 @@ class NIDirectTelephoneLinkFormatter extends TelephonePlusLinkFormatter {
           if (strpos($unformatted_field_number, str_replace($formatting_chars, '', $element['number']['#value'])) !== FALSE) {
             // Check the source value contains the prefix as some contacts use
             // the same number for phone and text phone.
-            if (strpos($element['number']['#value'], '00800') === 0 || strpos($element['number']['#value'], '18001') === 0) {
-              $element['number']['#value'] = $telephone_value;
+            if (strpos($element['#number']['#value'], '00800') === 0 || strpos($element['#number']['#value'], '18001') === 0) {
+              $element['#number']['#value'] = $telephone_value;
             }
           }
         }
