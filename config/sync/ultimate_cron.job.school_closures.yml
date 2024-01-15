@@ -1,0 +1,28 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - nidirect_school_closures
+title: 'Delete the school closures cache.'
+id: nidirect_school_closures
+module: nidirect_school_closures
+callback: nidirect_school_closures_delete_cache
+scheduler:
+  id: crontab
+  configuration:
+    rules:
+      - '*/10 * * * *'
+launcher:
+  id: serial
+  configuration:
+    timeouts:
+      lock_timeout: 3600
+      max_execution_time: 3600
+    launcher:
+      max_threads: 1
+logger:
+  id: database
+  configuration:
+    method: '3'
+    expire: 1209600
+    retain: 1000
