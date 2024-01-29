@@ -1,9 +1,20 @@
 nidirect_webforms.prison_visit_booking_json_api:
   path: '/api/prison-visit-booking-json'
   defaults:
-    _controller: 'Drupal\nidirect_webforms\Controller\PrisonVisitBookingJsonApiController::renderApi'
+    _controller: 'Drupal\nidirect_webforms\Controller\PrisonVisitBookingJsonApiController::updateData'
     _title: 'Prison Visit Booking JSON api'
   methods:  [GET, POST]
+  options:
+    no_cache: 'TRUE'
   requirements:
     _permission: 'access content'
-
+nidirect_webforms.prison_visit_booking_prism_status:
+  path: '/api/prison-visit-booking-prism-status'
+  defaults:
+    _controller: 'Drupal\nidirect_webforms\Controller\PrisonVisitBookingJsonApiController::getBackendStatus'
+    _title: 'Prison Visit Booking PRISM system status check'
+  methods:  [GET]
+  options:
+    no_cache: 'TRUE'
+  requirements:
+    _permission: 'access content'

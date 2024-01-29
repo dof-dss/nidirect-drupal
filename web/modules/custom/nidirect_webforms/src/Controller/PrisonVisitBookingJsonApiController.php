@@ -6,13 +6,11 @@ use Drupal\Core\Cache\CacheBackendInterface;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\File\FileSystemInterface;
-use Drupal\Core\Session\UserSession;
 use Drupal\file\Entity\File;
 use GuzzleHttp\ClientInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 /**
  * JSON API controller for receiving available
@@ -92,13 +90,15 @@ class PrisonVisitBookingJsonApiController extends ControllerBase {
   }
 
   /**
-   * Callback for the API.
+   * API endpoint for updating prison visit data. Returns
+   * the updated data if cached successfully. This endpoint is restricted
+   * to authorised clients.
    */
-  public function renderApi() {
+  public function updateData() {
 
     $response = new JsonResponse();
 
-    if ($this->isValidRequest() === FALSE) {
+    if ($this->isAuthorisedRequest() === FALSE) {
       // Return "401 Unauthorized" response.
       $response->setContent('Unauthorised Request')->setStatusCode(401);
       return $response;
@@ -121,10 +121,53 @@ class PrisonVisitBookingJsonApiController extends ControllerBase {
   }
 
   /**
+   * API endpoint to check the status of PRISM as indicated within the
+   * cached JSON data received from PRISM.
+   */
+  public function getBackendStatus() {
+
+    $response = new JsonResponse();
+
+    $cached_data = $this->cache->get('prison_visit_slots_data');
+
+    if (empty($cached_data)) {
+
+      // No data in cache, so try file instead. Every time the
+      // external service posts data to prison visits api controller,
+      // data is stored in cache and written to file.
+
+      $file_uri = 'private://nidirect_webforms/prison_visit_slots_data.json';
+      $file_contents = @file_get_contents($file_uri);
+
+      if (!empty($file_contents)) {
+        $cached_data = json_decode($file_contents, TRUE);
+      }
+    }
+
+    if ($cached_data && $cached_data['PRISM_DOWN']) {
+      $data = [
+        'status_code' => 503,
+        'status_message' => 'Service Unavailable',
+      ];
+
+    }
+    else {
+      $data = [
+        'status_code' => 200,
+        'status_message' => 'OK',
+      ];
+    }
+
+    $response->setData($data);
+
+    return $response;
+  }
+
+  /**
    * Helper function to validate request is from allowed IP and
    * request contains X-Auth-Token header with an allowed token.
    */
-  private function isValidRequest() {
+  private function isAuthorisedRequest() {
 
     // API restricted to specific client IP addresses and the client
     // must send secret token.
