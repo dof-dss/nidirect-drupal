@@ -5,23 +5,18 @@ namespace Drupal\nidirect_webforms\Plugin\WebformHandler;
 use Drupal\Component\Serialization\Json;
 use Drupal\Component\Utility\Html;
 use Drupal\Component\Utility\Xss;
+use Drupal\Core\Cache\Cache;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Datetime\DrupalDateTime;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\Core\TempStore\PrivateTempStoreFactory;
 use Drupal\datetime\Plugin\Field\FieldType\DateTimeItemInterface;
-use Drupal\file\Entity\File;
-use Drupal\file\FileInterface;
 use Drupal\webform\Plugin\WebformHandlerBase;
 use Drupal\webform\Utility\WebformFormHelper;
 use Drupal\webform\WebformInterface;
 use Drupal\webform\WebformSubmissionInterface;
-use GuzzleHttp\ClientInterface;
-use GuzzleHttp\Exception\RequestException;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
  * Prison Visit Booking Webform Handler.
@@ -74,6 +69,13 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
   protected $bookingReference = [];
 
   /**
+   * Array for storing data from backend.
+   *
+   * @var array
+   */
+  protected $data = [];
+
+  /**
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
@@ -98,13 +100,46 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
    */
   public function alterForm(array &$form, FormStateInterface $form_state, WebformSubmissionInterface $webform_submission) {
 
+    $page = $form_state->get('current_page');
     $elements = WebformFormHelper::flattenElements($form);
+
+//    // Get data for the form. The data provides information on
+//    // the status of the PRISM backend and available visit time slots.
+//    if (!$this->data) {
+//      $this->getData();
+//    }
+//
+//    // Hide the prism_down_msg.
+//    $elements['prism_down_msg']['#access'] = FALSE;
+//
+//    $form['#attached']['drupalSettings']['prisonVisitBookingStatus'] = [
+//      'available' => TRUE,
+//      'message' => 'Service is available.',
+//    ];
+//
+//    if ($this->data['PRISM_DOWN']) {
+//
+//      $form['#attached']['drupalSettings']['prisonVisitBookingStatus'] = [
+//        'available' => FALSE,
+//        'message' => 'This service is temporarily unavailable.',
+//      ];
+//
+//      $form_state->set('prism_was_down', TRUE);
+
+//      foreach ($elements as &$element) {
+//        if ($element['#webform_parent_key'] === $page) {
+//          $element['#attributes']['disabled'] = 'true';
+//        }
+//      }
+//
+//      //$elements['wizard_next']['#access'] = FALSE;
+//      $elements['submit']['#access'] = FALSE;
+//      $elements['prism_down_msg']['#access'] = TRUE;
+//    }
 
     $this->bookingReference = $form_state->get('booking_reference_processed');
     $form['#attached']['drupalSettings']['prisonVisitBooking'] = $this->configuration;
     $form['#attached']['drupalSettings']['prisonVisitBooking']['booking_ref'] = $this->bookingReference;
-
-    $page = $form_state->get('current_page');
 
     // Visitor IDs are entered in separate wizard steps. To enable
     // clientside checking for duplicate IDs, pass any visitor IDs
@@ -654,9 +689,54 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
   }
 
   /**
+   * Get data stored in cache or from file.
+   */
+  private function getData() {
+
+    // Face-to-face slots are retrieved from external data in cache
+    // (see PrisonVisitBookingJsonApiController.php). If there is no
+    // cached data, fallback to using slots from file.
+
+    $cached_data = \Drupal::cache()->get('prison_visit_slots_data');
+
+    if (!empty($cached_data)) {
+
+      // There is cached data.
+      $this->data = $cached_data->data;
+      $cached_data_timestamp = (int) $cached_data->created;
+
+      // Check when created.
+      $now = new \DateTime('now');
+      $data_last_updated = new \DateTime('now');
+      $data_last_updated->setTimestamp($cached_data_timestamp);
+
+      // Log a warning when cached data more than 24 hours old.
+      if ($now->diff($data_last_updated)->h >= 24) {
+        $this->getLogger('prison_visits')->warning('prison_visit_slots_data cache data has not been updated in last 24 hours.');
+      }
+
+    }
+    else {
+
+      // No data in cache, so try file instead. Every time the
+      // external service posts data to prison visits api controller,
+      // data is stored in cache and written to file.
+
+      $file_uri = 'private://nidirect_webforms/prison_visit_slots_data.json';
+      $file_contents = @file_get_contents($file_uri);
+
+      if (!empty($file_contents)) {
+        $this->data = json_decode($file_contents, TRUE);
+        $this->getLogger('prison_visits')->info('prison_visit_slots_data cache is empty. Using @file instead.', ['@file' => $file_uri]);
+      }
+    }
+  }
+
+  /**
    * Get available slots for a given prison, visit type and prisoner category.
    */
   private function getAvailableSlots() {
+
     // Need a valid booking reference to get available slots.
     if (empty($this->bookingReference)) {
       return [];
@@ -680,52 +760,7 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
     // Get face-to-face visit slots.
     if ($visit_type === 'face-to-face') {
 
-      // Face-to-face slots are retrieved from external data in cache
-      // (see PrisonVisitBookingJsonApiController.php). If there is no
-      // cached data, fallback to using slots from file and, failing
-      // that use slots from config.
-
-      $visit_slots_cache = \Drupal::cache()->get('prison_visit_slots_data');
-      $visit_slots_cache_is_from_config = FALSE;
-
-      if (!empty($visit_slots_cache)) {
-
-        // There is cached data.
-        $visit_slots = $visit_slots_cache->data;
-        $visit_slots_cache_timestamp = (int) $visit_slots_cache->created;
-
-        // Check when created.
-        $visit_slots_created = new \DateTime('now');
-        $visit_slots_created->setTimestamp($visit_slots_cache_timestamp);
-
-        // Log a warning when cached data more than 24 hours old.
-        if ($date->diff($visit_slots_created)->h >= 24) {
-          $this->getLogger()->warning('prison_visit_slots_data cache data has not been updated in last 24 hours.');
-        }
-
-      }
-      else {
-
-        // No data in cache, so try file instead. Every time the
-        // external service posts data to prison visits api controller,
-        // data is stored in cache and written to file.
-
-        $file_uri = 'private://nidirect_webforms/prison_visit_slots_data.json';
-        $file_contents = @file_get_contents($file_uri);
-
-        if (!empty($file_contents)) {
-          $visit_slots = json_decode($file_contents, TRUE);
-          $this->getLogger()->info('prison_visit_slots_data cache is empty. Using @file instead.', ['file' => $file_uri]);
-        }
-        else {
-          // Last fallback position - use config slots.
-          $visit_slots = $this->configuration['visit_slots']['face-to-face'];
-          $this->getLogger()->warning('prison_visit_slots_data cache is empty. Using config instead.');
-
-          // Flag these slots come from cache.
-          $visit_slots_cache_is_from_config = TRUE;
-        }
-      }
+      $data = $this->data;
 
       // Build a key to get the right slots depending on prison and prisoner category.
       $visit_slots_key = $prison_id;
@@ -742,23 +777,18 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
         }
       }
 
-      $visit_slots = $visit_slots[$visit_slots_key];
+      $visit_slots = $data[$visit_slots_key];
 
-      if ($visit_slots_cache_is_from_config) {
-        // Slots from config have old placeholder dates that need updated.
-        $available_slots = $this->updateConfigVisitSlotDates($visit_slots);
-      }
-      else {
-        // Slots from cached json have dates dd/mm/yyyy format. Alter to make it dd-mm-yyyy.
-        foreach ($visit_slots as $slot) {
+      // Slots from cached json have dates dd/mm/yyyy format. Alter to make it dd-mm-yyyy.
+      foreach ($visit_slots as $slot) {
 
-          $slot_parsed = str_replace('/', '-', $slot);
-          $slot_datetime = new \DateTime($slot_parsed);
+        $slot_parsed = str_replace('/', '-', $slot);
+        $slot_datetime = new \DateTime($slot_parsed);
 
-          $available_slots[] = $slot_datetime;
-        }
+        $available_slots[] = $slot_datetime;
       }
     }
+
     // Virtual slots are retrieved from config.
     elseif ($visit_type === 'virtual') {
       $visit_slots = $this->configuration['visit_slots']['virtual'][$prison_id];
