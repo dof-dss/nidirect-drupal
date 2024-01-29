@@ -8,6 +8,13 @@
   Drupal.behaviors.prisonVisit = {
     attach: function (context, settings) {
 
+      const jqxhr = $.get( "/api/prison-visit-booking-prism-status").done(function(data) {
+        if (data.status_code === 503) {
+          console.log('PRISM is down');
+          $(once('prisonVisitPrismStatus', '.webform-submission-prison-visit-online-booking-form', context)).html('Service is temporarily unavailable. Try again later');
+        }
+      });
+
       // The number of additional adult visitors determines
       // the number of additional child visitors.
       const $additionalAdults = $(once('prisonVisitAdditionalAdults', '[name="additional_visitor_adult_number"]', context));
