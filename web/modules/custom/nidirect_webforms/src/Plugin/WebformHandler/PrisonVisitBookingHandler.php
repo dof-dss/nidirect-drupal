@@ -69,13 +69,6 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
   protected $bookingReference = [];
 
   /**
-   * Array for storing data from backend.
-   *
-   * @var array
-   */
-  protected $data = [];
-
-  /**
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
@@ -99,7 +92,6 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
    * @throws \Exception
    */
   public function alterForm(array &$form, FormStateInterface $form_state, WebformSubmissionInterface $webform_submission) {
-
     $page = $form_state->get('current_page');
     $elements = WebformFormHelper::flattenElements($form);
 
@@ -655,91 +647,37 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
   }
 
   /**
-   * Get data stored in cache or from file.
-   */
-  private function getData() {
-
-    // Face-to-face slots are retrieved from external data in cache
-    // (see PrisonVisitBookingJsonApiController.php). If there is no
-    // cached data, fallback to using slots from file.
-
-    $cached_data = \Drupal::cache()->get('prison_visit_slots_data');
-
-    if (!empty($cached_data)) {
-
-      // There is cached data.
-      $this->data = $cached_data->data;
-      $cached_data_timestamp = (int) $cached_data->created;
-
-      // Check when created.
-      $now = new \DateTime('now');
-      $data_last_updated = new \DateTime('now');
-      $data_last_updated->setTimestamp($cached_data_timestamp);
-
-      // Log a warning when cached data more than 24 hours old.
-      if ($now->diff($data_last_updated)->h >= 24) {
-        $this->getLogger('prison_visits')->warning('prison_visit_slots_data cache data has not been updated in last 24 hours.');
-      }
-
-    }
-    else {
-
-      // No data in cache, so try file instead. Every time the
-      // external service posts data to prison visits api controller,
-      // data is stored in cache and written to file.
-
-      $file_uri = 'private://nidirect_webforms/prison_visit_slots_data.json';
-      $file_contents = @file_get_contents($file_uri);
-
-      if (!empty($file_contents)) {
-        $this->data = json_decode($file_contents, TRUE);
-        $this->getLogger('prison_visits')->info('prison_visit_slots_data cache is empty. Using @file instead.', ['@file' => $file_uri]);
-      }
-      else {
-        $this->getLogger('prison_visits')->error('prison_visit_slots_data no data found cache or in file @file.', ['@file' => $file_uri]);
-      }
-    }
-  }
-
-  /**
    * Get available slots for a given prison, visit type and prisoner category.
    */
   private function getAvailableSlots() {
 
-    // Need a valid booking reference to get available slots.
+    // Early return when there is no valid booking reference.
     if (empty($this->bookingReference)) {
       return [];
     }
 
-    // Need to get cached slot data.
-    if (!$this->data) {
-      $this->getData();
+    // Early return if there is no slot data.
+    if (!$data = $this->getData()) {
+      return [];
     }
 
+    // Early return if no slots based on visit type.
+    $visit_type = $this->bookingReference['visit_type'];
+    if ($visit_type === 'face-to-face' && !$data = $this->data['SLOTS']['FACE_TO_FACE']) {
+      return [];
+    }
+    elseif ($visit_type === 'virtual' && !$data = $this->data['SLOTS']['VIRTUAL']) {
+      return [];
+    }
+
+    // Get available slots for specific prison and prisoner category.
     $available_slots = [];
 
     $prison_id = $this->bookingReference['prison_id'];
-    $visit_type = $this->bookingReference['visit_type'];
-    $visit_type_id = $this->bookingReference['visit_type_id'];
     $prisoner_category = $this->bookingReference['prisoner_category'];
     $prisoner_subcategory = $this->bookingReference['prisoner_subcategory'];
 
-    $date = $this->bookingReference['date'];
-    $date_visit_earliest = $this->bookingReference['date_visit_earliest'];
-    $date_visit_latest = $this->bookingReference['date_visit_latest'];
-    $date_valid_from = $this->bookingReference['date_valid_from'];
-    $date_valid_to = $this->bookingReference['date_valid_to'];
-    $date_visit_week_start = $this->bookingReference['date_visit_week_start'];
-
-    // Get slots based on visit type.
-    if ($visit_type === 'face-to-face') {
-      $data = $this->data['SLOTS']['FACE_TO_FACE'];
-    }
-    elseif ($visit_type === 'virtual') {
-      $data = $this->data['SLOTS']['VIRTUAL'];
-    }
-
-    // Build a key to get slots for specific prison and prisoner category
+    // Build a key to get slots for specific prison and prisoner category.
     $visit_slots_key = $prison_id;
 
     if ($prisoner_category === 'separates' && $data[$visit_slots_key . '_AFILL_' . $prisoner_subcategory]) {
@@ -760,7 +698,18 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
       $available_slots[] = $slot_datetime;
     }
 
-    // Discard slots that are not bookable.
+    // Discard slots that are not bookable. A slot is bookable if it
+    // falls within certain dates. Weekend slots cannot be booked where
+    // the visit type is enhanced (booking reference visit type
+    // identifier is 'E').
+
+    $visit_type_id = $this->bookingReference['visit_type_id'];
+
+    $date = $this->bookingReference['date'];
+    $date_visit_earliest = $this->bookingReference['date_visit_earliest'];
+    $date_valid_to = $this->bookingReference['date_valid_to'];
+    $date_visit_week_start = $this->bookingReference['date_visit_week_start'];
+
     foreach ($available_slots as $slot_key => $slot) {
       // Determine if this slot is bookable.
       $slot_is_bookable = TRUE;
@@ -790,6 +739,57 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
     $this->bookingReference['available_slots'] = $available_slots;
 
     return $available_slots;
+  }
+
+  /**
+   * Get data stored in cache or from file.
+   */
+  private function getData() {
+
+    $data = [];
+
+    // Face-to-face slots are retrieved from external data in cache
+    // (see PrisonVisitBookingJsonApiController.php). If there is no
+    // cached data, fallback to using slots from file.
+
+    $cached_data = \Drupal::cache()->get('prison_visit_slots_data');
+
+    if (!empty($cached_data)) {
+
+      // There is cached data.
+      $data = $cached_data->data;
+      $cached_data_timestamp = (int) $cached_data->created;
+
+      // Check when created.
+      $now = new \DateTime('now');
+      $data_last_updated = new \DateTime('now');
+      $data_last_updated->setTimestamp($cached_data_timestamp);
+
+      // Log a warning when cached data more than 24 hours old.
+      if ($now->diff($data_last_updated)->h >= 24) {
+        $this->getLogger('prison_visits')->warning('prison_visit_slots_data cache data has not been updated in last 24 hours.');
+      }
+
+    }
+    else {
+
+      // No data in cache, so try file instead. Every time the
+      // external service posts data to prison visits api controller,
+      // data is stored in cache and written to file.
+
+      $file_uri = 'private://nidirect_webforms/prison_visit_slots_data.json';
+      $file_contents = @file_get_contents($file_uri);
+
+      if (!empty($file_contents)) {
+        $data = json_decode($file_contents, TRUE);
+        $this->getLogger('prison_visits')->info('prison_visit_slots_data cache is empty. Using @file instead.', ['@file' => $file_uri]);
+      }
+      else {
+        $this->getLogger('prison_visits')->error('prison_visit_slots_data not found in cache or file @file.', ['@file' => $file_uri]);
+      }
+    }
+
+    return $data;
   }
 
 }
