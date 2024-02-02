@@ -671,13 +671,13 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
 
     // Early return when there is no valid booking reference.
     if (empty($this->bookingReference)) {
-      return ['error' => true];
+      return ['error' => TRUE];
     }
 
     // Return an error if there is no slot data.
     $data = $this->getData();
     if (!$data || empty($data['SLOTS'])) {
-      return ['error' => true];
+      return ['error' => TRUE];
     }
 
     // Get slots based on visit type. Return an error if none exist.
@@ -690,7 +690,7 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
       $slots = $data['SLOTS']['VIRTUAL'];
     }
     else {
-      return ['error' => true];
+      return ['error' => TRUE];
     }
 
     // Get available slots for specific prison and prisoner category.
