@@ -799,7 +799,7 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
       // data is stored in cache and written to file.
 
       $file_uri = 'private://nidirect_webforms/prison_visit_slots_data.json';
-      $file_contents = @file_get_contents($file_uri);
+      $file_contents = file_exists($file_uri) ? file_get_contents($file_uri) : NULL;
 
       if (!empty($file_contents)) {
         $data = json_decode($file_contents, TRUE);
