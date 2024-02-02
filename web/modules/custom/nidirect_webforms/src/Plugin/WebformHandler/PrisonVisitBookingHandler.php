@@ -89,6 +89,18 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
 
   /**
    * {@inheritdoc}
+   *
+   * If webform submissions are optionally enabled, we can prevent or
+   * alter the submission before insertion into the database to
+   * obfuscate sensitive data or remove it altogether.
+   */
+  public function postSave(WebformSubmissionInterface $webform_submission, $update = TRUE) {
+    // For now, just delete the submission entirely!
+    $webform_submission->delete();
+  }
+
+  /**
+   * {@inheritdoc}
    * @throws \Exception
    */
   public function alterForm(array &$form, FormStateInterface $form_state, WebformSubmissionInterface $webform_submission) {
@@ -378,13 +390,6 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
         }
       }
     }
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function postSave(WebformSubmissionInterface $webform_submission, $update = TRUE) {
-    $webform_submission->delete();
   }
 
   /**
