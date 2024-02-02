@@ -25,7 +25,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *   id = "prison_visit_booking",
  *   label = @Translation("Prison Visit Booking"),
  *   category = @Translation("NIDirect"),
- *   description = @Translation("Does stuff with Prison Visit Booking."),
+ *   description = @Translation("Handles a Prison Visit Booking."),
  *   cardinality = \Drupal\webform\Plugin\WebformHandlerInterface::CARDINALITY_SINGLE,
  *   results = \Drupal\webform\Plugin\WebformHandlerInterface::RESULTS_IGNORED,
  *   submission = \Drupal\webform\Plugin\WebformHandlerInterface::SUBMISSION_OPTIONAL,
@@ -92,6 +92,7 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
    * @throws \Exception
    */
   public function alterForm(array &$form, FormStateInterface $form_state, WebformSubmissionInterface $webform_submission) {
+
     $page = $form_state->get('current_page');
     $elements = WebformFormHelper::flattenElements($form);
 
@@ -380,6 +381,13 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
   }
 
   /**
+   * {@inheritdoc}
+   */
+  public function postSave(WebformSubmissionInterface $webform_submission, $update = TRUE) {
+    $webform_submission->delete();
+  }
+
+  /**
    * Validate visit booking reference.
    */
   private function validateVisitBookingReference(array &$form, FormStateInterface $form_state) {
@@ -544,7 +552,10 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
 
         // Finally check for slots available.
         $available_slots = $this->getAvailableSlots();
-        if (empty($available_slots)) {
+        if ($available_slots && !empty($available_slots['error'])) {
+          $form_state->setError($form, 'An error has occurred. Booking cannot proceed at this time. Try again later.');
+        }
+        elseif (!$available_slots) {
           $booking_reference_valid = FALSE;
           $error_message = 'There are no remaining time slots for visit reference number ';
           $error_message .= $this->t(
@@ -651,28 +662,33 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
    */
   private function getAvailableSlots() {
 
+    $available_slots = [];
+
     // Early return when there is no valid booking reference.
     if (empty($this->bookingReference)) {
-      return [];
+      return ['error' => true];
     }
 
-    // Early return if there is no slot data.
-    if (!$data = $this->getData()) {
-      return [];
+    // Return an error if there is no slot data.
+    $data = $this->getData();
+    if (!$data || empty($data['SLOTS'])) {
+      return ['error' => true];
     }
 
-    // Early return if no slots based on visit type.
+    // Get slots based on visit type. Return an error if none exist.
     $visit_type = $this->bookingReference['visit_type'];
-    if ($visit_type === 'face-to-face' && !$data = $this->data['SLOTS']['FACE_TO_FACE']) {
-      return [];
+
+    if ($visit_type === 'face-to-face' && array_key_exists('FACE_TO_FACE', $data['SLOTS'])) {
+      $slots = $data['SLOTS']['FACE_TO_FACE'];
     }
-    elseif ($visit_type === 'virtual' && !$data = $this->data['SLOTS']['VIRTUAL']) {
-      return [];
+    elseif ($visit_type === 'virtual' && array_key_exists('VIRTUAL', $data['SLOTS'])) {
+      $slots = $data['SLOTS']['VIRTUAL'];
+    }
+    else {
+      return ['error' => true];
     }
 
     // Get available slots for specific prison and prisoner category.
-    $available_slots = [];
-
     $prison_id = $this->bookingReference['prison_id'];
     $prisoner_category = $this->bookingReference['prisoner_category'];
     $prisoner_subcategory = $this->bookingReference['prisoner_subcategory'];
@@ -680,18 +696,18 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
     // Build a key to get slots for specific prison and prisoner category.
     $visit_slots_key = $prison_id;
 
-    if ($prisoner_category === 'separates' && $data[$visit_slots_key . '_AFILL_' . $prisoner_subcategory]) {
+    if ($prisoner_category === 'separates' && array_key_exists($visit_slots_key . '_AFILL_' . $prisoner_subcategory, $slots)) {
       $visit_slots_key .= '_AFILL_' . $prisoner_subcategory;
     }
-    elseif ($prisoner_category === 'separates' && $data[$visit_slots_key . '_AFILL']) {
+    elseif ($prisoner_category === 'separates' && array_key_exists($visit_slots_key . '_AFILL', $slots)) {
       $visit_slots_key .= '_AFILL';
     }
-    elseif ($prisoner_category === 'integrated' && $data[$visit_slots_key . '_INT']) {
+    elseif ($prisoner_category === 'integrated' && array_key_exists($visit_slots_key . '_INT', $slots)) {
       $visit_slots_key .= '_INT';
     }
 
     // Slots from cached json have dates dd/mm/yyyy format. Alter to make it dd-mm-yyyy.
-    foreach ($data[$visit_slots_key] as $slot) {
+    foreach ($slots[$visit_slots_key] as $slot) {
       $slot_parsed = str_replace('/', '-', $slot);
       $slot_datetime = new \DateTime($slot_parsed);
 
