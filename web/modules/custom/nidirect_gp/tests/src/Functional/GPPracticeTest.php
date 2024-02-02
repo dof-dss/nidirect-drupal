@@ -18,7 +18,7 @@ class GPPracticeTest extends BrowserTestBase {
    *
    * @var array
    */
-  public static $modules = ['nidirect_common', 'node'];
+  protected static $modules = ['nidirect_common', 'node'];
 
   /**
    * Drupal\Tests\BrowserTestBase::$defaultTheme is required. See

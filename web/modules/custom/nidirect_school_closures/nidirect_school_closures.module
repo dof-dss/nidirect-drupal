@@ -5,6 +5,7 @@
  * Contains nidirect_school_closures.module.
  */
 
+use Drupal\Core\Cache\Cache;
 use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Render\BubbleableMetadata;
@@ -77,6 +78,7 @@ function nidirect_school_closures_tokens($type, $tokens, array $data, array $opt
             '#error' => $service->hasErrors(),
             '#updated' => $service->getUpdated(),
             '#attached' => ['library' => 'nidirect_school_closures/school_closures'],
+            '#cache' => ['tags' => ['school_closures']],
           ];
           $replacements[$original] = \Drupal::service('renderer')->render($output);
           break;
@@ -84,4 +86,13 @@ function nidirect_school_closures_tokens($type, $tokens, array $data, array $opt
     }
   }
   return $replacements;
+}
+
+/**
+ * Delete the school closures cache.
+ */
+function nidirect_school_closures_delete_cache() {
+  // Cache will be deleted and closure data rebuilt
+  // when someone visits the page.
+  Cache::invalidateTags(['school_closures']);
 }
