@@ -32,7 +32,7 @@ class ArticleProcessorsTest extends KernelTestBase {
    *
    * @var array
    */
-  public static $modules = [
+  protected static $modules = [
     'nidirect_money_advice_articles',
   ];
 

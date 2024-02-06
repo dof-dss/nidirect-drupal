@@ -1,0 +1,23 @@
+uuid: 2e0c714a-e026-42f0-8015-031ca8749b7f
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.taxonomy_term.feeds_item
+    - taxonomy.vocabulary.drive_instr_categories
+  module:
+    - feeds
+id: taxonomy_term.drive_instr_categories.feeds_item
+field_name: feeds_item
+entity_type: taxonomy_term
+bundle: drive_instr_categories
+label: 'Feeds item'
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:feeds_feed'
+  handler_settings: {  }
+field_type: feeds_item

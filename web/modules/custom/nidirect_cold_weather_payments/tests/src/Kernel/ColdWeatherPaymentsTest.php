@@ -30,7 +30,7 @@ class ColdWeatherPaymentsTest extends EntityKernelTestBase {
   /**
    * {@inheritdoc}
    */
-  public static $modules = [
+  protected static $modules = [
     'user',
     'system',
     'node',

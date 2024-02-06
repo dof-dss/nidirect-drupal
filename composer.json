@@ -65,10 +65,10 @@
         "drupal/config_split": "^2.0-beta",
         "drupal/config_update": "^2.0@alpha",
         "drupal/cookie_content_blocker": "^2.2",
-        "drupal/core-composer-scaffold": "^10.1",
-        "drupal/core-dev": "^10.1",
-        "drupal/core-project-message": "^10.1",
-        "drupal/core-recommended": "^10.1",
+        "drupal/core-composer-scaffold": "10.1.8",
+        "drupal/core-dev": "10.1.8",
+        "drupal/core-project-message": "10.1.8",
+        "drupal/core-recommended": "10.1.8",
         "drupal/csp": "^1.15",
         "drupal/csv_serialization": "^3.0",
         "drupal/ctools": "^3.7",
@@ -83,6 +83,10 @@
         "drupal/facets": "^2.0",
         "drupal/facets_pretty_paths": "^1.1",
         "drupal/fastly": "^4.0",
+        "drupal/feeds": "3.x-dev@dev",
+        "drupal/feeds_ex": "^1.0@beta",
+        "drupal/feeds_fetcher_headers": "1.0.x-dev@dev",
+        "drupal/feeds_tamper": "^2.0@beta",
         "drupal/field_group": "^3.2",
         "drupal/file_delete_ui": "^1.0@alpha",
         "drupal/filelog": "^2.1",
@@ -128,7 +132,7 @@
         "drupal/structure_sync": "^2.0",
         "drupal/taxonomy_access_fix": "^4.0",
         "drupal/taxonomy_entity_index": "^1.7",
-        "drupal/telephone_plus": "^9.1",
+        "drupal/telephone_plus": "^2.0@beta",
         "drupal/token": "^1.13",
         "drupal/token_filter": "^2.1",
         "drupal/twig_field_value": "^2.0",
@@ -195,7 +199,6 @@
                 "Disable XSS for tag settings to allow HTML output": "https://gist.githubusercontent.com/omahm/eb99bc8278b57798a7d82bf06c27b8d1/raw/d9d75e06300a102b072dd8166f82ec381f211b9d/cookie_content_blocker_disable_xss"
             },
             "drupal/core": {
-                "[IGNORE] Composer-friendly patches for filename sanitation while #2492171 awaits #3032390 (https://www.drupal.org/project/drupal/issues/2492171#comment-14173724)": "https://www.drupal.org/files/issues/2023-08-28/2492171-404.patch",
                 "Cannot save unpublished versions of published content for users without manage book privileges": "https://www.drupal.org/files/issues/2022-12-14/2918537-92.patch",
                 "Layout builder fails to assign inline block access dependencies for the overrides section storage on entities with pending revisions": "https://www.drupal.org/files/issues/2021-03-22/3047022-71.patch",
                 "Remove invalid iframe attributes from oembed field formatter": "https://www.drupal.org/files/issues/2019-07-31/remove-iframe-attributes-3071446-4.patch",
@@ -206,6 +209,9 @@
             },
             "drupal/easy_install": {
                 "Handle missing core version": "https://www.drupal.org/files/issues/2019-12-19/easy_install_core_version-3101883-0.patch"
+            },
+            "drupal/feeds": {
+                "Use uuid as GUID for Drupal entities": "https://www.drupal.org/files/issues/2022-09-23/feeds-3306725-18.patch"
             },
             "drupal/flag": {
                 "Fix-WSOD-when-click-scheduled-transitions-from-moderation-sidebar": "https://gist.githubusercontent.com/omahm/6448dbf36a93cdb8761f8c030e5836fc/raw/d5f150a3fb8627184b829688b1ea7740eba3efc9/Fix-WSOD-when-click-scheduled-transitions-from-moderation-sidebar.patch"
