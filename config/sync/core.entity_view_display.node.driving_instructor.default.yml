@@ -3,6 +3,7 @@ langcode: en
 status: true
 dependencies:
   config:
+    - field.field.node.driving_instructor.feeds_item
     - field.field.node.driving_instructor.field_di_adi_no
     - field.field.node.driving_instructor.field_di_areas
     - field.field.node.driving_instructor.field_di_categories
@@ -93,12 +94,13 @@ content:
     weight: 9
     region: content
   field_telephone:
-    type: telephone_plus_link
+    type: telephone_plus
     label: above
     settings:
+      link: true
       vcard: true
     third_party_settings: {  }
-    weight: 2
+    weight: 10
     region: content
   links:
     settings: {  }
@@ -107,5 +109,6 @@ content:
     region: content
 hidden:
   content_moderation_control: true
+  feeds_item: true
   langcode: true
   search_api_excerpt: true

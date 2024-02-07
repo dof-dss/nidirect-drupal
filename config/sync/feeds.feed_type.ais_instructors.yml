@@ -1,0 +1,285 @@
+uuid: c6d24483-5707-4445-91b8-63d3073260ba
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.node.driving_instructor.field_di_adi_no
+    - field.field.node.driving_instructor.field_di_areas
+    - field.field.node.driving_instructor.field_di_categories
+    - field.field.node.driving_instructor.field_di_firstname
+    - field.field.node.driving_instructor.field_di_lastname
+    - field.field.node.driving_instructor.field_email_address
+    - field.field.node.driving_instructor.field_link_url
+    - field.field.node.driving_instructor.field_telephone
+    - node.type.driving_instructor
+  module:
+    - feeds_ex
+    - feeds_log
+    - feeds_tamper
+    - node
+    - telephone_plus
+third_party_settings:
+  feeds_log:
+    status: true
+    operations:
+      created: created
+      updated: updated
+      deleted: deleted
+      skipped: skipped
+      failed: failed
+      cleaned: cleaned
+    items:
+      created: created
+      updated: updated
+      deleted: deleted
+      skipped: skipped
+      failed: failed
+    source: true
+  feeds_tamper:
+    tampers:
+      7fabb2e2-284c-46dc-b07a-25bde88e8f68:
+        override: false
+        uuid: 7fabb2e2-284c-46dc-b07a-25bde88e8f68
+        plugin: hash
+        source: title
+        weight: 0
+        label: Hash
+      6d03e86e-2d61-4a94-9b78-ef68f69001b4:
+        default_value: published
+        only_if_empty: false
+        uuid: 6d03e86e-2d61-4a94-9b78-ef68f69001b4
+        plugin: default_value
+        source: moderation_state_published
+        weight: 0
+        label: 'Set to published'
+      3370ac02-9427-4c42-a885-17176509bdc6:
+        default_value: '1'
+        only_if_empty: false
+        uuid: 3370ac02-9427-4c42-a885-17176509bdc6
+        plugin: default_value
+        source: published
+        weight: 0
+        label: 'Set published to true'
+label: 'AIS instructors'
+id: ais_instructors
+description: 'Imports driving instructors'
+help: ''
+import_period: 86400
+fetcher: upload
+fetcher_configuration:
+  allowed_extensions: 'txt csv tsv xml opml json'
+  directory: 'private://feeds'
+parser: jsonpath
+parser_configuration:
+  context:
+    value: '$.instructors.*'
+  source_encoding:
+    - auto
+  display_errors: false
+  line_limit: 100
+processor: 'entity:node'
+processor_configuration:
+  values:
+    type: driving_instructor
+  langcode: en
+  insert_new: 1
+  update_existing: 2
+  update_non_existent: _delete
+  skip_hash_check: false
+  skip_validation: false
+  skip_validation_types: {  }
+  authorize: false
+  revision: false
+  expire: 86400
+  owner_feed_author: false
+  owner_id: 0
+custom_sources:
+  '':
+    value: ''
+    label: ''
+    machine_name: ''
+    type: blank
+  adi:
+    value: adi
+    label: adi
+    machine_name: adi
+    type: json
+  locations_:
+    value: 'locations.*'
+    label: 'locations.*'
+    machine_name: locations_
+    type: json
+  categories_:
+    value: 'categories.*'
+    label: 'categories.*'
+    machine_name: categories_
+    type: json
+  first_name:
+    value: first_name
+    label: first_name
+    machine_name: first_name
+    type: json
+  last_name:
+    value: last_name
+    label: last_name
+    machine_name: last_name
+    type: json
+  title:
+    value: title
+    label: title
+    machine_name: title
+    type: blank
+  email_address:
+    value: email_address
+    label: email_address
+    machine_name: email_address
+    type: json
+  telephone_title:
+    value: 'telephone.*.title'
+    label: 'telephone.*.title'
+    machine_name: telephone_title
+    type: json
+  telephone_country_code:
+    value: 'telephone.*.country_code'
+    label: 'telephone.*.country_code'
+    machine_name: telephone_country_code
+    type: json
+  telephone_number:
+    value: 'telephone.*.number'
+    label: 'telephone.*.number'
+    machine_name: telephone_number
+    type: json
+  extension:
+    value: ''
+    label: extension
+    machine_name: extension
+    type: blank
+  supplementary:
+    value: ''
+    label: supplementary
+    machine_name: supplementary
+    type: blank
+  web_url:
+    value: web_url
+    label: web_url
+    machine_name: web_url
+    type: json
+  published:
+    value: published
+    label: published
+    machine_name: published
+    type: blank
+  moderation_state:
+    value: 'moderation state'
+    label: 'moderation state'
+    machine_name: moderation_state
+    type: blank
+  moderation_state_published:
+    value: 'moderation state published'
+    label: 'moderation state published'
+    machine_name: moderation_state_published
+    type: blank
+  telephone_ext:
+    value: telephone_ext
+    label: telephone_ext
+    machine_name: telephone_ext
+    type: blank
+  telephone_supplementary:
+    value: telephone_supplementary
+    label: telephone_supplementary
+    machine_name: telephone_supplementary
+    type: blank
+  telephone_int_display:
+    value: telephone_int_display
+    label: telephone_int_display
+    machine_name: telephone_int_display
+    type: blank
+mappings:
+  -
+    target: field_di_adi_no
+    map:
+      value: adi
+    settings:
+      language: null
+    unique:
+      value: 1
+  -
+    target: field_di_areas
+    map:
+      target_id: locations_
+    settings:
+      language: ''
+      reference_by: name
+      autocreate: 0
+      autocreate_bundle: ni_postcodes
+      feeds_item: false
+  -
+    target: field_di_categories
+    map:
+      target_id: categories_
+    settings:
+      language: ''
+      reference_by: uuid
+      autocreate: 0
+      autocreate_bundle: drive_instr_categories
+      feeds_item: false
+  -
+    target: field_di_firstname
+    map:
+      value: first_name
+    settings:
+      language: null
+    unique: {  }
+  -
+    target: field_di_lastname
+    map:
+      value: last_name
+    settings:
+      language: null
+    unique: {  }
+  -
+    target: title
+    map:
+      value: title
+    settings:
+      language: null
+    unique: {  }
+  -
+    target: field_email_address
+    map:
+      value: email_address
+    settings:
+      language: null
+      defuse: false
+    unique: {  }
+  -
+    target: field_link_url
+    map:
+      uri: web_url
+      title: web_url
+    settings:
+      language: null
+  -
+    target: status
+    map:
+      value: published
+    settings:
+      language: null
+  -
+    target: moderation_state
+    map:
+      value: moderation_state_published
+    settings:
+      language: null
+    unique: {  }
+  -
+    target: field_telephone
+    map:
+      telephone_title: telephone_title
+      country_code: telephone_country_code
+      telephone_number: telephone_number
+      telephone_extension: telephone_ext
+      telephone_supplementary: telephone_supplementary
+      display_international_number: telephone_int_display
+    settings:
+      language: null

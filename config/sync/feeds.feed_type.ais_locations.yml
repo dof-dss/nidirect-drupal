@@ -1,0 +1,88 @@
+uuid: a0eb98ac-2a22-4e13-8b5b-0eca80e1daea
+langcode: en
+status: true
+dependencies:
+  config:
+    - taxonomy.vocabulary.ni_postcodes
+  module:
+    - feeds_ex
+    - feeds_fetcher_headers
+    - feeds_log
+    - taxonomy
+third_party_settings:
+  feeds_log:
+    status: true
+    operations:
+      created: created
+      updated: updated
+      deleted: deleted
+      skipped: skipped
+      failed: failed
+      cleaned: cleaned
+    items:
+      created: created
+      updated: updated
+      deleted: deleted
+      skipped: skipped
+      failed: failed
+    source: true
+label: 'AIS locations'
+id: ais_locations
+description: 'Imports driving instructor locations'
+help: ''
+import_period: 2419200
+fetcher: httpfetcherheaders
+fetcher_configuration:
+  auto_detect_feeds: 0
+  use_pubsubhubbub: 0
+  always_download: 0
+  fallback_hub: ''
+  request_timeout: '30'
+parser: jsonpath
+parser_configuration:
+  context:
+    value: '$.locations.*'
+  source_encoding:
+    - auto
+  display_errors: false
+  line_limit: 100
+processor: 'entity:taxonomy_term'
+processor_configuration:
+  values:
+    vid: ni_postcodes
+  langcode: en
+  insert_new: 1
+  update_existing: 1
+  update_non_existent: _delete
+  skip_hash_check: false
+  authorize: false
+  revision: false
+  expire: -1
+  owner_feed_author: false
+  owner_id: 0
+custom_sources:
+  postcode:
+    value: postcode
+    label: postcode
+    machine_name: postcode
+    type: json
+  coverage:
+    value: coverage
+    label: coverage
+    machine_name: coverage
+    type: json
+mappings:
+  -
+    target: name
+    map:
+      value: postcode
+    settings:
+      language: null
+    unique: {  }
+  -
+    target: description
+    map:
+      value: coverage
+    settings:
+      language: null
+      format: plain_text

@@ -1,0 +1,23 @@
+uuid: ed51c9d8-90c8-43f7-b671-9c29948c85f3
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.feeds_item
+    - node.type.driving_instructor
+  module:
+    - feeds
+id: node.driving_instructor.feeds_item
+field_name: feeds_item
+entity_type: node
+bundle: driving_instructor
+label: 'Feeds item'
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:feeds_feed'
+  handler_settings: {  }
+field_type: feeds_item
