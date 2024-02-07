@@ -1557,6 +1557,7 @@ handlers:
       subject: OV_IN
       body: |-
         {
+        "SEQUENCE_ID": "[webform_submission:serial]",
         "SUBMITTED_DATETIME": "[webform_submission:completed:prison_visit_booking_datetime]",
         "VISIT_ORDER_NO": "[webform_submission:values:visitor_order_number]",
         "INMATE_ID": "[webform_submission:values:prisoner_id]",
@@ -1624,7 +1625,7 @@ handlers:
   ov_in_test:
     id: email
     handler_id: ov_in_test
-    label: OV_IN
+    label: OV_IN_TEST
     notes: ''
     status: true
     conditions:
@@ -1652,6 +1653,7 @@ handlers:
       subject: OV_IN
       body: |-
         {
+        "SEQUENCE_ID": "[webform_submission:serial]",
         "SUBMITTED_DATETIME": "[webform_submission:completed:prison_visit_booking_datetime]",
         "VISIT_ORDER_NO": "[webform_submission:values:visitor_order_number]",
         "INMATE_ID": "[webform_submission:values:prisoner_id]",
@@ -1719,7 +1721,7 @@ handlers:
   ov_in_local:
     id: email
     handler_id: ov_in_local
-    label: OV_IN
+    label: OV_IN_LOCAL
     notes: ''
     status: true
     conditions:
@@ -1747,6 +1749,7 @@ handlers:
       subject: OV_IN
       body: |-
         {
+        "SEQUENCE_ID": "[webform_submission:serial]",
         "SUBMITTED_DATETIME": "[webform_submission:completed:prison_visit_booking_datetime]",
         "VISIT_ORDER_NO": "[webform_submission:values:visitor_order_number]",
         "INMATE_ID": "[webform_submission:values:prisoner_id]",
