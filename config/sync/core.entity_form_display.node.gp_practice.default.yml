@@ -18,6 +18,7 @@ dependencies:
     - field.field.node.gp_practice.field_meta_tags
     - field.field.node.gp_practice.field_telephone
     - node.type.gp_practice
+    - workflows.workflow.nics_editorial_workflow
   module:
     - address
     - content_moderation
@@ -108,7 +109,8 @@ content:
     type: address_default
     weight: 3
     region: content
-    settings: {  }
+    settings:
+      wrapper_type: details
     third_party_settings: {  }
   field_contact_address_01:
     type: string_textfield
@@ -591,6 +593,11 @@ content:
     region: content
     settings: {  }
     third_party_settings: {  }
+  simple_sitemap:
+    weight: 10
+    settings: {  }
+    third_party_settings: {  }
+    region: content
   status:
     type: boolean_checkbox
     weight: 8
