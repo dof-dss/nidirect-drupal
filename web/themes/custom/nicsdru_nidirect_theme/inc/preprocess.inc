@@ -629,6 +629,20 @@ function nicsdru_nidirect_theme_preprocess_field(&$variables) {
   ) {
     $variables['body_summary'] = $variables['element']['#object']->body->summary;
   }
+
+  // Replace default extension prefix for telephone_plus
+  // formatted numbers.
+  if ($variables['field_type'] === 'telephone_plus_field') {
+    $element = $variables['element'];
+    $delta = 0;
+    while(!empty($element[$delta])) {
+      if ($element[$delta]['#extension']) {
+        $updated_number = str_replace(' x', ' ext ', $element[$delta]['#number']['#value']);
+        $variables['items'][$delta]['content']['#number']['#value'] = $updated_number;
+      }
+      $delta++;
+    }
+  }
 }
 
 /**
