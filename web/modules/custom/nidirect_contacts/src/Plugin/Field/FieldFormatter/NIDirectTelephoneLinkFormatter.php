@@ -52,6 +52,18 @@ class NIDirectTelephoneLinkFormatter extends TelephonePlusFieldFormatter {
           }
         }
       }
+      // Match numbers with extensions to replace the default
+      // extension prefix provided by the libphonenumber library.
+      $telephone_extension = $item->get("telephone_extension")->getString() ?? '';
+      if ($telephone_extension) {
+        // Iterate each render element to find the number to update.
+        foreach ($elements as &$element) {
+          // Does the current render element contain the telephone extension.
+          if ($element['#extension'] === $telephone_extension) {
+            $element['#number']['#value'] = $telephone_value . ' ext. ' . $telephone_extension;
+          }
+        }
+      }
     }
 
     return $elements;
