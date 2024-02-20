@@ -89,16 +89,16 @@ class HealthConditionsSearchAndAZBlock extends BlockBase implements ContainerFac
       ->setMethod('get')
       ->setAlwaysProcess()
       ->disableRedirect();
-    
+
     $form_state->set('rerender', NULL);
     $search_form = $this->formBuilder->buildForm('\Drupal\views\Form\ViewsExposedForm', $form_state);
     $search_form['#action'] = '/services/health-conditions-a-z';
-    
+
     $health_condition_atoz = $this->pluginManagerBlock->createInstance('healthconditions_az_block', []);
 
     $build['search'] = $search_form;
     $build['atoz'] = $health_condition_atoz->build();
-
+    
     return $build;
   }
 
