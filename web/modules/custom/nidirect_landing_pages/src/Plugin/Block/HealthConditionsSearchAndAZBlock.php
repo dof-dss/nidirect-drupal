@@ -98,7 +98,7 @@ class HealthConditionsSearchAndAZBlock extends BlockBase implements ContainerFac
 
     $build['search'] = $search_form;
     $build['atoz'] = $health_condition_atoz->build();
-    
+
     return $build;
   }
 
