@@ -18,7 +18,7 @@ class DrivingInstructorTest extends BrowserTestBase {
    *
    * @var array
    */
-  public static $modules = ['node', 'nidirect_driving_instructors'];
+  protected static $modules = ['node', 'nidirect_driving_instructors'];
 
   /**
    * Drupal\Tests\BrowserTestBase::$defaultTheme is required. See

@@ -1,0 +1,23 @@
+uuid: c88c0c5f-e7ee-4da3-b0f2-626f43ff15a7
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.taxonomy_term.feeds_item
+    - taxonomy.vocabulary.ni_postcodes
+  module:
+    - feeds
+id: taxonomy_term.ni_postcodes.feeds_item
+field_name: feeds_item
+entity_type: taxonomy_term
+bundle: ni_postcodes
+label: 'Feeds item'
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:feeds_feed'
+  handler_settings: {  }
+field_type: feeds_item

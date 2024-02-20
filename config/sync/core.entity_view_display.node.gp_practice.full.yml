@@ -35,8 +35,8 @@ third_party_settings:
     group_address:
       children:
         - field_address
-        - field_telephone
         - field_gp_practice_website
+        - field_telephone
       label: address
       parent_name: ''
       region: content
@@ -121,7 +121,9 @@ content:
     label: above
     settings:
       set_marker: true
+      show_label: false
       common_map: false
+      show_delta_label: false
       use_overridden_map_settings: false
       title: ''
       info_text: ''
@@ -159,12 +161,13 @@ content:
     weight: 5
     region: content
   field_telephone:
-    type: telephone_plus_link
+    type: telephone_plus
     label: hidden
     settings:
+      link: true
       vcard: true
     third_party_settings: {  }
-    weight: 5
+    weight: 7
     region: content
 hidden:
   content_moderation_control: true

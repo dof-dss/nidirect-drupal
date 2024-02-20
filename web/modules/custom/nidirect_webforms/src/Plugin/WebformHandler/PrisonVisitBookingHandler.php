@@ -700,7 +700,7 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
 
         // Log a warning when cached data more than 24 hours old.
         if ($date->diff($visit_slots_created)->h >= 24) {
-          $this->getLogger()->warning('prison_visit_slots_data cache data has not been updated in last 24 hours.');
+          $this->getLogger('prison_visits')->warning('prison_visit_slots_data cache data has not been updated in last 24 hours.');
         }
 
       }
@@ -715,12 +715,12 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
 
         if (!empty($file_contents)) {
           $visit_slots = json_decode($file_contents, TRUE);
-          $this->getLogger()->info('prison_visit_slots_data cache is empty. Using @file instead.', ['file' => $file_uri]);
+          $this->getLogger('prison_visits')->info('prison_visit_slots_data cache is empty. Using @file instead.', ['@file' => $file_uri]);
         }
         else {
           // Last fallback position - use config slots.
           $visit_slots = $this->configuration['visit_slots']['face-to-face'];
-          $this->getLogger()->warning('prison_visit_slots_data cache is empty. Using config instead.');
+          $this->getLogger('prison_visits')->warning('prison_visit_slots_data cache is empty. Using config instead.');
 
           // Flag these slots come from cache.
           $visit_slots_cache_is_from_config = TRUE;
