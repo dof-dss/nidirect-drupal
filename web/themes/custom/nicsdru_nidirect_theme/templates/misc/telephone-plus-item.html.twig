@@ -1,0 +1,28 @@
+{#
+/**
+ * @file
+ * Template for the Telephone Plus formatter.
+ *
+ * @ingroup themeable
+ */
+#}
+
+{%
+  set title_classes = [
+    'telephone-plus__item-title',
+    vcard ? 'type',
+  ]
+%}
+
+{% apply spaceless %}
+  {% if title %}
+    <span {{ attributes.addClass(title_classes) }}>{{ title }}: </span>
+  {% endif %}
+
+  {{ number }}
+
+  {% if supplementary %}
+    <span class="telephone-plus__item-supplementary"> ({{ supplementary }})</span>
+  {% endif %}
+{% endapply %}
+
