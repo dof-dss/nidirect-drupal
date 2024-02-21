@@ -105,8 +105,9 @@ jobs:
   deprecated_code:
     <<: *docker_image
     steps:
-      - attach_workspace:
-          at: ./
+      # TODO: replace with attach_workspace.
+      - checkout_code
+      - composer_tasks__no_cache
       - run:
           name: Deprecated code check
           command: |
@@ -119,11 +120,13 @@ jobs:
   disallowed_functions:
     <<: *docker_image
     steps:
+      # TODO: replace with attach_workspace.
       - checkout_code
       - composer_tasks__no_cache
       - run:
           name: Check for disallowed function calls
           command: |
+            cd $PROJECT_ROOT
             CHECK_DIRS="${PROJECT_ROOT}/web/modules/custom"
             CHECK_DIRS="$CHECK_DIRS ${PROJECT_ROOT}/web/modules/origins"
             CHECK_DIRS="${PROJECT_ROOT}/web/themes/custom"
