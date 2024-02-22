@@ -105,9 +105,8 @@ jobs:
   deprecated_code:
     <<: *docker_image
     steps:
-      # TODO: replace with attach_workspace.
-      - checkout_code
-      - composer_tasks__no_cache
+      - attach_workspace:
+          at: ./
       - run:
           name: Deprecated code check
           command: |
