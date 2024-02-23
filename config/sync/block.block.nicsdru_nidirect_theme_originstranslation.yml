@@ -1,0 +1,27 @@
+uuid: 062c30bb-be70-4456-b387-5abfba41cb45
+langcode: en
+status: true
+dependencies:
+  module:
+    - origins_translations
+    - system
+  theme:
+    - nicsdru_nidirect_theme
+id: nicsdru_nidirect_theme_originstranslation
+theme: nicsdru_nidirect_theme
+region: primary_menu
+weight: -17
+provider: null
+plugin: origins_translations_block
+settings:
+  id: origins_translations_block
+  label: 'Origins Translation'
+  label_display: visible
+  provider: origins_translations
+visibility:
+  request_path:
+    id: request_path
+    negate: true
+    pages: |-
+      /form/*
+      /forms/*
