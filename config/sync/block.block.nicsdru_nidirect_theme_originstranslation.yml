@@ -5,6 +5,7 @@ dependencies:
   module:
     - origins_translations
     - system
+    - user
   theme:
     - nicsdru_nidirect_theme
 id: nicsdru_nidirect_theme_originstranslation
@@ -25,3 +26,10 @@ visibility:
     pages: |-
       /form/*
       /forms/*
+  user_role:
+    id: user_role
+    negate: false
+    context_mapping:
+      user: '@user.current_user_context:current_user'
+    roles:
+      anonymous: anonymous
