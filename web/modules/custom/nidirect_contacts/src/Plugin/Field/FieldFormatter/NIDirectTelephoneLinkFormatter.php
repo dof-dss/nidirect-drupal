@@ -3,7 +3,7 @@
 namespace Drupal\nidirect_contacts\Plugin\Field\FieldFormatter;
 
 use Drupal\Core\Field\FieldItemListInterface;
-use Drupal\telephone_plus\Plugin\Field\FieldFormatter\TelephonePlusFieldFormatter;
+use Drupal\telephone_plus\Plugin\Field\FieldFormatter\TelephonePlusLinkFormatter;
 
 /**
  * Plugin extending the 'telephone_plus_link' formatter.
@@ -21,7 +21,7 @@ use Drupal\telephone_plus\Plugin\Field\FieldFormatter\TelephonePlusFieldFormatte
  *   }
  * )
  */
-class NIDirectTelephoneLinkFormatter extends TelephonePlusFieldFormatter {
+class NIDirectTelephoneLinkFormatter extends TelephonePlusLinkFormatter {
 
   /**
    * {@inheritdoc}
@@ -49,6 +49,18 @@ class NIDirectTelephoneLinkFormatter extends TelephonePlusFieldFormatter {
             if (strpos($element['#number']['#value'], '00800') === 0 || strpos($element['#number']['#value'], '18001') === 0) {
               $element['#number']['#value'] = $telephone_value;
             }
+          }
+        }
+      }
+      // Match numbers with extensions to replace the default
+      // extension prefix provided by the libphonenumber library.
+      $telephone_extension = $item->get("telephone_extension")->getString() ?? '';
+      if ($telephone_extension) {
+        // Iterate each render element to find the number to update.
+        foreach ($elements as &$element) {
+          // Does the current render element contain the telephone extension.
+          if ($element['#extension'] === $telephone_extension) {
+            $element['#number']['#value'] = $telephone_value . ' ext. ' . $telephone_extension;
           }
         }
       }

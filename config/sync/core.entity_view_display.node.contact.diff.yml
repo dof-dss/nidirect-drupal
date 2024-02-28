@@ -24,6 +24,7 @@ dependencies:
   module:
     - address
     - field_group
+    - geocoder_field
     - geolocation
     - layout_builder
     - link
@@ -39,9 +40,9 @@ third_party_settings:
     group_address:
       children:
         - field_address
-        - field_telephone
         - field_email_address
         - field_contact_website
+        - field_telephone
       label: address
       parent_name: ''
       region: content
@@ -157,7 +158,9 @@ content:
     label: above
     settings:
       set_marker: true
+      show_label: false
       common_map: false
+      show_delta_label: false
       use_overridden_map_settings: false
       title: ''
       info_text: ''
@@ -202,9 +205,11 @@ content:
     weight: 20
     region: content
   field_summary:
-    type: text_default
+    type: geocoder_geocode_formatter
     label: inline
-    settings: {  }
+    settings:
+      dumper: wkt
+      providers: {  }
     third_party_settings: {  }
     weight: 18
     region: content
@@ -222,7 +227,7 @@ content:
     settings:
       vcard: true
     third_party_settings: {  }
-    weight: 5
+    weight: 21
     region: content
 hidden:
   field_next_audit_due: true
