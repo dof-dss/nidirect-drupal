@@ -119,9 +119,8 @@ jobs:
   disallowed_functions:
     <<: *docker_image
     steps:
-      # TODO: replace with attach_workspace.
-      - checkout_code
-      - composer_tasks__no_cache
+      - attach_workspace:
+          at: ./
       - run:
           name: Check for disallowed function calls
           command: |
@@ -282,6 +281,27 @@ jobs:
               }
             }'
 
+
+  # Ensure defined PSH environments remain awake.
+  env_caffeine:
+    <<: *docker_image
+    environment:
+      # Comma separated list of envs to keep alive.
+      # Platformsh CLI token and project id securely
+      # injected from Circle CI env variable storage.
+      KEEP_ALIVE_ENVS: "prison-visits-online-form"
+    steps:
+      - checkout_code
+      - install_psh_cli
+      - run:
+          name: Keep alive envs
+          command: |
+            # Take env var and add to shell array variable to loop over later.
+            IFS=', ' read -r -a envs \<<< "$KEEP_ALIVE_ENVS"
+            for env in "${envs[@]}"; do
+              platform environment:resume -p $PLATFORM_PROJECT -e $env -y
+            done
+
 workflows:
   version: 2
   # Our default pipeline that tests the integrity of our code.
@@ -336,17 +356,15 @@ workflows:
     jobs:
       - sync_data
 
-  # A workflow to execute our functional tests against our edge branch environment.
-#  functional-tests:
-#    triggers:
-#      - schedule:
-#          cron: "0 2 * * 1-5"
-#          filters:
-#            branches:
-#              only:
-#                - D8NID-edge
-#    jobs:
-#      - build
-#      - functional_tests:
-#          requires:
-#            - build
+  # Workflow which re-activates any defined paused environments on platform.sh
+  environment-stay-awake:
+    triggers:
+      - schedule:
+          # “At 05:00 on Sunday.”
+          cron: "0 5 * * 0"
+          filters:
+            branches:
+              only:
+                - development
+    jobs:
+      - env_caffeine
