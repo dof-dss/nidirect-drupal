@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "efb044f19bc5bdd2fb1ee3a132736540",
+    "content-hash": "410b9eb19fdd4910c94936038faf0e43",
     "packages": [
         {
             "name": "arthurkushman/query-path",
@@ -8840,27 +8840,27 @@
         },
         {
             "name": "drupal/telephone_plus",
-            "version": "9.1.4",
+            "version": "2.0.0-beta1",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/telephone_plus.git",
-                "reference": "9.1.4"
+                "reference": "2.0.0-beta1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/telephone_plus-9.1.4.zip",
-                "reference": "9.1.4",
-                "shasum": "9f3065db2a1bfe78ac0e056ed35d545dc030933e"
+                "url": "https://ftp.drupal.org/files/projects/telephone_plus-2.0.0-beta1.zip",
+                "reference": "2.0.0-beta1",
+                "shasum": "e00fb11754c8625a61485995594647dfa926ba51"
             },
             "require": {
                 "drupal/core": "^9 || ^10",
-                "giggsey/libphonenumber-for-php": "^8.0@dev"
+                "giggsey/libphonenumber-for-php-lite": "dev-main"
             },
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "9.1.4",
-                    "datestamp": "1691050750",
+                    "version": "2.0.0-beta1",
+                    "datestamp": "1696237761",
                     "security-coverage": {
                         "status": "not-covered",
                         "message": "Project has not opted into security advisory coverage!"
@@ -10030,33 +10030,44 @@
             "time": "2023-04-14T11:13:20+00:00"
         },
         {
-            "name": "giggsey/libphonenumber-for-php",
-            "version": "8.13.30",
+            "name": "giggsey/libphonenumber-for-php-lite",
+            "version": "dev-main",
             "source": {
                 "type": "git",
-                "url": "https://github.com/giggsey/libphonenumber-for-php.git",
-                "reference": "e09260a4a470b3737877c0f04f964e8a4938ebbd"
+                "url": "https://github.com/giggsey/libphonenumber-for-php-lite.git",
+                "reference": "9e2489ea908a9cc3826218674880ac7a1bfe95aa"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/giggsey/libphonenumber-for-php/zipball/e09260a4a470b3737877c0f04f964e8a4938ebbd",
-                "reference": "e09260a4a470b3737877c0f04f964e8a4938ebbd",
+                "url": "https://api.github.com/repos/giggsey/libphonenumber-for-php-lite/zipball/9e2489ea908a9cc3826218674880ac7a1bfe95aa",
+                "reference": "9e2489ea908a9cc3826218674880ac7a1bfe95aa",
                 "shasum": ""
             },
             "require": {
-                "giggsey/locale": "^1.7|^2.0",
-                "php": ">=5.3.2",
+                "php": "^8.0",
                 "symfony/polyfill-mbstring": "^1.17"
             },
-            "require-dev": {
-                "pear/pear-core-minimal": "^1.9",
-                "pear/pear_exception": "^1.0",
-                "pear/versioncontrol_git": "^0.5",
-                "phing/phing": "^2.7",
-                "php-coveralls/php-coveralls": "^1.0|^2.0",
-                "symfony/console": "^2.8|^3.0|^v4.4|^v5.2",
-                "symfony/phpunit-bridge": "^4.2 || ^5"
+            "conflict": {
+                "giggsey/libphonenumber-for-php": "*"
             },
+            "require-dev": {
+                "ext-dom": "*",
+                "friendsofphp/php-cs-fixer": "^3.12",
+                "infection/infection": "^0.26.16",
+                "pear/pear-core-minimal": "^1.10.11",
+                "pear/pear_exception": "^1.0.2",
+                "pear/versioncontrol_git": "^0.5",
+                "phing/phing": "^2.17.4",
+                "phpstan/extension-installer": "^1.2",
+                "phpstan/phpstan": "^1.8",
+                "phpstan/phpstan-phpunit": "^1.2",
+                "phpunit/phpunit": "^9.5.26",
+                "symfony/console": "^6.0"
+            },
+            "suggest": {
+                "giggsey/libphonenumber-for-php": "Use libphonenumber-for-php for geocoding, carriers, timezones and matching"
+            },
+            "default-branch": true,
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -10085,8 +10096,8 @@
                     "homepage": "https://giggsey.com/"
                 }
             ],
-            "description": "PHP Port of Google's libphonenumber",
-            "homepage": "https://github.com/giggsey/libphonenumber-for-php",
+            "description": "A lite version of giggsey/libphonenumber-for-php, which is a PHP Port of Google's libphonenumber",
+            "homepage": "https://github.com/giggsey/libphonenumber-for-php-lite",
             "keywords": [
                 "geocoding",
                 "geolocation",
@@ -10096,64 +10107,10 @@
                 "validation"
             ],
             "support": {
-                "issues": "https://github.com/giggsey/libphonenumber-for-php/issues",
-                "source": "https://github.com/giggsey/libphonenumber-for-php"
+                "issues": "https://github.com/giggsey/libphonenumber-for-php-lite/issues",
+                "source": "https://github.com/giggsey/libphonenumber-for-php-lite"
             },
-            "time": "2024-02-09T12:16:23+00:00"
-        },
-        {
-            "name": "giggsey/locale",
-            "version": "2.5",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/giggsey/Locale.git",
-                "reference": "e6d4540109a01dd2bc7334cdc842d6a6a67cf239"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/giggsey/Locale/zipball/e6d4540109a01dd2bc7334cdc842d6a6a67cf239",
-                "reference": "e6d4540109a01dd2bc7334cdc842d6a6a67cf239",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=7.2"
-            },
-            "require-dev": {
-                "ext-json": "*",
-                "pear/pear-core-minimal": "^1.9",
-                "pear/pear_exception": "^1.0",
-                "pear/versioncontrol_git": "^0.5",
-                "phing/phing": "^2.7",
-                "php-coveralls/php-coveralls": "^2.0",
-                "phpunit/phpunit": "^8.5|^9.5",
-                "symfony/console": "^5.0|^6.0",
-                "symfony/filesystem": "^5.0|^6.0",
-                "symfony/finder": "^5.0|^6.0",
-                "symfony/process": "^5.0|^6.0"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Giggsey\\Locale\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Joshua Gigg",
-                    "email": "giggsey@gmail.com",
-                    "homepage": "https://giggsey.com/"
-                }
-            ],
-            "description": "Locale functions required by libphonenumber-for-php",
-            "support": {
-                "issues": "https://github.com/giggsey/Locale/issues",
-                "source": "https://github.com/giggsey/Locale/tree/2.5"
-            },
-            "time": "2023-11-01T17:19:48+00:00"
+            "time": "2024-03-25T07:35:47+00:00"
         },
         {
             "name": "google/analytics-data",
@@ -21134,6 +21091,7 @@
         "drupal/search_api_location": 15,
         "drupal/search_api_spellcheck": 20,
         "drupal/shs": 5,
+        "drupal/telephone_plus": 10,
         "drupal/ultimate_cron": 15,
         "drupal/webform": 5,
         "drupal/easy_install_d10": 20,
