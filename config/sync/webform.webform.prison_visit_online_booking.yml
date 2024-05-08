@@ -871,6 +871,12 @@ elements: |-
         <p class="info-notice">
           We will try to book the first available date and time from your list of preferred dates and times.
         </p>
+  current_visitor_order_number:
+    '#type': hidden
+    '#title': CURRENT_VISITOR_ORDER_NUMBER
+  last_visitor_order_number:
+    '#type': hidden
+    '#title': LAST_VISITOR_ORDER_NUMBER
   slot1_datetime:
     '#type': hidden
     '#title': SLOT1_DATETIME
@@ -979,7 +985,7 @@ settings:
   form_title: source_entity_webform
   form_submit_once: true
   form_open_message: ''
-  form_close_message: ''
+  form_close_message: 'The booking a prison visit online service is currently unavailable. We are working to restore service as soon as possible. Apologies for any inconvenience.'
   form_exception_message: ''
   form_previous_submissions: false
   form_confidential: false
@@ -1093,6 +1099,8 @@ settings:
     friday_week_4: friday_week_4
     saturday_week_4: saturday_week_4
     sunday_week_4: sunday_week_4
+    current_visitor_order_number: current_visitor_order_number
+    last_visitor_order_number: last_visitor_order_number
     slot1_datetime: slot1_datetime
     slot2_datetime: slot2_datetime
     slot3_datetime: slot3_datetime
