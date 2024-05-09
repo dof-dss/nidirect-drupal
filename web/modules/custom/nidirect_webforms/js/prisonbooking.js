@@ -49,17 +49,29 @@
           .prop('aria-pressed', true);
       }
 
-      // Visit time slots ...
-      let $timeSlots = $('input[type="checkbox"]', $weekSlots);
+      // Visit time slots preferences...
 
-      // Array for tracking slot IDs as they are checked or unchecked.
-      let preferredSlotIds = [];
+      // Add aria-live region for announcing time slot preferences.
+      const $preferredStatus = $('<div role="region" class="visually-hidden" aria-live="polite" />');
+      $preferredStatus.append($('<h2 id="timeslots-announce-title" />'));
+      $preferredStatus.append($('<div id="timeslots-announce-description" />'));
+
+      $(once('pvPreferredStatus', '[data-webform-key="visit_preferred_day_and_time"]', context)).prepend($preferredStatus);
+
+      // Limit timeslots that can be selected and
+      // keep track of preferred time slots.
+      let $timeSlots = $('input[type="checkbox"]', $weekSlots);
+      $timeSlots.attr('aria-controls', 'timeslots-announce');
+
+      let preferredSlots = [];
+
+      // Default visit type is 'F' for face to face.
+      let pvTypeId =  'F';
+      // By default, user can choose 3 timeslots.
+      let pvTimeSlotLimit = 3;
 
       // Get visit type from the booking reference and get
       // the timeslot limit for that visit type from settings.
-      let pvTypeId =  'F';
-      let pvTimeSlotLimit = 3;
-
       if (settings.prisonVisitBooking['booking_ref'] !== null) {
         pvTypeId = settings.prisonVisitBooking.booking_ref.visit_type_id;
         pvTimeSlotLimit = settings.prisonVisitBooking.visit_type_time_slot_limit[pvTypeId];
@@ -67,44 +79,8 @@
 
       if ($timeSlots.length) {
 
-        // Disable checkboxes if time slot limit reached.
+        // Call function to disable checkboxes if time slot limit reached.
         disableCheckboxes($timeSlots, pvTimeSlotLimit);
-
-        // Add aria-live region for announcing slot preferences.
-        const $preferredStatus = $('<div role="region" class="visually-hidden" aria-live="polite" />');
-        $preferredStatus.append($('<h2 id="timeslots-announce-title" />'));
-        $preferredStatus.append($('<div id="timeslots-announce-description" />'));
-
-        $(once('pvPreferredStatus', '[data-webform-key="visit_preferred_day_and_time"]', context)).prepend($preferredStatus);
-
-        // Set aria-controls on timeslots to control the
-        // aria-live region.
-        $timeSlots.attr('aria-controls', 'timeslots-announce');
-
-        // D8NID-1661
-        // Check current and last visitor_order_number. If the user has
-        // changed visitor_order_number after selecting timeslots, then
-        // all timeslots need unchecked and hidden timeslot preferences
-        // need cleared.
-
-        let hiddenTimeSlotSelectors = '';
-        hiddenTimeSlotSelectors += '[name="slot1_datetime"], ';
-        hiddenTimeSlotSelectors += '[name="slot2_datetime"], ';
-        hiddenTimeSlotSelectors += '[name="slot3_datetime"], ';
-        hiddenTimeSlotSelectors += '[name="slot4_datetime"], ';
-        hiddenTimeSlotSelectors += '[name="slot5_datetime"]';
-
-        const $hiddenTimeSlots = $(hiddenTimeSlotSelectors);
-        const $currOrderNumber = $('[name="current_visitor_order_number"]');
-        const $lastOrderNumber = $('[name="last_visitor_order_number"]');
-
-        if ($lastOrderNumber.val() && $lastOrderNumber.val() !== $currOrderNumber.val()) {
-          console.log('Timeslots were reset because visit_order_number was changed');
-          console.log($currOrderNumber.attr('name') + ' = ' + $currOrderNumber.val());
-          console.log($lastOrderNumber.attr('name') + ' = ' + $lastOrderNumber.val());
-          $timeSlots.prop('checked', false);
-          $hiddenTimeSlots.val('').attr('value', '');
-        }
 
         // Prep timeslots to show preference rank.
         $timeSlots.each(function() {
@@ -113,21 +89,29 @@
           $(this).next('label').append($span);
         });
 
-        // Update preference rank shown on timeslots.
-        $hiddenTimeSlots.each(function(index) {
+        // Preferred time slots may already exist (stored in hidden inputs).
+        // Update ranks shown on time slot checkbox labels.
+        let hiddenTimeSlotSelectors = '';
+        hiddenTimeSlotSelectors += '[name="slot1_datetime"], ';
+        hiddenTimeSlotSelectors += '[name="slot2_datetime"], ';
+        hiddenTimeSlotSelectors += '[name="slot3_datetime"], ';
+        hiddenTimeSlotSelectors += '[name="slot4_datetime"], ';
+        hiddenTimeSlotSelectors += '[name="slot5_datetime"]';
+
+        $(hiddenTimeSlotSelectors).each(function(index) {
           let value = $(this).val();
           if (value.length) {
             let $timeSlot = $('input[value="' + value + '"]');
             $timeSlot.next('label').find('span.rank').text(index + 1);
-            preferredSlotIds.push($timeSlot.prop('id'));
+            preferredSlots.push($timeSlot.prop('id'));
           }
         });
 
-        // Trigger announcement of preferred timeslots.
         updatePreferredStatus();
 
         // When a timeslot is checked or unchecked, update preference
         // ranks and hidden slot values.
+
         $timeSlots.on('change', function(e) {
 
           // Disable checkboxes if time slot limit reached.
@@ -137,30 +121,30 @@
           let slotId = $(this).prop('id');
           let slotValue = $(this).val();
           let $slotRank = $(this).next('label').find('span.rank');
-          let rank = preferredSlotIds.indexOf(slotId);
+          let rank = preferredSlots.indexOf(slotId);
 
           // By default a slot has no rank.
           $slotRank.text('');
-          $hiddenTimeSlots.eq(rank).val('').attr('value', '');
+          $(hiddenTimeSlotSelectors).eq(rank).val('').attr('value', '');
 
           if ($(this).is(':checked')) {
-            preferredSlotIds.push(slotId);
-            rank = preferredSlotIds.indexOf(slotId);
+            preferredSlots.push(slotId);
+            rank = preferredSlots.indexOf(slotId);
             $slotRank.text(rank + 1);
-            $hiddenTimeSlots.eq(rank).val(slotValue).attr('value', slotValue);
+            $(hiddenTimeSlotSelectors).eq(rank).val(slotValue).attr('value', slotValue);
           } else {
-            preferredSlotIds.splice(preferredSlotIds.indexOf(slotId), 1);
+            preferredSlots.splice(preferredSlots.indexOf(slotId), 1);
 
             // Update ranks shown on remaining preferred slots.
-            preferredSlotIds.forEach(function(value, index) {
+            preferredSlots.forEach(function(value, index) {
               let selector = '#' + value;
               $(selector).next('label').find('span.rank').text(index + 1);
             });
 
             // Update hidden timeslots.
-            $hiddenTimeSlots.each(function(index) {
-              const $slotVal = $('#' + preferredSlotIds[index]).val();
-              if (index in preferredSlotIds) {
+            $(hiddenTimeSlotSelectors).each(function(index) {
+              const $slotVal = $('#' + preferredSlots[index]).val();
+              if (index in preferredSlots) {
                 $(this).val($slotVal).attr('value', $slotVal);
               } else {
                 $(this).val('').attr('value', '');
@@ -170,9 +154,6 @@
 
           // Announce preferred slots.
           updatePreferredStatus();
-
-          // Update hidden last_visitor_order_number.
-          $lastOrderNumber.val($currOrderNumber.val()).attr('value', $currOrderNumber.val());
         });
       }
 
@@ -188,14 +169,14 @@
 
       function updatePreferredStatus() {
 
-        if (preferredSlotIds.length < pvTimeSlotLimit) {
-          $('#timeslots-announce-title').html('You have selected ' + preferredSlotIds.length + ' time slots');
+        if (preferredSlots.length < pvTimeSlotLimit) {
+          $('#timeslots-announce-title').html('You have selected ' + preferredSlots.length + ' time slots');
         } else {
-          $('#timeslots-announce-title').html('You have selected a maximum of ' + preferredSlotIds.length + ' time slots');
+          $('#timeslots-announce-title').html('You have selected a maximum of ' + preferredSlots.length + ' time slots');
         }
 
         let items = '';
-        preferredSlotIds.forEach(function(value, index) {
+        preferredSlots.forEach(function(value, index) {
           const options = {
             weekday: "long",
             year: "numeric",
