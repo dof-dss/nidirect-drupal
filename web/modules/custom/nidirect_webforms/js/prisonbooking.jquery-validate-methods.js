@@ -138,6 +138,11 @@
         }
 
         function getAge(dateString) {
+          // Convert dd/mm/yyyy to yyyy-mm-dd.
+          if (dateString.includes('/')) {
+            const dateParts = dateString.split("/");
+            dateString = dateParts[2] + '-' + dateParts[1] + '-' + dateParts[0];
+          }
           const today = new Date();
           const birthDate = new Date(dateString);
           let age = today.getFullYear() - birthDate.getFullYear();
