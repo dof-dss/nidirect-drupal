@@ -750,29 +750,3 @@ function nicsdru_nidirect_theme_preprocess_views_view_rss(&$variables) {
     $variables['namespaces'] = new Attribute($style->namespaces);
   }
 }
-
-/**
- * Implements hook_preprocess_HOOK().
- */
-function nicsdru_nidirect_theme_preprocess_webform_confirmation(&$variables) {
-
-  // Fix for confirmation title not showing when "Page" is selected in
-  // confirmation settings.
-  // See https://www.drupal.org/project/webform/issues/3171108.
-
-  if ($variables['webform']->getSetting('confirmation_title')) {
-    $title = $variables['webform']->getSetting('confirmation_title');
-  }
-  elseif ($variables['source_entity']) {
-    $title = $variables['source_entity']->label();
-  }
-  else {
-    $title = $variables['webform']->label();
-  }
-
-  if ($variables['webform']->getSettings()['confirmation_type'] === 'page') {
-    $token_service = \Drupal::service('webform.token_manager');
-    $title = $token_service->replace($title, $variables['webform_submission'] ?: $variables['webform']);
-    $variables['title'] = $title;
-  }
-}
