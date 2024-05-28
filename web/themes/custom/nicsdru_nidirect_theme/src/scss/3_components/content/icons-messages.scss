@@ -80,18 +80,18 @@
 }
 
 %notice-builder {
-  border: 2px solid;
   margin: 1.5em 0;
-  padding: 1.2rem 1em 1em 5rem;
-  background: #fff resolve('i.svg') no-repeat 1.1rem 1.1rem / 28px 28px;
+  padding: .75em 1em .75em 3em;
+  background: #fff resolve('i.svg') no-repeat .75em .75em / 1.5em 1.5em;
 
   @include breakpoint($phab, $no-query: true) {
-    padding: 1.4rem 1em 1em 6rem;
-    background-position: 1.4rem 1.4rem;
-    background-size: 30px 30px;
+    padding: 1em 1em 1em 3.5em;
+    background-position: 1em 1em;
+    background-size: 1.6667em 1.6667em;
   }
 
-  & > *:first-child {
+  & > *:first-child,
+  & > .visually-hidden:first-child + *:first-of-type {
     margin-top: 0;
   }
 
@@ -112,33 +112,26 @@
 .info-notice,
 .form-item.info-notice {
   @extend %notice-builder;
-  border-color: $brand-primary-light;
+  --notice-border-width: 2px;
+  --notice-border-color: #{$brand-primary-light};
+  box-shadow: inset 0 0 0 var(--notice-border-width) var(--notice-border-color);
 
   .no-svg & {
     background-image: resolve('i.png');
   }
 
   &--large {
-
-    border-width: .25em;
-    padding: .5em 5rem 1em;
-    margin: 1em 0 1.5em;
-    background-size: 3rem 3rem;
-    background-position: 1rem 1rem;
+    --notice-border-width: .25em;
+    padding: 1em 1em 1em 3.5em;
+    margin: .5em 0;
+    background-size: 1.6667em 1.6667em;
+    background-position: 1em 1em;
 
     @include breakpoint($phab) {
-      background-size: 4rem 4rem;
-      background-position: 2rem 2rem;
-      border-width: .3334em;
-      padding: .5em 8rem 1.5em;
-    }
-
-    > *:first-child {
-      margin-top: .9rem;
-
-      @include breakpoint($tab) {
-        margin-top: 1.5rem;
-      }
+      background-size: 2.1667em 2.1667em;
+      background-position: 1.3334em 1.3334em;
+      --notice-border-width: .3334em;
+      padding: 1.5em 1.5em 1.5em 4.5em;
     }
 
     p,
@@ -148,7 +141,7 @@
   }
 
   &--success {
-    border-color: $btn-action;
+    --notice-border-color: #{$btn-action};
     background-image: resolve('status.svg');
 
     .no-svg & {
@@ -157,7 +150,7 @@
   }
 
   &--error {
-    border-color: #e34f4f;
+    --notice-border-color: #e34f4f;
     background-image: resolve('wrong.svg');
 
     .no-svg & {
@@ -166,7 +159,7 @@
   }
 
   &--warning {
-    border-color: #db6304;
+    --notice-border-color: #db6304;
     background-image: resolve('warning.svg');
 
     .no-svg & {
