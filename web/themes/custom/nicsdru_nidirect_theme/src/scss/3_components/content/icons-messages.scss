@@ -186,9 +186,12 @@
 .messages,
 .form-item.messages {
   @extend %notice-builder;
+  --notice-border-width: 2px;
+  --notice-border-color: #{$brand-primary-light};
+  box-shadow: inset 0 0 0 var(--notice-border-width) var(--notice-border-color);
 
   &--error {
-    border-color: #e34f4f;
+    --notice-border-color: #e34f4f;
     background: #fff resolve('wrong.svg') no-repeat .9rem .9rem / 24px 24px;
 
     @include breakpoint($phab, $no-query: true) {
@@ -201,7 +204,7 @@
   }
 
   &--status {
-    border-color: $btn-action;
+    --notice-border-color: #{$btn-action};
     background: #fff resolve('status.svg') no-repeat .9rem .9rem / 24px 24px;
 
     @include breakpoint($phab, $no-query: true) {
@@ -214,7 +217,7 @@
   }
 
   &--warning {
-    border-color: #db6304;
+    --notice-border-color: #db6304;
     background: #fff resolve('warning.svg') no-repeat .9rem .9rem / 24px 24px;
 
     @include breakpoint($phab, $no-query: true) {
