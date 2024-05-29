@@ -1,9 +1,8 @@
 <div id="emergency-department-average-waiting-times">
   {% if hospitals|length > 0 %}
-    <p>Last updated: {{ updated|date('g.i a, l j F Y') }}.</p>
-
     {% if hospitals_non_emergency|length > 0 %}
       <h3>Minor Injury Units / Urgent Care services</h3>
+      <p class="small-text">Last updated: {{ updated|date('g.i a, l j F Y') }}.</p>
       <table class="hospital-waiting-times">
         <tbody>
         <tr>
@@ -27,6 +26,7 @@
 
     {% if hospitals_emergency|length > 0 %}
       <h3>Emergency Departments</h3>
+      <p class="small-text">Last updated: {{ updated|date('g.i a, l j F Y') }}.</p>
       <table class="hospital-waiting-times">
         <tbody>
         <tr>
