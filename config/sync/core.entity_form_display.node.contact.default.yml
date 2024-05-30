@@ -344,6 +344,22 @@ content:
         enable: true
         address_field: field_address
         geocoder: google_geocoding_api
+        geocoder_settings:
+          label: Address
+          description: 'Enter an address to be localized.'
+          autocomplete_min_length: 1
+          component_restrictions:
+            route: ''
+            country: UK
+            administrative_area: ''
+            locality: ''
+            postal_code: ''
+          boundary_restriction:
+            south: ''
+            west: ''
+            north: ''
+            east: ''
+          region: gb
         sync_mode: auto
         button_position: LEFT_TOP
         direction: duplex
@@ -354,22 +370,6 @@ content:
           locality: false
           administrative-area: false
           postal-code: false
-        geocoder_settings:
-          label: Address
-          description: 'Enter an address to be localized.'
-          autocomplete_min_length: '1'
-          component_restrictions:
-            route: ''
-            locality: ''
-            administrative_area: ''
-            postal_code: ''
-            country: UK
-          boundary_restriction:
-            south: ''
-            west: ''
-            north: ''
-            east: ''
-          region: gb
   field_meta_tags:
     type: metatag_firehose
     weight: 11

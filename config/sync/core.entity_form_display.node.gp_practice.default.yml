@@ -282,6 +282,16 @@ content:
         enable: true
         address_field: field_address
         geocoder: google_geocoding_api
+        sync_mode: auto
+        button_position: LEFT_TOP
+        direction: duplex
+        ignore:
+          organization: false
+          address-line1: false
+          address-line2: false
+          locality: false
+          administrative-area: false
+          postal-code: false
         settings:
           label: Address
           description: 'Enter an address to be localized.'
@@ -297,16 +307,6 @@ content:
             west: ''
             north: ''
             east: ''
-        sync_mode: auto
-        button_position: LEFT_TOP
-        direction: duplex
-        ignore:
-          organization: false
-          address-line1: false
-          address-line2: false
-          locality: false
-          administrative-area: false
-          postal-code: false
   field_meta_tags:
     type: metatag_firehose
     weight: 9
