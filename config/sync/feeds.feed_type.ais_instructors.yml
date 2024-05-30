@@ -10,14 +10,13 @@ dependencies:
     - field.field.node.driving_instructor.field_di_lastname
     - field.field.node.driving_instructor.field_email_address
     - field.field.node.driving_instructor.field_link_url
-    - field.field.node.driving_instructor.field_telephone
     - node.type.driving_instructor
   module:
     - feeds_ex
+    - feeds_fetcher_headers
     - feeds_log
     - feeds_tamper
     - node
-    - telephone_plus
 third_party_settings:
   feeds_log:
     status: true
@@ -65,10 +64,13 @@ id: ais_instructors
 description: 'Imports driving instructors'
 help: ''
 import_period: 86400
-fetcher: upload
+fetcher: httpfetcherheaders
 fetcher_configuration:
-  allowed_extensions: 'txt csv tsv xml opml json'
-  directory: 'private://feeds'
+  auto_detect_feeds: 0
+  use_pubsubhubbub: 0
+  always_download: 0
+  fallback_hub: ''
+  request_timeout: '30'
 parser: jsonpath
 parser_configuration:
   context:
