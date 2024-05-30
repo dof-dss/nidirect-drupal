@@ -20,8 +20,8 @@ dependencies:
     - layout_builder
     - link
     - metatag
+    - nidirect_contacts
     - origins_common
-    - telephone_plus
     - user
 third_party_settings:
   layout_builder:
@@ -30,9 +30,9 @@ third_party_settings:
   field_group:
     group_contact_info:
       children:
-        - field_telephone
         - field_email_address
         - field_link_url
+        - field_telephone
       label: 'Contact info'
       parent_name: ''
       region: content
@@ -100,10 +100,9 @@ content:
     weight: 4
     region: content
   field_telephone:
-    type: telephone_plus
+    type: nidirect_telephone_link
     label: above
     settings:
-      link: true
       vcard: true
     third_party_settings: {  }
     weight: 7
