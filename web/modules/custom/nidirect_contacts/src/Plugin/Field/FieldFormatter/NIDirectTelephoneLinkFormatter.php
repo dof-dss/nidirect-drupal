@@ -3,7 +3,7 @@
 namespace Drupal\nidirect_contacts\Plugin\Field\FieldFormatter;
 
 use Drupal\Core\Field\FieldItemListInterface;
-use Drupal\telephone_plus\Plugin\Field\FieldFormatter\TelephonePlusFieldFormatter;
+use Drupal\telephone_plus\Plugin\Field\FieldFormatter\TelephonePlusLinkFormatter;
 
 /**
  * Plugin extending the 'telephone_plus_link' formatter.
@@ -21,7 +21,7 @@ use Drupal\telephone_plus\Plugin\Field\FieldFormatter\TelephonePlusFieldFormatte
  *   }
  * )
  */
-class NIDirectTelephoneLinkFormatter extends TelephonePlusFieldFormatter {
+class NIDirectTelephoneLinkFormatter extends TelephonePlusLinkFormatter {
 
   /**
    * {@inheritdoc}
@@ -61,6 +61,9 @@ class NIDirectTelephoneLinkFormatter extends TelephonePlusFieldFormatter {
           // Does the current render element contain the telephone extension.
           if ($element['#extension'] === $telephone_extension) {
             $element['#number']['#value'] = $telephone_value . ' ext. ' . $telephone_extension;
+          }
+          if (str_contains($element['number']['#suffix'], 'extension')) {
+            unset($element['number']['#suffix']);
           }
         }
       }
