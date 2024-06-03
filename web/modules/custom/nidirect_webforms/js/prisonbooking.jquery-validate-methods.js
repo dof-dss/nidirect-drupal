@@ -108,6 +108,14 @@
           return this.optional(element) || getAge(value) <= param[1];
         }, $.validator.format("Age must be no more than {1} years old"));
 
+        $.validator.addMethod("validDate", function(value, element) {
+          const dateParts = value.split("/");
+          const year = parseInt(dateParts[2]);
+          const month = parseInt(dateParts[1]);
+          const day = parseInt(dateParts[0]);
+          return this.optional(element) || isValidDate(day, month, year);
+        }, $.validator.format("Date must be a valid date"));
+
         $.validator.addMethod("noHtml", function(value, element) {
           return this.optional(element) || value === value.replace(/(<([^>]+)>)/gi, "");
         }, "Text must be plain text only");
@@ -138,10 +146,10 @@
         }
 
         function getAge(dateString) {
-          // Convert dd/mm/yyyy to yyyy-mm-dd.
+          // Simple conversion of dd/mm/yyyy to yyyy-mm-dd
           if (dateString.includes('/')) {
             const dateParts = dateString.split("/");
-            dateString = dateParts[2] + '-' + dateParts[1] + '-' + dateParts[0];
+            dateString = dateParts[2] + '-' + dateParts[1] + '-' + dateParts[0] + 'T00:00';
           }
           const today = new Date();
           const birthDate = new Date(dateString);
@@ -151,6 +159,22 @@
             age--;
           }
           return age;
+        }
+
+        function daysInMonth(m, y) {
+          switch (m) {
+            case 1 :
+              return (y % 4 == 0 && y % 100) || y % 400 == 0 ? 29 : 28;
+            case 8 : case 3 : case 5 : case 10 :
+              return 30;
+            default :
+              return 31;
+          }
+        }
+
+        function isValidDate(d, m, y) {
+          m = parseInt(m, 10) - 1;
+          return m >= 0 && m < 12 && d > 0 && d <= daysInMonth(m, y);
         }
 
       });
@@ -192,6 +216,7 @@
 
       if ($pvVisitorOneDob.length) {
         $pvVisitorOneDob.rules("add", {
+          validDate: true,
           minAge: [true, 18],
           messages: {
             minAge: "You must be at least 18 years of age to book a prison visit"
@@ -226,6 +251,7 @@
 
       $(once('pvAdultDobs', pvAdultDobSelectors, context)).each(function() {
         $(this).rules("add", {
+          validDate: true,
           minAge: [true, 18],
           messages: {
             minAge: "Adult visitor must be at least 18 years of age"
@@ -243,6 +269,7 @@
 
       $(once('pvChildDobs', pvChildDobSelectors, context)).each(function() {
         $(this).rules("add", {
+          validDate: true,
           minAge: [true, 0],
           maxAge: [true, 17],
           messages: {
