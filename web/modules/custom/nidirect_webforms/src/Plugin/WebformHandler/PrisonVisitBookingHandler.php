@@ -373,7 +373,7 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
         $visitor_dob = $form_values['additional_visitor_adult_' . $i . '_dob'] ?? NULL;
 
         if ($visitor_dob) {
-          $visitor_dob = new \DateTime(str_replace("/", "-",  $visitor_dob));
+          $visitor_dob = new \DateTime(str_replace("/", "-", $visitor_dob));
         }
 
         if (!empty($visitor_id) && !empty($visitor_dob)) {
@@ -390,7 +390,7 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
         $visitor_dob = $form_values['additional_visitor_child_' . $i . '_dob'] ?? NULL;
 
         if ($visitor_dob) {
-          $visitor_dob = new \DateTime(str_replace("/", "-",  $visitor_dob));
+          $visitor_dob = new \DateTime(str_replace("/", "-", $visitor_dob));
         }
 
         if (!empty($visitor_id) && !empty($visitor_dob)) {
