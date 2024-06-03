@@ -17,8 +17,8 @@ dependencies:
   module:
     - link
     - metatag
+    - nidirect_contacts
     - origins_common
-    - telephone_plus
     - user
 id: node.driving_instructor.default
 targetEntityType: node
@@ -94,10 +94,9 @@ content:
     weight: 9
     region: content
   field_telephone:
-    type: telephone_plus
+    type: nidirect_telephone_link
     label: above
     settings:
-      link: true
       vcard: true
     third_party_settings: {  }
     weight: 10
