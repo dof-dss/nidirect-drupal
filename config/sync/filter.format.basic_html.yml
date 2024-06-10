@@ -22,27 +22,13 @@ name: 'Basic HTML'
 format: basic_html
 weight: 0
 filters:
-  filter_html:
-    id: filter_html
-    provider: filter
-    status: true
-    weight: -50
+  cookie_content_blocker_filter:
+    id: cookie_content_blocker_filter
+    provider: cookie_content_blocker
+    status: false
+    weight: -44
     settings:
-      allowed_html: '<a class href hreflang> <em> <strong> <cite> <blockquote cite> <code> <ul class type> <ol class start type> <li> <dl> <dt> <dd> <h2 id> <h3 id> <h4 id> <div class> <p class translate> <br> <img src alt height width data-* typeof> <sup> <table class> <caption> <tbody> <thead> <tfoot> <th scope> <td> <tr> <drupal-entity data-entity-type data-entity-uuid data-entity-embed-display data-entity-embed-display-settings data-align data-caption data-embed-button alt title class> <picture data-* alt title class> <source srcset media type> <address> <drupal-media data-entity-type data-entity-uuid data-entity-embed-display data-entity-embed-display-settings data-align data-caption data-embed-button data-view-mode alt title class> <strike> <span dir lang>'
-      filter_html_help: false
-      filter_html_nofollow: false
-  filter_align:
-    id: filter_align
-    provider: filter
-    status: false
-    weight: -39
-    settings: {  }
-  filter_caption:
-    id: filter_caption
-    provider: filter
-    status: false
-    weight: -38
-    settings: {  }
+      disable_xss: '1'
   editor_file_reference:
     id: editor_file_reference
     provider: editor
@@ -55,11 +41,44 @@ filters:
     status: true
     weight: -46
     settings: {  }
+  filter_align:
+    id: filter_align
+    provider: filter
+    status: false
+    weight: -39
+    settings: {  }
   filter_autop:
     id: filter_autop
     provider: filter
     status: false
     weight: -41
+    settings: {  }
+  filter_caption:
+    id: filter_caption
+    provider: filter
+    status: false
+    weight: -38
+    settings: {  }
+  filter_html:
+    id: filter_html
+    provider: filter
+    status: true
+    weight: -50
+    settings:
+      allowed_html: '<a class href hreflang> <em> <strong> <cite> <blockquote cite> <code> <ul class type> <ol class start type> <li> <dl> <dt> <dd> <h2 id> <h3 id> <h4 id> <div class> <p class translate> <br> <img src alt height width data-* typeof> <sup> <table class> <caption> <tbody> <thead> <tfoot> <th scope> <td> <tr> <drupal-entity data-entity-type data-entity-uuid data-entity-embed-display data-entity-embed-display-settings data-align data-caption data-embed-button alt title class> <picture data-* alt title class> <source srcset media type> <address> <drupal-media data-entity-type data-entity-uuid data-entity-embed-display data-entity-embed-display-settings data-align data-caption data-embed-button data-view-mode alt title class> <strike> <span dir lang>'
+      filter_html_help: false
+      filter_html_nofollow: false
+  filter_html_escape:
+    id: filter_html_escape
+    provider: filter
+    status: false
+    weight: -40
+    settings: {  }
+  filter_html_image_secure:
+    id: filter_html_image_secure
+    provider: filter
+    status: false
+    weight: -37
     settings: {  }
   filter_htmlcorrector:
     id: filter_htmlcorrector
@@ -67,11 +86,11 @@ filters:
     status: false
     weight: -42
     settings: {  }
-  filter_html_escape:
-    id: filter_html_escape
+  filter_image_lazy_load:
+    id: filter_image_lazy_load
     provider: filter
-    status: false
-    weight: -40
+    status: true
+    weight: -35
     settings: {  }
   filter_url:
     id: filter_url
@@ -80,25 +99,13 @@ filters:
     weight: -43
     settings:
       filter_url_length: 72
-  filter_html_image_secure:
-    id: filter_html_image_secure
-    provider: filter
+  linkit:
+    id: linkit
+    provider: linkit
     status: false
-    weight: -37
-    settings: {  }
-  noreferrer:
-    id: noreferrer
-    provider: noreferrer
-    status: true
-    weight: -49
-    settings: {  }
-  token_filter:
-    id: token_filter
-    provider: token_filter
-    status: true
-    weight: -45
+    weight: -34
     settings:
-      replace_empty: '1'
+      title: true
   media_embed:
     id: media_embed
     provider: media
@@ -116,20 +123,12 @@ filters:
         image: image
         remote_video: remote_video
         video: video
-  cookie_content_blocker_filter:
-    id: cookie_content_blocker_filter
-    provider: cookie_content_blocker
-    status: false
-    weight: -44
-    settings:
-      disable_xss: '1'
-  linkit:
-    id: linkit
-    provider: linkit
-    status: false
-    weight: -34
-    settings:
-      title: true
+  noreferrer:
+    id: noreferrer
+    provider: noreferrer
+    status: true
+    weight: -49
+    settings: {  }
   origins_media_cookie_content_blocker_embed_filter:
     id: origins_media_cookie_content_blocker_embed_filter
     provider: origins_common
@@ -137,9 +136,10 @@ filters:
     weight: -48
     settings:
       replacement_text: 'Click here to view the video content'
-  filter_image_lazy_load:
-    id: filter_image_lazy_load
-    provider: filter
+  token_filter:
+    id: token_filter
+    provider: token_filter
     status: true
-    weight: -35
-    settings: {  }
+    weight: -45
+    settings:
+      replace_empty: '1'
