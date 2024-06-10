@@ -132,6 +132,10 @@ web:
       # Deny access to static files in this location.
       allow: false
 
+      # Apply rules to all static files (dynamic files get rules from your app)
+      headers:
+        X-Content-Type-Options: nosniff
+
       # Rules for specific URI patterns.
       rules:
         # Allow access to common static files.
