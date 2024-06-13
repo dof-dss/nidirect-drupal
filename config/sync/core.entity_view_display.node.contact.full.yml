@@ -15,6 +15,7 @@ dependencies:
     - field.field.node.contact.field_location
     - field.field.node.contact.field_meta_tags
     - field.field.node.contact.field_next_audit_due
+    - field.field.node.contact.field_phone
     - field.field.node.contact.field_related_info
     - field.field.node.contact.field_site_themes
     - field.field.node.contact.field_summary
@@ -28,7 +29,7 @@ dependencies:
     - geolocation
     - layout_builder
     - link
-    - nidirect_contacts
+    - telephone_plus
     - text
     - user
 third_party_settings:
@@ -39,7 +40,7 @@ third_party_settings:
     group_address:
       children:
         - field_address
-        - field_telephone
+        - field_phone
         - field_email_address
         - field_contact_website
       label: address
@@ -100,14 +101,14 @@ content:
       rel: ''
       target: ''
     third_party_settings: {  }
-    weight: 9
+    weight: 8
     region: content
   field_email_address:
     type: basic_string
     label: inline
     settings: {  }
     third_party_settings: {  }
-    weight: 8
+    weight: 7
     region: content
   field_location:
     type: geolocation_map
@@ -430,6 +431,15 @@ content:
     third_party_settings: {  }
     weight: 6
     region: content
+  field_phone:
+    type: telephone_plus
+    label: hidden
+    settings:
+      vcard: true
+      link: true
+    third_party_settings: {  }
+    weight: 6
+    region: content
   field_related_info:
     type: link
     label: above
@@ -439,15 +449,6 @@ content:
       url_plain: false
       rel: ''
       target: ''
-    third_party_settings: {  }
-    weight: 5
-    region: content
-  field_telephone:
-    type: nidirect_telephone_link
-    label: hidden
-    settings:
-      vcard: '1'
-      link: true
     third_party_settings: {  }
     weight: 5
     region: content
@@ -465,6 +466,7 @@ hidden:
   field_site_themes: true
   field_summary: true
   field_supplementary_contact: true
+  field_telephone: true
   langcode: true
   search_api_excerpt: true
   toc_display: true
