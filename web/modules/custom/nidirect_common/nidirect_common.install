@@ -323,6 +323,25 @@ function nidirect_common_update_8005() {
 
 
 /**
+ * Copy telephone field values to phone field to fix issue raise in D8NID-1678.
+ */
+function nidirect_common_update_8006() {
+  $database = \Drupal::database();
+
+  // Use 'IGNORE' to prevent 'Duplicate entry' warnings.
+  $database->query("INSERT IGNORE INTO node__field_phone (bundle, deleted, entity_id, revision_id, langcode, delta, field_phone_country_code, field_phone_telephone_number, field_phone_telephone_extension, field_phone_display_international_number, field_phone_telephone_title, field_phone_telephone_supplementary)
+SELECT bundle, deleted, entity_id, revision_id, langcode, delta, field_telephone_country_code, field_telephone_telephone_number, field_telephone_telephone_extension, field_telephone_display_international_number, field_telephone_telephone_title, field_telephone_telephone_supplementary
+FROM node__field_telephone")->execute();
+
+  $database->query("INSERT IGNORE INTO node_revision__field_phone (bundle, deleted, entity_id, revision_id, langcode, delta, field_phone_country_code, field_phone_telephone_number, field_phone_telephone_extension, field_phone_display_international_number, field_phone_telephone_title, field_phone_telephone_supplementary)
+SELECT bundle, deleted, entity_id, revision_id, langcode, delta, field_telephone_country_code, field_telephone_telephone_number, field_telephone_telephone_extension, field_telephone_display_international_number, field_telephone_telephone_title, field_telephone_telephone_supplementary
+FROM node_revision__field_telephone")->execute();
+
+}
+
+
+
+/**
  * Return a list of nids with problematic telephone numbers.
  */
 function _check_telephone_field_values() {
