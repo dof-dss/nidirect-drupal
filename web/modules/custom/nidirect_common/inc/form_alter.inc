@@ -219,7 +219,7 @@ function nidirect_common_form_node_form_alter(&$form, FormStateInterface $form_s
   }
 
   // Custom validation for Telephone_Plus field.
-  if (array_key_exists('field_telephone', $form)) {
+  if (array_key_exists('field_phone', $form)) {
     array_unshift($form['#validate'], 'nidirect_common_validate_telephone');
   }
 
@@ -364,7 +364,7 @@ function nidirect_common_field_widget_single_element_telephone_plus_widget_form_
   // Display the title textfield if the user selects 'Other'.
   $element['telephone_title']['#states'] = [
     'visible' => [
-      ':input[name="field_telephone[' . $context['delta'] . '][telephone_predefined]"]' => ['value' => 'Other'],
+      ':input[name="field_phone[' . $context['delta'] . '][telephone_predefined]"]' => ['value' => 'Other'],
     ],
   ];
 }
