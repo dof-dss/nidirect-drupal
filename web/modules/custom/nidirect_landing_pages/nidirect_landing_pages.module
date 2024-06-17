@@ -143,8 +143,8 @@ function nidirect_landing_pages_block_form_alter(array $element, FormStateInterf
 
   if (!empty($element['#block']) && $element['#block']->bundle() === 'card_contact') {
     // Remove container-inline class from the telephone plus fieldsets.
-    if (!empty($element['field_telephone']) && !empty($element['field_telephone']['widget'])) {
-      $classes = &$element['field_telephone']['widget'][0]['#attributes']['class'];
+    if (!empty($element['field_phone']) && !empty($element['field_phone']['widget'])) {
+      $classes = &$element['field_phone']['widget'][0]['#attributes']['class'];
       $classes = array_filter($classes, function ($e) {
         return $e != 'container-inline';
       });
