@@ -3,7 +3,7 @@
 namespace Drupal\nidirect_contacts\Plugin\Field\FieldFormatter;
 
 use Drupal\Core\Field\FieldItemListInterface;
-use Drupal\telephone_plus\Plugin\Field\FieldFormatter\TelephonePlusLinkFormatter;
+use Drupal\telephone_plus\Plugin\Field\FieldFormatter\TelephonePlusFieldFormatter;
 
 /**
  * Plugin extending the 'telephone_plus_link' formatter.
@@ -21,7 +21,7 @@ use Drupal\telephone_plus\Plugin\Field\FieldFormatter\TelephonePlusLinkFormatter
  *   }
  * )
  */
-class NIDirectTelephoneLinkFormatter extends TelephonePlusLinkFormatter {
+class NIDirectTelephoneLinkFormatter extends TelephonePlusFieldFormatter {
 
   /**
    * {@inheritdoc}
