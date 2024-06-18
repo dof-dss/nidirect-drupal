@@ -369,30 +369,34 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
 
       for ($i = 1; $i <= $num_adults; $i++) {
 
-        $av_id = $form_values['additional_visitor_adult_' . $i . '_id'] ?? NULL;
-        if (!empty($form_values['additional_visitor_adult_' . $i . '_dob'])) {
-          $av_dob = new \DateTime($form_values['additional_visitor_adult_' . $i . '_dob']);
+        $visitor_id = $form_values['additional_visitor_adult_' . $i . '_id'] ?? NULL;
+        $visitor_dob = $form_values['additional_visitor_adult_' . $i . '_dob'] ?? NULL;
+
+        if ($visitor_dob) {
+          $visitor_dob = new \DateTime(str_replace("/", "-", $visitor_dob));
         }
 
-        if (!empty($av_id) && !empty($av_dob)) {
+        if (!empty($visitor_id) && !empty($visitor_dob)) {
           $additional_visitors[] = [
-            'id' => $av_id,
-            'dob' => $av_dob->format('d/m/Y H:i')
+            'id' => $visitor_id,
+            'dob' => $visitor_dob->format('d/m/Y H:i')
           ];
         }
       }
 
       for ($i = 1; $i <= $num_children; $i++) {
 
-        $av_id = $form_values['additional_visitor_child_' . $i . '_id'] ?? NULL;
-        if (!empty($form_values['additional_visitor_child_' . $i . '_dob'])) {
-          $av_dob = new \DateTime($form_values['additional_visitor_child_' . $i . '_dob']);
+        $visitor_id = $form_values['additional_visitor_child_' . $i . '_id'] ?? NULL;
+        $visitor_dob = $form_values['additional_visitor_child_' . $i . '_dob'] ?? NULL;
+
+        if ($visitor_dob) {
+          $visitor_dob = new \DateTime(str_replace("/", "-", $visitor_dob));
         }
 
-        if (!empty($av_id) && !empty($av_dob)) {
+        if (!empty($visitor_id) && !empty($visitor_dob)) {
           $additional_visitors[] = [
-            'id' => $av_id,
-            'dob' => $av_dob->format('d/m/Y H:i')
+            'id' => $visitor_id,
+            'dob' => $visitor_dob->format('d/m/Y H:i')
           ];
         }
       }
