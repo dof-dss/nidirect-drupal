@@ -14,6 +14,7 @@ dependencies:
     - field.field.node.contact.field_location
     - field.field.node.contact.field_meta_tags
     - field.field.node.contact.field_next_audit_due
+    - field.field.node.contact.field_phone
     - field.field.node.contact.field_related_info
     - field.field.node.contact.field_site_themes
     - field.field.node.contact.field_summary
@@ -377,6 +378,15 @@ content:
     third_party_settings: {  }
     weight: 2
     region: content
+  field_phone:
+    type: nidirect_telephone_link
+    label: above
+    settings:
+      vcard: true
+      link: true
+    third_party_settings: {  }
+    weight: 4
+    region: content
   field_related_info:
     type: link
     label: above
@@ -410,15 +420,6 @@ content:
     third_party_settings: {  }
     weight: 3
     region: content
-  field_telephone:
-    type: nidirect_telephone_link
-    label: above
-    settings:
-      vcard: true
-      link: true
-    third_party_settings: {  }
-    weight: 4
-    region: content
   links:
     settings: {  }
     third_party_settings: {  }
@@ -435,6 +436,7 @@ hidden:
   field_next_audit_due: true
   field_site_themes: true
   field_supplementary_contact: true
+  field_telephone: true
   langcode: true
   search_api_excerpt: true
   toc_display: true

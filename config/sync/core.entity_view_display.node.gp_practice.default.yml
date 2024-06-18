@@ -16,6 +16,7 @@ dependencies:
     - field.field.node.gp_practice.field_gp_surgery_name
     - field.field.node.gp_practice.field_location
     - field.field.node.gp_practice.field_meta_tags
+    - field.field.node.gp_practice.field_phone
     - field.field.node.gp_practice.field_telephone
     - filter.format.basic_html
     - node.type.gp_practice
@@ -373,13 +374,14 @@ content:
     third_party_settings: {  }
     weight: 4
     region: content
-  field_telephone:
+  field_phone:
     type: nidirect_telephone_link
     label: above
     settings:
       vcard: true
+      link: true
     third_party_settings: {  }
-    weight: 6
+    weight: 5
     region: content
   gp_names:
     settings: {  }
@@ -401,6 +403,7 @@ hidden:
   field_gp_prescriptions: true
   field_gp_surgery_name: true
   field_meta_tags: true
+  field_telephone: true
   langcode: true
   links: true
   search_api_excerpt: true
