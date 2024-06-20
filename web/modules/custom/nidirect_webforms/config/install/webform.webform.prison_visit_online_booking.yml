@@ -30,15 +30,15 @@ elements: |-
       '#description': 'For example, AAA9999-9999'
       '#description_display': before
       '#maxlength': 12
-      '#size': 14
+      '#size': 12
       '#autocomplete': 'off'
       '#input_mask': AAA9999-9999
-      '#required': true
-      '#required_error': 'Enter a visit reference number'
       '#pattern': '[A-Z]{3}[0-9]{4}-[0-9]{4}'
       '#pattern_error': 'Visit reference number is not recognised'
       '#attributes':
-        data-inputmask-placeholder: '  '
+        class:
+          - monospace-text
+        data-inputmask-placeholder: ' '
       '#data-tippy-arrow': false
     prisoner_id:
       '#type': textfield
@@ -46,7 +46,7 @@ elements: |-
       '#description': 'For example, A9999'
       '#description_display': before
       '#maxlength': 5
-      '#size': 6
+      '#size': 5
       '#autocomplete': 'off'
       '#input_mask': 'A9[9][9][9]'
       '#required': true
@@ -54,7 +54,9 @@ elements: |-
       '#pattern': '[A-FH][0-9]{1,4}'
       '#pattern_error': 'Prisoner ID is not recognised'
       '#attributes':
-        data-inputmask-placeholder: ' '
+        class:
+          - monospace-text
+        data-inputmask-placeholder: ' '
   visitor_details_page:
     '#type': webform_wizard_page
     '#title': 'Visitor details'
@@ -79,28 +81,32 @@ elements: |-
         '#description': 'Enter your 6 digit visitor ID number.'
         '#description_display': before
         '#maxlength': 6
-        '#size': 8
+        '#size': 6
         '#placeholder': '000000'
         '#autocomplete': 'off'
         '#required': true
         '#required_error': 'Enter your visitor ID'
         '#pattern': '[0-9]{6}'
         '#pattern_error': 'Visitor ID is not recognised'
+        '#attributes':
+          class:
+            - monospace-text
       visitor_1_dob:
         '#type': textfield
         '#title': 'Date of birth'
         '#description': 'Your date of birth must match the one we have on record for you.'
         '#description_display': before
         '#maxlength': 10
-        '#size': 12
+        '#size': 10
         '#placeholder': dd/mm/yyyy
         '#input_mask': 99/99/9999
         '#pattern': '[0-3][0-9]\/(0[0-9]|1[0-2])\/[0-9]{4}'
         '#pattern_error': 'Enter a valid date, for example 31/01/2000'
         '#attributes':
-          style: 'letter-spacing: .1em'
+          class:
+            - monospace-text
           autocomplete: bday
-          data-inputmask-placeholder: ' '
+          data-inputmask-placeholder: ' '
           inputmode: numeric
       visitor_1_email:
         '#type': webform_email_confirm
@@ -126,7 +132,8 @@ elements: |-
         '#pattern': '^[\+0-9\s\-\(\)]+$'
         '#pattern_error': 'Enter a valid telephone or mobile number'
         '#attributes':
-          data-inputmask-placeholder: ' '
+          class:
+            - monospace-text
   additional_visitors:
     '#type': webform_wizard_page
     '#title': 'Additional visitors'
@@ -227,17 +234,20 @@ elements: |-
         '#title_display': inline
         '#description_display': before
         '#maxlength': 6
-        '#size': 10
+        '#size': 6
         '#placeholder': '000000'
         '#autocomplete': 'off'
+        '#required_error': 'Enter the visitor ID for additional adult 1'
         '#pattern': '[0-9]{6}'
         '#pattern_error': 'Visitor ID must be a 6 digit number'
-        '#required_error': 'Enter the visitor ID for additional adult 1'
         '#states':
           required:
             ':input[name="additional_visitor_adult_number"]':
               value:
                 greater: '0'
+        '#attributes':
+          class:
+            - monospace-text
         '#label_attributes':
           style: 'min-width: 7em; display: inline-block'
           aria-label: 'Additional visitor one visitor ID'
@@ -247,7 +257,7 @@ elements: |-
         '#title_display': inline
         '#description_display': invisible
         '#maxlength': 10
-        '#size': 12
+        '#size': 10
         '#placeholder': dd/mm/yyyy
         '#autocomplete': 'off'
         '#input_mask': 99/99/9999
@@ -260,9 +270,10 @@ elements: |-
               value:
                 greater: '0'
         '#attributes':
-          style: 'letter-spacing: .1em'
-          data-inputmask-placeholder: ' '
+          class:
+            - monospaced-text
           inputmode: numeric
+          data-inputmask-placeholder: ' '
         '#label_attributes':
           style: 'display: inline-block; min-width: 7em;'
           aria-label: 'Additional adult 1 date of birth'
@@ -281,17 +292,20 @@ elements: |-
         '#title_display': inline
         '#description_display': before
         '#maxlength': 6
-        '#size': 10
+        '#size': 6
         '#placeholder': '000000'
         '#autocomplete': 'off'
+        '#required_error': 'Enter the visitor ID for additional adult 2'
         '#pattern': '[0-9]{6}'
         '#pattern_error': 'Visitor ID must be a 6 digit number'
-        '#required_error': 'Enter the visitor ID for additional adult 2'
         '#states':
           required:
             ':input[name="additional_visitor_adult_number"]':
               value:
                 greater: '1'
+        '#attributes':
+          class:
+            - monospace-text
         '#label_attributes':
           style: 'min-width: 7em; display: inline-block'
           aria-label: 'Additional visitor one visitor ID'
@@ -300,7 +314,7 @@ elements: |-
         '#title': 'Date of birth'
         '#title_display': inline
         '#maxlength': 10
-        '#size': 12
+        '#size': 10
         '#placeholder': dd/mm/yyyy
         '#autocomplete': 'off'
         '#input_mask': 99/99/9999
@@ -313,9 +327,10 @@ elements: |-
               value:
                 greater: '1'
         '#attributes':
-          style: 'letter-spacing: .1em'
-          data-inputmask-placeholder: ' '
+          class:
+            - monospaced-text
           inputmode: numeric
+          data-inputmask-placeholder: ' '
         '#label_attributes':
           style: 'min-width: 7em; display: inline-block'
           aria-label: 'Additional adult 2 date of birth'
@@ -348,17 +363,20 @@ elements: |-
         '#title': 'Visitor ID'
         '#title_display': inline
         '#maxlength': 6
-        '#size': 10
+        '#size': 6
         '#placeholder': '000000'
         '#autocomplete': 'off'
+        '#required_error': 'Enter the visitor ID for additional child 1'
         '#pattern': '[0-9]{6}'
         '#pattern_error': 'Visitor ID must be a 6 digit number'
-        '#required_error': 'Enter the visitor ID for additional child 1'
         '#states':
           required:
             ':input[name="additional_visitor_child_number"]':
               value:
                 greater: '0'
+        '#attributes':
+          class:
+            - monospace-text
         '#label_attributes':
           style: 'min-width: 7em; display: inline-block'
           aria-label: 'Additional visitor three visitor ID'
@@ -367,7 +385,7 @@ elements: |-
         '#title': 'Date of birth'
         '#title_display': inline
         '#maxlength': 10
-        '#size': 12
+        '#size': 10
         '#placeholder': dd/mm/yyyy
         '#autocomplete': 'off'
         '#input_mask': 99/99/9999
@@ -380,9 +398,10 @@ elements: |-
               value:
                 greater: '0'
         '#attributes':
-          style: 'letter-spacing: .1em'
-          data-inputmask-placeholder: ' '
+          class:
+            - monospaced-text
           inputmode: numeric
+          data-inputmask-placeholder: ' '
         '#label_attributes':
           style: 'min-width: 7em; display: inline-block'
           aria-label: 'Additional child 1 date of birth'
@@ -400,17 +419,20 @@ elements: |-
         '#title': 'Visitor ID'
         '#title_display': inline
         '#maxlength': 6
-        '#size': 10
+        '#size': 6
         '#placeholder': '000000'
         '#autocomplete': 'off'
+        '#required_error': 'Enter the visitor ID for additional child 2'
         '#pattern': '[0-9]{6}'
         '#pattern_error': 'Visitor ID is not recognised'
-        '#required_error': 'Enter the visitor ID for additional child 2'
         '#states':
           required:
             ':input[name="additional_visitor_child_number"]':
               value:
                 greater: '1'
+        '#attributes':
+          class:
+            - monospaced-text
         '#label_attributes':
           style: 'min-width: 7em; display: inline-block'
           aria-label: 'Additional visitor four visitor ID'
@@ -419,7 +441,7 @@ elements: |-
         '#title': 'Date of birth'
         '#title_display': inline
         '#maxlength': 10
-        '#size': 12
+        '#size': 10
         '#placeholder': dd/mm/yyyy
         '#autocomplete': 'off'
         '#input_mask': 99/99/9999
@@ -432,9 +454,10 @@ elements: |-
               value:
                 greater: '1'
         '#attributes':
-          style: 'letter-spacing: .1em'
-          data-inputmask-placeholder: ' '
+          class:
+            - monospaced-text
           inputmode: numeric
+          data-inputmask-placeholder: ' '
         '#label_attributes':
           style: 'min-width: 7em; display: inline-block'
           aria-label: 'Additional child 2 date of birth'
@@ -452,17 +475,20 @@ elements: |-
         '#title': 'Visitor ID'
         '#title_display': inline
         '#maxlength': 6
-        '#size': 10
+        '#size': 6
         '#placeholder': '000000'
         '#autocomplete': 'off'
+        '#required_error': 'Enter the visitor ID for additional child 3'
         '#pattern': '[0-9]{6}'
         '#pattern_error': 'Visitor ID is not recognised'
-        '#required_error': 'Enter the visitor ID for additional child 3'
         '#states':
           required:
             ':input[name="additional_visitor_child_number"]':
               value:
                 greater: '2'
+        '#attributes':
+          class:
+            - monospaced-text
         '#label_attributes':
           style: 'min-width: 7em; display: inline-block'
           aria-label: 'Additional visitor four visitor ID'
@@ -471,7 +497,7 @@ elements: |-
         '#title': 'Date of birth'
         '#title_display': inline
         '#maxlength': 10
-        '#size': 12
+        '#size': 10
         '#placeholder': dd/mm/yyyy
         '#autocomplete': 'off'
         '#input_mask': 99/99/9999
@@ -484,9 +510,10 @@ elements: |-
               value:
                 greater: '2'
         '#attributes':
-          style: 'letter-spacing: .1em'
-          data-inputmask-placeholder: ' '
+          class:
+            - monospaced-text
           inputmode: numeric
+          data-inputmask-placeholder: ' '
         '#label_attributes':
           style: 'min-width: 7em; display: inline-block'
           aria-label: 'Additional child 3 date of birth'
@@ -504,17 +531,20 @@ elements: |-
         '#title': 'Visitor ID'
         '#title_display': inline
         '#maxlength': 6
-        '#size': 10
+        '#size': 6
         '#placeholder': '000000'
         '#autocomplete': 'off'
+        '#required_error': 'Enter the visitor ID for additional child 4'
         '#pattern': '[0-9]{6}'
         '#pattern_error': 'Visitor ID is not recognised'
-        '#required_error': 'Enter the visitor ID for additional child 4'
         '#states':
           required:
             ':input[name="additional_visitor_child_number"]':
               value:
                 greater: '3'
+        '#attributes':
+          class:
+            - monospaced-text
         '#label_attributes':
           style: 'min-width: 7em; display: inline-block'
           aria-label: 'Additional visitor four visitor ID'
@@ -523,7 +553,7 @@ elements: |-
         '#title': 'Date of birth'
         '#title_display': inline
         '#maxlength': 10
-        '#size': 12
+        '#size': 10
         '#placeholder': dd/mm/yyyy
         '#autocomplete': 'off'
         '#input_mask': 99/99/9999
@@ -536,9 +566,10 @@ elements: |-
               value:
                 greater: '3'
         '#attributes':
-          style: 'letter-spacing: .1em'
-          data-inputmask-placeholder: ' '
+          class:
+            - monospaced-text
           inputmode: numeric
+          data-inputmask-placeholder: ' '
         '#label_attributes':
           style: 'min-width: 7em; display: inline-block'
           aria-label: 'Additional child 4 date of birth'
@@ -556,17 +587,20 @@ elements: |-
         '#title': 'Visitor ID'
         '#title_display': inline
         '#maxlength': 6
-        '#size': 10
+        '#size': 6
         '#placeholder': '000000'
         '#autocomplete': 'off'
+        '#required_error': 'Enter the visitor ID for additional child 5'
         '#pattern': '[0-9]{6}'
         '#pattern_error': 'Visitor ID is not recognised'
-        '#required_error': 'Enter the visitor ID for additional child 5'
         '#states':
           required:
             ':input[name="additional_visitor_child_number"]':
               value:
                 greater: '4'
+        '#attributes':
+          class:
+            - monospaced-text
         '#label_attributes':
           style: 'min-width: 7em; display: inline-block'
           aria-label: 'Additional visitor four visitor ID'
@@ -575,7 +609,7 @@ elements: |-
         '#title': 'Date of birth'
         '#title_display': inline
         '#maxlength': 10
-        '#size': 12
+        '#size': 10
         '#placeholder': dd/mm/yyyy
         '#autocomplete': 'off'
         '#input_mask': 99/99/9999
@@ -588,9 +622,10 @@ elements: |-
               value:
                 greater: '4'
         '#attributes':
-          style: 'letter-spacing: .1em'
-          data-inputmask-placeholder: ' '
+          class:
+            - monospaced-text
           inputmode: numeric
+          data-inputmask-placeholder: ' '
         '#label_attributes':
           style: 'min-width: 7em; display: inline-block'
           aria-label: 'Additional child 5 date of birth'
