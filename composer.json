@@ -123,7 +123,7 @@
         "drupal/search_api": "^1.26",
         "drupal/search_api_autocomplete": "^1.7",
         "drupal/search_api_location": "^1.0@alpha",
-        "drupal/search_api_solr": "^4.2",
+        "drupal/search_api_solr": "4.x-dev@dev",
         "drupal/search_api_spellcheck": "4.0.x-dev@dev",
         "drupal/seven": "^1.0",
         "drupal/shs": "^2.0@RC",
@@ -135,7 +135,7 @@
         "drupal/structure_sync": "^2.0",
         "drupal/taxonomy_access_fix": "^4.0",
         "drupal/taxonomy_entity_index": "^1.7",
-        "drupal/telephone_plus": "^2.0@beta",
+        "drupal/telephone_plus": "2.0.x-dev@dev",
         "drupal/token": "^1.13",
         "drupal/token_filter": "^2.1",
         "drupal/twig_field_value": "^2.0",
@@ -254,6 +254,9 @@
             },
             "drupal/scheduled_transitions": {
                 "Add pagination to target revision candidates list": "https://www.drupal.org/files/issues/2024-02-01/scheduled_transitions-page-revisions-3241497-13.patch"
+            },
+            "drupal/search_api": {
+                "Declaration of Drupal\\search_api_solr\\Plugin\\search_api\\backend\\SearchApiSolrBackend::__sleep() must be compatible #3454939": "https://www.drupal.org/files/issues/2024-06-17/3454939-search-api-solr-core-10.patch"
             }
         },
         "composer-exit-on-patch-failure": true,
