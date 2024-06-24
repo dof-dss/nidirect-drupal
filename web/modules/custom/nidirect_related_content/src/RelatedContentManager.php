@@ -283,7 +283,7 @@ class RelatedContentManager {
     }
 
     // Sort the content list by title alphabetically.
-    uasort($this->content, function($a, $b) {
+    uasort($this->content, function ($a, $b) {
       return strcmp($a['title_sort'], $b['title_sort']);
     });
   }
