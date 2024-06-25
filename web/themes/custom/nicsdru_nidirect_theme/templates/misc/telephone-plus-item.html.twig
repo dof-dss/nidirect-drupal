@@ -1,0 +1,52 @@
+{#
+/**
+ * @file
+ * Template for the Telephone Plus formatter.
+ *
+ * @ingroup themeable
+ */
+#}
+{% set title_attributes = create_attribute() %}
+{% set number_attributes = create_attribute() %}
+{%
+  set title_classes = [
+    'telephone-plus__item-title',
+    vcard ? 'type',
+  ]
+%}
+{%
+  set number_classes = [
+    'telephone-plus__item-number',
+    vcard ? 'value',
+  ]
+%}
+
+{#
+  If phone number title is empty, add a visually hidden title.
+#}
+{% if title is empty %}
+  {% set title_classes = title_classes|merge(['visually-hidden']) %}
+  {% set title = 'Phone' %}
+{% endif %}
+
+{#
+  nidirect style guide insists extensions should be prefixed with
+  "ext." instead of "x".
+#}
+{% set number = number | replace({' x': ' ext. '}) %}
+
+{% apply spaceless %}
+  <span {{ title_attributes.addClass(title_classes) }}>{{ title }}:</span>
+
+  {% if url %}
+    <a href="{{ url }}" {{ number_attributes.addClass(number_classes) }}>{{ number }}</a>
+  {% else %}
+    <span {{ number_attributes.addClass(number_classes) }}>{{ number }}</span>
+  {% endif %}
+
+  {% if supplementary %}
+    &nbsp;<span class="telephone-plus__item-supplementary">{{ supplementary }}</span>
+  {% endif %}
+{% endapply %}
+
+
