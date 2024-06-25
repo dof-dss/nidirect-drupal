@@ -17,6 +17,7 @@ dependencies:
     - field.field.node.gp_practice.field_gp_surgery_name
     - field.field.node.gp_practice.field_location
     - field.field.node.gp_practice.field_meta_tags
+    - field.field.node.gp_practice.field_phone
     - field.field.node.gp_practice.field_telephone
     - filter.format.basic_html
     - node.type.gp_practice
@@ -26,7 +27,7 @@ dependencies:
     - geolocation
     - layout_builder
     - link
-    - nidirect_contacts
+    - telephone_plus
     - user
 third_party_settings:
   layout_builder:
@@ -37,7 +38,7 @@ third_party_settings:
       children:
         - field_address
         - field_gp_practice_website
-        - field_telephone
+        - field_phone
       label: address
       parent_name: ''
       region: content
@@ -103,7 +104,7 @@ content:
       rel: ''
       target: ''
     third_party_settings: {  }
-    weight: 6
+    weight: 5
     region: content
   field_gp_prescriptions:
     type: link
@@ -438,11 +439,12 @@ content:
     third_party_settings: {  }
     weight: 5
     region: content
-  field_telephone:
-    type: nidirect_telephone_link
+  field_phone:
+    type: telephone_plus
     label: hidden
     settings:
       vcard: true
+      link: true
     third_party_settings: {  }
     weight: 7
     region: content
@@ -458,6 +460,7 @@ hidden:
   field_gp_practice_no: true
   field_gp_surgery_name: true
   field_meta_tags: true
+  field_telephone: true
   gp_names: true
   langcode: true
   links: true

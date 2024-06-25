@@ -10,7 +10,7 @@ dependencies:
     - field.storage.node.field_di_lastname
     - field.storage.node.field_email_address
     - field.storage.node.field_link_url
-    - field.storage.node.field_telephone
+    - field.storage.node.field_phone
     - search_api.index.contacts
     - taxonomy.vocabulary.drive_instr_categories
   module:
@@ -421,7 +421,7 @@ display:
     position: 2
     display_options:
       cache:
-        type: none
+        type: search_api_none
       defaults:
         cache: false
       exposed_block: true
@@ -969,10 +969,10 @@ display:
             use_highlighting: false
             multi_type: separator
             multi_separator: ', '
-        field_telephone:
-          id: field_telephone
+        field_phone:
+          id: field_phone
           table: search_api_datasource_contacts_entity_node
-          field: field_telephone
+          field: field_phone
           relationship: none
           group_type: group
           admin_label: ''
@@ -982,7 +982,7 @@ display:
           exclude: false
           alter:
             alter_text: true
-            text: '{{ field_telephone__telephone_title }}: {{ field_telephone__telephone_number }}'
+            text: '{{ field_phone__telephone_title }}: {{ field_phone__telephone_number }}'
             make_link: false
             path: ''
             absolute: false
@@ -1274,7 +1274,7 @@ display:
             field_di_lastname:
               alias: LastName
               raw_output: false
-            field_telephone:
+            field_phone:
               alias: Telephone
               raw_output: false
             field_email_address:
@@ -1327,5 +1327,5 @@ display:
         - 'config:field.storage.node.field_di_lastname'
         - 'config:field.storage.node.field_email_address'
         - 'config:field.storage.node.field_link_url'
-        - 'config:field.storage.node.field_telephone'
+        - 'config:field.storage.node.field_phone'
         - 'config:search_api.index.contacts'

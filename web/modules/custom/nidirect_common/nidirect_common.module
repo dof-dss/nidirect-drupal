@@ -294,7 +294,7 @@ function nidirect_common_validate_date_field(&$form_state, $date_field) {
  * Form validation handler for telephone fields.
  */
 function nidirect_common_validate_telephone(&$form, FormStateInterface $form_state) {
-  $telephones = $form_state->getValues()['field_telephone'];
+  $telephones = $form_state->getValues()['field_phone'];
 
   foreach ($telephones as $index => $telephone) {
     // Prevent processing of the 'add more' widget.
@@ -303,7 +303,7 @@ function nidirect_common_validate_telephone(&$form, FormStateInterface $form_sta
       // Verify that the number doesn't contain alphabetic characters with
       // some exceptions: (,),.,+,-.
       if (!empty($number) && preg_match('/[^\d\s+().-]/m', $number)) {
-        $form_state->setErrorByName('field_telephone][' . $index . '][telephone_container][telephone_number', t('Telephone number invalid.'));
+        $form_state->setErrorByName('field_phone][' . $index . '][telephone_container][telephone_number', t('Telephone number invalid.'));
       }
     }
   }
