@@ -6,6 +6,7 @@ dependencies:
     - taxonomy.vocabulary.drive_instr_categories
   module:
     - feeds_ex
+    - feeds_fetcher_headers
     - feeds_log
     - taxonomy
 third_party_settings:
@@ -29,11 +30,14 @@ label: 'AIS categories'
 id: ais_categories
 description: 'Imports driving instructor categories'
 help: ''
-import_period: 2419200
-fetcher: upload
+import_period: 86400
+fetcher: httpfetcherheaders
 fetcher_configuration:
-  allowed_extensions: 'txt csv tsv xml opml json'
-  directory: 'private://feeds'
+  auto_detect_feeds: 0
+  use_pubsubhubbub: 0
+  always_download: 0
+  fallback_hub: ''
+  request_timeout: '30'
 parser: jsonpath
 parser_configuration:
   context:
@@ -51,6 +55,8 @@ processor_configuration:
   update_existing: 1
   update_non_existent: _delete
   skip_hash_check: false
+  skip_validation: false
+  skip_validation_types: {  }
   authorize: false
   revision: true
   expire: -1

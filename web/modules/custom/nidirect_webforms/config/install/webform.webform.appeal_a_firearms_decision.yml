@@ -27,28 +27,25 @@ elements: |-
       '#type': fieldset
       '#title': 'Notification details'
       '#format': container
-      notification_ref_no:
+      psni_ref_no:
         '#type': textfield
-        '#title': 'Notification reference number'
+        '#title': 'PSNI reference number'
         '#description': "Enter the reference number shown on the Chief Constable's letter of notification."
         '#description_display': before
         '#maxlength': 20
         '#size': 22
         '#autocomplete': 'off'
         '#required': true
-        '#required_error': 'Notification reference number is required'
-        '#pattern': '[A-Za-z0-9]{5,20}'
-        '#pattern_error': 'Notification reference number is not recognised'
+        '#required_error': 'PSNI reference number is required'
         '#attributes':
           oninput: 'this.value = this.value.toUpperCase()'
       notification_date:
         '#type': date
-        '#title': 'Notification date'
-        '#description': "Enter the date shown on the Chief Constable's letter of notification."
+        '#title': 'Date notification received'
+        '#description': "Enter the date when you received the Chief Constable's letter of notification."
         '#description_display': before
         '#required': true
         '#required_error': 'Date of notification is required'
-        '#date_date_min': '-1 month'
         '#date_date_max': today
   your_details_page:
     '#type': webform_wizard_page
@@ -96,8 +93,8 @@ elements: |-
         '#required_error': 'Date of birth is required'
         '#attributes':
           autocomplete: bday
-          data-msg-max: 'You must be at least 18 years old'
-        '#date_date_max': '-18 years'
+          data-msg-max: 'You must be at least 16 years old'
+        '#date_date_max': '-16 years'
       daytime_telephone_number:
         '#type': tel
         '#title': 'Daytime telephone number'
@@ -230,20 +227,17 @@ elements: |-
     decision_being_appealed:
       '#type': webform_section
       '#title': 'Decision being appealed'
+      '#description_display': before
       '#format': container
-      what_decision_are_you_appealing:
-        '#type': textarea
-        '#title': 'What is the decision of the Chief Constable you are appealing against?'
-        '#description': 'Use plain text only.'
-        '#description_display': before
-        '#maxlength': 3000
-        '#rows': 10
-        '#autocomplete': 'off'
-        '#required': true
-        '#required_error': 'Enter details of the decision you are appealing'
-        '#counter_type': character
-        '#counter_minimum': 1
-        '#counter_maximum': 3000
+      decisions_which_can_be_appealed:
+        '#type': radios
+        '#title': 'Which of the following decisions by the Chief Constable do you want to appeal?'
+        '#options':
+          'a refusal to grant or vary any certificate': 'a refusal to grant or vary any certificate'
+          'a revocation of a certificate': 'a revocation of a certificate'
+          'a condition attached to any certificate or the variation of such a condition': 'a condition attached to any certificate or the variation of such a condition'
+          'a requirement to surrender a certificate of approval under Article 17(3) or 18(2)': 'a requirement to surrender a certificate of approval under Article 17(3) or 18(2)'
+          'an order under Article 72(4)': 'an order under Article 72(4)'
   reason_for_appeal_page:
     '#type': webform_wizard_page
     '#title': 'Reason for appeal'
@@ -269,7 +263,7 @@ elements: |-
     '#display_on': view
     '#markup': |-
       <p class="info-notice info-notice--warning" role="alert">
-      By selecting <strong>Submit appeal</strong> you are declaring that all information you have provided is correct.  Select <strong>Previous</strong> if you need to go back to correct anything. 
+      By selecting <strong>Submit appeal</strong> you are declaring that all information you have provided is correct.  Select <strong>Previous</strong> if you need to go back to correct anything.
       </p>
   actions:
     '#type': webform_actions
@@ -305,7 +299,7 @@ javascript: |-
               $errMsg.text('The notification date must be within the last month.');
           }
       });
-    
+
       // Alter date of birth validation message.
       $(once('dobValidation', '#edit-date-of-birth')).each(function () {
           const today = new Date();
@@ -313,9 +307,9 @@ javascript: |-
           const dateOfBirth = new Date($(this).val());
           const $errMsg = $(this).next('.form-item--error-message');
           minDate.setYear(minDate.getYear() - 1);
-         
+
           if (dateOfBirth > minDate) {
-              $errMsg.text('You must be at least 18 years old.');
+              $errMsg.text('You must be at least 16 years old.');
           }
       });
 
@@ -540,16 +534,16 @@ handlers:
 
             <div role="main" style="font-size: medium; padding: 0 0 1em; margin: 0 0 1em; border-bottom: 1px solid;">
                 <p>
-                  Submitted: 
+                  Submitted:
                   <time datetime="[webform_submission:created]">
                    [webform_submission:created]
                   </time>
                 </p>
-                
+
                 [webform_submission:values]
-                
+
             </div>
-            
+
         </div>
       excluded_elements:
         notification_info: notification_info
@@ -621,7 +615,7 @@ handlers:
 
             <div role="footer" style="font-size: medium">
                 <p>
-                    We will reply to your appeal within X days of receiving your submission.
+                   The information you have provided will be reviewed and we will contact you if any further information is required.
                 </p>
 
                 <p>

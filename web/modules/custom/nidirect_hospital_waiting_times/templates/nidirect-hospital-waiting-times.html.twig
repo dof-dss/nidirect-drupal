@@ -1,23 +1,54 @@
 <div id="emergency-department-average-waiting-times">
   {% if hospitals|length > 0 %}
-  <p>Last updated: {{ updated|date('g.i a, l j F Y') }}.</p>
-  <table>
-    <tbody>
-      <tr>
-        <th>Hospital/Unit</th>
-        <th>Opening hours</th>
-        <th>Average waiting time to be seen</th>
-      </tr>
-      {% for hospital in hospitals %}
-      <tr>
-        <td>{{ hospital.name }} - {{ hospital.type }}</td>
-        <td>{{ hospital.hours }}</td>
-        <td>{{ hospital.wait }}</td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+    {% if hospitals_non_emergency|length > 0 %}
+      <h3>Minor Injury Units / Urgent Care services</h3>
+      <p class="small-text">Last updated: {{ updated|date('g.i a, l j F Y') }}.</p>
+      <table class="hospital-waiting-times">
+        <tbody>
+        <tr>
+          <th class="unit">Hospital/Unit</th>
+          <th class="opening-hours">Opening hours</th>
+          <th class="wait">Average waiting time to be seen</th>
+        </tr>
+        {% for hospital in hospitals_non_emergency %}
+          <tr>
+            <td>
+              <span class="name">{{ hospital.name }}</span><br>
+              <span class="type">{{ hospital.type }}</span>
+            </td>
+            <td>{{ hospital.hours }}</td>
+            <td>{{ hospital.wait }}</td>
+          </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    {% endif %}
+
+    {% if hospitals_emergency|length > 0 %}
+      <h3>Emergency Departments</h3>
+      <p class="small-text">Last updated: {{ updated|date('g.i a, l j F Y') }}.</p>
+      <table class="hospital-waiting-times">
+        <tbody>
+        <tr>
+          <th class="unit">Hospital/Unit</th>
+          <th class="opening-hours">Opening hours</th>
+          <th class="wait">Average waiting time to be seen</th>
+        </tr>
+        {% for hospital in hospitals_emergency %}
+          <tr>
+            <td>
+              <span class="name">{{ hospital.name }}</span><br>
+              <span class="type">{{ hospital.type }}</span>
+            </td>
+            <td>{{ hospital.hours }}</td>
+            <td>{{ hospital.wait }}</td>
+          </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    {% endif %}
+
   {% else %}
-  <p>Sorry, we are unable to display the hospital waiting times.</p>
+  <p class="info-notice info-notice--error">Sorry, we are unable to display the hospital waiting times. Try refreshing this page.</p>
   {% endif %}
 </div>
