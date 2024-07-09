@@ -5,8 +5,8 @@ uuid: 4aeec51b-9eb4-4468-81c6-0c1d8ac9e55a
 popup_enabled: true
 popup_clicking_confirmation: false
 popup_scrolling_confirmation: false
-eu_only: null
-eu_only_js: null
+eu_only: false
+eu_only_js: false
 popup_position: false
 fixed_top_position: false
 popup_info:
@@ -57,6 +57,7 @@ set_cookie_session_zero_on_disagree: 0
 cookie_lifetime: 365
 use_mobile_message: false
 use_bare_css: true
+use_olivero_css: false
 disagree_do_not_show_popup: false
 reload_page: false
 reload_options: null
@@ -65,7 +66,9 @@ cookie_name: ''
 exclude_uid_1: true
 better_support_for_screen_readers: true
 method: opt_in
-disabled_javascripts: 'public://google_tag/nidirect/google_tag.script.js'
+disabled_javascripts: |-
+  modules/contrib/google_tag/js/gtag.js||google_tag/gtag
+  modules/contrib/google_tag/js/gtm.js||google_tag/gtm
 automatic_cookies_removal: true
 allowed_cookies: ''
 consent_storage_method: do_not_store
@@ -97,6 +100,10 @@ cookie_categories: ''
 fix_first_cookie_category: true
 select_all_categories_by_default: false
 accessibility_focus: false
+close_button_action: close_banner
+reject_button_label: ''
+reject_button_enabled: false
+close_button_enabled: false
 dependencies:
   config:
     - filter.format.basic_html
