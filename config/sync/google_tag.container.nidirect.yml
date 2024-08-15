@@ -4,13 +4,14 @@ status: true
 dependencies:
   module:
     - system
+    - user
 id: nidirect
 label: NIDirect
 weight: 0
 tag_container_ids:
   - GTM-KLM7XRX
 advanced_settings:
-  consent_mode: true
+  consent_mode: false
   gtm:
     GTM-KLM7XRX:
       data_layer: dataLayer
@@ -39,6 +40,13 @@ conditions:
       /node/*/delete
       /user/*/edit*
       /user/*/cancel*
+  user_role:
+    id: user_role
+    negate: false
+    context_mapping:
+      user: '@user.current_user_context:current_user'
+    roles:
+      anonymous: anonymous
 events:
   custom: {  }
   generate_lead:
