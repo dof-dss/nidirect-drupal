@@ -405,6 +405,11 @@ function nidirect_common_clientside_validation_should_validate($element, FormSta
     return TRUE;
   }
 
+  // Turn off for GP Practice forms due to a bug which sets the Link fields as required if there is existing content.
+  if (str_ends_with($form_id, 'node_gp_practice_form')) {
+    return TRUE;
+  }
+
   // Turn off clientside validation jquery functionality on anything that isn't
   // a webform form.
   // Also see: nidirect_common_page_attachments_alter.
