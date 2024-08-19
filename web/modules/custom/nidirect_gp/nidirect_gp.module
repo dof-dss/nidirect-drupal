@@ -104,7 +104,6 @@ function nidirect_gp_entity_extra_field_info() {
  * Implements hook_form_alter().
  */
 function nidirect_gp_form_alter(&$form, FormStateInterface $form_state, $form_id) {
-
   // Process GP Practices View form.
   if ($form['#id'] == 'views-exposed-form-gp-practices-find-a-gp') {
     $form['categories']['#attributes']['class'][] = 'container-inline';
@@ -117,9 +116,19 @@ function nidirect_gp_form_alter(&$form, FormStateInterface $form_state, $form_id
     if (empty($form['title']['widget'][0]['value']['#default_value'])) {
       $form['title']['widget'][0]['value']['#default_value'] = ' ';
     }
-    $form['title']['widget'][0]['value']['#description'] =
-      t('You cannot edit the title. It is created automatically from the practice name and surgery name.');
-    $form['title']['#disabled'] = 'TRUE';
+
+    // Allow specified roles access to edit the node title (See NID-483)
+    if (count(array_intersect(\Drupal::currentUser()->getRoles(), [
+      'gp_supervisor_user',
+      'administrator'
+      ])) > 0) {
+      $form['title']['widget'][0]['value']['#description'] = t('You can edit this title but it will be automatically replaced with the practice name and surgery name.');
+    }
+    else {
+      $form['title']['#disabled'] = 'TRUE';
+      $form['title']['widget'][0]['value']['#description'] =
+        t('You cannot edit the title. It is created automatically from the practice name and surgery name.');
+    }
 
     // Hide the Prescriptions URL title as we will use a default.
     $form['field_gp_prescriptions']['widget']['0']['title']['#type'] = 'hidden';

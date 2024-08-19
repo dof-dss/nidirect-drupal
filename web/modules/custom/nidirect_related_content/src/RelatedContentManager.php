@@ -283,7 +283,9 @@ class RelatedContentManager {
     }
 
     // Sort the content list by title alphabetically.
-    array_multisort(array_column($this->content, 'title_sort'), SORT_ASC, $this->content);
+    uasort($this->content, function ($a, $b) {
+      return strcmp($a['title_sort'], $b['title_sort']);
+    });
   }
 
   /**

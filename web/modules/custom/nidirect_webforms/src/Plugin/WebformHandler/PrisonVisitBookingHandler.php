@@ -133,7 +133,7 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
       }
     }
 
-    // Show available time slots in the form.
+    // Show available timeslots in the form.
     if ($page === 'visit_preferred_day_and_time' && !empty($this->bookingReference)) {
 
       // Reset timeslots when user changes visit_order_number.
@@ -173,13 +173,13 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
         $visit_booking_ref_valid_from = clone $visit_booking_week_start;
       }
 
+      // Alter form slots to correspond with available slots.
       if (!empty($available_slots)) {
-        // Alter form slots to correspond with available slots.
+
         for ($i = 4; $i >= 1; $i--) {
 
           // Form slots for each week.
           $form_slots_week = &$form['elements']['visit_preferred_day_and_time']['slots_week_' . $i];
-
           $webform_submission_slots_week = $webform_submission->getWebform()->getElement('slots_week_' . $i, TRUE);
 
           if ($form_slots_week['#access'] = FALSE) {
@@ -321,7 +321,10 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state, WebformSubmissionInterface $webform_submission) {
-    if ($form_state->isValidationComplete() && $form_state->get('current_page') === 'webform_preview') {
+
+    $page = $form_state->get('current_page');
+
+    if ($form_state->isValidationComplete() && $page === 'webform_preview') {
 
       $temp_store = $this->tempStoreFactory->get('nidirect_webforms.prison_visit_booking');
       $remember_visitors = $form_state->getValue('additional_visitors_remember') === 'yes' ?? FALSE;

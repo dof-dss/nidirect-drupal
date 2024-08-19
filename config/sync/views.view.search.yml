@@ -259,7 +259,7 @@ display:
             offset_label: Offset
           quantity: 9
       exposed_form:
-        type: basic
+        type: input_required
         options:
           submit_button: Search
           reset_button: false
@@ -268,6 +268,8 @@ display:
           expose_sort_order: true
           sort_asc_label: Asc
           sort_desc_label: Desc
+          text_input_required: '<p>Try searching using just a few specific words.</p>'
+          text_input_required_format: basic_html
       access:
         type: none
         options: {  }
@@ -297,7 +299,9 @@ display:
           plugin_id: text
           empty: true
           content:
-            value: '<p>Try searching again using different words or browse the <a href="/sitemap">sitemap</a>.</p>'
+            value: |-
+              <h2 class="view--count">0 results</h2>
+              <p>Try searching again using just a few specific words.</p>
             format: basic_html
           tokenize: false
       sorts:
@@ -477,6 +481,7 @@ display:
         - 'config:field.storage.node.field_summary'
         - 'config:field.storage.node.field_teaser'
         - 'config:search_api.index.default_content'
+        - 'search_api_list:default_content'
   search_page:
     id: search_page
     display_title: Page
@@ -711,7 +716,10 @@ display:
           empty: false
           content: '<h2 class="view--count">@total results</h2>'
       footer: {  }
-      display_extenders: {  }
+      display_extenders:
+        metatag_display_extender:
+          metatags: {  }
+          tokenize: false
       path: search
     cache_metadata:
       max-age: -1
@@ -725,6 +733,7 @@ display:
         - 'config:field.storage.node.field_summary'
         - 'config:field.storage.node.field_teaser'
         - 'config:search_api.index.default_content'
+        - 'search_api_list:default_content'
   site_search:
     id: site_search
     display_title: 'Embed: Site search'
@@ -943,3 +952,4 @@ display:
         - 'user.node_grants:view'
       tags:
         - 'config:search_api.index.default_content'
+        - 'search_api_list:default_content'
