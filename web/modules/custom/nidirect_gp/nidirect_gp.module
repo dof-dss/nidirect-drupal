@@ -130,11 +130,23 @@ function nidirect_gp_form_alter(&$form, FormStateInterface $form_state, $form_id
         t('You cannot edit the title. It is created automatically from the practice name and surgery name.');
     }
 
-    // Hide the Prescriptions URL title as we will use a default.
-    $form['field_gp_prescriptions']['widget']['0']['title']['#type'] = 'hidden';
+    // Replace link fields set as 'entity reference' to textfields, remove
+    // the autocomplete description and FAPI #states which prevents the removal
+    // of previously set URLs.
+
+    $form['field_gp_appointments']['widget']['0']['uri']['#type'] = 'textfield';
+    unset($form['field_gp_appointments']['widget']['0']['uri']['#states']);
+    unset($form['field_gp_appointments']['widget']['0']['uri']['#description']);
 
     // Hide the Appointments URL title as we will use a default.
     $form['field_gp_appointments']['widget']['0']['title']['#type'] = 'hidden';
+
+    $form['field_gp_prescriptions']['widget']['0']['uri']['#type'] = 'textfield';
+    unset($form['field_gp_prescriptions']['widget']['0']['uri']['#states']);
+    unset($form['field_gp_prescriptions']['widget']['0']['uri']['#description']);
+
+    // Hide the Prescriptions URL title as we will use a default.
+    $form['field_gp_prescriptions']['widget']['0']['title']['#type'] = 'hidden';
 
     // Add a validator.
     array_unshift($form['#validate'], 'nidirect_gp_gp_practice_form_validate');
