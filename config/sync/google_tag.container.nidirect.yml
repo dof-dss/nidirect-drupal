@@ -4,28 +4,31 @@ status: true
 dependencies:
   module:
     - system
+    - user
 id: nidirect
 label: NIDirect
 weight: 0
 tag_container_ids:
   - GTM-KLM7XRX
 advanced_settings:
+  consent_mode: false
   gtm:
-    data_layer: dataLayer
-    include_classes: false
-    allowlist_classes: |-
-      google
-      nonGooglePixels
-      nonGoogleScripts
-      nonGoogleIframes
-    blocklist_classes: |-
-      customScripts
-      customPixels
-    include_environment: false
-    environment_id: ''
-    environment_token: ''
+    GTM-KLM7XRX:
+      data_layer: dataLayer
+      include_classes: false
+      allowlist_classes: ''
+      blocklist_classes: ''
+      include_environment: false
+      environment_id: ''
+      environment_token: ''
 dimensions_metrics: {  }
 conditions:
+  response_code:
+    id: response_code
+    negate: true
+    response_codes: |-
+      403
+      404
   request_path:
     id: request_path
     negate: true
@@ -37,20 +40,21 @@ conditions:
       /node/*/delete
       /user/*/edit*
       /user/*/cancel*
-  response_code:
-    id: response_code
-    negate: true
-    response_codes: |-
-      403
-      404
+  user_role:
+    id: user_role
+    negate: false
+    context_mapping:
+      user: '@user.current_user_context:current_user'
+    roles:
+      anonymous: anonymous
 events:
-  search: {  }
   custom: {  }
-  login:
-    method: CMS
-  webform_purchase: {  }
-  sign_up:
-    method: CMS
   generate_lead:
     value: ''
     currency: ''
+  login:
+    method: CMS
+  search: {  }
+  sign_up:
+    method: CMS
+  webform_purchase: {  }
