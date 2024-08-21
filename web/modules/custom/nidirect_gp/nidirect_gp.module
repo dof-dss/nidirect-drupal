@@ -130,16 +130,28 @@ function nidirect_gp_form_alter(&$form, FormStateInterface $form_state, $form_id
         t('You cannot edit the title. It is created automatically from the practice name and surgery name.');
     }
 
-    // Hide the Prescriptions URL title as we will use a default.
-    $form['field_gp_prescriptions']['widget']['0']['title']['#type'] = 'hidden';
+    foreach ([
+      'field_gp_practice_website',
+      'field_gp_appointments',
+      'field_gp_prescriptions'
+    ] as $link_field) {
+      // Replace link fields set as 'entity reference' to textfields, remove
+      // the autocomplete description and the FAPI #states which prevents
+      // the removal of previous URLs.
+      $form[$link_field]['widget']['0']['uri']['#type'] = 'textfield';
+      unset($form[$link_field]['widget']['0']['uri']['#description']);
+      unset($form[$link_field]['widget']['0']['uri']['#states']);
 
-    // Hide the Appointments URL title as we will use a default.
-    $form['field_gp_appointments']['widget']['0']['title']['#type'] = 'hidden';
+      // Hide the title as this will be populated by JS for some fields.
+      if ($link_field !== 'field_gp_practice_website') {
+        $form[$link_field]['widget']['0']['title']['#type'] = 'hidden';
+      }
+    }
 
     // Add a validator.
     array_unshift($form['#validate'], 'nidirect_gp_gp_practice_form_validate');
-    // Prepend a submit callback.
-    array_unshift($form['#submit'], 'nidirect_gp_gp_practice_form_submit');
+
+    $form['#attached']['library'][] = 'nidirect_gp/gp_practice_admin';
   }
 }
 
@@ -211,33 +223,6 @@ function nidirect_gp_gp_practice_form_validate(&$form, FormStateInterface $form_
       'field_gp_practice_name',
       t('You must provide a surgery name, a practice name, or both. Both cannot be left blank.')
     );
-  }
-}
-
-/**
- * Submit callback for GP Practice node form.
- */
-function nidirect_gp_gp_practice_form_submit(&$form, FormStateInterface $form_state) {
-  foreach (['field_gp_prescriptions', 'field_gp_appointments'] as $field_id) {
-    // If we have URL values for specific fields, set a fixed text value.
-    $field = $form_state->getValue($field_id);
-
-    if (empty(reset($field['uri']))) {
-      // Skip items with blank URI values.
-      continue;
-    }
-
-    // If we have a URI value then we want to use fixed labels for the link
-    // text on these fields.
-    if ($field_id == 'field_gp_prescriptions') {
-      $field[0]['title'] = t('Repeat prescriptions');
-    }
-
-    if ($field_id == 'field_gp_appointments') {
-      $field[0]['title'] = t('Online appointments');
-    }
-
-    $form_state->setValue($field_id, $field);
   }
 }
 
