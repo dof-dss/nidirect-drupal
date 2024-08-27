@@ -14,6 +14,7 @@ dependencies:
     - field.field.node.contact.field_location
     - field.field.node.contact.field_meta_tags
     - field.field.node.contact.field_next_audit_due
+    - field.field.node.contact.field_phone
     - field.field.node.contact.field_related_info
     - field.field.node.contact.field_site_themes
     - field.field.node.contact.field_summary
@@ -60,7 +61,7 @@ third_party_settings:
         - field_address
         - field_location
         - field_email_address
-        - field_telephone
+        - field_phone
         - field_contact_website
         - field_contact_hours
         - field_site_themes
@@ -128,7 +129,7 @@ content:
     third_party_settings: {  }
   field_contact_hours:
     type: text_textarea
-    weight: 8
+    weight: 9
     region: content
     settings:
       rows: 5
@@ -136,7 +137,7 @@ content:
     third_party_settings: {  }
   field_contact_website:
     type: link_default
-    weight: 7
+    weight: 8
     region: content
     settings:
       placeholder_url: ''
@@ -160,6 +161,7 @@ content:
         conditional_initialization: 'no'
         conditional_description: 'Clicking this button will embed a map.'
         conditional_label: 'Show map'
+        conditional_viewport_threshold: 0.8
         map_features:
           google_maps_layer_bicycling:
             enabled: false
@@ -268,6 +270,11 @@ content:
             weight: 0
             settings:
               position: RIGHT_CENTER
+          control_tile_layers:
+            enabled: false
+            weight: 0
+            settings:
+              position: TOP_LEFT
           control_zoom:
             enabled: true
             weight: 0
@@ -293,6 +300,122 @@ content:
           google_maps_layer_transit:
             enabled: false
             weight: 0
+        data_layers:
+          'geolocation_default_layer:default':
+            enabled: true
+            weight: -1
+            settings:
+              features:
+                marker_clusterer:
+                  enabled: false
+                  weight: 0
+                marker_icon:
+                  enabled: false
+                  weight: 0
+                  settings:
+                    marker_icon_path: ''
+                    anchor:
+                      x: 0
+                      'y': 0
+                    origin:
+                      x: 0
+                      'y': 0
+                    label_origin:
+                      x: 0
+                      'y': 0
+                    size:
+                      width: null
+                      height: null
+                    scaled_size:
+                      width: null
+                      height: null
+                marker_infobubble:
+                  enabled: false
+                  weight: 0
+                  settings:
+                    close_other: 1
+                    close_button: 0
+                    close_button_src: ''
+                    shadow_style: 0
+                    padding: 10
+                    border_radius: 8
+                    border_width: 2
+                    border_color: '#039be5'
+                    background_color: '#fff'
+                    min_width: null
+                    max_width: 550
+                    min_height: null
+                    max_height: null
+                    arrow_style: 2
+                    arrow_position: 30
+                    arrow_size: 10
+                marker_infowindow:
+                  enabled: false
+                  weight: 0
+                  settings:
+                    info_window_solitary: true
+                    disable_auto_pan: true
+                    info_auto_display: false
+                    max_width: null
+                marker_label:
+                  enabled: false
+                  weight: 0
+                  settings:
+                    color: ''
+                    font_family: ''
+                    font_size: ''
+                    font_weight: ''
+                marker_opacity:
+                  enabled: false
+                  weight: 0
+                  settings:
+                    opacity: 1.0
+                marker_zoom_by_anchor:
+                  enabled: false
+                  weight: 0
+                  settings:
+                    marker_zoom_anchor_id: ''
+                spiderfying:
+                  enabled: false
+                  weight: 0
+                  settings:
+                    spiderfiable_marker_path: /modules/contrib/geolocation/modules/geolocation_google_maps/images/marker-plus.svg
+                    markersWontMove: true
+                    markersWontHide: false
+                    keepSpiderfied: true
+                    ignoreMapClick: false
+                    nearbyDistance: 20
+                    circleSpiralSwitchover: 9
+                    circleFootSeparation: 23
+                    spiralFootSeparation: 26
+                    spiralLengthStart: 11
+                    spiralLengthFactor: 4
+                    legWeight: 1.5
+                    spiralIconWidth: 23
+                    spiralIconHeight: 32
+        tile_layers:
+          geolocation_tile_thunderforest:
+            settings:
+              apikey: ''
+            layers:
+              'geolocation_tile_thunderforest:cycle':
+                enabled: 0
+              'geolocation_tile_thunderforest:transport':
+                enabled: 0
+              'geolocation_tile_thunderforest:transport-dark':
+                enabled: 0
+              'geolocation_tile_thunderforest:spinal-map':
+                enabled: 0
+              'geolocation_tile_thunderforest:landscape':
+                enabled: 0
+              'geolocation_tile_thunderforest:outdoors':
+                enabled: 0
+              'geolocation_tile_thunderforest:pioneer':
+                enabled: 0
+              'geolocation_tile_thunderforest:mobile-atlas':
+                enabled: 0
+              'geolocation_tile_thunderforest:neighbourhood':
+                enabled: 0
         type: ROADMAP
         zoom: 10
         minZoom: 0
@@ -303,33 +426,18 @@ content:
       allow_override_map_settings: 0
       hide_inputs: false
       centre:
-        ipstack:
-          enable: false
-          weight: 0
-          settings:
-            location_option_id: ipstack
-            access_key: ''
-          map_center_id: location_plugins
-        fixed_value:
-          enable: false
-          weight: 0
-          settings:
-            location_option_id: fixed_value
-            latitude: '0'
-            longitude: '0'
-          map_center_id: location_plugins
-        fit_shapes:
-          enable: false
-          weight: 0
-          settings:
-            min_zoom: null
-          map_center_id: fit_shapes
         fit_bounds:
           enable: true
           weight: 0
           settings:
             min_zoom: null
           map_center_id: fit_bounds
+        fit_shapes:
+          enable: false
+          weight: 0
+          settings:
+            min_zoom: null
+          map_center_id: fit_shapes
         fixed_boundaries:
           enable: false
           weight: 0
@@ -339,11 +447,42 @@ content:
             north: ''
             east: ''
           map_center_id: fixed_boundaries
+        fixed_value:
+          enable: false
+          weight: 0
+          settings:
+            location_option_id: fixed_value
+            latitude: '0'
+            longitude: '0'
+          map_center_id: location_plugins
+        ipstack:
+          enable: false
+          weight: 0
+          settings:
+            location_option_id: ipstack
+            access_key: ''
+          map_center_id: location_plugins
     third_party_settings:
       geolocation_address:
-        enable: true
+        enable: false
         address_field: field_address
         geocoder: google_geocoding_api
+        geocoder_settings:
+          label: Address
+          description: 'Enter an address to be localized.'
+          autocomplete_min_length: 1
+          component_restrictions:
+            route: ''
+            country: UK
+            administrative_area: ''
+            locality: ''
+            postal_code: ''
+          boundary_restriction:
+            south: ''
+            west: ''
+            north: ''
+            east: ''
+          region: gb
         sync_mode: auto
         button_position: LEFT_TOP
         direction: duplex
@@ -354,22 +493,6 @@ content:
           locality: false
           administrative-area: false
           postal-code: false
-        geocoder_settings:
-          label: Address
-          description: 'Enter an address to be localized.'
-          autocomplete_min_length: '1'
-          component_restrictions:
-            route: ''
-            locality: ''
-            administrative_area: ''
-            postal_code: ''
-            country: UK
-          boundary_restriction:
-            south: ''
-            west: ''
-            north: ''
-            east: ''
-          region: gb
   field_meta_tags:
     type: metatag_firehose
     weight: 11
@@ -380,13 +503,19 @@ content:
     third_party_settings: {  }
   field_next_audit_due:
     type: datetime_default
-    weight: 15
+    weight: 14
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_phone:
+    type: telephone_plus_widget
+    weight: 7
     region: content
     settings: {  }
     third_party_settings: {  }
   field_related_info:
     type: linkit
-    weight: 31
+    weight: 15
     region: content
     settings:
       placeholder_url: ''
@@ -396,7 +525,7 @@ content:
     third_party_settings: {  }
   field_site_themes:
     type: options_shs
-    weight: 9
+    weight: 10
     region: content
     settings:
       display_node_count: false
@@ -420,12 +549,6 @@ content:
       size: 60
       placeholder: ''
     third_party_settings: {  }
-  field_telephone:
-    type: telephone_plus_widget
-    weight: 6
-    region: content
-    settings: {  }
-    third_party_settings: {  }
   flag:
     weight: 10
     region: content
@@ -440,7 +563,7 @@ content:
     third_party_settings: {  }
   moderation_state:
     type: moderation_state_default
-    weight: 14
+    weight: 13
     region: content
     settings: {  }
     third_party_settings: {  }
@@ -528,4 +651,5 @@ content:
     region: content
     settings: {  }
     third_party_settings: {  }
-hidden: {  }
+hidden:
+  field_telephone: true

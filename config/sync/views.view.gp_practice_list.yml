@@ -13,7 +13,7 @@ dependencies:
     - field.storage.node.field_gp_practice_no
     - field.storage.node.field_gp_prescriptions
     - field.storage.node.field_gp_surgery_name
-    - field.storage.node.field_telephone
+    - field.storage.node.field_phone
     - node.type.gp_practice
   module:
     - address
@@ -431,10 +431,10 @@ display:
           multi_type: separator
           separator: ', '
           field_api_classes: false
-        field_telephone:
-          id: field_telephone
-          table: node__field_telephone
-          field: field_telephone
+        field_phone:
+          id: field_phone
+          table: node__field_phone
+          field: field_phone
           relationship: none
           group_type: group
           admin_label: ''
@@ -443,7 +443,7 @@ display:
           exclude: false
           alter:
             alter_text: true
-            text: '{{ field_telephone__telephone_number }}'
+            text: '{{ field_phone__telephone_number }}'
             make_link: false
             path: ''
             absolute: false
@@ -481,7 +481,7 @@ display:
           empty_zero: false
           hide_alter_empty: true
           click_sort_column: country_code
-          type: telephone_plus_plain
+          type: telephone_plus
           settings: {  }
           group_column: ''
           group_columns: {  }
@@ -891,7 +891,7 @@ display:
             field_gp_practice_lead: field_gp_practice_lead
             field_gp_practice_member: field_gp_practice_member
             field_address: field_address
-            field_telephone: field_telephone
+            field_phone: field_phone
             field_gp_lcg: field_gp_lcg
             field_gp_appointments: field_gp_appointments
             field_gp_prescriptions: field_gp_prescriptions
@@ -939,7 +939,7 @@ display:
               separator: ''
               empty_column: false
               responsive: ''
-            field_telephone:
+            field_phone:
               align: ''
               separator: ''
               empty_column: false
@@ -1024,7 +1024,7 @@ display:
         - 'config:field.storage.node.field_gp_practice_member'
         - 'config:field.storage.node.field_gp_practice_no'
         - 'config:field.storage.node.field_gp_prescriptions'
-        - 'config:field.storage.node.field_telephone'
+        - 'config:field.storage.node.field_phone'
   data_export_1:
     id: data_export_1
     display_title: 'Data export'
@@ -1485,10 +1485,10 @@ display:
           hide_empty: false
           empty_zero: false
           hide_alter_empty: true
-        field_telephone:
-          id: field_telephone
-          table: node__field_telephone
-          field: field_telephone
+        field_phone:
+          id: field_phone
+          table: node__field_phone
+          field: field_phone
           relationship: none
           group_type: group
           admin_label: ''
@@ -1497,7 +1497,7 @@ display:
           exclude: false
           alter:
             alter_text: true
-            text: '{{ field_telephone__telephone_number }}'
+            text: '{{ field_phone__telephone_number }}'
             make_link: false
             path: ''
             absolute: false
@@ -1535,7 +1535,7 @@ display:
           empty_zero: false
           hide_alter_empty: true
           click_sort_column: country_code
-          type: telephone_plus_plain
+          type: telephone_plus
           settings: {  }
           group_column: ''
           group_columns: {  }
@@ -2052,7 +2052,7 @@ display:
         - 'config:field.storage.node.field_gp_practice_no'
         - 'config:field.storage.node.field_gp_prescriptions'
         - 'config:field.storage.node.field_gp_surgery_name'
-        - 'config:field.storage.node.field_telephone'
+        - 'config:field.storage.node.field_phone'
   gp_practice_list_page:
     id: gp_practice_list_page
     display_title: Page
@@ -2513,10 +2513,10 @@ display:
           multi_type: separator
           separator: ', '
           field_api_classes: false
-        field_telephone:
-          id: field_telephone
-          table: node__field_telephone
-          field: field_telephone
+        field_phone:
+          id: field_phone
+          table: node__field_phone
+          field: field_phone
           relationship: none
           group_type: group
           admin_label: ''
@@ -2525,7 +2525,7 @@ display:
           exclude: false
           alter:
             alter_text: true
-            text: '{{ field_telephone__telephone_number }}'
+            text: '{{ field_phone__telephone_number }}'
             make_link: false
             path: ''
             absolute: false
@@ -2563,7 +2563,7 @@ display:
           empty_zero: false
           hide_alter_empty: true
           click_sort_column: country_code
-          type: telephone_plus_plain
+          type: telephone_plus
           settings: {  }
           group_column: ''
           group_columns: {  }
@@ -2925,4 +2925,4 @@ display:
         - 'config:field.storage.node.field_gp_practice_member'
         - 'config:field.storage.node.field_gp_practice_no'
         - 'config:field.storage.node.field_gp_prescriptions'
-        - 'config:field.storage.node.field_telephone'
+        - 'config:field.storage.node.field_phone'

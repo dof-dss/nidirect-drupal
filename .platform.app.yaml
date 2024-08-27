@@ -7,7 +7,7 @@
 name: 'nidirect'
 
 # The runtime the application uses.
-type: 'php:8.1'
+type: 'php:8.2'
 
 # Application variables.
 # Set non-sensitive variables here only.
@@ -131,6 +131,10 @@ web:
 
       # Deny access to static files in this location.
       allow: false
+
+      # Apply rules to all static files (dynamic files get rules from your app)
+      headers:
+        X-Content-Type-Options: nosniff
 
       # Rules for specific URI patterns.
       rules:

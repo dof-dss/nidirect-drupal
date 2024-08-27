@@ -45,7 +45,7 @@
         "composer/installers": "^2.0",
         "cweagans/composer-patches": "^1.6.5",
         "dof-dss/nicsdru_origins_modules": "^10.3",
-        "dof-dss/nicsdru_origins_theme": "^10",
+        "dof-dss/nicsdru_origins_theme": "^10.1",
         "drupal/address": "^2.0",
         "drupal/admin_toolbar": "^3.2",
         "drupal/adminimal_theme": "^1.7",
@@ -64,11 +64,11 @@
         "drupal/config_readonly": "^1.0@beta",
         "drupal/config_split": "^2.0-beta",
         "drupal/config_update": "^2.0@alpha",
-        "drupal/cookie_content_blocker": "^2.2",
-        "drupal/core-composer-scaffold": "10.1.8",
-        "drupal/core-dev": "10.1.8",
-        "drupal/core-project-message": "10.1.8",
-        "drupal/core-recommended": "10.1.8",
+        "drupal/cookie_content_blocker": "^2.3",
+        "drupal/core-composer-scaffold": "^10.2",
+        "drupal/core-dev": "^10.2",
+        "drupal/core-project-message": "^10.2",
+        "drupal/core-recommended": "^10.2",
         "drupal/csp": "^1.15",
         "drupal/csv_serialization": "^4.0",
         "drupal/ctools": "^4.0",
@@ -92,7 +92,7 @@
         "drupal/filelog": "^2.1",
         "drupal/flag": "4.x-dev",
         "drupal/geocoder": "^4.10",
-        "drupal/geolocation": "^4.0",
+        "drupal/geolocation": "^4.0@alpha",
         "drupal/google_tag": "^2.0",
         "drupal/handy_cache_tags": "^1.0",
         "drupal/honeypot": "^2.0",
@@ -123,7 +123,7 @@
         "drupal/search_api": "^1.26",
         "drupal/search_api_autocomplete": "^1.7",
         "drupal/search_api_location": "^1.0@alpha",
-        "drupal/search_api_solr": "^4.2",
+        "drupal/search_api_solr": "4.x-dev@dev",
         "drupal/search_api_spellcheck": "4.0.x-dev@dev",
         "drupal/seven": "^1.0",
         "drupal/shs": "^2.0@RC",
@@ -135,7 +135,7 @@
         "drupal/structure_sync": "^2.0",
         "drupal/taxonomy_access_fix": "^4.0",
         "drupal/taxonomy_entity_index": "^1.7",
-        "drupal/telephone_plus": "^9.1",
+        "drupal/telephone_plus": "2.0.x-dev@dev",
         "drupal/token": "^1.13",
         "drupal/token_filter": "^2.1",
         "drupal/twig_field_value": "^2.0",
@@ -147,7 +147,7 @@
         "drupal/webform": "^6.2@RC",
         "drupal/whatlinkshere": "^2.1",
         "drupal/xls_serialization": "^1.2",
-        "drush/drush": "^12",
+        "drush/drush": "^12.5",
         "geocoder-php/google-maps-provider": "^4.6",
         "harvesthq/chosen": "^1.8",
         "maxh/php-nominatim": "^2.2",
@@ -215,6 +215,12 @@
             "drupal/easy_install": {
                 "Handle missing core version": "https://www.drupal.org/files/issues/2019-12-19/easy_install_core_version-3101883-0.patch"
             },
+            "drupal/facets": {
+                "Fix to deprecated function $transliterateDisplayValue": "https://www.drupal.org/files/issues/2024-02-21/facets-php82-3406085-18.patch"
+            },
+            "drupal/filelog": {
+                "Circular refernce detected for service": "https://www.drupal.org/files/issues/2024-01-25/filelog_with_tests.patch"
+            },
             "drupal/feeds": {
                 "Use uuid as GUID for Drupal entities": "https://www.drupal.org/files/issues/2022-09-23/feeds-3306725-18.patch"
             },
@@ -248,6 +254,9 @@
             },
             "drupal/scheduled_transitions": {
                 "Add pagination to target revision candidates list": "https://www.drupal.org/files/issues/2024-02-01/scheduled_transitions-page-revisions-3241497-13.patch"
+            },
+            "drupal/search_api": {
+                "Declaration of Drupal\\search_api_solr\\Plugin\\search_api\\backend\\SearchApiSolrBackend::__sleep() must be compatible #3454939": "https://www.drupal.org/files/issues/2024-06-17/3454939-search-api-solr-core-10.patch"
             }
         },
         "composer-exit-on-patch-failure": true,

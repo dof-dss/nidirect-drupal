@@ -16,6 +16,7 @@ dependencies:
     - field.field.node.gp_practice.field_gp_surgery_name
     - field.field.node.gp_practice.field_location
     - field.field.node.gp_practice.field_meta_tags
+    - field.field.node.gp_practice.field_phone
     - field.field.node.gp_practice.field_telephone
     - node.type.gp_practice
     - workflows.workflow.nics_editorial_workflow
@@ -54,7 +55,7 @@ third_party_settings:
     group_contact_details:
       children:
         - field_gp_practice_website
-        - field_telephone
+        - field_phone
         - field_address
         - field_location
       label: 'Contact details'
@@ -107,7 +108,7 @@ content:
     third_party_settings: {  }
   field_address:
     type: address_default
-    weight: 3
+    weight: 4
     region: content
     settings:
       wrapper_type: details
@@ -228,7 +229,7 @@ content:
     third_party_settings: {  }
   field_location:
     type: geolocation_map
-    weight: 4
+    weight: 5
     region: content
     settings:
       map_provider_id: google_maps
@@ -282,6 +283,16 @@ content:
         enable: true
         address_field: field_address
         geocoder: google_geocoding_api
+        sync_mode: auto
+        button_position: LEFT_TOP
+        direction: duplex
+        ignore:
+          organization: false
+          address-line1: false
+          address-line2: false
+          locality: false
+          administrative-area: false
+          postal-code: false
         settings:
           label: Address
           description: 'Enter an address to be localized.'
@@ -297,16 +308,6 @@ content:
             west: ''
             north: ''
             east: ''
-        sync_mode: auto
-        button_position: LEFT_TOP
-        direction: duplex
-        ignore:
-          organization: false
-          address-line1: false
-          address-line2: false
-          locality: false
-          administrative-area: false
-          postal-code: false
   field_meta_tags:
     type: metatag_firehose
     weight: 9
@@ -315,9 +316,9 @@ content:
       sidebar: true
       use_details: true
     third_party_settings: {  }
-  field_telephone:
+  field_phone:
     type: telephone_plus_widget
-    weight: 2
+    weight: 3
     region: content
     settings: {  }
     third_party_settings: {  }
@@ -330,7 +331,7 @@ content:
     third_party_settings: {  }
   moderation_state:
     type: moderation_state_default
-    weight: 15
+    weight: 13
     region: content
     settings: {  }
     third_party_settings: {  }
@@ -365,7 +366,7 @@ content:
     settings: {  }
     third_party_settings: {  }
   simple_sitemap:
-    weight: 10
+    weight: 11
     region: content
     settings: {  }
     third_party_settings: {  }
@@ -414,8 +415,9 @@ content:
     settings: {  }
     third_party_settings: {  }
   url_redirects:
-    weight: 14
+    weight: 12
     region: content
     settings: {  }
     third_party_settings: {  }
-hidden: {  }
+hidden:
+  field_telephone: true

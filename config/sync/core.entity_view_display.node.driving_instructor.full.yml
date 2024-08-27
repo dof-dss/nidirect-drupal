@@ -13,6 +13,7 @@ dependencies:
     - field.field.node.driving_instructor.field_email_address
     - field.field.node.driving_instructor.field_link_url
     - field.field.node.driving_instructor.field_meta_tags
+    - field.field.node.driving_instructor.field_phone
     - field.field.node.driving_instructor.field_telephone
     - node.type.driving_instructor
   module:
@@ -30,9 +31,9 @@ third_party_settings:
   field_group:
     group_contact_info:
       children:
-        - field_telephone
         - field_email_address
         - field_link_url
+        - field_phone
       label: 'Contact info'
       parent_name: ''
       region: content
@@ -99,12 +100,12 @@ content:
     third_party_settings: {  }
     weight: 4
     region: content
-  field_telephone:
+  field_phone:
     type: telephone_plus
     label: above
     settings:
-      link: true
       vcard: true
+      link: true
     third_party_settings: {  }
     weight: 7
     region: content
@@ -119,5 +120,6 @@ hidden:
   field_di_adi_no: true
   field_di_firstname: true
   field_di_lastname: true
+  field_telephone: true
   langcode: true
   search_api_excerpt: true
