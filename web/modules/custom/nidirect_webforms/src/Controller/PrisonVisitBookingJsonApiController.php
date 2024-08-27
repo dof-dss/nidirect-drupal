@@ -100,7 +100,12 @@ class PrisonVisitBookingJsonApiController extends ControllerBase {
 
     if ($this->isValidRequest() === FALSE) {
       // Return "401 Unauthorized" response.
-      $response->setData(['status' => 'error', 'message' => 'Unauthorised request'])->setStatusCode(401);
+      $response
+        ->setData([
+          'status' => 'error',
+          'message' => 'Unauthorised request'
+        ])
+        ->setStatusCode(401);
       return $response;
     }
     else {
@@ -109,11 +114,20 @@ class PrisonVisitBookingJsonApiController extends ControllerBase {
 
       if ($data) {
         // Return data and 200 OK.
-        $response->setData(['status' => 'success', 'message' => 'Data received'])->setStatusCode(200);
+        $response
+          ->setData([
+            'status' => 'success',
+            'message' => 'Data received'])
+          ->setStatusCode(200);
       }
       else {
         // Return "400 Bad Request" response.
-        $response->setData(['status' => 'error', 'message' => 'Bad request'])->setStatusCode(400);
+        $response
+          ->setData([
+            'status' => 'error',
+            'message' => 'Bad request'
+          ])
+          ->setStatusCode(400);
       }
     }
 
