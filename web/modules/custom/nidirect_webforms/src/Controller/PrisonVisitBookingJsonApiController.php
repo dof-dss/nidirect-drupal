@@ -117,7 +117,8 @@ class PrisonVisitBookingJsonApiController extends ControllerBase {
         $response
           ->setData([
             'status' => 'success',
-            'message' => 'Data received'])
+            'message' => 'Data received'
+          ])
           ->setStatusCode(200);
       }
       else {
