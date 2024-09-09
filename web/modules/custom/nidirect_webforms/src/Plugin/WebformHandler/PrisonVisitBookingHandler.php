@@ -108,6 +108,79 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
     $page = $form_state->get('current_page');
     $elements = WebformFormHelper::flattenElements($form);
 
+    // Are we amending a booking?
+    $booking_data_encrypted = $this->request->get("booking");
+
+    if ($booking_data_encrypted) {
+
+      // Decrypt it.
+      $key = "EPYO2k1WncW2Es9zYRjQCouFU0q41xZP";
+      $iv = "0123456789ABCDEF";
+      //$key = getenv('PRISON_VISIT_BOOKING_AMEND_AES_256_CBC_KEY');
+      //$iv = getenv('PRISON_VISIT_BOOKING_AMEND_AES_256_CBC_IV')
+
+      $booking_data_decrypted = $this->getDecryptedBookingData($booking_data_encrypted, $key, $iv);
+      $booking_data_decrypted = preg_replace('/[[:cntrl:]]/', '', $booking_data_decrypted);
+      $booking_data = json_decode($booking_data_decrypted, TRUE);
+
+      if (!empty($booking_data) && json_last_error() === JSON_ERROR_NONE) {
+
+        // Pre-populate webform with booking to be amended.
+        /*
+         * {
+
+
+"SPECIAL_REQUIREMENTS": [webform_submission:values:special_requirements_json],
+"VISITOR_1_ID": "[webform_submission:values:visitor_1_id]",
+"VISITOR_1_DOB": "[webform_submission:values:visitor_1_dob:prison_visit_booking_datetime]",
+"VISITOR_1_EMAIL": "[webform_submission:values:visitor_1_email]",
+"VISITOR_1_PHONE": "[webform_submission:values:visitor_1_telephone]",
+"VISITOR_2_ID": "[webform_submission:values:av1_id]",
+"VISITOR_2_DOB": "[webform_submission:values:av1_dob]",
+"VISITOR_3_ID": "[webform_submission:values:av2_id]",
+"VISITOR_3_DOB": "[webform_submission:values:av2_dob]",
+"VISITOR_4_ID": "[webform_submission:values:av3_id]",
+"VISITOR_4_DOB": "[webform_submission:values:av3_dob]",
+"VISITOR_5_ID": "[webform_submission:values:av4_id]",
+"VISITOR_5_DOB": "[webform_submission:values:av4_dob]",
+"SLOT1_DATETIME": "[webform_submission:values:slot1_datetime_submission]",
+"SLOT2_DATETIME": "[webform_submission:values:slot2_datetime_submission]",
+"SLOT3_DATETIME": "[webform_submission:values:slot3_datetime_submission]",
+"SLOT4_DATETIME": "[webform_submission:values:slot4_datetime_submission]",
+"SLOT5_DATETIME": "[webform_submission:values:slot5_datetime_submission]"
+}
+         */
+
+        $form_state->setValue('visitor_order_number', $booking_data['VISIT_ORDER_NO']);
+        $elements['visitor_order_number']['#default_value'] = $booking_data['VISIT_ORDER_NO'];
+
+        $form_state->setValue('prisoner_id', $booking_data['INMATE_ID']);
+        $elements['prisoner_id']['#default_value'] = $booking_data['INMATE_ID'];
+
+        $form_state->setValue('visitor_special_requirements_details', $booking_data['SPECIAL_REQUIREMENTS']);
+        $elements['visitor_special_requirements_details']['#default_value'] = $booking_data['SPECIAL_REQUIREMENTS'];
+
+        $form_state->setValue('visitor_1_id', $booking_data['VISITOR_1_ID']);
+        $elements['visitor_1_id']['#default_value'] = $booking_data['VISITOR_1_ID'];
+
+        $form_state->setValue('visitor_1_dob', $booking_data['VISITOR_1_DOB']);
+        $elements['visitor_1_dob']['#default_value'] = $booking_data['VISITOR_1_DOB'];
+
+        $form_state->setValue('visitor_1_email', $booking_data['VISITOR_1_EMAIL']);
+        $elements['visitor_1_email']['#default_value'] = $booking_data['VISITOR_1_EMAIL'];
+
+        $form_state->setValue('visitor_1_phone', $booking_data['VISITOR_1_PHONE']);
+        $elements['visitor_1_phone']['#default_value'] = $booking_data['VISITOR_1_PHONE'];
+
+        ksm($elements);
+
+      }
+    }
+
+
+
+    // ***************************************
+
     $this->bookingReference = $form_state->get('booking_reference_processed');
     $form['#attached']['drupalSettings']['prisonVisitBooking'] = $this->configuration;
     $form['#attached']['drupalSettings']['prisonVisitBooking']['booking_ref'] = $this->bookingReference;
@@ -848,6 +921,26 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
     }
 
     return $data;
+  }
+
+  /**
+   * Get data stored in cache or from file.
+   */
+  private function getDecryptedBookingData(string $text, $key, $iv) {
+
+    // Text to decrypt has hexadecimal encoding.
+    $encrypted_raw = hex2bin($text);
+
+    // Decrypt using OpenSSL
+    $decrypted = openssl_decrypt(
+      $encrypted_raw,
+      'AES-256-CBC',
+      $key,
+      OPENSSL_RAW_DATA | OPENSSL_ZERO_PADDING,
+      $iv
+    );
+
+    return $decrypted;
   }
 
 }
