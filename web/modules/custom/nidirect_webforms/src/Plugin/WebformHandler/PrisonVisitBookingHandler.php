@@ -185,6 +185,12 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
     }
 
     if ($booking_data_is_valid) {
+
+      // Convert booking data slotdatetime to a more useable format.
+      $booked_slotdatetime = new \DateTime(str_replace('/', '-', $booking_data['SLOTDATETIME']));
+      $booking_data['SLOTDATETIME'] = $booked_slotdatetime->format(DATE_ATOM);
+
+      // Store booking data in form_state.
       $form_state->set('amend_booking_data', $booking_data);
 
       // Disable the first wizard page.
@@ -228,10 +234,6 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
 
     // Pre-populate form booking data to be amended.
     if ($amend_booking_data && $amend_booking_setup_complete !== TRUE) {
-
-      // Convert booking data slotdatetime to a more useable format.
-      $booked_slotdatetime = new \DateTime(str_replace('/', '-', $amend_booking_data['SLOTDATETIME']));
-      $amend_booking_data['SLOTDATETIME'] = $booked_slotdatetime->format(DATE_ATOM);
 
       // Populate hidden elements with supplied booking data.
       foreach ($amend_booking_data as $key => $value) {
@@ -438,6 +440,16 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
       $num_additional_adults = $form_state->getValue('additional_visitor_adult_number');
       $options = $elements['additional_visitor_child_number']['#options'];
       $elements['additional_visitor_child_number']['#options'] = array_splice($options, 0, -$num_additional_adults);
+    }
+
+    // Ensure any timeslots are always reset and the original timeslot
+    // from booking data is restored if user elects not to amend it.
+    if ($page === 'amend_visit_preferred_day_and_time' && $form_state->getValue('amend_timeslot') === 'No') {
+      $this->resetFormSlots($form, $form_state, $webform_submission);
+
+      $form_state->setValue('slot1_datetime', $amend_booking_data['SLOTDATETIME']);
+      $webform_submission->setElementData('slot1_datetime', $amend_booking_data['SLOTDATETIME']);
+      $elements['slot1_datetime']['#default_value'] = $amend_booking_data['SLOTDATETIME'];
     }
 
     // Show available timeslots in the form.
@@ -1218,6 +1230,16 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
       $form_state->setValue($element_name, []);
       $elements[$element_name]['#default_value'] = [];
       $webform_submission->setElementData($element_name, []);
+    }
+
+    $form_values = array_filter($form_state->getValues(), function ($key) {
+      return str_starts_with($key, 'slot') && str_ends_with($key, 'datetime');
+    }, ARRAY_FILTER_USE_KEY);
+
+    foreach ($form_values as $element_name => $element_value) {
+      $form_state->setValue($element_name, '');
+      $elements[$element_name]['#default_value'] = '';
+      $webform_submission->setElementData($element_name, '');
     }
   }
 
