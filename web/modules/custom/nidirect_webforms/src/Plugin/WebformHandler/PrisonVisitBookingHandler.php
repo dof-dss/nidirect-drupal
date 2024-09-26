@@ -251,7 +251,8 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
         $error_status_msg = $this->bookingReference['status_msg'] ?? NULL;
 
         if ($error_status) {
-          ksm($error_status, $error_status_msg);
+          ksm($error_status);
+          ksm($error_status_msg);
         }
 
         if ($error_status === self::VISIT_ORDER_REF_INVALID) {
@@ -334,7 +335,7 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
         $elements['additional_visitor_adult_number']['#value'] = $additional_adults_count;
 
         for ($i = 0; $i < $additional_adults_count; $i++) {
-          $form_key_stub = 'additional_visitor_adult_' . $i + 1;
+          $form_key_stub = 'additional_visitor_adult_' . ($i + 1);
 
           $form_state->setValue($form_key_stub . '_id', $additional_adults[$i]['id']);
           $webform_submission->setElementData($form_key_stub . '_id', $additional_adults[$i]['id']);
@@ -352,7 +353,7 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
         $elements['additional_visitor_child_number']['#value'] = $additional_children_count;
 
         for ($i = 0; $i < $additional_children_count; $i++) {
-          $form_key_stub = 'additional_visitor_child_' . $i + 1;
+          $form_key_stub = 'additional_visitor_child_' . ($i + 1);
 
           $form_state->setValue($form_key_stub . '_id', $additional_children[$i]['id']);
           $webform_submission->setElementData($form_key_stub . '_id', $additional_children[$i]['id']);
@@ -432,14 +433,6 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
         $form['#attached']['drupalSettings']['prisonVisitBooking']['adultVisitorIds'] = $adultVisitorIds;
       }
     }
-
-//    // Alter the number of additional adult visitors that can be added
-//    // depending on how many additional children there are.
-//    if ($page === 'additional_visitor_adult_details' && $form_state->getValue('additional_visitor_child_number') > 0) {
-//      $num_additional_children = $form_state->getValue('additional_visitor_child_number');
-//      $options = $elements['additional_visitor_adult_number']['#options'];
-//      $elements['additional_visitor_adult_number']['#options'] = array_splice($options, 0, -$num_additional_children);
-//    }
 
     // Alter the number of additional child visitors that can be added
     // depending on how many additional adults there are.
@@ -1236,7 +1229,7 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
   private function decrypt(string $text, $key, $iv) {
     // Text to decrypt has hexadecimal encoding.
     $encrypted_raw = hex2bin($text);
-    
+
     return openssl_decrypt(
       $encrypted_raw,
       'AES-256-CBC',
