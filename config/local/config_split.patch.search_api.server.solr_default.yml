@@ -3,8 +3,12 @@ adding:
     connector_config:
       host: solr
       port: 8983
+      core: dev
+      solr_install_dir: /opt/solr
 removing:
   backend_config:
     connector_config:
       host: solr.internal
       port: 8080
+      core: default
+      solr_install_dir: ''
