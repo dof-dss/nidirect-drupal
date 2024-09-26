@@ -46,10 +46,14 @@ console/
 imports
 .htpasswd
 web/modules/*/package-lock.json
+.ddev/homeadditions
+
+# Ignore filelog directory
+/log
+
+# Ignore local cron log.
+cron-log.txt
 
 # Ignore migration config
 /config/sync/migrate_plus.*
 !/config/sync/migrate_plus.migration.money_advice_service_rss_articles.yml
-
-# Ignore log directory
-/log/
