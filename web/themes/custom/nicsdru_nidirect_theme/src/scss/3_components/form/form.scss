@@ -55,15 +55,44 @@ form {
 
   .form-item {
     padding: 0;
-    margin: 1em 0;
+    margin: 0 0 1em;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+
+    h2 {
+      @include responsive-typo-map($h3-text);
+    }
+
+    h3 {
+      @include responsive-typo-map($h4-text);
+    }
 
     &.form-type-processed-text {
       margin: 0;
     }
+
+    &--card {
+      padding: .5em;
+      background-color: $grey-lightest;
+    }
+
+    .info-notice:first-child {
+      margin-top: 0;
+    }
   }
 
   > .form-item {
-    margin: 2em 0;
+    margin: 0 0 1.5em;
+  }
+
+  .compact .form-item {
+    margin: 0 0 .5em;
+
+    * {
+      margin: 0;
+    }
   }
 }
 
@@ -73,8 +102,8 @@ form {
 
   .fieldset-wrapper .field-prefix &,
   .fieldset-wrapper .field-suffix & {
-    @include responsive-typo-map($body-text);
-    margin: 1em 0 0;
+    //@include responsive-typo-map($body-text);
+    margin: 0 0 1em;
   }
 }
 
@@ -99,19 +128,18 @@ form > .form-wrapper > section {
   border: 0;
   padding: 0;
 
-  &:first-child {
-    margin-top: 0;
-  }
-
   &:focus {
     outline-color: $brand-primary-medium;
     border: 0;
   }
 
-  & > .form-item,
-  & > .fieldset-wrapper > .form-item,
-  fieldset {
-    margin: 1em 0 0;
+  &.important-question {
+    margin-top: 1.5em;
+
+    legend {
+      @include responsive-typo-map($h4-text);
+      font-weight: normal;
+    }
   }
 
   legend,
@@ -119,17 +147,36 @@ form > .form-wrapper > section {
     @include responsive-typo-map($form-legend);
     color: $brand-primary-dark;
     font-weight: normal;
+
+    &:has(+ .fieldset-wrapper > .field-prefix > .description) {
+      margin-bottom: .9rem;
+    }
   }
 
   // Nested fieldset legends / section titles.
   fieldset legend,
   section h2 {
     @include responsive-typo-map($form-legend-plain);
+    font-weight: bold;
     color: $text;
   }
 
   .form-type-processed-text > * {
-    margin: 1em 0;
+    margin: 0 0 1em;
+  }
+
+  &.form-item--card {
+    padding: 0;
+    background-color: #fff;
+
+    .fieldset-wrapper {
+      padding: .5em;
+      background-color: $grey-lightest;
+
+      > *:last-child {
+        margin-bottom: 0;
+      }
+    }
   }
 }
 
@@ -147,12 +194,16 @@ form .legend {
 label,
 .label {
   display: block;
-  margin: 0;
+  margin: 0 0 .5em;
   padding: 0;
   font-size: 1em;
   line-height: 1.5;
-  font-weight: normal;
+  font-weight: bold;
   color: color(text);
+
+  &:has(+ .description) {
+    margin: 0;
+  }
 
   &--small {
     font-size: 1.6rem;
@@ -239,7 +290,7 @@ textarea {
   border: 1px solid #333;
   border-radius: 0;
   color: color(text);
-  margin: .5em 0;
+  margin: 0 0 .5em;
   padding: .6rem;
   min-height: 2.5em;
 
@@ -395,6 +446,7 @@ input[type='checkbox'],
     min-height: 2.75em;
     box-shadow: inset 0 0 0 1px $charcoal; // Using box shadow to make thin border as it doesn't affect the overall size.
     font-size: 1em;
+    font-weight: normal;
     line-height: 1.5;
     vertical-align: baseline;
     color: color(text);
