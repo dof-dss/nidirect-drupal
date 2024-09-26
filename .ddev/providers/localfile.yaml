@@ -1,0 +1,12 @@
+# This will pull in the databases within the ./imports directory
+# DB files should be named:
+# - Drupal DB: db.sql.gz
+# - Migration DB: drupal7.sql.gz
+db_import_command:
+  command: |
+    set -eu -o pipefail
+    # set -x   # You can enable bash debugging output by uncommenting
+    gzip -dc .ddev/.downloads/drupal7.sql.gz | ddev mysql drupal7
+    gzip -dc .ddev/.downloads/db.sql.gz | ddev mysql db
+    ddev drush cim -y
+  service: host

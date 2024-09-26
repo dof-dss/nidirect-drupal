@@ -1,0 +1,93 @@
+#ddev-generated
+# If you remove the ddev-generated line above you
+# are responsible for maintaining this file. DDEV will not then
+# update it, for example if you add `additional_hostnames`, etc.
+
+http:
+  routers:
+    dept-web-80-http:
+      entrypoints:
+        - http-80
+      rule: HostRegexp(`^dept\.ddev\.site$`)|| HostRegexp(`^communities-ni\.ddev\.site$`)|| HostRegexp(`^daera-ni\.ddev\.site$`)|| HostRegexp(`^economy-ni\.ddev\.site$`)|| HostRegexp(`^education-ni\.ddev\.site$`)|| HostRegexp(`^executiveoffice-ni\.ddev\.site$`)|| HostRegexp(`^finance-ni\.ddev\.site$`)|| HostRegexp(`^health-ni\.ddev\.site$`)|| HostRegexp(`^infrastructure-ni\.ddev\.site$`)|| HostRegexp(`^justice-ni\.ddev\.site$`)|| HostRegexp(`^nigov\.ddev\.site$`)
+      
+      service: "dept-web-80"
+      ruleSyntax: v3
+      tls: false
+      # middlewares:
+      #   - "dept-redirectHttps"
+    dept-web-8025-http:
+      entrypoints:
+        - http-8025
+      rule: HostRegexp(`^dept\.ddev\.site$`)|| HostRegexp(`^communities-ni\.ddev\.site$`)|| HostRegexp(`^daera-ni\.ddev\.site$`)|| HostRegexp(`^economy-ni\.ddev\.site$`)|| HostRegexp(`^education-ni\.ddev\.site$`)|| HostRegexp(`^executiveoffice-ni\.ddev\.site$`)|| HostRegexp(`^finance-ni\.ddev\.site$`)|| HostRegexp(`^health-ni\.ddev\.site$`)|| HostRegexp(`^infrastructure-ni\.ddev\.site$`)|| HostRegexp(`^justice-ni\.ddev\.site$`)|| HostRegexp(`^nigov\.ddev\.site$`)
+      
+      service: "dept-web-8025"
+      ruleSyntax: v3
+      tls: false
+      # middlewares:
+      #   - "dept-redirectHttps"
+    dept-solr-8983-http:
+      entrypoints:
+        - http-8983
+      rule: HostRegexp(`^dept\.ddev\.site$`)|| HostRegexp(`^communities-ni\.ddev\.site$`)|| HostRegexp(`^daera-ni\.ddev\.site$`)|| HostRegexp(`^economy-ni\.ddev\.site$`)|| HostRegexp(`^education-ni\.ddev\.site$`)|| HostRegexp(`^executiveoffice-ni\.ddev\.site$`)|| HostRegexp(`^finance-ni\.ddev\.site$`)|| HostRegexp(`^health-ni\.ddev\.site$`)|| HostRegexp(`^infrastructure-ni\.ddev\.site$`)|| HostRegexp(`^justice-ni\.ddev\.site$`)|| HostRegexp(`^nigov\.ddev\.site$`)
+      
+      service: "dept-solr-8983"
+      ruleSyntax: v3
+      tls: false
+      # middlewares:
+      #   - "dept-redirectHttps"
+    
+    
+    
+    dept-web-80-https:
+      entrypoints:
+        - http-443
+      rule: HostRegexp(`^dept\.ddev\.site$`) || HostRegexp(`^communities-ni\.ddev\.site$`) || HostRegexp(`^daera-ni\.ddev\.site$`) || HostRegexp(`^economy-ni\.ddev\.site$`) || HostRegexp(`^education-ni\.ddev\.site$`) || HostRegexp(`^executiveoffice-ni\.ddev\.site$`) || HostRegexp(`^finance-ni\.ddev\.site$`) || HostRegexp(`^health-ni\.ddev\.site$`) || HostRegexp(`^infrastructure-ni\.ddev\.site$`) || HostRegexp(`^justice-ni\.ddev\.site$`) || HostRegexp(`^nigov\.ddev\.site$`)
+      
+      service: "dept-web-80"
+      ruleSyntax: v3
+      
+      tls: true
+      
+    dept-web-8025-https:
+      entrypoints:
+        - http-8026
+      rule: HostRegexp(`^dept\.ddev\.site$`) || HostRegexp(`^communities-ni\.ddev\.site$`) || HostRegexp(`^daera-ni\.ddev\.site$`) || HostRegexp(`^economy-ni\.ddev\.site$`) || HostRegexp(`^education-ni\.ddev\.site$`) || HostRegexp(`^executiveoffice-ni\.ddev\.site$`) || HostRegexp(`^finance-ni\.ddev\.site$`) || HostRegexp(`^health-ni\.ddev\.site$`) || HostRegexp(`^infrastructure-ni\.ddev\.site$`) || HostRegexp(`^justice-ni\.ddev\.site$`) || HostRegexp(`^nigov\.ddev\.site$`)
+      
+      service: "dept-web-8025"
+      ruleSyntax: v3
+      
+      tls: true
+      
+    
+    
+
+  middlewares:
+    dept-redirectHttps:
+      redirectScheme:
+        scheme: https
+        permanent: true
+
+  services:
+    dept-web-80:
+      loadbalancer:
+        servers:
+          - url: http://ddev-dept-web:80
+        
+    dept-web-8025:
+      loadbalancer:
+        servers:
+          - url: http://ddev-dept-web:8025
+        
+    
+    
+    dept-solr-8983:
+      loadbalancer:
+        servers:
+          - url: http://ddev-dept-solr:8983
+        
+    
+
+tls:
+  certificates:
+    - certFile: /mnt/ddev-global-cache/traefik/certs/dept.crt
+      keyFile: /mnt/ddev-global-cache/traefik/certs/dept.key
