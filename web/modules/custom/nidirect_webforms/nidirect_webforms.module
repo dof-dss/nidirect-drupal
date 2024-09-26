@@ -234,3 +234,16 @@ function nidirect_webforms_preprocess_webform_confirmation(&$variables) {
     $variables['title'] = $title;
   }
 }
+
+/**
+ * Implements hook_cron().
+ */
+function nidirect_webforms_cron() {
+  $seven_weeks_ago = \Drupal::service('datetime.time')->getRequestTime() - (7 * 7 * 24 * 60 * 60);
+  $connection = \Drupal::database();
+
+  // Delete records older than 7 weeks.
+  $connection->delete('prison_visit_booking_link_ids')
+    ->condition('created', $seven_weeks_ago, '<')
+    ->execute();
+}
