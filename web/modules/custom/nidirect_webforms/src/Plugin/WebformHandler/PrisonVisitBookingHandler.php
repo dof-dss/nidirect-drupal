@@ -442,6 +442,8 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
       $elements['additional_visitor_child_number']['#options'] = array_splice($options, 0, -$num_additional_adults);
     }
 
+    // Ensure any timeslots are always reset and the original timeslot
+    // from booking data is restored if user elects not to amend it.
     if ($page === 'amend_visit_preferred_day_and_time' && $form_state->getValue('amend_timeslot') === 'No') {
       $this->resetFormSlots($form, $form_state, $webform_submission);
 
