@@ -251,22 +251,20 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
         $error_status_msg = $this->bookingReference['status_msg'] ?? NULL;
 
         if ($error_status) {
-          ksm($error_status);
-          ksm($error_status_msg);
+          \Drupal::messenger()->addError($error_status_msg);
         }
 
         if ($error_status === self::VISIT_ORDER_REF_INVALID) {
           // Cannot proceed with booking amendment.
-
+          \Drupal::messenger()->addError($error_status_msg);
         }
         elseif ($error_status === self::VISIT_ORDER_REF_EXPIRED) {
           // Cannot process with booking amendment.
-
+          \Drupal::messenger()->addError($error_status_msg);
         }
         elseif ($error_status === self::VISIT_ORDER_REF_NOTICE_EXCEEDED) {
           // Cannot amend time slot, but can edit visitor details.
           $webform_submission->getWebform()->setElementProperties('visit_preferred_day_and_time', ['#access' => FALSE]);
-
         }
         elseif ($error_status === self::VISIT_ORDER_REF_NO_SLOTS) {
           // Cannot amend time slot, but can edit visitor details.
