@@ -351,7 +351,7 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
         $webform_submission->setElementData('additional_visitor_child_number', $additional_children_count);
         $elements['additional_visitor_child_number']['#value'] = $additional_children_count;
 
-        for($i = 0; $i < $additional_children_count; $i++) {
+        for ($i = 0; $i < $additional_children_count; $i++) {
           $form_key_stub = 'additional_visitor_child_' . $i + 1;
 
           $form_state->setValue($form_key_stub . '_id', $additional_children[$i]['id']);
@@ -380,9 +380,7 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
       $webform_submission->setElementData('slot1_datetime', $amend_booking_data['SLOTDATETIME']);
       $elements['slot1_datetime']['#default_value'] = $amend_booking_data['SLOTDATETIME'];
 
-
-      // Form should now be propopulated to allow booking to be
-      // amended.
+      // Form is now pre-populated to allow booking to be amended.
       $form_state->set('amend_booking_setup_complete', TRUE);
     }
 
@@ -401,7 +399,6 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
         $elements['actions'][0]['#submit__label'] = $this->t('Keep booking');
       }
 
-
       // If amending a booking...
       if ($form_state->getValue('amend_booking_options') === 'change') {
         $elements['preview']['#title'] = $this->t('Confirm amend booking');
@@ -413,7 +410,6 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
         $elements['preview']['#title'] = $this->t('Confirm cancel booking');
         $elements['actions'][0]['#submit__label'] = $this->t('Cancel booking');
       }
-
     }
 
     // Visitor IDs are entered in separate wizard steps. To enable
@@ -645,7 +641,7 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
 
     $page = $form_state->get('current_page');
 
-    //ksm($page, $form_state->get('amend_booking_data'), $form_state->getValues());
+    // ksm($page, $form_state->get('amend_booking_data'), $form_state->getValues());
 
     if ($form_state->isValidationComplete() && $page === 'webform_preview') {
 
@@ -881,7 +877,7 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
       $error = TRUE;
     }
     elseif ($now < $booking_ref_max_advanced_issue_date) {
-      $this->bookingReference['status'] =  self::VISIT_ORDER_REF_INVALID;
+      $this->bookingReference['status'] = self::VISIT_ORDER_REF_INVALID;
       $this->bookingReference['status_msg'] = $this->t('Visit reference number is not recognised.');
       $error = TRUE;
     }
@@ -905,7 +901,8 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
         // Determine whether week date for the booking is for a future week or
         // current week.
         $this->bookingReference['date_visit_week_start'] = $booking_ref_valid_from;
-      } else {
+      }
+      else {
         $this->bookingReference['date_visit_week_start'] = $now_week_commence;
       }
 
@@ -916,11 +913,13 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
         $this->bookingReference['status'] = self::VISIT_ORDER_REF_NO_DATA;
         $this->bookingReference['status_msg'] = $this->t('An error has occurred. Booking cannot proceed at this time. Try again later.');
         $error = TRUE;
-      } elseif (!$available_slots) {
+      }
+      elseif (!$available_slots) {
         $this->bookingReference['status'] = self::VISIT_ORDER_REF_NO_SLOTS;
         $this->bookingReference['status_msg'] = $this->t('There are no remaining time slots for visit reference number.');
         $error = TRUE;
-      } else {
+      }
+      else {
         $this->bookingReference['available_slots'] = $available_slots;
       }
     }
@@ -948,7 +947,7 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
       return;
     }
     else {
-      $booking_ref_processed = $this->processVisitBookingReference($booking_ref, $form,  $form_state, $webform_submission);
+      $booking_ref_processed = $this->processVisitBookingReference($booking_ref, $form, $form_state, $webform_submission);
     }
 
     if ($booking_ref_processed && $this->bookingReference['status'] === self::VISIT_ORDER_REF_NO_DATA) {
@@ -1199,8 +1198,8 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
     // Decrypt it.
     $key = "EPYO2k1WncW2Es9zYRjQCouFU0q41xZP";
     $iv = "0123456789ABCDEF";
-    //$key = getenv('PRISON_VISIT_BOOKING_AMEND_AES_256_CBC_KEY');
-    //$iv = getenv('PRISON_VISIT_BOOKING_AMEND_AES_256_CBC_IV')
+    // $key = getenv('PRISON_VISIT_BOOKING_AMEND_AES_256_CBC_KEY');
+    // $iv = getenv('PRISON_VISIT_BOOKING_AMEND_AES_256_CBC_IV')
 
     $booking_data_decrypted = $this->decrypt($booking_data_encrypted, $key, $iv);
     $booking_data_decrypted = preg_replace('/[[:cntrl:]]/', '', $booking_data_decrypted);
@@ -1237,8 +1236,7 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
   private function decrypt(string $text, $key, $iv) {
     // Text to decrypt has hexadecimal encoding.
     $encrypted_raw = hex2bin($text);
-
-    // Decrypt using OpenSSL
+    
     return openssl_decrypt(
       $encrypted_raw,
       'AES-256-CBC',
