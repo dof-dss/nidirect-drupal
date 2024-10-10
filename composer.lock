@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b786ad3a0b808eedd9e3f51a0d3e27b6",
+    "content-hash": "8b4344a3a27a56e630193ddd7961a96b",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -2563,22 +2563,23 @@
         },
         {
             "name": "dof-dss/nicsdru_origins_modules",
-            "version": "10.4.0",
+            "version": "dev-10.x-dev",
             "source": {
                 "type": "git",
                 "url": "https://github.com/dof-dss/nicsdru_origins_modules.git",
-                "reference": "6e438fd21a9c2aa9f821fc1de62a59c0eb25cda4"
+                "reference": "81a7e54f2f1d8129279c3db603e9353ee2d7e82d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/dof-dss/nicsdru_origins_modules/zipball/6e438fd21a9c2aa9f821fc1de62a59c0eb25cda4",
-                "reference": "6e438fd21a9c2aa9f821fc1de62a59c0eb25cda4",
+                "url": "https://api.github.com/repos/dof-dss/nicsdru_origins_modules/zipball/81a7e54f2f1d8129279c3db603e9353ee2d7e82d",
+                "reference": "81a7e54f2f1d8129279c3db603e9353ee2d7e82d",
                 "shasum": ""
             },
             "require": {
                 "composer/installers": "^2.0",
                 "drupal/core": "^10"
             },
+            "default-branch": true,
             "type": "drupal-module",
             "notification-url": "https://packagist.org/downloads/",
             "license": [
@@ -2587,27 +2588,28 @@
             "description": "Generic modules for DOF-DSS Drupal sites",
             "support": {
                 "issues": "https://github.com/dof-dss/nicsdru_origins_modules/issues",
-                "source": "https://github.com/dof-dss/nicsdru_origins_modules/tree/10.4.0"
+                "source": "https://github.com/dof-dss/nicsdru_origins_modules/tree/10.x-dev"
             },
-            "time": "2024-08-21T11:21:24+00:00"
+            "time": "2024-09-05T10:37:28+00:00"
         },
         {
             "name": "dof-dss/nicsdru_origins_theme",
-            "version": "10.1.4",
+            "version": "dev-10.x-dev",
             "source": {
                 "type": "git",
                 "url": "https://github.com/dof-dss/nicsdru_origins_theme.git",
-                "reference": "94a735fad544dcd0840959858c5f73449bb848de"
+                "reference": "dccf4d146e34d525e95bbda1ac66e152fa70058b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/dof-dss/nicsdru_origins_theme/zipball/94a735fad544dcd0840959858c5f73449bb848de",
-                "reference": "94a735fad544dcd0840959858c5f73449bb848de",
+                "url": "https://api.github.com/repos/dof-dss/nicsdru_origins_theme/zipball/dccf4d146e34d525e95bbda1ac66e152fa70058b",
+                "reference": "dccf4d146e34d525e95bbda1ac66e152fa70058b",
                 "shasum": ""
             },
             "require": {
                 "php": ">=8.0"
             },
+            "default-branch": true,
             "type": "drupal-custom-theme",
             "notification-url": "https://packagist.org/downloads/",
             "license": [
@@ -2626,9 +2628,9 @@
                 "theme"
             ],
             "support": {
-                "source": "https://github.com/dof-dss/nicsdru_origins_theme/tree/10.1.4"
+                "source": "https://github.com/dof-dss/nicsdru_origins_theme/tree/10.x-dev"
             },
-            "time": "2024-06-10T13:54:39+00:00"
+            "time": "2024-09-02T10:01:47+00:00"
         },
         {
             "name": "drupal/address",
@@ -22072,9 +22074,12 @@
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
+        "dof-dss/nicsdru_origins_modules": 20,
+        "dof-dss/nicsdru_origins_theme": 20,
         "drupal/block_field": 5,
         "drupal/config_readonly": 10,
         "drupal/config_update": 15,
+        "drupal/easy_install_d10": 20,
         "drupal/feeds": 20,
         "drupal/feeds_ex": 10,
         "drupal/feeds_fetcher_headers": 20,
@@ -22083,16 +22088,15 @@
         "drupal/flag": 20,
         "drupal/geolocation": 15,
         "drupal/layout_builder_modal": 15,
+        "drupal/masquerade": 10,
+        "drupal/multiline_config": 20,
         "drupal/search_api_location": 15,
         "drupal/search_api_solr": 20,
         "drupal/search_api_spellcheck": 20,
         "drupal/shs": 5,
         "drupal/telephone_plus": 20,
         "drupal/ultimate_cron": 15,
-        "drupal/webform": 5,
-        "drupal/easy_install_d10": 20,
-        "drupal/masquerade": 10,
-        "drupal/multiline_config": 20
+        "drupal/webform": 5
     },
     "prefer-stable": true,
     "prefer-lowest": false,
@@ -22100,6 +22104,6 @@
         "ext-dom": "20031129",
         "ext-simplexml": "*"
     },
-    "platform-dev": [],
+    "platform-dev": {},
     "plugin-api-version": "2.6.0"
 }
