@@ -146,6 +146,7 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
   public function prepareForm(WebformSubmissionInterface $webform_submission, $operation, FormStateInterface $form_state) {
 
     // Prepare form if a booking is being amended.
+    $webform = $webform_submission->getWebform();
 
     // A prison visit booking confirmation email contains a link to
     // allow users to amend the booking. Since the original booking
@@ -154,7 +155,7 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
 
     // Early return if no booking data in the request.
     if ($this->request->query->has('booking') === FALSE) {
-      $webform_submission->getWebform()->setElementProperties('amend_booking_page', ['#access' => FALSE]);
+      $webform->setElementProperties('amend_booking_page', ['#access' => FALSE]);
       return;
     }
 
@@ -194,7 +195,7 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
 
     // Disable booking_reference_prisoner_reference wizard page
     // and set current page to amend_booking_page.
-    $webform_submission->getWebform()->setElementProperties('booking_reference_prisoner_reference', ['#access' => FALSE]);
+    $webform->setElementProperties('booking_reference_prisoner_reference', ['#access' => FALSE]);
     $webform_submission->setCurrentPage('amend_booking_page');
   }
 
@@ -205,14 +206,31 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
   public function alterForm(array &$form, FormStateInterface $form_state, WebformSubmissionInterface $webform_submission) {
 
     $page = $form_state->get('current_page');
+    $pages = $form_state->get('pages');
     $elements = WebformFormHelper::flattenElements($form);
     $webform = $webform_submission->getWebform();
 
+    // Many form alterations here are dependent on data extracted from
+    // the visit_order_number or "booking reference".
+    //
+    // The booking reference determines:
+    //   - The prison being visited
+    //   - Whether it is a face-to-face or virtual visit
+    //   - The date when the visit can be booked
+    //   - The prisoner type and time slots available for prisoner type
+    //
+    // The booking reference is collected in the very first wizard page.
+    // Once it is submitted and validated, form_state will contain the
+    // processed booking reference (see processVisitBookingReference()).
+
     $this->bookingReference = $form_state->get('booking_reference_processed');
+
+    // Pass configuration and the processed booking reference
+    // to clientside.
     $form['#attached']['drupalSettings']['prisonVisitBooking'] = $this->configuration;
     $form['#attached']['drupalSettings']['prisonVisitBooking']['booking_ref'] = $this->bookingReference;
 
-    // Are we amending a booking?
+    // Prepopulate the form with any booking amendment data.
     $amend_booking_data = $form_state->get('amend_booking_data');
     $amend_booking_setup_complete = $form_state->get('amend_booking_setup_complete');
 
@@ -222,6 +240,7 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
     }
 
     if ($amend_booking_data) {
+      // Alter wizard page titles.
       $elements['main_visitor_details']['#title'] = $this->t('Amend visitor details');
       $elements['additional_visitors']['#title'] = $this->t('Amend additional visitors');
       $elements['additional_visitor_adult_details']['#title'] = $this->t('Amend additional adult visitors');
@@ -229,6 +248,14 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
       $elements['visitor_special_requirements']['#title'] = $this->t('Amend visitor special requirements');
       $elements['visit_preferred_day_and_time']['#title'] = $this->t('Amend visit date and time');
       $elements['webform_preview']['#title'] = $this->t('Amend booking confirmation');
+
+      // Alter change options presented to the user.
+      // If visit type is virtual, remove option to change additional
+      // visitor details (virtual visits have no additional visitors).
+      $pattern = '/^[A-Z]{2}V[0-9]{4}-[0-9]{4}$/';
+      if (preg_match($pattern, $amend_booking_data['VISIT_ORDER_NO'])) {
+        unset($elements['choose_changes']['#options']['additional_visitors']);
+      }
     }
 
     // If user chooses to keep existing booking, disable Next button
@@ -554,6 +581,8 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
       }
     }
     else {
+      // No issue with the visit order number, so the booking data is
+      // amendable. Safe to show the booking details.
       $elements['booking_details']['#access'] = TRUE;
     }
 
