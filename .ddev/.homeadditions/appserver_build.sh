@@ -2,10 +2,6 @@
 
 # Variables to indicate key settings files or directories for Drupal.
 DRUPAL_ROOT=/var/www/html/web
-DRUPAL_SETTINGS_FILE=$DRUPAL_ROOT/sites/default/settings.php
-DRUPAL_SERVICES_FILE=$DRUPAL_ROOT/sites/default/services.yml
-DRUPAL_CUSTOM_CODE=$DRUPAL_ROOT/modules/custom
-DRUPAL_CUSTOM_THEME=$DRUPAL_ROOT/themes/custom/nicsdru_nidirect_theme
 
 # If we don't have a Drupal install, download it.
 if [ ! -d "/var/www/html/core" ]; then
