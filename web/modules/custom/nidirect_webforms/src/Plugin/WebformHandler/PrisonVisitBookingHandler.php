@@ -698,6 +698,11 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
     $webform_submission->setElementData('slot1_datetime', $amend_booking_data['SLOTDATETIME']);
     $elements['slot1_datetime']['#default_value'] = $amend_booking_data['SLOTDATETIME'];
 
+    // Keep track of original booking slot date and time.
+    $form_state->setValue('bkg_slotdatetime', $amend_booking_data['SLOTDATETIME']);
+    $webform_submission->setElementData('bkg_slotdatetime', $amend_booking_data['SLOTDATETIME']);
+    $elements['bkg_slotdatetime']['#default_value'] = $amend_booking_data['SLOTDATETIME'];
+
     // Form is now pre-populated to allow booking to be amended.
     $form_state->set('amend_booking_setup_complete', TRUE);
   }

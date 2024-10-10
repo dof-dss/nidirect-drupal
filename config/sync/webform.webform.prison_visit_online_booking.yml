@@ -163,19 +163,25 @@ elements: |-
           {% endif %}
 
           <h3>Visit date and time</h3>
-          
+
           {% if data.bkg_id is empty or data.amend_timeslot == 'Yes' %}
               <p class="info-notice">
                   We will try to book the first available date and time from your list of preferred dates and times below.
               </p>
           {% endif %}
-          
+
           <div class="form-item--card">
               <ol class="list--ordered-bullet">
                   {% if data.slot1_datetime %}
                       <li>
                           <time datetime="{{ data.slot1_datetime }}">
                               {{ data.slot1_datetime | date('g.i a \\o\\n l, j F Y') }}
+                          </time>
+                      </li>
+                  {% elseif data.bkg_slotdatetime %}
+                      <li>
+                          <time datetime="{{ data.bkg_slotdatetime }}">
+                              {{ data.bkg_slotdatetime | date('g.i a \\o\\n l, j F Y') }}
                           </time>
                       </li>
                   {% endif %}
@@ -290,7 +296,6 @@ elements: |-
           The visit reference number for this booking has expired.
         </p>
     booking_details:
-      '#access': false
       '#type': webform_computed_twig
       '#title': booking_details
       '#title_display': none
@@ -1491,6 +1496,9 @@ elements: |-
   bkg_link_uniqueid:
     '#type': hidden
     '#title': BKG_LINK_UNIQUEID
+  bkg_slotdatetime:
+    '#type': hidden
+    '#title': BKG_SLOTDATETIME
   current_visitor_order_number:
     '#type': hidden
     '#title': CURRENT_VISITOR_ORDER_NUMBER
@@ -1656,16 +1664,16 @@ javascript: |-
     attach: function (context, settings) {
 
       once('resettableInputs', 'input.resettable', context).forEach(input => {
-        
+
         const addResetButton = function(input) {
-          
+
           const inputLabel = document.querySelector('label[for="' + input.id + '"]');
           let buttonHTML = 'Clear';
-          
+
           if (inputLabel) {
             buttonHTML = '<span class="visually-hidden">Clear ' + inputLabel.textContent + '</span>';
           }
-          
+
           // Create a button element
           const button = document.createElement('button');
           button.type = 'button';
