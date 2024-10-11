@@ -567,15 +567,13 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
         }
         else {
           $elements['booking_details_notice_exceeded_virtual']['#access'] = TRUE;
-          unset($elements['choose_changes_virtual']['#prefix']);
-          $elements['choose_changes_virtual']['#description'] = t('You can change your details. Visit date and time cannot be changed.');
-          $elements['choose_changes_virtual']['#description_display'] = 'before';
-          unset($elements['choose_changes_virtual']['#options']['time_slot']);
+          unset($elements['choose_changes']['#options']['time_slot']);
         }
       }
       elseif ($error_status === self::VISIT_ORDER_REF_NO_SLOTS) {
         // Cannot amend time slot, but can edit visitor details.
-        $elements['booking_details_no_slots']['#access'] = TRUE;
+        $elements['booking_details_ref_no_slots']['#access'] = TRUE;
+        unset($elements['choose_changes']['#options']['time_slot']);
       }
       elseif ($error_status) {
         \Drupal::messenger()->addError($error_status_msg);
