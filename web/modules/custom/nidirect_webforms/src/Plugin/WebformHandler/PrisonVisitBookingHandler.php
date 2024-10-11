@@ -292,7 +292,6 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
       // booking.
       if ($form_state->getValue('amend_booking_options') === 'keep') {
         $webform_confirmation_message = $webform->getElement('webform_confirmation_message_keep')['#markup'];
-        $webform->setSetting('confirmation_title', $this->t('Prison visit booking complete — keep booking'));
         $webform->setSetting('confirmation_message', $webform_confirmation_message);
       }
       elseif ($form_state->getValue('amend_booking_options') === 'cancel') {
@@ -301,6 +300,10 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
       }
       elseif ($form_state->getValue('amend_booking_options') === 'change') {
         $webform_confirmation_message = $webform->getElement('webform_confirmation_message_change')['#markup'];
+        $webform->setSetting('confirmation_message', $webform_confirmation_message);
+      }
+      else {
+        $webform_confirmation_message = $webform->getElement('webform_confirmation_message_default')['#markup'];
         $webform->setSetting('confirmation_message', $webform_confirmation_message);
       }
     }
@@ -508,6 +511,7 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
 
     if ($amend_booking_data['error']) {
       $elements['error_booking_already_amended']['#access'] = TRUE;
+      $elements['booking_details']['#access'] = FALSE;
       $elements['amend_booking_options']['#access'] = FALSE;
       $elements['wizard_next']['#access'] = FALSE;
 

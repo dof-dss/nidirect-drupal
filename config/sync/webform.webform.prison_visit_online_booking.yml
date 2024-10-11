@@ -266,11 +266,11 @@ elements: |-
     '#states_clear': false
     '#format': container
     error_booking_already_amended:
-      '#access': false
       '#type': webform_computed_twig
       '#title': error_booking_already_amended
       '#title_display': none
       '#states_clear': false
+      '#access': false
       '#display_on': form
       '#template': |-
         <div class="visit-details" role="status">
@@ -278,7 +278,7 @@ elements: |-
             This booking has already been amended.
           </p>
           <p class="info-notice">
-            Check your email for a more recent booking confirmation and use the "Amend or Cancel" button to make further changes to this booking.
+            Check your email for a more recent booking confirmation. Use the "Amend or Cancel" button in that email if you need to make further changes to this booking.
           </p>
         </div>
     visit_order_ref_invalid:
@@ -1572,38 +1572,60 @@ elements: |-
     '#type': value
     '#title': 'Environment base url'
     '#value': '[site:base-url]'
+  webform_confirmation_message_default:
+    '#type': webform_markup
+    '#access': false
+    '#markup': |-
+      <div role="status">
+        <h2 class="legend">Booking complete</h2>
+        <p class="info-notice info-notice--success">
+          We will send you an email shortly to let you know whether your booking has been successful.  Please allow up to 1 hour for this email to arrive.
+        </p>
+        <div class="launch-service">
+          <a href="/forms/book-prison-visit" class="btn btn--call-to-action" data-self-ref="true">Book another prison visit</a>
+        </div>
+      </div>
   webform_confirmation_message_cancel:
     '#type': webform_markup
     '#access': false
     '#markup': |-
-      <p class="info-notice" role="status">
-          We will send you an email shortly to let you know whether your booking cancellation has been successful.  Please allow up to 1 hour for this email to arrive.
-      </p>
+      <div role="status">
+        <h2 class="legend">Booking cancelled</h2>
+        <p class="info-notice">
+           We will send you an email shortly to let you know whether your booking cancellation has been successful.  Please allow up to 1 hour for this email to arrive.
+        </p>
 
-      <div class="launch-service">
+        <div class="launch-service">
           <a href="/forms/book-prison-visit" class="btn btn--call-to-action" data-self-ref="true">Book another prison visit</a>
+        </div>
       </div>
   webform_confirmation_message_keep:
     '#type': webform_markup
     '#access': false
     '#markup': |-
-      <p class="info-notice" role="status">
+      <div role="status">
+        <h2 class="legend">Booking kept</h2>
+        <p class="info-notice">
           Your booking has not been changed.
-      </p>
+        </p>
 
-      <div class="launch-service">
+        <div class="launch-service">
           <a href="/forms/book-prison-visit" class="btn btn--call-to-action" data-self-ref="true">Book another prison visit</a>
+        </div>
       </div>
   webform_confirmation_message_change:
     '#type': webform_markup
     '#access': false
     '#markup': |-
-      <p class="info-notice" role="status">
+      <div role="status">
+        <h2 class="legend">Booking amendment complete</h2>
+        <p class="info-notice info-notice--success">
           We will send you an email shortly to let you know whether your booking amendments have been successful.  Please allow up to 1 hour for this email to arrive.
-      </p>
+        </p>
 
-      <div class="launch-service">
+        <div class="launch-service">
           <a href="/forms/book-prison-visit" class="btn btn--call-to-action" data-self-ref="true">Book another prison visit</a>
+        </div>
       </div>
   actions:
     '#type': webform_actions
