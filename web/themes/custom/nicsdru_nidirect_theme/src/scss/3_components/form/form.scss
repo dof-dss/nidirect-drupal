@@ -53,20 +53,24 @@ main form {
 
 form {
 
-  .form-item {
+  h2 {
+    @include responsive-typo-map($h3-text);
+  }
+
+  h3 {
+    @include responsive-typo-map($h4-text);
+  }
+
+  > .form-wrapper {
+    margin: 0 0 1.5em;
+  }
+
+  .form-wrapper .form-item {
     padding: 0;
     margin: 0 0 1em;
 
     &:last-child {
       margin-bottom: 0;
-    }
-
-    h2 {
-      @include responsive-typo-map($h3-text);
-    }
-
-    h3 {
-      @include responsive-typo-map($h4-text);
     }
 
     &.form-type-processed-text {
@@ -83,10 +87,6 @@ form {
     }
   }
 
-  > .form-item {
-    margin: 0 0 1.5em;
-  }
-
   .compact .form-item {
     margin: 0 0 .5em;
 
@@ -100,8 +100,7 @@ form {
   @include responsive-typo-map($small-text);
   margin: .6rem 0 .9rem;
 
-  .fieldset-wrapper .field-prefix &,
-  .fieldset-wrapper .field-suffix & {
+  .fieldset-wrapper & {
     //@include responsive-typo-map($body-text);
     margin: 0 0 1em;
   }
@@ -148,7 +147,7 @@ form > .form-wrapper > section {
     color: $brand-primary-dark;
     font-weight: normal;
 
-    &:has(+ .fieldset-wrapper > .field-prefix > .description) {
+    &:has(+ .fieldset-wrapper > .description, + .fieldset-wrapper > .field-prefix > .description) {
       margin-bottom: .9rem;
     }
   }
