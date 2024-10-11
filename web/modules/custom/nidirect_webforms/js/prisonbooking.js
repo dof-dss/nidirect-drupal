@@ -91,7 +91,7 @@
         const $hiddenTimeSlots = $(hiddenTimeSlotSelectors);
 
         // D8NID-1661.
-        if (settings.prisonVisitBooking.resetTimeslots === true) {
+        if (settings.prisonVisitBooking.resetTimeslots && settings.prisonVisitBooking.resetTimeslots === true) {
           // Reset all timeslots user has selected.
           $timeSlots.prop('checked', false);
           $hiddenTimeSlots.val('').attr('value', '');

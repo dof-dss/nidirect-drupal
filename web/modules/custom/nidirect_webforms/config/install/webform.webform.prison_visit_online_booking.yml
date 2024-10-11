@@ -19,7 +19,7 @@ elements: |-
     '#type': webform_markup
     '#states':
       visible:
-        ':input[name="bkg_bkg_id"]':
+        ':input[name="bkg_id"]':
           empty: true
     '#display_on': view
     '#markup': |-
@@ -100,58 +100,52 @@ elements: |-
               <dd>{{ data.visitor_1_telephone }}</dd>
           </dl>
 
-          {% if data.additional_visitor_adult_1_id %}
-              <h3>Additional adult visitors</h3>
+          {% if data.additional_visitor_adult_number > 0 or data.additional_visitor_child_number > 0 %}
+              <h3>Additional visitors</h3>
               <div class="additional-visitors compact">
-                  {% if data.additional_visitor_adult_1_id %}
+                  {% if data.additional_visitor_adult_number > 0 %}
                       <dl class="compact">
-                          <dt>Visitor ID</dt>
+                          <dt>Adult visitor</dt>
                           <dd>{{ data.additional_visitor_adult_1_id }}</dd>
                           <dt>Date of birth</dt>
                           <dd>{{ data.additional_visitor_adult_1_dob }}</dd>
                       </dl>
                   {% endif %}
-                  {% if data.additional_visitor_adult_2_id %}
+                  {% if data.additional_visitor_adult_number > 1 %}
                       <dl class="compact">
-                          <dt>Visitor ID</dt>
+                          <dt>Adult visitor</dt>
                           <dd>{{ data.additional_visitor_adult_2_id }}</dd>
                           <dt>Date of birth</dt>
                           <dd>{{ data.additional_visitor_adult_2_dob }}</dd>
                       </dl>
                   {% endif %}
-              </div>
-          {% endif %}
-
-          {% if data.additional_visitor_child_1_id %}
-              <h3>Additional child visitors</h3>
-              <div class="additional-visitors compact">
-                  {% if data.additional_visitor_child_1_id %}
+                  {% if data.additional_visitor_child_number > 0 %}
                       <dl class="compact">
-                          <dt>Visitor ID</dt>
+                          <dt>Child visitor</dt>
                           <dd>{{ data.additional_visitor_child_1_id }}</dd>
                           <dt>Date of birth</dt>
                           <dd>{{ data.additional_visitor_child_1_dob }}</dd>
                       </dl>
                   {% endif %}
-                  {% if data.additional_visitor_child_2_id %}
+                  {% if data.additional_visitor_child_number > 1 %}
                       <dl class="compact">
-                          <dt>Visitor ID</dt>
+                          <dt>Child visitor</dt>
                           <dd>{{ data.additional_visitor_child_2_id }}</dd>
                           <dt>Date of birth</dt>
                           <dd>{{ data.additional_visitor_child_2_dob }}</dd>
                       </dl>
                   {% endif %}
-                  {% if data.additional_visitor_child_3_id %}
+                  {% if data.additional_visitor_child_number > 2 %}
                       <dl class="compact">
-                          <dt>Visitor ID</dt>
+                          <dt>Child visitor</dt>
                           <dd>{{ data.additional_visitor_child_3_id }}</dd>
                           <dt>Date of birth</dt>
                           <dd>{{ data.additional_visitor_child_3_dob }}</dd>
                       </dl>
                   {% endif %}
-                  {% if data.additional_visitor_child_4_id %}
+                  {% if data.additional_visitor_child_number > 3 %}
                       <dl class="compact">
-                          <dt>Visitor ID</dt>
+                          <dt>Child visitor</dt>
                           <dd>{{ data.additional_visitor_child_4_id }}</dd>
                           <dt>Date of birth</dt>
                           <dd>{{ data.additional_visitor_child_4_dob }}</dd>
@@ -169,7 +163,8 @@ elements: |-
           {% endif %}
 
           <h3>Visit date and time</h3>
-          {% if data.bkg_bkg_id is empty or data.amend_timeslot == 'Yes' %}
+
+          {% if data.bkg_id is empty or data.amend_timeslot == 'Yes' %}
               <p class="info-notice">
                   We will try to book the first available date and time from your list of preferred dates and times below.
               </p>
@@ -181,6 +176,12 @@ elements: |-
                       <li>
                           <time datetime="{{ data.slot1_datetime }}">
                               {{ data.slot1_datetime | date('g.i a \\o\\n l, j F Y') }}
+                          </time>
+                      </li>
+                  {% elseif data.bkg_slotdatetime %}
+                      <li>
+                          <time datetime="{{ data.bkg_slotdatetime }}">
+                              {{ data.bkg_slotdatetime | date('g.i a \\o\\n l, j F Y') }}
                           </time>
                       </li>
                   {% endif %}
@@ -264,6 +265,36 @@ elements: |-
     '#title': 'Amend booking'
     '#states_clear': false
     '#format': container
+    error_booking_already_amended:
+      '#type': webform_computed_twig
+      '#title': error_booking_already_amended
+      '#title_display': none
+      '#states_clear': false
+      '#access': false
+      '#display_on': form
+      '#template': |-
+        <div class="visit-details" role="status">
+          <p class="info-notice info-notice--error">
+            This booking has already been amended.
+          </p>
+          <p class="info-notice">
+            Check your email for a more recent booking confirmation. Use the "Amend or Cancel" button in that email if you need to make further changes to this booking.
+          </p>
+        </div>
+    visit_order_ref_invalid:
+      '#access': false
+      '#type': webform_markup
+      '#markup': |-
+        <p class="info-notice info-notice--error">
+          The visit reference number for this booking is invalid.
+        </p>
+    visit_order_ref_expired:
+      '#access': false
+      '#type': webform_markup
+      '#markup': |-
+        <p class="info-notice info-notice--error">
+          The visit reference number for this booking has expired.
+        </p>
     booking_details:
       '#type': webform_computed_twig
       '#title': booking_details
@@ -276,124 +307,91 @@ elements: |-
         </p>
 
         {{ data.confirmation_visit_details }}
-    bkg_bkg_id:
-      '#type': hidden
-      '#title': BKG_ID
-    bkg_link_uniqueid:
-      '#type': hidden
-      '#title': BKG_LINK_UNIQUEID
-    bkg_visit_order_no:
-      '#type': hidden
-      '#title': BKG_VISIT_ORDER_NO
-    bkg_inmate_id:
-      '#type': hidden
-      '#title': BKG_INMATE_ID
-    bkg_special_requirements:
-      '#type': hidden
-      '#title': BKG_SPECIAL_REQUIREMENTS
-    bkg_visitor_1_id:
-      '#type': hidden
-      '#title': BKG_VISITOR_1_ID
-    bkg_visitor_1_dob:
-      '#type': hidden
-      '#title': BKG_VISITOR_1_DOB
-    bkg_visitor_1_email:
-      '#type': hidden
-      '#title': "\tBKG_VISITOR_1_EMAIL"
-    bkg_visitor_1_phone:
-      '#type': hidden
-      '#title': "\tBKG_VISITOR_1_PHONE"
-    bkg_visitor_2_id:
-      '#type': hidden
-      '#title': BKG_VISITOR_2_ID
-    bkg_visitor_2_dob:
-      '#type': hidden
-      '#title': BKG_VISITOR_2_DOB
-    bkg_visitor_3_id:
-      '#type': hidden
-      '#title': BKG_VISITOR_3_ID
-    bkg_visitor_3_dob:
-      '#type': hidden
-      '#title': BKG_VISITOR_3_DOB
-    bkg_visitor_4_id:
-      '#type': hidden
-      '#title': BKG_VISITOR_4_ID
-    bkg_visitor_4_dob:
-      '#type': hidden
-      '#title': BKG_VISITOR_4_DOB
-    bkg_visitor_5_id:
-      '#type': hidden
-      '#title': BKG_VISITOR_5_ID
-    bkg_visitor_5_dob:
-      '#type': hidden
-      '#title': BKG_VISITOR_5_DOB
-    bkg_slotdatetime:
-      '#type': hidden
-      '#title': BKG_SLOTDATETIME
+    booking_details_notice_exceeded_virtual:
+      '#access': false
+      '#type': webform_computed_twig
+      '#template': |-
+        <p class="info-notice info-notice--warning" role="status">
+          You cannot change the visit date and time for this booking. You are outside of the 48 hour notice period required for changing virtual visit times.
+        </p>
+
+        {{ data.confirmation_visit_details }}
+    booking_details_notice_exceeded_face_to_face:
+      '#access': false
+      '#type': webform_computed_twig
+      '#template': |-
+        <p class="info-notice info-notice--warning" role="status">
+          You cannot change the visit date and time for this booking. You are outside of the 24 hour notice period required for changing face-to-face visit times.
+        </p>
+
+        {{ data.confirmation_visit_details }}
+    booking_details_ref_no_slots:
+      '#access': false
+      '#type': webform_computed_twig
+      '#template': |-
+        <p class="info-notice info-notice--warning" role="status">
+          You cannot change the visit date and time for this booking. There are no more time slots available.
+        </p>
+
+        {{ data.confirmation_visit_details }}
     amend_booking_options:
       '#type': radios
-      '#title': 'Do you want keep, change or cancel this booking?'
+      '#title': 'Do you want to keep, cancel or change this booking?'
       '#options':
-        keep: 'Keep it'
-        change: 'Change it'
-        cancel: 'Cancel it'
+        keep: Keep
+        cancel: Cancel
+        change: Change
       '#options_display': side_by_side
       '#required': true
       '#wrapper_attributes':
         class:
           - important-question
-  amend_visitor_details:
-    '#type': webform_wizard_page
-    '#title': 'Amend your details'
-    '#states':
-      visible:
-        ':input[name="bkg_bkg_id"]':
-          filled: true
-        ':input[name="amend_booking_options"]':
-          value: change
-    '#format': container
-    '#next_button_label': Next
-    visitor_details:
-      '#type': webform_computed_twig
-      '#title': visitor_details
-      '#title_display': none
-      '#states_clear': false
-      '#display_on': form
-      '#template': |-
-        <div class="visit-details" role="status">
-
-          <dl class="compact">
-            <dt>Visitor ID</dt>
-            <dd>{{ data.bkg_visitor_1_id }}</dd>
-            <dt>Date of birth</dt>
-            <dd>
-              {{ data.bkg_visitor_1_dob | replace({'/':'-'}) | date('d/m/Y') }}
-            </dd>
-            <dt>Email</dt>
-            <dd>{{ data.bkg_visitor_1_email }}</dd>
-            <dt>Phone</dt>
-            <dd>{{ data.bkg_visitor_1_phone }}</dd>
-          </dl>
-
-        </div>
-    do_you_want_change_visitor_details:
-      '#type': radios
-      '#title': 'Do you want to change your details?'
-      '#options': yes_no
-      '#options_display': side_by_side
+    choose_changes:
+      '#type': checkboxes
+      '#title': 'What do you want to change?'
+      '#description': 'Choose one or more items.'
+      '#description_display': before
+      '#options':
+        your_details: 'change your details'
+        additional_visitors: 'change visitors'
+        time_slot: 'visit date and time'
+      '#required': true
+      '#required_error': 'You must select what you want to change'
+      '#states':
+        visible:
+          ':input[name="amend_booking_options"]':
+            value: change
       '#wrapper_attributes':
         class:
           - important-question
+    choose_changes_virtual:
+      '#type': checkboxes
+      '#title': 'What do you want to change?'
+      '#description': 'Choose one or more items.'
+      '#description_display': before
+      '#options':
+        your_details: 'change your details'
+        time_slot: 'visit date and time'
+      '#required': true
+      '#required_error': 'You must select what you want to change'
+      '#wrapper_attributes':
+        class:
+          - important-question
+      '#access': false
   main_visitor_details:
     '#type': webform_wizard_page
     '#title': 'Visitor details'
     '#states':
       visible:
-        - ':input[name="do_you_want_change_visitor_details"]':
-            value: 'Yes'
+        - ':input[name="choose_changes[your_details]"]':
+            checked: true
         - or
-        - ':input[name="bkg_bkg_id"]':
+        - ':input[name="choose_changes_virtual[your_details]"]':
+            checked: true
+        - or
+        - ':input[name="bkg_id"]':
             empty: true
+    '#states_clear': false
     '#format': container
     '#next_button_label': Next
     visitor_1_details:
@@ -474,6 +472,9 @@ elements: |-
         '#required_error': 'Enter your email address'
         '#pattern': '[^@\s]+@[^@\s]+\.[^@\s]+'
         '#pattern_error': 'Enter a valid email address'
+        '#attributes':
+          class:
+            - resettable
         '#flexbox': '0'
       visitor_1_telephone:
         '#type': textfield
@@ -490,130 +491,31 @@ elements: |-
         '#attributes':
           class:
             - monospace-text
-  additional_visitors:
-    '#type': webform_wizard_page
-    '#title': 'Additional visitors'
-    '#states':
-      visible:
-        ':input[name="amend_booking_options"]':
-          value: change
-    '#format': container
-    additional_visitors_msg:
-      '#type': webform_computed_twig
-      '#title': 'Add or amend additional visitors'
-      '#title_display': none
-      '#template': |-
-        <div class="visit-details" role="status">
-
-        <!--
-        {% if data.additional_visitor_adult_1_id or data.additional_visitor_child_1_id  %}
-          <p class="info-notice">
-            Details of additional visitors are shown below. Choose whether you want to amend additional visitors.
-          </p>
-        {% else %}
-          <p class="info-notice">
-            There are no additional visitors for this booking. Choose whether you want to add additional visitors. You can add up to four additional visitors.
-          </p>
-        {% endif %}
-        -->
-
-        {% if data.additional_visitor_adult_1_id or data.additional_visitor_child_1_id %}
-        <div class="additional-visitors compact">
-          {% if data.additional_visitor_adult_1_id %}
-          <dl class="compact">
-            <dt>Adult visitor</dt>
-            <dd>{{ data.additional_visitor_adult_1_id }}</dd>
-            <dt>Date of birth</dt>
-            <dd>{{ data.additional_visitor_adult_1_dob }}</dd>
-          </dl>
-          {% endif %}
-          {% if data.additional_visitor_adult_2_id %}
-          <dl class="compact">
-            <dt>Adult visitor</dt>
-            <dd>{{ data.additional_visitor_adult_2_id }}</dd>
-            <dt>Date of birth</dt>
-            <dd>{{ data.additional_visitor_adult_2_dob }}</dd>
-          </dl>
-          {% endif %}
-          {% if data.additional_visitor_child_1_id %}
-          <dl class="compact">
-            <dt>Child visitor</dt>
-            <dd>{{ data.additional_visitor_child_1_id }}</dd>
-            <dt>Date of birth</dt>
-            <dd>{{ data.additional_visitor_child_1_dob }}</dd>
-          </dl>
-          {% endif %}
-          {% if data.additional_visitor_child_2_id %}
-          <dl class="compact">
-            <dt>Child visitor</dt>
-            <dd>{{ data.additional_visitor_child_2_id }}</dd>
-            <dt>Date of birth</dt>
-            <dd>{{ data.additional_visitor_child_2_dob }}</dd>
-          </dl>
-          {% endif %}
-          {% if data.additional_visitor_child_3_id %}
-          <dl class="compact">
-            <dt>Child visitor</dt>
-            <dd>{{ data.additional_visitor_child_3_id }}</dd>
-            <dt>Date of birth</dt>
-            <dd>{{ data.additional_visitor_child_3_dob }}</dd>
-          </dl>
-          {% endif %}
-          {% if data.additional_visitor_child_4_id %}
-          <dl class="compact">
-            <dt>Child visitor</dt>
-            <dd>{{ data.additional_visitor_child_4_id }}</dd>
-            <dt>Date of birth</dt>
-            <dd>{{ data.additional_visitor_child_4_dob }}</dd>
-          </dl>
-          {% endif %}
-        </div>
-        {% endif %}
-
-
-        </div>
-    do_you_want_to_add_additional_visitors:
-      '#type': radios
-      '#title': 'Do you want to add additional visitors?'
-      '#description': 'Select yes to add additional adult and child visitors in following steps.'
-      '#description_display': before
-      '#options': yes_no
-      '#options_display': side_by_side
-      '#required': true
-      '#required_error': 'Answer yes or no, do you want to add additional visitors?'
-      '#states':
-        visible:
-          ':input[name="bkg_bkg_id"]':
-            empty: true
-      '#wrapper_attributes':
-        class:
-          - important-question
-    do_you_want_to_amend_additional_visitors:
-      '#type': radios
-      '#title': 'Do you want to amend additional visitors?'
-      '#description': 'Select yes to change additional visitor details in the following steps.'
-      '#description_display': before
-      '#options': yes_no
-      '#options_display': side_by_side
-      '#required': true
-      '#required_error': 'Answer yes or no, do you want to amend additional visitors?'
-      '#states':
-        visible:
-          ':input[name="bkg_bkg_id"]':
-            filled: true
-      '#wrapper_attributes':
-        class:
-          - important-question
   additional_visitor_adult_details:
     '#type': webform_wizard_page
     '#title': 'Additional adult visitors'
     '#states':
-      visible:
-        - ':input[name="do_you_want_to_add_additional_visitors"]':
-            value: 'Yes'
+      invisible:
+        - ':input[name="visitor_order_number"]':
+            value:
+              pattern: '^[A-Z]{2}V[0-9]{4}-[0-9]{4}$'
         - or
-        - ':input[name="do_you_want_to_amend_additional_visitors"]':
-            value: 'Yes'
+        - ':input[name="bkg_id"]':
+            filled: true
+          ':input[name="amend_booking_options"]':
+            value: change
+          ':input[name="choose_changes[additional_visitors]"]':
+            unchecked: true
+        - or
+        - ':input[name="bkg_id"]':
+            filled: true
+          ':input[name="amend_booking_options"]':
+            value: keep
+        - or
+        - ':input[name="bkg_id"]':
+            filled: true
+          ':input[name="amend_booking_options"]':
+            value: cancel
     '#states_clear': false
     '#format': container
     msg_existing_additional_visitors:
@@ -654,6 +556,13 @@ elements: |-
       '#title': 'Additional adult one'
       '#open': true
       '#states':
+        invisible:
+          - ':input[name="additional_visitor_adult_number"]':
+              value:
+                less: '1'
+          - or
+          - ':input[name="additional_visitor_adult_number"]':
+              value: '0'
         visible:
           ':input[name="additional_visitor_adult_number"]':
             value:
@@ -718,6 +627,13 @@ elements: |-
       '#title': 'Additional adult two'
       '#open': true
       '#states':
+        invisible:
+          - ':input[name="additional_visitor_adult_number"]':
+              value:
+                less: '2'
+          - or
+          - ':input[name="additional_visitor_adult_number"]':
+              value: '0'
         visible:
           ':input[name="additional_visitor_adult_number"]':
             value:
@@ -780,12 +696,27 @@ elements: |-
     '#type': webform_wizard_page
     '#title': 'Additional child visitors'
     '#states':
-      visible:
-        - ':input[name="do_you_want_to_add_additional_visitors"]':
-            value: 'Yes'
+      invisible:
+        - ':input[name="visitor_order_number"]':
+            value:
+              pattern: '^[A-Z]{2}V[0-9]{4}-[0-9]{4}$'
         - or
-        - ':input[name="do_you_want_to_amend_additional_visitors"]':
-            value: 'Yes'
+        - ':input[name="bkg_id"]':
+            filled: true
+          ':input[name="amend_booking_options"]':
+            value: change
+          ':input[name="choose_changes[additional_visitors]"]':
+            unchecked: true
+        - or
+        - ':input[name="bkg_id"]':
+            filled: true
+          ':input[name="amend_booking_options"]':
+            value: keep
+        - or
+        - ':input[name="bkg_id"]':
+            filled: true
+          ':input[name="amend_booking_options"]':
+            value: cancel
     '#states_clear': false
     '#format': container
     additional_visitor_child_number:
@@ -819,15 +750,19 @@ elements: |-
       '#title': 'Additional child one'
       '#open': true
       '#states':
+        invisible:
+          ':input[name="additional_visitor_child_number"]':
+            value:
+              less: '1'
         visible:
           ':input[name="additional_visitor_child_number"]':
             value:
               greater: '0'
-      '#format': container
       '#attributes':
         class:
           - compact
           - form-item--card
+      '#format': container
       additional_visitor_child_1_id:
         '#type': textfield
         '#title': 'Visitor ID'
@@ -881,15 +816,19 @@ elements: |-
       '#title': 'Additional child two'
       '#open': true
       '#states':
+        invisible:
+          ':input[name="additional_visitor_child_number"]':
+            value:
+              less: '2'
         visible:
           ':input[name="additional_visitor_child_number"]':
             value:
               greater: '1'
-      '#format': container
       '#attributes':
         class:
           - compact
           - form-item--card
+      '#format': container
       additional_visitor_child_2_id:
         '#type': textfield
         '#title': 'Visitor ID'
@@ -943,15 +882,19 @@ elements: |-
       '#title': 'Additional child three'
       '#open': true
       '#states':
+        invisible:
+          ':input[name="additional_visitor_child_number"]':
+            value:
+              less: '3'
         visible:
           ':input[name="additional_visitor_child_number"]':
             value:
               greater: '2'
-      '#format': container
       '#attributes':
         class:
           - compact
           - form-item--card
+      '#format': container
       additional_visitor_child_3_id:
         '#type': textfield
         '#title': 'Visitor ID'
@@ -1005,15 +948,19 @@ elements: |-
       '#title': 'Additional child four'
       '#open': true
       '#states':
+        invisible:
+          ':input[name="additional_visitor_child_number"]':
+            value:
+              less: '4'
         visible:
           ':input[name="additional_visitor_child_number"]':
             value:
               greater: '3'
-      '#format': container
       '#attributes':
         class:
           - compact
           - form-item--card
+      '#format': container
       additional_visitor_child_4_id:
         '#type': textfield
         '#title': 'Visitor ID'
@@ -1067,15 +1014,19 @@ elements: |-
       '#title': 'Additional child five'
       '#open': true
       '#states':
+        invisible:
+          ':input[name="additional_visitor_child_number"]':
+            value:
+              less: '5'
         visible:
           ':input[name="additional_visitor_child_number"]':
             value:
               greater: '4'
-      '#format': container
       '#attributes':
         class:
           - compact
           - form-item--card
+      '#format': container
       additional_visitor_child_5_id:
         '#type': textfield
         '#title': 'Visitor ID'
@@ -1131,13 +1082,23 @@ elements: |-
       invisible:
         - ':input[name="visitor_order_number"]':
             value:
-              pattern: '^[A-Z]{2}V[0-9]{4}-[0-9]{4}'
+              pattern: '^[A-Z]{2}V[0-9]{4}-[0-9]{4}$'
         - or
-        - ':input[name="amend_booking_options"]':
-            value: cancel
+        - ':input[name="bkg_id"]':
+            filled: true
+          ':input[name="choose_changes[your_details]"]':
+            unchecked: true
+          ':input[name="choose_changes[additional_visitors]"]':
+            unchecked: true
+      visible:
+        - ':input[name="bkg_id"]':
+            empty: true
         - or
-        - ':input[name="amend_booking_options"]':
-            value: keep
+        - ':input[name="choose_changes[your_details]"]':
+            checked: true
+        - or
+        - ':input[name="choose_changes[additional_visitors]"]':
+            checked: true
     '#format': container
     visitor_special_requirements_choice:
       '#type': radios
@@ -1164,7 +1125,7 @@ elements: |-
       '#counter_minimum': 1
       '#counter_maximum': 1000
       '#states':
-        visible-slide:
+        visible:
           ':input[name="visitor_special_requirements_choice"]':
             value: 'yes'
   remember_settings:
@@ -1172,11 +1133,39 @@ elements: |-
     '#title': 'Remember additional visitors'
     '#states':
       invisible:
-        - ':input[name="do_you_want_to_add_additional_visitors"]':
-            value: 'No'
+        - ':input[name="visitor_order_number"]':
+            value:
+              pattern: '^[A-Z]{2}V[0-9]{4}-[0-9]{4}$'
         - or
-        - ':input[name="bkg_bkg_id"]':
+        - ':input[name="bkg_id"]':
             filled: true
+          ':input[name="choose_changes[additional_visitors]"]':
+            unchecked: true
+        - or
+        - ':input[name="additional_visitor_adult_number"]':
+            value: '0'
+          ':input[name="additional_visitor_child_number"]':
+            value: '0'
+      visible:
+        - ':input[name="bkg_id"]':
+            empty: true
+          ':input[name="additional_visitor_adult_number"]':
+            '!value': '0'
+        - or
+        - ':input[name="bkg_id"]':
+            empty: true
+          ':input[name="additional_visitor_child_number"]':
+            '!value': '0'
+        - or
+        - ':input[name="choose_changes[additional_visitors]"]':
+            checked: true
+          ':input[name="additional_visitor_adult_number"]':
+            '!value': '0'
+        - or
+        - ':input[name="choose_changes[additional_visitors]"]':
+            checked: true
+          ':input[name="additional_visitor_child_number"]':
+            '!value': '0'
     '#format': container
     remember_settings_info:
       '#type': webform_markup
@@ -1191,78 +1180,25 @@ elements: |-
       '#options_display': side_by_side
       '#required': true
       '#required_error': 'Select yes or no, do you want additional visitor details to be remembered?'
-  amend_visit_preferred_day_and_time:
-    '#type': webform_wizard_page
-    '#title': 'Amend visit date and time'
-    '#states':
-      visible:
-        ':input[name="amend_booking_options"]':
-          value: change
-    '#states_clear': false
-    '#format': container
-    '#prev_button_label': Previous
-    '#next_button_label': Next
-    amend_visit_details:
-      '#type': webform_computed_twig
-      '#title': 'Visit date and time'
-      '#title_display': invisible
-      '#states':
-        visible:
-          ':input[name="bkg_bkg_id"]':
-            filled: true
-      '#states_clear': false
-      '#label_attributes':
-        class:
-          - visually-hidden
-      '#mode': html
-      '#template': |-
-        <div class="visit-details" role="status">
-        <dl class="compact">
-          <dt>Visiting prisoner</dt>
-          <dd>{{ data.prisoner_id }}</dd>
-          <dt>Prison</dt>
-          <dd>{{ data.prison_name }}</dd>
-          <dt>Visit type</dt>
-          <dd>{{ data.visit_type | title }}</dd>
-          <dt>Date and time</dt>
-          <dd>
-            {% set slot_datetime = data.bkg_slotdatetime | replace({'/':'-'}) %}
-            {% set pretty_slot_datetime = slot_datetime | date('g.i a \\o\\n l, j F Y') %}
-            <time datetime="{{ slot_datetime }}">
-              {{ pretty_slot_datetime }}
-            </time>
-          </dd>
-        </dl>
-        </div>
-
-        <!--
-
-            <p class="info-notice">The time and date for your {{ data.visit_type }} visit with prisoner {{ data.prisoner_id }} is:<br><time datetime="{{ slot_datetime }}" style="font-weight: bold">{{ pretty_slot_datetime }}</time></p>
-        -->
-    amend_timeslot:
-      '#type': radios
-      '#title': 'Do you want to change visit date and time?'
-      '#options': yes_no
-      '#options_display': side_by_side
-      '#required': true
-      '#required_error': 'Answer yes or no, do you want to change visit date and time?'
-      '#wrapper_attributes':
-        class:
-          - important-question
   visit_preferred_day_and_time:
     '#type': webform_wizard_page
     '#title': 'Visit date and time'
     '#states':
-      invisible:
-        - ':input[name="amend_timeslot"]':
-            value: 'No'
+      visible:
+        - ':input[name="choose_changes[time_slot]"]':
+            checked: true
         - or
+        - ':input[name="choose_changes_virtual[time_slot]"]':
+            checked: true
+        - or
+        - ':input[name="bkg_id"]':
+            empty: true
+      invisible:
         - ':input[name="amend_booking_options"]':
             value: cancel
         - or
         - ':input[name="amend_booking_options"]':
             value: keep
-    '#states_clear': false
     '#format': container
     '#prev_button_label': Previous
     '#next_button_label': Next
@@ -1272,7 +1208,7 @@ elements: |-
       '#title_display': invisible
       '#states':
         visible:
-          ':input[name="bkg_bkg_id"]':
+          ':input[name="bkg_id"]':
             empty: true
       '#states_clear': false
       '#label_attributes':
@@ -1494,7 +1430,7 @@ elements: |-
     '#title': 'Your visit preferred dates and times'
     '#display_on': view
     '#template': |-
-      {% if data.bkg_bkg_id is empty or data.amend_timeslot == 'Yes' %}
+      {% if data.bkg_id is empty or data.amend_timeslot == 'Yes' %}
         <p class="info-notice">
           We will try to book the first available date and time from your list of preferred dates and times below.
         </p>
@@ -1551,6 +1487,18 @@ elements: |-
   visit_type:
     '#type': value
     '#title': 'Visit type'
+  amend_timeslot_message:
+    '#type': value
+    '#title': amend_timeslot_message
+  bkg_id:
+    '#type': hidden
+    '#title': BKG_ID
+  bkg_link_uniqueid:
+    '#type': hidden
+    '#title': BKG_LINK_UNIQUEID
+  bkg_slotdatetime:
+    '#type': hidden
+    '#title': BKG_SLOTDATETIME
   current_visitor_order_number:
     '#type': hidden
     '#title': CURRENT_VISITOR_ORDER_NUMBER
@@ -1624,6 +1572,61 @@ elements: |-
     '#type': value
     '#title': 'Environment base url'
     '#value': '[site:base-url]'
+  webform_confirmation_message_default:
+    '#type': webform_markup
+    '#access': false
+    '#markup': |-
+      <div role="status">
+        <h2 class="legend">Booking complete</h2>
+        <p class="info-notice info-notice--success">
+          We will send you an email shortly to let you know whether your booking has been successful.  Please allow up to 1 hour for this email to arrive.
+        </p>
+        <div class="launch-service">
+          <a href="/forms/book-prison-visit" class="btn btn--call-to-action" data-self-ref="true">Book another prison visit</a>
+        </div>
+      </div>
+  webform_confirmation_message_cancel:
+    '#type': webform_markup
+    '#access': false
+    '#markup': |-
+      <div role="status">
+        <h2 class="legend">Booking cancelled</h2>
+        <p class="info-notice">
+           We will send you an email shortly to let you know whether your booking cancellation has been successful.  Please allow up to 1 hour for this email to arrive.
+        </p>
+
+        <div class="launch-service">
+          <a href="/forms/book-prison-visit" class="btn btn--call-to-action" data-self-ref="true">Book another prison visit</a>
+        </div>
+      </div>
+  webform_confirmation_message_keep:
+    '#type': webform_markup
+    '#access': false
+    '#markup': |-
+      <div role="status">
+        <h2 class="legend">Booking kept</h2>
+        <p class="info-notice">
+          Your booking has not been changed.
+        </p>
+
+        <div class="launch-service">
+          <a href="/forms/book-prison-visit" class="btn btn--call-to-action" data-self-ref="true">Book another prison visit</a>
+        </div>
+      </div>
+  webform_confirmation_message_change:
+    '#type': webform_markup
+    '#access': false
+    '#markup': |-
+      <div role="status">
+        <h2 class="legend">Booking amendment complete</h2>
+        <p class="info-notice info-notice--success">
+          We will send you an email shortly to let you know whether your booking amendments have been successful.  Please allow up to 1 hour for this email to arrive.
+        </p>
+
+        <div class="launch-service">
+          <a href="/forms/book-prison-visit" class="btn btn--call-to-action" data-self-ref="true">Book another prison visit</a>
+        </div>
+      </div>
   actions:
     '#type': webform_actions
     '#title': 'Submit button(s)'
@@ -1642,6 +1645,44 @@ css: |-
     letter-spacing: 1px;
     font-weight: normal;
   }
+
+  button.clear-button::before {
+      content: '\00d7';
+      display: inline-block;
+      background: #666666;
+      width: 1.5em;
+      height: 1.5em;
+      border-radius: 50%;
+      line-height: 1.5em;
+      text-align: center;
+      color: white;
+  }
+
+  button.clear-button:focus::before,
+  button.clear-button:hover::before {
+      background: #5d5d5d;
+  }
+
+  button.clear-button {
+      position: absolute;
+      width: 2em;
+      height: 2em;
+      padding: 0;
+      border: 0;
+      border-radius: 50%;
+      transform: translate(-2.25em, .25em);
+      font: 1em monospace;
+      line-height: 1em;
+      background-color: transparent;
+  }
+
+  input:has(+ button.clear-button) {
+
+  }
+
+  .form-item--error-message:has(+ button.clear-button) {
+    position: absolute;
+  }
 javascript: |-
   if (!document.location.hostname.includes('nidirect.gov.uk')) {
     const h1 = document.querySelector('h1.page-title');
@@ -1652,6 +1693,46 @@ javascript: |-
       h1.insertBefore(testIndicator, h1.firstChild);
     }
   }
+
+  Drupal.behaviors.webformResettableInputs = {
+    attach: function (context, settings) {
+
+      once('resettableInputs', 'input.resettable', context).forEach(input => {
+
+        const addResetButton = function(input) {
+
+          const inputLabel = document.querySelector('label[for="' + input.id + '"]');
+          let buttonHTML = 'Clear';
+
+          if (inputLabel) {
+            buttonHTML = '<span class="visually-hidden">Clear ' + inputLabel.textContent + '</span>';
+          }
+
+          // Create a button element
+          const button = document.createElement('button');
+          button.type = 'button';
+          button.className = 'clear-button';
+          button.innerHTML = buttonHTML;
+          button.title = 'Clear';
+          button.setAttribute('aria-controls', input.id);
+
+          // Add a click event to the button
+          button.addEventListener('click', function () {
+            input.value = ''; // Clear the value of the text input
+            input.focus();
+          });
+
+          // Insert the button before the text input
+          input.parentNode.insertBefore(button, input.nextSibling);
+        }
+
+        if (!input.nextElementSibling || !input.nextElementSibling.classList.contains('clear-button')) {
+          addResetButton(input);
+        }
+
+      });
+    }
+  };
 settings:
   ajax: true
   ajax_scroll_top: form
@@ -1748,37 +1829,22 @@ settings:
     booking_and_prisoner_reference_preamble: booking_and_prisoner_reference_preamble
     visitor_order_number: visitor_order_number
     prisoner_id: prisoner_id
+    error_booking_already_amended: error_booking_already_amended
+    visit_order_ref_invalid: visit_order_ref_invalid
+    visit_order_ref_expired: visit_order_ref_expired
     booking_details: booking_details
-    bkg_bkg_id: bkg_bkg_id
-    bkg_link_uniqueid: bkg_link_uniqueid
-    bkg_visit_order_no: bkg_visit_order_no
-    bkg_inmate_id: bkg_inmate_id
-    bkg_special_requirements: bkg_special_requirements
-    bkg_visitor_1_id: bkg_visitor_1_id
-    bkg_visitor_1_dob: bkg_visitor_1_dob
-    bkg_visitor_1_email: bkg_visitor_1_email
-    bkg_visitor_1_phone: bkg_visitor_1_phone
-    bkg_visitor_2_id: bkg_visitor_2_id
-    bkg_visitor_2_dob: bkg_visitor_2_dob
-    bkg_visitor_3_id: bkg_visitor_3_id
-    bkg_visitor_3_dob: bkg_visitor_3_dob
-    bkg_visitor_4_id: bkg_visitor_4_id
-    bkg_visitor_4_dob: bkg_visitor_4_dob
-    bkg_visitor_5_id: bkg_visitor_5_id
-    bkg_visitor_5_dob: bkg_visitor_5_dob
-    bkg_slotdatetime: bkg_slotdatetime
+    booking_details_notice_exceeded_virtual: booking_details_notice_exceeded_virtual
+    booking_details_notice_exceeded_face_to_face: booking_details_notice_exceeded_face_to_face
+    booking_details_ref_no_slots: booking_details_ref_no_slots
     amend_booking_options: amend_booking_options
-    visitor_details: visitor_details
-    do_you_want_change_visitor_details: do_you_want_change_visitor_details
+    choose_changes: choose_changes
+    choose_changes_virtual: choose_changes_virtual
     visitor_1_intro: visitor_1_intro
     visitor_1_intro_amend: visitor_1_intro_amend
     visitor_1_id: visitor_1_id
     visitor_1_dob: visitor_1_dob
     visitor_1_email: visitor_1_email
     visitor_1_telephone: visitor_1_telephone
-    additional_visitors_msg: additional_visitors_msg
-    do_you_want_to_add_additional_visitors: do_you_want_to_add_additional_visitors
-    do_you_want_to_amend_additional_visitors: do_you_want_to_amend_additional_visitors
     msg_existing_additional_visitors: msg_existing_additional_visitors
     additional_visitor_adult_number: additional_visitor_adult_number
     additional_visitors_adult: additional_visitors_adult
@@ -1802,8 +1868,6 @@ settings:
     visitor_special_requirements_details: visitor_special_requirements_details
     remember_settings_info: remember_settings_info
     additional_visitors_remember: additional_visitors_remember
-    amend_visit_details: amend_visit_details
-    amend_timeslot: amend_timeslot
     visit_details: visit_details
     time_slot_restrictions: time_slot_restrictions
     monday_week_1: monday_week_1
@@ -1839,6 +1903,10 @@ settings:
     amend_booking_setup_complete: amend_booking_setup_complete
     prison_name: prison_name
     visit_type: visit_type
+    amend_timeslot_message: amend_timeslot_message
+    bkg_id: bkg_id
+    bkg_link_uniqueid: bkg_link_uniqueid
+    bkg_slotdatetime: bkg_slotdatetime
     current_visitor_order_number: current_visitor_order_number
     last_visitor_order_number: last_visitor_order_number
     slot1_datetime: slot1_datetime
@@ -1904,7 +1972,7 @@ settings:
   entity_limit_user_interval: null
   purge: none
   purge_days: null
-  results_disabled: true
+  results_disabled: false
   results_disabled_ignore: false
   results_customize: false
   token_view: false
@@ -1969,6 +2037,8 @@ handlers:
       enabled:
         ':input[name="environment_base_url"]':
           value: 'https://www.nidirect.gov.uk'
+        ':input[name="bkg_id"]':
+          empty: true
     weight: -50
     settings:
       states:
@@ -2065,6 +2135,8 @@ handlers:
         ':input[name="environment_base_url"]':
           value:
             pattern: '^.*wcjm3mu7bacfm.*$'
+        ':input[name="bkg_id"]':
+          empty: true
     weight: -49
     settings:
       states:
@@ -2161,6 +2233,8 @@ handlers:
         ':input[name="environment_base_url"]':
           value:
             pattern: '^.*(lndo\.site|localhost).*$'
+        ':input[name="bkg_id"]':
+          empty: true
     weight: -48
     settings:
       states:
@@ -2253,7 +2327,7 @@ handlers:
     notes: ''
     status: true
     conditions: {  }
-    weight: 0
+    weight: -47
     settings:
       prisons:
         MY: Maghaberry
@@ -2562,4 +2636,309 @@ handlers:
             - '07-01-1973 15:30'
             - '07-01-1973 16:00'
       visit_slots_uri: 'https://gist.githubusercontent.com/dof-dss-eddwebdev/57ea797b76466f4036654e4242da82bb/raw/eb8eb122149add828bfad5179811ec77a4a90187/prism-slots.json'
+  ov_in_test_1:
+    id: email
+    handler_id: ov_in_test_1
+    label: OV_IN_AMEND_TEST
+    notes: ''
+    status: true
+    conditions:
+      enabled:
+        ':input[name="environment_base_url"]':
+          value:
+            pattern: '^.*wcjm3mu7bacfm.*$'
+        ':input[name="bkg_id"]':
+          filled: true
+        ':input[name="amend_booking_options"]':
+          '!value': keep
+    weight: -45
+    settings:
+      states:
+        - completed
+      to_mail: PRISMTESTVisitsBooking@justice-ni.gov.uk
+      to_options: {  }
+      bcc_mail: ''
+      bcc_options: {  }
+      cc_mail: ''
+      cc_options: {  }
+      from_mail: _default
+      from_options: {  }
+      from_name: _default
+      reply_to: ''
+      return_path: ''
+      sender_mail: ''
+      sender_name: ''
+      subject: OV_AMEND
+      body: |-
+        {
+        "SEQUENCE_ID": "[webform_submission:serial]",
+        "SUBMITTED_DATETIME": "[webform_submission:completed:prison_visit_booking_datetime]",
+        "AMEND_TYPE": "UPDATE",
+        "BKG_ID": "[webform_submission:values:bkg_id]",
+        "VISIT_ORDER_NO": "[webform_submission:values:visitor_order_number]",
+        "INMATE_ID": "[webform_submission:values:prisoner_id]",
+        "SPECIAL_REQUIREMENTS": [webform_submission:values:special_requirements_json],
+        "VISITOR_1_ID": "[webform_submission:values:visitor_1_id]",
+        "VISITOR_1_DOB": "[webform_submission:values:visitor_1_dob] 00:00",
+        "VISITOR_1_EMAIL": "[webform_submission:values:visitor_1_email]",
+        "VISITOR_1_PHONE": "[webform_submission:values:visitor_1_telephone]",
+        "VISITOR_2_ID": "[webform_submission:values:av1_id]",
+        "VISITOR_2_DOB": "[webform_submission:values:av1_dob]",
+        "VISITOR_3_ID": "[webform_submission:values:av2_id]",
+        "VISITOR_3_DOB": "[webform_submission:values:av2_dob]",
+        "VISITOR_4_ID": "[webform_submission:values:av3_id]",
+        "VISITOR_4_DOB": "[webform_submission:values:av3_dob]",
+        "VISITOR_5_ID": "[webform_submission:values:av4_id]",
+        "VISITOR_5_DOB": "[webform_submission:values:av4_dob]",
+        "SLOT1_DATETIME": "[webform_submission:values:slot1_datetime_submission]",
+        "SLOT2_DATETIME": "[webform_submission:values:slot2_datetime_submission]",
+        "SLOT3_DATETIME": "[webform_submission:values:slot3_datetime_submission]",
+        "SLOT4_DATETIME": "[webform_submission:values:slot4_datetime_submission]",
+        "SLOT5_DATETIME": "[webform_submission:values:slot5_datetime_submission]"
+        }
+      excluded_elements:
+        visitor_1_intro: visitor_1_intro
+        visit_details: visit_details
+        monday_week_1: monday_week_1
+        tuesday_week_1: tuesday_week_1
+        wednesday_week_1: wednesday_week_1
+        thursday_week_1: thursday_week_1
+        friday_week_1: friday_week_1
+        saturday_week_1: saturday_week_1
+        sunday_week_1: sunday_week_1
+        monday_week_2: monday_week_2
+        tuesday_week_2: tuesday_week_2
+        wednesday_week_2: wednesday_week_2
+        thursday_week_2: thursday_week_2
+        friday_week_2: friday_week_2
+        saturday_week_2: saturday_week_2
+        sunday_week_2: sunday_week_2
+        monday_week_3: monday_week_3
+        tuesday_week_3: tuesday_week_3
+        wednesday_week_3: wednesday_week_3
+        thursday_week_3: thursday_week_3
+        friday_week_3: friday_week_3
+        saturday_week_3: saturday_week_3
+        sunday_week_3: sunday_week_3
+        monday_week_4: monday_week_4
+        tuesday_week_4: tuesday_week_4
+        wednesday_week_4: wednesday_week_4
+        thursday_week_4: thursday_week_4
+        friday_week_4: friday_week_4
+        saturday_week_4: saturday_week_4
+        sunday_week_4: sunday_week_4
+        environment_base_url: environment_base_url
+      ignore_access: true
+      exclude_empty: true
+      exclude_empty_checkbox: false
+      exclude_attachments: false
+      html: false
+      attachments: false
+      twig: false
+      theme_name: ''
+      parameters: {  }
+      debug: true
+  ov_in:
+    id: email
+    handler_id: ov_in
+    label: OV_IN_AMEND
+    notes: ''
+    status: true
+    conditions:
+      enabled:
+        ':input[name="environment_base_url"]':
+          value: 'https://www.nidirect.gov.uk'
+        ':input[name="bkg_id"]':
+          filled: true
+        ':input[name="amend_booking_options"]':
+          '!value': keep
+    weight: -46
+    settings:
+      states:
+        - completed
+      to_mail: PRISMVisitsBooking@justice-ni.gov.uk
+      to_options: {  }
+      bcc_mail: ''
+      bcc_options: {  }
+      cc_mail: ''
+      cc_options: {  }
+      from_mail: _default
+      from_options: {  }
+      from_name: _default
+      reply_to: ''
+      return_path: ''
+      sender_mail: ''
+      sender_name: ''
+      subject: OV_AMEND
+      body: |-
+        {
+        "SEQUENCE_ID": "[webform_submission:serial]",
+        "SUBMITTED_DATETIME": "[webform_submission:completed:prison_visit_booking_datetime]",
+        "AMEND_TYPE": "UPDATE",
+        "BKG_ID": "[webform_submission:values:bkg_id]",
+        "VISIT_ORDER_NO": "[webform_submission:values:visitor_order_number]",
+        "INMATE_ID": "[webform_submission:values:prisoner_id]",
+        "SPECIAL_REQUIREMENTS": [webform_submission:values:special_requirements_json],
+        "VISITOR_1_ID": "[webform_submission:values:visitor_1_id]",
+        "VISITOR_1_DOB": "[webform_submission:values:visitor_1_dob] 00:00",
+        "VISITOR_1_EMAIL": "[webform_submission:values:visitor_1_email]",
+        "VISITOR_1_PHONE": "[webform_submission:values:visitor_1_telephone]",
+        "VISITOR_2_ID": "[webform_submission:values:av1_id]",
+        "VISITOR_2_DOB": "[webform_submission:values:av1_dob]",
+        "VISITOR_3_ID": "[webform_submission:values:av2_id]",
+        "VISITOR_3_DOB": "[webform_submission:values:av2_dob]",
+        "VISITOR_4_ID": "[webform_submission:values:av3_id]",
+        "VISITOR_4_DOB": "[webform_submission:values:av3_dob]",
+        "VISITOR_5_ID": "[webform_submission:values:av4_id]",
+        "VISITOR_5_DOB": "[webform_submission:values:av4_dob]",
+        "SLOT1_DATETIME": "[webform_submission:values:slot1_datetime_submission]",
+        "SLOT2_DATETIME": "[webform_submission:values:slot2_datetime_submission]",
+        "SLOT3_DATETIME": "[webform_submission:values:slot3_datetime_submission]",
+        "SLOT4_DATETIME": "[webform_submission:values:slot4_datetime_submission]",
+        "SLOT5_DATETIME": "[webform_submission:values:slot5_datetime_submission]"
+        }
+      excluded_elements:
+        visitor_1_intro: visitor_1_intro
+        visit_details: visit_details
+        monday_week_1: monday_week_1
+        tuesday_week_1: tuesday_week_1
+        wednesday_week_1: wednesday_week_1
+        thursday_week_1: thursday_week_1
+        friday_week_1: friday_week_1
+        saturday_week_1: saturday_week_1
+        sunday_week_1: sunday_week_1
+        monday_week_2: monday_week_2
+        tuesday_week_2: tuesday_week_2
+        wednesday_week_2: wednesday_week_2
+        thursday_week_2: thursday_week_2
+        friday_week_2: friday_week_2
+        saturday_week_2: saturday_week_2
+        sunday_week_2: sunday_week_2
+        monday_week_3: monday_week_3
+        tuesday_week_3: tuesday_week_3
+        wednesday_week_3: wednesday_week_3
+        thursday_week_3: thursday_week_3
+        friday_week_3: friday_week_3
+        saturday_week_3: saturday_week_3
+        sunday_week_3: sunday_week_3
+        monday_week_4: monday_week_4
+        tuesday_week_4: tuesday_week_4
+        wednesday_week_4: wednesday_week_4
+        thursday_week_4: thursday_week_4
+        friday_week_4: friday_week_4
+        saturday_week_4: saturday_week_4
+        sunday_week_4: sunday_week_4
+        environment_base_url: environment_base_url
+      ignore_access: true
+      exclude_empty: true
+      exclude_empty_checkbox: false
+      exclude_attachments: false
+      html: false
+      attachments: false
+      twig: false
+      theme_name: ''
+      parameters: {  }
+      debug: false
+  ov_in_local_1:
+    id: email
+    handler_id: ov_in_local_1
+    label: OV_IN_AMEND_LOCAL
+    notes: ''
+    status: true
+    conditions:
+      enabled:
+        ':input[name="environment_base_url"]':
+          value:
+            pattern: '^.*(lndo\.site|localhost).*$'
+        ':input[name="bkg_id"]':
+          filled: true
+        ':input[name="amend_booking_options"]':
+          '!value': keep
+    weight: -44
+    settings:
+      states:
+        - completed
+      to_mail: test@mailhog.local
+      to_options: {  }
+      bcc_mail: ''
+      bcc_options: {  }
+      cc_mail: ''
+      cc_options: {  }
+      from_mail: noreply@mailhog.local
+      from_options: {  }
+      from_name: _default
+      reply_to: ''
+      return_path: ''
+      sender_mail: ''
+      sender_name: ''
+      subject: OV_IN
+      body: |-
+        {
+        "SEQUENCE_ID": "[webform_submission:serial]",
+        "SUBMITTED_DATETIME": "[webform_submission:completed:prison_visit_booking_datetime]",
+        "AMEND_TYPE": "UPDATE",
+        "BKG_ID": "[webform_submission:values:bkg_id]",
+        "VISIT_ORDER_NO": "[webform_submission:values:visitor_order_number]",
+        "INMATE_ID": "[webform_submission:values:prisoner_id]",
+        "SPECIAL_REQUIREMENTS": [webform_submission:values:special_requirements_json],
+        "VISITOR_1_ID": "[webform_submission:values:visitor_1_id]",
+        "VISITOR_1_DOB": "[webform_submission:values:visitor_1_dob] 00:00",
+        "VISITOR_1_EMAIL": "[webform_submission:values:visitor_1_email]",
+        "VISITOR_1_PHONE": "[webform_submission:values:visitor_1_telephone]",
+        "VISITOR_2_ID": "[webform_submission:values:av1_id]",
+        "VISITOR_2_DOB": "[webform_submission:values:av1_dob]",
+        "VISITOR_3_ID": "[webform_submission:values:av2_id]",
+        "VISITOR_3_DOB": "[webform_submission:values:av2_dob]",
+        "VISITOR_4_ID": "[webform_submission:values:av3_id]",
+        "VISITOR_4_DOB": "[webform_submission:values:av3_dob]",
+        "VISITOR_5_ID": "[webform_submission:values:av4_id]",
+        "VISITOR_5_DOB": "[webform_submission:values:av4_dob]",
+        "SLOT1_DATETIME": "[webform_submission:values:slot1_datetime_submission]",
+        "SLOT2_DATETIME": "[webform_submission:values:slot2_datetime_submission]",
+        "SLOT3_DATETIME": "[webform_submission:values:slot3_datetime_submission]",
+        "SLOT4_DATETIME": "[webform_submission:values:slot4_datetime_submission]",
+        "SLOT5_DATETIME": "[webform_submission:values:slot5_datetime_submission]"
+        }
+      excluded_elements:
+        visitor_1_intro: visitor_1_intro
+        visit_details: visit_details
+        monday_week_1: monday_week_1
+        tuesday_week_1: tuesday_week_1
+        wednesday_week_1: wednesday_week_1
+        thursday_week_1: thursday_week_1
+        friday_week_1: friday_week_1
+        saturday_week_1: saturday_week_1
+        sunday_week_1: sunday_week_1
+        monday_week_2: monday_week_2
+        tuesday_week_2: tuesday_week_2
+        wednesday_week_2: wednesday_week_2
+        thursday_week_2: thursday_week_2
+        friday_week_2: friday_week_2
+        saturday_week_2: saturday_week_2
+        sunday_week_2: sunday_week_2
+        monday_week_3: monday_week_3
+        tuesday_week_3: tuesday_week_3
+        wednesday_week_3: wednesday_week_3
+        thursday_week_3: thursday_week_3
+        friday_week_3: friday_week_3
+        saturday_week_3: saturday_week_3
+        sunday_week_3: sunday_week_3
+        monday_week_4: monday_week_4
+        tuesday_week_4: tuesday_week_4
+        wednesday_week_4: wednesday_week_4
+        thursday_week_4: thursday_week_4
+        friday_week_4: friday_week_4
+        saturday_week_4: saturday_week_4
+        sunday_week_4: sunday_week_4
+        environment_base_url: environment_base_url
+      ignore_access: true
+      exclude_empty: true
+      exclude_empty_checkbox: false
+      exclude_attachments: false
+      html: false
+      attachments: false
+      twig: false
+      theme_name: ''
+      parameters: {  }
+      debug: true
 variants: {  }

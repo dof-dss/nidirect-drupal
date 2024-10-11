@@ -83,9 +83,11 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
 
   const VISIT_ORDER_REF_NOTICE_EXCEEDED = 3;
 
-  const VISIT_ORDER_REF_NO_SLOTS = 4;
+  const VISIT_ORDER_REF_AMENDMENT_NOTICE_EXCEEDED = 4;
 
-  const VISIT_ORDER_REF_NO_DATA = 5;
+  const VISIT_ORDER_REF_NO_SLOTS = 5;
+
+  const VISIT_ORDER_REF_NO_DATA = 6;
 
   /**
    * {@inheritdoc}
@@ -117,7 +119,11 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
 
     // Store the amend booking link unique identifier for this
     // submission so that it cannot be used again.
-    if ($booking_link_id = $webform_submission->getData()['bkg_link_uniqueid']) {
+    $amend_booking_options = $webform_submission->getData()['amend_booking_options'] ?? NULL;
+    $is_amended = $amend_booking_options === 'cancel' || $amend_booking_options === 'change' ?? FALSE;
+
+    if ($is_amended && $booking_link_id = $webform_submission->getData()['bkg_link_uniqueid']) {
+
       $connection = Database::getConnection();
 
       // Store the unique identifier with the current timestamp.
@@ -140,6 +146,7 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
   public function prepareForm(WebformSubmissionInterface $webform_submission, $operation, FormStateInterface $form_state) {
 
     // Prepare form if a booking is being amended.
+    $webform = $webform_submission->getWebform();
 
     // A prison visit booking confirmation email contains a link to
     // allow users to amend the booking. Since the original booking
@@ -148,13 +155,12 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
 
     // Early return if no booking data in the request.
     if ($this->request->query->has('booking') === FALSE) {
-      $webform_submission->getWebform()->setElementProperties('amend_booking_page', ['#access' => FALSE]);
+      $webform->setElementProperties('amend_booking_page', ['#access' => FALSE]);
       return;
     }
 
     // Get booking data from the request.
     $booking_data = $this->getRequestBookingData();
-    $booking_data_is_valid = TRUE;
 
     if ($booking_data) {
 
@@ -164,44 +170,33 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
       if ($link_unique_id) {
         $connection = Database::getConnection();
 
-        // Query database to check if the identifier already exists and
-        // hasn't expired.
-        $id_expires = new \DateTime('now');
-        $id_expires->setTimezone(new \DateTimeZone(DateTimeItemInterface::STORAGE_TIMEZONE));
-        $id_expires->modify('-' . $this->configuration['visit_order_number_max_advance_issue']);
-
         $query = $connection->select('prison_visit_booking_link_ids', 'pvblink_ids')
           ->fields('pvblink_ids', ['unique_identifier'])
-          ->condition('unique_identifier', $link_unique_id)
-          ->condition('created', $id_expires->getTimestamp(), '>');
+          ->condition('unique_identifier', $link_unique_id);
 
         $result = $query->execute()->fetchField();
 
         if ($result) {
           // Unique identifier exists, booking data already amended.
-          $booking_data_is_valid = FALSE;
+          // Flag this in the booking data.
+          $booking_data['error'] = TRUE;
+          $booking_data['error_msg'] = t('Booking link has already been be used and cannot be reused to amend your booking.');
+        }
+        else {
+          // Convert booking data slotdatetime to a more useable format.
+          $booked_slotdatetime = new \DateTime(str_replace('/', '-', $booking_data['SLOTDATETIME']));
+          $booking_data['SLOTDATETIME'] = $booked_slotdatetime->format(DATE_ATOM);
         }
       }
     }
 
-    if ($booking_data_is_valid) {
+    // Store booking data in form_state.
+    $form_state->set('amend_booking_data', $booking_data);
 
-      // Convert booking data slotdatetime to a more useable format.
-      $booked_slotdatetime = new \DateTime(str_replace('/', '-', $booking_data['SLOTDATETIME']));
-      $booking_data['SLOTDATETIME'] = $booked_slotdatetime->format(DATE_ATOM);
-
-      // Store booking data in form_state.
-      $form_state->set('amend_booking_data', $booking_data);
-
-      // Disable the first wizard page.
-      $webform_submission->getWebform()->setElementProperties('booking_reference_prisoner_reference', ['#access' => FALSE]);
-
-      // Start from the amend booking wizard page instead.
-      $webform_submission->setCurrentPage('amend_booking_page');
-    }
-    else {
-      \Drupal::messenger()->addError('Booking link has expired and can no longer be used.');
-    }
+    // Disable booking_reference_prisoner_reference wizard page
+    // and set current page to amend_booking_page.
+    $webform->setElementProperties('booking_reference_prisoner_reference', ['#access' => FALSE]);
+    $webform_submission->setCurrentPage('amend_booking_page');
   }
 
   /**
@@ -211,18 +206,41 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
   public function alterForm(array &$form, FormStateInterface $form_state, WebformSubmissionInterface $webform_submission) {
 
     $page = $form_state->get('current_page');
+    $pages = $form_state->get('pages');
     $elements = WebformFormHelper::flattenElements($form);
+    $webform = $webform_submission->getWebform();
+
+    // Many form alterations here are dependent on data extracted from
+    // the visit_order_number or "booking reference".
+    //
+    // The booking reference determines:
+    // - The prison being visited
+    // - Whether it is a face-to-face or virtual visit
+    // - The date when the visit can be booked
+    // - The prisoner type and time slots available for prisoner type.
+    //
+    // The booking reference is collected in the very first wizard page.
+    // Once it is submitted and validated, form_state will contain the
+    // processed booking reference (see processVisitBookingReference()).
 
     $this->bookingReference = $form_state->get('booking_reference_processed');
+
+    // Pass configuration and the processed booking reference
+    // to clientside.
     $form['#attached']['drupalSettings']['prisonVisitBooking'] = $this->configuration;
     $form['#attached']['drupalSettings']['prisonVisitBooking']['booking_ref'] = $this->bookingReference;
 
-    // Are we amending a booking?
+    // Prepopulate the form with any booking amendment data.
     $amend_booking_data = $form_state->get('amend_booking_data');
     $amend_booking_setup_complete = $form_state->get('amend_booking_setup_complete');
 
-    // Alter titles of wizard pages to indicate we are amending.
+    // Pre-populate form with booking data.
+    if ($amend_booking_data && $amend_booking_setup_complete !== TRUE) {
+      $this->alterFormToAmendBooking($form, $form_state, $webform_submission);
+    }
+
     if ($amend_booking_data) {
+      // Alter wizard page titles.
       $elements['main_visitor_details']['#title'] = $this->t('Amend visitor details');
       $elements['additional_visitors']['#title'] = $this->t('Amend additional visitors');
       $elements['additional_visitor_adult_details']['#title'] = $this->t('Amend additional adult visitors');
@@ -230,159 +248,14 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
       $elements['visitor_special_requirements']['#title'] = $this->t('Amend visitor special requirements');
       $elements['visit_preferred_day_and_time']['#title'] = $this->t('Amend visit date and time');
       $elements['webform_preview']['#title'] = $this->t('Amend booking confirmation');
-    }
 
-    // Pre-populate form booking data to be amended.
-    if ($amend_booking_data && $amend_booking_setup_complete !== TRUE) {
-
-      // Populate hidden elements with supplied booking data.
-      foreach ($amend_booking_data as $key => $value) {
-        $form_key = 'bkg_' . strtolower($key);
-        $form_state->setValue($form_key, $value);
-        $webform_submission->setElementData($form_key, $value);
-        $elements[$form_key]['#default_value'] = $value;
+      // Alter change options presented to the user.
+      // If visit type is virtual, remove option to change additional
+      // visitor details (virtual visits have no additional visitors).
+      $pattern = '/^[A-Z]{2}V[0-9]{4}-[0-9]{4}$/';
+      if (preg_match($pattern, $amend_booking_data['VISIT_ORDER_NO'])) {
+        unset($elements['choose_changes']['#options']['additional_visitors']);
       }
-
-      // Process the visitor order number.
-      $booking_ref_processed = $this->processVisitBookingReference($amend_booking_data['VISIT_ORDER_NO'], $form, $form_state, $webform_submission);
-
-      if (!$booking_ref_processed) {
-
-        // Get the error message.
-        $error_status = $this->bookingReference['status'] ?? NULL;
-        $error_status_msg = $this->bookingReference['status_msg'] ?? NULL;
-
-        if ($error_status) {
-          \Drupal::messenger()->addError($error_status_msg);
-        }
-
-        if ($error_status === self::VISIT_ORDER_REF_INVALID) {
-          // Cannot proceed with booking amendment.
-          \Drupal::messenger()->addError($error_status_msg);
-        }
-        elseif ($error_status === self::VISIT_ORDER_REF_EXPIRED) {
-          // Cannot process with booking amendment.
-          \Drupal::messenger()->addError($error_status_msg);
-        }
-        elseif ($error_status === self::VISIT_ORDER_REF_NOTICE_EXCEEDED) {
-          // Cannot amend time slot, but can edit visitor details.
-          $webform_submission->getWebform()->setElementProperties('visit_preferred_day_and_time', ['#access' => FALSE]);
-        }
-        elseif ($error_status === self::VISIT_ORDER_REF_NO_SLOTS) {
-          // Cannot amend time slot, but can edit visitor details.
-          $webform_submission->getWebform()->setElementProperties('visit_preferred_day_and_time', ['#access' => FALSE]);
-        }
-      }
-
-      // Populate the form.
-      $form_state->setValue('visitor_order_number', $amend_booking_data['VISIT_ORDER_NO']);
-      $webform_submission->setElementData('visitor_order_number', $amend_booking_data['VISIT_ORDER_NO']);
-      $elements['visitor_order_number']['#value'] = $amend_booking_data['VISIT_ORDER_NO'];
-
-      $form_state->setValue('prisoner_id', $amend_booking_data['INMATE_ID']);
-      $webform_submission->setElementData('prisoner_id', $amend_booking_data['INMATE_ID']);
-      $elements['prisoner_id']['#default_value'] = $amend_booking_data['INMATE_ID'];
-
-      $form_state->setValue('visitor_1_id', $amend_booking_data['VISITOR_1_ID']);
-      $webform_submission->setElementData('visitor_1_id', $amend_booking_data['VISITOR_1_ID']);
-      $elements['visitor_1_id']['#default_value'] = $amend_booking_data['VISITOR_1_ID'];
-
-      // Chop off time from visitor 1 DOB.
-      $visitor_1_dob = explode(" ", $amend_booking_data['VISITOR_1_DOB'])[0];
-
-      $form_state->setValue('visitor_1_dob', $visitor_1_dob);
-      $webform_submission->setElementData('visitor_1_dob', $visitor_1_dob);
-      $elements['visitor_1_dob']['#default_value'] = $visitor_1_dob;
-
-      $form_state->setValue('visitor_1_email', $amend_booking_data['VISITOR_1_EMAIL']);
-      $webform_submission->setElementData('visitor_1_email', $amend_booking_data['VISITOR_1_EMAIL']);
-      $elements['visitor_1_email']['#default_value'] = $amend_booking_data['VISITOR_1_EMAIL'];
-
-      $form_state->setValue('visitor_1_telephone', $amend_booking_data['VISITOR_1_PHONE']);
-      $webform_submission->setElementData('visitor_1_telephone', $amend_booking_data['VISITOR_1_PHONE']);
-      $elements['visitor_1_telephone']['#default_value'] = $amend_booking_data['VISITOR_1_PHONE'];
-
-      // Extract additional visitors from booking data.
-      $additional_adults = [];
-      $additional_children = [];
-
-      for ($i = 2; $i <= 5; $i++) {
-        $visitor_id = $amend_booking_data['VISITOR_' . $i . '_ID'] ?? NULL;
-        $visitor_dob = $amend_booking_data['VISITOR_' . $i . '_DOB'] ?? NULL;
-
-        if ($visitor_id && $visitor_dob) {
-          if ($this->isAdultDateOfBirth($visitor_dob)) {
-            $additional_adults[] = [
-              'id' => $visitor_id,
-              'dob' => explode(" ", $visitor_dob)[0],
-            ];
-          }
-          else {
-            $additional_children[] = [
-              'id' => $visitor_id,
-              'dob' => explode(" ", $visitor_dob)[0],
-            ];
-          }
-        }
-      }
-
-      $additional_adults_count = count($additional_adults);
-      $additional_children_count = count($additional_children);
-
-      if ($additional_adults_count <= 2) {
-        $form_state->setValue('additional_visitor_adult_number', $additional_adults_count);
-        $webform_submission->setElementData('additional_visitor_adult_number', $additional_adults_count);
-        $elements['additional_visitor_adult_number']['#value'] = $additional_adults_count;
-
-        for ($i = 0; $i < $additional_adults_count; $i++) {
-          $form_key_stub = 'additional_visitor_adult_' . ($i + 1);
-
-          $form_state->setValue($form_key_stub . '_id', $additional_adults[$i]['id']);
-          $webform_submission->setElementData($form_key_stub . '_id', $additional_adults[$i]['id']);
-          $elements[$form_key_stub . '_id']['#value'] = $additional_adults[$i]['id'];
-
-          $form_state->setValue($form_key_stub . $i . '_dob', $additional_adults[$i]['dob']);
-          $webform_submission->setElementData($form_key_stub . '_dob', $additional_adults[$i]['dob']);
-          $elements[$form_key_stub . '_dob']['#value'] = $additional_adults[$i]['dob'];
-        }
-      }
-
-      if ($additional_children_count <= 4) {
-        $form_state->setValue('additional_visitor_child_number', $additional_children_count);
-        $webform_submission->setElementData('additional_visitor_child_number', $additional_children_count);
-        $elements['additional_visitor_child_number']['#value'] = $additional_children_count;
-
-        for ($i = 0; $i < $additional_children_count; $i++) {
-          $form_key_stub = 'additional_visitor_child_' . ($i + 1);
-
-          $form_state->setValue($form_key_stub . '_id', $additional_children[$i]['id']);
-          $webform_submission->setElementData($form_key_stub . '_id', $additional_children[$i]['id']);
-          $elements[$form_key_stub . '_id']['#value'] = $additional_children[$i]['id'];
-
-          $form_state->setValue($form_key_stub . '_dob', $additional_children[$i]['dob']);
-          $webform_submission->setElementData($form_key_stub . '_dob', $additional_children[$i]['dob']);
-          $elements[$form_key_stub . '_dob']['#value'] = $additional_children[$i]['dob'];
-        }
-      }
-
-      // Visitor special requirements.
-      if ($amend_booking_data['SPECIAL_REQUIREMENTS']) {
-        $form_state->setValue('visitor_special_requirements_choice', 'yes');
-        $webform_submission->setElementData('visitor_special_requirements_choice', 'yes');
-        $elements['visitor_special_requirements_choice']['#default_value'] = 'yes';
-
-        $form_state->setValue('visitor_special_requirements_details', $amend_booking_data['SPECIAL_REQUIREMENTS']);
-        $webform_submission->setElementData('visitor_special_requirements_details', $amend_booking_data['SPECIAL_REQUIREMENTS']);
-        $elements['visitor_special_requirements_details']['#default_value'] = $amend_booking_data['SPECIAL_REQUIREMENTS'];
-      }
-
-      // Visit preferred date and time.
-      $form_state->setValue('slot1_datetime', $amend_booking_data['SLOTDATETIME']);
-      $webform_submission->setElementData('slot1_datetime', $amend_booking_data['SLOTDATETIME']);
-      $elements['slot1_datetime']['#default_value'] = $amend_booking_data['SLOTDATETIME'];
-
-      // Form is now pre-populated to allow booking to be amended.
-      $form_state->set('amend_booking_setup_complete', TRUE);
     }
 
     // If user chooses to keep existing booking, disable Next button
@@ -394,22 +267,44 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
     // Alter webform preview.
     if ($page === 'webform_preview') {
 
-      // If keeping a booking...
+      // Alter preview title and submit button text depending on
+      // whether we are keeping, cancelling or changing an existing
+      // booking.
       if ($form_state->getValue('amend_booking_options') === 'keep') {
         $elements['preview']['#title'] = $this->t('Confirm keep booking');
         $elements['actions'][0]['#submit__label'] = $this->t('Keep booking');
       }
-
-      // If amending a booking...
-      if ($form_state->getValue('amend_booking_options') === 'change') {
+      elseif ($form_state->getValue('amend_booking_options') === 'cancel') {
+        $elements['preview']['#title'] = $this->t('Confirm cancel booking');
+        $elements['actions'][0]['#submit__label'] = $this->t('Cancel booking');
+      }
+      elseif ($form_state->getValue('amend_booking_options') === 'change') {
         $elements['preview']['#title'] = $this->t('Confirm amend booking');
         $elements['actions'][0]['#submit__label'] = $this->t('Amend booking');
       }
+    }
 
-      // If cancelling a booking...
-      if ($form_state->getValue('amend_booking_options') === 'cancel') {
-        $elements['preview']['#title'] = $this->t('Confirm cancel booking');
-        $elements['actions'][0]['#submit__label'] = $this->t('Cancel booking');
+    // Alter webform confirmation message.
+    if ($page === 'webform_confirmation') {
+
+      // Alter confirmation title and message depending on
+      // whether we are keeping, cancelling or changing an existing
+      // booking.
+      if ($form_state->getValue('amend_booking_options') === 'keep') {
+        $webform_confirmation_message = $webform->getElement('webform_confirmation_message_keep')['#markup'];
+        $webform->setSetting('confirmation_message', $webform_confirmation_message);
+      }
+      elseif ($form_state->getValue('amend_booking_options') === 'cancel') {
+        $webform_confirmation_message = $webform->getElement('webform_confirmation_message_cancel')['#markup'];
+        $webform->setSetting('confirmation_message', $webform_confirmation_message);
+      }
+      elseif ($form_state->getValue('amend_booking_options') === 'change') {
+        $webform_confirmation_message = $webform->getElement('webform_confirmation_message_change')['#markup'];
+        $webform->setSetting('confirmation_message', $webform_confirmation_message);
+      }
+      else {
+        $webform_confirmation_message = $webform->getElement('webform_confirmation_message_default')['#markup'];
+        $webform->setSetting('confirmation_message', $webform_confirmation_message);
       }
     }
 
@@ -442,9 +337,10 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
       $elements['additional_visitor_child_number']['#options'] = array_splice($options, 0, -$num_additional_adults);
     }
 
-    // Ensure any timeslots are always reset and the original timeslot
-    // from booking data is restored if user elects not to amend it.
-    if ($page === 'amend_visit_preferred_day_and_time' && $form_state->getValue('amend_timeslot') === 'No') {
+    // If user is amending a booking, timeslots are always reset and
+    // the original timeslot restored if user chose not to amend it.
+    $choose_changes = $form_state->getValue('choose_changes') ?? $form_state->getValue('choose_changes_virtual') ?? NULL;
+    if ($amend_booking_data && is_array($choose_changes) && !in_array('time_slot', $choose_changes)) {
       $this->resetFormSlots($form, $form_state, $webform_submission);
 
       $form_state->setValue('slot1_datetime', $amend_booking_data['SLOTDATETIME']);
@@ -455,16 +351,8 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
     // Show available timeslots in the form.
     if ($page === 'visit_preferred_day_and_time' && !empty($this->bookingReference)) {
 
-      // Reset timeslots under certain conditions.
-      // Some of the logic for setting timeslot preferences is handled
-      // via clientside JS.  Flag to clientside when timeslots must be
-      // reset.
-      $form['#attached']['drupalSettings']['prisonVisitBooking']['resetTimeslots'] = FALSE;
-
-      // Reset timeslots when user is amending a booking and wants to
-      // change the timeslot.
-      if ($form_state->getValue('amend_timeslot') === 'Yes' && $form_state->getTriggeringElement()['#value'] === "Next") {
-        $form['#attached']['drupalSettings']['prisonVisitBooking']['resetTimeslots'] = TRUE;
+      // Reset timeslots when user is amending a booking.
+      if ($amend_booking_data && $form_state->getTriggeringElement()['#value'] === "Next") {
         $this->resetFormSlots($form, $form_state, $webform_submission);
       }
 
@@ -474,8 +362,6 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
       if (!empty($last_visitor_order_number)
         && $last_visitor_order_number !== $form_state->getValue('visitor_order_number')
         && $form_state->getTriggeringElement()['#value'] === "Next") {
-
-        $form['#attached']['drupalSettings']['prisonVisitBooking']['resetTimeslots'] = TRUE;
         $this->resetFormSlots($form, $form_state, $webform_submission);
       }
 
@@ -500,7 +386,7 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
 
           // Form slots for each week.
           $form_slots_week = &$form['elements']['visit_preferred_day_and_time']['slots']['slots_week_' . $i];
-          $webform_submission_slots_week = $webform_submission->getWebform()->getElement('slots_week_' . $i, TRUE);
+          $webform_submission_slots_week = $webform->getElement('slots_week_' . $i, TRUE);
 
           if ($form_slots_week['#access'] = FALSE) {
             continue;
@@ -517,7 +403,7 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
 
           $form_slots_week['#title'] = $form_slots_week_title;
           $webform_submission_slots_week['#title'] = $form_slots_week_title;
-          $webform_submission->getWebform()->setElementProperties('slots_week_' . $i, $webform_submission_slots_week);
+          $webform->setElementProperties('slots_week_' . $i, $webform_submission_slots_week);
 
           // Loop through form slots for each day.
           $days_of_week = [
@@ -614,6 +500,218 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
   }
 
   /**
+   * Alter form so that an existing booking can be amended.
+   */
+  private function alterFormToAmendBooking(array &$form, FormStateInterface $form_state, WebformSubmissionInterface $webform_submission) {
+
+    $amend_booking_data = $form_state->get('amend_booking_data');
+    $elements = WebformFormHelper::flattenElements($form);
+    $webform = $webform_submission->getWebform();
+    $pages = $form_state->get('pages');
+
+    if ($amend_booking_data['error']) {
+      $elements['error_booking_already_amended']['#access'] = TRUE;
+      $elements['booking_details']['#access'] = FALSE;
+      $elements['amend_booking_options']['#access'] = FALSE;
+      $elements['wizard_next']['#access'] = FALSE;
+
+      // Early return.
+      return;
+    }
+
+    // Booking ID from the booking data.
+    $form_state->setValue('bkg_id', $amend_booking_data['BKG_ID']);
+    $webform_submission->setElementData('bkg_id', $amend_booking_data['BKG_ID']);
+    $elements['bkg_id']['#default_value'] = $amend_booking_data['BKG_ID'];
+
+    // Booking link unique ID from the booking data.
+    // This is stored on submission and checked in prepareForm() to
+    // prevent same booking data being amended more than once.
+    $form_state->setValue('bkg_link_uniqueid', $amend_booking_data['LINK_UNIQUEID']);
+    $webform_submission->setElementData('bkg_link_uniqueid', $amend_booking_data['LINK_UNIQUEID']);
+    $elements['bkg_link_uniqueid']['#default_value'] = $amend_booking_data['LINK_UNIQUEID'];
+
+    // Process the visitor order number and check it is still usable.
+    $this->processVisitBookingReference($amend_booking_data['VISIT_ORDER_NO'], $form, $form_state, $webform_submission);
+
+    if ($error_status = $this->bookingReference['error_status']) {
+
+      // Get any error messages.
+      $error_status_msg = $this->bookingReference['error_status_msg'] ?? NULL;
+
+      if ($error_status === self::VISIT_ORDER_REF_INVALID) {
+        // Cannot proceed with booking amendment.
+        $elements['visit_order_ref_invalid']['#access'] = TRUE;
+        $elements['booking_details']['#access'] = FALSE;
+        $elements['amend_booking_options']['#access'] = FALSE;
+        $elements['wizard_next']['#access'] = FALSE;
+
+        // Early return.
+        return;
+      }
+      elseif ($error_status === self::VISIT_ORDER_REF_EXPIRED) {
+        // Cannot process with booking amendment.
+        $elements['visit_order_ref_expired']['#access'] = TRUE;
+        $elements['booking_details']['#access'] = FALSE;
+        $elements['amend_booking_options']['#access'] = FALSE;
+        $elements['wizard_next']['#access'] = FALSE;
+
+        // Early return.
+        return;
+      }
+      elseif ($error_status === self::VISIT_ORDER_REF_NOTICE_EXCEEDED || $error_status === self::VISIT_ORDER_REF_AMENDMENT_NOTICE_EXCEEDED) {
+        // Cannot amend time slot, but can edit other things.
+        if ($this->bookingReference['visit_type_id'] !== 'V') {
+          $elements['booking_details_notice_exceeded_face_to_face']['#access'] = TRUE;
+          unset($elements['choose_changes']['#options']['time_slot']);
+        }
+        else {
+          $elements['booking_details_notice_exceeded_virtual']['#access'] = TRUE;
+          unset($elements['choose_changes_virtual']['#prefix']);
+          $elements['choose_changes_virtual']['#description'] = t('You can change your details. Visit date and time cannot be changed.');
+          $elements['choose_changes_virtual']['#description_display'] = 'before';
+          unset($elements['choose_changes_virtual']['#options']['time_slot']);
+        }
+      }
+      elseif ($error_status === self::VISIT_ORDER_REF_NO_SLOTS) {
+        // Cannot amend time slot, but can edit visitor details.
+        $elements['booking_details_no_slots']['#access'] = TRUE;
+      }
+      elseif ($error_status) {
+        \Drupal::messenger()->addError($error_status_msg);
+
+        // Early return.
+        return;
+      }
+    }
+    else {
+      // No issue with the visit order number, so the booking data is
+      // amendable. Safe to show the booking details.
+      $elements['booking_details']['#access'] = TRUE;
+    }
+
+    // Populate the form.
+    $form_state->setValue('visitor_order_number', $amend_booking_data['VISIT_ORDER_NO']);
+    $webform_submission->setElementData('visitor_order_number', $amend_booking_data['VISIT_ORDER_NO']);
+    $elements['visitor_order_number']['#value'] = $amend_booking_data['VISIT_ORDER_NO'];
+
+    $form_state->setValue('prisoner_id', $amend_booking_data['INMATE_ID']);
+    $webform_submission->setElementData('prisoner_id', $amend_booking_data['INMATE_ID']);
+    $elements['prisoner_id']['#default_value'] = $amend_booking_data['INMATE_ID'];
+
+    $form_state->setValue('visitor_1_id', $amend_booking_data['VISITOR_1_ID']);
+    $webform_submission->setElementData('visitor_1_id', $amend_booking_data['VISITOR_1_ID']);
+    $elements['visitor_1_id']['#default_value'] = $amend_booking_data['VISITOR_1_ID'];
+
+    // Chop off time from visitor 1 DOB.
+    $visitor_1_dob = explode(" ", $amend_booking_data['VISITOR_1_DOB'])[0];
+
+    $form_state->setValue('visitor_1_dob', $visitor_1_dob);
+    $webform_submission->setElementData('visitor_1_dob', $visitor_1_dob);
+    $elements['visitor_1_dob']['#default_value'] = $visitor_1_dob;
+
+    $form_state->setValue('visitor_1_email', $amend_booking_data['VISITOR_1_EMAIL']);
+    $webform_submission->setElementData('visitor_1_email', $amend_booking_data['VISITOR_1_EMAIL']);
+    $elements['visitor_1_email']['#default_value'] = $amend_booking_data['VISITOR_1_EMAIL'];
+
+    $form_state->setValue('visitor_1_telephone', $amend_booking_data['VISITOR_1_PHONE']);
+    $webform_submission->setElementData('visitor_1_telephone', $amend_booking_data['VISITOR_1_PHONE']);
+    $elements['visitor_1_telephone']['#default_value'] = $amend_booking_data['VISITOR_1_PHONE'];
+
+    // Extract additional visitors from booking data.
+    $additional_adults = [];
+    $additional_children = [];
+
+    for ($i = 2; $i <= 5; $i++) {
+      $visitor_id = $amend_booking_data['VISITOR_' . $i . '_ID'] ?? NULL;
+      $visitor_dob = $amend_booking_data['VISITOR_' . $i . '_DOB'] ?? NULL;
+
+      if ($visitor_id && $visitor_dob) {
+        if ($this->isAdultDateOfBirth($visitor_dob)) {
+          $additional_adults[] = [
+            'id' => $visitor_id,
+            'dob' => explode(" ", $visitor_dob)[0],
+          ];
+        }
+        else {
+          $additional_children[] = [
+            'id' => $visitor_id,
+            'dob' => explode(" ", $visitor_dob)[0],
+          ];
+        }
+      }
+    }
+
+    $additional_adults_count = count($additional_adults);
+    $additional_children_count = count($additional_children);
+
+    if ($additional_adults_count <= 2) {
+      $form_state->setValue('additional_visitor_adult_number', $additional_adults_count);
+      $webform_submission->setElementData('additional_visitor_adult_number', $additional_adults_count);
+      $elements['additional_visitor_adult_number']['#value'] = $additional_adults_count;
+
+      for ($i = 0; $i < $additional_adults_count; $i++) {
+        $form_key_stub = 'additional_visitor_adult_' . ($i + 1);
+
+        $form_state->setValue($form_key_stub . '_id', $additional_adults[$i]['id']);
+        $webform_submission->setElementData($form_key_stub . '_id', $additional_adults[$i]['id']);
+        $elements[$form_key_stub . '_id']['#value'] = $additional_adults[$i]['id'];
+
+        $form_state->setValue($form_key_stub . $i . '_dob', $additional_adults[$i]['dob']);
+        $webform_submission->setElementData($form_key_stub . '_dob', $additional_adults[$i]['dob']);
+        $elements[$form_key_stub . '_dob']['#value'] = $additional_adults[$i]['dob'];
+      }
+    }
+
+    if ($additional_children_count <= 4) {
+      $form_state->setValue('additional_visitor_child_number', $additional_children_count);
+      $webform_submission->setElementData('additional_visitor_child_number', $additional_children_count);
+      $elements['additional_visitor_child_number']['#value'] = $additional_children_count;
+
+      for ($i = 0; $i < $additional_children_count; $i++) {
+        $form_key_stub = 'additional_visitor_child_' . ($i + 1);
+
+        $form_state->setValue($form_key_stub . '_id', $additional_children[$i]['id']);
+        $webform_submission->setElementData($form_key_stub . '_id', $additional_children[$i]['id']);
+        $elements[$form_key_stub . '_id']['#value'] = $additional_children[$i]['id'];
+
+        $form_state->setValue($form_key_stub . '_dob', $additional_children[$i]['dob']);
+        $webform_submission->setElementData($form_key_stub . '_dob', $additional_children[$i]['dob']);
+        $elements[$form_key_stub . '_dob']['#value'] = $additional_children[$i]['dob'];
+      }
+    }
+
+    // Visitor special requirements.
+    if ($amend_booking_data['SPECIAL_REQUIREMENTS']) {
+      $form_state->setValue('visitor_special_requirements_choice', 'yes');
+      $webform_submission->setElementData('visitor_special_requirements_choice', 'yes');
+      $elements['visitor_special_requirements_choice']['#default_value'] = 'yes';
+
+      $form_state->setValue('visitor_special_requirements_details', $amend_booking_data['SPECIAL_REQUIREMENTS']);
+      $webform_submission->setElementData('visitor_special_requirements_details', $amend_booking_data['SPECIAL_REQUIREMENTS']);
+      $elements['visitor_special_requirements_details']['#default_value'] = $amend_booking_data['SPECIAL_REQUIREMENTS'];
+    }
+    else {
+      $form_state->setValue('visitor_special_requirements_choice', 'no');
+      $webform_submission->setElementData('visitor_special_requirements_choice', 'no');
+      $elements['visitor_special_requirements_choice']['#default_value'] = 'no';
+    }
+
+    // Visit preferred date and time.
+    $form_state->setValue('slot1_datetime', $amend_booking_data['SLOTDATETIME']);
+    $webform_submission->setElementData('slot1_datetime', $amend_booking_data['SLOTDATETIME']);
+    $elements['slot1_datetime']['#default_value'] = $amend_booking_data['SLOTDATETIME'];
+
+    // Keep track of original booking slot date and time.
+    $form_state->setValue('bkg_slotdatetime', $amend_booking_data['SLOTDATETIME']);
+    $webform_submission->setElementData('bkg_slotdatetime', $amend_booking_data['SLOTDATETIME']);
+    $elements['bkg_slotdatetime']['#default_value'] = $amend_booking_data['SLOTDATETIME'];
+
+    // Form is now pre-populated to allow booking to be amended.
+    $form_state->set('amend_booking_setup_complete', TRUE);
+  }
+
+  /**
    * {@inheritdoc}
    */
   public function validateForm(array &$form, FormStateInterface $form_state, WebformSubmissionInterface $webform_submission) {
@@ -643,8 +741,6 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
   public function submitForm(array &$form, FormStateInterface $form_state, WebformSubmissionInterface $webform_submission) {
 
     $page = $form_state->get('current_page');
-
-    // ksm($page, $form_state->get('amend_booking_data'), $form_state->getValues());
 
     if ($form_state->isValidationComplete() && $page === 'webform_preview') {
 
@@ -756,8 +852,8 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
    */
   private function processVisitBookingReference(string $booking_ref, array &$form, FormStateInterface $form_state, WebformSubmissionInterface $webform_submission) {
 
-    $error = FALSE;
     $elements = WebformFormHelper::flattenElements($form);
+    $amend_booking_data = $form_state->get('amend_booking_data') ?? NULL;
 
     // Extract various bits of the booking reference.
     $prison_id = substr($booking_ref, 0, 2);
@@ -776,9 +872,10 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
       $elements['prison_name']['#default_value'] = $this->bookingReference['prison_name'];
     }
     else {
-      $this->bookingReference['status'] = self::VISIT_ORDER_REF_INVALID;
-      $this->bookingReference['status_msg'] = $this->t('Visit reference number is invalid.');
-      $error = TRUE;
+      // Invalid visit reference number, early return.
+      $this->bookingReference['error_status'] = self::VISIT_ORDER_REF_INVALID;
+      $this->bookingReference['error_status_msg'] = $this->t('Visit reference number is invalid.');
+      return;
     }
 
     // Determine the visit type.
@@ -797,9 +894,9 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
       $elements['visit_type']['#default_value'] = $this->bookingReference['visit_type'];
     }
     else {
-      $this->bookingReference['status'] = self::VISIT_ORDER_REF_INVALID;
-      $this->bookingReference['status_msg'] = $this->t('Visit reference number is invalid.');
-      $error = TRUE;
+      $this->bookingReference['error_status'] = self::VISIT_ORDER_REF_INVALID;
+      $this->bookingReference['error_status_msg'] = $this->t('Visit reference number is invalid.');
+      return;
     }
 
     // Determine prisoner category and subcategory.
@@ -817,9 +914,9 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
       }
     }
     else {
-      $this->bookingReference['status'] = self::VISIT_ORDER_REF_INVALID;
-      $this->bookingReference['status_msg'] = $this->t('Visit reference number is invalid.');
-      $error = TRUE;
+      $this->bookingReference['error_status'] = self::VISIT_ORDER_REF_INVALID;
+      $this->bookingReference['error_status_msg'] = $this->t('Visit reference number is invalid.');
+      return;
     }
 
     // Determine various dates for the booking reference.
@@ -873,21 +970,30 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
     $visit_latest_booking_date = clone $booking_ref_valid_to;
     $visit_latest_booking_date->modify('-' . $booking_advance_notice);
 
+    // Determine the latest date for amending a booked timeslot.
+    $visit_latest_booking_amendment_date = $now;
+    $visit_latest_booking_amendment_date->modify('+' . $booking_advance_notice);
+
     // Check some dates and set a status.
     if ($now > $booking_ref_valid_to) {
-      $this->bookingReference['status'] = self::VISIT_ORDER_REF_EXPIRED;
-      $this->bookingReference['status_msg'] = $this->t('Visit reference number has expired.');
-      $error = TRUE;
+      $this->bookingReference['error_status'] = self::VISIT_ORDER_REF_EXPIRED;
+      $this->bookingReference['error_status_msg'] = $this->t('Visit reference number has expired.');
+      return;
     }
     elseif ($now < $booking_ref_max_advanced_issue_date) {
-      $this->bookingReference['status'] = self::VISIT_ORDER_REF_INVALID;
-      $this->bookingReference['status_msg'] = $this->t('Visit reference number is not recognised.');
-      $error = TRUE;
+      $this->bookingReference['error_status'] = self::VISIT_ORDER_REF_INVALID;
+      $this->bookingReference['error_status_msg'] = $this->t('Visit reference number is not recognised.');
+      return;
     }
     elseif ($now > $visit_latest_booking_date) {
-      $this->bookingReference['status'] = self::VISIT_ORDER_REF_NOTICE_EXCEEDED;
-      $this->bookingReference['status_msg'] = $this->t('Visit reference number period of notice has expired.');
-      $error = TRUE;
+      $this->bookingReference['error_status'] = self::VISIT_ORDER_REF_NOTICE_EXCEEDED;
+      $this->bookingReference['error_status_msg'] = $this->t('Visit reference number period of notice has expired.');
+      return;
+    }
+    elseif ($amend_booking_data && new \DateTime($amend_booking_data['SLOTDATETIME']) < $visit_latest_booking_amendment_date) {
+      $this->bookingReference['error_status'] = self::VISIT_ORDER_REF_AMENDMENT_NOTICE_EXCEEDED;
+      $this->bookingReference['error_status_msg'] = $this->t('The period of notice required for changing visit date and time has expired.');
+      return;
     }
     else {
       // Booking reference week and year are valid.
@@ -913,14 +1019,14 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
       $available_slots = $this->getAvailableSlots();
 
       if ($available_slots && !empty($available_slots['error'])) {
-        $this->bookingReference['status'] = self::VISIT_ORDER_REF_NO_DATA;
-        $this->bookingReference['status_msg'] = $this->t('An error has occurred. Booking cannot proceed at this time. Try again later.');
-        $error = TRUE;
+        $this->bookingReference['error_status'] = self::VISIT_ORDER_REF_NO_DATA;
+        $this->bookingReference['error_status_msg'] = $this->t('An error has occurred. Booking cannot proceed at this time. Try again later.');
+        return;
       }
       elseif (!$available_slots) {
-        $this->bookingReference['status'] = self::VISIT_ORDER_REF_NO_SLOTS;
-        $this->bookingReference['status_msg'] = $this->t('There are no remaining time slots for visit reference number.');
-        $error = TRUE;
+        $this->bookingReference['error_status'] = self::VISIT_ORDER_REF_NO_SLOTS;
+        $this->bookingReference['error_status_msg'] = $this->t('There are no remaining time slots for visit reference number.');
+        return;
       }
       else {
         $this->bookingReference['available_slots'] = $available_slots;
@@ -929,8 +1035,6 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
 
     // Keep the processed booking reference in form_state.
     $form_state->set('booking_reference_processed', $this->bookingReference);
-
-    return $error;
   }
 
   /**
@@ -950,14 +1054,14 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
       return;
     }
     else {
-      $booking_ref_processed = $this->processVisitBookingReference($booking_ref, $form, $form_state, $webform_submission);
+      $this->processVisitBookingReference($booking_ref, $form, $form_state, $webform_submission);
     }
 
-    if ($booking_ref_processed && $this->bookingReference['status'] === self::VISIT_ORDER_REF_NO_DATA) {
-      $form_state->setError($form, $this->bookingReference['status_msg']);
+    if ($this->bookingReference['error_status'] && $this->bookingReference['error_status'] === self::VISIT_ORDER_REF_NO_DATA) {
+      $form_state->setError($form, $this->bookingReference['error_status_msg']);
     }
-    elseif ($this->bookingReference['status']) {
-      $form_state->setErrorByName('visitor_order_number', $this->bookingReference['status_msg']);
+    elseif ($this->bookingReference['error_status']) {
+      $form_state->setErrorByName('visitor_order_number', $this->bookingReference['error_status_msg']);
     }
   }
 
@@ -1241,6 +1345,11 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
       $elements[$element_name]['#default_value'] = '';
       $webform_submission->setElementData($element_name, '');
     }
+
+    // Some of the logic for setting timeslot preferences is handled
+    // via clientside JS.  Flag to clientside when timeslots must be
+    // reset.
+    $form['#attached']['drupalSettings']['prisonVisitBooking']['resetTimeslots'] = TRUE;
   }
 
   /**
