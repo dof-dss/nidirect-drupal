@@ -308,32 +308,38 @@ elements: |-
 
         {{ data.confirmation_visit_details }}
     booking_details_notice_exceeded_virtual:
-      '#access': false
       '#type': webform_computed_twig
+      '#title': booking_details_notice_exceeded_virtual
+      '#title_display': none
+      '#access': false
       '#template': |-
         <p class="info-notice info-notice--warning" role="status">
           You cannot change the visit date and time for this booking. You are outside of the 48 hour notice period required for changing virtual visit times.
         </p>
 
-        {{ data.confirmation_visit_details }}
+        {# data.confirmation_visit_details #}
     booking_details_notice_exceeded_face_to_face:
-      '#access': false
       '#type': webform_computed_twig
+      '#title': booking_details_notice_exceeded_face_to_face
+      '#title_display': none
+      '#access': false
       '#template': |-
         <p class="info-notice info-notice--warning" role="status">
           You cannot change the visit date and time for this booking. You are outside of the 24 hour notice period required for changing face-to-face visit times.
         </p>
 
-        {{ data.confirmation_visit_details }}
+        {# data.confirmation_visit_details #}
     booking_details_ref_no_slots:
-      '#access': false
       '#type': webform_computed_twig
+      '#title': booking_details_ref_no_slots
+      '#title_display': none
+      '#access': false
       '#template': |-
         <p class="info-notice info-notice--warning" role="status">
           You cannot change the visit date and time for this booking. There are no more time slots available.
         </p>
 
-        {{ data.confirmation_visit_details }}
+        {# data.confirmation_visit_details #}
     amend_booking_options:
       '#type': radios
       '#title': 'Do you want to keep, cancel or change this booking?'
@@ -1660,7 +1666,7 @@ css: |-
 
   button.clear-button:focus::before,
   button.clear-button:hover::before {
-      background: #5d5d5d;
+      background: #1c1c1c;
   }
 
   button.clear-button {
