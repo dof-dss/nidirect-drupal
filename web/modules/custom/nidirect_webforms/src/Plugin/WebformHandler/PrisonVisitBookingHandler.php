@@ -214,10 +214,10 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
     // the visit_order_number or "booking reference".
     //
     // The booking reference determines:
-    //   - The prison being visited
-    //   - Whether it is a face-to-face or virtual visit
-    //   - The date when the visit can be booked
-    //   - The prisoner type and time slots available for prisoner type
+    // - The prison being visited
+    // - Whether it is a face-to-face or virtual visit
+    // - The date when the visit can be booked
+    // - The prisoner type and time slots available for prisoner type.
     //
     // The booking reference is collected in the very first wizard page.
     // Once it is submitted and validated, form_state will contain the
