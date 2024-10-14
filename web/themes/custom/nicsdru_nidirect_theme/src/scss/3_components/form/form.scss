@@ -308,6 +308,17 @@ textarea {
     box-shadow: none;
     color: color(text);
   }
+
+  &:disabled {
+    opacity: .8;
+    background-color: $grey-light;
+    color: $ash-grey;
+  }
+
+  &[readonly] {
+    background-color: $grey-light;
+    color: $grey-dark;
+  }
 }
 
 [type='date'] {
@@ -449,6 +460,18 @@ input[type='checkbox'],
     }
   }
 
+  &:checked:disabled,
+  &:disabled,
+  &:checked[readonly],
+  &[readonly] {
+    opacity: .6;
+
+    & ~ label {
+      background-color: $grey-light;
+      color: $grey-dark;
+    }
+  }
+
   &[role='switch'] {
     -webkit-appearance: none;
     -moz-appearance: none;
@@ -489,10 +512,6 @@ input[type='checkbox'],
       &::before {
         left: 1em;
       }
-    }
-
-    &:disabled {
-      opacity: .4;
     }
 
     & ~ label {
