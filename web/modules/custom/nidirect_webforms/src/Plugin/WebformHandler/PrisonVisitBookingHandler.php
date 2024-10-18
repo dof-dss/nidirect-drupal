@@ -85,9 +85,11 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
 
   const VISIT_ORDER_REF_AMENDMENT_NOTICE_EXCEEDED = 4;
 
-  const VISIT_ORDER_REF_NO_SLOTS = 5;
+  const VISIT_ORDER_REF_AMENDMENT_EXPIRED = 5;
 
-  const VISIT_ORDER_REF_NO_DATA = 6;
+  const VISIT_ORDER_REF_NO_SLOTS = 6;
+
+  const VISIT_ORDER_REF_NO_DATA = 7;
 
   /**
    * {@inheritdoc}
@@ -182,13 +184,12 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
           $booking_data['error'] = TRUE;
           $booking_data['error_msg'] = t('Booking link has already been be used and cannot be reused to amend your booking.');
         }
-        else {
-          // Convert booking data slotdatetime to a more useable format.
-          $booked_slotdatetime = new \DateTime(str_replace('/', '-', $booking_data['SLOTDATETIME']));
-          $booking_data['SLOTDATETIME'] = $booked_slotdatetime->format(DATE_ATOM);
-        }
       }
     }
+
+    // Convert booking data slotdatetime to a more useable format.
+    $booked_slotdatetime = new \DateTime(str_replace('/', '-', $booking_data['SLOTDATETIME']));
+    $booking_data['SLOTDATETIME'] = $booked_slotdatetime->format(DATE_ATOM);
 
     // Store booking data in form_state.
     $form_state->set('amend_booking_data', $booking_data);
@@ -283,8 +284,18 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
           return;
         }
         elseif ($error_status === self::VISIT_ORDER_REF_EXPIRED) {
-          // Cannot process with booking amendment.
+          // Cannot proceed with booking amendment.
           $elements['visit_order_ref_expired']['#access'] = TRUE;
+          $elements['booking_details']['#access'] = FALSE;
+          $elements['amend_booking_options']['#access'] = FALSE;
+          $elements['wizard_next']['#access'] = FALSE;
+
+          // Early return.
+          return;
+        }
+        elseif ($error_status === self::VISIT_ORDER_REF_AMENDMENT_EXPIRED) {
+          // Cannot proceed with booking amendment.
+          $elements['visit_order_ref_amendment_expired']['#access'] = TRUE;
           $elements['booking_details']['#access'] = FALSE;
           $elements['amend_booking_options']['#access'] = FALSE;
           $elements['wizard_next']['#access'] = FALSE;
@@ -986,10 +997,6 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
     $visit_latest_booking_date = clone $booking_ref_valid_to;
     $visit_latest_booking_date->modify('-' . $booking_advance_notice);
 
-    // Determine the latest date for amending a booked timeslot.
-    $visit_latest_booking_amendment_date = $now;
-    $visit_latest_booking_amendment_date->modify('+' . $booking_advance_notice);
-
     // Check some dates and set a status.
     if ($now > $booking_ref_valid_to) {
       $this->bookingReference['error_status'] = self::VISIT_ORDER_REF_EXPIRED;
@@ -1004,9 +1011,25 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
       $this->bookingReference['error_status'] = self::VISIT_ORDER_REF_NOTICE_EXCEEDED;
       $this->bookingReference['error_status_msg'] = $this->t('Visit reference number period of notice has expired.');
     }
-    elseif ($amend_booking_data && new \DateTime($amend_booking_data['SLOTDATETIME']) < $visit_latest_booking_amendment_date) {
-      $this->bookingReference['error_status'] = self::VISIT_ORDER_REF_AMENDMENT_NOTICE_EXCEEDED;
-      $this->bookingReference['error_status_msg'] = $this->t('The period of notice required for changing visit date and time has expired.');
+    elseif ($amend_booking_data) {
+
+      // Get the booked timeslot.
+      $amend_booking_date = new \DateTime($amend_booking_data['SLOTDATETIME']);
+
+      // Determine the latest date for amending a booked timeslot.
+      $visit_latest_booking_amendment_date = clone $amend_booking_date;
+      $visit_latest_booking_amendment_date->modify('-' . $booking_advance_notice);
+
+      if ($now > $amend_booking_date) {
+        $this->bookingReference['error_status'] = self::VISIT_ORDER_REF_AMENDMENT_EXPIRED;
+        $this->bookingReference['error_status_msg'] = $this->t('The scheduled date and time for this visit have already passed, so amendments can no longer be made.');
+      }
+      elseif ($now > $visit_latest_booking_amendment_date) {
+        $this->bookingReference['error_status'] = self::VISIT_ORDER_REF_AMENDMENT_NOTICE_EXCEEDED;
+        $this->bookingReference['error_status_msg'] = $this->t('The period of notice required for amending the visit date and time has not been met.');
+
+      }
+
     }
 
     // Booking reference week and year are valid.
