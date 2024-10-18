@@ -116,41 +116,52 @@
 
   }
 
-  .visit-details dl {
-    display: grid;
-    grid-template-columns: minmax(6em, max-content) 1fr;
-    gap: .6rem;
+  .visit-details {
+    dl {
+      display: grid;
+      grid-template-columns: minmax(6em, max-content) 1fr;
+      gap: .6rem;
 
-    &.column-wrap {
+      &.column-wrap {
 
-      @include breakpoint($phab) {
-        display: flex;
-        flex-flow: column wrap;
-        justify-content: flex-start;
-        max-height: 5.5em;
+        @include breakpoint($phab) {
+          display: flex;
+          flex-flow: column wrap;
+          justify-content: flex-start;
+          max-height: 5.5em;
+        }
       }
-    }
 
-    &.compact {
-      dd,
+      &.compact {
+        dd,
+        dt {
+          @include responsive-typo-map($small-text);
+        }
+      }
+
+      dt,
+      dd {
+        padding: .25em .5em;
+        margin: 0;
+
+        @include breakpoint($tab) {
+          padding: .3334em .5em;
+        }
+      }
+
       dt {
-        @include responsive-typo-map($small-text);
+        font-weight: bold;
+        background-color: $brand-primary-lighter;
+
+        &.error {
+          background-color: $error-bg;
+        }
       }
     }
 
-    dt,
-    dd {
-      padding: .25em .5em;
-      margin: 0;
-
-      @include breakpoint($tab) {
-        padding: .3334em .5em;
-      }
-    }
-
-    dt {
-      font-weight: bold;
-      background-color: $brand-primary-lighter;
+    .form-item--card ol {
+      margin: 1em 0;
+      padding: 0 0 0 .5em;
     }
   }
 
