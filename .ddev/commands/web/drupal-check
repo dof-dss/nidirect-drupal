@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+## Description: Run drupal-check locally to detect deprecated code and ensure future compliance.
+## Usage: drupal-check
+## Aliases: drck
+## Example: "ddev <drupal-check|drck> web/modules/custom"
+
+/app/vendor/bin/drupal-check --memory-limit=256M $1
