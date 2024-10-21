@@ -106,7 +106,7 @@ function nidirect_common_requirements($phase) {
         $link['#suffix'] = ', ';
         $links[] = $link;
       }
-      $requirements['nidirect_common']['description'] = \Drupal::service('renderer')->renderPlain($links);
+      $requirements['nidirect_common']['description'] = \Drupal::service('renderer')->renderInIsolation($links);
       $requirements['nidirect_common']['severity'] = REQUIREMENT_ERROR;
     }
   }
