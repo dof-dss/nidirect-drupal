@@ -347,18 +347,32 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
       $elements['visit_preferred_day_and_time']['#title'] = $this->t('Amend visit date and time');
       $elements['webform_preview']['#title'] = $this->t('Amend booking confirmation');
 
+      // Alter the hidden element tracking the amendment type.
+      if ($form_state->getValue('amend_booking_options') === 'keep') {
+        $form_state->setValue('amend_type', 'KEEP');
+        $webform_submission->setElementData('amend_type', 'KEEP');
+        $elements['amend_type']['#default_value'] = 'KEEP';
+      }
+      elseif ($form_state->getValue('amend_booking_options') === 'cancel') {
+        $form_state->setValue('amend_type', 'CANCEL');
+        $webform_submission->setElementData('amend_type', 'CANCEL');
+        $elements['amend_type']['#default_value'] = 'CANCEL';
+      }
+      elseif ($form_state->getValue('amend_booking_options') === 'change') {
+        $form_state->setValue('amend_type', 'UPDATE');
+        $webform_submission->setElementData('amend_type', 'UPDATE');
+        $elements['amend_type']['#default_value'] = 'UPDATE';
+      }
+
       // Alter change options presented to the user.
       // Virtual visits have no additional visitors.
       if ($this->bookingReference['visit_type'] === 'virtual') {
         unset($elements['choose_changes']['#options']['additional_visitors']);
       }
 
-      // Alter webform preview.
+      // Alterations at webform preview stage.
       if ($page === 'webform_preview') {
 
-        // Alter preview title and submit button text depending on
-        // whether we are keeping, cancelling or changing an existing
-        // booking.
         if ($form_state->getValue('amend_booking_options') === 'keep') {
           $elements['preview']['#title'] = $this->t('Confirm keep booking');
           $elements['actions'][0]['#submit__label'] = $this->t('Keep booking');

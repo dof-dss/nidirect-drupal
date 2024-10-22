@@ -1539,6 +1539,9 @@ elements: |-
   amend_timeslot_message:
     '#type': value
     '#title': amend_timeslot_message
+  amend_type:
+    '#type': hidden
+    '#title': AMEND_TYPE
   bkg_id:
     '#type': hidden
     '#title': BKG_ID
@@ -1972,9 +1975,9 @@ settings:
     visit_order_ref_invalid: visit_order_ref_invalid
     visit_order_ref_expired: visit_order_ref_expired
     booking_details: booking_details
-    booking_details_notice_exceeded_virtual: booking_details_notice_exceeded_virtual
-    booking_details_notice_exceeded_face_to_face: booking_details_notice_exceeded_face_to_face
     booking_details_ref_no_slots: booking_details_ref_no_slots
+    booking_details_notice_exceeded_face_to_face: booking_details_notice_exceeded_face_to_face
+    booking_details_notice_exceeded_virtual: booking_details_notice_exceeded_virtual
     amend_booking_options: amend_booking_options
     choose_changes: choose_changes
     choose_changes_virtual: choose_changes_virtual
@@ -2070,6 +2073,7 @@ settings:
     av5_id: av5_id
     av5_dob: av5_dob
     environment_base_url: environment_base_url
+    amend_type: amend_type
   preview_exclude_empty: true
   preview_exclude_empty_checkbox: true
   draft: none
@@ -2812,7 +2816,7 @@ handlers:
         {
         "SEQUENCE_ID": "[webform_submission:serial]",
         "SUBMITTED_DATETIME": "[webform_submission:completed:prison_visit_booking_datetime]",
-        "AMEND_TYPE": "UPDATE",
+        "AMEND_TYPE": "[webform_submission:values:amend_type]",
         "BKG_ID": "[webform_submission:values:bkg_id]",
         "VISIT_ORDER_NO": "[webform_submission:values:visitor_order_number]",
         "INMATE_ID": "[webform_submission:values:prisoner_id]",
@@ -2913,7 +2917,7 @@ handlers:
         {
         "SEQUENCE_ID": "[webform_submission:serial]",
         "SUBMITTED_DATETIME": "[webform_submission:completed:prison_visit_booking_datetime]",
-        "AMEND_TYPE": "UPDATE",
+        "AMEND_TYPE": "[webform_submission:values:amend_type]",
         "BKG_ID": "[webform_submission:values:bkg_id]",
         "VISIT_ORDER_NO": "[webform_submission:values:visitor_order_number]",
         "INMATE_ID": "[webform_submission:values:prisoner_id]",
@@ -2968,6 +2972,7 @@ handlers:
         saturday_week_4: saturday_week_4
         sunday_week_4: sunday_week_4
         environment_base_url: environment_base_url
+        amend_type: amend_type
       ignore_access: true
       exclude_empty: true
       exclude_empty_checkbox: false
@@ -3015,7 +3020,7 @@ handlers:
         {
         "SEQUENCE_ID": "[webform_submission:serial]",
         "SUBMITTED_DATETIME": "[webform_submission:completed:prison_visit_booking_datetime]",
-        "AMEND_TYPE": "UPDATE",
+        "AMEND_TYPE": "[webform_submission:values:amend_type]",
         "BKG_ID": "[webform_submission:values:bkg_id]",
         "VISIT_ORDER_NO": "[webform_submission:values:visitor_order_number]",
         "INMATE_ID": "[webform_submission:values:prisoner_id]",
