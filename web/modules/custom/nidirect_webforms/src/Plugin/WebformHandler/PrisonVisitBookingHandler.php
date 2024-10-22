@@ -353,12 +353,6 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
         unset($elements['choose_changes']['#options']['additional_visitors']);
       }
 
-      // If user chooses to keep existing booking, disable Next button
-      // on keep_booking_page.
-      if ($page === 'keep_booking_page' && $form_state->getValue('amend_booking_options') === 'keep') {
-        $elements['wizard_next']['#access'] = FALSE;
-      }
-
       // Alter webform preview.
       if ($page === 'webform_preview') {
 
