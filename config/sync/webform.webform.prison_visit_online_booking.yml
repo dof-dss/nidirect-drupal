@@ -295,6 +295,45 @@ elements: |-
         <p class="info-notice info-notice--error">
           The visit reference number for this booking has expired.
         </p>
+    visit_order_ref_amendment_expired:
+      '#type': webform_computed_twig
+      '#title': booking_expired
+      '#title_display': none
+      '#states_clear': false
+      '#access': false
+      '#template': |-
+        <div class="visit-details" role="status">
+          <p class="info-notice info-notice--error">
+            The visit date and time for this booking has passed.
+          </p>
+          <dl class="compact">
+              <dt>Visit reference number</dt>
+              <dd>{{ data.visitor_order_number }}</dd>
+              <dt>Visiting prisoner</dt>
+              <dd>{{ data.prisoner_id }}</dd>
+              <dt>Prison</dt>
+              <dd>{{ data.prison_name }}</dd>
+              <dt>Visit type</dt>
+              <dd>{{ data.visit_type | title }}</dd>
+              <dt class="error">
+                <span class="visually-hidden">Error: </span>
+                Visit date and time
+              </dt>
+              <dd>
+                <time datetime="{{ data.slot1_datetime }}">
+                {{ data.slot1_datetime | date('g.i a \\o\\n l, j F Y') }}
+                </time>
+              </dd>
+          </dl>
+          <p>
+            If you have amended this booking previously and the date and time shown above is not correct, check your email for a
+            more recent booking confirmation. Use the "Amend or Cancel" button in that email if you need to make further changes
+            to your booking.
+          </p>
+          <p>
+            Or, you can <a href="/forms/book-prison-visit" data-self-ref="true">make a new booking</a>.
+          </p>
+        </div>
     booking_details:
       '#type': webform_computed_twig
       '#title': booking_details
@@ -307,39 +346,37 @@ elements: |-
         </p>
 
         {{ data.confirmation_visit_details }}
-    booking_details_notice_exceeded_virtual:
-      '#type': webform_computed_twig
-      '#title': booking_details_notice_exceeded_virtual
-      '#title_display': none
-      '#access': false
-      '#template': |-
-        <p class="info-notice info-notice--warning" role="status">
-          You cannot change the visit date and time for this booking. You are outside of the 48 hour notice period required for changing virtual visit times.
-        </p>
-
-        {# data.confirmation_visit_details #}
-    booking_details_notice_exceeded_face_to_face:
-      '#type': webform_computed_twig
-      '#title': booking_details_notice_exceeded_face_to_face
-      '#title_display': none
-      '#access': false
-      '#template': |-
-        <p class="info-notice info-notice--warning" role="status">
-          You cannot change the visit date and time for this booking. You are outside of the 24 hour notice period required for changing face-to-face visit times.
-        </p>
-
-        {# data.confirmation_visit_details #}
     booking_details_ref_no_slots:
-      '#type': webform_computed_twig
-      '#title': booking_details_ref_no_slots
-      '#title_display': none
       '#access': false
-      '#template': |-
-        <p class="info-notice info-notice--warning" role="status">
-          You cannot change the visit date and time for this booking. There are no more time slots available.
+      '#type': webform_markup
+      '#markup': |-
+        <div class="info-notice info-notice--warning" role="status">
+          <p>
+            You cannot change the visit date and time for this booking. There are no more visit dates and times available.
+          </p>
+          <p>
+            You can still make other changes by selecting <strong>Change</strong> below.
+          </p>
+        </div>
+    booking_details_notice_exceeded_face_to_face:
+      '#type': webform_markup
+      '#access': false
+      '#markup': |-
+        <div class="info-notice info-notice--warning" role="status">
+        <h2>24 hours notice is required for changes to face-to-face visits</h2>
+        <p>
+        The visit date and time for this booking occurs in less than 24 hours. If you want to make any changes to the booking, the visit date and time must be changed.
         </p>
-
-        {# data.confirmation_visit_details #}
+        </div>
+    booking_details_notice_exceeded_virtual:
+      '#type': webform_markup
+      '#access': false
+      '#markup': |-
+        <div class="info-notice info-notice--warning" role="status">
+          <h2>48 hours notice is required for changes to virtual visits</h2>
+          <p>The visit date and time for this booking occurs in less than 48 hours. If you want to make any changes to the booking, the visit date and time must be changed.
+          </p>
+        </div>
     amend_booking_options:
       '#type': radios
       '#title': 'Do you want to keep, cancel or change this booking?'
@@ -364,9 +401,12 @@ elements: |-
       '#required': true
       '#required_error': 'You must select what you want to change'
       '#states':
-        visible:
+        invisible:
           ':input[name="amend_booking_options"]':
-            value: change
+            '!value': change
+        disabled:
+          ':input[name="amend_booking_options"]':
+            '!value': change
       '#wrapper_attributes':
         class:
           - important-question
@@ -389,14 +429,17 @@ elements: |-
     '#title': 'Visitor details'
     '#states':
       visible:
-        - ':input[name="choose_changes[your_details]"]':
-            checked: true
-        - or
-        - ':input[name="choose_changes_virtual[your_details]"]':
-            checked: true
-        - or
         - ':input[name="bkg_id"]':
             empty: true
+        - or
+        - ':input[name="choose_changes[your_details]"]':
+            checked: true
+      invisible:
+        - ':input[name="amend_booking_options"]':
+            value: keep
+        - xor
+        - ':input[name="amend_booking_options"]':
+            value: cancel
     '#states_clear': false
     '#format': container
     '#next_button_label': Next
@@ -1241,16 +1284,16 @@ elements: |-
         '#display_on': form
         '#mode': html
         '#template': |-
-          <div role="status">
-
-              <p class="info-notice">
-                  You can choose up to
+          <div role="status" class="info-notice">
+              <p>
+                  <strong>You can choose up to
                   {% if data.visitor_order_number | slice(2, 1) == 'V' %}
                       five
                   {% else %}
                       three
                   {% endif %}
-                  time slots. &nbsp;We will try to book the first of your chosen time slots that is available.
+                  time slots.</strong>
+                  &nbsp;We will try to book the first of your chosen time slots that is available.
               </p>
 
           </div>
@@ -1496,6 +1539,9 @@ elements: |-
   amend_timeslot_message:
     '#type': value
     '#title': amend_timeslot_message
+  amend_type:
+    '#type': hidden
+    '#title': AMEND_TYPE
   bkg_id:
     '#type': hidden
     '#title': BKG_ID
@@ -1656,6 +1702,7 @@ css: |-
       content: '\00d7';
       display: inline-block;
       background: #666666;
+      font-size: 14px;
       width: 1.5em;
       height: 1.5em;
       border-radius: 50%;
@@ -1682,8 +1729,14 @@ css: |-
       background-color: transparent;
   }
 
-  input:has(+ button.clear-button) {
+  input[disabled] ~ button.clear-button,
+  input[readonly] ~ button.clear-button {
+      opacity: .6;
+  }
 
+  input[disabled] ~ button.clear-button:hover::before,
+  input[readonly] ~ button.clear-button:hover::before {
+      background: #666666;
   }
 
   .form-item--error-message:has(+ button.clear-button) {
@@ -1724,12 +1777,17 @@ javascript: |-
 
           // Add a click event to the button
           button.addEventListener('click', function () {
-            input.value = ''; // Clear the value of the text input
-            input.focus();
+            if (!input.hasAttribute(disabled) && !input.hasAttribute(readonly)) {
+              input.value = ''; // Clear the value of the text input
+              input.focus();
+            }
           });
 
           // Insert the button before the text input
           input.parentNode.insertBefore(button, input.nextSibling);
+
+          // Increase the size of the input to accommodate the button.
+          input.size = input.size + 4;
         }
 
         if (!input.nextElementSibling || !input.nextElementSibling.classList.contains('clear-button')) {
@@ -1739,6 +1797,84 @@ javascript: |-
       });
     }
   };
+
+
+  (function($, Drupal, once) {
+
+    Drupal.behaviors.prisonVisitAdditionalVisitors = {
+      attach: function (context, settings) {
+
+        let selectors = '';
+        selectors += 'fieldset[data-drupal-selector^="edit-additional-visitor-adult-1-"],';
+        selectors += 'fieldset[data-drupal-selector^="edit-additional-visitor-adult-2-"],';
+        selectors += 'fieldset[data-drupal-selector^="edit-additional-visitor-child-1-"],';
+        selectors += 'fieldset[data-drupal-selector^="edit-additional-visitor-child-2-"],';
+        selectors += 'fieldset[data-drupal-selector^="edit-additional-visitor-child-3-"],';
+        selectors += 'fieldset[data-drupal-selector^="edit-additional-visitor-child-4-"]';
+
+        const $additionalVisitors = $(once('prisonVisitAdditionalVisitors', selectors, context));
+        let visitorData = [];
+
+        const removeVisitor = function(event) {
+          event.preventDefault();
+
+          // When a visitor's ID and DOB is removed, we shift the details for all
+          // the next visitors "up" to close the gap.
+
+          let $visitor = $(this).closest('fieldset');
+          let $visitor_id = $('input[name$="_id"]', $visitor);
+          let $visitor_dob = $('input[name$="_dob"]', $visitor);
+
+          const $visitorNextAll = $visitor.nextAll();
+
+          $visitorNextAll.each(function(index) {
+            let $visitor_sibling_id = $('input[name$="_id"]', $(this));
+            let $visitor_sibling_dob = $('input[name$="_dob"]', $(this));
+
+            $visitor_id.val($visitor_sibling_id.val());
+            $visitor_dob.val($visitor_sibling_dob.val());
+
+            $visitor_id = $visitor_sibling_id;
+            $visitor_dob = $visitor_sibling_dob;
+          });
+
+          $visitor_id
+              .val('')
+              .removeClass('valid error')
+              .removeAttr('aria-invalid')
+              .removeAttr('aria-describedby')
+              .removeAttr('required')
+              .removeAttr('aria-required')
+              .next('.error')
+              .html('');
+          $visitor_dob
+              .val('')
+              .removeClass('valid error')
+              .removeAttr('aria-invalid')
+              .removeAttr('aria-describedby')
+              .removeAttr('required')
+              .removeAttr('aria-required')
+              .next('.error')
+              .html('');
+
+          // Update the radios controlling the number of visitors.
+          // Use a click event so it fires events to hide visitors
+          // in the normal way.
+          let visitor_number = $('input[id^="edit-additional-visitor-"][name$="_number"]:checked').val();
+          $('input[id^="edit-additional-visitor-"][name$="_number"][value="' + (visitor_number - 1) + '"]').click();
+        }
+
+        // Add a remove link for each visitor.
+        $additionalVisitors.each(function(index) {
+          let $link_innerHTML = 'Remove <span class="visually-hidden">' + $('legend', $(this)).text() + '</span>';
+          let $button = $('<a href="#">' + $link_innerHTML + '</a>').attr('data-index', (index + 1)).click(removeVisitor);
+          $(this).find('.fieldset-wrapper').append($button);
+        });
+
+      }
+    };
+
+  })(jQuery, Drupal, once);
 settings:
   ajax: true
   ajax_scroll_top: form
@@ -1839,9 +1975,9 @@ settings:
     visit_order_ref_invalid: visit_order_ref_invalid
     visit_order_ref_expired: visit_order_ref_expired
     booking_details: booking_details
-    booking_details_notice_exceeded_virtual: booking_details_notice_exceeded_virtual
-    booking_details_notice_exceeded_face_to_face: booking_details_notice_exceeded_face_to_face
     booking_details_ref_no_slots: booking_details_ref_no_slots
+    booking_details_notice_exceeded_face_to_face: booking_details_notice_exceeded_face_to_face
+    booking_details_notice_exceeded_virtual: booking_details_notice_exceeded_virtual
     amend_booking_options: amend_booking_options
     choose_changes: choose_changes
     choose_changes_virtual: choose_changes_virtual
@@ -1937,6 +2073,7 @@ settings:
     av5_id: av5_id
     av5_dob: av5_dob
     environment_base_url: environment_base_url
+    amend_type: amend_type
   preview_exclude_empty: true
   preview_exclude_empty_checkbox: true
   draft: none
@@ -2679,7 +2816,7 @@ handlers:
         {
         "SEQUENCE_ID": "[webform_submission:serial]",
         "SUBMITTED_DATETIME": "[webform_submission:completed:prison_visit_booking_datetime]",
-        "AMEND_TYPE": "UPDATE",
+        "AMEND_TYPE": "[webform_submission:values:amend_type]",
         "BKG_ID": "[webform_submission:values:bkg_id]",
         "VISIT_ORDER_NO": "[webform_submission:values:visitor_order_number]",
         "INMATE_ID": "[webform_submission:values:prisoner_id]",
@@ -2780,7 +2917,7 @@ handlers:
         {
         "SEQUENCE_ID": "[webform_submission:serial]",
         "SUBMITTED_DATETIME": "[webform_submission:completed:prison_visit_booking_datetime]",
-        "AMEND_TYPE": "UPDATE",
+        "AMEND_TYPE": "[webform_submission:values:amend_type]",
         "BKG_ID": "[webform_submission:values:bkg_id]",
         "VISIT_ORDER_NO": "[webform_submission:values:visitor_order_number]",
         "INMATE_ID": "[webform_submission:values:prisoner_id]",
@@ -2835,6 +2972,7 @@ handlers:
         saturday_week_4: saturday_week_4
         sunday_week_4: sunday_week_4
         environment_base_url: environment_base_url
+        amend_type: amend_type
       ignore_access: true
       exclude_empty: true
       exclude_empty_checkbox: false
@@ -2882,7 +3020,7 @@ handlers:
         {
         "SEQUENCE_ID": "[webform_submission:serial]",
         "SUBMITTED_DATETIME": "[webform_submission:completed:prison_visit_booking_datetime]",
-        "AMEND_TYPE": "UPDATE",
+        "AMEND_TYPE": "[webform_submission:values:amend_type]",
         "BKG_ID": "[webform_submission:values:bkg_id]",
         "VISIT_ORDER_NO": "[webform_submission:values:visitor_order_number]",
         "INMATE_ID": "[webform_submission:values:prisoner_id]",
