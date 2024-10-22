@@ -75,21 +75,21 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
   /**
    * Visit reference number validation statuses.
    */
-  const VISIT_ORDER_REF_MISSING = 0;
+  const VISIT_ORDER_REF_MISSING = 1;
 
-  const VISIT_ORDER_REF_INVALID = 1;
+  const VISIT_ORDER_REF_INVALID = 2;
 
-  const VISIT_ORDER_REF_EXPIRED = 2;
+  const VISIT_ORDER_REF_EXPIRED = 3;
 
-  const VISIT_ORDER_REF_NOTICE_EXCEEDED = 3;
+  const VISIT_ORDER_REF_NOTICE_EXCEEDED = 4;
 
-  const VISIT_ORDER_REF_AMENDMENT_NOTICE_EXCEEDED = 4;
+  const VISIT_ORDER_REF_AMENDMENT_NOTICE_EXCEEDED = 5;
 
-  const VISIT_ORDER_REF_AMENDMENT_EXPIRED = 5;
+  const VISIT_ORDER_REF_AMENDMENT_EXPIRED = 6;
 
-  const VISIT_ORDER_REF_NO_SLOTS = 6;
+  const VISIT_ORDER_REF_NO_SLOTS = 7;
 
-  const VISIT_ORDER_REF_NO_DATA = 7;
+  const VISIT_ORDER_REF_NO_DATA = 8;
 
   /**
    * {@inheritdoc}
@@ -273,7 +273,7 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
         // Get any error messages.
         $error_status_msg = $this->bookingReference['error_status_msg'] ?? NULL;
 
-        if ($error_status === self::VISIT_ORDER_REF_INVALID) {
+        if ($error_status === self::VISIT_ORDER_REF_MISSING || $error_status === self::VISIT_ORDER_REF_INVALID) {
           // Cannot proceed with booking amendment.
           $elements['visit_order_ref_invalid']['#access'] = TRUE;
           $elements['booking_details']['#access'] = FALSE;
@@ -560,7 +560,7 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
     $temp_store = $this->tempStoreFactory->get('nidirect_webforms.prison_visit_booking');
     $visitor_data = $temp_store->get('visitor_data');
 
-    if (!empty($visitor_data) && $page === 'additional_visitors') {
+    if (!empty($visitor_data) && ($page === 'additional_visitor_adult_details' || $page === 'additional_visitor_child_details')) {
       $visitor_data_is_valid = TRUE;
 
       if ($visitor_data['additional_visitors_remember'] === 'no') {
@@ -890,6 +890,18 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
     $elements = WebformFormHelper::flattenElements($form);
     $amend_booking_data = $form_state->get('amend_booking_data') ?? NULL;
 
+    // Basic validation with early return.
+    if (empty($booking_ref)) {
+      $this->bookingReference['error_status'] = self::VISIT_ORDER_REF_MISSING;
+      $this->bookingReference['error_status_msg'] = $this->t('Visit reference number is required');
+      return;
+    }
+    elseif (strlen($booking_ref) !== $this->configuration['visit_order_number_length']) {
+      $this->bookingReference['error_status'] = self::VISIT_ORDER_REF_INVALID;
+      $this->bookingReference['error_status_msg'] = $this->t('Visit reference number is invalid.');
+      return;
+    }
+
     // Extract various bits of the booking reference.
     $prison_id = substr($booking_ref, 0, 2);
     $visit_type_id = substr($booking_ref, 2, 1);
@@ -1085,18 +1097,7 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
 
     $booking_ref = !empty($form_state->getValue('visitor_order_number')) ? $form_state->getValue('visitor_order_number') : NULL;
 
-    // Basic validation with early return.
-    if (empty($booking_ref)) {
-      $form_state->setErrorByName('visitor_order_number', $this->t('Visit reference number is required'));
-      return;
-    }
-    elseif (strlen($booking_ref) !== $this->configuration['visit_order_number_length']) {
-      $form_state->setErrorByName('visitor_order_number', $this->t('Visit reference number must contain 12 characters'));
-      return;
-    }
-    else {
-      $this->processVisitBookingReference($booking_ref, $form, $form_state, $webform_submission);
-    }
+    $this->processVisitBookingReference($booking_ref, $form, $form_state, $webform_submission);
 
     if ($this->bookingReference['error_status'] && $this->bookingReference['error_status'] === self::VISIT_ORDER_REF_NO_DATA) {
       $form_state->setError($form, $this->bookingReference['error_status_msg']);
