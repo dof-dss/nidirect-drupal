@@ -265,6 +265,13 @@ elements: |-
     '#title': 'Amend booking'
     '#states_clear': false
     '#format': container
+    amend_error_default:
+      '#type': webform_markup
+      '#access': false
+      '#markup': |-
+        <p class="info-notice info-notice--error">
+          An error has occurred. Booking cannot proceed at this time. Try again later.
+        </p>
     error_booking_already_amended:
       '#type': webform_computed_twig
       '#title': error_booking_already_amended
@@ -277,8 +284,15 @@ elements: |-
           <p class="info-notice info-notice--error">
             This booking has already been amended.
           </p>
-          <p class="info-notice">
+          <hr>
+          <p>
             Check your email for a more recent booking confirmation. Use the "Amend or Cancel" button in that email if you need to make further changes to this booking.
+          </p>
+          <p>
+            Make sure that you always use the Amend or Cancel button in your most recent booking confirmation email to make changes to your booking.
+          </p>
+          <p>
+            Or, <a href="/forms/book-prison-visit" data-self-ref="true">make a new booking using a different visit reference number</a> if you have one.
           </p>
         </div>
     visit_order_ref_invalid:
@@ -289,12 +303,42 @@ elements: |-
           The visit reference number for this booking is invalid.
         </p>
     visit_order_ref_expired:
+      '#type': webform_computed_twig
+      '#title': visit_order_ref_expired
+      '#title_display': none
       '#access': false
-      '#type': webform_markup
-      '#markup': |-
-        <p class="info-notice info-notice--error">
-          The visit reference number for this booking has expired.
-        </p>
+      '#template': |-
+        <div class="visit-details" role="status">
+          <p class="info-notice info-notice--error">
+            The visit reference number for this booking has expired.
+          </p>
+          <dl class="compact">
+              <dt class="error">
+                <span class="visually-hidden">Error: </span>
+                Visit reference number
+              </dt>
+              <dd>{{ data.visitor_order_number }} (expired)</dd>
+              <dt>Visiting prisoner</dt>
+              <dd>{{ data.prisoner_id }}</dd>
+              <dt>Prison</dt>
+              <dd>{{ data.prison_name }}</dd>
+              <dt>Visit type</dt>
+              <dd>{{ data.visit_type | title }}</dd>
+              <dt class="error">
+                <span class="visually-hidden">Error: </span>
+                Visit date and time
+              </dt>
+              <dd>
+                <time datetime="{{ data.slot1_datetime }}">
+                {{ data.slot1_datetime | date('g.i a \\o\\n l, j F Y') }}
+                </time>
+              </dd>
+          </dl>
+          <hr>
+          <p>
+            You should <a href="/forms/book-prison-visit" data-self-ref="true">make a new booking using a different visit reference number</a> if you have one.
+          </p>
+        </div>
     visit_order_ref_amendment_expired:
       '#type': webform_computed_twig
       '#title': booking_expired
@@ -303,9 +347,9 @@ elements: |-
       '#access': false
       '#template': |-
         <div class="visit-details" role="status">
-          <p class="info-notice info-notice--error">
-            The visit date and time for this booking has passed.
-          </p>
+          <div class="info-notice info-notice--error">
+            <p>The visit date and time for this booking has passed.</p>
+          </div>
           <dl class="compact">
               <dt>Visit reference number</dt>
               <dd>{{ data.visitor_order_number }}</dd>
@@ -325,13 +369,9 @@ elements: |-
                 </time>
               </dd>
           </dl>
+          <hr>
           <p>
-            If you have amended this booking previously and the date and time shown above is not correct, check your email for a
-            more recent booking confirmation. Use the "Amend or Cancel" button in that email if you need to make further changes
-            to your booking.
-          </p>
-          <p>
-            Or, you can <a href="/forms/book-prison-visit" data-self-ref="true">make a new booking</a>.
+            You should <a href="/forms/book-prison-visit" data-self-ref="true">make a new booking using a different visit reference number</a> if you have one.
           </p>
         </div>
     booking_details:
@@ -573,6 +613,14 @@ elements: |-
         <p class="info-notice" role="status">
         Existing details of additional visitors from a previous booking have been found.
         </p>
+    msg_additional_adult_visitors:
+      '#type': webform_computed_twig
+      '#title': msg_additional_adult_visitors
+      '#title_display': none
+      '#template': |-
+        <p class="info-notice" role="status">
+        You can add four additional visitors.  The maximum number of additional adult visitors is two.  You will be able to add additional child visitors in the next step.
+        </p>
     additional_visitor_adult_number:
       '#type': radios
       '#title': 'How many additional adults?'
@@ -768,6 +816,23 @@ elements: |-
             value: cancel
     '#states_clear': false
     '#format': container
+    msg_additional_child_visitors:
+      '#type': webform_computed_twig
+      '#title': msg_additional_child_visitors
+      '#title_display': none
+      '#template': |-
+        <p class="info-notice" role="status">
+        {% if data.additional_visitor_adult_number == 2 %}
+          You can add two additional child visitors<br>
+          (maximum of four additional visitors, two additional adults already added).
+        {% elseif data.additional_visitor_adult_number == 1 %}
+          You can add three additional child visitors<br>
+          (maximum of four additional visitors, one additional adult already added).
+        {% else %}
+          You can add four additional child visitors<br>
+          (maximum of four additional visitors, no additional adults have been added).
+        {% endif %}
+        </p>
     additional_visitor_child_number:
       '#type': radios
       '#title': 'How many additional children?'
