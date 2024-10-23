@@ -344,8 +344,6 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
       // Alter wizard page titles.
       $elements['main_visitor_details']['#title'] = $this->t('Amend visitor details');
       $elements['additional_visitors']['#title'] = $this->t('Amend additional visitors');
-      $elements['additional_visitor_adult_details']['#title'] = $this->t('Amend additional adult visitors');
-      $elements['additional_visitor_child_details']['#title'] = $this->t('Amend additional child visitors');
       $elements['visitor_special_requirements']['#title'] = $this->t('Amend visitor special requirements');
       $elements['visit_preferred_day_and_time']['#title'] = $this->t('Amend visit date and time');
       $elements['webform_preview']['#title'] = $this->t('Amend booking confirmation');
@@ -424,6 +422,7 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
       // adult visitor ids to be checked against it.
       $form['#attached']['drupalSettings']['prisonVisitBooking']['visitorOneId'] = ['visitor_1_id' => $visitor_1_id];
     }
+    // @TODO single additional visitors step - remove below?
     elseif ($page === 'additional_visitor_child_details') {
       // Pass all adult visitor ids to clientside to validate
       // child visitor ids.
@@ -436,6 +435,7 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
       }
     }
 
+    // @TODO single additional visitors step - remove below?
     // Alter the number of additional child visitors that can be added
     // depending on how many additional adults there are.
     if ($page === 'additional_visitor_child_details' && $form_state->getValue('additional_visitor_adult_number') > 0) {
@@ -563,7 +563,7 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
     $temp_store = $this->tempStoreFactory->get('nidirect_webforms.prison_visit_booking');
     $visitor_data = $temp_store->get('visitor_data');
 
-    if (!empty($visitor_data) && ($page === 'additional_visitor_adult_details' || $page === 'additional_visitor_child_details')) {
+    if (!empty($visitor_data) && $page === 'additional_visitor_details') {
       $visitor_data_is_valid = TRUE;
 
       if ($visitor_data['additional_visitors_remember'] === 'no') {
@@ -657,65 +657,35 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
     $elements['visitor_1_telephone']['#default_value'] = $amend_booking_data['VISITOR_1_PHONE'];
 
     // Extract additional visitors from booking data.
-    $additional_adults = [];
-    $additional_children = [];
+    $additional_visitors = [];
 
     for ($i = 2; $i <= 5; $i++) {
       $visitor_id = $amend_booking_data['VISITOR_' . $i . '_ID'] ?? NULL;
       $visitor_dob = $amend_booking_data['VISITOR_' . $i . '_DOB'] ?? NULL;
 
-      if ($visitor_id && $visitor_dob) {
-        if ($this->isAdultDateOfBirth($visitor_dob)) {
-          $additional_adults[] = [
-            'id' => $visitor_id,
-            'dob' => explode(" ", $visitor_dob)[0],
-          ];
-        }
-        else {
-          $additional_children[] = [
-            'id' => $visitor_id,
-            'dob' => explode(" ", $visitor_dob)[0],
-          ];
-        }
-      }
+      $additional_visitors[] = [
+        'id' => $visitor_id,
+        'dob' => explode(" ", $visitor_dob)[0],
+      ];
     }
 
-    $additional_adults_count = count($additional_adults);
-    $additional_children_count = count($additional_children);
+    $additional_visitors_count = count($additional_visitors);
 
-    if ($additional_adults_count <= 2) {
-      $form_state->setValue('additional_visitor_adult_number', $additional_adults_count);
-      $webform_submission->setElementData('additional_visitor_adult_number', $additional_adults_count);
-      $elements['additional_visitor_adult_number']['#value'] = $additional_adults_count;
+    if ($additional_visitors_count > 0) {
+      $form_state->setValue('additional_visitor_number', $additional_visitors_count);
+      $webform_submission->setElementData('additional_visitor_number', $additional_visitors_count);
+      $elements['additional_visitor_number']['#value'] = $additional_visitors_count;
 
-      for ($i = 0; $i < $additional_adults_count; $i++) {
-        $form_key_stub = 'additional_visitor_adult_' . ($i + 1);
+      for ($i = 0; $i < $additional_visitors_count; $i++) {
+        $form_key_stub = 'additional_visitor_' . ($i + 1);
 
-        $form_state->setValue($form_key_stub . '_id', $additional_adults[$i]['id']);
-        $webform_submission->setElementData($form_key_stub . '_id', $additional_adults[$i]['id']);
-        $elements[$form_key_stub . '_id']['#value'] = $additional_adults[$i]['id'];
+        $form_state->setValue($form_key_stub . '_id', $additional_visitors[$i]['id']);
+        $webform_submission->setElementData($form_key_stub . '_id', $additional_visitors[$i]['id']);
+        $elements[$form_key_stub . '_id']['#value'] = $additional_visitors[$i]['id'];
 
-        $form_state->setValue($form_key_stub . $i . '_dob', $additional_adults[$i]['dob']);
-        $webform_submission->setElementData($form_key_stub . '_dob', $additional_adults[$i]['dob']);
-        $elements[$form_key_stub . '_dob']['#value'] = $additional_adults[$i]['dob'];
-      }
-    }
-
-    if ($additional_children_count <= 4) {
-      $form_state->setValue('additional_visitor_child_number', $additional_children_count);
-      $webform_submission->setElementData('additional_visitor_child_number', $additional_children_count);
-      $elements['additional_visitor_child_number']['#value'] = $additional_children_count;
-
-      for ($i = 0; $i < $additional_children_count; $i++) {
-        $form_key_stub = 'additional_visitor_child_' . ($i + 1);
-
-        $form_state->setValue($form_key_stub . '_id', $additional_children[$i]['id']);
-        $webform_submission->setElementData($form_key_stub . '_id', $additional_children[$i]['id']);
-        $elements[$form_key_stub . '_id']['#value'] = $additional_children[$i]['id'];
-
-        $form_state->setValue($form_key_stub . '_dob', $additional_children[$i]['dob']);
-        $webform_submission->setElementData($form_key_stub . '_dob', $additional_children[$i]['dob']);
-        $elements[$form_key_stub . '_dob']['#value'] = $additional_children[$i]['dob'];
+        $form_state->setValue($form_key_stub . $i . '_dob', $additional_visitors[$i]['dob']);
+        $webform_submission->setElementData($form_key_stub . '_dob', $additional_visitors[$i]['dob']);
+        $elements[$form_key_stub . '_dob']['#value'] = $additional_visitors[$i]['dob'];
       }
     }
 
@@ -759,7 +729,7 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
       $this->validateVisitBookingReference($form, $form_state, $webform_submission);
     }
 
-    if ($page === 'additional_visitor_adult_details' || $page === 'additional_visitor_child_details') {
+    if ($page === 'additional_visitor_details') {
       $this->validateUniqueVisitorIds($form, $form_state);
     }
 
@@ -823,30 +793,12 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
 
       // Get additional visitors.
       $additional_visitors = [];
-      $num_adults = $form_values['additional_visitor_adult_number'];
-      $num_children = $form_values['additional_visitor_child_number'];
+      $num_visitors = $form_values['additional_visitor_number'];
 
-      for ($i = 1; $i <= $num_adults; $i++) {
+      for ($i = 1; $i <= $num_visitors; $i++) {
 
-        $visitor_id = $form_values['additional_visitor_adult_' . $i . '_id'] ?? NULL;
-        $visitor_dob = $form_values['additional_visitor_adult_' . $i . '_dob'] ?? NULL;
-
-        if ($visitor_dob) {
-          $visitor_dob = new \DateTime(str_replace("/", "-", $visitor_dob));
-        }
-
-        if (!empty($visitor_id) && !empty($visitor_dob)) {
-          $additional_visitors[] = [
-            'id' => $visitor_id,
-            'dob' => $visitor_dob->format('d/m/Y H:i')
-          ];
-        }
-      }
-
-      for ($i = 1; $i <= $num_children; $i++) {
-
-        $visitor_id = $form_values['additional_visitor_child_' . $i . '_id'] ?? NULL;
-        $visitor_dob = $form_values['additional_visitor_child_' . $i . '_dob'] ?? NULL;
+        $visitor_id = $form_values['additional_visitor_' . $i . '_id'] ?? NULL;
+        $visitor_dob = $form_values['additional_visitor_' . $i . '_dob'] ?? NULL;
 
         if ($visitor_dob) {
           $visitor_dob = new \DateTime(str_replace("/", "-", $visitor_dob));
@@ -1116,20 +1068,16 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
   }
 
   /**
-   * Validate visitor IDs and DOBs.
+   * Validate visitor IDs are unique.
    */
   private function validateUniqueVisitorIds(array &$form, FormStateInterface $form_state) {
 
-    if ($form_state->get('current_page') === 'additional_visitor_adult_details') {
+    $visitorIds = [];
+
+    if ($form_state->get('current_page') === 'additional_visitor_details') {
       // Get all additional adult visitor ids.
       $visitorIds = array_filter($form_state->getValues(), function ($v, $k) {
-        return ($k === 'visitor_1_id' || (str_contains($k, 'additional_visitor_adult_') && str_ends_with($k, '_id'))) && is_numeric($v);
-      }, ARRAY_FILTER_USE_BOTH);
-    }
-    else {
-      // Get all additional visitor IDs.
-      $visitorIds = array_filter($form_state->getValues(), function ($v, $k) {
-        return str_starts_with($k, 'visitor_') && str_ends_with($k, '_id') && is_numeric($v);
+        return ($k === 'visitor_1_id' || (str_contains($k, 'additional_visitor_') && str_ends_with($k, '_id'))) && is_numeric($v);
       }, ARRAY_FILTER_USE_BOTH);
     }
 
