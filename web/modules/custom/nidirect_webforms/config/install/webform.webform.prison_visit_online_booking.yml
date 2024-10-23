@@ -100,55 +100,39 @@ elements: |-
               <dd>{{ data.visitor_1_telephone }}</dd>
           </dl>
 
-          {% if data.additional_visitor_adult_number > 0 or data.additional_visitor_child_number > 0 %}
+          {% if data.additional_visitor_number > 0 %}
               <h3>Additional visitors</h3>
               <div class="additional-visitors compact">
-                  {% if data.additional_visitor_adult_number > 0 %}
+                  {% if data.additional_visitor_number > 0 %}
                       <dl class="compact">
-                          <dt>Adult visitor</dt>
-                          <dd>{{ data.additional_visitor_adult_1_id }}</dd>
+                          <dt>Visitor ID</dt>
+                          <dd>{{ data.additional_visitor_1_id }}</dd>
                           <dt>Date of birth</dt>
-                          <dd>{{ data.additional_visitor_adult_1_dob }}</dd>
+                          <dd>{{ data.additional_visitor_1_dob }}</dd>
                       </dl>
                   {% endif %}
-                  {% if data.additional_visitor_adult_number > 1 %}
+                  {% if data.additional_visitor_number > 1 %}
                       <dl class="compact">
-                          <dt>Adult visitor</dt>
-                          <dd>{{ data.additional_visitor_adult_2_id }}</dd>
+                          <dt>Visitor ID</dt>
+                          <dd>{{ data.additional_visitor_2_id }}</dd>
                           <dt>Date of birth</dt>
-                          <dd>{{ data.additional_visitor_adult_2_dob }}</dd>
+                          <dd>{{ data.additional_visitor_2_dob }}</dd>
                       </dl>
                   {% endif %}
-                  {% if data.additional_visitor_child_number > 0 %}
+                  {% if data.additional_visitor_number > 2 %}
                       <dl class="compact">
-                          <dt>Child visitor</dt>
-                          <dd>{{ data.additional_visitor_child_1_id }}</dd>
+                          <dt>Visitor ID</dt>
+                          <dd>{{ data.additional_visitor_3_id }}</dd>
                           <dt>Date of birth</dt>
-                          <dd>{{ data.additional_visitor_child_1_dob }}</dd>
+                          <dd>{{ data.additional_visitor_3_dob }}</dd>
                       </dl>
                   {% endif %}
-                  {% if data.additional_visitor_child_number > 1 %}
+                  {% if data.additional_visitor_number > 3 %}
                       <dl class="compact">
-                          <dt>Child visitor</dt>
-                          <dd>{{ data.additional_visitor_child_2_id }}</dd>
+                          <dt>Visitor ID</dt>
+                          <dd>{{ data.additional_visitor_4_id }}</dd>
                           <dt>Date of birth</dt>
-                          <dd>{{ data.additional_visitor_child_2_dob }}</dd>
-                      </dl>
-                  {% endif %}
-                  {% if data.additional_visitor_child_number > 2 %}
-                      <dl class="compact">
-                          <dt>Child visitor</dt>
-                          <dd>{{ data.additional_visitor_child_3_id }}</dd>
-                          <dt>Date of birth</dt>
-                          <dd>{{ data.additional_visitor_child_3_dob }}</dd>
-                      </dl>
-                  {% endif %}
-                  {% if data.additional_visitor_child_number > 3 %}
-                      <dl class="compact">
-                          <dt>Child visitor</dt>
-                          <dd>{{ data.additional_visitor_child_4_id }}</dd>
-                          <dt>Date of birth</dt>
-                          <dd>{{ data.additional_visitor_child_4_dob }}</dd>
+                          <dd>{{ data.additional_visitor_4_dob }}</dd>
                       </dl>
                   {% endif %}
               </div>
@@ -580,9 +564,9 @@ elements: |-
         '#attributes':
           class:
             - monospace-text
-  additional_visitor_adult_details:
+  additional_visitor_details:
     '#type': webform_wizard_page
-    '#title': 'Additional adult visitors'
+    '#title': 'Additional visitors'
     '#states':
       invisible:
         - ':input[name="visitor_order_number"]':
@@ -607,235 +591,17 @@ elements: |-
             value: cancel
     '#states_clear': false
     '#format': container
-    msg_existing_additional_visitors:
-      '#type': webform_markup
-      '#markup': |-
-        <p class="info-notice" role="status">
-        Existing details of additional visitors from a previous booking have been found.
-        </p>
-    msg_additional_adult_visitors:
+    msg_additional_visitors:
       '#type': webform_computed_twig
-      '#title': msg_additional_adult_visitors
+      '#title': msg_additional_visitors
       '#title_display': none
       '#template': |-
         <p class="info-notice" role="status">
-        You can add four additional visitors.  The maximum number of additional adult visitors is two.  You will be able to add additional child visitors in the next step.
+          You can add four additional visitors.  The maximum number of additional adult visitors is two. Enter the correct visitor ID and date of birth for each additional child visitor. If visitor details entered here do not match those we hold on record, they will not be included in the booking.
         </p>
-    additional_visitor_adult_number:
+    additional_visitor_number:
       '#type': radios
-      '#title': 'How many additional adults?'
-      '#description_display': before
-      '#options':
-        - None
-        - One
-        - Two
-      '#options_display': side_by_side
-      '#empty_option': ''
-      '#required': true
-      '#required_error': 'You must select the number of additional adult visitors'
-      '#states_clear': false
-    additional_visitors_adult:
-      '#type': webform_markup
-      '#states':
-        visible:
-          ':input[name="additional_visitor_adult_number"]':
-            value:
-              greater: '0'
-      '#display_on': view
-      '#markup': |-
-        <div role="status">
-        <p class="info-notice">
-        Enter the correct visitor ID and date of birth for each additional adult visitor. If visitor details entered here do not match those we hold on record, they will not be included in the booking.
-        </p>
-        </div>
-    additional_visitor_adult_1_details:
-      '#type': fieldset
-      '#title': 'Additional adult one'
-      '#open': true
-      '#states':
-        invisible:
-          - ':input[name="additional_visitor_adult_number"]':
-              value:
-                less: '1'
-          - or
-          - ':input[name="additional_visitor_adult_number"]':
-              value: '0'
-        visible:
-          ':input[name="additional_visitor_adult_number"]':
-            value:
-              greater: '0'
-      '#attributes':
-        class:
-          - compact
-          - form-item--card
-      '#format': container
-      additional_visitor_adult_1_id:
-        '#type': textfield
-        '#title': 'Visitor ID'
-        '#title_display': inline
-        '#description_display': before
-        '#maxlength': 6
-        '#size': 6
-        '#placeholder': '000000'
-        '#autocomplete': 'off'
-        '#required_error': 'Enter the visitor ID for additional adult 1'
-        '#pattern': '[0-9]{6}'
-        '#pattern_error': 'Visitor ID must be a 6 digit number'
-        '#states':
-          required:
-            ':input[name="additional_visitor_adult_number"]':
-              value:
-                greater: '0'
-        '#attributes':
-          class:
-            - monospace-text
-          inputmode: numeric
-        '#label_attributes':
-          style: 'min-width: 7em; display: inline-block'
-          aria-label: 'Additional visitor one visitor ID'
-      additional_visitor_adult_1_dob:
-        '#type': textfield
-        '#title': 'Date of birth'
-        '#title_display': inline
-        '#description_display': invisible
-        '#maxlength': 10
-        '#size': 10
-        '#placeholder': dd/mm/yyyy
-        '#autocomplete': 'off'
-        '#input_mask': 99/99/9999
-        '#required_error': 'Enter the date of birth for additional adult 1'
-        '#pattern': '[0-3][0-9]\/(0[0-9]|1[0-2])\/[0-9]{4}'
-        '#pattern_error': 'Enter a valid date, for example 31/01/2000'
-        '#states':
-          required:
-            ':input[name="additional_visitor_adult_number"]':
-              value:
-                greater: '0'
-        '#attributes':
-          class:
-            - monospaced-text
-          inputmode: numeric
-          data-inputmask-placeholder: ' '
-        '#label_attributes':
-          style: 'display: inline-block; min-width: 7em;'
-          aria-label: 'Additional adult 1 date of birth'
-    additional_visitor_adult_2_details:
-      '#type': fieldset
-      '#title': 'Additional adult two'
-      '#open': true
-      '#states':
-        invisible:
-          - ':input[name="additional_visitor_adult_number"]':
-              value:
-                less: '2'
-          - or
-          - ':input[name="additional_visitor_adult_number"]':
-              value: '0'
-        visible:
-          ':input[name="additional_visitor_adult_number"]':
-            value:
-              greater: '1'
-      '#attributes':
-        class:
-          - compact
-          - form-item--card
-      '#format': container
-      additional_visitor_adult_2_id:
-        '#type': textfield
-        '#title': 'Visitor ID'
-        '#title_display': inline
-        '#description_display': before
-        '#maxlength': 6
-        '#size': 6
-        '#placeholder': '000000'
-        '#autocomplete': 'off'
-        '#required_error': 'Enter the visitor ID for additional adult 2'
-        '#pattern': '[0-9]{6}'
-        '#pattern_error': 'Visitor ID must be a 6 digit number'
-        '#states':
-          required:
-            ':input[name="additional_visitor_adult_number"]':
-              value:
-                greater: '1'
-        '#attributes':
-          class:
-            - monospace-text
-          inputmode: numeric
-        '#label_attributes':
-          style: 'min-width: 7em; display: inline-block'
-          aria-label: 'Additional visitor one visitor ID'
-      additional_visitor_adult_2_dob:
-        '#type': textfield
-        '#title': 'Date of birth'
-        '#title_display': inline
-        '#maxlength': 10
-        '#size': 10
-        '#placeholder': dd/mm/yyyy
-        '#autocomplete': 'off'
-        '#input_mask': 99/99/9999
-        '#required_error': 'Enter the date of birth for additional adult 2'
-        '#pattern': '[0-3][0-9]\/(0[0-9]|1[0-2])\/[0-9]{4}'
-        '#pattern_error': 'Enter a valid date, for example 31/01/2000'
-        '#states':
-          required:
-            ':input[name="additional_visitor_adult_number"]':
-              value:
-                greater: '1'
-        '#attributes':
-          class:
-            - monospaced-text
-          inputmode: numeric
-          data-inputmask-placeholder: ' '
-        '#label_attributes':
-          style: 'min-width: 7em; display: inline-block'
-          aria-label: 'Additional adult 2 date of birth'
-  additional_visitor_child_details:
-    '#type': webform_wizard_page
-    '#title': 'Additional child visitors'
-    '#states':
-      invisible:
-        - ':input[name="visitor_order_number"]':
-            value:
-              pattern: '^[A-Z]{2}V[0-9]{4}-[0-9]{4}$'
-        - or
-        - ':input[name="bkg_id"]':
-            filled: true
-          ':input[name="amend_booking_options"]':
-            value: change
-          ':input[name="choose_changes[additional_visitors]"]':
-            unchecked: true
-        - or
-        - ':input[name="bkg_id"]':
-            filled: true
-          ':input[name="amend_booking_options"]':
-            value: keep
-        - or
-        - ':input[name="bkg_id"]':
-            filled: true
-          ':input[name="amend_booking_options"]':
-            value: cancel
-    '#states_clear': false
-    '#format': container
-    msg_additional_child_visitors:
-      '#type': webform_computed_twig
-      '#title': msg_additional_child_visitors
-      '#title_display': none
-      '#template': |-
-        <p class="info-notice" role="status">
-        {% if data.additional_visitor_adult_number == 2 %}
-          You can add two additional child visitors<br>
-          (maximum of four additional visitors, two additional adults already added).
-        {% elseif data.additional_visitor_adult_number == 1 %}
-          You can add three additional child visitors<br>
-          (maximum of four additional visitors, one additional adult already added).
-        {% else %}
-          You can add four additional child visitors<br>
-          (maximum of four additional visitors, no additional adults have been added).
-        {% endif %}
-        </p>
-    additional_visitor_child_number:
-      '#type': radios
-      '#title': 'How many additional children?'
+      '#title': 'How many additional visitors?'
       '#options':
         - None
         - One
@@ -845,31 +611,17 @@ elements: |-
       '#options_display': side_by_side
       '#empty_option': Select
       '#states_clear': false
-    additional_visitors_child:
-      '#type': webform_markup
-      '#states':
-        visible:
-          ':input[name="additional_visitor_child_number"]':
-            value:
-              greater: '0'
-      '#display_on': view
-      '#markup': |-
-        <div role="status">
-        <p class="info-notice">
-        Enter the correct visitor ID and date of birth for each additional child visitor. If visitor details entered here do not match those we hold on record, they will not be included in the booking.
-        </p>
-        </div>
-    additional_visitor_child_1_details:
+    additional_visitor_1_details:
       '#type': fieldset
-      '#title': 'Additional child one'
+      '#title': 'Additional visitor one'
       '#open': true
       '#states':
         invisible:
-          ':input[name="additional_visitor_child_number"]':
+          ':input[name="additional_visitor_number"]':
             value:
               less: '1'
         visible:
-          ':input[name="additional_visitor_child_number"]':
+          ':input[name="additional_visitor_number"]':
             value:
               greater: '0'
       '#attributes':
@@ -877,7 +629,7 @@ elements: |-
           - compact
           - form-item--card
       '#format': container
-      additional_visitor_child_1_id:
+      additional_visitor_1_id:
         '#type': textfield
         '#title': 'Visitor ID'
         '#title_display': inline
@@ -885,12 +637,12 @@ elements: |-
         '#size': 6
         '#placeholder': '000000'
         '#autocomplete': 'off'
-        '#required_error': 'Enter the visitor ID for additional child 1'
+        '#required_error': 'Enter the visitor ID for additional visitor one'
         '#pattern': '[0-9]{6}'
         '#pattern_error': 'Visitor ID must be a 6 digit number'
         '#states':
           required:
-            ':input[name="additional_visitor_child_number"]':
+            ':input[name="additional_visitor_number"]':
               value:
                 greater: '0'
         '#attributes':
@@ -899,8 +651,8 @@ elements: |-
           inputmode: numeric
         '#label_attributes':
           style: 'min-width: 7em; display: inline-block'
-          aria-label: 'Additional visitor three visitor ID'
-      additional_visitor_child_1_dob:
+          aria-label: 'Additional visitor one visitor ID'
+      additional_visitor_1_dob:
         '#type': textfield
         '#title': 'Date of birth'
         '#title_display': inline
@@ -909,12 +661,12 @@ elements: |-
         '#placeholder': dd/mm/yyyy
         '#autocomplete': 'off'
         '#input_mask': 99/99/9999
-        '#required_error': 'Enter the date of birth for additional child 1'
+        '#required_error': 'Enter the date of birth for additional visitor one'
         '#pattern': '[0-3][0-9]\/(0[0-9]|1[0-2])\/[0-9]{4}'
         '#pattern_error': 'Enter a valid date, for example 31/01/2000'
         '#states':
           required:
-            ':input[name="additional_visitor_child_number"]':
+            ':input[name="additional_visitor_number"]':
               value:
                 greater: '0'
         '#attributes':
@@ -924,18 +676,18 @@ elements: |-
           data-inputmask-placeholder: ' '
         '#label_attributes':
           style: 'min-width: 7em; display: inline-block'
-          aria-label: 'Additional child 1 date of birth'
-    additional_visitor_child_2_details:
+          aria-label: 'Additional visitor one date of birth'
+    additional_visitor_2_details:
       '#type': fieldset
-      '#title': 'Additional child two'
+      '#title': 'Additional visitor two'
       '#open': true
       '#states':
         invisible:
-          ':input[name="additional_visitor_child_number"]':
+          ':input[name="additional_visitor_number"]':
             value:
               less: '2'
         visible:
-          ':input[name="additional_visitor_child_number"]':
+          ':input[name="additional_visitor_number"]':
             value:
               greater: '1'
       '#attributes':
@@ -943,7 +695,7 @@ elements: |-
           - compact
           - form-item--card
       '#format': container
-      additional_visitor_child_2_id:
+      additional_visitor_2_id:
         '#type': textfield
         '#title': 'Visitor ID'
         '#title_display': inline
@@ -951,12 +703,12 @@ elements: |-
         '#size': 6
         '#placeholder': '000000'
         '#autocomplete': 'off'
-        '#required_error': 'Enter the visitor ID for additional child 2'
+        '#required_error': 'Enter the visitor ID for additional visitor two'
         '#pattern': '[0-9]{6}'
         '#pattern_error': 'Visitor ID is not recognised'
         '#states':
           required:
-            ':input[name="additional_visitor_child_number"]':
+            ':input[name="additional_visitor_number"]':
               value:
                 greater: '1'
         '#attributes':
@@ -965,8 +717,8 @@ elements: |-
           inputmode: numeric
         '#label_attributes':
           style: 'min-width: 7em; display: inline-block'
-          aria-label: 'Additional visitor four visitor ID'
-      additional_visitor_child_2_dob:
+          aria-label: 'Additional visitor two visitor ID'
+      additional_visitor_2_dob:
         '#type': textfield
         '#title': 'Date of birth'
         '#title_display': inline
@@ -975,12 +727,12 @@ elements: |-
         '#placeholder': dd/mm/yyyy
         '#autocomplete': 'off'
         '#input_mask': 99/99/9999
-        '#required_error': 'Enter the date of birth for additional child 2'
+        '#required_error': 'Enter the date of birth for additional visitor two'
         '#pattern': '[0-3][0-9]\/(0[0-9]|1[0-2])\/[0-9]{4}'
         '#pattern_error': 'Enter a valid date, for example 31/01/2000'
         '#states':
           required:
-            ':input[name="additional_visitor_child_number"]':
+            ':input[name="additional_visitor_number"]':
               value:
                 greater: '1'
         '#attributes':
@@ -990,18 +742,18 @@ elements: |-
           data-inputmask-placeholder: ' '
         '#label_attributes':
           style: 'min-width: 7em; display: inline-block'
-          aria-label: 'Additional child 2 date of birth'
-    additional_visitor_child_3_details:
+          aria-label: 'Additional visitor two date of birth'
+    additional_visitor_3_details:
       '#type': fieldset
-      '#title': 'Additional child three'
+      '#title': 'Additional visitor three'
       '#open': true
       '#states':
         invisible:
-          ':input[name="additional_visitor_child_number"]':
+          ':input[name="additional_visitor_number"]':
             value:
               less: '3'
         visible:
-          ':input[name="additional_visitor_child_number"]':
+          ':input[name="additional_visitor_number"]':
             value:
               greater: '2'
       '#attributes':
@@ -1009,7 +761,7 @@ elements: |-
           - compact
           - form-item--card
       '#format': container
-      additional_visitor_child_3_id:
+      additional_visitor_3_id:
         '#type': textfield
         '#title': 'Visitor ID'
         '#title_display': inline
@@ -1017,12 +769,12 @@ elements: |-
         '#size': 6
         '#placeholder': '000000'
         '#autocomplete': 'off'
-        '#required_error': 'Enter the visitor ID for additional child 3'
+        '#required_error': 'Enter the visitor ID for additional visitor three'
         '#pattern': '[0-9]{6}'
         '#pattern_error': 'Visitor ID is not recognised'
         '#states':
           required:
-            ':input[name="additional_visitor_child_number"]':
+            ':input[name="additional_visitor_number"]':
               value:
                 greater: '2'
         '#attributes':
@@ -1031,8 +783,8 @@ elements: |-
           inputmode: numeric
         '#label_attributes':
           style: 'min-width: 7em; display: inline-block'
-          aria-label: 'Additional visitor four visitor ID'
-      additional_visitor_child_3_dob:
+          aria-label: 'Additional visitor three visitor ID'
+      additional_visitor_3_dob:
         '#type': textfield
         '#title': 'Date of birth'
         '#title_display': inline
@@ -1041,12 +793,12 @@ elements: |-
         '#placeholder': dd/mm/yyyy
         '#autocomplete': 'off'
         '#input_mask': 99/99/9999
-        '#required_error': 'Enter the date of birth for additional child 3'
+        '#required_error': 'Enter the date of birth for additional visitor three'
         '#pattern': '[0-3][0-9]\/(0[0-9]|1[0-2])\/[0-9]{4}'
         '#pattern_error': 'Enter a valid date, for example 31/01/2000'
         '#states':
           required:
-            ':input[name="additional_visitor_child_number"]':
+            ':input[name="additional_visitor_number"]':
               value:
                 greater: '2'
         '#attributes':
@@ -1056,18 +808,18 @@ elements: |-
           data-inputmask-placeholder: ' '
         '#label_attributes':
           style: 'min-width: 7em; display: inline-block'
-          aria-label: 'Additional child 3 date of birth'
-    additional_visitor_child_4_details:
+          aria-label: 'Additional visitor three date of birth'
+    additional_visitor_4_details:
       '#type': fieldset
-      '#title': 'Additional child four'
+      '#title': 'Additional visitor four'
       '#open': true
       '#states':
         invisible:
-          ':input[name="additional_visitor_child_number"]':
+          ':input[name="additional_visitor_number"]':
             value:
               less: '4'
         visible:
-          ':input[name="additional_visitor_child_number"]':
+          ':input[name="additional_visitor_number"]':
             value:
               greater: '3'
       '#attributes':
@@ -1075,7 +827,7 @@ elements: |-
           - compact
           - form-item--card
       '#format': container
-      additional_visitor_child_4_id:
+      additional_visitor_4_id:
         '#type': textfield
         '#title': 'Visitor ID'
         '#title_display': inline
@@ -1083,12 +835,12 @@ elements: |-
         '#size': 6
         '#placeholder': '000000'
         '#autocomplete': 'off'
-        '#required_error': 'Enter the visitor ID for additional child 4'
+        '#required_error': 'Enter the visitor ID for additional visitor four'
         '#pattern': '[0-9]{6}'
         '#pattern_error': 'Visitor ID is not recognised'
         '#states':
           required:
-            ':input[name="additional_visitor_child_number"]':
+            ':input[name="additional_visitor_number"]':
               value:
                 greater: '3'
         '#attributes':
@@ -1098,7 +850,7 @@ elements: |-
         '#label_attributes':
           style: 'min-width: 7em; display: inline-block'
           aria-label: 'Additional visitor four visitor ID'
-      additional_visitor_child_4_dob:
+      additional_visitor_4_dob:
         '#type': textfield
         '#title': 'Date of birth'
         '#title_display': inline
@@ -1107,12 +859,12 @@ elements: |-
         '#placeholder': dd/mm/yyyy
         '#autocomplete': 'off'
         '#input_mask': 99/99/9999
-        '#required_error': 'Enter the date of birth for additional child 4'
+        '#required_error': 'Enter the date of birth for additional visitor four'
         '#pattern': '[0-3][0-9]\/(0[0-9]|1[0-2])\/[0-9]{4}'
         '#pattern_error': 'Enter a valid date, for example 31/01/2000'
         '#states':
           required:
-            ':input[name="additional_visitor_child_number"]':
+            ':input[name="additional_visitor_number"]':
               value:
                 greater: '3'
         '#attributes':
@@ -1122,18 +874,18 @@ elements: |-
           data-inputmask-placeholder: ' '
         '#label_attributes':
           style: 'min-width: 7em; display: inline-block'
-          aria-label: 'Additional child 4 date of birth'
-    additional_visitor_child_5_details:
+          aria-label: 'Additional visitor four date of birth'
+    additional_visitor_5_details:
       '#type': fieldset
-      '#title': 'Additional child five'
+      '#title': 'Additional visitor five'
       '#open': true
       '#states':
         invisible:
-          ':input[name="additional_visitor_child_number"]':
+          ':input[name="additional_visitor_number"]':
             value:
               less: '5'
         visible:
-          ':input[name="additional_visitor_child_number"]':
+          ':input[name="additional_visitor_number"]':
             value:
               greater: '4'
       '#attributes':
@@ -1141,7 +893,7 @@ elements: |-
           - compact
           - form-item--card
       '#format': container
-      additional_visitor_child_5_id:
+      additional_visitor_5_id:
         '#type': textfield
         '#title': 'Visitor ID'
         '#title_display': inline
@@ -1149,12 +901,12 @@ elements: |-
         '#size': 6
         '#placeholder': '000000'
         '#autocomplete': 'off'
-        '#required_error': 'Enter the visitor ID for additional child 5'
+        '#required_error': 'Enter the visitor ID for additional visitor five'
         '#pattern': '[0-9]{6}'
         '#pattern_error': 'Visitor ID is not recognised'
         '#states':
           required:
-            ':input[name="additional_visitor_child_number"]':
+            ':input[name="additional_visitor_number"]':
               value:
                 greater: '4'
         '#attributes':
@@ -1163,8 +915,8 @@ elements: |-
           inputmode: numeric
         '#label_attributes':
           style: 'min-width: 7em; display: inline-block'
-          aria-label: 'Additional visitor four visitor ID'
-      additional_visitor_child_5_dob:
+          aria-label: 'Additional visitor five visitor ID'
+      additional_visitor_5_dob:
         '#type': textfield
         '#title': 'Date of birth'
         '#title_display': inline
@@ -1173,12 +925,12 @@ elements: |-
         '#placeholder': dd/mm/yyyy
         '#autocomplete': 'off'
         '#input_mask': 99/99/9999
-        '#required_error': 'Enter the date of birth for additional child 5'
+        '#required_error': 'Enter the date of birth for additional visitor five'
         '#pattern': '[0-3][0-9]\/(0[0-9]|1[0-2])\/[0-9]{4}'
         '#pattern_error': 'Enter a valid date, for example 31/01/2000'
         '#states':
           required:
-            ':input[name="additional_visitor_child_number"]':
+            ':input[name="additional_visitor_number"]':
               value:
                 greater: '4'
         '#attributes':
@@ -1188,7 +940,7 @@ elements: |-
           data-inputmask-placeholder: ' '
         '#label_attributes':
           style: 'min-width: 7em; display: inline-block'
-          aria-label: 'Additional child 5 date of birth'
+          aria-label: 'Additional visitor five date of birth'
   visitor_special_requirements:
     '#type': webform_wizard_page
     '#title': 'Visitor special requirements'
@@ -1258,7 +1010,7 @@ elements: |-
         - or
         - ':input[name="additional_visitor_adult_number"]':
             value: '0'
-          ':input[name="additional_visitor_child_number"]':
+          ':input[name="additional_visitor_number"]':
             value: '0'
       visible:
         - ':input[name="bkg_id"]':
@@ -1268,7 +1020,7 @@ elements: |-
         - or
         - ':input[name="bkg_id"]':
             empty: true
-          ':input[name="additional_visitor_child_number"]':
+          ':input[name="additional_visitor_number"]':
             '!value': '0'
         - or
         - ':input[name="choose_changes[additional_visitors]"]':
@@ -1278,7 +1030,7 @@ elements: |-
         - or
         - ':input[name="choose_changes[additional_visitors]"]':
             checked: true
-          ':input[name="additional_visitor_child_number"]':
+          ':input[name="additional_visitor_number"]':
             '!value': '0'
     '#format': container
     remember_settings_info:
@@ -1763,6 +1515,22 @@ css: |-
     font-weight: normal;
   }
 
+  .visitor-badge {
+    position: absolute;
+    right: 0;
+    display: inline-block;
+    background-color: orangered;
+    color: white;
+    font-size: medium;
+    padding: .25em .5em;
+    margin: .5em .5em 0 0;
+    border-radius: 1em;
+    line-height: 1em;
+    vertical-align: top;
+    letter-spacing: 1px;
+    font-weight: normal;
+  }
+
   button.clear-button::before {
       content: '\00d7';
       display: inline-block;
@@ -1870,12 +1638,10 @@ javascript: |-
       attach: function (context, settings) {
 
         let selectors = '';
-        selectors += 'fieldset[data-drupal-selector^="edit-additional-visitor-adult-1-"],';
-        selectors += 'fieldset[data-drupal-selector^="edit-additional-visitor-adult-2-"],';
-        selectors += 'fieldset[data-drupal-selector^="edit-additional-visitor-child-1-"],';
-        selectors += 'fieldset[data-drupal-selector^="edit-additional-visitor-child-2-"],';
-        selectors += 'fieldset[data-drupal-selector^="edit-additional-visitor-child-3-"],';
-        selectors += 'fieldset[data-drupal-selector^="edit-additional-visitor-child-4-"]';
+        selectors += 'fieldset[data-drupal-selector^="edit-additional-visitor-1-"],';
+        selectors += 'fieldset[data-drupal-selector^="edit-additional-visitor-2-"],';
+        selectors += 'fieldset[data-drupal-selector^="edit-additional-visitor-3-"],';
+        selectors += 'fieldset[data-drupal-selector^="edit-additional-visitor-4-"]';
 
         const $additionalVisitors = $(once('prisonVisitAdditionalVisitors', selectors, context));
         let visitorData = [];
@@ -1925,15 +1691,55 @@ javascript: |-
           // Update the radios controlling the number of visitors.
           // Use a click event so it fires events to hide visitors
           // in the normal way.
-          let visitor_number = $('input[id^="edit-additional-visitor-"][name$="_number"]:checked').val();
-          $('input[id^="edit-additional-visitor-"][name$="_number"][value="' + (visitor_number - 1) + '"]').click();
+          let visitor_number = $('input[id^="edit-additional-visitor-number"]:checked').val();
+          $('input[id^="edit-additional-visitor-number"][value="' + (visitor_number - 1) + '"]').click();
         }
 
-        // Add a remove link for each visitor.
+        const getAge = function(dateString) {
+          // Simple conversion of dd/mm/yyyy to yyyy-mm-dd
+          if (dateString.includes('/')) {
+            const dateParts = dateString.split("/");
+            dateString = dateParts[2] + '-' + dateParts[1] + '-' + dateParts[0] + 'T00:00';
+          }
+          const today = new Date();
+          const birthDate = new Date(dateString);
+          let age = today.getFullYear() - birthDate.getFullYear();
+          let m = today.getMonth() - birthDate.getMonth();
+          if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+            age--;
+          }
+          return age;
+        }
+
         $additionalVisitors.each(function(index) {
+
+          // Add a remove link for each visitor.
           let $link_innerHTML = 'Remove <span class="visually-hidden">' + $('legend', $(this)).text() + '</span>';
           let $button = $('<a href="#">' + $link_innerHTML + '</a>').attr('data-index', (index + 1)).click(removeVisitor);
           $(this).find('.fieldset-wrapper').append($button);
+
+          // Add a badge indicating whether visitor is an adult or a child.
+          let $dob = $(this).find('input[name^="additional_visitor_' + (index+1) + '_dob"]');
+
+          const badge = document.createElement("span");
+          badge.classList.add('visitor-badge');
+
+          if (getAge($dob.val()) >= 18) {
+            badge.textContent = 'Adult';
+          } else {
+            badge.textContent = 'Child';
+          }
+
+          $dob.after(badge).blur(function() {
+            console.log(getAge($(this).val()));
+            if (getAge($(this).val()) >= 18) {
+              console.log($(this).siblings('.visitor-badge').text());
+              $(this).siblings('.visitor-badge').text('Adult');
+            } else {
+              console.log($(this).siblings('.visitor-badge').text());
+              $(this).siblings('.visitor-badge').text('Child');
+            }
+          });
         });
 
       }
