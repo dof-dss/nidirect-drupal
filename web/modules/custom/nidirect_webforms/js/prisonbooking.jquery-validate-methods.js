@@ -108,6 +108,10 @@
           return this.optional(element) || getAge(value) <= param[1];
         }, $.validator.format("Age must be no more than {1} years old"));
 
+        $.validator.addMethod("maxAdults", function(value, element, param) {
+          return this.optional(element) || numberOfAdultVisitors() > param[1];
+        }, $.validator.format("Maximum number of adults is {1}"));
+
         $.validator.addMethod("validDate", function(value, element) {
           const dateParts = value.split("/");
           const year = parseInt(dateParts[2]);
@@ -143,6 +147,18 @@
           });
 
           return isUnique;
+        }
+
+        function numberOfAdultVisitors() {
+          let numAdults = 0;
+
+          $('[name^="additional_visitor_"][name$="_dob"]').each(function(index) {
+            if (getAge($(this).val()) >= 18) {
+              numAdults++;
+            }
+          });
+
+          return numAdults;
         }
 
         function getAge(dateString) {
@@ -226,7 +242,7 @@
 
       // Adult Visitor ID validation rules.
       const pvVisitorOneId =  settings.prisonVisitBooking.visitorOneId ?? {};
-      $(once('pvAdultIds', '[name*="additional_visitor_adult"][name$="_id"]', context)).each(function() {
+      $(once('pvAdultIds', '[name^="additional_visitor_"][name$="_id"]', context)).each(function() {
         $(this).rules("add", {
           uniqueVisitorId: [true, pvVisitorOneId],
           messages: {
@@ -235,46 +251,14 @@
         });
       });
 
-      // Child Visitor ID validation rules.
-      const pvAdultVisitorIds =  settings.prisonVisitBooking.adultVisitorIds ?? {};
-      $(once('pvChildIds', '[name*="additional_visitor_child"][name$="_id"]', context)).each(function() {
+      // Visitor dates of birth validation rules.
+      // There is maximum of two adults.
+
+      $(once('pvDobs', '[name^="additional_visitor_"][name$="_dob"]', context)).each(function() {
         $(this).rules("add", {
-          uniqueVisitorId: [true, pvAdultVisitorIds],
+          maxAdults: [true, 2],
           messages: {
-            uniqueVisitorId: "Visitor ID has already been entered"
-          }
-        });
-      });
-
-      // Adult visitor dates of birth validation rules.
-      const pvAdultDobSelectors = '[name="additional_visitor_adult_1_dob"], [name="additional_visitor_adult_2_dob"]';
-
-      $(once('pvAdultDobs', pvAdultDobSelectors, context)).each(function() {
-        $(this).rules("add", {
-          validDate: true,
-          minAge: [true, 18],
-          messages: {
-            minAge: "Adult visitor must be at least 18 years of age"
-          }
-        });
-      });
-
-      // Child visitor dates of birth validation rules.
-      const pvChildDobSelectors = '' +
-        '[name="additional_visitor_child_1_dob"], ' +
-        '[name="additional_visitor_child_2_dob"], ' +
-        '[name="additional_visitor_child_3_dob"], ' +
-        '[name="additional_visitor_child_4_dob"], ' +
-        '[name="additional_visitor_child_5_dob"]';
-
-      $(once('pvChildDobs', pvChildDobSelectors, context)).each(function() {
-        $(this).rules("add", {
-          validDate: true,
-          minAge: [true, 0],
-          maxAge: [true, 17],
-          messages: {
-            minAge: "Date of birth cannot be greater than today's date",
-            maxAge: "Child visitor must be under 18 years of age"
+            maxAdults: "You cannot add any more adult visitors. Enter a child visitor ID and date of birth."
           }
         });
       });
