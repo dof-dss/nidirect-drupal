@@ -226,7 +226,7 @@ function nidirect_landing_pages_entity_presave(EntityInterface $entity) {
           if (!empty($node->id())) {
             $results = nidirect_landing_pages_retrieve_article_teasers_by_term($node->field_subtheme->target_id, $node->id());
           }
-          if (!empty(!empty($node->field_subtheme->target_id))) {
+          if (!empty(!empty($node->get('field_subtheme')->target_id))) {
             $results += nidirect_landing_pages_retrieve_article_teasers_by_topic($node->field_subtheme->target_id);
           }
         }
@@ -236,7 +236,7 @@ function nidirect_landing_pages_entity_presave(EntityInterface $entity) {
         foreach ($results as $result) {
           $paras[] = $result;
         }
-        $entity->field_article_teasers = $paras;
+        $entity->set('field_article_teasers', $paras);
       }
     }
   }
@@ -733,6 +733,7 @@ function nidirect_landing_pages_preprocess_book_navigation(&$variables) {
   if ($node instanceof NodeInterface && $node->bundle() == 'landing_page') {
 
     // Hide book navigation on landing pages that are the first page of a book.
+    // @phpstan-ignore-next-line. Ignore as Book doesn't have a defined interface.
     if ($node->book && $node->book['depth'] == 1) {
       // Remove list of book contents.
       unset($variables['tree']);
