@@ -242,7 +242,7 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
     // Further alterations when amending a booking...
     if ($amend_booking_data) {
 
-      if ($amend_booking_data['error']) {
+      if (!empty($amend_booking_data['error'])) {
 
         // Show custom error message.
         $elements['error_booking_already_amended']['#access'] = TRUE;
@@ -268,7 +268,9 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
       // to halt the amendment process, or only allow
       // specific amendments.
 
-      if ($error_status = $this->bookingReference['error_status']) {
+      $error_status = $this->bookingReference['error_status'] ?? FALSE;
+
+      if ($error_status) {
 
         // Get any error messages.
         $error_status_msg = $this->bookingReference['error_status_msg'] ?? NULL;
