@@ -239,11 +239,8 @@
           $visitor_dob = $visitor_sibling_dob;
         });
 
-        $visitor_id.val('');
-        $visitor_dob.val('');
-
-        // const validator = $(element).closest('form').validate();
-        // validator.resetForm();
+        $visitor_id.val('').removeClass('error').next('form-item--error-message').remove();
+        $visitor_dob.val('').removeClass('error').next('form-item--error-message').remove();
 
         // Update the radios controlling the number of visitors.
         // Use a click event so it fires events to hide visitors
