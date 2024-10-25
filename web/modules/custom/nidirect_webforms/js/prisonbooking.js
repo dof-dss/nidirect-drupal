@@ -205,4 +205,105 @@
     }
   };
 
+  Drupal.behaviors.prisonVisitAdditionalVisitors = {
+    attach: function (context, settings) {
+
+      let selectors = '';
+      selectors += 'fieldset[data-drupal-selector^="edit-additional-visitor-1-"],';
+      selectors += 'fieldset[data-drupal-selector^="edit-additional-visitor-2-"],';
+      selectors += 'fieldset[data-drupal-selector^="edit-additional-visitor-3-"],';
+      selectors += 'fieldset[data-drupal-selector^="edit-additional-visitor-4-"]';
+
+      const $additionalVisitors = $(once('prisonVisitAdditionalVisitors', selectors, context));
+
+      const removeVisitor = function(element) {
+        // When a visitor's ID and DOB is removed, we shift the details for all
+        // the next visitors "up" to close the gap.
+
+        let $visitor = $(element).closest('fieldset');
+        //console.log('Removing', $visitor);
+
+        let $visitor_id = $('input[name$="_id"]', $visitor);
+        let $visitor_dob = $('input[name$="_dob"]', $visitor);
+
+        $visitor_id.removeClass('error').next('form-item--error-message').remove();
+        $visitor_dob.removeClass('error').next('form-item--error-message').remove();
+
+        const $visitorNextAll = $visitor.nextAll();
+
+        $visitorNextAll.each(function(index) {
+          let $visitor_sibling_id = $('input[name$="_id"]', $(this));
+          let $visitor_sibling_dob = $('input[name$="_dob"]', $(this));
+
+          $visitor_id.val($visitor_sibling_id.val());
+          $visitor_dob.val($visitor_sibling_dob.val());
+
+          $visitor_id = $visitor_sibling_id;
+          $visitor_dob = $visitor_sibling_dob;
+        });
+
+        $visitor_id.val('');
+        $visitor_dob.val('');
+
+        // Update the radios controlling the number of visitors.
+        // Use a click event so it fires events to hide visitors
+        // in the normal way.
+        let visitor_number = $('input[id^="edit-additional-visitor-number"]:checked').val();
+        $('input[id^="edit-additional-visitor-number"][value="' + (visitor_number - 1) + '"]').click();
+      }
+
+      const updateVisitorBadges = function(event) {
+        $additionalVisitors.each(function(index) {
+          let $visitor = $(this);
+          let $dob = $visitor.find('input[name^="additional_visitor_' + (index+1) + '_dob"]');
+          let $badge = $visitor.find('.visitor-badge');
+
+          updateVisitorBadge($dob, $badge);
+        });
+      }
+
+      const updateVisitorBadge = function($dob, $badge) {
+        if (Drupal.pvGetAge($dob.val()) >= 18) {
+          $badge.text('Adult').removeClass('visitor-badge--child visually-hidden');
+        } else if (Drupal.pvGetAge($dob.val()) >= 0) {
+          $badge.text('Child').removeClass('visually-hidden').addClass('visitor-badge--child');
+        } else {
+          $badge.addClass('visually-hidden');
+        }
+      }
+
+      $additionalVisitors.each(function(index) {
+
+        let $visitor = $(this);
+
+        // Remove link for each visitor.
+        // Has to remove the visitor and update visitor badges.
+        let $link_innerHTML = 'Remove <span class="visually-hidden">' + $('legend', $visitor).text() + '</span>';
+        let $link = $('<a href="#" class="visitor-remove">' + $link_innerHTML + '</a>').attr('data-index', (index + 1));
+        $link.click(function() {
+          removeVisitor(this);
+          updateVisitorBadges();
+          return false;
+        });
+        $visitor.find('.fieldset-wrapper').append($link);
+
+        // Add a badge indicating whether visitor is an adult or a child.
+        const $badge = $('<span />');
+        $badge.addClass('visitor-badge');
+        $visitor.find('legend').append($badge);
+
+        // Update badge based on visitor DOB.
+        let $dob = $visitor.find('input[name^="additional_visitor_' + (index+1) + '_dob"]');
+        updateVisitorBadge($dob, $badge);
+
+        // Update badge when DOB is altered.
+        $dob.on('keyup blur', function() {
+          updateVisitorBadge($dob, $badge);
+        });
+
+      });
+
+    }
+  };
+
 })(jQuery, Drupal, once);

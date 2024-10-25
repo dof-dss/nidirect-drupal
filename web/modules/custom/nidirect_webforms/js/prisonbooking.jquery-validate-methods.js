@@ -4,6 +4,72 @@
  */
 (function ($, Drupal, once) {
 
+  Drupal.pvGetAge = function(dateString) {
+    // Simple conversion of dd/mm/yyyy to yyyy-mm-dd
+    if (dateString.includes('/')) {
+      const dateParts = dateString.split("/");
+      dateString = dateParts[2] + '-' + dateParts[1] + '-' + dateParts[0] + 'T00:00';
+    }
+    const today = new Date();
+    const birthDate = new Date(dateString);
+    let age = today.getFullYear() - birthDate.getFullYear();
+    let m = today.getMonth() - birthDate.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+    }
+    return age;
+  };
+
+  Drupal.pvIsUniqueVisitorId = function(existingIds = {}, visitorId, visitorElement) {
+
+    let isUnique = true;
+
+    // Check against adult visitor ids.
+    for (const [key, value] of Object.entries(existingIds)) {
+      const visitorElementName = $(visitorElement).attr('name');
+      if (value === visitorId && key !== visitorElementName) {
+        isUnique = false;
+      }
+    }
+
+    // Check against child visitor ids within the present step.
+    $('[name*="visitor_"][name$="_id"]').each(function() {
+      let key = $(this).attr('name');
+      let value = $(this).val();
+      if (value === visitorId && key !== $(visitorElement).attr('name')) {
+        isUnique = false;
+      }
+    });
+
+    return isUnique;
+  }
+
+  Drupal.pvNumberOfAdultVisitors = function() {
+    let numAdults = 0;
+    $('[name^="additional_visitor_"][name$="_dob"]').each(function(index) {
+      if (Drupal.pvGetAge($(this).val()) >= 18) {
+        numAdults++;
+      }
+    });
+    return numAdults;
+  }
+
+  Drupal.pvDaysInMonth = function(m, y) {
+    switch (m) {
+      case 1 :
+        return (y % 4 == 0 && y % 100) || y % 400 == 0 ? 29 : 28;
+      case 8 : case 3 : case 5 : case 10 :
+        return 30;
+      default :
+        return 31;
+    }
+  }
+
+  Drupal.pvIsValidDate = function(d, m, y) {
+    m = parseInt(m, 10) - 1;
+    return m >= 0 && m < 12 && d > 0 && d <= Drupal.pvDaysInMonth(m, y);
+  }
+
   Drupal.behaviors.prisonVisitValidateMethods = {
     attach: function (context, settings) {
 
@@ -97,85 +163,36 @@
         }, `Visit reference number is not recognised or has expired.`);
 
         $.validator.addMethod("uniqueVisitorId", function(value, element, params) {
-          return this.optional(element) || isUniqueVisitorId(params[1], value, element) === true;
+          return this.optional(element) || Drupal.pvIsUniqueVisitorId(params[1], value, element) === true;
         }, $.validator.format("Visitor ID has already been entered"));
 
         $.validator.addMethod("minAge", function(value, element, param) {
-          return this.optional(element) || getAge(value) >= param[1];
+          return this.optional(element) || Drupal.pvGetAge(value) >= param[1];
         }, $.validator.format("Age must be {1} years old or over"));
 
         $.validator.addMethod("maxAge", function(value, element, param) {
-          return this.optional(element) || getAge(value) <= param[1];
+          return this.optional(element) || Drupal.pvGetAge(value) <= param[1];
         }, $.validator.format("Age must be no more than {1} years old"));
+
+        $.validator.addMethod("maxAdults", function(value, element, param) {
+          let isValid = true;
+          if (Drupal.pvNumberOfAdultVisitors() > param[1] && Drupal.pvGetAge(value) >= 18) {
+            isValid = false;
+          }
+          return this.optional(element) || isValid;
+        }, $.validator.format("Maximum number of adults is {1}"));
 
         $.validator.addMethod("validDate", function(value, element) {
           const dateParts = value.split("/");
           const year = parseInt(dateParts[2]);
           const month = parseInt(dateParts[1]);
           const day = parseInt(dateParts[0]);
-          return this.optional(element) || isValidDate(day, month, year);
+          return this.optional(element) || Drupal.pvIsValidDate(day, month, year);
         }, $.validator.format("Date must be a valid date"));
 
         $.validator.addMethod("noHtml", function(value, element) {
           return this.optional(element) || value === value.replace(/(<([^>]+)>)/gi, "");
         }, "Text must be plain text only");
-
-
-        function isUniqueVisitorId(existingIds = {}, visitorId, visitorElement) {
-
-          let isUnique = true;
-
-          // Check against adult visitor ids.
-          for (const [key, value] of Object.entries(existingIds)) {
-            const visitorElementName = $(visitorElement).attr('name');
-            if (value === visitorId && key !== visitorElementName) {
-              isUnique = false;
-            }
-          }
-
-          // Check against child visitor ids within the present step.
-          $('[name*="visitor_"][name$="_id"]').each(function() {
-            let key = $(this).attr('name');
-            let value = $(this).val();
-            if (value === visitorId && key !== $(visitorElement).attr('name')) {
-              isUnique = false;
-            }
-          });
-
-          return isUnique;
-        }
-
-        function getAge(dateString) {
-          // Simple conversion of dd/mm/yyyy to yyyy-mm-dd
-          if (dateString.includes('/')) {
-            const dateParts = dateString.split("/");
-            dateString = dateParts[2] + '-' + dateParts[1] + '-' + dateParts[0] + 'T00:00';
-          }
-          const today = new Date();
-          const birthDate = new Date(dateString);
-          let age = today.getFullYear() - birthDate.getFullYear();
-          let m = today.getMonth() - birthDate.getMonth();
-          if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
-            age--;
-          }
-          return age;
-        }
-
-        function daysInMonth(m, y) {
-          switch (m) {
-            case 1 :
-              return (y % 4 == 0 && y % 100) || y % 400 == 0 ? 29 : 28;
-            case 8 : case 3 : case 5 : case 10 :
-              return 30;
-            default :
-              return 31;
-          }
-        }
-
-        function isValidDate(d, m, y) {
-          m = parseInt(m, 10) - 1;
-          return m >= 0 && m < 12 && d > 0 && d <= daysInMonth(m, y);
-        }
 
       });
 
@@ -226,7 +243,7 @@
 
       // Adult Visitor ID validation rules.
       const pvVisitorOneId =  settings.prisonVisitBooking.visitorOneId ?? {};
-      $(once('pvAdultIds', '[name*="additional_visitor_adult"][name$="_id"]', context)).each(function() {
+      $(once('pvAdultIds', '[name^="additional_visitor_"][name$="_id"]', context)).each(function() {
         $(this).rules("add", {
           uniqueVisitorId: [true, pvVisitorOneId],
           messages: {
@@ -235,46 +252,14 @@
         });
       });
 
-      // Child Visitor ID validation rules.
-      const pvAdultVisitorIds =  settings.prisonVisitBooking.adultVisitorIds ?? {};
-      $(once('pvChildIds', '[name*="additional_visitor_child"][name$="_id"]', context)).each(function() {
+      // Visitor dates of birth validation rules.
+      // There is maximum of two adults.
+
+      $(once('pvDobs', '[name^="additional_visitor_"][name$="_dob"]', context)).each(function() {
         $(this).rules("add", {
-          uniqueVisitorId: [true, pvAdultVisitorIds],
+          maxAdults: [true, 2],
           messages: {
-            uniqueVisitorId: "Visitor ID has already been entered"
-          }
-        });
-      });
-
-      // Adult visitor dates of birth validation rules.
-      const pvAdultDobSelectors = '[name="additional_visitor_adult_1_dob"], [name="additional_visitor_adult_2_dob"]';
-
-      $(once('pvAdultDobs', pvAdultDobSelectors, context)).each(function() {
-        $(this).rules("add", {
-          validDate: true,
-          minAge: [true, 18],
-          messages: {
-            minAge: "Adult visitor must be at least 18 years of age"
-          }
-        });
-      });
-
-      // Child visitor dates of birth validation rules.
-      const pvChildDobSelectors = '' +
-        '[name="additional_visitor_child_1_dob"], ' +
-        '[name="additional_visitor_child_2_dob"], ' +
-        '[name="additional_visitor_child_3_dob"], ' +
-        '[name="additional_visitor_child_4_dob"], ' +
-        '[name="additional_visitor_child_5_dob"]';
-
-      $(once('pvChildDobs', pvChildDobSelectors, context)).each(function() {
-        $(this).rules("add", {
-          validDate: true,
-          minAge: [true, 0],
-          maxAge: [true, 17],
-          messages: {
-            minAge: "Date of birth cannot be greater than today's date",
-            maxAge: "Child visitor must be under 18 years of age"
+            maxAdults: "You cannot add any more adult visitors. You must enter a child's visitor ID and date of birth."
           }
         });
       });
