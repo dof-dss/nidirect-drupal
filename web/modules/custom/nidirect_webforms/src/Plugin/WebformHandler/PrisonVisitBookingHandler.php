@@ -424,27 +424,6 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
       // adult visitor ids to be checked against it.
       $form['#attached']['drupalSettings']['prisonVisitBooking']['visitorOneId'] = ['visitor_1_id' => $visitor_1_id];
     }
-    // @TODO single additional visitors step - remove below?
-    elseif ($page === 'additional_visitor_child_details') {
-      // Pass all adult visitor ids to clientside to validate
-      // child visitor ids.
-      $adultVisitorIds = array_filter($form_state->getValues(), function ($v, $k) {
-        return ($k === 'visitor_1_id' || (str_contains($k, 'additional_visitor_adult_') && str_ends_with($k, '_id'))) && is_numeric($v);
-      }, ARRAY_FILTER_USE_BOTH);
-
-      if (!empty($adultVisitorIds)) {
-        $form['#attached']['drupalSettings']['prisonVisitBooking']['adultVisitorIds'] = $adultVisitorIds;
-      }
-    }
-
-    // @TODO single additional visitors step - remove below?
-    // Alter the number of additional child visitors that can be added
-    // depending on how many additional adults there are.
-    if ($page === 'additional_visitor_child_details' && $form_state->getValue('additional_visitor_adult_number') > 0) {
-      $num_additional_adults = $form_state->getValue('additional_visitor_adult_number');
-      $options = $elements['additional_visitor_child_number']['#options'];
-      $elements['additional_visitor_child_number']['#options'] = array_splice($options, 0, -$num_additional_adults);
-    }
 
     // If user is amending a booking, timeslots are always reset and
     // the original timeslot restored if user chose not to amend it.
@@ -565,7 +544,7 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
     $temp_store = $this->tempStoreFactory->get('nidirect_webforms.prison_visit_booking');
     $visitor_data = $temp_store->get('visitor_data');
 
-    if (!empty($visitor_data) && $page === 'additional_visitor_details') {
+    if (empty($amend_booking_data) && !empty($visitor_data) && $page === 'additional_visitor_details') {
       $visitor_data_is_valid = TRUE;
 
       if ($visitor_data['additional_visitors_remember'] === 'no') {
@@ -1064,7 +1043,7 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
 
     $this->processVisitBookingReference($booking_ref, $form, $form_state, $webform_submission);
 
-    if ($this->bookingReference['error_status']) {
+    if (!empty($this->bookingReference['error_status'])) {
       $form_state->setErrorByName('visitor_order_number', $this->bookingReference['error_status_msg']);
     }
   }
