@@ -76,7 +76,7 @@ elements: |-
       <div class="visit-details" role="status">
           <h3>Visit details</h3>
 
-          <dl class="compact">
+          <dl class="two-column compact">
               <dt>Visit reference number</dt>
               <dd>{{ data.visitor_order_number }}</dd>
               <dt>Visiting prisoner</dt>
@@ -89,7 +89,7 @@ elements: |-
 
           <h3>Your details</h3>
 
-          <dl class="compact">
+          <dl class="two-column compact">
               <dt>Visitor ID</dt>
               <dd>{{ data.visitor_1_id }}</dd>
               <dt>Date of birth</dt>
@@ -103,44 +103,44 @@ elements: |-
           {% if data.additional_visitor_number > 0 %}
               <h3>Additional visitors</h3>
               <div class="additional-visitors compact">
-                  {% if data.additional_visitor_number > 0 %}
-                      <dl class="compact">
-                          <dt>Visitor ID</dt>
-                          <dd>{{ data.additional_visitor_1_id }}</dd>
-                          <dt>Date of birth</dt>
-                          <dd>{{ data.additional_visitor_1_dob }}</dd>
-                      </dl>
-                  {% endif %}
-                  {% if data.additional_visitor_number > 1 %}
-                      <dl class="compact">
-                          <dt>Visitor ID</dt>
-                          <dd>{{ data.additional_visitor_2_id }}</dd>
-                          <dt>Date of birth</dt>
-                          <dd>{{ data.additional_visitor_2_dob }}</dd>
-                      </dl>
-                  {% endif %}
-                  {% if data.additional_visitor_number > 2 %}
-                      <dl class="compact">
-                          <dt>Visitor ID</dt>
-                          <dd>{{ data.additional_visitor_3_id }}</dd>
-                          <dt>Date of birth</dt>
-                          <dd>{{ data.additional_visitor_3_dob }}</dd>
-                      </dl>
-                  {% endif %}
-                  {% if data.additional_visitor_number > 3 %}
-                      <dl class="compact">
-                          <dt>Visitor ID</dt>
-                          <dd>{{ data.additional_visitor_4_id }}</dd>
-                          <dt>Date of birth</dt>
-                          <dd>{{ data.additional_visitor_4_dob }}</dd>
-                      </dl>
-                  {% endif %}
+              {% if data.additional_visitor_number > 0 %}
+                  <dl class="two-column compact">
+                      <dt>Visitor ID</dt>
+                      <dd>{{ data.additional_visitor_1_id }}</dd>
+                      <dt>Date of birth</dt>
+                      <dd>{{ data.additional_visitor_1_dob }}</dd>
+                  </dl>
+              {% endif %}
+              {% if data.additional_visitor_number > 1 %}
+                  <dl class="two-column compact">
+                      <dt>Visitor ID</dt>
+                      <dd>{{ data.additional_visitor_2_id }}</dd>
+                      <dt>Date of birth</dt>
+                      <dd>{{ data.additional_visitor_2_dob }}</dd>
+                  </dl>
+              {% endif %}
+              {% if data.additional_visitor_number > 2 %}
+                  <dl class="two-column compact">
+                      <dt>Visitor ID</dt>
+                      <dd>{{ data.additional_visitor_3_id }}</dd>
+                      <dt>Date of birth</dt>
+                      <dd>{{ data.additional_visitor_3_dob }}</dd>
+                  </dl>
+              {% endif %}
+              {% if data.additional_visitor_number > 3 %}
+                  <dl class="two-column compact">
+                      <dt>Visitor ID</dt>
+                      <dd>{{ data.additional_visitor_4_id }}</dd>
+                      <dt>Date of birth</dt>
+                      <dd>{{ data.additional_visitor_4_dob }}</dd>
+                  </dl>
+              {% endif %}
               </div>
           {% endif %}
 
           {% if data.visitor_special_requirements_details %}
               <h3>Visitor special requirements</h3>
-              <dl class="column-wrap compact">
+              <dl class="compact">
                   <dt>Do you or any other visitors have any special requirements?</dt>
                   <dd>{{ data.visitor_special_requirements_details }}</dd>
               </dl>
@@ -592,13 +592,26 @@ elements: |-
     '#states_clear': false
     '#format': container
     msg_additional_visitors:
-      '#type': webform_computed_twig
-      '#title': msg_additional_visitors
-      '#title_display': none
-      '#template': |-
-        <p class="info-notice" role="status">
-          You can add four additional visitors.  The maximum number of additional adult visitors is two. Enter the correct visitor ID and date of birth for each additional child visitor. If visitor details entered here do not match those we hold on record, they will not be included in the booking.
-        </p>
+      '#type': webform_markup
+      '#markup': |-
+        <div class="info-notice" role="status" data-once="emptyTags nicsdruNoticesAndMessages"><strong class="visually-hidden">Important information </strong>
+          <ul>
+            <li>You can have up to four additional visitors</li>
+            <li>The maximum number of additional adults is two</li>
+            <li>Ensure the details for each visitor are correct, otherwise they will not be included in the booking</li>
+          </ul>
+        </div>
+    msg_existing_additional_visitors:
+      '#type': webform_markup
+      '#markup': |-
+        <div class="info-notice" role="status">
+          <p>Existing details of additional visitors from a previous booking have been found.</p>
+          <ul>
+            <li>You can have up to four additional visitors</li>
+            <li>The maximum number of additional adults is two</li>
+            <li>Ensure the details for each visitor are correct, otherwise they will not be included in the booking</li>
+          </ul>
+        </div>
     additional_visitor_number:
       '#type': radios
       '#title': 'How many additional visitors?'
@@ -1015,17 +1028,7 @@ elements: |-
       visible:
         - ':input[name="bkg_id"]':
             empty: true
-          ':input[name="additional_visitor_adult_number"]':
-            '!value': '0'
-        - or
-        - ':input[name="bkg_id"]':
-            empty: true
           ':input[name="additional_visitor_number"]':
-            '!value': '0'
-        - or
-        - ':input[name="choose_changes[additional_visitors]"]':
-            checked: true
-          ':input[name="additional_visitor_adult_number"]':
             '!value': '0'
         - or
         - ':input[name="choose_changes[additional_visitors]"]':
@@ -1514,67 +1517,6 @@ css: |-
     letter-spacing: 1px;
     font-weight: normal;
   }
-
-  .visitor-badge {
-    position: absolute;
-    right: 0;
-    display: inline-block;
-    background-color: orangered;
-    color: white;
-    font-size: medium;
-    padding: .25em .5em;
-    margin: .5em .5em 0 0;
-    border-radius: 1em;
-    line-height: 1em;
-    vertical-align: top;
-    letter-spacing: 1px;
-    font-weight: normal;
-  }
-
-  button.clear-button::before {
-      content: '\00d7';
-      display: inline-block;
-      background: #666666;
-      font-size: 14px;
-      width: 1.5em;
-      height: 1.5em;
-      border-radius: 50%;
-      line-height: 1.5em;
-      text-align: center;
-      color: white;
-  }
-
-  button.clear-button:focus::before,
-  button.clear-button:hover::before {
-      background: #1c1c1c;
-  }
-
-  button.clear-button {
-      position: absolute;
-      width: 2em;
-      height: 2em;
-      padding: 0;
-      border: 0;
-      border-radius: 50%;
-      transform: translate(-2.25em, .25em);
-      font: 1em monospace;
-      line-height: 1em;
-      background-color: transparent;
-  }
-
-  input[disabled] ~ button.clear-button,
-  input[readonly] ~ button.clear-button {
-      opacity: .6;
-  }
-
-  input[disabled] ~ button.clear-button:hover::before,
-  input[readonly] ~ button.clear-button:hover::before {
-      background: #666666;
-  }
-
-  .form-item--error-message:has(+ button.clear-button) {
-    position: absolute;
-  }
 javascript: |-
   if (!document.location.hostname.includes('nidirect.gov.uk')) {
     const h1 = document.querySelector('h1.page-title');
@@ -1630,122 +1572,6 @@ javascript: |-
       });
     }
   };
-
-
-  (function($, Drupal, once) {
-
-    Drupal.behaviors.prisonVisitAdditionalVisitors = {
-      attach: function (context, settings) {
-
-        let selectors = '';
-        selectors += 'fieldset[data-drupal-selector^="edit-additional-visitor-1-"],';
-        selectors += 'fieldset[data-drupal-selector^="edit-additional-visitor-2-"],';
-        selectors += 'fieldset[data-drupal-selector^="edit-additional-visitor-3-"],';
-        selectors += 'fieldset[data-drupal-selector^="edit-additional-visitor-4-"]';
-
-        const $additionalVisitors = $(once('prisonVisitAdditionalVisitors', selectors, context));
-        let visitorData = [];
-
-        const removeVisitor = function(event) {
-          event.preventDefault();
-
-          // When a visitor's ID and DOB is removed, we shift the details for all
-          // the next visitors "up" to close the gap.
-
-          let $visitor = $(this).closest('fieldset');
-          let $visitor_id = $('input[name$="_id"]', $visitor);
-          let $visitor_dob = $('input[name$="_dob"]', $visitor);
-
-          const $visitorNextAll = $visitor.nextAll();
-
-          $visitorNextAll.each(function(index) {
-            let $visitor_sibling_id = $('input[name$="_id"]', $(this));
-            let $visitor_sibling_dob = $('input[name$="_dob"]', $(this));
-
-            $visitor_id.val($visitor_sibling_id.val());
-            $visitor_dob.val($visitor_sibling_dob.val());
-
-            $visitor_id = $visitor_sibling_id;
-            $visitor_dob = $visitor_sibling_dob;
-          });
-
-          $visitor_id
-              .val('')
-              .removeClass('valid error')
-              .removeAttr('aria-invalid')
-              .removeAttr('aria-describedby')
-              .removeAttr('required')
-              .removeAttr('aria-required')
-              .next('.error')
-              .html('');
-          $visitor_dob
-              .val('')
-              .removeClass('valid error')
-              .removeAttr('aria-invalid')
-              .removeAttr('aria-describedby')
-              .removeAttr('required')
-              .removeAttr('aria-required')
-              .next('.error')
-              .html('');
-
-          // Update the radios controlling the number of visitors.
-          // Use a click event so it fires events to hide visitors
-          // in the normal way.
-          let visitor_number = $('input[id^="edit-additional-visitor-number"]:checked').val();
-          $('input[id^="edit-additional-visitor-number"][value="' + (visitor_number - 1) + '"]').click();
-        }
-
-        const getAge = function(dateString) {
-          // Simple conversion of dd/mm/yyyy to yyyy-mm-dd
-          if (dateString.includes('/')) {
-            const dateParts = dateString.split("/");
-            dateString = dateParts[2] + '-' + dateParts[1] + '-' + dateParts[0] + 'T00:00';
-          }
-          const today = new Date();
-          const birthDate = new Date(dateString);
-          let age = today.getFullYear() - birthDate.getFullYear();
-          let m = today.getMonth() - birthDate.getMonth();
-          if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
-            age--;
-          }
-          return age;
-        }
-
-        $additionalVisitors.each(function(index) {
-
-          // Add a remove link for each visitor.
-          let $link_innerHTML = 'Remove <span class="visually-hidden">' + $('legend', $(this)).text() + '</span>';
-          let $button = $('<a href="#">' + $link_innerHTML + '</a>').attr('data-index', (index + 1)).click(removeVisitor);
-          $(this).find('.fieldset-wrapper').append($button);
-
-          // Add a badge indicating whether visitor is an adult or a child.
-          let $dob = $(this).find('input[name^="additional_visitor_' + (index+1) + '_dob"]');
-
-          const badge = document.createElement("span");
-          badge.classList.add('visitor-badge');
-
-          if (getAge($dob.val()) >= 18) {
-            badge.textContent = 'Adult';
-          } else {
-            badge.textContent = 'Child';
-          }
-
-          $dob.after(badge).blur(function() {
-            console.log(getAge($(this).val()));
-            if (getAge($(this).val()) >= 18) {
-              console.log($(this).siblings('.visitor-badge').text());
-              $(this).siblings('.visitor-badge').text('Adult');
-            } else {
-              console.log($(this).siblings('.visitor-badge').text());
-              $(this).siblings('.visitor-badge').text('Child');
-            }
-          });
-        });
-
-      }
-    };
-
-  })(jQuery, Drupal, once);
 settings:
   ajax: true
   ajax_scroll_top: form
@@ -1858,25 +1684,18 @@ settings:
     visitor_1_dob: visitor_1_dob
     visitor_1_email: visitor_1_email
     visitor_1_telephone: visitor_1_telephone
-    msg_existing_additional_visitors: msg_existing_additional_visitors
-    additional_visitor_adult_number: additional_visitor_adult_number
-    additional_visitors_adult: additional_visitors_adult
-    additional_visitor_adult_1_id: additional_visitor_adult_1_id
-    additional_visitor_adult_1_dob: additional_visitor_adult_1_dob
-    additional_visitor_adult_2_id: additional_visitor_adult_2_id
-    additional_visitor_adult_2_dob: additional_visitor_adult_2_dob
-    additional_visitor_child_number: additional_visitor_child_number
-    additional_visitors_child: additional_visitors_child
-    additional_visitor_child_1_id: additional_visitor_child_1_id
-    additional_visitor_child_1_dob: additional_visitor_child_1_dob
-    additional_visitor_child_2_id: additional_visitor_child_2_id
-    additional_visitor_child_2_dob: additional_visitor_child_2_dob
-    additional_visitor_child_3_id: additional_visitor_child_3_id
-    additional_visitor_child_3_dob: additional_visitor_child_3_dob
-    additional_visitor_child_4_id: additional_visitor_child_4_id
-    additional_visitor_child_4_dob: additional_visitor_child_4_dob
-    additional_visitor_child_5_id: additional_visitor_child_5_id
-    additional_visitor_child_5_dob: additional_visitor_child_5_dob
+    msg_additional_visitors: msg_additional_visitors
+    additional_visitor_number: additional_visitor_number
+    additional_visitor_1_id: additional_visitor_1_id
+    additional_visitor_1_dob: additional_visitor_1_dob
+    additional_visitor_2_id: additional_visitor_2_id
+    additional_visitor_2_dob: additional_visitor_2_dob
+    additional_visitor_3_id: additional_visitor_3_id
+    additional_visitor_3_dob: additional_visitor_3_dob
+    additional_visitor_4_id: additional_visitor_4_id
+    additional_visitor_4_dob: additional_visitor_4_dob
+    additional_visitor_5_id: additional_visitor_5_id
+    additional_visitor_5_dob: additional_visitor_5_dob
     visitor_special_requirements_choice: visitor_special_requirements_choice
     visitor_special_requirements_details: visitor_special_requirements_details
     remember_settings_info: remember_settings_info
@@ -1917,6 +1736,7 @@ settings:
     prison_name: prison_name
     visit_type: visit_type
     amend_timeslot_message: amend_timeslot_message
+    amend_type: amend_type
     bkg_id: bkg_id
     bkg_link_uniqueid: bkg_link_uniqueid
     bkg_slotdatetime: bkg_slotdatetime
@@ -1944,7 +1764,6 @@ settings:
     av5_id: av5_id
     av5_dob: av5_dob
     environment_base_url: environment_base_url
-    amend_type: amend_type
   preview_exclude_empty: true
   preview_exclude_empty_checkbox: true
   draft: none
@@ -2097,8 +1916,51 @@ handlers:
         "SLOT5_DATETIME": "[webform_submission:values:slot5_datetime_submission]"
         }
       excluded_elements:
+        confirmation_message: confirmation_message
+        confirmation_keep_booking_message: confirmation_keep_booking_message
+        confirmation_amend_booking_message: confirmation_amend_booking_message
+        confirmation_cancel_booking_message: confirmation_cancel_booking_message
+        confirmation_visit_details: confirmation_visit_details
+        booking_and_prisoner_reference_preamble: booking_and_prisoner_reference_preamble
+        visitor_order_number: visitor_order_number
+        prisoner_id: prisoner_id
+        amend_error_default: amend_error_default
+        error_booking_already_amended: error_booking_already_amended
+        visit_order_ref_invalid: visit_order_ref_invalid
+        visit_order_ref_expired: visit_order_ref_expired
+        visit_order_ref_amendment_expired: visit_order_ref_amendment_expired
+        booking_details: booking_details
+        booking_details_ref_no_slots: booking_details_ref_no_slots
+        booking_details_notice_exceeded_face_to_face: booking_details_notice_exceeded_face_to_face
+        booking_details_notice_exceeded_virtual: booking_details_notice_exceeded_virtual
+        amend_booking_options: amend_booking_options
+        choose_changes: choose_changes
+        choose_changes_virtual: choose_changes_virtual
         visitor_1_intro: visitor_1_intro
+        visitor_1_intro_amend: visitor_1_intro_amend
+        visitor_1_id: visitor_1_id
+        visitor_1_dob: visitor_1_dob
+        visitor_1_email: visitor_1_email
+        visitor_1_telephone: visitor_1_telephone
+        msg_additional_visitors: msg_additional_visitors
+        msg_existing_additional_visitors: msg_existing_additional_visitors
+        additional_visitor_number: additional_visitor_number
+        additional_visitor_1_id: additional_visitor_1_id
+        additional_visitor_1_dob: additional_visitor_1_dob
+        additional_visitor_2_id: additional_visitor_2_id
+        additional_visitor_2_dob: additional_visitor_2_dob
+        additional_visitor_3_id: additional_visitor_3_id
+        additional_visitor_3_dob: additional_visitor_3_dob
+        additional_visitor_4_id: additional_visitor_4_id
+        additional_visitor_4_dob: additional_visitor_4_dob
+        additional_visitor_5_id: additional_visitor_5_id
+        additional_visitor_5_dob: additional_visitor_5_dob
+        visitor_special_requirements_choice: visitor_special_requirements_choice
+        visitor_special_requirements_details: visitor_special_requirements_details
+        remember_settings_info: remember_settings_info
+        additional_visitors_remember: additional_visitors_remember
         visit_details: visit_details
+        time_slot_restrictions: time_slot_restrictions
         monday_week_1: monday_week_1
         tuesday_week_1: tuesday_week_1
         wednesday_week_1: wednesday_week_1
@@ -2127,7 +1989,44 @@ handlers:
         friday_week_4: friday_week_4
         saturday_week_4: saturday_week_4
         sunday_week_4: sunday_week_4
+        slots_preferred: slots_preferred
+        booking_reference_processed: booking_reference_processed
+        amend_booking_setup_complete: amend_booking_setup_complete
+        prison_name: prison_name
+        visit_type: visit_type
+        amend_timeslot_message: amend_timeslot_message
+        amend_type: amend_type
+        bkg_id: bkg_id
+        bkg_link_uniqueid: bkg_link_uniqueid
+        bkg_slotdatetime: bkg_slotdatetime
+        current_visitor_order_number: current_visitor_order_number
+        last_visitor_order_number: last_visitor_order_number
+        slot1_datetime: slot1_datetime
+        slot2_datetime: slot2_datetime
+        slot3_datetime: slot3_datetime
+        slot4_datetime: slot4_datetime
+        slot5_datetime: slot5_datetime
+        slot1_datetime_submission: slot1_datetime_submission
+        slot2_datetime_submission: slot2_datetime_submission
+        slot3_datetime_submission: slot3_datetime_submission
+        slot4_datetime_submission: slot4_datetime_submission
+        slot5_datetime_submission: slot5_datetime_submission
+        special_requirements_json: special_requirements_json
+        av1_id: av1_id
+        av1_dob: av1_dob
+        av2_id: av2_id
+        av2_dob: av2_dob
+        av3_id: av3_id
+        av3_dob: av3_dob
+        av4_id: av4_id
+        av4_dob: av4_dob
+        av5_id: av5_id
+        av5_dob: av5_dob
         environment_base_url: environment_base_url
+        webform_confirmation_message_default: webform_confirmation_message_default
+        webform_confirmation_message_cancel: webform_confirmation_message_cancel
+        webform_confirmation_message_keep: webform_confirmation_message_keep
+        webform_confirmation_message_change: webform_confirmation_message_change
       ignore_access: true
       exclude_empty: true
       exclude_empty_checkbox: false
@@ -2195,8 +2094,51 @@ handlers:
         "SLOT5_DATETIME": "[webform_submission:values:slot5_datetime_submission]"
         }
       excluded_elements:
+        confirmation_message: confirmation_message
+        confirmation_keep_booking_message: confirmation_keep_booking_message
+        confirmation_amend_booking_message: confirmation_amend_booking_message
+        confirmation_cancel_booking_message: confirmation_cancel_booking_message
+        confirmation_visit_details: confirmation_visit_details
+        booking_and_prisoner_reference_preamble: booking_and_prisoner_reference_preamble
+        visitor_order_number: visitor_order_number
+        prisoner_id: prisoner_id
+        amend_error_default: amend_error_default
+        error_booking_already_amended: error_booking_already_amended
+        visit_order_ref_invalid: visit_order_ref_invalid
+        visit_order_ref_expired: visit_order_ref_expired
+        visit_order_ref_amendment_expired: visit_order_ref_amendment_expired
+        booking_details: booking_details
+        booking_details_ref_no_slots: booking_details_ref_no_slots
+        booking_details_notice_exceeded_face_to_face: booking_details_notice_exceeded_face_to_face
+        booking_details_notice_exceeded_virtual: booking_details_notice_exceeded_virtual
+        amend_booking_options: amend_booking_options
+        choose_changes: choose_changes
+        choose_changes_virtual: choose_changes_virtual
         visitor_1_intro: visitor_1_intro
+        visitor_1_intro_amend: visitor_1_intro_amend
+        visitor_1_id: visitor_1_id
+        visitor_1_dob: visitor_1_dob
+        visitor_1_email: visitor_1_email
+        visitor_1_telephone: visitor_1_telephone
+        msg_additional_visitors: msg_additional_visitors
+        msg_existing_additional_visitors: msg_existing_additional_visitors
+        additional_visitor_number: additional_visitor_number
+        additional_visitor_1_id: additional_visitor_1_id
+        additional_visitor_1_dob: additional_visitor_1_dob
+        additional_visitor_2_id: additional_visitor_2_id
+        additional_visitor_2_dob: additional_visitor_2_dob
+        additional_visitor_3_id: additional_visitor_3_id
+        additional_visitor_3_dob: additional_visitor_3_dob
+        additional_visitor_4_id: additional_visitor_4_id
+        additional_visitor_4_dob: additional_visitor_4_dob
+        additional_visitor_5_id: additional_visitor_5_id
+        additional_visitor_5_dob: additional_visitor_5_dob
+        visitor_special_requirements_choice: visitor_special_requirements_choice
+        visitor_special_requirements_details: visitor_special_requirements_details
+        remember_settings_info: remember_settings_info
+        additional_visitors_remember: additional_visitors_remember
         visit_details: visit_details
+        time_slot_restrictions: time_slot_restrictions
         monday_week_1: monday_week_1
         tuesday_week_1: tuesday_week_1
         wednesday_week_1: wednesday_week_1
@@ -2225,7 +2167,44 @@ handlers:
         friday_week_4: friday_week_4
         saturday_week_4: saturday_week_4
         sunday_week_4: sunday_week_4
+        slots_preferred: slots_preferred
+        booking_reference_processed: booking_reference_processed
+        amend_booking_setup_complete: amend_booking_setup_complete
+        prison_name: prison_name
+        visit_type: visit_type
+        amend_timeslot_message: amend_timeslot_message
+        amend_type: amend_type
+        bkg_id: bkg_id
+        bkg_link_uniqueid: bkg_link_uniqueid
+        bkg_slotdatetime: bkg_slotdatetime
+        current_visitor_order_number: current_visitor_order_number
+        last_visitor_order_number: last_visitor_order_number
+        slot1_datetime: slot1_datetime
+        slot2_datetime: slot2_datetime
+        slot3_datetime: slot3_datetime
+        slot4_datetime: slot4_datetime
+        slot5_datetime: slot5_datetime
+        slot1_datetime_submission: slot1_datetime_submission
+        slot2_datetime_submission: slot2_datetime_submission
+        slot3_datetime_submission: slot3_datetime_submission
+        slot4_datetime_submission: slot4_datetime_submission
+        slot5_datetime_submission: slot5_datetime_submission
+        special_requirements_json: special_requirements_json
+        av1_id: av1_id
+        av1_dob: av1_dob
+        av2_id: av2_id
+        av2_dob: av2_dob
+        av3_id: av3_id
+        av3_dob: av3_dob
+        av4_id: av4_id
+        av4_dob: av4_dob
+        av5_id: av5_id
+        av5_dob: av5_dob
         environment_base_url: environment_base_url
+        webform_confirmation_message_default: webform_confirmation_message_default
+        webform_confirmation_message_cancel: webform_confirmation_message_cancel
+        webform_confirmation_message_keep: webform_confirmation_message_keep
+        webform_confirmation_message_change: webform_confirmation_message_change
       ignore_access: true
       exclude_empty: true
       exclude_empty_checkbox: false
@@ -2293,8 +2272,51 @@ handlers:
         "SLOT5_DATETIME": "[webform_submission:values:slot5_datetime_submission]"
         }
       excluded_elements:
+        confirmation_message: confirmation_message
+        confirmation_keep_booking_message: confirmation_keep_booking_message
+        confirmation_amend_booking_message: confirmation_amend_booking_message
+        confirmation_cancel_booking_message: confirmation_cancel_booking_message
+        confirmation_visit_details: confirmation_visit_details
+        booking_and_prisoner_reference_preamble: booking_and_prisoner_reference_preamble
+        visitor_order_number: visitor_order_number
+        prisoner_id: prisoner_id
+        amend_error_default: amend_error_default
+        error_booking_already_amended: error_booking_already_amended
+        visit_order_ref_invalid: visit_order_ref_invalid
+        visit_order_ref_expired: visit_order_ref_expired
+        visit_order_ref_amendment_expired: visit_order_ref_amendment_expired
+        booking_details: booking_details
+        booking_details_ref_no_slots: booking_details_ref_no_slots
+        booking_details_notice_exceeded_face_to_face: booking_details_notice_exceeded_face_to_face
+        booking_details_notice_exceeded_virtual: booking_details_notice_exceeded_virtual
+        amend_booking_options: amend_booking_options
+        choose_changes: choose_changes
+        choose_changes_virtual: choose_changes_virtual
         visitor_1_intro: visitor_1_intro
+        visitor_1_intro_amend: visitor_1_intro_amend
+        visitor_1_id: visitor_1_id
+        visitor_1_dob: visitor_1_dob
+        visitor_1_email: visitor_1_email
+        visitor_1_telephone: visitor_1_telephone
+        msg_additional_visitors: msg_additional_visitors
+        msg_existing_additional_visitors: msg_existing_additional_visitors
+        additional_visitor_number: additional_visitor_number
+        additional_visitor_1_id: additional_visitor_1_id
+        additional_visitor_1_dob: additional_visitor_1_dob
+        additional_visitor_2_id: additional_visitor_2_id
+        additional_visitor_2_dob: additional_visitor_2_dob
+        additional_visitor_3_id: additional_visitor_3_id
+        additional_visitor_3_dob: additional_visitor_3_dob
+        additional_visitor_4_id: additional_visitor_4_id
+        additional_visitor_4_dob: additional_visitor_4_dob
+        additional_visitor_5_id: additional_visitor_5_id
+        additional_visitor_5_dob: additional_visitor_5_dob
+        visitor_special_requirements_choice: visitor_special_requirements_choice
+        visitor_special_requirements_details: visitor_special_requirements_details
+        remember_settings_info: remember_settings_info
+        additional_visitors_remember: additional_visitors_remember
         visit_details: visit_details
+        time_slot_restrictions: time_slot_restrictions
         monday_week_1: monday_week_1
         tuesday_week_1: tuesday_week_1
         wednesday_week_1: wednesday_week_1
@@ -2323,7 +2345,44 @@ handlers:
         friday_week_4: friday_week_4
         saturday_week_4: saturday_week_4
         sunday_week_4: sunday_week_4
+        slots_preferred: slots_preferred
+        booking_reference_processed: booking_reference_processed
+        amend_booking_setup_complete: amend_booking_setup_complete
+        prison_name: prison_name
+        visit_type: visit_type
+        amend_timeslot_message: amend_timeslot_message
+        amend_type: amend_type
+        bkg_id: bkg_id
+        bkg_link_uniqueid: bkg_link_uniqueid
+        bkg_slotdatetime: bkg_slotdatetime
+        current_visitor_order_number: current_visitor_order_number
+        last_visitor_order_number: last_visitor_order_number
+        slot1_datetime: slot1_datetime
+        slot2_datetime: slot2_datetime
+        slot3_datetime: slot3_datetime
+        slot4_datetime: slot4_datetime
+        slot5_datetime: slot5_datetime
+        slot1_datetime_submission: slot1_datetime_submission
+        slot2_datetime_submission: slot2_datetime_submission
+        slot3_datetime_submission: slot3_datetime_submission
+        slot4_datetime_submission: slot4_datetime_submission
+        slot5_datetime_submission: slot5_datetime_submission
+        special_requirements_json: special_requirements_json
+        av1_id: av1_id
+        av1_dob: av1_dob
+        av2_id: av2_id
+        av2_dob: av2_dob
+        av3_id: av3_id
+        av3_dob: av3_dob
+        av4_id: av4_id
+        av4_dob: av4_dob
+        av5_id: av5_id
+        av5_dob: av5_dob
         environment_base_url: environment_base_url
+        webform_confirmation_message_default: webform_confirmation_message_default
+        webform_confirmation_message_cancel: webform_confirmation_message_cancel
+        webform_confirmation_message_keep: webform_confirmation_message_keep
+        webform_confirmation_message_change: webform_confirmation_message_change
       ignore_access: true
       exclude_empty: true
       exclude_empty_checkbox: false
@@ -2711,8 +2770,51 @@ handlers:
         "SLOT5_DATETIME": "[webform_submission:values:slot5_datetime_submission]"
         }
       excluded_elements:
+        confirmation_message: confirmation_message
+        confirmation_keep_booking_message: confirmation_keep_booking_message
+        confirmation_amend_booking_message: confirmation_amend_booking_message
+        confirmation_cancel_booking_message: confirmation_cancel_booking_message
+        confirmation_visit_details: confirmation_visit_details
+        booking_and_prisoner_reference_preamble: booking_and_prisoner_reference_preamble
+        visitor_order_number: visitor_order_number
+        prisoner_id: prisoner_id
+        amend_error_default: amend_error_default
+        error_booking_already_amended: error_booking_already_amended
+        visit_order_ref_invalid: visit_order_ref_invalid
+        visit_order_ref_expired: visit_order_ref_expired
+        visit_order_ref_amendment_expired: visit_order_ref_amendment_expired
+        booking_details: booking_details
+        booking_details_ref_no_slots: booking_details_ref_no_slots
+        booking_details_notice_exceeded_face_to_face: booking_details_notice_exceeded_face_to_face
+        booking_details_notice_exceeded_virtual: booking_details_notice_exceeded_virtual
+        amend_booking_options: amend_booking_options
+        choose_changes: choose_changes
+        choose_changes_virtual: choose_changes_virtual
         visitor_1_intro: visitor_1_intro
+        visitor_1_intro_amend: visitor_1_intro_amend
+        visitor_1_id: visitor_1_id
+        visitor_1_dob: visitor_1_dob
+        visitor_1_email: visitor_1_email
+        visitor_1_telephone: visitor_1_telephone
+        msg_additional_visitors: msg_additional_visitors
+        msg_existing_additional_visitors: msg_existing_additional_visitors
+        additional_visitor_number: additional_visitor_number
+        additional_visitor_1_id: additional_visitor_1_id
+        additional_visitor_1_dob: additional_visitor_1_dob
+        additional_visitor_2_id: additional_visitor_2_id
+        additional_visitor_2_dob: additional_visitor_2_dob
+        additional_visitor_3_id: additional_visitor_3_id
+        additional_visitor_3_dob: additional_visitor_3_dob
+        additional_visitor_4_id: additional_visitor_4_id
+        additional_visitor_4_dob: additional_visitor_4_dob
+        additional_visitor_5_id: additional_visitor_5_id
+        additional_visitor_5_dob: additional_visitor_5_dob
+        visitor_special_requirements_choice: visitor_special_requirements_choice
+        visitor_special_requirements_details: visitor_special_requirements_details
+        remember_settings_info: remember_settings_info
+        additional_visitors_remember: additional_visitors_remember
         visit_details: visit_details
+        time_slot_restrictions: time_slot_restrictions
         monday_week_1: monday_week_1
         tuesday_week_1: tuesday_week_1
         wednesday_week_1: wednesday_week_1
@@ -2741,7 +2843,44 @@ handlers:
         friday_week_4: friday_week_4
         saturday_week_4: saturday_week_4
         sunday_week_4: sunday_week_4
+        slots_preferred: slots_preferred
+        booking_reference_processed: booking_reference_processed
+        amend_booking_setup_complete: amend_booking_setup_complete
+        prison_name: prison_name
+        visit_type: visit_type
+        amend_timeslot_message: amend_timeslot_message
+        amend_type: amend_type
+        bkg_id: bkg_id
+        bkg_link_uniqueid: bkg_link_uniqueid
+        bkg_slotdatetime: bkg_slotdatetime
+        current_visitor_order_number: current_visitor_order_number
+        last_visitor_order_number: last_visitor_order_number
+        slot1_datetime: slot1_datetime
+        slot2_datetime: slot2_datetime
+        slot3_datetime: slot3_datetime
+        slot4_datetime: slot4_datetime
+        slot5_datetime: slot5_datetime
+        slot1_datetime_submission: slot1_datetime_submission
+        slot2_datetime_submission: slot2_datetime_submission
+        slot3_datetime_submission: slot3_datetime_submission
+        slot4_datetime_submission: slot4_datetime_submission
+        slot5_datetime_submission: slot5_datetime_submission
+        special_requirements_json: special_requirements_json
+        av1_id: av1_id
+        av1_dob: av1_dob
+        av2_id: av2_id
+        av2_dob: av2_dob
+        av3_id: av3_id
+        av3_dob: av3_dob
+        av4_id: av4_id
+        av4_dob: av4_dob
+        av5_id: av5_id
+        av5_dob: av5_dob
         environment_base_url: environment_base_url
+        webform_confirmation_message_default: webform_confirmation_message_default
+        webform_confirmation_message_cancel: webform_confirmation_message_cancel
+        webform_confirmation_message_keep: webform_confirmation_message_keep
+        webform_confirmation_message_change: webform_confirmation_message_change
       ignore_access: true
       exclude_empty: true
       exclude_empty_checkbox: false
@@ -2751,7 +2890,7 @@ handlers:
       twig: false
       theme_name: ''
       parameters: {  }
-      debug: true
+      debug: false
   ov_in:
     id: email
     handler_id: ov_in
@@ -2812,8 +2951,51 @@ handlers:
         "SLOT5_DATETIME": "[webform_submission:values:slot5_datetime_submission]"
         }
       excluded_elements:
+        confirmation_message: confirmation_message
+        confirmation_keep_booking_message: confirmation_keep_booking_message
+        confirmation_amend_booking_message: confirmation_amend_booking_message
+        confirmation_cancel_booking_message: confirmation_cancel_booking_message
+        confirmation_visit_details: confirmation_visit_details
+        booking_and_prisoner_reference_preamble: booking_and_prisoner_reference_preamble
+        visitor_order_number: visitor_order_number
+        prisoner_id: prisoner_id
+        amend_error_default: amend_error_default
+        error_booking_already_amended: error_booking_already_amended
+        visit_order_ref_invalid: visit_order_ref_invalid
+        visit_order_ref_expired: visit_order_ref_expired
+        visit_order_ref_amendment_expired: visit_order_ref_amendment_expired
+        booking_details: booking_details
+        booking_details_ref_no_slots: booking_details_ref_no_slots
+        booking_details_notice_exceeded_face_to_face: booking_details_notice_exceeded_face_to_face
+        booking_details_notice_exceeded_virtual: booking_details_notice_exceeded_virtual
+        amend_booking_options: amend_booking_options
+        choose_changes: choose_changes
+        choose_changes_virtual: choose_changes_virtual
         visitor_1_intro: visitor_1_intro
+        visitor_1_intro_amend: visitor_1_intro_amend
+        visitor_1_id: visitor_1_id
+        visitor_1_dob: visitor_1_dob
+        visitor_1_email: visitor_1_email
+        visitor_1_telephone: visitor_1_telephone
+        msg_additional_visitors: msg_additional_visitors
+        msg_existing_additional_visitors: msg_existing_additional_visitors
+        additional_visitor_number: additional_visitor_number
+        additional_visitor_1_id: additional_visitor_1_id
+        additional_visitor_1_dob: additional_visitor_1_dob
+        additional_visitor_2_id: additional_visitor_2_id
+        additional_visitor_2_dob: additional_visitor_2_dob
+        additional_visitor_3_id: additional_visitor_3_id
+        additional_visitor_3_dob: additional_visitor_3_dob
+        additional_visitor_4_id: additional_visitor_4_id
+        additional_visitor_4_dob: additional_visitor_4_dob
+        additional_visitor_5_id: additional_visitor_5_id
+        additional_visitor_5_dob: additional_visitor_5_dob
+        visitor_special_requirements_choice: visitor_special_requirements_choice
+        visitor_special_requirements_details: visitor_special_requirements_details
+        remember_settings_info: remember_settings_info
+        additional_visitors_remember: additional_visitors_remember
         visit_details: visit_details
+        time_slot_restrictions: time_slot_restrictions
         monday_week_1: monday_week_1
         tuesday_week_1: tuesday_week_1
         wednesday_week_1: wednesday_week_1
@@ -2842,8 +3024,44 @@ handlers:
         friday_week_4: friday_week_4
         saturday_week_4: saturday_week_4
         sunday_week_4: sunday_week_4
-        environment_base_url: environment_base_url
+        slots_preferred: slots_preferred
+        booking_reference_processed: booking_reference_processed
+        amend_booking_setup_complete: amend_booking_setup_complete
+        prison_name: prison_name
+        visit_type: visit_type
+        amend_timeslot_message: amend_timeslot_message
         amend_type: amend_type
+        bkg_id: bkg_id
+        bkg_link_uniqueid: bkg_link_uniqueid
+        bkg_slotdatetime: bkg_slotdatetime
+        current_visitor_order_number: current_visitor_order_number
+        last_visitor_order_number: last_visitor_order_number
+        slot1_datetime: slot1_datetime
+        slot2_datetime: slot2_datetime
+        slot3_datetime: slot3_datetime
+        slot4_datetime: slot4_datetime
+        slot5_datetime: slot5_datetime
+        slot1_datetime_submission: slot1_datetime_submission
+        slot2_datetime_submission: slot2_datetime_submission
+        slot3_datetime_submission: slot3_datetime_submission
+        slot4_datetime_submission: slot4_datetime_submission
+        slot5_datetime_submission: slot5_datetime_submission
+        special_requirements_json: special_requirements_json
+        av1_id: av1_id
+        av1_dob: av1_dob
+        av2_id: av2_id
+        av2_dob: av2_dob
+        av3_id: av3_id
+        av3_dob: av3_dob
+        av4_id: av4_id
+        av4_dob: av4_dob
+        av5_id: av5_id
+        av5_dob: av5_dob
+        environment_base_url: environment_base_url
+        webform_confirmation_message_default: webform_confirmation_message_default
+        webform_confirmation_message_cancel: webform_confirmation_message_cancel
+        webform_confirmation_message_keep: webform_confirmation_message_keep
+        webform_confirmation_message_change: webform_confirmation_message_change
       ignore_access: true
       exclude_empty: true
       exclude_empty_checkbox: false
@@ -2864,7 +3082,7 @@ handlers:
       enabled:
         ':input[name="environment_base_url"]':
           value:
-            pattern: '^.*(lndo\.site|localhost).*$'
+            pattern: '^.*(ddev\.site|lndo\.site|localhost).*$'
         ':input[name="bkg_id"]':
           filled: true
         ':input[name="amend_booking_options"]':
@@ -2915,8 +3133,51 @@ handlers:
         "SLOT5_DATETIME": "[webform_submission:values:slot5_datetime_submission]"
         }
       excluded_elements:
+        confirmation_message: confirmation_message
+        confirmation_keep_booking_message: confirmation_keep_booking_message
+        confirmation_amend_booking_message: confirmation_amend_booking_message
+        confirmation_cancel_booking_message: confirmation_cancel_booking_message
+        confirmation_visit_details: confirmation_visit_details
+        booking_and_prisoner_reference_preamble: booking_and_prisoner_reference_preamble
+        visitor_order_number: visitor_order_number
+        prisoner_id: prisoner_id
+        amend_error_default: amend_error_default
+        error_booking_already_amended: error_booking_already_amended
+        visit_order_ref_invalid: visit_order_ref_invalid
+        visit_order_ref_expired: visit_order_ref_expired
+        visit_order_ref_amendment_expired: visit_order_ref_amendment_expired
+        booking_details: booking_details
+        booking_details_ref_no_slots: booking_details_ref_no_slots
+        booking_details_notice_exceeded_face_to_face: booking_details_notice_exceeded_face_to_face
+        booking_details_notice_exceeded_virtual: booking_details_notice_exceeded_virtual
+        amend_booking_options: amend_booking_options
+        choose_changes: choose_changes
+        choose_changes_virtual: choose_changes_virtual
         visitor_1_intro: visitor_1_intro
+        visitor_1_intro_amend: visitor_1_intro_amend
+        visitor_1_id: visitor_1_id
+        visitor_1_dob: visitor_1_dob
+        visitor_1_email: visitor_1_email
+        visitor_1_telephone: visitor_1_telephone
+        msg_additional_visitors: msg_additional_visitors
+        msg_existing_additional_visitors: msg_existing_additional_visitors
+        additional_visitor_number: additional_visitor_number
+        additional_visitor_1_id: additional_visitor_1_id
+        additional_visitor_1_dob: additional_visitor_1_dob
+        additional_visitor_2_id: additional_visitor_2_id
+        additional_visitor_2_dob: additional_visitor_2_dob
+        additional_visitor_3_id: additional_visitor_3_id
+        additional_visitor_3_dob: additional_visitor_3_dob
+        additional_visitor_4_id: additional_visitor_4_id
+        additional_visitor_4_dob: additional_visitor_4_dob
+        additional_visitor_5_id: additional_visitor_5_id
+        additional_visitor_5_dob: additional_visitor_5_dob
+        visitor_special_requirements_choice: visitor_special_requirements_choice
+        visitor_special_requirements_details: visitor_special_requirements_details
+        remember_settings_info: remember_settings_info
+        additional_visitors_remember: additional_visitors_remember
         visit_details: visit_details
+        time_slot_restrictions: time_slot_restrictions
         monday_week_1: monday_week_1
         tuesday_week_1: tuesday_week_1
         wednesday_week_1: wednesday_week_1
@@ -2945,7 +3206,44 @@ handlers:
         friday_week_4: friday_week_4
         saturday_week_4: saturday_week_4
         sunday_week_4: sunday_week_4
+        slots_preferred: slots_preferred
+        booking_reference_processed: booking_reference_processed
+        amend_booking_setup_complete: amend_booking_setup_complete
+        prison_name: prison_name
+        visit_type: visit_type
+        amend_timeslot_message: amend_timeslot_message
+        amend_type: amend_type
+        bkg_id: bkg_id
+        bkg_link_uniqueid: bkg_link_uniqueid
+        bkg_slotdatetime: bkg_slotdatetime
+        current_visitor_order_number: current_visitor_order_number
+        last_visitor_order_number: last_visitor_order_number
+        slot1_datetime: slot1_datetime
+        slot2_datetime: slot2_datetime
+        slot3_datetime: slot3_datetime
+        slot4_datetime: slot4_datetime
+        slot5_datetime: slot5_datetime
+        slot1_datetime_submission: slot1_datetime_submission
+        slot2_datetime_submission: slot2_datetime_submission
+        slot3_datetime_submission: slot3_datetime_submission
+        slot4_datetime_submission: slot4_datetime_submission
+        slot5_datetime_submission: slot5_datetime_submission
+        special_requirements_json: special_requirements_json
+        av1_id: av1_id
+        av1_dob: av1_dob
+        av2_id: av2_id
+        av2_dob: av2_dob
+        av3_id: av3_id
+        av3_dob: av3_dob
+        av4_id: av4_id
+        av4_dob: av4_dob
+        av5_id: av5_id
+        av5_dob: av5_dob
         environment_base_url: environment_base_url
+        webform_confirmation_message_default: webform_confirmation_message_default
+        webform_confirmation_message_cancel: webform_confirmation_message_cancel
+        webform_confirmation_message_keep: webform_confirmation_message_keep
+        webform_confirmation_message_change: webform_confirmation_message_change
       ignore_access: true
       exclude_empty: true
       exclude_empty_checkbox: false
@@ -2955,5 +3253,5 @@ handlers:
       twig: false
       theme_name: ''
       parameters: {  }
-      debug: true
+      debug: false
 variants: {  }
