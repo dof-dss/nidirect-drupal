@@ -171,11 +171,15 @@
         }, $.validator.format("Age must be {1} years old or over"));
 
         $.validator.addMethod("maxAge", function(value, element, param) {
-          return this.optional(element) || getAge(value) <= param[1];
+          return this.optional(element) || Drupal.pvGetAge(value) <= param[1];
         }, $.validator.format("Age must be no more than {1} years old"));
 
         $.validator.addMethod("maxAdults", function(value, element, param) {
-          return this.optional(element) || Drupal.pvNumberOfAdultVisitors() <= param[1];
+          let isValid = true;
+          if (Drupal.pvNumberOfAdultVisitors() > param[1] && Drupal.pvGetAge(value) >= 18) {
+            isValid = false;
+          }
+          return this.optional(element) || isValid;
         }, $.validator.format("Maximum number of adults is {1}"));
 
         $.validator.addMethod("validDate", function(value, element) {
@@ -255,7 +259,7 @@
         $(this).rules("add", {
           maxAdults: [true, 2],
           messages: {
-            maxAdults: "You cannot add any more adult visitors. Enter a child visitor ID and date of birth."
+            maxAdults: "You cannot add any more adult visitors. You must enter a child's visitor ID and date of birth."
           }
         });
       });

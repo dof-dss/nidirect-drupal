@@ -226,6 +226,9 @@
         let $visitor_id = $('input[name$="_id"]', $visitor);
         let $visitor_dob = $('input[name$="_dob"]', $visitor);
 
+        $visitor_id.removeClass('error').next('form-item--error-message').remove();
+        $visitor_dob.removeClass('error').next('form-item--error-message').remove();
+
         const $visitorNextAll = $visitor.nextAll();
 
         $visitorNextAll.each(function(index) {
@@ -239,8 +242,8 @@
           $visitor_dob = $visitor_sibling_dob;
         });
 
-        $visitor_id.val('').removeClass('error').next('form-item--error-message').remove();
-        $visitor_dob.val('').removeClass('error').next('form-item--error-message').remove();
+        $visitor_id.val('');
+        $visitor_dob.val('');
 
         // Update the radios controlling the number of visitors.
         // Use a click event so it fires events to hide visitors
@@ -261,9 +264,11 @@
 
       const updateVisitorBadge = function($dob, $badge) {
         if (Drupal.pvGetAge($dob.val()) >= 18) {
-          $badge.text('Adult').removeClass('visitor-badge--child');
+          $badge.text('Adult').removeClass('visitor-badge--child visually-hidden');
+        } else if (Drupal.pvGetAge($dob.val()) >= 0) {
+          $badge.text('Child').removeClass('visually-hidden').addClass('visitor-badge--child');
         } else {
-          $badge.text('Child').addClass('visitor-badge--child');
+          $badge.addClass('visually-hidden');
         }
       }
 
@@ -274,7 +279,7 @@
         // Remove link for each visitor.
         // Has to remove the visitor and update visitor badges.
         let $link_innerHTML = 'Remove <span class="visually-hidden">' + $('legend', $visitor).text() + '</span>';
-        let $link = $('<a href="#">' + $link_innerHTML + '</a>').attr('data-index', (index + 1));
+        let $link = $('<a href="#" class="visitor-remove">' + $link_innerHTML + '</a>').attr('data-index', (index + 1));
         $link.click(function() {
           removeVisitor(this);
           updateVisitorBadges();
