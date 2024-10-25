@@ -117,10 +117,15 @@
   }
 
   .visit-details {
+
     dl {
       display: grid;
-      grid-template-columns: minmax(6em, max-content) 1fr;
+      grid-template-columns: 1fr;
       gap: .6rem;
+
+      &.two-column {
+        grid-template-columns: minmax(6em, max-content) 1fr;
+      }
 
       &.column-wrap {
 
@@ -168,14 +173,47 @@
   .additional-visitors {
     display: flex;
     flex-flow: row wrap;
-    gap: .5em;
+    gap: 1em 2em;
     margin: 1em 0 2em;
 
     > * {
       flex: auto 0 1;
+      box-shadow: 0 2px 1px -1px #e7e7e7;
+      padding-bottom: 1em;
       margin: 0;
     }
+
+    > hr {
+      flex: 100%;
+    }
   }
+
+  a.visitor-remove {
+    @include link-state-style($link-body-no-visited);
+  }
+
+  .visitor-badge {
+    position: absolute;
+    right: 0;
+    transform: translateY(2em);
+    display: inline-block;
+    background-color: $prussian-blue;
+    color: white;
+    font-size: 1em;
+    padding: 0 .5em;
+    margin: .5em;
+    border-radius: 1em;
+    line-height: 1.5em;
+    font-weight: normal;
+
+    &--child {
+      background-color: $blue-violet;
+    }
+  }
+
+  //fieldset[id^='edit-additional-visitor']:has(.visitor-badge--child) .fieldset-wrapper {
+  //  background-color: #e4f0fa;
+  //}
 
   .webform-preview {
 
