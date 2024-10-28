@@ -166,6 +166,13 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
 
     if ($booking_data) {
 
+      // Set cache contexts.
+      $webform->addCacheableDependency([
+        '#cache' => [
+          'contexts' => ['url.query_args:booking'],
+        ],
+      ]);
+
       // Has the LINK_UNIQUEID in the booking data been used before?
       $link_unique_id = $booking_data['LINK_UNIQUEID'];
 
