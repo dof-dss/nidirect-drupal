@@ -612,6 +612,17 @@ elements: |-
             <li>Ensure the details for each visitor are correct, otherwise they will not be included in the booking</li>
           </ul>
         </div>
+    msg_amend_additional_visitors:
+      '#type': webform_markup
+      '#markup': |-
+        <div class="info-notice" role="status">
+          <p>Details of additional visitors for this booking are shown below.</p>
+          <ul>
+            <li>You can have up to four additional visitors</li>
+            <li>The maximum number of additional adults is two</li>
+            <li>Ensure the details for each visitor are correct, otherwise they will not be included in the booking</li>
+          </ul>
+        </div>
     additional_visitor_number:
       '#type': radios
       '#title': 'How many additional visitors?'
@@ -1021,9 +1032,7 @@ elements: |-
           ':input[name="choose_changes[additional_visitors]"]':
             unchecked: true
         - or
-        - ':input[name="additional_visitor_adult_number"]':
-            value: '0'
-          ':input[name="additional_visitor_number"]':
+        - ':input[name="additional_visitor_number"]':
             value: '0'
       visible:
         - ':input[name="bkg_id"]':
@@ -1552,7 +1561,7 @@ javascript: |-
 
           // Add a click event to the button
           button.addEventListener('click', function () {
-            if (!input.hasAttribute(disabled) && !input.hasAttribute(readonly)) {
+            if (!input.hasAttribute('disabled') && !input.hasAttribute('readonly')) {
               input.value = ''; // Clear the value of the text input
               input.focus();
             }
@@ -1668,9 +1677,11 @@ settings:
     booking_and_prisoner_reference_preamble: booking_and_prisoner_reference_preamble
     visitor_order_number: visitor_order_number
     prisoner_id: prisoner_id
+    amend_error_default: amend_error_default
     error_booking_already_amended: error_booking_already_amended
     visit_order_ref_invalid: visit_order_ref_invalid
     visit_order_ref_expired: visit_order_ref_expired
+    visit_order_ref_amendment_expired: visit_order_ref_amendment_expired
     booking_details: booking_details
     booking_details_ref_no_slots: booking_details_ref_no_slots
     booking_details_notice_exceeded_face_to_face: booking_details_notice_exceeded_face_to_face
@@ -1685,6 +1696,7 @@ settings:
     visitor_1_email: visitor_1_email
     visitor_1_telephone: visitor_1_telephone
     msg_additional_visitors: msg_additional_visitors
+    msg_existing_additional_visitors: msg_existing_additional_visitors
     additional_visitor_number: additional_visitor_number
     additional_visitor_1_id: additional_visitor_1_id
     additional_visitor_1_dob: additional_visitor_1_dob
@@ -1764,6 +1776,10 @@ settings:
     av5_id: av5_id
     av5_dob: av5_dob
     environment_base_url: environment_base_url
+    webform_confirmation_message_default: webform_confirmation_message_default
+    webform_confirmation_message_cancel: webform_confirmation_message_cancel
+    webform_confirmation_message_keep: webform_confirmation_message_keep
+    webform_confirmation_message_change: webform_confirmation_message_change
   preview_exclude_empty: true
   preview_exclude_empty_checkbox: true
   draft: none
@@ -3253,5 +3269,5 @@ handlers:
       twig: false
       theme_name: ''
       parameters: {  }
-      debug: false
+      debug: true
 variants: {  }
