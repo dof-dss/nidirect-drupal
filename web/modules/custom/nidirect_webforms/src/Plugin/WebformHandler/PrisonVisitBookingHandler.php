@@ -352,7 +352,7 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
 
       // Alter wizard page titles.
       $elements['main_visitor_details']['#title'] = $this->t('Amend visitor details');
-      $elements['additional_visitors']['#title'] = $this->t('Amend additional visitors');
+      $elements['additional_visitor_details']['#title'] = $this->t('Amend additional visitors');
       $elements['visitor_special_requirements']['#title'] = $this->t('Amend visitor special requirements');
       $elements['visit_preferred_day_and_time']['#title'] = $this->t('Amend visit date and time');
       $elements['webform_preview']['#title'] = $this->t('Amend booking confirmation');
@@ -544,40 +544,72 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
       }
     }
 
-    // Deal with remembered additional visitors.
+    // Deal with remembered additional visitors versus amending
+    // a booking containing additional visitors.
+
     $elements['msg_existing_additional_visitors']['#access'] = FALSE;
     $elements['msg_additional_visitors']['#access'] = FALSE;
+    $elements['msg_amend_additional_visitors']['#access'] = FALSE;
 
+    // Remembered additional visitors are stored in a private tempstore.
     $temp_store = $this->tempStoreFactory->get('nidirect_webforms.prison_visit_booking');
     $visitor_data = $temp_store->get('visitor_data');
 
-    if (empty($amend_booking_data) && !empty($visitor_data) && $page === 'additional_visitor_details') {
+    // If there is remembered visitor data from a previous booking...
+    if (!empty($visitor_data) && $page === 'additional_visitor_details') {
+
+      // Assume it is valid.
       $visitor_data_is_valid = TRUE;
 
+      // It's not valid if user decides not to remember it.
       if ($visitor_data['additional_visitors_remember'] === 'no') {
         $visitor_data_is_valid = FALSE;
       }
+      // It's not valid if it's missing.
       elseif (empty($visitor_data['visitor_1_id']) || empty($visitor_data['visitor_1_dob'])) {
         $visitor_data_is_valid = FALSE;
       }
+      // It's not valid if main visitor id and dob in the present booking
+      // differs from remembered values.  This indicates someone else
+      // is making a booking using the same device and they should not
+      // see remembered visitor data belonging to another visitor.
       elseif ($visitor_data['visitor_1_id'] !== $form_state->getValue('visitor_1_id') || $visitor_data['visitor_1_dob'] !== $form_state->getValue('visitor_1_dob')) {
         $visitor_data_is_valid = FALSE;
       }
 
       if ($visitor_data_is_valid) {
-        $elements['msg_existing_additional_visitors']['#access'] = TRUE;
 
-        // Retrieve existing visitor data.
-        foreach ($visitor_data as $key => $value) {
-          $form_state->setValue($key, $value);
-          $elements[$key]['#default_value'] = $value;
+        // Remembered visitor data is valid and can be used.
+
+        // If we are not amending a booking, we just prepopulate
+        // all additional visitor fields with the remembered data.
+        if (empty($amend_booking_data)) {
+
+          // Retrieve existing visitor data.
+          foreach ($visitor_data as $key => $value) {
+            $form_state->setValue($key, $value);
+            $elements[$key]['#default_value'] = $value;
+          }
+
+          // Show msg that existing visitor data found.
+          $elements['msg_existing_additional_visitors']['#access'] = TRUE;
+        }
+        // Else we are amending a booking. We can only set the value of
+        // the question "Do you want to remember additional visitors?.
+        // The data for additional visitors has already been
+        // pre-populated elsewhere.
+        else {
+          $form_state->setValue('additional_visitors_remember', $visitor_data['additional_visitors_remember']);
+          $elements['additional_visitors_remember']['#default_value'] = $visitor_data['additional_visitors_remember'];
+
+          // Show msg for amending additional visitors.
+          $elements['msg_amend_additional_visitors']['#access'] = TRUE;
         }
       }
       else {
-        $elements['msg_additional_visitors']['#access'] = TRUE;
 
-        // @TODO - do not remove all visitor data?
-        // Remove all visitor data.
+        // Remembered visitor data is not valid.
+        // @TODO - remove all visitor data?
         $temp_store->delete('visitor_data');
 
         // Reset form state for additional visitors.
@@ -587,9 +619,20 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
             $elements[$key]['#default_value'] = '';
           }
         }
+
+        // Show the standard additional visitor message.
+        $elements['msg_additional_visitors']['#access'] = TRUE;
       }
     }
+    elseif (!empty($amend_booking_data)) {
+      // No remembered data from a previous booking.
+      // Show msg amending additional visitors.
+      $elements['msg_amend_additional_visitors']['#access'] = TRUE;
+    }
     else {
+      // No remembered data from a previous booking and we are not
+      // amending a booking...
+      // Show the standard additional visitor message.
       $elements['msg_additional_visitors']['#access'] = TRUE;
     }
   }
@@ -651,10 +694,12 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
       $visitor_id = $amend_booking_data['VISITOR_' . $i . '_ID'] ?? NULL;
       $visitor_dob = $amend_booking_data['VISITOR_' . $i . '_DOB'] ?? NULL;
 
-      $additional_visitors[] = [
-        'id' => $visitor_id,
-        'dob' => explode(" ", $visitor_dob)[0],
-      ];
+      if ($visitor_id && $visitor_dob) {
+        $additional_visitors[] = [
+          'id' => $visitor_id,
+          'dob' => explode(" ", $visitor_dob)[0],
+        ];
+      }
     }
 
     $additional_visitors_count = count($additional_visitors);
