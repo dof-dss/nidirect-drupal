@@ -259,7 +259,7 @@
         $(this).rules("add", {
           maxAdults: [true, 2],
           messages: {
-            maxAdults: "You cannot add any more adult visitors. You must enter a child's visitor ID and date of birth."
+            maxAdults: "The maximum number of adults is two. Enter a child's visitor ID and date of birth."
           }
         });
       });

@@ -44,6 +44,7 @@ main form {
 
     @at-root {
       .container-inline &,
+      .webform-element--title-inline &,
       .webform-options-display-side-by-side & {
         @extend %error-bubble--floating-below;
       }
@@ -396,7 +397,6 @@ textarea,
   padding: 0 33% 0 0; // Right padding makes room for error bubbles.
 
   .container-inline &,
-  .webform-element--title-inline &,
   .webform-options-display-side-by-side & {
     display: inline-block;
     width: auto;
