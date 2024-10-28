@@ -220,14 +220,18 @@
         // When a visitor's ID and DOB is removed, we shift the details for all
         // the next visitors "up" to close the gap.
 
+        // Clear any errors.
+        $('input', $additionalVisitors)
+          .removeClass('error')
+          .attr('aria-invalid', false)
+          .next('.form-item--error-message')
+          .remove();
+
         let $visitor = $(element).closest('fieldset');
         //console.log('Removing', $visitor);
 
         let $visitor_id = $('input[name$="_id"]', $visitor);
         let $visitor_dob = $('input[name$="_dob"]', $visitor);
-
-        $visitor_id.removeClass('error').next('form-item--error-message').remove();
-        $visitor_dob.removeClass('error').next('form-item--error-message').remove();
 
         const $visitorNextAll = $visitor.nextAll();
 
