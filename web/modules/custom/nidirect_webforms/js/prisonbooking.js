@@ -5,38 +5,8 @@
 
 (function($, Drupal, once) {
 
-  Drupal.behaviors.prisonVisit = {
+  Drupal.behaviors.prisonVisitTimeSlots = {
     attach: function (context, settings) {
-
-      // The number of additional adult visitors determines
-      // the number of additional child visitors.
-      const $additionalAdults = $(once('prisonVisitAdditionalAdults', '[name="additional_visitor_adult_number"]', context));
-      const $additionalChildren = $(once('prisonVisitAdditionalChildren', '[name="additional_visitor_child_number"]', context));
-
-      if ($additionalAdults.val() > 0) {
-        $('option', $additionalChildren)
-          .slice(($(this).length - 1) - parseInt($additionalAdults.val()))
-          .attr('disabled', true);
-      }
-
-      $additionalAdults.on('change', function(e) {
-        let numAdults = $(this).val() ?? 0;
-
-        if (numAdults > 0) {
-          $('option', $additionalChildren)
-            .removeAttr('disabled')
-            .slice(($(this).length - 1) - numAdults)
-            .attr('disabled', true)
-            .prop('selected', false);
-        } else {
-          $('option', $additionalChildren).removeAttr('disabled')
-        }
-
-        if ($('option:selected', $additionalChildren).is(':disabled')) {
-          $('option').not(':disabled').last().prop('selected', true);
-        }
-      });
-
 
       // Visit time slots grouped by week in details containers.
       const $weekSlots = $(once('pvSlots', '[data-webform-key^="slots_week"]', context));
