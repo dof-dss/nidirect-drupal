@@ -366,7 +366,7 @@ elements: |-
       '#display_on': form
       '#template': |-
         <p class="info-notice" role="status">
-        Booking details are shown below. Choose whether you want to keep, change or cancel the booking.
+            Booking details are shown below. Choose whether you want to keep, change or cancel the booking.
         </p>
 
         <div class="visit-details" role="status">
@@ -396,10 +396,10 @@ elements: |-
                 <dd>{{ data.bkg_visitor_1_phone }}</dd>
             </dl>
 
-            {% if data.additional_visitor_number > 0 %}
+            {% if data.bkg_visitor_2_id is not empty %}
                 <h3>Additional visitors</h3>
                 <div class="additional-visitors compact">
-                    {% if data.additional_visitor_number > 0 %}
+                    {% if data.bkg_visitor_2_id is not empty %}
                         <dl class="two-column compact">
                             <dt>Visitor ID</dt>
                             <dd>{{ data.bkg_visitor_2_id }}</dd>
@@ -407,7 +407,7 @@ elements: |-
                             <dd>{{ data.bkg_visitor_2_dob }}</dd>
                         </dl>
                     {% endif %}
-                    {% if data.additional_visitor_number > 1 %}
+                    {% if data.bkg_visitor_3_id is not empty %}
                         <dl class="two-column compact">
                             <dt>Visitor ID</dt>
                             <dd>{{ data.bkg_visitor_3_id }}</dd>
@@ -415,7 +415,7 @@ elements: |-
                             <dd>{{ data.bkg_visitor_3_dob }}</dd>
                         </dl>
                     {% endif %}
-                    {% if data.additional_visitor_number > 2 %}
+                    {% if data.bkg_visitor_4_id is not empty %}
                         <dl class="two-column compact">
                             <dt>Visitor ID</dt>
                             <dd>{{ data.bkg_visitor_4_id }}</dd>
@@ -423,7 +423,7 @@ elements: |-
                             <dd>{{ data.bkg_visitor_4_dob }}</dd>
                         </dl>
                     {% endif %}
-                    {% if data.additional_visitor_number > 3 %}
+                    {% if data.bkg_visitor_5_id is not empty %}
                         <dl class="two-column compact">
                             <dt>Visitor ID</dt>
                             <dd>{{ data.bkg_visitor_5_id }}</dd>
@@ -1098,7 +1098,7 @@ elements: |-
       '#required_error': 'Enter details of any special requirements you or any other visitors may have'
       '#counter_type': character
       '#counter_minimum': 1
-      '#counter_maximum': 1000
+      '#counter_maximum': 400
       '#states':
         visible:
           ':input[name="visitor_special_requirements_choice"]':
