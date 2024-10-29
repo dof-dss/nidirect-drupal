@@ -366,10 +366,95 @@ elements: |-
       '#display_on': form
       '#template': |-
         <p class="info-notice" role="status">
-        Booking details are shown below. Choose whether you want to keep, change or cancel the booking.
+            Booking details are shown below. Choose whether you want to keep, change or cancel the booking.
         </p>
 
-        {{ data.confirmation_visit_details }}
+        <div class="visit-details" role="status">
+            <h3>Visit details</h3>
+
+            <dl class="two-column compact">
+                <dt>Visit reference number</dt>
+                <dd>{{ data.bkg_visit_order_no }}</dd>
+                <dt>Visiting prisoner</dt>
+                <dd>{{ data.bkg_inmate_id }}</dd>
+                <dt>Prison</dt>
+                <dd>{{ data.prison_name }}</dd>
+                <dt>Visit type</dt>
+                <dd>{{ data.visit_type | title }}</dd>
+            </dl>
+
+            <h3>Your details</h3>
+
+            <dl class="two-column compact">
+                <dt>Visitor ID</dt>
+                <dd>{{ data.bkg_visitor_1_id }}</dd>
+                <dt>Date of birth</dt>
+                <dd>{{ data.bkg_visitor_1_dob }}</dd>
+                <dt>Email</dt>
+                <dd>{{ data.bkg_visitor_1_email }}</dd>
+                <dt>Phone</dt>
+                <dd>{{ data.bkg_visitor_1_phone }}</dd>
+            </dl>
+
+            {% if data.bkg_visitor_2_id is not empty %}
+                <h3>Additional visitors</h3>
+                <div class="additional-visitors compact">
+                    {% if data.bkg_visitor_2_id is not empty %}
+                        <dl class="two-column compact">
+                            <dt>Visitor ID</dt>
+                            <dd>{{ data.bkg_visitor_2_id }}</dd>
+                            <dt>Date of birth</dt>
+                            <dd>{{ data.bkg_visitor_2_dob }}</dd>
+                        </dl>
+                    {% endif %}
+                    {% if data.bkg_visitor_3_id is not empty %}
+                        <dl class="two-column compact">
+                            <dt>Visitor ID</dt>
+                            <dd>{{ data.bkg_visitor_3_id }}</dd>
+                            <dt>Date of birth</dt>
+                            <dd>{{ data.bkg_visitor_3_dob }}</dd>
+                        </dl>
+                    {% endif %}
+                    {% if data.bkg_visitor_4_id is not empty %}
+                        <dl class="two-column compact">
+                            <dt>Visitor ID</dt>
+                            <dd>{{ data.bkg_visitor_4_id }}</dd>
+                            <dt>Date of birth</dt>
+                            <dd>{{ data.bkg_visitor_4_dob }}</dd>
+                        </dl>
+                    {% endif %}
+                    {% if data.bkg_visitor_5_id is not empty %}
+                        <dl class="two-column compact">
+                            <dt>Visitor ID</dt>
+                            <dd>{{ data.bkg_visitor_5_id }}</dd>
+                            <dt>Date of birth</dt>
+                            <dd>{{ data.bkg_visitor_5_dob }}</dd>
+                        </dl>
+                    {% endif %}
+                </div>
+            {% endif %}
+
+            {% if data.visitor_special_requirements_details %}
+                <h3>Visitor special requirements</h3>
+                <dl class="compact">
+                    <dt>Do you or any other visitors have any special requirements?</dt>
+                    <dd>{{ data.bkg_special_requirements }}</dd>
+                </dl>
+            {% endif %}
+
+            <h3>Visit date and time</h3>
+
+            <div class="form-item--card">
+                <ol class="list--ordered-bullet">
+                    <li>
+                        {% set time_slot = data.bkg_slotdatetime | replace({'/': '-'}) %}
+                        <time datetime="{{ time_slot }}">
+                            {{ time_slot | date('g.i a \\o\\n l, j F Y') }}
+                        </time>
+                    </li>
+                </ol>
+            </div>
+        </div>
     booking_details_ref_no_slots:
       '#access': false
       '#type': webform_markup
@@ -1006,14 +1091,14 @@ elements: |-
       '#title': 'Tell us about any special requirements you or any other visitors may have'
       '#description': 'Use plain text only.'
       '#description_display': before
-      '#maxlength': 1000
+      '#maxlength': 400
       '#rows': 5
       '#autocomplete': 'off'
       '#required': true
       '#required_error': 'Enter details of any special requirements you or any other visitors may have'
       '#counter_type': character
       '#counter_minimum': 1
-      '#counter_maximum': 1000
+      '#counter_maximum': 400
       '#states':
         visible:
           ':input[name="visitor_special_requirements_choice"]':
@@ -1373,13 +1458,58 @@ elements: |-
     '#title': AMEND_TYPE
   bkg_id:
     '#type': hidden
-    '#title': BKG_ID
+    '#title': bkg_id
   bkg_link_uniqueid:
     '#type': hidden
-    '#title': BKG_LINK_UNIQUEID
+    '#title': bkg_link_uniqueid
+  bkg_visit_order_no:
+    '#type': hidden
+    '#title': bkg_visit_order_no
+  bkg_inmate_id:
+    '#type': hidden
+    '#title': bkg_inmate_id
+  bkg_special_requirements:
+    '#type': hidden
+    '#title': bkg_special_requirements
+  bkg_visitor_1_id:
+    '#type': hidden
+    '#title': bkg_visitor_1_id
+  bkg_visitor_1_dob:
+    '#type': hidden
+    '#title': bkg_visitor_1_dob
+  bkg_visitor_1_email:
+    '#type': hidden
+    '#title': bkg_visitor_1_email
+  bkg_visitor_1_phone:
+    '#type': hidden
+    '#title': bkg_visitor_1_phone
+  bkg_visitor_2_id:
+    '#type': hidden
+    '#title': bkg_visitor_2_id
+  bkg_visitor_2_dob:
+    '#type': hidden
+    '#title': bkg_visitor_2_dob
+  bkg_visitor_3_id:
+    '#type': hidden
+    '#title': bkg_visitor_3_id
+  bkg_visitor_3_dob:
+    '#type': hidden
+    '#title': bkg_visitor_3_dob
+  bkg_visitor_4_id:
+    '#type': hidden
+    '#title': bkg_visitor_4_id
+  bkg_visitor_4_dob:
+    '#type': hidden
+    '#title': bkg_visitor_4_dob
+  bkg_visitor_5_id:
+    '#type': hidden
+    '#title': bkg_visitor_5_id
+  bkg_visitor_5_dob:
+    '#type': hidden
+    '#title': bkg_visitor_5_dob
   bkg_slotdatetime:
     '#type': hidden
-    '#title': BKG_SLOTDATETIME
+    '#title': bkg_slotdatetime
   current_visitor_order_number:
     '#type': hidden
     '#title': CURRENT_VISITOR_ORDER_NUMBER
@@ -1745,6 +1875,7 @@ settings:
     sunday_week_4: sunday_week_4
     slots_preferred: slots_preferred
     booking_reference_processed: booking_reference_processed
+    amend_booking_data: amend_booking_data
     amend_booking_setup_complete: amend_booking_setup_complete
     prison_name: prison_name
     visit_type: visit_type
@@ -1752,6 +1883,21 @@ settings:
     amend_type: amend_type
     bkg_id: bkg_id
     bkg_link_uniqueid: bkg_link_uniqueid
+    bkg_visit_order_no: bkg_visit_order_no
+    bkg_inmate_id: bkg_inmate_id
+    bkg_special_requirements: bkg_special_requirements
+    bkg_visitor_1_id: bkg_visitor_1_id
+    bkg_visitor_1_dob: bkg_visitor_1_dob
+    bkg_visitor_1_email: bkg_visitor_1_email
+    bkg_visitor_1_phone: bkg_visitor_1_phone
+    bkg_visitor_2_id: bkg_visitor_2_id
+    bkg_visitor_2_dob: bkg_visitor_2_dob
+    bkg_visitor_3_id: bkg_visitor_3_id
+    bkg_visitor_3_dob: bkg_visitor_3_dob
+    bkg_visitor_4_id: bkg_visitor_4_id
+    bkg_visitor_4_dob: bkg_visitor_4_dob
+    bkg_visitor_5_id: bkg_visitor_5_id
+    bkg_visitor_5_dob: bkg_visitor_5_dob
     bkg_slotdatetime: bkg_slotdatetime
     current_visitor_order_number: current_visitor_order_number
     last_visitor_order_number: last_visitor_order_number

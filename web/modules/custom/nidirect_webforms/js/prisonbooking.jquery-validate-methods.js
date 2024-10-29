@@ -24,7 +24,7 @@
 
     let isUnique = true;
 
-    // Check against adult visitor ids.
+    // Check against known existing ids.
     for (const [key, value] of Object.entries(existingIds)) {
       const visitorElementName = $(visitorElement).attr('name');
       if (value === visitorId && key !== visitorElementName) {
@@ -32,8 +32,8 @@
       }
     }
 
-    // Check against child visitor ids within the present step.
-    $('[name*="visitor_"][name$="_id"]').each(function() {
+    // Check against other additional visitor ids.
+    $('[name^="additional_visitor_"][name$="_id"]').each(function() {
       let key = $(this).attr('name');
       let value = $(this).val();
       if (value === visitorId && key !== $(visitorElement).attr('name')) {
@@ -241,16 +241,19 @@
         });
       }
 
-      // Adult Visitor ID validation rules.
-      const pvVisitorOneId =  settings.prisonVisitBooking.visitorOneId ?? {};
-      $(once('pvAdultIds', '[name^="additional_visitor_"][name$="_id"]', context)).each(function() {
-        $(this).rules("add", {
-          uniqueVisitorId: [true, pvVisitorOneId],
-          messages: {
-            uniqueVisitorId: "Visitor ID has already been entered"
-          }
+      // Additional Visitor ID validation rules.
+      const pvVisitorOneId =  settings.prisonVisitBooking.visitorOneId ?? '';
+
+      if (pvVisitorOneId !== '') {
+        $(once('pvAdditionalVisitorIds', '[name^="additional_visitor_"][name$="_id"]', context)).each(function() {
+          $(this).rules("add", {
+            uniqueVisitorId: [true, pvVisitorOneId],
+            messages: {
+              uniqueVisitorId: "Visitor ID has already been entered"
+            }
+          });
         });
-      });
+      }
 
       // Visitor dates of birth validation rules.
       // There is maximum of two adults.
