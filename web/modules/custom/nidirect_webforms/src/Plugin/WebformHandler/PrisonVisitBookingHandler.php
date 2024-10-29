@@ -426,7 +426,7 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
     // clientside checking for duplicate IDs, pass any visitor IDs
     // added so far to clientside.
 
-    if ($page === 'additional_visitor_adult_details' && $visitor_1_id = $form_state->getValue('visitor_1_id')) {
+    if ($page === 'additional_visitor_details' && $visitor_1_id = $form_state->getValue('visitor_1_id')) {
       // Pass the main visitor ID to clientside to enable additional
       // adult visitor ids to be checked against it.
       $form['#attached']['drupalSettings']['prisonVisitBooking']['visitorOneId'] = ['visitor_1_id' => $visitor_1_id];
@@ -647,18 +647,6 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
     $webform = $webform_submission->getWebform();
     $pages = $form_state->get('pages');
 
-    // Booking ID from the booking data.
-    $form_state->setValue('bkg_id', $amend_booking_data['BKG_ID']);
-    $webform_submission->setElementData('bkg_id', $amend_booking_data['BKG_ID']);
-    $elements['bkg_id']['#default_value'] = $amend_booking_data['BKG_ID'];
-
-    // Booking link unique ID from the booking data.
-    // This is stored on submission and checked in prepareForm() to
-    // prevent same booking data being amended more than once.
-    $form_state->setValue('bkg_link_uniqueid', $amend_booking_data['LINK_UNIQUEID']);
-    $webform_submission->setElementData('bkg_link_uniqueid', $amend_booking_data['LINK_UNIQUEID']);
-    $elements['bkg_link_uniqueid']['#default_value'] = $amend_booking_data['LINK_UNIQUEID'];
-
     // Populate the form.
     $form_state->setValue('visitor_order_number', $amend_booking_data['VISIT_ORDER_NO']);
     $webform_submission->setElementData('visitor_order_number', $amend_booking_data['VISIT_ORDER_NO']);
@@ -743,10 +731,16 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
     $webform_submission->setElementData('slot1_datetime', $amend_booking_data['SLOTDATETIME']);
     $elements['slot1_datetime']['#default_value'] = $amend_booking_data['SLOTDATETIME'];
 
-    // Keep track of original booking slot date and time.
-    $form_state->setValue('bkg_slotdatetime', $amend_booking_data['SLOTDATETIME']);
-    $webform_submission->setElementData('bkg_slotdatetime', $amend_booking_data['SLOTDATETIME']);
-    $elements['bkg_slotdatetime']['#default_value'] = $amend_booking_data['SLOTDATETIME'];
+    // Populate hidden form elements with original amendment data.
+    foreach ($amend_booking_data as $key => $value) {
+      $key = strtolower($key);
+      $key = ($key !== 'bkg_id') ? 'bkg_' . $key : $key;
+      $value = (str_ends_with($key, '_dob')) ? str_replace(' 00:00', '', $value) : $value;
+
+      $form_state->setValue($key, $value);
+      $webform_submission->setElementData($key, $value);
+      $elements[$key]['#default_value'] = $value;
+    }
 
     // Form is now pre-populated to allow booking to be amended.
     $form_state->set('amend_booking_setup_complete', TRUE);
