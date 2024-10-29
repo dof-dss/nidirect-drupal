@@ -224,7 +224,7 @@
         // Use a click event to fire events to hide visitors
         // in the normal way and focus on the number of visitors.
         let visitor_number = $('input[id^="edit-additional-visitor-number"]:checked').val();
-        $('input[id^="edit-additional-visitor-number"][value="' + (visitor_number - 1) + '"]').click().focus();
+        $('input[id^="edit-additional-visitor-number"][value="' + (visitor_number - 1) + '"]').click();
 
         Drupal.announce(
           Drupal.t('Visitor removed. Number of additional visitors is ' + (visitor_number - 1))
