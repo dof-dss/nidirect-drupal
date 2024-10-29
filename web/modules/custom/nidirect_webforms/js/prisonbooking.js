@@ -63,8 +63,11 @@
         // D8NID-1661.
         if (settings.prisonVisitBooking.resetTimeslots && settings.prisonVisitBooking.resetTimeslots === true) {
           // Reset all timeslots user has selected.
-          $timeSlots.prop('checked', false);
+          $timeSlots.prop('checked', false).removeAttr('checked');
           $hiddenTimeSlots.val('').attr('value', '');
+
+          // Now they're reset, no need to reset again.
+          settings.prisonVisitBooking.resetTimeslots = false;
         }
 
         // Prep timeslots to show preference rank.
@@ -198,8 +201,6 @@
           .remove();
 
         let $visitor = $(element).closest('fieldset');
-        //console.log('Removing', $visitor);
-
         let $visitor_id = $('input[name$="_id"]', $visitor);
         let $visitor_dob = $('input[name$="_dob"]', $visitor);
 
@@ -220,10 +221,14 @@
         $visitor_dob.val('');
 
         // Update the radios controlling the number of visitors.
-        // Use a click event so it fires events to hide visitors
-        // in the normal way.
+        // Use a click event to fire events to hide visitors
+        // in the normal way and focus on the number of visitors.
         let visitor_number = $('input[id^="edit-additional-visitor-number"]:checked').val();
-        $('input[id^="edit-additional-visitor-number"][value="' + (visitor_number - 1) + '"]').click();
+        $('input[id^="edit-additional-visitor-number"][value="' + (visitor_number - 1) + '"]').click().focus();
+
+        Drupal.announce(
+          Drupal.t('Visitor removed. Number of additional visitors is ' + (visitor_number - 1))
+        );
       }
 
       const updateVisitorBadges = function(event) {
