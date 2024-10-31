@@ -145,7 +145,7 @@ class GpController extends ControllerBase {
             '#template' => '{% trans %}{{ date }} by {{ username }}{% endtrans %}{% if message %}<p class="revision-log">{{ message }}</p>{% endif %}',
             '#context' => [
               'date' => $link->toString(),
-              'username' => \Drupal::service('renderer')->renderPlain($username),
+              'username' => \Drupal::service('renderer')->renderInIsolation($username),
               'message' => [
                 '#markup' => $revision->getRevisionLogMessage(),
                 '#allowed_tags' => Xss::getHtmlTagList(),
