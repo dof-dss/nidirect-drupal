@@ -5,9 +5,12 @@
  * Contains nidirect_contacts.module.
  */
 
+use Drupal\block\Entity\Block;
 use Drupal\Component\Utility\Html;
+use Drupal\Core\Access\AccessResult;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Link;
+use Drupal\Core\Session\AccountInterface;
 use Drupal\Core\Url;
 use Drupal\views\Plugin\views\query\QueryPluginBase;
 use Drupal\views\ViewExecutable;
@@ -300,6 +303,26 @@ function nidirect_contacts_views_pre_render(ViewExecutable $view) {
 
     $view->result = $results;
   }
+}
+
+/**
+ * Implements hook_block_access().
+ */
+function nidirect_contacts_block_access(Block $block, $operation, AccountInterface $account) {
+
+  // Allow the contacts page content block to be show only on
+  // the default contacts page route (and not on search or a to z
+  // routes).
+  $current_path = \Drupal::service('path.current')->getPath();
+  $query_string = \Drupal::request()->getQueryString();
+  $block_id = $block->id();
+
+  if ($block_id === 'contacts_page_popular_contacts' && $current_path === '/contacts' && !empty($query_string)) {
+    return AccessResult::forbidden();
+  }
+
+  // No opinion.
+  return AccessResult::neutral();
 }
 
 /**
