@@ -422,14 +422,98 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
       }
     }
 
-    // Visitor IDs are entered in separate wizard steps. To enable
-    // clientside checking for duplicate IDs, pass any visitor IDs
-    // added so far to clientside.
+    // To enable clientside checking for duplicate IDs, pass any
+    // visitor IDs to clientside.
+    $visitor_1_id = $form_state->getValue('visitor_1_id');
+    $additional_visitor_ids = array_filter($form_state->getValues(), function ($v, $k) {
+      return preg_match("/additional_visitor_[1-5]_id/", $k);
+    }, ARRAY_FILTER_USE_BOTH);
 
-    if ($page === 'additional_visitor_details' && $visitor_1_id = $form_state->getValue('visitor_1_id')) {
-      // Pass the main visitor ID to clientside to enable additional
-      // adult visitor ids to be checked against it.
-      $form['#attached']['drupalSettings']['prisonVisitBooking']['visitorOneId'] = ['visitor_1_id' => $visitor_1_id];
+    $form['#attached']['drupalSettings']['prisonVisitBooking']['visitorOneId'] = ['visitor_1_id' => $visitor_1_id];
+    $form['#attached']['drupalSettings']['prisonVisitBooking']['additionalVisitorIds'] = $additional_visitor_ids;
+
+    // When amending a booking, the main visitor details can be changed.
+    // If the main visitor ID is changed to an ID already entered for an
+    // existing additional visitor, then the additional visitor is
+    // removed.
+
+    if ($duplicate_visitor_id_key = array_search($visitor_1_id, $additional_visitor_ids)) {
+
+      $duplicate_visitor_number = (int) filter_var($duplicate_visitor_id_key, FILTER_SANITIZE_NUMBER_INT);
+      $duplicate_visitor_dob_key = str_replace('_id', '_dob', $duplicate_visitor_id_key);
+
+      for ($i = $duplicate_visitor_number; $i < count($additional_visitor_ids); $i++) {
+        $next_id = $form_state->getValue('additional_visitor_' . ($i + 1) . '_id');
+        $next_dob = $form_state->getValue('additional_visitor_' . ($i + 1) . '_dob');
+        $form_state->setValue('additional_visitor_' . $i . '_id', $next_id);
+        $form_state->setValue('additional_visitor_' . $i . '_dob', $next_dob);
+        $webform_submission->setElementData('additional_visitor_' . $i . '_id', $next_id);
+        $webform_submission->setElementData('additional_visitor_' . $i . '_dob', $next_dob);
+        $elements['additional_visitor_' . $i . '_id']['#default_value'] = $next_id;
+        $elements['additional_visitor_' . $i . '_dob']['#default_value'] = $next_dob;
+      }
+
+      $additional_visitor_number = (int) $form_state->getValue('additional_visitor_number');
+      $form_state->setValue('additional_visitor_number', $additional_visitor_number - 1);
+      $webform_submission->setElementData('additional_visitor_number', $additional_visitor_number - 1);
+      $elements['additional_visitor_number']['#default_value'] = $additional_visitor_number - 1;
+
+      ksm($duplicate_visitor_id_key, $duplicate_visitor_dob_key, $duplicate_visitor_number);
+
+      // Get all additional visitor elements.
+      $additional_visitors = array_filter($elements, function ($key) {
+        return preg_match("/additional_visitor_[1-5]_details/", $key);
+      }, ARRAY_FILTER_USE_KEY);
+
+      //ksm($additional_visitors);
+
+//      $id = $additional_visitors[0]['additional_visitor_' . ($index + 1) . '_id']['#default_value'];
+//      $dob = $additional_visitors[0]['additional_visitor_' . ($index + 1) . '_dob']['#default_value'];
+//
+//      for ($i = 1; $i < count($additional_visitors); $i++) {
+//
+//        $next_id = $additional_visitors[$i]['additional_visitor_' . ($i + 1) . '_id']['#default_value'];
+//        $next_dob = $additional_visitors[$i]['additional_visitor_' . ($i + 1) . '_dob']['#default_value'];
+//
+//        if ($id = $duplicate_visitor_id) {
+//          $elements[$id]
+//        }
+//        ksm($id, $dob);
+//      }
+//
+//      for ($i = 1; $i <= 5; $i++) {
+//
+//
+//        $key = $form_state->getValue('additional_visitor_' . $i . '_id');
+//        $value = $form_state->getValue('additional_visitor_' . $i . '_dob');
+//
+//        if ($key && $key !==  $additional_visitor_ids[$duplicate_visitor_id]) {
+//          $additional_visitors[$key] = $value;
+//        }
+//
+//        $form_state->unsetValue($key);
+//        $form_state->unsetValue($value);
+//        $webform_submission->setElementData($key, NULL);
+//        $webform_submission->setElementData($value, NULL);
+//        unset($elements[$key]);
+//        unset($elements[$value]);
+//      }
+//
+//      $count = 1;
+//      foreach ($additional_visitors as $id => $dob) {
+//        //ksm('additional_visitor_' . $count);
+//        $form_state->setValue('additional_visitor_' . $count . '_id', $id);
+//        $form_state->setValue('additional_visitor_' . $count . '_dob', $dob);
+//        $webform_submission->setElementData('additional_visitor_' . $count . '_id', $id);
+//        $webform_submission->setElementData('additional_visitor_' . $count . '_dob', $dob);
+//        $count++;
+//      }
+//
+//      $duplicate_visitor_dob = str_replace('_id', '_dob', $duplicate_visitor_id);
+//      $form_state->unsetValue($duplicate_visitor_id);
+//      $form_state->unsetValue($duplicate_visitor_dob);
+//      $webform_submission->setElementData($duplicate_visitor_id, NULL);
+//      $webform_submission->setElementData($duplicate_visitor_dob, NULL);
     }
 
     // If user is amending a booking, timeslots are always reset and
@@ -776,6 +860,10 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
   public function submitForm(array &$form, FormStateInterface $form_state, WebformSubmissionInterface $webform_submission) {
 
     $page = $form_state->get('current_page');
+
+    if ($form_state->isValidationComplete() && $page === 'main_visitor_details') {
+
+    }
 
     if ($form_state->isValidationComplete() && $page === 'webform_preview') {
 
