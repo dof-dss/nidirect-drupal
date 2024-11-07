@@ -78,19 +78,19 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
   protected array $form = [];
 
   /**
-   * @var FormStateInterface
+   * @var \Drupal\Core\Form\FormStateInterface
    */
   protected FormStateInterface $formState;
 
   /**
-   * @var WebformSubmissionInterface
+   * @var \Drupal\webform\WebformSubmissionInterface
    */
   protected $webformSubmission;
 
   /**
    * @var array
    */
-  protected $elements;
+  protected array $elements = [];
 
   /**
    * Visit reference number validation statuses.
@@ -759,7 +759,7 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
     }
 
     // Form is now pre-populated to allow booking to be amended.
-    $form_state->set('amend_booking_setup_complete', TRUE);
+    $this->formState->set('amend_booking_setup_complete', TRUE);
   }
 
   /**
