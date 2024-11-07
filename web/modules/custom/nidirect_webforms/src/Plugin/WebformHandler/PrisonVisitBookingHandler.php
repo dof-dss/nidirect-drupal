@@ -432,13 +432,11 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
     $form['#attached']['drupalSettings']['prisonVisitBooking']['visitorOneId'] = ['visitor_1_id' => $visitor_1_id];
     $form['#attached']['drupalSettings']['prisonVisitBooking']['additionalVisitorIds'] = $additional_visitor_ids;
 
-    // When amending a booking, the main visitor details can be changed.
-    // If the main visitor ID is changed to an ID already entered for an
-    // existing additional visitor, then the additional visitor is
-    // removed.
+    // When amending a booking, and the main visitor ID is changed so
+    // that it duplicates an existing additional visitor ID, then the
+    // additional visitor is removed.
 
     if ($duplicate_visitor_id_key = array_search($visitor_1_id, $additional_visitor_ids)) {
-
       $duplicate_visitor_number = (int) filter_var($duplicate_visitor_id_key, FILTER_SANITIZE_NUMBER_INT);
       $duplicate_visitor_dob_key = str_replace('_id', '_dob', $duplicate_visitor_id_key);
 
@@ -457,63 +455,6 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
       $form_state->setValue('additional_visitor_number', $additional_visitor_number - 1);
       $webform_submission->setElementData('additional_visitor_number', $additional_visitor_number - 1);
       $elements['additional_visitor_number']['#default_value'] = $additional_visitor_number - 1;
-
-      ksm($duplicate_visitor_id_key, $duplicate_visitor_dob_key, $duplicate_visitor_number);
-
-      // Get all additional visitor elements.
-      $additional_visitors = array_filter($elements, function ($key) {
-        return preg_match("/additional_visitor_[1-5]_details/", $key);
-      }, ARRAY_FILTER_USE_KEY);
-
-      //ksm($additional_visitors);
-
-//      $id = $additional_visitors[0]['additional_visitor_' . ($index + 1) . '_id']['#default_value'];
-//      $dob = $additional_visitors[0]['additional_visitor_' . ($index + 1) . '_dob']['#default_value'];
-//
-//      for ($i = 1; $i < count($additional_visitors); $i++) {
-//
-//        $next_id = $additional_visitors[$i]['additional_visitor_' . ($i + 1) . '_id']['#default_value'];
-//        $next_dob = $additional_visitors[$i]['additional_visitor_' . ($i + 1) . '_dob']['#default_value'];
-//
-//        if ($id = $duplicate_visitor_id) {
-//          $elements[$id]
-//        }
-//        ksm($id, $dob);
-//      }
-//
-//      for ($i = 1; $i <= 5; $i++) {
-//
-//
-//        $key = $form_state->getValue('additional_visitor_' . $i . '_id');
-//        $value = $form_state->getValue('additional_visitor_' . $i . '_dob');
-//
-//        if ($key && $key !==  $additional_visitor_ids[$duplicate_visitor_id]) {
-//          $additional_visitors[$key] = $value;
-//        }
-//
-//        $form_state->unsetValue($key);
-//        $form_state->unsetValue($value);
-//        $webform_submission->setElementData($key, NULL);
-//        $webform_submission->setElementData($value, NULL);
-//        unset($elements[$key]);
-//        unset($elements[$value]);
-//      }
-//
-//      $count = 1;
-//      foreach ($additional_visitors as $id => $dob) {
-//        //ksm('additional_visitor_' . $count);
-//        $form_state->setValue('additional_visitor_' . $count . '_id', $id);
-//        $form_state->setValue('additional_visitor_' . $count . '_dob', $dob);
-//        $webform_submission->setElementData('additional_visitor_' . $count . '_id', $id);
-//        $webform_submission->setElementData('additional_visitor_' . $count . '_dob', $dob);
-//        $count++;
-//      }
-//
-//      $duplicate_visitor_dob = str_replace('_id', '_dob', $duplicate_visitor_id);
-//      $form_state->unsetValue($duplicate_visitor_id);
-//      $form_state->unsetValue($duplicate_visitor_dob);
-//      $webform_submission->setElementData($duplicate_visitor_id, NULL);
-//      $webform_submission->setElementData($duplicate_visitor_dob, NULL);
     }
 
     // If user is amending a booking, timeslots are always reset and
