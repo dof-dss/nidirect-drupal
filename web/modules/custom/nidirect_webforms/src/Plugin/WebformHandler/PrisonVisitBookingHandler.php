@@ -451,7 +451,8 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
       $duplicate_visitor_dob_key = str_replace('_id', '_dob', $duplicate_visitor_id_key);
 
       // Erase the duplicate visitor values.
-      $this->deleteAdditionalVisitorDetails($duplicate_visitor_number, $form, $form_state, $webform_submission);
+      $this->setFormElementValue('additional_visitor_' . $duplicate_visitor_number . '_id', '');
+      $this->setFormElementValue('additional_visitor_' . $duplicate_visitor_number . '_dob', '');
 
       // Shift up the visitors that follow to fill the gap.
       for ($i = $duplicate_visitor_number; $i < count($additional_visitor_ids); $i++) {
