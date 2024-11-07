@@ -285,4 +285,25 @@
     }
   };
 
+  Drupal.behaviors.prisonVisitMainVisitor = {
+    attach: function (context, settings) {
+
+      const $mainVisitorID = $(once('prisonVisitMainVisitorID', '[name="visitor_1_id"]', context));
+      const additionalVisitorIDs =  settings.prisonVisitBooking.additionalVisitorIds ?? {};
+
+      $mainVisitorID.on('keyup blur', function() {
+        // Check against existing additional visitor IDs and show
+        // a warning message if there is a match.
+        let mainVisitorID = $(this).val();
+
+        if (mainVisitorID.length >= 6 && Object.values(additionalVisitorIDs).includes($(this).val())) {
+          $('#visitor-1-id-duplicate-warning').removeAttr('hidden');
+        } else {
+          $('#visitor-1-id-duplicate-warning').attr('hidden', 'hidden');
+        }
+      });
+
+    }
+  };
+
 })(jQuery, Drupal, once);

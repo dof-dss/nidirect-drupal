@@ -603,6 +603,11 @@ elements: |-
           class:
             - monospace-text
           inputmode: numeric
+      visitor_1_id_duplicate_warning:
+        '#type': webform_markup
+        '#markup': |-
+          <div id="visitor-1-id-duplicate-warning" class="info-notice info-notice--warning" hidden>
+          An additional visitor with the same visitor ID has been detected. The additional visitor will be removed from the booking.</div>
       visitor_1_dob:
         '#type': textfield
         '#title': 'Date of birth'
@@ -612,6 +617,8 @@ elements: |-
         '#size': 10
         '#placeholder': dd/mm/yyyy
         '#input_mask': 99/99/9999
+        '#required': true
+        '#required_error': 'Enter your date of birth'
         '#pattern': '[0-3][0-9]\/(0[0-9]|1[0-2])\/[0-9]{4}'
         '#pattern_error': 'Enter a valid date, for example 31/01/2000'
         '#attributes':
@@ -689,13 +696,17 @@ elements: |-
     msg_existing_additional_visitors:
       '#type': webform_markup
       '#markup': |-
-        <div class="info-notice" role="status">
-          <p>Existing details of additional visitors from a previous booking have been found.</p>
-          <ul>
-            <li>You can have up to four additional visitors</li>
-            <li>The maximum number of additional adults is two</li>
-            <li>Ensure the details for each visitor are correct, otherwise they will not be included in the booking</li>
-          </ul>
+        <div role="status">
+          <p class="info-notice info-notice--success">
+            Existing details of additional visitors from a previous booking have been found.
+          </p>
+          <div class="info-notice">
+            <ul>
+              <li>You can have up to four additional visitors</li>
+              <li>The maximum number of additional adults is two</li>
+              <li>Ensure the details for each visitor are correct, otherwise they will not be included in the booking</li>
+            </ul>
+          </div>
         </div>
     msg_amend_additional_visitors:
       '#type': webform_markup
@@ -1589,9 +1600,10 @@ elements: |-
     '#markup': |-
       <div role="status">
         <h2 class="legend">Booking complete</h2>
-        <p class="info-notice info-notice--success">
-          We will send you an email shortly to let you know whether your booking has been successful.  Please allow up to 1 hour for this email to arrive.
-        </p>
+        <div class="info-notice info-notice--success">
+          <p>We will send you an email shortly to let you know whether your booking has been successful.  Please allow up to 1 hour for this email to arrive.</p>
+      <p>If you need to amend this booking, use the <strong>Cancel or Amend Booking</strong> button in the email.</p>
+        </div>
         <div class="launch-service">
           <a href="/forms/book-prison-visit" class="btn btn--call-to-action" data-self-ref="true">Book another prison visit</a>
         </div>
