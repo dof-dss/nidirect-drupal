@@ -194,6 +194,13 @@
           return this.optional(element) || value === value.replace(/(<([^>]+)>)/gi, "");
         }, "Text must be plain text only");
 
+        $.validator.addMethod("timeSlotRequired", function(value, element, options) {
+          // Count how many checkboxes in the group are checked.
+          const checkboxes = $(options);
+          const checked = checkboxes.filter(":checked").length;
+          return checked > 0;
+        }, "You must choose a time slot for your visit");
+
       });
 
       // Apply jquery validation methods once to individual elements
@@ -274,6 +281,33 @@
         });
       });
 
+      // Visit time slot validation rules.
+      const validator = $('form.webform-submission-prison-visit-online-booking-form').validate();
+      const $weekSlots = $(once('pvTimeSlots', 'details[data-webform-key^="slots_week_"]', context));
+
+      // Add container for time slot error messages.
+      $weekSlots.append('<div class="time-slot-error-placement" aria-live="polite"></div>');
+
+      // Add required rule to time slots
+      const $timeslots = $weekSlots.find("input.timeslot");
+      $timeslots.rules("add", {
+        timeSlotRequired: $timeslots
+      });
+
+      // Trigger validation on first timeslot when any checkbox is changed.
+      $timeslots.on("change", function() {
+        validator.element($timeslots.first());
+      });
+
+      // Update the errorPlacement function on the validator instance.
+      validator.settings.errorPlacement = function(error, element) {
+        if (element.hasClass('timeslot')) {
+          error.appendTo($(".time-slot-error-placement"));
+        } else {
+          // Default error placement for other elements.
+          error.insertAfter(element);
+        }
+      };
     }
   }
 })(jQuery, Drupal, once);

@@ -104,6 +104,18 @@
 
 .webform-submission-prison-visit-online-booking-form {
 
+  [data-drupal-selector='edit-slots']:has([type='checkbox'].error) [type='checkbox'] ~ label {
+    box-shadow: inset 0 0 0 1px $error;
+    outline-color: $error;
+    background-color: $error-bg;
+    color: color(text);
+  }
+
+  .time-slot-error-placement {
+    position: relative;
+    margin-top: -.5em;
+  }
+
   details[data-webform-key^='slots_week'] {
 
     fieldset {
@@ -113,7 +125,6 @@
         @include responsive-typo-map($large-text);
       }
     }
-
   }
 
   .visit-details {
