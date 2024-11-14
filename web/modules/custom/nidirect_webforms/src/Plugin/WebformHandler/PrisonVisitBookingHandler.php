@@ -479,6 +479,14 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
       $this->setFormElementValue('slot1_datetime', $amend_booking_data['SLOTDATETIME']);
     }
 
+    // Fix additional_visitor_number issue.
+    if ($page === 'additional_visitor_details') {
+      $additional_visitor_number = $this->formState->getValue('additional_visitor_number');
+      if ($additional_visitor_number === -1) {
+        $this->setFormElementValue('additional_visitor_number', 0);
+      }
+    }
+
     // Show available timeslots in the form.
     if ($page === 'visit_preferred_day_and_time' && !empty($this->bookingReference)) {
 
