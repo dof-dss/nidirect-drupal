@@ -190,6 +190,7 @@
       const $additionalVisitors = $(once('prisonVisitAdditionalVisitors', selectors, context));
 
       const removeVisitor = function(element) {
+
         // When a visitor's ID and DOB is removed, we shift the details for all
         // the next visitors "up" to close the gap.
 
@@ -210,15 +211,19 @@
           let $visitor_sibling_id = $('input[name$="_id"]', $(this));
           let $visitor_sibling_dob = $('input[name$="_dob"]', $(this));
 
-          $visitor_id.val($visitor_sibling_id.val());
-          $visitor_dob.val($visitor_sibling_dob.val());
+          $visitor_id
+            .val($visitor_sibling_id.val())
+            .attr('value', $visitor_sibling_id.val());
+          $visitor_dob
+            .val($visitor_sibling_dob.val())
+            .attr('value', $visitor_sibling_dob.val());
 
           $visitor_id = $visitor_sibling_id;
           $visitor_dob = $visitor_sibling_dob;
         });
 
-        $visitor_id.val('');
-        $visitor_dob.val('');
+        $visitor_id.val('').attr('value', '');
+        $visitor_dob.val('').attr('value', '');
 
         // Update the radios controlling the number of visitors.
         // Use a click event to fire events to hide visitors
