@@ -77,7 +77,6 @@
       once('prisonVisitValidateMethods', 'html').forEach(function (element) {
 
         // Validation methods and related functions
-
         $.validator.addMethod('validPrisonVisitBookingRef', function (value, element, params) {
 
           let bookRefIsValid = true;
@@ -203,6 +202,9 @@
 
       });
 
+      // The form's validator object.
+      const validator = $('form.webform-submission-prison-visit-online-booking-form').validate();
+
       // Apply jquery validation methods once to individual elements
       // which might be loaded in via ajax.
 
@@ -264,8 +266,9 @@
 
       // Visitor dates of birth validation rules.
       // There is maximum of two adults.
+      const $pvDobs = $(once('pvDobs', '[name^="additional_visitor_"][name$="_dob"]', context));
 
-      $(once('pvDobs', '[name^="additional_visitor_"][name$="_dob"]', context)).each(function() {
+      $pvDobs.each(function() {
         $(this).rules("add", {
           maxAdults: [true, 2],
           messages: {
@@ -282,7 +285,6 @@
       });
 
       // Visit time slot validation rules.
-      const validator = $('form.webform-submission-prison-visit-online-booking-form').validate();
       const $weekSlots = $(once('pvTimeSlots', 'details[data-webform-key^="slots_week_"]', context));
 
       // Add container for time slot error messages.
