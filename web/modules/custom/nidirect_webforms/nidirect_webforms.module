@@ -35,6 +35,15 @@ function nidirect_webforms_help($route_name, RouteMatchInterface $route_match) {
 }
 
 /**
+ * Implements hook_install().
+ */
+function nidirect_webforms_install() {
+  // Enable the submodule automatically.
+  \Drupal::service('module_installer')->install(['prisons_integration']);
+}
+
+
+/**
  * Implements hook_theme().
  */
 function nidirect_webforms_theme() {

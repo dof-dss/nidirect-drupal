@@ -1,0 +1,4 @@
+services:
+  prisons_integration.service:
+    class: Drupal\prisons_integration\PrisonsIntegrationService
+    arguments: ['@request_stack', '@logger.factory', '@cache.default']
