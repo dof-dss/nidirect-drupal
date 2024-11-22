@@ -2,6 +2,7 @@
 
 namespace Drupal\nidirect_prisons\Plugin\rest\resource;
 
+use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\rest\Plugin\ResourceBase;
 use Drupal\rest\ResourceResponse;
 use Drupal\nidirect_prisons\PrisonsIntegrationService;
@@ -21,7 +22,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *   }
  * )
  */
-class PrisonerAmountsResource extends ResourceBase {
+class PrisonerAmountsResource extends ResourceBase implements ContainerFactoryPluginInterface {
 
   protected $integrationService;
 
@@ -79,21 +80,41 @@ class PrisonerAmountsResource extends ResourceBase {
       return new ResourceResponse(['error' => 'Unauthorized request'], 403);
     }
 
-    if (empty($data) || !isset($data['MY']) || isset($data['MY']['ID']) || isset($data['MY']['AMT'])) {
-      return new ResourceResponse(['error' => 'Invalid data'], 400);
+    if (empty($data) || !is_array($data)) {
+      return new ResourceResponse(['error' => 'Invalid JSON payload'], 400);
     }
 
-    // Process and store prisoner amounts.
-    foreach ($data as $prison => $prisoner) {
-      \Drupal::database()->merge('prisoner_payment_amount')
-        ->key('prisoner_id', $prisoner['ID'])
-        ->fields([
-          'prison_id' => $prison,
-          'remaining_amount' => $prisoner['AMT']
-        ])
-        ->execute();
+    // Process each prison.
+    foreach ($data as $prison_key => $prisoners) {
+
+      // Each prison must be an array (of prisoners).
+      if (empty($prisoners) || !is_array($prisoners)) {
+        return new ResourceResponse(['error' => 'Invalid JSON payload: missing prison and/or prisoner data'], 400);
+      }
+
+      // Process each prisoner.
+      foreach ($prisoners as $prisoner) {
+
+        // Each prisoner must contain an ID and AMT (Amount).
+        if (!array_key_exists('ID', $prisoner) || !array_key_exists('AMT', $prisoner)) {
+          return new ResourceResponse(['error' => 'Missing required prisoner data'], 400);
+        }
+
+        try {
+          \Drupal::database()->merge('prisoner_payment_amount')
+            ->key('prisoner_id', $prisoner['ID'])
+            ->fields([
+              'prison_id' => $prison_key,
+              'amount' => $prisoner['AMT'],
+            ])
+            ->execute();
+        } catch (\Exception $e) {
+          \Drupal::logger('nidirect_prisons')->error('Database error: @message', ['@message' => $e->getMessage()]);
+          return new ResourceResponse(['error' => 'Database error: ' . $e->getMessage()], 500);
+        }
+      }
     }
 
-    return new ResourceResponse(['message' => 'Data updated successfully'], 200);
+    return new ResourceResponse(['message' => 'Data successfully updated'], 200);
   }
 }
