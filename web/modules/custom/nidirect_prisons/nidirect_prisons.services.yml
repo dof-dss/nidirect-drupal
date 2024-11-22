@@ -1,0 +1,14 @@
+services:
+  nidirect_prisons.service:
+    class: Drupal\nidirect_prisons\PrisonsIntegrationService
+    arguments: ['@request_stack', '@logger.factory', '@cache.default']
+
+  nidirect_prisons.authentication.x_auth_token:
+    class: Drupal\nidirect_prisons\Authentication\Provider\XAuthToken
+    tags:
+      - { name: authentication_provider, provider_id: 'nidirect_prisons_auth_token', priority: 10 }
+
+  nidirect_prisons.authentication.ip_address:
+    class: Drupal\nidirect_prisons\Authentication\Provider\IpAddressAuth
+    tags:
+      - { name: authentication_provider, provider_id: 'nidirect_prisons_auth_ip_address', priority: 10 }
