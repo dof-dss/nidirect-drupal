@@ -1,0 +1,18 @@
+uuid: b1b1bcb0-e15e-4f4f-83f7-eae91f1192cb
+langcode: en
+status: true
+dependencies:
+  module:
+    - nidirect_prisons
+    - serialization
+id: prisoner_amounts_resource
+plugin_id: prisoner_amounts_resource
+granularity: resource
+configuration:
+  methods:
+    - POST
+  formats:
+    - xml
+  authentication:
+    - nidirect_prisons_auth_token
+    - nidirect_prisons_auth_ip_address
