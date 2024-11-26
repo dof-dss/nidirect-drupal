@@ -32,7 +32,7 @@ class XAuthToken implements AuthenticationProviderInterface {
     }
 
     // Token is valid, return an anonymous user.
-    return \Drupal::entityTypeManager()->getStorage('user')->load(0); // Anonymous user.
+    return \Drupal::entityTypeManager()->getStorage('user')->load(0);
   }
 
 }
