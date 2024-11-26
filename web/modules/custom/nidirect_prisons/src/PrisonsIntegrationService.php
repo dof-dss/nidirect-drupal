@@ -83,4 +83,5 @@ class PrisonsIntegrationService {
     // Return TRUE if both IP and token are valid.
     return $ip_is_allowed && $token_is_allowed;
   }
+  
 }
