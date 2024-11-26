@@ -14,7 +14,7 @@ class IpAddressAuth implements AuthenticationProviderInterface {
    * {@inheritdoc}
    */
   public function applies(Request $request) {
-    // Restrict to endpoints under /api/prisoner-payments/*
+    // Restrict to endpoints under /api/prisoner-payments.
     $path = $request->getPathInfo();
     return str_starts_with($path, '/api/prisoner-payments');
   }
@@ -32,11 +32,12 @@ class IpAddressAuth implements AuthenticationProviderInterface {
 
     // Check if the client IP is allowed.
     if (in_array($client_ip, $allowed_ip_addresses)) {
-      // IP is allowed; return an anonymous user (or specific user account).
-      return \Drupal::entityTypeManager()->getStorage('user')->load(0); // Anonymous user.
+      // IP is allowed, return an anonymous user.
+      return \Drupal::entityTypeManager()->getStorage('user')->load(0);
     }
 
-    // IP not allowed; return NULL to deny access.
+    // IP not allowed.
     return NULL;
   }
+
 }

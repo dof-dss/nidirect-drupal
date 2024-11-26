@@ -5,7 +5,6 @@ namespace Drupal\nidirect_prisons\Plugin\rest\resource;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\rest\Plugin\ResourceBase;
 use Drupal\rest\ResourceResponse;
-use Drupal\nidirect_prisons\PrisonsIntegrationService;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -24,8 +23,6 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 class PrisonerAmountsResource extends ResourceBase implements ContainerFactoryPluginInterface {
 
-  protected $integrationService;
-
   /**
    * Constructs a new PrisonerAmountsResource object.
    *
@@ -40,19 +37,15 @@ class PrisonerAmountsResource extends ResourceBase implements ContainerFactoryPl
    *   The available serialization formats.
    * @param \Psr\Log\LoggerInterface $logger
    *   A logger instance.
-   * @param PrisonsIntegrationService $integration_service
-   *   Entity Type Manager instance.
    */
   public function __construct(
     array $configuration,
     $plugin_id,
     $plugin_definition,
     array $serializer_formats,
-    LoggerInterface $logger,
-    PrisonsIntegrationService $integration_service
+    LoggerInterface $logger
   ) {
     parent::__construct($configuration, $plugin_id, $plugin_definition, $serializer_formats, $logger);
-    $this->integrationService = $integration_service;
   }
 
   /**
@@ -64,8 +57,7 @@ class PrisonerAmountsResource extends ResourceBase implements ContainerFactoryPl
       $plugin_id,
       $plugin_definition,
       $container->getParameter('serializer.formats'),
-      $container->get('logger.factory')->get('nidirect_prisons'),
-      $container->get('nidirect_prisons.service')
+      $container->get('logger.factory')->get('nidirect_prisons')
     );
   }
 
@@ -75,10 +67,6 @@ class PrisonerAmountsResource extends ResourceBase implements ContainerFactoryPl
   public function post(Request $request) {
 
     $data = json_decode($request->getContent(), TRUE);
-
-    if (!$this->integrationService->isValidRequest()) {
-      return new ResourceResponse(['error' => 'Unauthorized request'], 403);
-    }
 
     if (empty($data) || !is_array($data)) {
       return new ResourceResponse(['error' => 'Invalid JSON payload'], 400);
@@ -108,7 +96,8 @@ class PrisonerAmountsResource extends ResourceBase implements ContainerFactoryPl
               'amount' => $prisoner['AMT'],
             ])
             ->execute();
-        } catch (\Exception $e) {
+        }
+        catch (\Exception $e) {
           \Drupal::logger('nidirect_prisons')->error('Database error: @message', ['@message' => $e->getMessage()]);
           return new ResourceResponse(['error' => 'Database error: ' . $e->getMessage()], 500);
         }
@@ -117,4 +106,5 @@ class PrisonerAmountsResource extends ResourceBase implements ContainerFactoryPl
 
     return new ResourceResponse(['message' => 'Data successfully updated'], 200);
   }
+
 }

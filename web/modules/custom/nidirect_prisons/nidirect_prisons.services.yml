@@ -1,8 +1,4 @@
 services:
-  nidirect_prisons.service:
-    class: Drupal\nidirect_prisons\PrisonsIntegrationService
-    arguments: ['@request_stack', '@logger.factory', '@cache.default']
-
   nidirect_prisons.authentication.x_auth_token:
     class: Drupal\nidirect_prisons\Authentication\Provider\XAuthToken
     tags:

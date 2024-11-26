@@ -5,7 +5,6 @@ namespace Drupal\nidirect_prisons\Plugin\rest\resource;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\rest\Plugin\ResourceBase;
 use Drupal\rest\ResourceResponse;
-use Drupal\nidirect_prisons\PrisonsIntegrationService;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -24,13 +23,6 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 class NominatedVisitorsResource extends ResourceBase implements ContainerFactoryPluginInterface {
 
   /**
-   * Prisons Integration service.
-   *
-   * @var PrisonsIntegrationService
-   */
-  protected $integrationService;
-
-  /**
    * Constructs a new NominatedVisitorsResource object.
    *
    * @param array $configuration
@@ -43,19 +35,15 @@ class NominatedVisitorsResource extends ResourceBase implements ContainerFactory
    *   The available serialization formats.
    * @param \Psr\Log\LoggerInterface $logger
    *   A logger instance.
-   * @param PrisonsIntegrationService $integration_service
-   *   Entity Type Manager instance.
    */
   public function __construct(
     array $configuration,
     $plugin_id,
     $plugin_definition,
     array $serializer_formats,
-    LoggerInterface $logger,
-    PrisonsIntegrationService $integration_service
+    LoggerInterface $logger
   ) {
     parent::__construct($configuration, $plugin_id, $plugin_definition, $serializer_formats, $logger);
-    $this->integrationService = $integration_service;
   }
 
   /**
@@ -67,20 +55,14 @@ class NominatedVisitorsResource extends ResourceBase implements ContainerFactory
       $plugin_id,
       $plugin_definition,
       $container->getParameter('serializer.formats'),
-      $container->get('logger.factory')->get('nidirect_prisons'),
-      $container->get('nidirect_prisons.service')
+      $container->get('logger.factory')->get('nidirect_prisons')
     );
   }
-
 
   /**
    * Handles POST requests to update nominated visitors.
    */
   public function post(Request $request) {
-
-    if (!$this->integrationService->isValidRequest()) {
-      return new ResourceResponse(['error' => 'Unauthorized request'], 403);
-    }
 
     $data = json_decode($request->getContent(), TRUE);
 
@@ -109,9 +91,9 @@ class NominatedVisitorsResource extends ResourceBase implements ContainerFactory
         }
 
         $visitor_ids = [
-          $prisoner['N1'] ?? null,
-          $prisoner['N2'] ?? null,
-          $prisoner['N3'] ?? null,
+          $prisoner['N1'] ?? NULL,
+          $prisoner['N2'] ?? NULL,
+          $prisoner['N3'] ?? NULL,
         ];
 
         // Remove null values from visitor_ids to avoid empty entries in the database.
@@ -122,7 +104,8 @@ class NominatedVisitorsResource extends ResourceBase implements ContainerFactory
             ->key('prisoner_id', $prisoner['ID'])
             ->fields(['visitor_ids' => implode(',', $visitor_ids)])
             ->execute();
-        } catch (\Exception $e) {
+        }
+        catch (\Exception $e) {
           \Drupal::logger('nidirect_prisons')->error('Database error: @message', ['@message' => $e->getMessage()]);
           return new ResourceResponse(['error' => 'Database error: ' . $e->getMessage()], 500);
         }
@@ -131,4 +114,5 @@ class NominatedVisitorsResource extends ResourceBase implements ContainerFactory
 
     return new ResourceResponse(['message' => 'Data successfully updated'], 200);
   }
+
 }

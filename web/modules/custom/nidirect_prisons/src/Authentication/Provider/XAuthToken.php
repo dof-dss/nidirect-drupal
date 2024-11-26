@@ -22,18 +22,17 @@ class XAuthToken implements AuthenticationProviderInterface {
    * {@inheritdoc}
    */
   public function authenticate(Request $request) {
-    // Extract the token from the header.
+    // Extract the token from the header and check it is valid.
     $token = $request->headers->get('X-Auth-Token');
-
-    // Validate the token (you can enhance this with your logic).
     $allowed_tokens = explode(',', getenv('PRISONS_API_PERMITTED_TOKENS'));
     $allowed_tokens = array_map('trim', $allowed_tokens);
 
     if (!in_array($token, $allowed_tokens)) {
-      return NULL; // Invalid token; return NULL to deny access.
+      return NULL;
     }
 
-    // Token is valid; return an anonymous user (or a specific user account).
+    // Token is valid, return an anonymous user.
     return \Drupal::entityTypeManager()->getStorage('user')->load(0); // Anonymous user.
   }
+
 }
