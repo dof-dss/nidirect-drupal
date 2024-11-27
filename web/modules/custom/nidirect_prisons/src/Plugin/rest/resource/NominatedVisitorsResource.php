@@ -16,7 +16,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *   id = "prisoner_nominees_resource",
  *   label = @Translation("Prisoner Payments Nominees Resource"),
  *   uri_paths = {
- *     "create" = "/api/prisoner-payments/nominees"
+ *     "create" = "/api/v1/prisoner-payments/nominees"
  *   }
  * )
  */

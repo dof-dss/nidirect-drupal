@@ -14,9 +14,9 @@ class IpAddressAuth implements AuthenticationProviderInterface {
    * {@inheritdoc}
    */
   public function applies(Request $request) {
-    // Restrict to endpoints under /api/prisoner-payments.
+    // Restrict to endpoints under /api/{version}/prisoner-payments.
     $path = $request->getPathInfo();
-    return str_starts_with($path, '/api/prisoner-payments');
+    return preg_match('#^/api/v\d+/prisoner-payments#', $path);
   }
 
   /**
