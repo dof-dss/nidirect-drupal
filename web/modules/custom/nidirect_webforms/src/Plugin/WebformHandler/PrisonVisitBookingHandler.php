@@ -379,7 +379,7 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
       }
 
       // Alter wizard page titles.
-      $elements['main_visitor_details']['#title'] = $this->t('Amend visitor details');
+      $elements['main_visitor_details']['#title'] = $this->t('Amend main visitor details');
       $elements['additional_visitor_details']['#title'] = $this->t('Amend additional visitors');
       $elements['visitor_special_requirements']['#title'] = $this->t('Amend visitor special requirements');
       $elements['visit_preferred_day_and_time']['#title'] = $this->t('Amend visit date and time');
