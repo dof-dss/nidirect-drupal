@@ -87,7 +87,7 @@ elements: |-
               <dd>{{ data.visit_type | title }}</dd>
           </dl>
 
-          <h3>Your details</h3>
+          <h3>Main visitor details</h3>
 
           <dl class="two-column compact">
               <dt>Visitor ID</dt>
@@ -383,7 +383,7 @@ elements: |-
                 <dd>{{ data.visit_type | title }}</dd>
             </dl>
 
-            <h3>Your details</h3>
+            <h3>Main visitor details</h3>
 
             <dl class="two-column compact">
                 <dt>Visitor ID</dt>
@@ -504,8 +504,8 @@ elements: |-
       '#description': 'Choose one or more items.'
       '#description_display': before
       '#options':
-        your_details: 'change your details'
-        additional_visitors: 'change visitors'
+        your_details: 'change main visitor details'
+        additional_visitors: 'change additional visitors'
         time_slot: 'visit date and time'
       '#required': true
       '#required_error': 'You must select what you want to change'
@@ -525,7 +525,7 @@ elements: |-
       '#description': 'Choose one or more items.'
       '#description_display': before
       '#options':
-        your_details: 'change your details'
+        your_details: 'change main visitor details'
         time_slot: 'visit date and time'
       '#required': true
       '#required_error': 'You must select what you want to change'
@@ -535,7 +535,7 @@ elements: |-
       '#access': false
   main_visitor_details:
     '#type': webform_wizard_page
-    '#title': 'Visitor details'
+    '#title': 'Main visitor details'
     '#states':
       visible:
         - ':input[name="bkg_id"]':
@@ -583,7 +583,7 @@ elements: |-
               filled: true
         '#text': |
           <div role="status">
-          <p class="info-notice">Amend your details as the main visitor.&nbsp;</p>
+          <p class="info-notice">You can select and change any of the details for the main visitor shown below.</p>
           </div>
         '#format': full_html
       visitor_1_id:
@@ -3420,11 +3420,13 @@ handlers:
         visitor_1_intro: visitor_1_intro
         visitor_1_intro_amend: visitor_1_intro_amend
         visitor_1_id: visitor_1_id
+        visitor_1_id_duplicate_warning: visitor_1_id_duplicate_warning
         visitor_1_dob: visitor_1_dob
         visitor_1_email: visitor_1_email
         visitor_1_telephone: visitor_1_telephone
         msg_additional_visitors: msg_additional_visitors
         msg_existing_additional_visitors: msg_existing_additional_visitors
+        msg_amend_additional_visitors: msg_amend_additional_visitors
         additional_visitor_number: additional_visitor_number
         additional_visitor_1_id: additional_visitor_1_id
         additional_visitor_1_dob: additional_visitor_1_dob
@@ -3479,6 +3481,21 @@ handlers:
         amend_type: amend_type
         bkg_id: bkg_id
         bkg_link_uniqueid: bkg_link_uniqueid
+        bkg_visit_order_no: bkg_visit_order_no
+        bkg_inmate_id: bkg_inmate_id
+        bkg_special_requirements: bkg_special_requirements
+        bkg_visitor_1_id: bkg_visitor_1_id
+        bkg_visitor_1_dob: bkg_visitor_1_dob
+        bkg_visitor_1_email: bkg_visitor_1_email
+        bkg_visitor_1_phone: bkg_visitor_1_phone
+        bkg_visitor_2_id: bkg_visitor_2_id
+        bkg_visitor_2_dob: bkg_visitor_2_dob
+        bkg_visitor_3_id: bkg_visitor_3_id
+        bkg_visitor_3_dob: bkg_visitor_3_dob
+        bkg_visitor_4_id: bkg_visitor_4_id
+        bkg_visitor_4_dob: bkg_visitor_4_dob
+        bkg_visitor_5_id: bkg_visitor_5_id
+        bkg_visitor_5_dob: bkg_visitor_5_dob
         bkg_slotdatetime: bkg_slotdatetime
         current_visitor_order_number: current_visitor_order_number
         last_visitor_order_number: last_visitor_order_number
