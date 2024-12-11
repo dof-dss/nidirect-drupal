@@ -212,19 +212,19 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
           $booking_data['error_msg'] = t('Booking link has already been be used and cannot be reused to amend your booking.');
         }
       }
+
+      // Convert booking data slotdatetime to a more useable format.
+      $booked_slotdatetime = new \DateTime(str_replace('/', '-', $booking_data['SLOTDATETIME']));
+      $booking_data['SLOTDATETIME'] = $booked_slotdatetime->format(DATE_ATOM);
+
+      // Store booking data in form_state.
+      $form_state->set('amend_booking_data', $booking_data);
+
+      // Disable booking_reference_prisoner_reference wizard page
+      // and set current page to amend_booking_page.
+      $webform->setElementProperties('booking_reference_prisoner_reference', ['#access' => FALSE]);
+      $webform_submission->setCurrentPage('amend_booking_page');
     }
-
-    // Convert booking data slotdatetime to a more useable format.
-    $booked_slotdatetime = new \DateTime(str_replace('/', '-', $booking_data['SLOTDATETIME']));
-    $booking_data['SLOTDATETIME'] = $booked_slotdatetime->format(DATE_ATOM);
-
-    // Store booking data in form_state.
-    $form_state->set('amend_booking_data', $booking_data);
-
-    // Disable booking_reference_prisoner_reference wizard page
-    // and set current page to amend_booking_page.
-    $webform->setElementProperties('booking_reference_prisoner_reference', ['#access' => FALSE]);
-    $webform_submission->setCurrentPage('amend_booking_page');
   }
 
   /**
@@ -1355,6 +1355,17 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
     // Decrypt it.
     $key = getenv('PRISON_VISIT_BOOKING_AMEND_AES_256_CBC_KEY');
     $iv = getenv('PRISON_VISIT_BOOKING_AMEND_AES_256_CBC_IV');
+
+    if (!$key || !$iv) {
+      $error_message = 'Missing environment variables:';
+      $error_message .= !$key ? ' PRISON_VISIT_BOOKING_AMEND_AES_256_CBC_KEY ' : '';
+      $error_message .= !$iv ? ' PRISON_VISIT_BOOKING_AMEND_AES_256_CBC_IV' : '';
+
+      $this->getLogger('prison_visits')->error($error_message);
+
+      // Throw an exception.
+      throw new \RuntimeException($error_message);
+    }
 
     $booking_data_decrypted = $this->decrypt($booking_data_encrypted, $key, $iv);
     $booking_data_decrypted = preg_replace('/[[:cntrl:]]/', '', $booking_data_decrypted);
