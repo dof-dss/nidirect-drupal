@@ -1147,15 +1147,16 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
    * been exceeded.
    */
   private function validateMaxAdultVisitors(array &$form, FormStateInterface $form_state) {
-
+    
     $additional_visitor_dobs = [];
     $num_max_adults = 2;
+    $additional_visitor_number = (int) $form_state->getValue('additional_visitor_number');
 
-    if ($form_state->get('current_page') === 'additional_visitor_details' && $form_state->getValue('additional_visitor_number') > $num_max_adults) {
-      // Get all additional visitor birthdates.
-      $additional_visitor_dobs = array_filter($form_state->getValues(), function ($v, $k) {
-        return (str_contains($k, 'additional_visitor_') && str_ends_with($k, '_dob') && $this->isAdultDateOfBirth($v));
-      }, ARRAY_FILTER_USE_BOTH);
+    for ($i = 1; $i <= $additional_visitor_number; $i++) {
+      $dob = $form_state->getValue('additional_visitor_' . $i . '_dob');
+      if ($this->isAdultDateOfBirth($dob)) {
+        $additional_visitor_dobs[] = $dob;
+      }
     }
 
     $additional_adult_count = count($additional_visitor_dobs);
