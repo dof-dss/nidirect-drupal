@@ -1147,7 +1147,6 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
    * been exceeded.
    */
   private function validateMaxAdultVisitors(array &$form, FormStateInterface $form_state) {
-    
     $additional_visitor_dobs = [];
     $num_max_adults = 2;
     $additional_visitor_number = (int) $form_state->getValue('additional_visitor_number');
