@@ -247,9 +247,10 @@
       }
 
       const updateVisitorBadge = function($dob, $badge) {
-        if (Drupal.pvGetAge($dob.val()) >= 18) {
+        const age = Drupal.pvGetAge($dob.val());
+        if (age >= 18) {
           $badge.text('Adult').removeClass('visitor-badge--child visually-hidden');
-        } else if (Drupal.pvGetAge($dob.val()) >= 0) {
+        } else if (age !== null && age >= 0) {
           $badge.text('Child').removeClass('visually-hidden').addClass('visitor-badge--child');
         } else {
           $badge.addClass('visually-hidden');
