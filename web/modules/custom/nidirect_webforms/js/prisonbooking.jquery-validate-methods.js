@@ -63,7 +63,7 @@
   Drupal.pvNumberOfAdultVisitors = function() {
     let numAdults = 0;
     $('[name^="additional_visitor_"][name$="_dob"]').each(function(index) {
-      if (Drupal.pvGetAge($(this).val()) >= 18) {
+      if ($(this).is(':visible') && Drupal.pvGetAge($(this).val()) >= 18) {
         numAdults++;
       }
     });
