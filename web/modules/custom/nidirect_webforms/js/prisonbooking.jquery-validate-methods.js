@@ -4,21 +4,37 @@
  */
 (function ($, Drupal, once) {
 
-  Drupal.pvGetAge = function(dateString) {
-    // Simple conversion of dd/mm/yyyy to yyyy-mm-dd
-    if (dateString.includes('/')) {
-      const dateParts = dateString.split("/");
-      dateString = dateParts[2] + '-' + dateParts[1] + '-' + dateParts[0] + 'T00:00';
+  Drupal.pvGetAge = function (dateString) {
+    // Validate the input format: dd/mm/yyyy.
+    const dateRegex = /^([0-2][0-9]|3[0-1])\/(0[1-9]|1[0-2])\/\d{4}$/;
+    if (!dateRegex.test(dateString)) {
+      return null;
     }
+
+    // Convert dd/mm/yyyy to ISO format (yyyy-mm-dd).
+    const dateParts = dateString.split("/");
+    const isoDateString = `${dateParts[2]}-${dateParts[1]}-${dateParts[0]}T00:00:00Z`;
+
+    // Parse the birthdate.
+    const birthDate = new Date(isoDateString);
+    if (isNaN(birthDate)) {
+      return null;
+    }
+
+    // Calculate the age.
     const today = new Date();
-    const birthDate = new Date(dateString);
-    let age = today.getFullYear() - birthDate.getFullYear();
-    let m = today.getMonth() - birthDate.getMonth();
-    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+    let age = today.getUTCFullYear() - birthDate.getUTCFullYear();
+    const monthDiff = today.getUTCMonth() - birthDate.getUTCMonth();
+    const dayDiff = today.getUTCDate() - birthDate.getUTCDate();
+
+    // Adjust age if the birth month/day hasn't occurred yet.
+    if (monthDiff < 0 || (monthDiff === 0 && dayDiff < 0)) {
       age--;
     }
+
     return age;
   };
+
 
   Drupal.pvIsUniqueVisitorId = function(existingIds = {}, visitorId, visitorElement) {
 
@@ -270,8 +286,12 @@
 
       $pvDobs.each(function() {
         $(this).rules("add", {
+          validDate: true,
+          minAge: [true, 0],
           maxAdults: [true, 2],
           messages: {
+            validDate: "Enter a valid birthdate.",
+            minAge: "Enter a valid birthdate.",
             maxAdults: "The maximum number of adults is two. Enter a child's visitor ID and date of birth."
           }
         });
