@@ -787,6 +787,7 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
 
     if ($page === 'additional_visitor_details') {
       $this->validateUniqueVisitorIds($form, $form_state);
+      $this->validateMaxAdultVisitors($form, $form_state);
     }
 
     if ($page === 'visitor_special_requirements') {
@@ -1142,6 +1143,29 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
   }
 
   /**
+   * Validate maximum number of additional adult visitors has not
+   * been exceeded.
+   */
+  private function validateMaxAdultVisitors(array &$form, FormStateInterface $form_state) {
+
+    $additional_visitor_dobs = [];
+
+    if ($form_state->get('current_page') === 'additional_visitor_details') {
+      // Get all additional visitor birthdates.
+      $additional_visitor_dobs = array_filter($form_state->getValues(), function ($v, $k) {
+        return (str_contains($k, 'additional_visitor_') && str_ends_with($k, '_dob') && $this->isAdultDateOfBirth($v));
+      }, ARRAY_FILTER_USE_BOTH);
+    }
+
+    $additional_adult_count = count($additional_visitor_dobs);
+
+    // The maximum number of additional adults is two.
+    if ($additional_adult_count > 2) {
+      $form_state->setError($form, $this->t('Maximum number of additional adult visitors has been exceeded. Remove 1 or more adults.'));
+    }
+  }
+
+  /**
    * Validate textareas contain plain text (no html).
    */
   private function validatePlainText(string $element_name, string $error_msg, array &$form, FormStateInterface $form_state) {
@@ -1427,8 +1451,15 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
    * Check date string is an adult birthdate.
    */
   private function isAdultDateOfBirth(string $date) {
-    $birthdate_format = 'd/m/Y H:i';
-    $birthdate = \DateTime::createFromFormat($birthdate_format, $date);
+
+    // Date string must be formatted as dd/mm/yyyy.
+    if (!preg_match("/^([0-2][0-9]|3[0-1])\/(0[1-9]|1[0-2])\/\d{4}$/", $date)) {
+      return FALSE;
+    }
+
+    // Create DateTime from the date string. Better to pass date
+    // as dd-mm-yyyy to avoid being parsed as a US date.
+    $birthdate = new \DateTime(str_replace("/", "-", $date));
     $today = new \DateTime();
 
     return $birthdate && $today->diff($birthdate)->y >= 18;
