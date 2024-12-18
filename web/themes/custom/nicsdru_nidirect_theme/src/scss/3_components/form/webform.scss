@@ -10,6 +10,11 @@
   line-height: 0;
 }
 
+h2.webform-section-title {
+  font-size: 1.5em;
+  line-height: 2em;
+}
+
 .webform-counter {
   margin-bottom: 0;
 
@@ -37,12 +42,13 @@
   }
 }
 
-
 /* webform radios and checkboxes displayed inline are wrapped with this class */
 .webform-options-display-side-by-side {
 
   display: flex;
   flex-flow: row wrap;
+  gap: .5em;
+  margin: 0 0 .5em;
 
   // webform css adds unwanted margin on child labels
   label {
@@ -52,7 +58,7 @@
   .form-item {
     display: inline-block;
     width: auto;
-    margin: .5em .5em 0 0;
+    margin: 0;
     padding: 0;
 
     &--error-message .error {
@@ -69,7 +75,7 @@
   display: inline-flex;
 
   .webform-options-display-buttons-wrapper {
-    margin: .5em .5em .5em 0;
+    margin: 0 .5em .5em 0;
   }
 
   .form-item {

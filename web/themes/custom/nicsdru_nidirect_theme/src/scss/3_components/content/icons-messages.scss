@@ -99,12 +99,13 @@
     margin-bottom: 0;
   }
 
-  & > h2:first-child,
-  & > h3:first-child {
+  h2,
+  h3 {
     @include adjust-font-size-to(21px, 4.5);
+    color: $text;
 
     @include breakpoint($phab) {
-      @include adjust-font-size-to(24px, 5);
+      @include adjust-font-size-to(22px, 5);
     }
   }
 }
