@@ -1,0 +1,24 @@
+<?php
+
+function nidirect_prisons_schema() {
+  $schema['prisoner_payment_amount'] = [
+    'description' => 'Stores the amount that can be paid to a prisoner.',
+    'fields' => [
+      'prisoner_id' => ['type' => 'varchar', 'length' => 5, 'not null' => TRUE],
+      'prison_id' => ['type' => 'varchar', 'length' => 2, 'not null' => TRUE],
+      'amount' => ['type' => 'float', 'not null' => TRUE],
+    ],
+    'primary key' => ['prisoner_id'],
+  ];
+
+  $schema['prisoner_payment_nominees'] = [
+    'description' => 'Stores nominated visitor IDs for each prisoner.',
+    'fields' => [
+      'prisoner_id' => ['type' => 'varchar', 'length' => 5, 'not null' => TRUE],
+      'visitor_ids' => ['type' => 'varchar', 'length' => 69],
+    ],
+    'primary key' => ['prisoner_id'],
+  ];
+
+  return $schema;
+}
