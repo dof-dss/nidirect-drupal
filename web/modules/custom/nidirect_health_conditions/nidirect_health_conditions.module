@@ -40,7 +40,7 @@ function nidirect_health_conditions_node_view(array &$build, EntityInterface $en
         $hc_node->isPublished()) {
 
       // Use of $view_mode ensures we get the appropriate field config.
-      $build['field_summary'] = $hc_node->field_summary->view($view_mode);
+      $build['field_summary'] = $hc_node->get('field_summary')->view($view_mode);
       $build['field_parent_condition']['#access'] = FALSE;
     }
   }
@@ -242,7 +242,7 @@ function nidirect_health_conditions_node_update(NodeInterface $node) {
     return;
   }
 
-  $alt_titles = $node->field_alternative_condition->referencedEntities() ?? [];
+  $alt_titles = $node->get('field_alternative_condition')->referencedEntities() ?? [];
   $hc_publish_state = $node->isPublished();
 
   foreach ($alt_titles as $index => $alt_node) {
