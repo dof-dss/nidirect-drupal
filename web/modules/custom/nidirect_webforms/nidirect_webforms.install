@@ -1,0 +1,49 @@
+<?php
+
+/**
+ * @file
+ * Install and uninstall hooks for the NIDirect webforms module.
+ */
+
+/**
+ * Implements hook_update_N().
+ */
+function nidirect_webforms_update_8001() {
+  // Create the table prison_visit_booking_link_ids.
+  $schema = \Drupal::database()->schema();
+  if (!$schema->tableExists('prison_visit_booking_link_ids')) {
+    $schema->createTable('prison_visit_booking_link_ids', nidirect_webforms_schema()['prison_visit_booking_link_ids']);
+  }
+}
+
+/**
+ * Implements hook_schema().
+ */
+function nidirect_webforms_schema() {
+  $schema['prison_visit_booking_link_ids'] = [
+    'description' => 'Stores unique identifiers from booking amendment links with a timestamp. Used to ensure booking amendment links can be used only once.',
+    'fields' => [
+      'id' => [
+        'type' => 'serial',
+        'not null' => TRUE,
+      ],
+      'unique_identifier' => [
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'description' => 'The unique identifier of the booking amendment from the request.',
+      ],
+      'created' => [
+        'type' => 'int',
+        'not null' => TRUE,
+        'description' => 'Timestamp of when the identifier was created.',
+      ],
+    ],
+    'primary key' => ['id'],
+    'indexes' => [
+      'unique_identifier' => ['unique_identifier'],
+    ],
+  ];
+
+  return $schema;
+}

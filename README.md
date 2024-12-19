@@ -11,35 +11,56 @@ Drupal project based on `drupal/recommended-project`. The project comprises of a
 Repository links for custom modules and themes:
 
 - https://github.com/dof-dss/nidirect-site-modules
-- https://github.com/dof-dss/nidirect-d8-mig-mods
-- https://github.com/dof-dss/nidirect-d8-test-install-profile
 - https://github.com/dof-dss/nicsdru_origins_modules
 - https://github.com/dof-dss/nicsdru_origins_theme
 - https://github.com/dof-dss/nicsdru_nidirect_theme
 
+## Getting started
+
+### Pre-requisites
+
+1. Rancher Desktop [https://docs.rancherdesktop.io/(https://docs.rancherdesktop.io/)]
+   - Install notes: https://ddev.readthedocs.io/en/stable/users/install/docker-installation/#rancher-desktop
+   - Rancher is an cross-platform Open Source container management tool, as an alternative to Docker Desktop.
+   - **Make sure you turn off Kubernetes support or it can block port 80 and 443 causing DDEV to fail to start.**
+2. DDEV [https://ddev.com/get-started/](https://ddev.com/get-started/)
+   - The project uses a Mutagen (a file sync agent) performance profile for all platforms. It installs itself into each project, as needed.
+3. Platform CLI tool and access [https://docs.platform.sh/development/cli.html](https://docs.platform.sh/development/cli.html)
+   - You will need to request access to the projects you work on.
+   - Once granted, log in with `platform login -f` to renew any local SSH certs.
+4. Environment variables
+   - You need to populate the sensitive values in `.ddev/.env` as part of the build process.
+   - **Ask the team for how best to obtain these.**
+5. Platform SH API Token
+   - You will need to generate an API Token for DDev. This can be found on platform.sh -> My Profile -> API Tokens
+   - Assign the token to the PLATFORMSH_CLI_TOKEN key of your .env file.
+6. Install DBeaver or SequelAce (if you haven't done so already)
+   - DBeaver (MacOS for Apple Silicon) https://dbeaver.io/download/
+   - Sequel Ace https://sequel-ace.com
+
+### Next installation/import steps
+
+- Clone this repo and change directory into it.
+- `mv <path-to-dot-env-file> .ddev/.env`
+- `ddev start`. This will run composer inside the container for you, avoiding host-level inconsistencies.
+- Verify env vars have taken effect with: `ddev exec "env | sort""`
+- Run `ddev pull nidirect` which will import the database and run config import.
+- To inspect the databases you can use either `ddev dbeaver` or `ddev sequelace` depending on the DBMS you have installed.
+- Copy your `~/.composer/auth.json` to `.ddev/homeadditions/.composer` to allow git operations inside the container using `ddev composer`
+
+## Troubleshooting
+
+- Can't connect to the database
+  - Ensure your .env file values are valid and in effect. See https://ddev.readthedocs.io/en/stable/users/extend/customization-extendibility/#environment-variables-for-containers-and-services for details.
+  - Ensure your databases have fully imported.
+- Port 443 or 80 is blocked.
+  - Make sure Rancher Desktop's Kubernetes option is disabled.
+  - Run `lando poweroff` to ensure any legacy applications are not listening on the ports.
+  - https://ddev.readthedocs.io/en/stable/users/usage/troubleshooting/#web-server-ports-already-occupied
+
 ## Updating Core
 
 Follow the instructions at: https://www.drupal.org/docs/updating-drupal/updating-drupal-core-via-composer
-
-## Getting started
-
-## Prerequisites
-
-- Access to the hosting platform (for access to database resources)
-- GitHub account with relevant permissions
-- Platform.sh CLI tool: https://docs.platform.sh/administration/cli.html#1-install
-
-1. Fetch a recent database via `platform db:dump -z -e main`
-2. Lando start
-3. Fetch/copy env var values into your `.env` file: `platform ssh -e main 'env | sort'`
-4. Rebuild the project for the new values to take effect: `lando rebuild -y`
-5. Import the db: `lando db-import <filename>.sql.gz`
-6. Rebuild the app container and import local config split settings: `lando drush cr && lando cim -y`
-
-## Drupal settings files
-
-There is a general settings file (`sites/default/settings.php`) that detects and loads more specific settings, depending
-on the environment the application is running in.
 
 ## Code workflow
 
