@@ -6,7 +6,8 @@ use Drupal\Core\Authentication\AuthenticationProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
- * Provides authentication for requests using X-Auth-Token.
+ * Provides token and IP authentication for
+ * Prisoner Payments REST resources.
  */
 class TokenAndIpAddressAuth implements AuthenticationProviderInterface {
 
@@ -28,6 +29,7 @@ class TokenAndIpAddressAuth implements AuthenticationProviderInterface {
    * {@inheritdoc}
    */
   public function authenticate(Request $request) {
+
     // Allowed tokens and IP addresses.
     $allowed_tokens = array_map('trim', explode(',', getenv('PRISONS_API_PERMITTED_TOKENS')));
     $allowed_ip_addresses = array_map('trim', explode(',', getenv('PRISONS_API_PERMITTED_IPS')));
@@ -46,7 +48,8 @@ class TokenAndIpAddressAuth implements AuthenticationProviderInterface {
       return NULL;
     }
 
-    // IP and token are allowed. Return the nidirect_prisons_api_user.
+    // IP and token are allowed. Return nidirect_prisons_api_user
+    // user (has authenticated user role).
     $username = 'nidirect_prisons_api_user';
     $authenticated_user = user_load_by_name($username);
 
