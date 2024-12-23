@@ -256,7 +256,7 @@ class NIDirectQuizResultsHandler extends WebformHandlerBase {
           $variables['message'] = [
             '#type' => 'html_tag',
             '#tag' => 'p',
-            '#value' => $this->t('Sorry, we cannot display the results as the original form submission no longer available.'),
+            '#value' => $this->t('Sorry, we cannot display the results as the original form submission is no longer available.'),
           ];
 
           $webform_link = $variables['webform']->toLink($variables['webform']->label());
@@ -264,7 +264,7 @@ class NIDirectQuizResultsHandler extends WebformHandlerBase {
           $variables['message'][] = [
             '#type' => 'html_tag',
             '#tag' => 'p',
-            '#value' => $this->t('Return to %link.', ['%link' => $webform_link]),
+            '#value' => $this->t('Return to %link.', ['%link' => $webform_link->toString()]),
           ];
 
           return;

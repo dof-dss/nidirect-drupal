@@ -5,6 +5,7 @@ namespace Drupal\nidirect_webforms\Controller;
 use Drupal\Core\Cache\CacheBackendInterface;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Controller\ControllerBase;
+use Drupal\Core\File\FileExists;
 use Drupal\Core\File\FileSystemInterface;
 use Drupal\Core\Session\UserSession;
 use Drupal\file\Entity\File;
@@ -235,7 +236,7 @@ class PrisonVisitBookingJsonApiController extends ControllerBase {
         }
 
         // Write content to the file.
-        $fileRepository->writeData($content, $filepath, FileSystemInterface::EXISTS_REPLACE);
+        $fileRepository->writeData($content, $filepath, FileExists::Replace);
         $file->save();
         $this->getLogger('prison_visits')->info('prison_visit_slots_data saved to ' . $filepath);
       }

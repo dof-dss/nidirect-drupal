@@ -4,6 +4,7 @@ status: true
 dependencies:
   config:
     - core.entity_view_display.node.landing_page.full
+    - entity_browser.browser.location_browser
     - filter.format.basic_html
     - filter.format.layout_builder_html
     - media.type.audio
@@ -52,6 +53,7 @@ dependencies:
     - path
     - pathauto
     - redirect
+    - redis
     - scheduled_transitions
     - sitewide_alert
     - system
@@ -71,6 +73,7 @@ permissions:
   - 'access location_browser entity browser pages'
   - 'access media overview'
   - 'access printer-friendly version'
+  - 'access redis report'
   - 'access site in maintenance mode'
   - 'access site reports'
   - 'access taxonomy overview'
