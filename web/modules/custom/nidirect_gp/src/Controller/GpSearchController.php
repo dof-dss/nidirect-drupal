@@ -367,7 +367,7 @@ class GpSearchController extends ControllerBase {
       $reverse = $nominatim->newReverse()->latlon($latitude, $longitude);
       $result = $nominatim->find($reverse);
     }
-    catch (NominatimException $e) {
+    catch (\Exception $e) {
       $this->getLogger('nidirect_gp')->error($e);
       return $locality;
     }
