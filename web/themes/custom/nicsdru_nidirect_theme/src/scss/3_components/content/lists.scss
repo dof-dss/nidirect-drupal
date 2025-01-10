@@ -77,3 +77,22 @@
   columns: 2;
   column-gap: 3.6rem;
 }
+
+/*
+ * Definition list - side by side.
+ *
+ * Terms and descriptions appear side by side.
+ */
+dl.side-by-side {
+  display: grid;
+  grid-template-columns: max-content auto;
+
+  dt {
+    text-align: right;
+    white-space: nowrap;
+  }
+
+  dd {
+    grid-column-start: 2;
+  }
+}
