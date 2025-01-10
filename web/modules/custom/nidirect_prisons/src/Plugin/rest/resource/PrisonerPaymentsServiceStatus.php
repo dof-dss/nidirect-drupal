@@ -2,7 +2,6 @@
 
 namespace Drupal\nidirect_prisons\Plugin\rest\resource;
 
-use Drupal\Core\Entity\EntityStorageException;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\rest\Plugin\ResourceBase;
 use Drupal\rest\ResourceResponse;
@@ -67,7 +66,6 @@ class PrisonerPaymentsServiceStatus extends ResourceBase implements ContainerFac
 
   /**
    * Handles POST requests to update prisoner payments service status.
-   * @throws EntityStorageException
    */
   public function post(Request $request) {
     $data = json_decode($request->getContent(), TRUE);
