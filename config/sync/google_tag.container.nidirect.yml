@@ -23,12 +23,6 @@ advanced_settings:
       environment_token: ''
 dimensions_metrics: {  }
 conditions:
-  response_code:
-    id: response_code
-    negate: true
-    response_codes: |-
-      403
-      404
   request_path:
     id: request_path
     negate: true
@@ -40,6 +34,12 @@ conditions:
       /node/*/delete
       /user/*/edit*
       /user/*/cancel*
+  response_code:
+    id: response_code
+    negate: true
+    response_codes: |-
+      403
+      404
   user_role:
     id: user_role
     negate: false

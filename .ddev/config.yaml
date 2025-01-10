@@ -1,0 +1,28 @@
+# DDEV project level config. See https://ddev.readthedocs.io/en/stable/users/configuration/config/
+# for full set of options that can be used.
+composer_version: "2"
+database:
+    type: mariadb
+    version: "10.11"
+docroot: web
+fail_on_hook_fail: true
+hooks:
+  pre-start:
+    # Ensure env var file is deployed; needs to be filled in manually for sensitive values.
+    - exec-host: "if [ ! -f .ddev/.env ]; then cp -v .env.sample .ddev/.env && echo PLEASE FILL IN SENSITIVE ENV VAR VALUES IN .ddev/.env THEN RUN ddev restart && exit 1; fi"
+  post-start:
+    - composer: install
+    - exec: ".ddev/homeadditions/appserver_build.sh"
+  post-import-db:
+    # Use --skip-hooks flag to skip these commands, eg: when importing the migration db for the first time.
+    # Ensure the local config split profile is detected and active.
+    - exec: "drush cr"
+    # Import any local config split profile overrides.
+    - exec: "drush cim -y"
+name: nidirect
+nodejs_version: 20
+php_version: "8.2"
+timezone: Europe/London
+type: drupal
+webimage_extra_packages: ["libjpeg-dev", "make", "python3", "g++", "dh-autoreconf"]
+xdebug_enabled: false

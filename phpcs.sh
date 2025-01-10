@@ -22,9 +22,11 @@ DRUPAL_PRACTICE_EXCLUDED_SNIFFS=(
 )
 
 # Comma separated list of npm or non-PHP related FE toolchain directories we want to ignore.
-IGNORE="${DRUPAL_DEPLOY_PATH}/web/themes/custom/nicsdru_nidirect_theme/node_modules"
-
-echo "Running coding standard checks in ${PHPCS_CHECK_DIR}"
+IGNORE="${DRUPAL_DEPLOY_PATH}/web/themes/origins/node_modules,${DRUPAL_DEPLOY_PATH}/web/themes/custom/nicsdru_nidirect_theme/node_modules"
+echo "----------------------------------------------------------------------"
+echo ">>> Running coding standard checks in: ${PHPCS_CHECK_DIR}"
+echo ">>> Ignoring directories: ${IGNORE}"
+echo "----------------------------------------------------------------------"
 
 # Configure PHPCS.
 ${PHPCS_PATH} --config-set installed_paths ${DRUPAL_DEPLOY_PATH}/vendor/drupal/coder/coder_sniffer,${DRUPAL_DEPLOY_PATH}/vendor/slevomat/coding-standard
@@ -33,6 +35,7 @@ EXCLUDE=$(IFS=, ; echo "${DRUPAL_EXCLUDED_SNIFFS[*]}")
 ${PHPCS_PATH} -nq --standard=Drupal --extensions=${PHPCS_EXTENSIONS} --exclude=${EXCLUDE} --ignore=${IGNORE} ${PHPCS_CHECK_DIR}
 if [ $? != 0 ]
 then
+    echo "🚫 Drupal coding standards checks failed, see above for details 🚫"
     exit 1
 fi
 
@@ -41,5 +44,9 @@ EXCLUDE=$(IFS=, ; echo "${DRUPAL_PRACTICE_EXCLUDED_SNIFFS[*]}")
 ${PHPCS_PATH} -nq --standard=DrupalPractice --extensions=${PHPCS_EXTENSIONS} --exclude=${EXCLUDE} --ignore=${IGNORE} ${PHPCS_CHECK_DIR}
 if [ $? != 0 ]
 then
+    echo "🚫 Drupal best practice checks failed, see above for details 🚫"
     exit 1
 fi
+
+## Make it clearer when the script succeeds.
+echo "LGTM ✅"

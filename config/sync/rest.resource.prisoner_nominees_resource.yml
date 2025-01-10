@@ -1,0 +1,17 @@
+uuid: ecbe3fab-230d-4098-8dea-0b137020315b
+langcode: en
+status: true
+dependencies:
+  module:
+    - nidirect_prisons
+    - serialization
+id: prisoner_nominees_resource
+plugin_id: prisoner_nominees_resource
+granularity: resource
+configuration:
+  methods:
+    - POST
+  formats:
+    - json
+  authentication:
+    - nidirect_prisons_token_ip_auth
