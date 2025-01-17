@@ -2,6 +2,7 @@
 
 namespace Drupal\nidirect_prisons\Plugin\rest\resource;
 
+use Drupal\Component\Utility\Html;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\rest\Plugin\ResourceBase;
 use Drupal\rest\ResourceResponse;
@@ -84,23 +85,36 @@ class PrisonerPaymentsServiceStatus extends ResourceBase implements ContainerFac
 
     if (isset($data['available'])) {
       if ($data['available'] === 'false') {
-        // Set the closure message if provided.
+        // Set the closure message if provided. Strip html, as only
+        // plain text allowed.
         if (!empty($data['message'])) {
-          $webform->setSetting('closed_message', $data['message']);
+          $webform->setSetting('form_close_message', Html::escape($data['message']));
         }
 
         // Close the webform for anonymous users.
         $webform->setStatus(WebformInterface::STATUS_CLOSED);
-        $webform->save();
 
-        return new ResourceResponse(['message' => 'Prisoner Payments service is unavailable'], 200);
+        try {
+          $webform->save();
+        } catch (\Exception $e) {
+          $this->logger->error('Failed to update webform status: {message}', ['message' => $e->getMessage()]);
+          return new ResourceResponse(['error' => 'Failed to update service status'], 500);
+        }
+
+        return new ResourceResponse(['message' => 'Service status updated: STATUS_CLOSED'], 200);
       }
       elseif ($data['available'] === 'true') {
         // Open the webform for anonymous users.
         $webform->setStatus(WebformInterface::STATUS_OPEN);
-        $webform->save();
 
-        return new ResourceResponse(['message' => 'Prisoner Payments service is available'], 200);
+        try {
+          $webform->save();
+        } catch (\Exception $e) {
+          $this->logger->error('Failed to update webform status: {message}', ['message' => $e->getMessage()]);
+          return new ResourceResponse(['error' => 'Failed to update service status'], 500);
+        }
+
+        return new ResourceResponse(['message' => 'Service status updated: STATUS_OPEN'], 200);
       }
     }
 
