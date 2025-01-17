@@ -1,7 +1,9 @@
 uuid: 63c402bf-969a-49cb-8dc0-9a44ddedacbd
 langcode: en
 status: open
-dependencies: {  }
+dependencies:
+  module:
+    - nidirect_prisons
 weight: 0
 open: null
 close: null
@@ -61,15 +63,15 @@ elements: |-
       '#template': |-
         <div class="info-notice" role="status">
           You can pay a maximum of
-          
+
           <strong>
             {% if data.prisoner_max_amount %}
               &pound;{{ data.prisoner_max_amount }}
             {% else %}
               &pound;MISSING
             {% endif %}
-          </strong> 
-          
+          </strong>
+
           to prisoner <strong>{{ data.prisoner_id }}</strong>.
         </div>
     prisoner_payment_amount:
@@ -111,7 +113,7 @@ settings:
   form_title: source_entity_webform
   form_submit_once: true
   form_open_message: ''
-  form_close_message: ''
+  form_close_message: 'Prisoner payments service is currently unavailable. Try again later.'
   form_exception_message: ''
   form_previous_submissions: true
   form_confidential: false
@@ -279,5 +281,16 @@ access:
     roles: {  }
     users: {  }
     permissions: {  }
-handlers: {  }
+handlers:
+  prisoner_payments:
+    id: prisoner_payments
+    handler_id: prisoner_payments
+    label: 'Prisoner Payments'
+    notes: ''
+    status: true
+    conditions: {  }
+    weight: 0
+    settings:
+      message: 'This is a custom message.'
+      debug: false
 variants: {  }
