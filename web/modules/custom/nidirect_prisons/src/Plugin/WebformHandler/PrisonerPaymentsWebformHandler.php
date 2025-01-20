@@ -20,7 +20,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *   description = @Translation("Handles making a payment to prisoner."),
  *   cardinality = \Drupal\webform\Plugin\WebformHandlerInterface::CARDINALITY_SINGLE,
  *   results = \Drupal\webform\Plugin\WebformHandlerInterface::RESULTS_IGNORED,
- *   submission = \Drupal\webform\Plugin\WebformHandlerInterface::SUBMISSION_REQUIRED,
+ *   submission = \Drupal\webform\Plugin\WebformHandlerInterface::SUBMISSION_OPTIONAL,
  * )
  */
 class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
@@ -46,7 +46,6 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
    */
   public function defaultConfiguration() {
     return [
-      'message' => 'This is a custom message.',
       'debug' => FALSE,
     ];
   }
@@ -55,18 +54,6 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
    * {@inheritdoc}
    */
   public function buildConfigurationForm(array $form, FormStateInterface $form_state) {
-    // Message.
-    $form['message'] = [
-      '#type' => 'fieldset',
-      '#title' => $this->t('Message settings'),
-    ];
-    $form['message']['message'] = [
-      '#type' => 'textfield',
-      '#title' => $this->t('Message to be displayed when form is completed'),
-      '#default_value' => $this->configuration['message'],
-      '#required' => TRUE,
-    ];
-
     // Development.
     $form['development'] = [
       '#type' => 'details',
@@ -88,7 +75,6 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
    */
   public function submitConfigurationForm(array &$form, FormStateInterface $form_state) {
     parent::submitConfigurationForm($form, $form_state);
-    $this->configuration['message'] = $form_state->getValue('message');
     $this->configuration['debug'] = (bool) $form_state->getValue('debug');
   }
 
@@ -134,9 +120,6 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
    * {@inheritdoc}
    */
   public function confirmForm(array &$form, FormStateInterface $form_state, WebformSubmissionInterface $webform_submission) {
-    $message = $this->configuration['message'];
-    $message = $this->replaceTokens($message, $this->getWebformSubmission());
-    $this->messenger()->addStatus(Markup::create(Xss::filter($message)), FALSE);
     $this->debug(__FUNCTION__);
   }
 
