@@ -78,6 +78,15 @@ form {
       background-color: $grey-lightest;
     }
 
+    &--important {
+      margin-top: 2em;
+
+      label {
+        @include responsive-typo-map($h4-text);
+        font-weight: normal;
+      }
+    }
+
     .info-notice:first-child {
       margin-top: 0;
     }
@@ -266,6 +275,7 @@ label,
 [size='40'],
 [size='50'],
 [size='60'] {
+  width: auto;
   max-width: 56rem;
 }
 
