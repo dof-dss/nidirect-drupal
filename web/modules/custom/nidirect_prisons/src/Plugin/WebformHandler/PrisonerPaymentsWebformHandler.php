@@ -69,7 +69,7 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
   public function defaultConfiguration() {
     return [
       'debug' => FALSE,
-      'prisoner_maximum_payment_amount' => 100,
+      'prisoner_maximum_payment_amount' => 0,
     ];
   }
 
@@ -134,32 +134,24 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
 
     if ($page === 'page_payment_amount') {
 
-      // The default maximum amount a prisoner can be paid.
-      $prisoner_max_amount = $this->configuration['prisoner_maximum_payment_amount'] ?? 100;
-
       // The prisoner_id to be paid.
       $prisoner_id = $form_state->getValue('prisoner_id') ?? NULL;
 
-      // Try to get the current maximum from db.
-      try {
-        $connection = Database::getConnection();
+      // The maximum amount a prisoner can be paid.
+      $prisoner_max_amount = $this->getPrisonerPaymentMaxAmount($prisoner_id);
 
-        $query = $connection->select('prisoner_payment_amount', 'pp_amount')
-          ->fields('pp_amount', ['amount'])
-          ->condition('prisoner_id', $prisoner_id);
+      if ($prisoner_max_amount > 0) {
+        // Set a form element value for display in the webform.
+        $this->setFormElementValue('prisoner_max_amount', $prisoner_max_amount);
 
-        $result = $query->execute()->fetchField();
-
-        if ($result) {
-          $prisoner_max_amount = $result;
-        }
+        // Pass to clientside JS for validation purposes.
+        $form['#attached']['drupalSettings']['prisonerPayments']['prisonerMaxAmount'] = $prisoner_max_amount;
       }
-      catch (\Exception $e) {
-        $this->getLogger('nidirect_prisons')->error('Database error: @message', ['@message' => $e->getMessage()]);
+      else {
+        // Cannot enter an amount to pay, nor proceed to next step.
+        $elements['prisoner_payment_amount']['#access'] = FALSE;
+        $elements['wizard_next']['#access'] = FALSE;
       }
-
-
-      $this->setFormElementValue('prisoner_max_amount', $prisoner_max_amount);
     }
   }
 
@@ -170,38 +162,66 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
     $this->debug(__FUNCTION__);
     $page = $form_state->get('current_page');
 
-    // Validate the visitor_id is nominated by prisoner_id to
-    // make payments.
-
     if ($page === 'page_prisoner_and_visitor_id') {
 
-      $visitor_ids = [];
-      $prisoner_id = $form_state->getValue('prisoner_id');
+      $visitor_fullname = $form_state->getValue('visitor_fullname');
       $visitor_id = $form_state->getValue('visitor_id');
 
-      // Get list of visitor_ids nominated by prisoner_id.
-      $connection = \Drupal::database();
-      $query = $connection->select('prisoner_payment_nominees', 'ppn');
-      $query->fields('ppn', ['visitor_ids']);
-      $query->condition('prisoner_id', $prisoner_id);
-      $result = $query->execute()->fetchField();
+      $prisoner_fullname = $form_state->getValue('prisoner_fullname');
+      $prisoner_id = $form_state->getValue('prisoner_id');
 
-      if ($result) {
-        $visitor_ids = explode(',', $result);
+      // Validate visitor and prisoner names contain a first name and
+      // last name.
+
+      /*
+       * Regex to check for:
+       * - At least one first name.
+       * - Optional middle names.
+       * - At least one last name.
+       *
+       * \p{L}: Matches any Unicode letter.
+       *
+       */
+      $regex = '/^\p{L}+(?:[ \-\'\p{L}]*\p{L})*(\s+\p{L}+(?:[ \-\'\p{L}]*\p{L})*)+\s+\p{L}+(?:[ \-\'\p{L}]*\p{L})*$/u';
+
+      // Validate the "visitor_fullname" field.
+      if (!preg_match($regex, $visitor_fullname)) {
+        // Add an error if the full name is invalid.
+        $form_state->setErrorByName('visitor_fullname', $this->t('Please enter a valid full name with at least a first and last name.'));
       }
 
-      if (!$result || !in_array($visitor_id, $visitor_ids)) {
-        // Add an error if the visitor_id is not valid for the prisoner_id.
-        $form_state->setErrorByName('visitor_id', 'Check your visitor ID is correct and the prisoner has nominated you to make payments to them');
-        $form_state->setErrorByName('prisoner_id', 'Check prisoner ID is correct');
-        //$form_state->setError($form, 'Has the prisoner nominated you to make payments to them?');
+
+      // Validate the visitor_id is nominated by prisoner_id to
+      // make payments.
+      $visitor_ids = $this->getPrisonerNominatedVisitorIds($prisoner_id) ?? [];
+
+      if (!in_array($visitor_id, $visitor_ids)) {
+        $form_state->setErrorByName('visitor_id', $this->t('Check your visitor ID is correct and the prisoner has nominated you to make payments to them'));
+        $form_state->setErrorByName('prisoner_id', $this->t('Check prisoner ID is correct'));
+      }
+    }
+
+    if ($page === 'page_payment_amount') {
+
+      $prisoner_id = $form_state->getValue('prisoner_id');
+      $prisoner_payment_amount = $form_state->getValue('prisoner_payment_amount');
+      $prisoner_max_amount = $this->getPrisonerPaymentMaxAmount($prisoner_id);
+
+      if ($prisoner_max_amount == 0) {
+        $form_state->setError($form, $this->t('Prisoner has reached the maximum amount payable for this week. Try again next week.'));
+      }
+
+      if ($prisoner_payment_amount == 0 || $prisoner_payment_amount > $prisoner_max_amount) {
+        $form_state->setErrorByName('prisoner_payment_amount', $this->t('Amount must be more than &pound;0'));
+      }
+
+      if ($prisoner_payment_amount > $prisoner_max_amount) {
+        $form_state->setErrorByName('prisoner_payment_amount', $this->t('Amount must be &pound;@max or less', ['@max' => $prisoner_max_amount]));
       }
 
     }
 
-    if ($value = $form_state->getValue('element')) {
-      $form_state->setErrorByName('element', $this->t('The element must be empty. You entered %value.', ['%value' => $value]));
-    }
+
   }
 
   /**
@@ -350,6 +370,61 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
     if (isset($this->elements[$element_key])) {
       $this->elements[$element_key]['#default_value'] = $element_value;
     }
+  }
+
+  /**
+   * Get the maximum amount a prisoner can be paid.
+   */
+  protected function getPrisonerPaymentMaxAmount(string $prisoner_id) {
+
+    $prisoner_max_amount = 0.00;
+
+    // Try to get the current maximum from db.
+    try {
+      $connection = Database::getConnection();
+
+      $query = $connection->select('prisoner_payment_amount', 'pp_amount')
+        ->fields('pp_amount', ['amount'])
+        ->condition('prisoner_id', $prisoner_id);
+
+      $result = $query->execute()->fetchField();
+
+      if ($result) {
+        $prisoner_max_amount = floatval($result);
+      }
+    }
+    catch (\Exception $e) {
+      $this->getLogger('nidirect_prisons')->error('Database error: @message', ['@message' => $e->getMessage()]);
+    }
+
+    return $prisoner_max_amount;
+  }
+
+  /**
+   * Get nominated visitor IDs who can make payments to a prisoner ID.
+   */
+  protected function getPrisonerNominatedVisitorIds(string $prisoner_id) {
+
+    $nominated_visitor_ids = [];
+
+    try {
+      $connection = \Drupal::database();
+      $query = $connection->select('prisoner_payment_nominees', 'ppn');
+      $query->fields('ppn', ['visitor_ids']);
+      $query->condition('prisoner_id', $prisoner_id);
+      $result = $query->execute()->fetchField();
+
+      if ($result) {
+        $nominated_visitor_ids = explode(',', $result);
+      }
+    }
+    catch (\Exception $e) {
+      $this->getLogger('nidirect_prisons')->error('Database error: @message', ['@message' => $e->getMessage()]);
+
+      return NULL;
+    }
+
+    return $nominated_visitor_ids;
   }
 
 }
