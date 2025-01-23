@@ -27,7 +27,7 @@ elements: |-
         Checks are performed on this service to prevent fraud and other criminal behaviour.
         </p>
         <p>
-        By selecting <strong>Continue</strong>, you're agreeing to the <a href="#">terms and conditions</a> and <a href="#">privacy policy</a> for this service.
+        By selecting <strong>Continue</strong>, you're agreeing to the <a href="#">terms and conditions</a> and <a href="#">privacy policy</a>.
         </p>
         </div>
   page_prisoner_and_visitor_id:
@@ -38,13 +38,26 @@ elements: |-
       '#markup': |-
         <div class="info-notice" role="status">
           <p>
-            To make a payment to a prisoner in Northern Ireland, you must have a valid visitor ID issued by the prison and the prisoner ID of the prisoner who has nominated you to make payments to them.
-          </p>
+        To make a payment to a prisoner in Northern Ireland, you must:
+        </p>
+        <ul>
+        <li>be registered as a visitor with the prison and can provide your name and your visitor ID</li>
+        <li>have been nominated by a prisoner to make payments to them and can provide their name and prisoner ID</li>
+        <ul>
         </div>
+    visitor_fullname:
+      '#type': textfield
+      '#title': 'Your name'
+      '#description': 'Include your first and last name'
+      '#description_display': before
+      '#maxlength': 105
+      '#size': 40
+      '#required': true
+      '#required_error': "You must enter the prisoner's name"
     visitor_id:
       '#type': textfield
-      '#title': 'Visitor ID'
-      '#description': 'Enter your 6 digit visitor ID number'
+      '#title': 'Your visitor ID'
+      '#description': 'Enter the 6 digit visitor ID number issued to you by the prison'
       '#description_display': before
       '#maxlength': 6
       '#size': 6
@@ -55,6 +68,15 @@ elements: |-
       '#pattern': '[0-9]{6}'
       '#pattern_error': 'Visitor ID is not recognised'
       '#inputmode': numeric
+    prisoner_fullname:
+      '#type': textfield
+      '#title': 'Prisoner name'
+      '#description': 'Include their first name and last name'
+      '#description_display': before
+      '#maxlength': 105
+      '#size': 40
+      '#required': true
+      '#required_error': "You must enter the prisoner's name"
     prisoner_id:
       '#type': textfield
       '#title': 'Prisoner ID'
@@ -70,6 +92,7 @@ elements: |-
   your_name:
     '#type': webform_wizard_page
     '#title': 'Enter your name'
+    '#access': false
     visitor_details:
       '#type': fieldset
       '#title': 'Your details'
@@ -96,6 +119,7 @@ elements: |-
   prisoner_name:
     '#type': webform_wizard_page
     '#title': "Enter the prisoner's name"
+    '#access': false
     prisoner_details:
       '#type': fieldset
       '#title': 'Prisoner details'
@@ -128,25 +152,36 @@ elements: |-
       '#title_display': none
       '#display_on': form
       '#template': |-
-        <div class="info-notice" role="status">
+        <div role="status">
 
-          You can pay
-          {{ data.prisoner_first_name }}
-          {{ data.prisoner_last_name }}
-          ({{ data.prisoner_id }})
-          a maximum of
+          <!--<dl class="column-wrap">
+            <dt>Prisoner name</dt>
+            <dd>{{ data.prisoner_fullname }}</dd>
+            <dt>Prisoner ID</dt>
+            <dd>{{ data.prisoner_id }}</dd>
+          </dl>-->
 
-          <strong>
-            {% if data.prisoner_max_amount %}
-              &pound;{{ data.prisoner_max_amount }}
-            {% else %}
-              &pound;MISSING
-            {% endif %}
-          </strong>.
+          {% if data.prisoner_max_amount > 0 %}
+            <p class="info-notice">
+              You can pay
+              {{ data.prisoner_fullname }}
+              a maximum of
+
+              <strong>
+                &pound;{{ data.prisoner_max_amount }}
+              </strong>
+            </p>
+          {% else %}
+            <p class="info-notice info-notice--error">
+              {{ data.prisoner_fullname }} has
+              reached the maximum amount payable for this
+              week. Try again next week.
+            </p>
+          {% endif %}
         </div>
     prisoner_payment_amount:
       '#type': textfield
-      '#title': 'How much do you want to pay the prisoner?'
+      '#title': 'How much do you want to pay?'
       '#field_prefix': £
       '#maxlength': 6
       '#size': 6
@@ -154,12 +189,16 @@ elements: |-
       '#input_mask': '[1][9][9][.99]'
       '#required': true
       '#required_error': 'Enter how much you want to pay the prisoner'
+      '#wrapper_attributes':
+        class:
+          - form-item--important
   page_payment_card_details:
     '#type': webform_wizard_page
     '#title': 'Payment card details'
     twig_payment_card_details:
       '#type': webform_computed_twig
       '#title': 'Payment card details'
+      '#title_display': none
       '#template': |-
         <div role="status" class="info-notice">
         The Worldpay bit!
@@ -191,6 +230,9 @@ elements: |-
           wpLibraryObject.setup(wpHppCustomOptions);
 
         </script>
+  prisoner_max_amount:
+    '#type': value
+    '#title': 'Prisoner max amount'
 css: ''
 javascript: |-
   /**
@@ -201,6 +243,66 @@ javascript: |-
     Drupal.behaviors.prisonerPaymentsValidateMethods = {
       attach: function (context, settings) {
 
+        if (typeof $.validator === 'undefined') {
+          console.warn('jQuery Validate is not available. Skipping prisonerPaymentsValidateMethods.');
+          return;
+        }
+
+        Drupal.convertToASCII = function(value) {
+
+          console.log(`convertToASCII(${value})`);
+
+          const characterMap = {
+            // Polish
+            'ł': 'l', 'Ł': 'L',
+
+            // Accented vowels
+            'á': 'a', 'à': 'a', 'ä': 'a', 'â': 'a', 'å': 'a', 'ã': 'a', 'ā': 'a',
+            'Á': 'A', 'À': 'A', 'Ä': 'A', 'Â': 'A', 'Å': 'A', 'Ã': 'A', 'Ā': 'A',
+            'é': 'e', 'è': 'e', 'ë': 'e', 'ê': 'e', 'ē': 'e', 'ė': 'e', 'ę': 'e',
+            'É': 'E', 'È': 'E', 'Ë': 'E', 'Ê': 'E', 'Ē': 'E', 'Ė': 'E', 'Ę': 'E',
+            'í': 'i', 'ì': 'i', 'ï': 'i', 'î': 'i', 'ī': 'i', 'į': 'i',
+            'Í': 'I', 'Ì': 'I', 'Ï': 'I', 'Î': 'I', 'Ī': 'I', 'Į': 'I',
+            'ó': 'o', 'ò': 'o', 'ö': 'o', 'ô': 'o', 'õ': 'o', 'ø': 'o', 'ō': 'o',
+            'Ó': 'O', 'Ò': 'O', 'Ö': 'O', 'Ô': 'O', 'Õ': 'O', 'Ø': 'O', 'Ō': 'O',
+            'ú': 'u', 'ù': 'u', 'ü': 'u', 'û': 'u', 'ū': 'u', 'ů': 'u',
+            'Ú': 'U', 'Ù': 'U', 'Ü': 'U', 'Û': 'U', 'Ū': 'U', 'Ů': 'U',
+            'ý': 'y', 'ÿ': 'y', 'ŷ': 'y',
+            'Ý': 'Y', 'Ÿ': 'Y', 'Ŷ': 'Y',
+
+            // Special consonants
+            'ç': 'c', 'č': 'c', 'ć': 'c', 'ĉ': 'c',
+            'Ç': 'C', 'Č': 'C', 'Ć': 'C', 'Ĉ': 'C',
+            'ñ': 'n', 'ń': 'n',
+            'Ñ': 'N', 'Ń': 'N',
+            'š': 's', 'ś': 's', 'ş': 's', 'ŝ': 's',
+            'Š': 'S', 'Ś': 'S', 'Ş': 'S', 'Ŝ': 'S',
+            'ž': 'z', 'ź': 'z', 'ż': 'z',
+            'Ž': 'Z', 'Ź': 'Z', 'Ż': 'Z',
+            'ð': 'd', 'đ': 'd',
+            'Ð': 'D', 'Đ': 'D',
+            'þ': 'th',
+            'Þ': 'Th',
+
+            // Ligatures
+            'æ': 'ae', 'œ': 'oe',
+            'Æ': 'Ae', 'Œ': 'Oe',
+
+            // Others
+            'ß': 'ss',
+          };
+
+          // Replace specific characters using character map.
+          let converted = value.replace(/[\u00C0-\u017F]/g, (char) => characterMap[char] || char);
+
+          // Normalize the string to NFD form and remove combining diacritical marks.
+          converted = converted.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+
+          console.log(`returning ${converted}`);
+
+          return converted;
+        }
+
         // Add validation methods once globally for the page.
         once('prisonerPaymentsValidateMethods', 'html').forEach(function (element) {
 
@@ -208,23 +310,61 @@ javascript: |-
             return this.optional(element) || value >= param[1];
           }, $.validator.format("Amount must be no more than &pound;{1}"));
 
+          $.validator.addMethod("firstAndLastName", function (value, element) {
+            const regex = /[\p{L}]+(?:\s+[\p{L}\.\-']+){1,}/u;
+            return this.optional(element) || regex.test(value);
+          }, "You must include both first and last name");
+
+          $.validator.addMethod("asciiCompatibleFullName", function (value, element) {
+            let asciiText = Drupal.convertToASCII(value).trim();
+            asciiText = asciiText.replace(/[^a-zA-Z ]/g, '');
+            console.log(asciiText);
+            return this.optional(element) || asciiText;
+          }, "Full name not recognised. Try using letters A to Z.");
+
         });
 
         // Apply jquery validation methods once to individual elements.
         const $prisonerPaymentAmount = $(once('prisonerPaymentAmount', 'form input[name="prisoner_payment_amount"]', context));
+        const $visitorFullname = $(once('visitorFullName', 'form input[name="visitor_fullname"]', context));
+        const $prisonerFullname = $(once('prisonerFullName', 'form input[name="prisoner_fullname"]', context));
 
         if ($prisonerPaymentAmount.length) {
+
+          const prisonerMaxAmount = settings.prisonerPayments.prisonerMaxAmount ?? 0;
 
           $prisonerPaymentAmount.rules("add", {
             min: {
               param: 0.01
             },
             max: {
-              param: 100
+              param: prisonerMaxAmount
             },
             messages: {
               min: "Amount must be more than &pound;0",
-              max: "Amount must be &pound;100 or less"
+              max: "Amount must be &pound;" + prisonerMaxAmount + " or less"
+            }
+          });
+        }
+
+        if ($visitorFullname.length) {
+          $visitorFullname.rules("add", {
+            firstAndLastName: true,
+            asciiCompatibleFullName: true,
+            messages: {
+              firstAndLastName: "Your name must include both first and last name",
+              asciiCompatibleFullName: "Your name has not been recognised. Try using letters A to Z."
+            }
+          });
+        }
+
+        if ($prisonerFullname.length) {
+          $prisonerFullname.rules("add", {
+            firstAndLastName: true,
+            asciiCompatibleFullName: true,
+            messages: {
+              firstAndLastName: "Prisoner name must include both first and last name",
+              asciiCompatibleFullName: "Prisoner name has not been recognised. Try using letters A to Z."
             }
           });
         }
@@ -233,11 +373,11 @@ javascript: |-
     }
   })(jQuery, Drupal, once);
 settings:
-  ajax: true
+  ajax: false
   ajax_scroll_top: form
-  ajax_progress_type: throbber
-  ajax_effect: fade
-  ajax_speed: 500
+  ajax_progress_type: ''
+  ajax_effect: ''
+  ajax_speed: null
   page: true
   page_submit_path: ''
   page_confirm_path: ''
@@ -261,7 +401,7 @@ settings:
   form_submit_back: false
   form_disable_autocomplete: false
   form_novalidate: false
-  form_disable_inline_errors: true
+  form_disable_inline_errors: false
   form_required: false
   form_autofocus: false
   form_details_toggle: false
@@ -431,4 +571,5 @@ handlers:
     settings:
       message: 'This is a custom message.'
       debug: false
+      prisoner_maximum_payment_amount: 100
 variants: {  }
