@@ -12,8 +12,73 @@ main form {
   max-width: 800px;
 }
 
-.form-actions {
+form {
 
+  > fieldset > legend {
+    @include responsive-typo-map($form-legend-large);
+    color: $headings;
+  }
+
+  h2 {
+    @include responsive-typo-map($h3-text);
+  }
+
+  h3 {
+    @include responsive-typo-map($h4-text);
+  }
+
+  .description {
+    @include responsive-typo-map($small-text);
+    margin: .6rem 0 .9rem;
+
+    .fieldset-wrapper & {
+      //@include responsive-typo-map($body-text);
+      margin: 0 0 1em;
+    }
+  }
+}
+
+fieldset {
+
+  margin: 0 0 1.5em;
+  padding: 0;
+  border: 0;
+
+  &:focus {
+    outline-color: $brand-primary-medium;
+    outline-offset: .5em;
+    border: 0;
+  }
+
+  legend {
+    @include responsive-typo-map($form-legend);
+    color: $dark-green;
+    font-weight: normal;
+
+    &:has(span.fieldset-legend.visually-hidden) {
+      padding: 0;
+      margin: 0;
+    }
+
+    &:has(+ .fieldset-wrapper > .description, + .fieldset-wrapper > .field-prefix > .description) {
+      margin-bottom: 0;
+    }
+  }
+
+  // Deeply nested fieldsets.
+  fieldset fieldset.radios--wrapper,
+  fieldset fieldset.checkboxes--wrapper {
+
+    legend {
+      @include responsive-typo-map($form-legend-small);
+      font-weight: bold;
+      color: $text;
+    }
+
+  }
+}
+
+.form-actions {
   position: relative;
   margin: 2.5em 0;
 
@@ -32,11 +97,51 @@ main form {
   }
 }
 
+.form-wrapper {
+  margin: 0 0 1.5em;
+}
+
+.form-item:not(.form-wrapper) {
+  padding: 0;
+  margin: 0 0 1em;
+}
+
 .form-item {
   position: relative;
 
   .container-inline {
     margin: 0;
+  }
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+
+  &.form-type-checkbox,
+  &.form-type-radio {
+    margin-bottom: .5em;
+  }
+
+  &.form-type-processed-text {
+    margin: 0;
+  }
+
+  .info-notice:first-child {
+    margin-top: 0;
+  }
+
+  &--card {
+    padding: .5em;
+    background-color: $grey-lightest;
+  }
+
+  &--important {
+    margin-top: 2em;
+
+    label {
+      @include responsive-typo-map($h4-text);
+      font-weight: normal;
+    }
   }
 
   &--error-message {
@@ -49,50 +154,8 @@ main form {
       }
     }
   }
-}
 
-form {
-
-  h2 {
-    @include responsive-typo-map($h3-text);
-  }
-
-  h3 {
-    @include responsive-typo-map($h4-text);
-  }
-
-  > .form-item.form-wrapper {
-    margin: 0 0 1.5em;
-  }
-
-  .form-item {
-    padding: 0;
-    margin: 0 0 1em;
-
-    &.form-type-processed-text {
-      margin: 0;
-    }
-
-    &--card {
-      padding: .5em;
-      background-color: $grey-lightest;
-    }
-
-    &--important {
-      margin-top: 2em;
-
-      label {
-        @include responsive-typo-map($h4-text);
-        font-weight: normal;
-      }
-    }
-
-    .info-notice:first-child {
-      margin-top: 0;
-    }
-  }
-
-  .compact .form-item {
+  @at-root .compact & {
     margin: 0 0 .5em;
 
     * {
@@ -101,16 +164,7 @@ form {
   }
 }
 
-.description {
-  @include responsive-typo-map($small-text);
-  margin: .6rem 0 .9rem;
-
-  .fieldset-wrapper & {
-    //@include responsive-typo-map($body-text);
-    margin: 0 0 1em;
-  }
-}
-
+/*
 // Fieldsets and sections act as containers for groups of related form controls.
 //
 // Using a fieldset is the preferred way to group form controls where the legend of the fieldset helps to uniquely
@@ -160,7 +214,7 @@ form > .form-wrapper > section {
   // Nested fieldset legends / section titles.
   fieldset legend,
   section h2 {
-    @include responsive-typo-map($form-legend-plain);
+    @include responsive-typo-map($form-legend-small);
     font-weight: bold;
     color: $text;
   }
@@ -190,10 +244,11 @@ form .legend {
   font-weight: normal;
 
   &--plain {
-    @include responsive-typo-map($form-legend-plain);
+    @include responsive-typo-map($form-legend-small);
     color: $text;
   }
 }
+*/
 
 label,
 .label {
@@ -275,8 +330,8 @@ label,
 [size='40'],
 [size='50'],
 [size='60'] {
-  width: auto;
-  max-width: 56rem;
+  width: 100%;
+  max-width: fit-content;
 }
 
 select,
@@ -396,6 +451,7 @@ textarea,
 
 *:has( > .form-type-radio, > .form-type-checkbox) {
   width: fit-content;
+  max-width: 66%;
 }
 
 .form-type-radio,
