@@ -170,34 +170,43 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
       $prisoner_fullname = $form_state->getValue('prisoner_fullname');
       $prisoner_id = $form_state->getValue('prisoner_id');
 
-      // Validate visitor and prisoner names contain a first name and
-      // last name.
 
-      /*
-       * Regex to check for:
-       * - At least one first name.
-       * - Optional middle names.
-       * - At least one last name.
-       *
-       * \p{L}: Matches any Unicode letter.
-       *
-       */
-      $regex = '/^\p{L}+(?:[ \-\'\p{L}]*\p{L})*(\s+\p{L}+(?:[ \-\'\p{L}]*\p{L})*)+\s+\p{L}+(?:[ \-\'\p{L}]*\p{L})*$/u';
 
-      // Validate the "visitor_fullname" field.
-      if (!preg_match($regex, $visitor_fullname)) {
-        // Add an error if the full name is invalid.
-        $form_state->setErrorByName('visitor_fullname', $this->t('Please enter a valid full name with at least a first and last name.'));
+      // Validate full name fields.
+      // A full name is valid if it only contains latin alphabet
+      // letters, hyphens, single apostrophes, and spaces. And it must
+      // contain a first name and last name (each with at least one
+      // letter once non-letter characters are removed).
+
+      // Regex pattern to match latin alphabet letters, hyphens, single
+      // apostrophes, and spaces.
+      $pattern_match = '/^[\p{Latin}\-.\'\s]+$/u';
+
+      // Regex pattern to replace any character that is not a latin
+      // alphabet letter or a space.
+      $pattern_replace = '/[^\p{Latin}\s]/u';
+
+      if (!preg_match($pattern_match, $visitor_fullname)) {
+        $form_state->setErrorByName('visitor_fullname', $this->t('Your name must contain letters (A–Z), hyphens (-), periods (.), apostrophes (\') and spaces only.'));
+      }
+      elseif (count(array_filter(array_map('trim', explode(" ", preg_replace($pattern_replace, '', $visitor_fullname))))) < 2) {
+        $form_state->setErrorByName('visitor_fullname', $this->t('Your name must include both a first and last name separated by a space.'));
       }
 
+      if (!preg_match($pattern_match, $prisoner_fullname)) {
+        $form_state->setErrorByName('prisoner_fullname', $this->t('Prisoner name must contain letters (A–Z), hyphens (-), periods (.), apostrophes (\') and spaces only.'));
+      }
+      elseif (count(array_filter(array_map('trim', explode(" ", preg_replace($pattern_replace, '', $prisoner_fullname))))) < 2) {
+        $form_state->setErrorByName('prisoner_fullname', $this->t('Prisoner name must include both a first and last name separated by a space.'));
+      }
 
       // Validate the visitor_id is nominated by prisoner_id to
       // make payments.
       $visitor_ids = $this->getPrisonerNominatedVisitorIds($prisoner_id) ?? [];
 
       if (!in_array($visitor_id, $visitor_ids)) {
-        $form_state->setErrorByName('visitor_id', $this->t('Check your visitor ID is correct and the prisoner has nominated you to make payments to them'));
-        $form_state->setErrorByName('prisoner_id', $this->t('Check prisoner ID is correct'));
+        $form_state->setErrorByName('visitor_id', $this->t('Check your visitor ID is correct and the prisoner has nominated you to make payments to them.'));
+        $form_state->setErrorByName('prisoner_id', $this->t('Check prisoner ID is correct.'));
       }
     }
 
