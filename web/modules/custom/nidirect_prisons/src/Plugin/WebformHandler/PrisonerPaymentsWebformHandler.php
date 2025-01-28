@@ -70,6 +70,7 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
     return [
       'debug' => FALSE,
       'prisoner_maximum_payment_amount' => 0,
+      'payment_service_url' => 'https://secure-test.worldpay.com/jsp/merchant/xml/paymentService.jsp',
     ];
   }
 
@@ -153,6 +154,37 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
         $elements['wizard_next']['#access'] = FALSE;
       }
     }
+
+    if ($page === 'page_payment_card_details') {
+
+      // Generate and send Worldpay order XML request.
+      $order_data = $this->generateOrderData($form_state);
+      $response_xml = $this->sendWorldpayRequest($order_data);
+
+      // Parse the Worldpay response to get the iframe URL.
+      $response_url = $this->parseWorldpayResponse($response_xml);
+
+      if ($response_url) {
+
+        // Attach the Worldpay JS library and pass the iframe URL to drupalSettings.
+        $form['#attached']['library'][] = 'nidirect_prisons/prisoner_payments_worldpay';
+        $form['#attached']['drupalSettings']['worldpay'] = [
+          'url' => $response_url,
+          'target' => 'worldpay-html',
+        ];
+
+        // Add a container for the iframe.
+        $form['worldpay_container'] = [
+          '#markup' => '<div id="worldpay-html"></div>',
+          '#allowed_tags' => ['div'],
+        ];
+
+      } else {
+        // Handle error cases and display messages to users.
+        $form['#attached']['drupalSettings']['worldpayError'] = 'Unable to process your payment request. Please try again later.';
+      }
+    }
+
   }
 
   /**
@@ -169,8 +201,6 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
 
       $prisoner_fullname = $form_state->getValue('prisoner_fullname');
       $prisoner_id = $form_state->getValue('prisoner_id');
-
-
 
       // Validate full name fields.
       // A full name is valid if it only contains latin alphabet
@@ -435,5 +465,122 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
 
     return $nominated_visitor_ids;
   }
+
+  /**
+   * Generate the XML data for a Worldpay payment request.
+   *
+   * @param \Drupal\Core\Form\FormStateInterface $form_state
+   *   The form state object containing user-submitted data.
+   *
+   * @return string
+   *   The XML string for the Worldpay payment request.
+   */
+  protected function generateOrderData(FormStateInterface $form_state) {
+    // Extract form values.
+    $prisoner_id = $form_state->getValue('prisoner_id');
+    $visitor_name = $form_state->getValue('visitor_name');
+    $payment_amount = $form_state->getValue('payment_amount');
+
+    // Worldpay requires the amount in the smallest currency unit (e.g., pence for GBP).
+    $amount_in_cents = intval($payment_amount * 100);
+
+    // Create the array representing the XML structure.
+    $data = [
+      'paymentService' => [
+        '@attributes' => [
+          'version' => '1.4',
+          'merchantCode' => 'YOUR_MERCHANT_CODE',
+        ],
+        'submit' => [
+          'order' => [
+            '@attributes' => [
+              'orderCode' => $this->generateOrderCode($prisoner_id),
+              'installationId' => 'YOUR_INSTALLATION_ID',
+            ],
+            'description' => "Payment for prisoner ID: $prisoner_id",
+            'amount' => [
+              '@attributes' => [
+                'currencyCode' => 'GBP',
+                'exponent' => '2',
+                'value' => $amount_in_cents,
+              ],
+            ],
+            'orderContent' => "Payment made by: $visitor_name",
+            'paymentMethodMask' => [
+              'include' => [
+                '@attributes' => ['code' => 'ALL'],
+              ],
+            ],
+            'shopper' => [
+              'shopperEmailAddress' => 'example@example.com', // Replace as needed.
+            ],
+            'billingAddress' => [
+              'address' => [
+                'address1' => '123 Example Street',
+                'postalCode' => 'AB12CD',
+                'city' => 'Example City',
+                'countryCode' => 'GB',
+              ],
+            ],
+          ],
+        ],
+      ],
+    ];
+
+    // Convert the array to XML.
+    return $this->arrayToXml($data, new \SimpleXMLElement('<root/>'))->asXML();
+  }
+
+  /**
+   * Recursively convert an array to a SimpleXMLElement object.
+   *
+   * @param array $data
+   *   The array to convert.
+   * @param \SimpleXMLElement $xml
+   *   The SimpleXMLElement object to append to.
+   *
+   * @return \SimpleXMLElement
+   *   The updated SimpleXMLElement object.
+   */
+  protected function arrayToXml(array $data, \SimpleXMLElement $xml) {
+    foreach ($data as $key => $value) {
+      if (is_array($value)) {
+        if (isset($value['@attributes'])) {
+          // Handle attributes for this element.
+          $child = $xml->addChild($key);
+          foreach ($value['@attributes'] as $attr_key => $attr_value) {
+            $child->addAttribute($attr_key, $attr_value);
+          }
+          // Process child elements if they exist.
+          if (isset($value['@value'])) {
+            $child[0] = $value['@value'];
+          } else {
+            $this->arrayToXml($value, $child);
+          }
+        } else {
+          // Recurse for nested elements.
+          $this->arrayToXml($value, $xml->addChild($key));
+        }
+      } else {
+        // Add a single element.
+        $xml->addChild($key, htmlspecialchars($value));
+      }
+    }
+    return $xml;
+  }
+
+  /**
+   * Generate a unique order code for Worldpay.
+   *
+   * @param string $prisoner_id
+   *   The prisoner ID for the payment.
+   *
+   * @return string
+   *   A unique order code.
+   */
+  protected function generateOrderCode($prisoner_id) {
+    return 'ORDER_' . $prisoner_id . '_' . time();
+  }
+
 
 }
