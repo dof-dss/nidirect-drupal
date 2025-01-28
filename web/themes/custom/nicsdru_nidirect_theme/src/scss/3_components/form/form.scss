@@ -38,7 +38,8 @@ form {
   }
 }
 
-fieldset {
+fieldset,
+section.webform-section {
 
   margin: 0 0 1.5em;
   padding: 0;
@@ -50,9 +51,13 @@ fieldset {
     border: 0;
   }
 
+  &.important-question {
+    margin: 2em 0;
+  }
+
   legend {
     @include responsive-typo-map($form-legend);
-    color: $dark-green;
+    color: $peacock-blue;
     font-weight: normal;
 
     &:has(span.fieldset-legend.visually-hidden) {
