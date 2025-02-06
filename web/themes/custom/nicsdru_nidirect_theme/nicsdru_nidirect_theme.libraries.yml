@@ -1,5 +1,5 @@
 nidirect-global-styles:
-  version: 1.x
+  version: 1.0
   css:
     # The SMACSS category, "base", is loaded before other categories. Drupal 8
     # loads stylesheets based on the SMACSS ordering of:
@@ -67,7 +67,7 @@ nidirect-global-styles:
     - core/modernizr
 
 nidirect-specific-styles:
-  version: 1.x
+  version: 1.0
   css:
     component:
       css/3_components/block/site-logo.css: { minified: true }
@@ -91,7 +91,7 @@ nidirect-specific-styles:
       '//fonts.googleapis.com/css?family=Lato': { type: external }
 
 nidirect-table-of-contents:
-  version: VERSION
+  version: 1.0
   js:
     js/in_page_navigation.js: { minified: true }
   dependencies:
@@ -100,7 +100,7 @@ nidirect-table-of-contents:
     - core/once
 
 nidirect-accordions:
-  version: VERSION
+  version: 1.0
   css:
     component:
       css/3_components/content/accordions.css: { minified: true }
@@ -114,13 +114,14 @@ nidirect-accordions:
 # This library provides styling for common admin interface components - the library is only loaded for
 # authenticated users and on the user login form - @see nicsdru_nidirect_theme.theme for processing functions
 authenticated-styles:
-  version: VERSION
+  version: 1.0
   css:
     theme:
       css/3_components/form/layout-builder-form.css: { minified: true, weight: -6 }
       css/3_components/layout/layout-builder.css: { minified: true, weight: -5 }
 
 nidirect-ui:
+  version: 1.0
   js:
     js/ui.js: { minified: false }
   dependencies:

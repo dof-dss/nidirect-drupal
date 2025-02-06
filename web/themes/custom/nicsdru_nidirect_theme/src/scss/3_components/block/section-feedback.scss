@@ -27,9 +27,14 @@ body:not(.path-taxonomy) .section-feedback {
   &__heading {
     width: 100%;
     padding: 0;
-    margin: 0;
+    margin: 0 0 1.5em;
     font-size: 1em;
     line-height: 1.5;
+
+    &:has(button[aria-expanded='false']) {
+      // Make sure it's tight to footer when feedback form is hidden.
+      margin-bottom: 0;
+    }
   }
 
   &__toggle {

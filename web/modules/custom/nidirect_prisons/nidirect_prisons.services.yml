@@ -1,0 +1,5 @@
+services:
+  nidirect_prisons.authentication.token_and_ip:
+    class: Drupal\nidirect_prisons\Authentication\Provider\TokenAndIpAddressAuth
+    tags:
+      - { name: authentication_provider, provider_id: 'nidirect_prisons_token_ip_auth', priority: 10 }

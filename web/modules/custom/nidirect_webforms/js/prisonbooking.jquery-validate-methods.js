@@ -4,6 +4,88 @@
  */
 (function ($, Drupal, once) {
 
+  Drupal.pvGetAge = function (dateString) {
+    // Validate the input format: dd/mm/yyyy.
+    const dateRegex = /^([0-2][0-9]|3[0-1])\/(0[1-9]|1[0-2])\/\d{4}$/;
+    if (!dateRegex.test(dateString)) {
+      return null;
+    }
+
+    // Convert dd/mm/yyyy to ISO format (yyyy-mm-dd).
+    const dateParts = dateString.split("/");
+    const isoDateString = `${dateParts[2]}-${dateParts[1]}-${dateParts[0]}T00:00:00Z`;
+
+    // Parse the birthdate.
+    const birthDate = new Date(isoDateString);
+    if (isNaN(birthDate)) {
+      return null;
+    }
+
+    // Calculate the age.
+    const today = new Date();
+    let age = today.getUTCFullYear() - birthDate.getUTCFullYear();
+    const monthDiff = today.getUTCMonth() - birthDate.getUTCMonth();
+    const dayDiff = today.getUTCDate() - birthDate.getUTCDate();
+
+    // Adjust age if the birth month/day hasn't occurred yet.
+    if (monthDiff < 0 || (monthDiff === 0 && dayDiff < 0)) {
+      age--;
+    }
+
+    return age;
+  };
+
+
+  Drupal.pvIsUniqueVisitorId = function(existingIds = {}, visitorId, visitorElement) {
+
+    let isUnique = true;
+
+    // Check against known existing ids.
+    for (const [key, value] of Object.entries(existingIds)) {
+      const visitorElementName = $(visitorElement).attr('name');
+      if (value === visitorId && key !== visitorElementName) {
+        isUnique = false;
+      }
+    }
+
+    // Check against other additional visitor ids.
+    $('[name^="additional_visitor_"][name$="_id"]').each(function() {
+      let key = $(this).attr('name');
+      let value = $(this).val();
+      if (value === visitorId && key !== $(visitorElement).attr('name')) {
+        isUnique = false;
+      }
+    });
+
+    return isUnique;
+  }
+
+  Drupal.pvNumberOfAdultVisitors = function() {
+    let numAdults = 0;
+    $('[name^="additional_visitor_"][name$="_dob"]').each(function(index) {
+      if ($(this).is(':visible') && Drupal.pvGetAge($(this).val()) >= 18) {
+        numAdults++;
+      }
+    });
+    return numAdults;
+  }
+
+  Drupal.pvDaysInMonth = function(m, y) {
+    switch (m) {
+      case 1 :
+        return (y % 4 == 0 && y % 100) || y % 400 == 0 ? 29 : 28;
+      case 8 : case 3 : case 5 : case 10 :
+        return 30;
+      default :
+        return 31;
+    }
+  }
+
+  Drupal.pvIsValidDate = function(d, m, y) {
+    m = parseInt(m, 10) - 1;
+    return m >= 0 && m < 12 && d > 0 && d <= Drupal.pvDaysInMonth(m, y);
+  }
+
   Drupal.behaviors.prisonVisitValidateMethods = {
     attach: function (context, settings) {
 
@@ -11,7 +93,6 @@
       once('prisonVisitValidateMethods', 'html').forEach(function (element) {
 
         // Validation methods and related functions
-
         $.validator.addMethod('validPrisonVisitBookingRef', function (value, element, params) {
 
           let bookRefIsValid = true;
@@ -97,87 +178,48 @@
         }, `Visit reference number is not recognised or has expired.`);
 
         $.validator.addMethod("uniqueVisitorId", function(value, element, params) {
-          return this.optional(element) || isUniqueVisitorId(params[1], value, element) === true;
+          return this.optional(element) || Drupal.pvIsUniqueVisitorId(params[1], value, element) === true;
         }, $.validator.format("Visitor ID has already been entered"));
 
         $.validator.addMethod("minAge", function(value, element, param) {
-          return this.optional(element) || getAge(value) >= param[1];
+          return this.optional(element) || Drupal.pvGetAge(value) >= param[1];
         }, $.validator.format("Age must be {1} years old or over"));
 
         $.validator.addMethod("maxAge", function(value, element, param) {
-          return this.optional(element) || getAge(value) <= param[1];
+          return this.optional(element) || Drupal.pvGetAge(value) <= param[1];
         }, $.validator.format("Age must be no more than {1} years old"));
+
+        $.validator.addMethod("maxAdults", function(value, element, param) {
+          let isValid = true;
+          if (Drupal.pvNumberOfAdultVisitors() > param[1] && Drupal.pvGetAge(value) >= 18) {
+            isValid = false;
+          }
+          return this.optional(element) || isValid;
+        }, $.validator.format("Maximum number of adults is {1}"));
 
         $.validator.addMethod("validDate", function(value, element) {
           const dateParts = value.split("/");
           const year = parseInt(dateParts[2]);
           const month = parseInt(dateParts[1]);
           const day = parseInt(dateParts[0]);
-          return this.optional(element) || isValidDate(day, month, year);
+          return this.optional(element) || Drupal.pvIsValidDate(day, month, year);
         }, $.validator.format("Date must be a valid date"));
 
         $.validator.addMethod("noHtml", function(value, element) {
           return this.optional(element) || value === value.replace(/(<([^>]+)>)/gi, "");
         }, "Text must be plain text only");
 
-
-        function isUniqueVisitorId(existingIds = {}, visitorId, visitorElement) {
-
-          let isUnique = true;
-
-          // Check against adult visitor ids.
-          for (const [key, value] of Object.entries(existingIds)) {
-            const visitorElementName = $(visitorElement).attr('name');
-            if (value === visitorId && key !== visitorElementName) {
-              isUnique = false;
-            }
-          }
-
-          // Check against child visitor ids within the present step.
-          $('[name*="visitor_"][name$="_id"]').each(function() {
-            let key = $(this).attr('name');
-            let value = $(this).val();
-            if (value === visitorId && key !== $(visitorElement).attr('name')) {
-              isUnique = false;
-            }
-          });
-
-          return isUnique;
-        }
-
-        function getAge(dateString) {
-          // Simple conversion of dd/mm/yyyy to yyyy-mm-dd
-          if (dateString.includes('/')) {
-            const dateParts = dateString.split("/");
-            dateString = dateParts[2] + '-' + dateParts[1] + '-' + dateParts[0] + 'T00:00';
-          }
-          const today = new Date();
-          const birthDate = new Date(dateString);
-          let age = today.getFullYear() - birthDate.getFullYear();
-          let m = today.getMonth() - birthDate.getMonth();
-          if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
-            age--;
-          }
-          return age;
-        }
-
-        function daysInMonth(m, y) {
-          switch (m) {
-            case 1 :
-              return (y % 4 == 0 && y % 100) || y % 400 == 0 ? 29 : 28;
-            case 8 : case 3 : case 5 : case 10 :
-              return 30;
-            default :
-              return 31;
-          }
-        }
-
-        function isValidDate(d, m, y) {
-          m = parseInt(m, 10) - 1;
-          return m >= 0 && m < 12 && d > 0 && d <= daysInMonth(m, y);
-        }
+        $.validator.addMethod("timeSlotRequired", function(value, element, options) {
+          // Count how many checkboxes in the group are checked.
+          const checkboxes = $(options);
+          const checked = checkboxes.filter(":checked").length;
+          return checked > 0;
+        }, "You must choose a time slot for your visit");
 
       });
+
+      // The form's validator object.
+      const validator = $('form.webform-submission-prison-visit-online-booking-form').validate();
 
       // Apply jquery validation methods once to individual elements
       // which might be loaded in via ajax.
@@ -224,57 +266,33 @@
         });
       }
 
-      // Adult Visitor ID validation rules.
-      const pvVisitorOneId =  settings.prisonVisitBooking.visitorOneId ?? {};
-      $(once('pvAdultIds', '[name*="additional_visitor_adult"][name$="_id"]', context)).each(function() {
-        $(this).rules("add", {
-          uniqueVisitorId: [true, pvVisitorOneId],
-          messages: {
-            uniqueVisitorId: "Visitor ID has already been entered"
-          }
+      // Additional Visitor ID validation rules.
+      const pvVisitorOneId =  settings.prisonVisitBooking.visitorOneId ?? '';
+
+      if (pvVisitorOneId !== '') {
+        $(once('pvAdditionalVisitorIds', '[name^="additional_visitor_"][name$="_id"]', context)).each(function() {
+          $(this).rules("add", {
+            uniqueVisitorId: [true, pvVisitorOneId],
+            messages: {
+              uniqueVisitorId: "Visitor ID has already been entered"
+            }
+          });
         });
-      });
+      }
 
-      // Child Visitor ID validation rules.
-      const pvAdultVisitorIds =  settings.prisonVisitBooking.adultVisitorIds ?? {};
-      $(once('pvChildIds', '[name*="additional_visitor_child"][name$="_id"]', context)).each(function() {
-        $(this).rules("add", {
-          uniqueVisitorId: [true, pvAdultVisitorIds],
-          messages: {
-            uniqueVisitorId: "Visitor ID has already been entered"
-          }
-        });
-      });
+      // Visitor dates of birth validation rules.
+      // There is maximum of two adults.
+      const $pvDobs = $(once('pvDobs', '[name^="additional_visitor_"][name$="_dob"]', context));
 
-      // Adult visitor dates of birth validation rules.
-      const pvAdultDobSelectors = '[name="additional_visitor_adult_1_dob"], [name="additional_visitor_adult_2_dob"]';
-
-      $(once('pvAdultDobs', pvAdultDobSelectors, context)).each(function() {
-        $(this).rules("add", {
-          validDate: true,
-          minAge: [true, 18],
-          messages: {
-            minAge: "Adult visitor must be at least 18 years of age"
-          }
-        });
-      });
-
-      // Child visitor dates of birth validation rules.
-      const pvChildDobSelectors = '' +
-        '[name="additional_visitor_child_1_dob"], ' +
-        '[name="additional_visitor_child_2_dob"], ' +
-        '[name="additional_visitor_child_3_dob"], ' +
-        '[name="additional_visitor_child_4_dob"], ' +
-        '[name="additional_visitor_child_5_dob"]';
-
-      $(once('pvChildDobs', pvChildDobSelectors, context)).each(function() {
+      $pvDobs.each(function() {
         $(this).rules("add", {
           validDate: true,
           minAge: [true, 0],
-          maxAge: [true, 17],
+          maxAdults: [true, 2],
           messages: {
-            minAge: "Date of birth cannot be greater than today's date",
-            maxAge: "Child visitor must be under 18 years of age"
+            validDate: "Enter a valid birthdate.",
+            minAge: "Enter a valid birthdate.",
+            maxAdults: "The maximum number of adults is two. Enter a child's visitor ID and date of birth."
           }
         });
       });
@@ -286,6 +304,32 @@
         });
       });
 
+      // Visit time slot validation rules.
+      const $weekSlots = $(once('pvTimeSlots', 'details[data-webform-key^="slots_week_"]', context));
+
+      // Add container for time slot error messages.
+      $weekSlots.append('<div class="time-slot-error-placement" aria-live="polite"></div>');
+
+      // Add required rule to time slots
+      const $timeslots = $weekSlots.find("input.timeslot");
+      $timeslots.rules("add", {
+        timeSlotRequired: $timeslots
+      });
+
+      // Trigger validation on first timeslot when any checkbox is changed.
+      $timeslots.on("change", function() {
+        validator.element($timeslots.first());
+      });
+
+      // Update the errorPlacement function on the validator instance.
+      validator.settings.errorPlacement = function(error, element) {
+        if (element.hasClass('timeslot')) {
+          error.appendTo($(".time-slot-error-placement"));
+        } else {
+          // Default error placement for other elements.
+          error.insertAfter(element);
+        }
+      };
     }
   }
 })(jQuery, Drupal, once);
