@@ -71,27 +71,7 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
       'debug' => FALSE,
       'prisoner_maximum_payment_amount' => 0,
       'worldpay_payment_service_url' => 'https://secure-test.worldpay.com/jsp/merchant/xml/paymentService.jsp',
-      'worldpay_username' => 'wp-test-user',
-      'worldpay_password' => 'password',
-      'worldpay_merchant_codes' => [
-        'MY' => 'MERCHANT_CODE_MY',
-        'MN' => 'MERCHANT_CODE_MN',
-        'HW' => 'MERCHANT_CODE_HW',
-      ],
     ];
-
-    /*return [
-      'debug' => FALSE,
-      'prisoner_maximum_payment_amount' => 0,
-      'worldpay_payment_service_url' => 'https://secure-test.worldpay.com/jsp/merchant/xml/paymentService.jsp',
-      'worldpay_username' => 'wp-test-user',
-      'worldpay_password' => getenv('PRISONER_PAYMENTS_WP_PASSWORD'),
-      'worldpay_merchant_codes' => [
-        'MY' => getenv('PRISONER_PAYMENTS_WP_MERCHANT_CODE_MY'),
-        'MN' => getenv('PRISONER_PAYMENTS_WP_MERCHANT_CODE_MN'),
-        'HW' => getenv('PRISONER_PAYMENTS_WP_MERCHANT_CODE_HW'),
-      ],
-    ];*/
   }
 
   /**
@@ -192,27 +172,17 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
         ];
 
         // Add a container for the iframe.
-        $form['worldpay_container'] = [
+        $form['elements']['page_payment_card_details']['worldpay_container'] = [
           '#markup' => '<div id="worldpay-html"></div>',
           '#allowed_tags' => ['div'],
         ];
+
+        // Hide submit.
+        $form['actions']['submit']['#attributes']['class'][] = 'visually-hidden';
 
       } else {
         // Handle error cases and display messages to users.
-        // $form['#attached']['drupalSettings']['worldpayError'] = 'Unable to process your payment request. Please try again later.';
-
-        // FOR TESTING PURPOSES, try adding iframe anyway...
-        $form['#attached']['library'][] = 'nidirect_prisons/prisoner_payments_worldpay';
-        $form['#attached']['drupalSettings']['worldpay'] = [
-          'url' => 'https://payments.worldpay.com/app/hpp/integration/transaction/37d9d008-d649-4458-a7cd-c07a65debc54?ref=1718718877578485&cs=JWNvp6kQ0Xsrca_q',
-          'target' => 'worldpay-html',
-        ];
-
-        // Add a container for the iframe.
-        $form['worldpay_container'] = [
-          '#markup' => '<div id="worldpay-html"></div>',
-          '#allowed_tags' => ['div'],
-        ];
+        $form['#attached']['drupalSettings']['worldpayError'] = 'Unable to process your payment request. Please try again later.';
       }
     }
 
@@ -281,12 +251,8 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
         $form_state->setError($form, $this->t('Prisoner has reached the maximum amount payable for this week. Try again next week.'));
       }
 
-      if ($prisoner_payment_amount == 0 || $prisoner_payment_amount > $prisoner_max_amount) {
-        $form_state->setErrorByName('prisoner_payment_amount', $this->t('Amount must be more than &pound;0'));
-      }
-
-      if ($prisoner_payment_amount > $prisoner_max_amount) {
-        $form_state->setErrorByName('prisoner_payment_amount', $this->t('Amount must be &pound;@max or less', ['@max' => $prisoner_max_amount]));
+      if (!is_numeric($prisoner_payment_amount) || $prisoner_payment_amount < 0.01 || $prisoner_payment_amount > $prisoner_max_amount) {
+        $form_state->setErrorByName('prisoner_payment_amount', $this->t('Amount must be between &pound;0.01 and &pound;@max.', ['@max' => $prisoner_max_amount]));
       }
 
     }
@@ -298,112 +264,36 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state, WebformSubmissionInterface $webform_submission) {
-    $this->debug(__FUNCTION__);
-  }
 
-  /**
-   * {@inheritdoc}
-   */
-  public function confirmForm(array &$form, FormStateInterface $form_state, WebformSubmissionInterface $webform_submission) {
-    $this->debug(__FUNCTION__);
-  }
+    $webform = $webform_submission->getWebform();
 
-  /**
-   * {@inheritdoc}
-   */
-  public function preCreate(array &$values) {
-    $this->debug(__FUNCTION__);
-  }
+    // Retrieve the JSON string from the hidden field
+    $response_data_json = $form_state->getValue('wp_response');
 
-  /**
-   * {@inheritdoc}
-   */
-  public function postCreate(WebformSubmissionInterface $webform_submission) {
-    $this->debug(__FUNCTION__);
-  }
+    // Decode the JSON string into an associative array
+    $response_data = json_decode($response_data_json, TRUE);
 
-  /**
-   * {@inheritdoc}
-   */
-  public function postLoad(WebformSubmissionInterface $webform_submission) {
-    $this->debug(__FUNCTION__);
-  }
+    if (json_last_error() !== JSON_ERROR_NONE) {
+      // Handle error if the JSON is invalid
+      $this->getLogger('nidirect_prisons')->error('Invalid worldpay response data received: @error', ['@error' => json_last_error_msg()]);
+      return;
+    }
 
-  /**
-   * {@inheritdoc}
-   */
-  public function preDelete(WebformSubmissionInterface $webform_submission) {
-    $this->debug(__FUNCTION__);
-  }
+    // Get the order status.
+    //ksm($response_data);
+    $order_status = $response_data['order']['status'];
 
-  /**
-   * {@inheritdoc}
-   */
-  public function postDelete(WebformSubmissionInterface $webform_submission) {
-    $this->debug(__FUNCTION__);
-  }
+    // Process payment results, update submission, or modify confirmation message
+    if ($order_status === 'success') {
+      $webform->setSetting('confirmation_message', $webform->getElement('webform_confirmation_success')['#markup']);
+    } else {
+      $webform->setSetting('confirmation_message', $webform->getElement('webform_confirmation_failure')['#markup']);
+    }
 
-  /**
-   * {@inheritdoc}
-   */
-  public function preSave(WebformSubmissionInterface $webform_submission) {
-    $this->debug(__FUNCTION__);
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function postSave(WebformSubmissionInterface $webform_submission, $update = TRUE) {
-    $this->debug(__FUNCTION__, $update ? 'update' : 'insert');
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function preprocessConfirmation(array &$variables) {
-    $this->debug(__FUNCTION__);
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function createHandler() {
-    $this->debug(__FUNCTION__);
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function updateHandler() {
-    $this->debug(__FUNCTION__);
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function deleteHandler() {
-    $this->debug(__FUNCTION__);
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function createElement($key, array $element) {
-    $this->debug(__FUNCTION__);
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function updateElement($key, array $element, array $original_element) {
-    $this->debug(__FUNCTION__);
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function deleteElement($key, array $element) {
-    $this->debug(__FUNCTION__);
+    // Optionally log the payment response for auditing
+    $this->getLogger('nidirect_prisons')->notice('Payment processed for order key: @orderKey', [
+      '@orderKey' => $response_data['order']['orderKey']
+    ]);
   }
 
   /**
@@ -544,127 +434,52 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
     $prisoner_id = $form_state->getValue('prisoner_id');
     $visitor_id = $form_state->getValue('visitor_id');
     $visitor_fullname = $form_state->getValue('visitor_fullname');
-    $payment_amount = $form_state->getValue('prisoner_payment_amount');
+    $payment_amount = (float) $form_state->getValue('prisoner_payment_amount');
 
+    // Generate the correct merchant code based on the prison_id for the given prisoner_id.
     $prison_id = $this->getPrisonId($prisoner_id);
-    $merchant_code = $this->configuration['worldpay_merchant_codes'][$prison_id];
+    $merchant_code = getenv('PRISONER_PAYMENTS_WP_MERCHANT_CODE_' . $prison_id) ?: 'DEFAULT_MERCHANT_CODE';
+
+    // Log an error if merchant code could not be retrieved.
+    if (!$merchant_code || $merchant_code === 'DEFAULT_MERCHANT_CODE') {
+      $this->getLogger('nidirect_prisons')->error('Missing merchant code for prison ID: @prison_id', [
+        '@prison_id' => $prison_id,
+      ]);
+    }
+
+    // Generate the order code needed to uniquely identify the payment request order.
     $order_code = $this->generateOrderCode($prison_id, $prisoner_id, $visitor_id);
-    $description = "Payment for prisoner ID: $prisoner_id";
+
+    // Generate a meaningful description for the payment request.
+    $description = htmlspecialchars("Payment for prisoner ID: $prisoner_id", ENT_XML1);
+
+    // The currency for the payment request must be pounds sterling.
     $currency = 'GBP';
 
     // Worldpay requires the amount in the smallest currency unit (e.g., pence for GBP).
-    $amount_in_cents = intval($payment_amount * 100);
+    $amount_in_pence = (int) round($payment_amount * 100);
 
-    // Create XML structure
-    $xml = new \SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><paymentService version="1.4" merchantCode="' . $merchant_code . '"></paymentService>');
-    $submit = $xml->addChild('submit');
-    $order = $submit->addChild('order');
-    $order->addAttribute('orderCode', $order_code);
-    $order->addChild('description', $description);
+    // Create XML structure.
+    $xml = <<<XML
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE paymentService PUBLIC "-//Worldpay//DTD Worldpay PaymentService v1//EN" "http://dtd.worldpay.com/paymentService_v1.dtd">
+<paymentService version="1.4" merchantCode="$merchant_code">
+  <submit>
+    <order orderCode="$order_code" installationId="1536419">
+      <description>$description</description>
+      <amount value="$amount_in_pence" currencyCode="$currency" exponent="2"/>
+      <paymentMethodMask>
+        <include code="ECMC_DEBIT-SSL"/>
+        <include code="VISA_DEBIT-SSL"/>
+      </paymentMethodMask>
+    </order>
+  </submit>
+</paymentService>
 
-    // Add amount details
-    $amount_node = $order->addChild('amount');
-    $amount_node->addAttribute('value', intval($payment_amount * 100)); // Convert to minor units
-    $amount_node->addAttribute('currencyCode', $currency);
-    $amount_node->addAttribute('exponent', '2');
+XML;
 
-    // Add payment method restrictions
-    $payment_method_mask = $order->addChild('paymentMethodMask');
-    $payment_method_mask->addChild('include')->addAttribute('code', 'VISA-DELTA');
-    $payment_method_mask->addChild('include')->addAttribute('code', 'ECMC-DEBIT');
+    //ksm('Generated Worldpay payment request', $xml);
 
-    ksm($xml->asXML());
-
-    return $xml->asXML();
-
-    // Create the array representing the XML structure.
-    /*
-    $data = [
-      'paymentService' => [
-        '@attributes' => [
-          'version' => '1.4',
-          'merchantCode' => $merchant_code,
-        ],
-        'submit' => [
-          'order' => [
-            '@attributes' => [
-              'orderCode' => $this->generateOrderCode($prison_id, $prisoner_id, $visitor_id),
-              'installationId' => 'YOUR_INSTALLATION_ID',
-            ],
-            'description' => "Payment for prisoner ID: $prisoner_id",
-            'amount' => [
-              '@attributes' => [
-                'currencyCode' => 'GBP',
-                'exponent' => '2',
-                'value' => $amount_in_cents,
-              ],
-            ],
-            'orderContent' => "Payment made by: $visitor_fullname",
-            'paymentMethodMask' => [
-              'include' => [
-                '@attributes' => ['code' => 'ALL'],
-              ],
-            ],
-            'shopper' => [
-              'shopperEmailAddress' => 'example@example.com', // Replace as needed.
-            ],
-            'billingAddress' => [
-              'address' => [
-                'address1' => '123 Example Street',
-                'postalCode' => 'AB12CD',
-                'city' => 'Example City',
-                'countryCode' => 'GB',
-              ],
-            ],
-          ],
-        ],
-      ],
-    ];
-
-    $order_data = $this->arrayToXml($data, new \SimpleXMLElement('<root/>'))->asXML();
-
-    ksm($order_data);
-
-    // Convert the array to XML.
-    return $order_data;
-    */
-  }
-
-  /**
-   * Recursively convert an array to a SimpleXMLElement object.
-   *
-   * @param array $data
-   *   The array to convert.
-   * @param \SimpleXMLElement $xml
-   *   The SimpleXMLElement object to append to.
-   *
-   * @return \SimpleXMLElement
-   *   The updated SimpleXMLElement object.
-   */
-  protected function arrayToXml(array $data, \SimpleXMLElement $xml) {
-    foreach ($data as $key => $value) {
-      if (is_array($value)) {
-        if (isset($value['@attributes'])) {
-          // Handle attributes for this element.
-          $child = $xml->addChild($key);
-          foreach ($value['@attributes'] as $attr_key => $attr_value) {
-            $child->addAttribute($attr_key, $attr_value);
-          }
-          // Process child elements if they exist.
-          if (isset($value['@value'])) {
-            $child[0] = $value['@value'];
-          } else {
-            $this->arrayToXml($value, $child);
-          }
-        } else {
-          // Recurse for nested elements.
-          $this->arrayToXml($value, $xml->addChild($key));
-        }
-      } else {
-        // Add a single element.
-        $xml->addChild($key, htmlspecialchars($value));
-      }
-    }
     return $xml;
   }
 
@@ -692,34 +507,57 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
   protected function sendWorldpayRequest(string $order_data) {
     $xml = NULL;
     $client = \Drupal::service('http_client');
-    $url = $this->configuration['worldpay_payment_service_url'];
-    $api_username = $this->configuration['worldpay_username']; // Worldpay API username
-    $api_password = $this->configuration['worldpay_password']; // Worldpay API password
+    $url = getenv('PRISONER_PAYMENTS_WP_SERVICE_URL') ?: 'https://secure-test.worldpay.com/jsp/merchant/xml/paymentService.jsp';
+    $api_username = getenv('PRISONER_PAYMENTS_WP_USERNAME');
+    $api_password = getenv('PRISONER_PAYMENTS_WP_PASSWORD');
+
+    // Validate credentials before making request.
+    if (empty($api_username) || empty($api_password)) {
+      $this->getLogger('nidirect_prisons')->error('Missing Worldpay API credentials.');
+      return NULL;
+    }
 
     try {
       $response = $client->post($url, [
-        'auth' => [$api_username, $api_password], // Basic Authentication
         'headers' => [
+          'Authorization' => 'Basic ' . base64_encode("$api_username:$api_password"),
           'Content-Type' => 'application/xml',
           'Accept' => 'application/xml',
         ],
         'body' => $order_data,
       ]);
 
-      if ($response->getStatusCode() == 200) {
-        $xml_string = $response->getBody()->getContents();
-        $xml = simplexml_load_string($xml_string);
+      $status_code = $response->getStatusCode();
+      $xml_string = $response->getBody()->getContents();
+
+      if ($status_code == 200) {
+        // Validate response is XML before parsing.
+        if (str_starts_with($xml_string, '<?xml')) {
+          $xml = simplexml_load_string($xml_string);
+          //ksm('Worldpay payment request response 200 OK', $xml);
+        }
+        else {
+          $this->getLogger('nidirect_prisons')->error('Worldpay response is not valid XML: @response', [
+            '@response' => substr($xml_string, 0, 500), // Log first 500 chars for debugging.
+          ]);
+          //ksm('Worldpay payment request invalid XML', $xml_string);
+        }
       }
       else {
-        $this->getLogger('nidirect_prisons')->error('sendWorldpayRequest received unexpected status code: @code', [
-          '@code' => $response->getStatusCode(),
+        $this->getLogger('nidirect_prisons')->error('sendWorldpayRequest received unexpected status code: @code | Response: @response', [
+          '@code' => $status_code,
+          '@response' => substr($xml_string, 0, 500), // Log first 500 chars.
         ]);
+        //ksm('Worldpay payment request unexpected status code', $status_code, $xml_string);
       }
     }
-    catch (\Exception $e) {
-      $this->getLogger('nidirect_prisons')->error('sendWorldpayRequest error: @message', [
+    catch (\GuzzleHttp\Exception\RequestException $e) {
+      $response_body = $e->hasResponse() ? $e->getResponse()->getBody()->getContents() : 'No response';
+      $this->getLogger('nidirect_prisons')->error('sendWorldpayRequest error: @message | Response: @response', [
         '@message' => $e->getMessage(),
+        '@response' => substr($response_body, 0, 500), // Avoid logging excessive data.
       ]);
+      //ksm('Worldpay payment request exception', $e->getMessage(), $response_body);
     }
 
     return $xml;
@@ -733,7 +571,7 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
       'error' => NULL,
     ];
 
-    if (!$xml) {
+    if (!$xml || !($xml instanceof \SimpleXMLElement)) {
       $result['error'] = 'Invalid or empty XML response from Worldpay.';
       $this->getLogger('nidirect_prisons')->error('parseWorldpayResponse: Invalid or empty XML response.');
       return $result;
@@ -750,7 +588,18 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
         $reference = $order_status->xpath('reference');
         if (!empty($reference)) {
           $result['reference_url'] = (string) $reference[0];
-          $result['success'] = TRUE;
+
+          if (!filter_var($result['reference_url'], FILTER_VALIDATE_URL)) {
+            $this->getLogger('nidirect_prisons')->warning('parseWorldpayResponse: Reference URL is not a valid URL: @url', [
+              '@url' => $result['reference_url'],
+            ]);
+            $result['error'] = 'Invalid reference URL returned by Worldpay.';
+          } else {
+            $result['success'] = TRUE;
+          }
+        } else {
+          $result['error'] = 'Missing reference URL in Worldpay response.';
+          $this->getLogger('nidirect_prisons')->warning('parseWorldpayResponse: Missing reference URL in Worldpay response.');
         }
       }
       else {
@@ -758,21 +607,27 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
         $error = $xml->xpath('//error');
         if (!empty($error)) {
           $result['error'] = (string) $error[0];
+          $this->getLogger('nidirect_prisons')->error('parseWorldpayResponse: Worldpay error - @error', [
+            '@error' => $result['error'],
+          ]);
         }
         else {
           $result['error'] = 'Unexpected response format from Worldpay.';
+          $this->getLogger('nidirect_prisons')->error('parseWorldpayResponse: Unexpected response format. Raw XML: @xml', [
+            '@xml' => $xml->asXML(),
+          ]);
         }
-        $this->getLogger('nidirect_prisons')->error('parseWorldpayResponse: @error', ['@error' => $result['error']]);
       }
     }
     catch (\Exception $e) {
       $result['error'] = 'Exception parsing Worldpay response: ' . $e->getMessage();
-      $this->getLogger('nidirect_prisons')->error('parseWorldpayResponse exception: @message', ['@message' => $e->getMessage()]);
+      $this->getLogger('nidirect_prisons')->error('parseWorldpayResponse exception: @message', [
+        '@message' => $e->getMessage(),
+      ]);
     }
 
     return $result;
   }
-
 
 
 }
