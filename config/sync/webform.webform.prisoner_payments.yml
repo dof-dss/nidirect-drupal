@@ -15,6 +15,15 @@ title: 'Make a payment to prisoner'
 description: ''
 categories: {  }
 elements: |-
+  msg_confirmation:
+    '#type': webform_markup
+    '#display_on': view
+    '#markup': |-
+      <div role="status">
+        <p class="info-notice" data-once="emptyTags nicsdruNoticesAndMessages"><strong class="visually-hidden">Important information </strong>
+          Review the information you have provided. Select <strong>Make payment</strong> to proceed to the next step.
+        </p>
+      </div>
   page_before_you_continue:
     '#type': webform_wizard_page
     '#title': 'Before you continue'
@@ -165,8 +174,8 @@ elements: |-
           {% if data.prisoner_max_amount > 0 %}
             <p class="info-notice">
               You can pay
-              <strong>{{ data.prisoner_fullname }}</strong>
-              a maximum of
+              <strong>{{ data.prisoner_id }}</strong>
+              ({{ data.prisoner_fullname }}) a maximum of
 
               <strong>
                 &pound;{{ data.prisoner_max_amount }}
@@ -196,51 +205,70 @@ elements: |-
           - form-item--important
   page_payment_card_details:
     '#type': webform_wizard_page
-    '#title': 'Payment card details'
+    '#title': 'Pay now by debit card'
     twig_payment_card_details:
       '#type': webform_computed_twig
       '#title': 'Payment card details'
       '#title_display': none
-      '#template': |-
-        <div role="status" class="info-notice">
-        The Worldpay bit!
+    msg_payment_card_details:
+      '#type': webform_markup
+      '#markup': |-
+        <div role="status">
+        <p class="info-notice">
+        Complete your payment using Mastercard or Visa <strong>debit cards only</strong>.
+        <br>Credit cards will not be accepted.
+        </p>
+        <p>
+        Money usually takes less than 3 working days to reach a prisoner’s account, but may take longer.
+        </p>
         </div>
-
-        {# TODO: add script below to HEAD section #}
-        <script src="https://payments.worldpay.com/resources/hpp/integrations/embedded/js/hpp-embedded-integration-library.js"></script>
-
-        {# TODO: add following html via webformHandler #}
-
-        {# Container for Hosted Payment Pages (HPP) iframe #}
-        <div id="wp-hpp-html"></div>
-
-        {# JavaScript to inject the HPP iframe #}
-        <script type="text/javascript">
-
-          {# Custom options for WP HPP iframe. #}
-          const wpHppCustomOptions = {
-            url: 'https://payments.worldpay.com/app/hpp/integration/transaction/37d9d008-d649-4458-a7cd-c07a65debc54?ref=1718718877578485&cs=JWNvp6kQ0Xsrca_q',
-            type: 'iframe',
-            inject: 'onload',
-            target: 'wp-hpp-html',
-            accessibility: true,
-            debug: true,
-          };
-
-          {# Initialize the library and pass options #}
-          const wpLibraryObject = new WPCL.Library();
-          wpLibraryObject.setup(wpHppCustomOptions);
-
-        </script>
   prisoner_max_amount:
     '#type': value
     '#title': 'Prisoner max amount'
-css: ''
-javascript: |-
-  /**
-   * @file
-   * Defines jquery-validation methods and rules for prisoner payments.
-   */
+  wp_response:
+    '#type': hidden
+    '#title': wp_response
+  webform_confirmation_success:
+    '#type': webform_markup
+    '#access': false
+    '#markup': |-
+      <div role="status">
+        <h2 class="legend">Payment success</h2>
+        <p class="info-notice info-notice--success">
+           You will receive an email shortly with confirmation of your payment.  It may take a few minutes for the email to arrive.
+        </p>
+
+        <div class="launch-service">
+          <a href="/forms/prisoner-payment" class="btn btn--call-to-action" data-self-ref="true">Make another payment to a prisoner</a>
+        </div>
+      </div>
+  webform_confirmation_failure:
+    '#type': webform_markup
+    '#access': false
+    '#markup': |-
+      <div role="status">
+        <h2 class="legend">Payment failed</h2>
+        <p class="info-notice info-notice--error">
+           Payment could not be processed. Try again later.
+        </p>
+
+        <div class="launch-service">
+          <a href="/forms/prisoner-payment" class="btn btn--call-to-action" data-self-ref="true">Try again</a>
+        </div>
+      </div>
+  actions:
+    '#type': webform_actions
+    '#title': 'Submit button(s)'
+    '#attributes':
+      class:
+        - test-class
+css: |-
+  #worldpay-html {
+    padding: 2em 1em;
+    margin: 2em 0 2em;
+    box-shadow: 0 3px 0 #0a78cd, 0 -3px 0 #0a78cd;
+  }
+javascript: |
   (function ($, Drupal, once) {
     Drupal.behaviors.prisonerPaymentsValidateMethods = {
       attach: function (context, settings) {
@@ -253,15 +281,13 @@ javascript: |-
         // Add validation methods once globally for the page.
         once('prisonerPaymentsValidateMethods', 'html').forEach(function (element) {
 
-          $.validator.addMethod("maxPayment", function(value, element, param) {
-            return this.optional(element) || value >= param[1];
-          }, $.validator.format("Amount must be no more than &pound;{1}"));
-
+          // Custom method for valid characters in names
           $.validator.addMethod("fullNameValidCharacters", function (value, element) {
             const regex = /^[\p{Script=Latin}\-.'\s]+$/u;
             return this.optional(element) || regex.test(value);
           }, "Name must contain letters (A–Z), hyphens (-), periods (.), apostrophes (') and spaces only.");
 
+          // Custom method to check if both first and last names are provided
           $.validator.addMethod("firstAndLastName", function (value, element) {
             const nameParts = value.split(" ").map(part => part.replace(/[^\p{Script=Latin} ]/ug, '').trim()).filter(part => part !== "");
             return this.optional(element) || nameParts.length >= 2;
@@ -405,11 +431,24 @@ settings:
   wizard_page_type: webform_section
   wizard_page_title_tag: h2
   preview: 0
-  preview_label: ''
-  preview_title: ''
-  preview_message: ''
+  preview_label: 'Confirm and make payment'
+  preview_title: 'Confirm and make payment'
+  preview_message: '[none]'
   preview_attributes: {  }
-  preview_excluded_elements: {  }
+  preview_excluded_elements:
+    msg_before_you_continue: msg_before_you_continue
+    msg_prisoner_and_visitor_id: msg_prisoner_and_visitor_id
+    visitor_first_name: visitor_first_name
+    visitor_middle_name: visitor_middle_name
+    visitor_last_name: visitor_last_name
+    prisoner_first_name: prisoner_first_name
+    prisoner_middle_name: prisoner_middle_name
+    prisoner_last_name: prisoner_last_name
+    twig_payment_card_details: twig_payment_card_details
+    prisoner_max_amount: prisoner_max_amount
+    wp_response: wp_response
+    webform_confirmation_success: webform_confirmation_success
+    webform_confirmation_failure: webform_confirmation_failure
   preview_exclude_empty: true
   preview_exclude_empty_checkbox: false
   draft: none
@@ -423,8 +462,8 @@ settings:
   confirmation_url: ''
   confirmation_title: 'Confirmation page title'
   confirmation_message: |-
-    <p class="info-notice" role="status">
-        We will send you an email shortly to let you know whether payment has been successful.  Please allow up to 1 hour for this email to arrive.
+    <p class="info-notice info-notice--success" role="status">
+        You will receive an email shortly confirming your payment.  It may take a few minutes for the email to arrive.
     </p>
     <div class="launch-service">
         <a href="/forms/prisoner-payment" class="btn btn--call-to-action" data-self-ref="true">Make another payment to a prisoner</a>
@@ -514,7 +553,13 @@ handlers:
     conditions: {  }
     weight: 0
     settings:
-      message: 'This is a custom message.'
       debug: false
-      prisoner_maximum_payment_amount: 100
+      prisoner_maximum_payment_amount: 0
+      worldpay_payment_service_url: 'https://secure-test.worldpay.com/jsp/merchant/xml/paymentService.jsp'
+      worldpay_username: wp-test-user
+      worldpay_password: password
+      worldpay_merchant_codes:
+        MY: MERCHANT_CODE_MY
+        MN: MERCHANT_CODE_MN
+        HW: MERCHANT_CODE_HW
 variants: {  }
