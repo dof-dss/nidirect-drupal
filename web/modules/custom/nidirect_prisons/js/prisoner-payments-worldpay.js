@@ -2,39 +2,57 @@
   Drupal.behaviors.prisonerPaymentsWorldpay = {
     attach: function (context, settings) {
 
-      // This runs after request to WP
-      console.log(settings.worldpay);
+      if (!settings.worldpay || !settings.worldpay.url) {
+        console.error("Worldpay iframe URL missing.");
+        return;
+      }
 
-      const options = {
-        url: settings.worldpay.url,
-        type: 'iframe',
-        inject: 'onload',
-        target: settings.worldpay.target,
-        accessibility: true,
-        debug: false,
-        language: 'en',
-        country: 'gb',
-        resultCallback: Drupal.behaviors.prisonerPaymentsWorldpay.handleResult,
-      };
+      once('worldpay-init', '#worldpay-html', context).forEach(function (element) {
+        const options = {
+          url: settings.worldpay.url,
+          type: 'iframe',
+          inject: 'onload',
+          target: 'worldpay-html',
+          accessibility: true,
+          debug: true,
+          language: 'en',
+          country: 'gb',
+          resultCallback: Drupal.behaviors.prisonerPaymentsWorldpay.handleResult,
+        };
 
-      const libraryObject = new WPCL.Library();
-      libraryObject.setup(options);
+        const libraryObject = new WPCL.Library();
+        libraryObject.setup(options);
+      });
+
     },
     handleResult: function(responseData) {
-
       const wpResponse = document.querySelector('[data-drupal-selector="edit-wp-response"]');
+      if (!wpResponse) {
+        console.error('Webform response field missing.');
+        return;
+      }
+
       wpResponse.value = JSON.stringify(responseData);
 
-      const status = responseData.order.status;
+      const submitButton = document.querySelector('[data-drupal-selector="edit-actions-submit"]');
+      if (!submitButton) {
+        console.error('Submit button not found.');
+        return;
+      }
+
+      const status = responseData.order?.status;
       switch (status) {
         case "success":
-          document.getElementById('edit-wizard-next').click();
+          console.log('Payment successful, submitting webform...');
+          submitButton.click();
           break;
         case "failure":
           console.log(`Worldpay status failure: ${responseData}`);
+          alert("Payment failed. Please try again.");
           break;
         case "error":
           console.log(`Worldpay status error: ${responseData}`);
+          alert("An error occurred during payment. Please try again later.");
           break;
         default:
           console.log(`Worldpay status unknown: ${responseData}`);
