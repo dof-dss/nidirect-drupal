@@ -2,6 +2,7 @@
 
 namespace Drupal\nidirect_prisons\Plugin\WebformHandler;
 
+use Drupal\Component\Utility\Crypt;
 use Drupal\Component\Utility\Xss;
 use Drupal\Core\Database\Database;
 use Drupal\Core\Form\FormStateInterface;
@@ -153,13 +154,54 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
         $elements['prisoner_payment_amount']['#access'] = FALSE;
         $elements['wizard_next']['#access'] = FALSE;
       }
+
+      $pending_payment = \Drupal::database()->select('prisoner_payment_transactions', 't')
+        ->fields('t', ['amount'])
+        ->condition('prisoner_id', $prisoner_id)
+        ->condition('visitor_id', $visitor_id)
+        ->condition('status', ['pending', 'success'], 'IN')
+        ->condition('created_timestamp', strtotime('-7 days'), '>')
+        ->execute()
+        ->fetchField();
+
+      if ($pending_payment) {
+        \Drupal::messenger()->addError(t('You have already made a payment recently. Please wait before making another.'));
+        return;
+      }
     }
 
     if ($page === 'page_payment_card_details') {
 
+      // Generate order code needed uniquely identify transaction.
+      $prisoner_id = $form_state->getValue('prisoner_id');
+      $prison_id = $this->getPrisonId($prisoner_id);
+      $visitor_id = $form_state->getValue('visitor_id');
+      $visitor_email = $form_state->getValue('visitor_email');
+      $order_code = $this->generateOrderCode($prison_id, $prisoner_id, $visitor_id);
+
+      // Keep $order_code in $form_state for later retrieval.
+      $form_state->set('order_code', $order_code);
+
+      // Get amount to be paid.
+      $payment_amount = (float) $form_state->getValue('prisoner_payment_amount');
+
+      // Store a pending transaction before doing the Worldpay bit.
+      /*\Drupal::database()->insert('prisoner_payment_transactions')
+        ->fields([
+          'order_key' => $order_code,
+          'prisoner_id' => $prisoner_id,
+          'visitor_id' => $visitor_id,
+          'amount' => $payment_amount,
+          'status' => 'pending',
+          'created_timestamp' => time(),
+        ])
+        ->execute();*/
+
+      $this->logPendingTransaction($order_code, $prisoner_id, $visitor_id, $payment_amount);
+
       // Generate and send Worldpay order XML request.
-      $order_data = $this->generateOrderData($form_state);
-      $response_xml = $this->sendWorldpayRequest($order_data);
+      $order_data_xml = $this->generateOrderData($order_code, $prison_id, $prisoner_id, $payment_amount, $visitor_email);
+      $response_xml = $this->sendWorldpayRequest($order_data_xml);
 
       // Parse the Worldpay response to get the iframe URL.
       if ($response_xml && $response = $this->parseWorldpayResponse($response_xml)) {
@@ -258,42 +300,6 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
     }
 
 
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function submitForm(array &$form, FormStateInterface $form_state, WebformSubmissionInterface $webform_submission) {
-
-    $webform = $webform_submission->getWebform();
-
-    // Retrieve the JSON string from the hidden field
-    $response_data_json = $form_state->getValue('wp_response');
-
-    // Decode the JSON string into an associative array
-    $response_data = json_decode($response_data_json, TRUE);
-
-    if (json_last_error() !== JSON_ERROR_NONE) {
-      // Handle error if the JSON is invalid
-      $this->getLogger('nidirect_prisons')->error('Invalid worldpay response data received: @error', ['@error' => json_last_error_msg()]);
-      return;
-    }
-
-    // Get the order status.
-    //ksm($response_data);
-    $order_status = $response_data['order']['status'];
-
-    // Process payment results, update submission, or modify confirmation message
-    if ($order_status === 'success') {
-      $webform->setSetting('confirmation_message', $webform->getElement('webform_confirmation_success')['#markup']);
-    } else {
-      $webform->setSetting('confirmation_message', $webform->getElement('webform_confirmation_failure')['#markup']);
-    }
-
-    // Optionally log the payment response for auditing
-    $this->getLogger('nidirect_prisons')->notice('Payment processed for order key: @orderKey', [
-      '@orderKey' => $response_data['order']['orderKey']
-    ]);
   }
 
   /**
@@ -428,16 +434,8 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
    * @return string
    *   The XML string for the Worldpay payment request.
    */
-  protected function generateOrderData(FormStateInterface $form_state) {
+  protected function generateOrderData(string $order_code, string $prison_id, string $prisoner_id, float $payment_amount, string $visitor_email) {
 
-    // Extract form values.
-    $prisoner_id = $form_state->getValue('prisoner_id');
-    $visitor_id = $form_state->getValue('visitor_id');
-    $visitor_fullname = $form_state->getValue('visitor_fullname');
-    $payment_amount = (float) $form_state->getValue('prisoner_payment_amount');
-
-    // Generate the correct merchant code based on the prison_id for the given prisoner_id.
-    $prison_id = $this->getPrisonId($prisoner_id);
     $merchant_code = getenv('PRISONER_PAYMENTS_WP_MERCHANT_CODE_' . $prison_id) ?: 'DEFAULT_MERCHANT_CODE';
 
     // Log an error if merchant code could not be retrieved.
@@ -446,9 +444,6 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
         '@prison_id' => $prison_id,
       ]);
     }
-
-    // Generate the order code needed to uniquely identify the payment request order.
-    $order_code = $this->generateOrderCode($prison_id, $prisoner_id, $visitor_id);
 
     // Generate a meaningful description for the payment request.
     $description = htmlspecialchars("Payment for prisoner ID: $prisoner_id", ENT_XML1);
@@ -472,6 +467,9 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
         <include code="ECMC_DEBIT-SSL"/>
         <include code="VISA_DEBIT-SSL"/>
       </paymentMethodMask>
+      <shopper>
+        <shopperEmailAddress>$visitor_email</shopperEmailAddress>
+      </shopper>
     </order>
   </submit>
 </paymentService>
@@ -629,5 +627,179 @@ XML;
     return $result;
   }
 
+  /**
+   * {@inheritdoc}
+   */
+
+  public function submitForm(array &$form, FormStateInterface $form_state, WebformSubmissionInterface $webform_submission) {
+    $webform = $webform_submission->getWebform();
+    $page = $form_state->get('current_page');
+    ksm($page);
+
+    if ($page === 'webform_confirmation') {
+
+      // Retrieve the JSON string from the hidden field.
+      $response_data_json = $form_state->getValue('wp_response');
+
+      // Retrieve the original order_code.
+      $original_order_code = $form_state->get('order_key');
+
+      ksm($response_data_json, $original_order_code);
+
+      // Decode the JSON string into an associative array
+      $response_data = json_decode($response_data_json, TRUE);
+
+      if (json_last_error() !== JSON_ERROR_NONE) {
+        // Handle error if the JSON is invalid
+        $this->getLogger('nidirect_prisons')->error('Invalid Worldpay response data received: @error', [
+          '@error' => json_last_error_msg(),
+        ]);
+        return;
+      }
+
+      // Verify the response integrity using MAC
+      if (!$this->isValidWorldpayResponse($response_data)) {
+
+        // Mark transaction as failed if tampering is detected
+        \Drupal::database()->update('prisoner_payment_transactions')
+          ->fields(['status' => 'failed'])
+          ->condition('order_key', $original_order_code)
+          ->execute();
+
+        $this->getLogger('nidirect_prisons')->alert('Worldpay response verification failed. Possible tampering detected for order key: @orderKey', [
+          '@orderKey' => $response_data['order']['orderKey'],
+        ]);
+
+        \Drupal::messenger()->addError(t('Payment verification failed. Please contact support.'));
+
+        return;
+      }
+
+      // Get the order status.
+      $order_status = $response_data['order']['status'];
+
+      // Process payment results, update submission, or modify confirmation message
+      if ($order_status === 'success') {
+
+        // Payment is verified, update transaction status and deduct amount
+        \Drupal::database()->update('prisoner_payment_transactions')
+          ->fields(['status' => 'success'])
+          ->condition('order_key', $original_order_code)
+          ->execute();
+
+        // Deduct the amount from available prisoner funds
+        \Drupal::database()->update('prisoner_payment_amount')
+          ->expression('amount', 'amount - :paid_amount', [':paid_amount' => $response_data['gateway']['paymentAmount']])
+          ->condition('prisoner_id', $form_state->getValue('prisoner_id'))
+          ->execute();
+
+        $webform->setSetting('confirmation_message', $webform->getElement('webform_confirmation_success')['#markup']);
+
+      } else {
+
+        // Payment is not verified, update transaction status as failed.
+        \Drupal::database()->update('prisoner_payment_transactions')
+          ->fields(['status' => 'failed'])
+          ->condition('order_key', $original_order_code)
+          ->execute();
+
+        $webform->setSetting('confirmation_message', $webform->getElement('webform_confirmation_failure')['#markup']);
+
+      }
+
+      // Log the payment response for auditing
+      $this->getLogger('nidirect_prisons')->notice('Payment processed for order key: @orderKey', [
+        '@orderKey' => $response_data['order']['orderKey'],
+      ]);
+
+    }
+  }
+
+  /**
+   * Validates the Worldpay response using HMAC (MAC2).
+   *
+   * @param array $response_data
+   *   The decoded response data.
+   *
+   * @return bool
+   *   TRUE if the response is valid, FALSE otherwise.
+   */
+  private function isValidWorldpayResponse(array $response_data) {
+
+    // Retrieve the secret key.
+    $secret_key = getenv('PRISONER_PAYMENTS_WP_MAC_SECRET');
+    if (empty($secret_key)) {
+      $this->getLogger('nidirect_prisons')->error('Worldpay secret key is missing from configuration.');
+      return FALSE;
+    }
+
+    // Ensure required fields exist.
+    if (!isset(
+      $response_data['gateway']['orderKey'],
+      $response_data['gateway']['paymentAmount'],
+      $response_data['gateway']['paymentCurrency'],
+      $response_data['gateway']['paymentStatus'],
+      $response_data['gateway']['mac2']
+    )) {
+      return FALSE;
+    }
+
+    // Extract values needed for signature verification.
+    $order_key = $response_data['gateway']['orderKey'];
+    $payment_amount = $response_data['gateway']['paymentAmount'];
+    $payment_currency = $response_data['gateway']['paymentCurrency'];
+    $payment_status = $response_data['gateway']['paymentStatus'];
+    $mac2_received = $response_data['gateway']['mac2'];
+
+    // Compute the expected MAC.
+    $data_string  = $order_key . ':';
+    $data_string .= $payment_amount . ':';
+    $data_string .= $payment_currency . ':';
+    $data_string .= $payment_status;
+
+    // Compute the HMAC using SHA-256.
+    $computed_mac = hash_hmac('sha256', $data_string, $secret_key);
+
+    // Compare computed MAC with received MAC.
+    return hash_equals($computed_mac, $mac2_received);
+  }
+
+  /**
+   * Method to log the pending transaction.
+   *
+   * @param string $prisoner_id
+   *   The prisoner id.
+   *
+   * @param string $visitor_id
+   *   The visitor id.
+   *
+   * @param string $payment_amount
+   *   The visitor id.
+   *
+   */
+  private function logPendingTransaction(string $order_code, string $prisoner_id, string $visitor_id, float $payment_amount) {
+    // Prepare your transaction data and save to the database
+    // For example:
+    $transaction_data = [
+      'order_key' => $order_code,
+      'prisoner_id' => $prisoner_id,
+      'visitor_id' => $visitor_id,
+      'amount' => $payment_amount,
+      'status' => 'pending', // Or any other status you want to set
+      'created' => time(),
+    ];
+
+    // Insert the transaction into your database table
+    \Drupal::database()->insert('prisoner_payment_transactions')
+      ->fields($transaction_data)
+      ->execute();
+
+    // Log the operation for auditing
+    $this->getLogger('nidirect_prisons')->notice('Pending transaction logged for prisoner ID: @prisonerId, visitor ID: @visitorId, amount: @amount', [
+      '@prisonerId' => $prisoner_id,
+      '@visitorId' => $visitor_id,
+      '@amount' => $payment_amount,
+    ]);
+  }
 
 }
