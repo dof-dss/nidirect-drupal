@@ -48,11 +48,9 @@
           break;
         case "failure":
           console.log(`Worldpay status failure: ${responseData}`);
-          alert("Payment failed. Please try again.");
           break;
         case "error":
           console.log(`Worldpay status error: ${responseData}`);
-          alert("An error occurred during payment. Please try again later.");
           break;
         default:
           console.log(`Worldpay status unknown: ${responseData}`);
