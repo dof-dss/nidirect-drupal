@@ -81,6 +81,15 @@ elements: |-
         '#pattern': '[0-9]{6}'
         '#pattern_error': 'Visitor ID is not recognised'
         '#inputmode': numeric
+      visitor_email:
+        '#type': webform_email_confirm
+        '#title': 'Your email address'
+        '#description': 'We will use this email address to notify you if your payment was successful.'
+        '#description_display': before
+        '#required': true
+        '#required_error': 'Enter your email address'
+        '#pattern': '[^@\s]+@[^@\s]+\.[^@\s]+'
+        '#pattern_error': 'Enter a valid email address'
     prisoner_details:
       '#type': fieldset
       '#title': 'Prisoner details'
@@ -210,18 +219,34 @@ elements: |-
       '#type': webform_computed_twig
       '#title': 'Payment card details'
       '#title_display': none
-    msg_payment_card_details:
-      '#type': webform_markup
-      '#markup': |-
+      '#template': |-
         <div role="status">
-        <p class="info-notice">
+
+        <!--<p class="info-notice">
         Complete your payment using Mastercard or Visa <strong>debit cards only</strong>.
         <br>Credit cards will not be accepted.
+        </p>-->
+
+        <p class="info-notice">
+        <strong>Credit cards will not be accepted.</strong><br>
+        Complete your payment using Mastercard or Visa debit cards only.
         </p>
-        <p>
-        Money usually takes less than 3 working days to reach a prisoner’s account, but may take longer.
-        </p>
+
+        <h3>Payment summary</h3>
+
+        <dl class="side-by-side">
+          <dt>Pay prisoner</dt>
+          <dd>
+            {{ data.prisoner_id }}
+            ({{ data.prisoner_fullname }})
+          </dd>
+          <dt>Amount</dt>
+          <dd>&pound;{{ data.prisoner_payment_amount }}</dd>
+        </dl>
+
         </div>
+    msg_payment_card_details:
+      '#type': webform_markup
   prisoner_max_amount:
     '#type': value
     '#title': 'Prisoner max amount'
@@ -264,9 +289,10 @@ elements: |-
         - test-class
 css: |-
   #worldpay-html {
-    padding: 2em 1em;
-    margin: 2em 0 2em;
-    box-shadow: 0 3px 0 #0a78cd, 0 -3px 0 #0a78cd;
+    max-width: 540px;
+    padding: 0.5em 0 0;
+    margin: 1em 0 2em;
+    box-shadow: 0 2px 0 #0a78cd, 0 -2px 0 #0a78cd;
   }
 javascript: |
   (function ($, Drupal, once) {
