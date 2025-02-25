@@ -1,0 +1,39 @@
+<?php
+
+/**
+ * Implements hook_cron().
+ */
+function nidirect_prisons_cron() {
+  // Get the timestamp for 7 days ago.
+  $threshold = strtotime('-7 days');
+
+  // Delete transactions older than 7 days.
+  $query = \Drupal::database()->delete('prisoner_payment_transactions')
+    ->condition('created_timestamp', $threshold, '<');
+
+  $deleted = $query->execute();
+
+  if ($deleted) {
+    \Drupal::logger('nidirect_prisons')->notice('Deleted @count old prisoner payment transactions.', ['@count' => $deleted]);
+  }
+}
+
+/**
+ * Implements hook_mail().
+ */
+function nidirect_prisons_mail($key, &$message, $params) {
+  switch ($key) {
+    case 'prisoner_payment_notification':
+      $message['subject'] = $params['subject'];
+      $message['body'] = is_array($params['body']) ? $params['body'] : [$params['body']];
+      $message['headers']['Content-Type'] = 'text/plain; charset=UTF-8';
+
+      \Drupal::logger('nidirect_prisons')->notice('Email subject: @subject, body: @body', [
+        '@subject' => $message['subject'],
+        '@body' => implode("\n", $message['body']),
+      ]);
+
+      break;
+  }
+}
+
