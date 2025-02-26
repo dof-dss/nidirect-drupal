@@ -88,6 +88,16 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
       '#return_value' => TRUE,
       '#default_value' => $this->configuration['debug'],
     ];
+    $form['worldpay'] = [
+      '#type' => 'details',
+      '#title' => $this->t('Worldpay settings'),
+    ];
+    $form['worldpay']['payment_service_url'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Payment service URL'),
+      '#description' => $this->t('The URL for sending XML payment requests to. See https://docs.worldpay.com/apis/wpg/hostedintegration/quickstart for more information.'),
+      '#default_value' => $this->configuration['worldpay_payment_service_url'],
+    ];
 
     return $this->setSettingsParents($form);
   }
@@ -98,6 +108,7 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
   public function submitConfigurationForm(array &$form, FormStateInterface $form_state) {
     parent::submitConfigurationForm($form, $form_state);
     $this->configuration['debug'] = (bool) $form_state->getValue('debug');
+    $this->configuration['worldpay_payment_service_url'] = (string) $form_state->getValue('worldpay_payment_service_url');
   }
 
   /**
@@ -189,7 +200,7 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
 
       $response_xml = $this->sendWorldpayRequest($order_data_xml);
 
-      ksm($response_xml);
+      //ksm($response_xml);
 
       // Parse the Worldpay response to get the iframe URL.
       if ($response_xml && $response = $this->parseWorldpayResponse($response_xml)) {
@@ -523,7 +534,7 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
 
 XML;
 
-    ksm('Generated Worldpay payment request', $xml);
+    //ksm('Generated Worldpay payment request', $xml);
 
     return $xml;
   }
@@ -750,11 +761,6 @@ XML;
 
         $webform->setSetting('confirmation_message', $webform->getElement('webform_confirmation_failure')['#markup']);
       }
-
-      // Log payment processing.
-      $this->getLogger('nidirect_prisons')->notice('Payment processed for order key: @orderKey', [
-        '@orderKey' => $response_data['order']['orderKey'],
-      ]);
     }
   }
 
@@ -862,7 +868,7 @@ XML;
       "INMATE_ID" => $webform_submission->getElementData('prisoner_id'),
       "VISITOR_ID" => $webform_submission->getElementData('visitor_id'),
       "TRANSACTION_TIME" => $formatted_timestamp,
-      "AMOUNT_PAID" => $order_amount,
+      "AMOUNT_PAID" => number_format($order_amount, 2, '.', ''),
       "SEQUENCE_ID" => $webform_submission->serial(),
     ], JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT);
   }
@@ -878,7 +884,7 @@ XML;
     $mailManager = \Drupal::service('plugin.manager.mail');
     $module = 'nidirect_prisons';
     $key = 'prisoner_payment_notification';
-    $to = 'prism@example.com'; // Replace with actual email.
+    $to = getenv('PRISONER_PAYMENTS_PRISM_EMAIL') ?: 'prisoner_payments@mailhog.local';
     $langcode = \Drupal::currentUser()->getPreferredLangcode();
 
     $params = [
