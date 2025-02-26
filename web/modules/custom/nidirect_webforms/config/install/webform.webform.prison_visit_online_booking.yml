@@ -63,9 +63,15 @@ elements: |-
     '#display_on': view
     '#markup': |-
       <div role="status">
-        <p class="info-notice info-notice--warning">
-          <strong>Are you sure you want to cancel this booking?</strong><br>If you are sure you want to cancel, choose <strong>Cancel booking</strong> below.
-        </p>
+        <div class="info-notice info-notice--warning">
+          <h3>Are you sure you want to cancel this booking?</h3>
+          <p>
+             If you cancel, <strong>the visit will be lost and you will not be able to reuse the visit reference number</strong>.
+          </p>
+          <p>
+             If you are sure you want to cancel, choose <strong>Cancel booking</strong> below.
+          </p>
+        </div>
       </div>
   confirmation_visit_details:
     '#type': webform_computed_twig
@@ -2041,7 +2047,7 @@ settings:
     <p class="info-notice" role="status">
         We will send you an email shortly to let you know whether your booking request has been successful.  Please allow up to 1 hour for this email to arrive.
     </p>
-    <p>If you need to amend this booking, use the <strong>Cancel or Amend Booking</strong> button in the email.</p>
+
     <div class="launch-service">
         <a href="/forms/book-prison-visit" class="btn btn--call-to-action" data-self-ref="true">Book another prison visit</a>
     </div>
