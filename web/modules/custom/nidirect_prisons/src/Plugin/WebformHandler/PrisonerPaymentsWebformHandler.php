@@ -901,6 +901,16 @@ XML;
     }
   }
 
+  /**
+   * Method to split a full name into array of first, middle and
+   * last names.
+   *
+   * @param string $full_name
+   *   The full name to be split.
+   *
+   * @return array
+   *
+   */
   function splitFullName($full_name) {
     $parts = explode(' ', trim($full_name));
     $first = $parts[0] ?? '';
