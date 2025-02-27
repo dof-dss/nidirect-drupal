@@ -93,7 +93,7 @@ class PrisonerAmountsResource extends ResourceBase implements ContainerFactoryPl
             ->key('prisoner_id', $prisoner['ID'])
             ->fields([
               'prison_id' => $prison_key,
-              'amount' => $prisoner['AMT'],
+              'amount' => number_format($prisoner['AMT'], 2, '.', ''),
             ])
             ->execute();
         }
