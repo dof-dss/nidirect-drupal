@@ -116,52 +116,6 @@ elements: |-
         '#required_error': 'Enter the prisoner ID of the prisoner you want to make a payment to'
         '#pattern': '[A-FH][0-9]{1,4}'
         '#pattern_error': 'Prisoner ID is not recognised'
-  your_name:
-    '#type': webform_wizard_page
-    '#title': 'Enter your name'
-    '#access': false
-    visitor_first_name:
-      '#type': textfield
-      '#title': 'Your first name'
-      '#maxlength': 35
-      '#size': 35
-      '#required': true
-      '#required_error': 'You must enter your first name'
-    visitor_middle_name:
-      '#type': textfield
-      '#title': 'Middle names (optional)'
-      '#maxlength': 35
-      '#size': 35
-    visitor_last_name:
-      '#type': textfield
-      '#title': 'Last name'
-      '#maxlength': 35
-      '#size': 35
-      '#required': true
-      '#required_error': 'You must enter your last name'
-  prisoner_name:
-    '#type': webform_wizard_page
-    '#title': "Enter the prisoner's name"
-    '#access': false
-    prisoner_first_name:
-      '#type': textfield
-      '#title': "Prisoner's first name"
-      '#maxlength': 35
-      '#size': 35
-      '#required': true
-      '#required_error': "You must enter the prisoner's first name"
-    prisoner_middle_name:
-      '#type': textfield
-      '#title': 'Middle names (optional)'
-      '#maxlength': 35
-      '#size': 35
-    prisoner_last_name:
-      '#type': textfield
-      '#title': 'Last name'
-      '#maxlength': 35
-      '#size': 35
-      '#required': true
-      '#required_error': "You must enter the prisoner's last name"
   page_payment_amount:
     '#type': webform_wizard_page
     '#title': 'Amount to pay'
@@ -187,7 +141,7 @@ elements: |-
               ({{ data.prisoner_fullname }}) a maximum of
 
               <strong>
-                &pound;{{ data.prisoner_max_amount }}
+                &pound;{{ data.prisoner_max_amount|number_format(2, '.', '') }}
               </strong>
             </p>
           {% else %}
@@ -241,7 +195,7 @@ elements: |-
             ({{ data.prisoner_fullname }})
           </dd>
           <dt>Amount</dt>
-          <dd>&pound;{{ data.prisoner_payment_amount }}</dd>
+          <dd>&pound;{{ data.prisoner_payment_amount|number_format(2, '.', '') }}</dd>
         </dl>
 
         </div>
@@ -289,10 +243,30 @@ elements: |-
         - test-class
 css: |-
   #worldpay-html {
+    position: relative;
     max-width: 540px;
     padding: 0.5em 0 0;
     margin: 1em 0 2em;
     box-shadow: 0 2px 0 #0a78cd, 0 -2px 0 #0a78cd;
+  }
+
+  #worldpay-html .ajax-spinner--fill-container {
+      position:  absolute;
+      top: 0;
+      left: 0;
+      display: flex;
+      width: 100%;
+      height: 100%;
+      text-align: center;
+      align-items: center;
+      justify-content: center;
+      background: #fff;
+  }
+
+  #worldpay-html .ajax-spinner--fill-container div {
+      background-color: #666666;
+      width: .5rem;
+      height: 4rem;
   }
 javascript: |
   (function ($, Drupal, once) {
