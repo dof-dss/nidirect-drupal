@@ -6,7 +6,12 @@ function nidirect_prisons_schema() {
     'fields' => [
       'prisoner_id' => ['type' => 'varchar', 'length' => 5, 'not null' => TRUE],
       'prison_id' => ['type' => 'varchar', 'length' => 2, 'not null' => TRUE],
-      'amount' => ['type' => 'float', 'not null' => TRUE],
+      'amount' => [
+        'type' => 'numeric',
+        'precision' => 10,
+        'scale' => 2,
+        'not null' => TRUE,
+      ],
     ],
     'primary key' => ['prisoner_id'],
   ];
@@ -26,8 +31,13 @@ function nidirect_prisons_schema() {
       'order_key' => ['type' => 'varchar', 'length' => 50, 'not null' => TRUE],
       'prisoner_id' => ['type' => 'varchar', 'length' => 5, 'not null' => TRUE],
       'visitor_id' => ['type' => 'varchar', 'length' => 10, 'not null' => TRUE],
-      'amount' => ['type' => 'float', 'not null' => TRUE],
-      'status' => ['type' => 'varchar', 'length' => 10, 'not null' => TRUE, 'default' => 'pending'], // pending, success, failed
+      'amount' => [
+        'type' => 'numeric',
+        'precision' => 10,
+        'scale' => 2,
+        'not null' => TRUE,
+      ],
+      'status' => ['type' => 'varchar', 'length' => 10, 'not null' => TRUE, 'default' => 'pending'],
       'created_timestamp' => ['type' => 'int', 'not null' => TRUE],
     ],
     'primary key' => ['order_key'],
@@ -36,26 +46,3 @@ function nidirect_prisons_schema() {
   return $schema;
 }
 
-/**
- * Adds the prisoner_payment_transactions table.
- */
-function nidirect_prisons_update_9001() {
-  $schema = \Drupal::database()->schema();
-
-  if (!$schema->tableExists('prisoner_payment_transactions')) {
-    $schema->createTable('prisoner_payment_transactions', [
-      'description' => 'Stores individual payment transactions for prisoners.',
-      'fields' => [
-        'order_key' => ['type' => 'varchar', 'length' => 50, 'not null' => TRUE],
-        'prisoner_id' => ['type' => 'varchar', 'length' => 5, 'not null' => TRUE],
-        'visitor_id' => ['type' => 'varchar', 'length' => 10, 'not null' => TRUE],
-        'amount' => ['type' => 'float', 'not null' => TRUE],
-        'status' => ['type' => 'varchar', 'length' => 10, 'not null' => TRUE, 'default' => 'pending'], // pending, success, failed
-        'created_timestamp' => ['type' => 'int', 'not null' => TRUE],
-      ],
-      'primary key' => ['order_key'],
-    ]);
-
-    \Drupal::logger('nidirect_prisons')->notice('Added prisoner_payment_transactions table.');
-  }
-}
