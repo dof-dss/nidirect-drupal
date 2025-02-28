@@ -23,10 +23,6 @@
 
         const libraryObject = new WPCL.Library();
         libraryObject.setup(options);
-        console.dir(libraryObject);
-
-        //const prevButton = document.querySelector('[data-drupal-selector="edit-actions-wizard-prev"]');
-        //prevButton.style.display = 'none';
       });
 
     },
@@ -55,8 +51,6 @@
 
       wpResponse.value = JSON.stringify(responseData);
 
-      const prevButton = document.querySelector('[data-drupal-selector="edit-actions-wizard-prev"]');
-
       const submitButton = document.querySelector('[data-drupal-selector="edit-actions-submit"]');
       if (!submitButton) {
         console.error('Submit button not found.');
@@ -69,7 +63,7 @@
         submitButton.click();
       } else {
         iframeContainer.removeChild(overlay);
-        //prevButton.style.display = 'inline-block';
+        iframeContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
         console.log(`Worldpay payment did not succeed. Status: ${status}`);
         console.dir(responseData);
       }
