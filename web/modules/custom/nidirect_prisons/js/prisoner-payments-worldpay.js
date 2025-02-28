@@ -14,6 +14,7 @@
           inject: 'onload',
           target: 'worldpay-html',
           accessibility: true,
+          disableScrolling: true,
           debug: true,
           language: 'en',
           country: 'gb',
