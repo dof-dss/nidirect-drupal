@@ -100,9 +100,9 @@
 
 body
 {
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: Lato, Helvetica, sans-serif;
   background-color: #FFF;
-  color: #535759;
+  color: #333333;
 }
 
 /*
@@ -114,9 +114,9 @@ body
 .warning-message
 {
   background: #FFF;
-  color: #b63a1b;
+  color: #d1431f;
   border: 1px solid #DDD;
-  border-radius: 0.4em;
+  border-radius: 0;
   font-weight: bold;
 }
 
@@ -181,7 +181,7 @@ body
 #main .section-header.cross,
 #main .section-header.error
 {
-  color: #b63a1b;
+  color: #d1431f;
 }
 
 /* The cross icon displayed in the error section header. */
@@ -370,7 +370,7 @@ body
 /* Styles asterisks to indicate a required field. */
 #main .payment-details .required-field
 {
-  color: #b63a1b;
+  color: #d1431f;
   font-weight: bold;
 }
 
@@ -385,7 +385,7 @@ body
 */
 #main .payment-details .error-hint
 {
-  color: #b63a1b;
+  color: #d1431f;
   font-weight: bold;
 }
 
@@ -393,7 +393,8 @@ body
 .form-validation .textbox,
 .form-validation .dropdown
 {
-  border: solid 1px #333;
+  border: 0;
+  box-shadow: 0 0 0 1px #333;
   color: inherit;
   background-color: #FFF;
 }
@@ -404,19 +405,24 @@ body
 .form-validation .ok .dropdown:focus,
 .form-validation .error .dropdown:focus
 {
-  border: 3px solid #0a78cd;
+  border: 0;
+  box-shadow: 0 0 0 1px #0a78cd;
+  outline: 2px solid #0a78cd;
 }
 /* Style applied to checkbox when focused. */
 .form-validation .checkbox:focus
 {
-  outline: solid 1px #0a78cd;
+  border: 0;
+  box-shadow: 0 0 0 1px #0a78cd;
+  outline: 2px solid #0a78cd;
 }
 
 /* Style applied to disabled fields. */
 .form-validation .textbox[disabled],
 .form-validation .dropdown[disabled]
 {
-  border: solid 1px #CCC;
+  border: 0;
+  box-shadow: 0 0 0 1px #CCC;
   color: #CCC;
   background-color: #FFF;
 }
@@ -425,7 +431,7 @@ body
 .form-validation .error .textbox,
 .form-validation .error .dropdown
 {
-  border: solid 1px #b63a1b;
+  border: solid 1px #d1431f;
   color: inherit;
   background-color: #FFF;
 }
@@ -433,14 +439,15 @@ body
 /* The (cross) icon for invalid fields. */
 .form-validation .error .icon
 {
-  color: #f00;
+  color: #d1431f;
 }
 
 /* Style applied to form fields with valid input. */
 .form-validation .ok .textbox,
 .form-validation .ok .dropdown
 {
-  border: solid 1px #007867;
+  border: 0;
+  box-shadow: 0 0 0 1px #048a05;
   color: inherit;
   background-color: #FFF;
 }
@@ -448,7 +455,7 @@ body
 /* The (tick) icon for valid fields. */
 .form-validation .ok .icon
 {
-  color: #007867;
+  color: #048a05;
 }
 
 
@@ -460,9 +467,9 @@ body
 /* Style used by all buttons. */
 .button
 {
-  background-color: #007867;
-  border: solid 1px #BFBFBF;
-  border-radius: 0.4em;
+  background-color: #048a05;
+  border: solid 1px #048a05;
+  border-radius: 0;
 }
 
 /* Style used for all buttons, including visited links. */
@@ -475,10 +482,14 @@ body
 .button:hover,
 .button:focus
 {
-  background-color: #00948A;
+  background-color: #0c6325;
   color: #FFF;
   outline: none;
-  border: solid 1px #105EA0;
+  border: solid 1px #0c6325;
+}
+
+.button:focus {
+  outline: 2px solid #000;
 }
 
 /* Style applied to disabled buttons. */
@@ -631,7 +642,7 @@ body
 .pm-menu .pm-prev,
 .pm-menu .pm-next
 {
-  background-color: #007867;
+  background-color: #048a05;
   border-radius: 1.2em;
   color: #FFF;
 }
@@ -639,7 +650,7 @@ body
 /* Page controls (the dots below the carousel). */
 .pm-menu .pm-dots button
 {
-  background-color: #007867;
+  background-color: #048a05;
   border-radius: 1em;
 }
 
@@ -655,7 +666,7 @@ body
 .pm-menu .pm-icon:hover,
 .pm-menu .pm-select:hover .pm-icon
 {
-  border: solid 1px #007867;
+  border: solid 1px #048a05;
   border-radius: 0.4em;
 }
 
@@ -669,7 +680,7 @@ body
 /* The text shown below the payment method icons when the item has focus. */
 .pm-menu .pm-select:hover .pm-text
 {
-  color: #007867;
+  color: #048a05;
   font-weight: bold;
 }
 
