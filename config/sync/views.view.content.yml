@@ -259,23 +259,58 @@ display:
           multi_type: separator
           separator: ', '
           field_api_classes: false
-        changed:
-          id: changed
-          table: node_field_data
-          field: changed
+        revision_timestamp:
+          id: revision_timestamp
+          table: node_revision
+          field: revision_timestamp
+          relationship: vid
+          group_type: group
+          admin_label: ''
           entity_type: node
-          entity_field: changed
+          entity_field: revision_timestamp
           plugin_id: field
           label: Updated
           exclude: false
           alter:
             alter_text: false
+            text: ''
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
           element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: true
+          element_wrapper_type: ''
+          element_wrapper_class: ''
           element_default_classes: true
           empty: ''
           hide_empty: false
           empty_zero: false
           hide_alter_empty: true
+          click_sort_column: value
           type: timestamp
           settings:
             date_format: short
@@ -290,6 +325,17 @@ display:
               past_format: '@interval ago'
               granularity: 2
               refresh: 60
+              description: ''
+          group_column: value
+          group_columns: {  }
+          group_rows: true
+          delta_limit: 0
+          delta_offset: 0
+          delta_reversed: false
+          delta_first_last: false
+          multi_type: separator
+          separator: ', '
+          field_api_classes: false
         operations:
           id: operations
           table: node
@@ -345,6 +391,7 @@ display:
         type: full
         options:
           offset: 0
+          pagination_heading_level: h4
           items_per_page: 25
           total_pages: null
           id: 0
@@ -362,7 +409,6 @@ display:
             offset: false
             offset_label: Offset
           quantity: 9
-          pagination_heading_level: h4
       exposed_form:
         type: basic
         options:
@@ -808,9 +854,9 @@ display:
             type: type
             revision_uid: revision_uid
             status: status
-            changed: changed
+            revision_timestamp: revision_timestamp
             operations: operations
-          default: changed
+          default: '-1'
           info:
             node_bulk_form:
               align: ''
@@ -845,13 +891,13 @@ display:
               separator: ''
               empty_column: false
               responsive: ''
-            changed:
+            revision_timestamp:
               sortable: true
-              default_sort_order: desc
+              default_sort_order: asc
               align: ''
               separator: ''
               empty_column: false
-              responsive: priority-low
+              responsive: ''
             operations:
               align: ''
               separator: ''
@@ -886,6 +932,17 @@ display:
           entity_field: revision_uid
           plugin_id: standard
           required: true
+        vid:
+          id: vid
+          table: node_field_revision
+          field: vid
+          relationship: none
+          group_type: group
+          admin_label: vid
+          entity_type: node
+          entity_field: vid
+          plugin_id: standard
+          required: false
       show_admin_links: false
       display_extenders: {  }
     cache_metadata:
@@ -905,7 +962,10 @@ display:
     display_plugin: page
     position: 1
     display_options:
-      display_extenders: {  }
+      display_extenders:
+        metatag_display_extender:
+          metatags: {  }
+          tokenize: false
       path: admin/content/node
       menu:
         type: 'default tab'

@@ -12,7 +12,7 @@ id: debt_management_enquiry
 title: 'Debt Management enquiry'
 description: ''
 categories: {  }
-elements: |-
+elements: |
   your_details:
     '#type': fieldset
     '#title': 'Your details'
@@ -246,7 +246,7 @@ settings:
   confirmation_type: page
   confirmation_url: ''
   confirmation_title: ''
-  confirmation_message: |-
+  confirmation_message: |
     <p class="info-notice info-notice--success">
       Thank you for your enquiry. We aim to respond to you within 2 working days.
     </p>
@@ -337,13 +337,13 @@ handlers:
     settings:
       states:
         - completed
-      to_mail: BELFASTCOLLEGESTREETDCNI.DEBTMANAGEMENTCUSTOMERENQUIRIES@NISSA.GSI.GOV.UK
+      to_mail: BELFASTCOLLEGESTREETDCNI.DEBTMANAGEMENTCUSTOMERENQUIRIES@DFCNI.GOV.UK
       to_options: {  }
       bcc_mail: ''
       bcc_options: {  }
       cc_mail: ''
       cc_options: {  }
-      from_mail: feedback@nidirect.gov.uk
+      from_mail: _default
       from_options: {  }
       from_name: nidirect
       reply_to: ''
@@ -352,8 +352,8 @@ handlers:
       sender_name: ''
       subject: 'Debt Management Enquiry from nidirect.gov.uk'
       body: |-
-        &lt;p&gt;Submitted on [current-date:long]&lt;/p&gt;<br />
-        &lt;p&gt;Submitted values are:&lt;/p&gt;<br />
+        Submitted on [current-date:long]<br />
+        Submitted values are:<br />
         [webform_submission:values]
       excluded_elements: {  }
       ignore_access: false
