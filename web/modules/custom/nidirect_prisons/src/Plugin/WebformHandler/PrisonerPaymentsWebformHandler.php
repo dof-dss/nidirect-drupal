@@ -489,7 +489,7 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
     $recipient_middle_name = $prisoner_names['middle'] ? '<middle>' . $prisoner_names['middle'] . '</middle>' : NULL;
 
     // Create XML structure.
-    $xml = <<<XML
+    /*$xml = <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE paymentService PUBLIC "-//Worldpay//DTD Worldpay PaymentService v1//EN" "http://dtd.worldpay.com/paymentService_v1.dtd">
 <paymentService version="1.4" merchantCode="$merchant_code">
@@ -497,6 +497,9 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
     <order orderCode="$order_code" installationId="1536419">
       <description>$description</description>
       <amount value="$amount_in_pence" currencyCode="$currency" exponent="2"/>
+      <orderContent> <![CDATA[
+      <p>Hello?</p>
+      ]]> </orderContent>
       <paymentMethodMask>
         <include code="ECMC_DEBIT-SSL"/>
         <include code="VISA_DEBIT-SSL"/>
@@ -528,6 +531,30 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
           </fundingAddress>
         </fundingParty>
       </fundingTransfer>
+    </order>
+  </submit>
+</paymentService>
+
+XML;*/
+
+    $xml = <<<XML
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE paymentService PUBLIC "-//Worldpay//DTD Worldpay PaymentService v1//EN" "http://dtd.worldpay.com/paymentService_v1.dtd">
+<paymentService version="1.4" merchantCode="$merchant_code">
+  <submit>
+    <order orderCode="$order_code" installationId="1536419">
+      <description>$description</description>
+      <amount value="$amount_in_pence" currencyCode="$currency" exponent="2"/>
+      <orderContent> <![CDATA[
+      <p>ORDER_CONTENT_TEST</p>
+      ]]> </orderContent>
+      <paymentMethodMask>
+        <include code="ECMC_DEBIT-SSL"/>
+        <include code="VISA_DEBIT-SSL"/>
+      </paymentMethodMask>
+      <shopper>
+        <shopperEmailAddress>$visitor_email</shopperEmailAddress>
+      </shopper>
     </order>
   </submit>
 </paymentService>
