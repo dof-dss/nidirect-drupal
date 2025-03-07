@@ -756,6 +756,7 @@ XML;
 
       if ($order_status === 'success') {
         // Update transaction status.
+        /*
         \Drupal::database()->update('prisoner_payment_transactions')
           ->fields(['status' => 'success'])
           ->condition('order_key', $original_order_code)
@@ -774,17 +775,18 @@ XML;
         $json_data = $this->generatePrismJson($webform_submission, $original_order_code, $order_amount);
 
         // Send JSON data via email to Prism.
-        $this->sendJsonToPrism($json_data);
+        $this->sendJsonToPrism($json_data);*/
 
         // Update confirmation message.
         $webform->setSetting('confirmation_message', $webform->getElement('webform_confirmation_success')['#markup']);
 
       } else {
         // Update transaction as failed.
+        /*
         \Drupal::database()->update('prisoner_payment_transactions')
           ->fields(['status' => 'failed'])
           ->condition('order_key', $original_order_code)
-          ->execute();
+          ->execute();*/
 
         $webform->setSetting('confirmation_message', $webform->getElement('webform_confirmation_failure')['#markup']);
       }
