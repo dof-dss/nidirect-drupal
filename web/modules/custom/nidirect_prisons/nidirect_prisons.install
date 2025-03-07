@@ -43,6 +43,41 @@ function nidirect_prisons_schema() {
     'primary key' => ['order_key'],
   ];
 
+  $schema['prisoner_payment_sequence'] = [
+    'description' => 'Stores a sequential ID for each payment made to a prisoner.',
+    'fields' => [
+      'id' => [
+        'description' => 'Auto-incrementing sequence ID.',
+        'type' => 'serial',
+        'not null' => TRUE,
+      ],
+    ],
+    'primary key' => ['id'],
+  ];
+
   return $schema;
 }
 
+/**
+ * Adds the prisoner_payment_sequence table.
+ */
+function nidirect_prisons_update_8001() {
+  $schema = \Drupal::database()->schema();
+
+  // Check if the table already exists to avoid duplication.
+  if (!$schema->tableExists('prisoner_payment_sequence')) {
+    $schema->createTable('prisoner_payment_sequence', [
+      'description' => 'Stores a sequential ID for each payment made to a prisoner.',
+      'fields' => [
+        'id' => [
+          'description' => 'Auto-incrementing sequence ID.',
+          'type' => 'serial',
+          'not null' => TRUE,
+        ],
+      ],
+      'primary key' => ['id'],
+    ]);
+
+    \Drupal::logger('nidirect_prisons')->notice('Created prisoner_payment_sequence table.');
+  }
+}
