@@ -9,10 +9,29 @@ use Drupal\Core\Controller\ControllerBase;
 class WorldpayNotificationController extends ControllerBase {
 
   public function handleNotification(Request $request) {
+
+    $ip = $_SERVER['REMOTE_ADDR'];
+    $hostname = gethostbyaddr($ip);
+
+    // Ensure hostname ends with worldpay.com.
+    if (!$hostname || !preg_match('/\.worldpay\.com$/', $hostname)) {
+      \Drupal::logger('nidirect_prisons')->warning('Worldpay notification hostname @hostname not recognised.', ['@hostname' => $hostname]);
+      return new Response('Access Denied', 403);
+    }
+
+    // Perform a forward DNS lookup to verify the hostname maps back to the same IP.
+    $resolved_ips = gethostbynamel($hostname);
+    if (!$resolved_ips || !in_array($ip, $resolved_ips, TRUE)) {
+      \Drupal::logger('nidirect_prisons')->warning('Worldpay notification forward DNS lookup failed. @ip is not a resolved IP for @hostname. Resolved IPs are: @resolved_ips', [
+        '@ip' => $ip,
+        '@hostname' => $hostname,
+        '@resolved_ips' => print_r($resolved_ips, TRUE),
+      ]);
+      return new Response('Access Denied', 403);
+    }
+
     // Get the raw XML from the request body.
     $xml_data = $request->getContent();
-    \Drupal::logger('worldpay')->notice('Received raw XML: @xml', ['@xml' => $xml_data]);
-
 
     if (empty($xml_data)) {
       \Drupal::logger('nidirect_prisons')->error('Empty Worldpay notification received.');
@@ -26,6 +45,7 @@ class WorldpayNotificationController extends ControllerBase {
       return new Response('Invalid XML', 400);
     }
 
+    // Validate XML.
     if (!isset($xml->notify)) {
       \Drupal::logger('worldpay')->error('Missing <notify> element in XML.');
       return new Response('Invalid XML structure', 400);
@@ -42,11 +62,12 @@ class WorldpayNotificationController extends ControllerBase {
       '@payment_status' => $payment_status,
     ]);
 
-    // Validate order.
+    // Check transaction for order exists.
     $db = \Drupal::database();
     $transaction = $db->select('prisoner_payment_transactions', 'ppt')
-      ->fields('ppt', ['order_key', 'status'])
+      ->fields('ppt', ['order_key', 'prisoner_id', 'visitor_id', 'amount', 'status'])
       ->condition('order_key', $order_code)
+      ->condition('status', 'pending')
       ->execute()
       ->fetchAssoc();
 
