@@ -25,11 +25,23 @@ class PrisonerAmountsResource extends ResourceBase implements ContainerFactoryPl
 
   /**
    * Constructs a new PrisonerAmountsResource object.
+   *
+   *
+   * @param array $configuration
+   *   A configuration array containing information about the plugin instance.
+   * @param string $plugin_id
+   *   The plugin_id for the plugin instance.
+   * @param mixed $plugin_definition
+   *   The plugin implementation definition.
+   * @param array $serializer_formats
+   *   The available serialization formats.
+   * @param \Psr\Log\LoggerInterface $logger
+   *   A logger instance.
    */
   public function __construct(
     array $configuration,
-          $plugin_id,
-          $plugin_definition,
+    $plugin_id,
+    $plugin_definition,
     array $serializer_formats,
     LoggerInterface $logger
   ) {
@@ -53,61 +65,37 @@ class PrisonerAmountsResource extends ResourceBase implements ContainerFactoryPl
    * Handles POST requests to update prisoner amounts.
    */
   public function post(Request $request) {
+
     $data = json_decode($request->getContent(), TRUE);
 
     if (empty($data) || !is_array($data)) {
       return new ResourceResponse(['error' => 'Invalid JSON payload'], 400);
     }
 
-    $connection = \Drupal::database();
-
-    // Check for reset_amount in payload.
-    if (isset($data['reset_amount'])) {
-      $reset_amount = number_format((float) $data['reset_amount'], 2, '.', '');
-      try {
-        $connection->update('prisoner_payment_amount')
-          ->fields(['amount' => $reset_amount])
-          ->execute();
-      }
-      catch (\Exception $e) {
-        \Drupal::logger('nidirect_prisons')->error('Database error: @message', ['@message' => $e->getMessage()]);
-        return new ResourceResponse(['error' => 'Database error: ' . $e->getMessage()], 500);
-      }
-      return new ResourceResponse(['message' => 'All prisoner amounts reset to ' . $reset_amount], 200);
-    }
-
     // Process each prison.
     foreach ($data as $prison_key => $prisoners) {
-      if (!is_array($prisoners)) {
+
+      // Each prison must be an array (of prisoners).
+      if (empty($prisoners) || !is_array($prisoners)) {
         return new ResourceResponse(['error' => 'Invalid JSON payload: missing prison and/or prisoner data'], 400);
       }
 
+      // Process each prisoner.
       foreach ($prisoners as $prisoner) {
-        if (!isset($prisoner['ID']) || !isset($prisoner['AMT'])) {
+
+        // Each prisoner must contain an ID and AMT (Amount).
+        if (!array_key_exists('ID', $prisoner) || !array_key_exists('AMT', $prisoner)) {
           return new ResourceResponse(['error' => 'Missing required prisoner data'], 400);
         }
 
-        $prisoner_id = $prisoner['ID'];
-        $new_amount = number_format((float) $prisoner['AMT'], 2, '.', '');
-
         try {
-          // Get the current stored amount.
-          $query = $connection->select('prisoner_payment_amount', 'p')
-            ->fields('p', ['amount'])
-            ->condition('prisoner_id', $prisoner_id)
-            ->execute()
-            ->fetchField();
-
-          if ($query === FALSE || $new_amount < $query) {
-            // Update if no record exists or if new amount is less.
-            $connection->merge('prisoner_payment_amount')
-              ->key('prisoner_id', $prisoner_id)
-              ->fields([
-                'prison_id' => $prison_key,
-                'amount' => $new_amount,
-              ])
-              ->execute();
-          }
+          \Drupal::database()->merge('prisoner_payment_amount')
+            ->key('prisoner_id', $prisoner['ID'])
+            ->fields([
+              'prison_id' => $prison_key,
+              'amount' => number_format($prisoner['AMT'], 2, '.', ''),
+            ])
+            ->execute();
         }
         catch (\Exception $e) {
           \Drupal::logger('nidirect_prisons')->error('Database error: @message', ['@message' => $e->getMessage()]);
