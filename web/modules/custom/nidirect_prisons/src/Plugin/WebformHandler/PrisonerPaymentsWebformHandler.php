@@ -114,20 +114,6 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
   /**
    * {@inheritdoc}
    */
-  public function alterElements(array &$elements, WebformInterface $webform) {
-    $this->debug(__FUNCTION__);
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function overrideSettings(array &$settings, WebformSubmissionInterface $webform_submission) {
-    $this->debug(__FUNCTION__);
-  }
-
-  /**
-   * {@inheritdoc}
-   */
   public function alterForm(array &$form, FormStateInterface $form_state, WebformSubmissionInterface $webform_submission) {
     $this->debug(__FUNCTION__);
 
@@ -314,7 +300,51 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
 
     }
 
+  }
 
+  /**
+   * {@inheritdoc}
+   */
+
+  public function submitForm(array &$form, FormStateInterface $form_state, WebformSubmissionInterface $webform_submission) {
+    $this->debug(__FUNCTION__);
+
+    $webform = $webform_submission->getWebform();
+    $page = $form_state->get('current_page');
+
+    if ($page === 'webform_confirmation') {
+
+      // Retrieve the JSON response and order key.
+      $response_data_json = $form_state->getValue('wp_response');
+
+      // Decode JSON response.
+      $response_data = json_decode($response_data_json, TRUE);
+      if (json_last_error() !== JSON_ERROR_NONE) {
+        $this->getLogger('nidirect_prisons')->error('Invalid Worldpay response: @error', [
+          '@error' => json_last_error_msg(),
+        ]);
+        return;
+      }
+
+      // Verify response integrity.
+      if (!$this->isValidWorldpayResponse($response_data)) {
+        $this->getLogger('nidirect_prisons')->alert('Worldpay response verification failed for order key: @orderKey', [
+          '@orderKey' => $response_data['order']['orderKey'],
+        ]);
+
+        \Drupal::messenger()->addError(t('Payment verification failed. Contact the administrator.'));
+        return;
+      }
+
+      // Extract order details.
+      $order_status = $response_data['order']['status'];
+
+      if ($order_status === 'success') {
+        $webform->setSetting('confirmation_message', $webform->getElement('webform_confirmation_success')['#markup']);
+      } else {
+        $webform->setSetting('confirmation_message', $webform->getElement('webform_confirmation_failure')['#markup']);
+      }
+    }
   }
 
   /**
@@ -713,87 +743,6 @@ XML;
   }
 
   /**
-   * {@inheritdoc}
-   */
-
-  public function submitForm(array &$form, FormStateInterface $form_state, WebformSubmissionInterface $webform_submission) {
-    $webform = $webform_submission->getWebform();
-    $page = $form_state->get('current_page');
-
-    if ($page === 'webform_confirmation') {
-
-      // Retrieve the JSON response and order key.
-      $response_data_json = $form_state->getValue('wp_response');
-      $original_order_code = $form_state->get('order_code');
-
-      // Decode JSON response.
-      $response_data = json_decode($response_data_json, TRUE);
-      if (json_last_error() !== JSON_ERROR_NONE) {
-        $this->getLogger('nidirect_prisons')->error('Invalid Worldpay response: @error', [
-          '@error' => json_last_error_msg(),
-        ]);
-        return;
-      }
-
-      // Verify response integrity.
-      if (!$this->isValidWorldpayResponse($response_data)) {
-        \Drupal::database()->update('prisoner_payment_transactions')
-          ->fields(['status' => 'failed'])
-          ->condition('order_key', $original_order_code)
-          ->execute();
-
-        $this->getLogger('nidirect_prisons')->alert('Worldpay response verification failed for order key: @orderKey', [
-          '@orderKey' => $response_data['order']['orderKey'],
-        ]);
-
-        \Drupal::messenger()->addError(t('Payment verification failed. Please contact support.'));
-        return;
-      }
-
-      // Extract order details.
-      $order_status = $response_data['order']['status'];
-      $order_amount = $response_data['gateway']['paymentAmount'] / 100; // Convert pence to pounds.
-
-      if ($order_status === 'success') {
-        // Update transaction status.
-        /*
-        \Drupal::database()->update('prisoner_payment_transactions')
-          ->fields(['status' => 'success'])
-          ->condition('order_key', $original_order_code)
-          ->execute();
-
-        // Deduct payment amount from available funds.
-        \Drupal::database()->update('prisoner_payment_amount')
-          ->expression('amount', 'amount - :paid_amount', [':paid_amount' => $order_amount])
-          ->condition('prisoner_id', $form_state->getValue('prisoner_id'))
-          ->execute();
-
-        //ksm($original_order_code, $order_amount);
-        $webform_submission->save();
-
-        // Prepare JSON payload for Prism.
-        $json_data = $this->generatePrismJson($webform_submission, $original_order_code, $order_amount);
-
-        // Send JSON data via email to Prism.
-        $this->sendJsonToPrism($json_data);*/
-
-        // Update confirmation message.
-        $webform->setSetting('confirmation_message', $webform->getElement('webform_confirmation_success')['#markup']);
-
-      } else {
-        // Update transaction as failed.
-        /*
-        \Drupal::database()->update('prisoner_payment_transactions')
-          ->fields(['status' => 'failed'])
-          ->condition('order_key', $original_order_code)
-          ->execute();*/
-
-        $webform->setSetting('confirmation_message', $webform->getElement('webform_confirmation_failure')['#markup']);
-      }
-    }
-  }
-
-  /**
    * Validates the Worldpay response using HMAC (MAC2).
    *
    * @param array $response_data
@@ -872,62 +821,6 @@ XML;
     \Drupal::database()->insert('prisoner_payment_transactions')
       ->fields($transaction_data)
       ->execute();
-  }
-
-  /**
-   * Method to generate JSON payment data to be sent to Prism.
-   *
-   * @param WebformSubmissionInterface $webform_submission
-   *   The webform submission.
-   *
-   * @param string $order_code
-   *   The order code for the payment.
-   *
-   * @param float $order_amount
-   *   The amount paid.
-   *
-   */
-  protected function generatePrismJson(WebformSubmissionInterface $webform_submission, string $order_code, float $order_amount) {
-    // Format transaction timestamp.
-    $timestamp = new \Drupal\Core\Datetime\DrupalDateTime();
-    $formatted_timestamp = $timestamp->format('d/m/Y H:i:s');
-
-    return json_encode([
-      "UNIQUE_TRANSACTION_ID" => $order_code,
-      "INMATE_ID" => $webform_submission->getElementData('prisoner_id'),
-      "VISITOR_ID" => $webform_submission->getElementData('visitor_id'),
-      "TRANSACTION_TIME" => $formatted_timestamp,
-      "AMOUNT_PAID" => number_format($order_amount, 2, '.', ''),
-      "SEQUENCE_ID" => $webform_submission->serial(),
-    ], JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT);
-  }
-
-  /**
-   * Method to send details of a payment to Prism.
-   *
-   * @param string $json_data
-   *   The payment data as JSON.
-   *
-   */
-  protected function sendJsonToPrism(string $json_data) {
-    $mailManager = \Drupal::service('plugin.manager.mail');
-    $module = 'nidirect_prisons';
-    $key = 'prisoner_payment_notification';
-    $to = getenv('PRISONER_PAYMENTS_PRISM_EMAIL') ?: 'prisoner_payments@mailhog.local';
-    $langcode = \Drupal::currentUser()->getPreferredLangcode();
-
-    $params = [
-      'subject' => 'PAYIN',
-      'body' => ["$json_data"],
-    ];
-
-    $send = $mailManager->mail($module, $key, $to, $langcode, $params);
-
-    if (!$send['result']) {
-      $this->getLogger('nidirect_prisons')->error('Failed to send prisoner payment data to Prism.');
-    } else {
-      $this->getLogger('nidirect_prisons')->notice('Prisoner payment data sent to Prism successfully.');
-    }
   }
 
   /**
