@@ -10,22 +10,29 @@ class WorldpayNotificationController extends ControllerBase {
 
   public function handleNotification(Request $request) {
 
-    $ip = $_SERVER['REMOTE_ADDR'];
-    $hostname = gethostbyaddr($ip);
+    $ip = $_SERVER['REMOTE_ADDR'] ?? ($_SERVER['HTTP_X_FORWARDED_FOR'] ?? '');
+    if (!$ip) {
+      \Drupal::logger('nidirect_prisons')->error('No IP address detected in request.');
+      return new Response('Invalid request', 400);
+    }
 
-    // Ensure hostname ends with worldpay.com.
-    if (!$hostname || !preg_match('/\.worldpay\.com$/', $hostname)) {
-      \Drupal::logger('nidirect_prisons')->warning('Worldpay notification hostname @hostname not recognised.', ['@hostname' => $hostname]);
+    // Reverse DNS lookup to verify request from worldpay.com.
+    $hostname = gethostbyaddr($ip);
+    if (!$hostname || !str_ends_with($hostname, '.worldpay.com')) {
+      \Drupal::logger('nidirect_prisons')->warning('Unrecognized hostname: @hostname from IP @ip', [
+        '@hostname' => $hostname,
+        '@ip' => $ip,
+      ]);
       return new Response('Access Denied', 403);
     }
 
-    // Perform a forward DNS lookup to verify the hostname maps back to the same IP.
+    // Forward DNS verification
     $resolved_ips = gethostbynamel($hostname);
-    if (!$resolved_ips || !in_array($ip, $resolved_ips, TRUE)) {
-      \Drupal::logger('nidirect_prisons')->warning('Worldpay notification forward DNS lookup failed. @ip is not a resolved IP for @hostname. Resolved IPs are: @resolved_ips', [
+    if (!$resolved_ips || !in_array($ip, $resolved_ips, true)) {
+      \Drupal::logger('nidirect_prisons')->warning('DNS verification failed for IP @ip with hostname @hostname.', [
         '@ip' => $ip,
         '@hostname' => $hostname,
-        '@resolved_ips' => print_r($resolved_ips, TRUE),
+        '@resolved_ips' => implode(', ', $resolved_ips ?? []),
       ]);
       return new Response('Access Denied', 403);
     }
@@ -62,40 +69,78 @@ class WorldpayNotificationController extends ControllerBase {
       '@payment_status' => $payment_status,
     ]);
 
-    // Check transaction for order exists.
+    // Check transaction for order_key exists.
     $db = \Drupal::database();
-    $transaction = $db->select('prisoner_payment_transactions', 'ppt')
+    $payment_transaction = $db->select('prisoner_payment_transactions', 'ppt')
       ->fields('ppt', ['order_key', 'prisoner_id', 'visitor_id', 'amount', 'status'])
       ->condition('order_key', $order_code)
       ->condition('status', 'pending')
       ->execute()
       ->fetchAssoc();
 
-    if (!$transaction) {
+    if (!$payment_transaction) {
       \Drupal::logger('nidirect_prisons')->error("No matching transaction found for order key: {$order_code}");
       return new Response('Transaction not found', 404);
     }
 
-    // If payment was successful, update transaction and prisoner balance.
+    // Handle the payment status.
+    $allowed_statuses = ['AUTHORISED', 'CANCELLED', 'SHOPPER_CANCELLED', 'REFUSED', 'EXPIRED', 'REQUEST_EXPIRED', 'ERROR'];
+    if (!in_array($payment_status, $allowed_statuses, true)) {
+      \Drupal::logger('nidirect_prisons')->warning('Unhandled Worldpay payment status: @status', [
+        '@status' => $payment_status,
+      ]);
+      return new Response('Unknown status', 400);
+    }
+
+    // If payment was successful, update prisoner balance and send
+    // payment details to Prism.
     if ($payment_status === 'AUTHORISED') {
-      // Update transaction status.
-      $db->update('prisoner_payment_transactions')
-        ->fields(['status' => 'success'])
-        ->condition('order_key', $order_code)
-        ->execute();
 
       // Deduct from prisoner's balance.
-      $db->update('prisoner_payment_amount')
-        ->expression('amount', 'amount - :paid_amount', [':paid_amount' => $amount])
-        ->condition('prisoner_id', $transaction['prisoner_id'])
-        ->execute();
+      $db_transaction = $db->startTransaction();
+
+      try {
+        $db->update('prisoner_payment_amount')
+          ->expression('amount', 'GREATEST(amount - :paid_amount, 0)', [':paid_amount' => $amount])
+          ->condition('prisoner_id', $payment_transaction['prisoner_id'])
+          ->execute();
+      }
+      catch (\Exception $e) {
+        $db_transaction->rollBack();
+        \Drupal::logger('nidirect_prisons')->error('Balance update failed: @message', ['@message' => $e->getMessage()]);
+        return new Response('Transaction failed', 500);
+      }
+      finally {
+        unset($db_transaction);
+      }
 
       // Get sequence id for this payment.
       $sequence_id = $this->getNextSequenceId();
 
       // Send payment details to Prism.
-      $this->sendJsonToPrism($order_code, $transaction['prisoner_id'], $transaction['visitor_id'], $amount, $sequence_id);
+      $this->sendJsonToPrism($order_code, $payment_transaction['prisoner_id'], $payment_transaction['visitor_id'], $amount, $sequence_id);
+
+      // Set transaction status as success.
+      $transaction_status = 'success';
     }
+    // Otherwise the payment was cancelled, refused or some other
+    // status which means it failed.
+    elseif ($payment_status === 'CANCELLED' || $payment_status === 'SHOPPER_CANCELLED') {
+      $transaction_status = 'cancelled';
+    }
+    elseif ($payment_status === 'REFUSED') {
+      $transaction_status = 'refused';
+    }
+    else {
+      $transaction_status = 'failed';
+    }
+
+    // Update transaction table.
+    $db->update('prisoner_payment_transactions')
+      ->fields(['status' => $transaction_status])
+      ->condition('order_key', $order_code)
+      ->execute();
+
 
     return new Response('OK', 200);
   }
