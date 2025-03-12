@@ -10,13 +10,47 @@ class WorldpayNotificationController extends ControllerBase {
 
   public function handleNotification(Request $request) {
 
-    $ip = $_SERVER['REMOTE_ADDR'] ?? ($_SERVER['HTTP_X_FORWARDED_FOR'] ?? '');
-    if (!$ip) {
-      \Drupal::logger('nidirect_prisons')->error('No IP address detected in request.');
-      return new Response('Invalid request', 400);
-    }
+    /*
+     * Handle notifications from Worldpay to track if a payment has
+     * succeeded or failed.
+     *
+     * See https://docs.worldpay.com/apis/wpg/manage for information
+     * on configuring Worldpay order notifications.
+     *
+     * When a payment request is initialised, the payment transaction is
+     * recorded as 'pending' in the prisoner_payment_transactions table.
+     * When the hosted payment page is submitted, Worldpay sends
+     * notifications on the status of the payment.
+     *
+     * At present, notifications for the following statuses are
+     * configured:
+     *   - 'AUTHORISED'
+     *   - 'CANCELLED'
+     *   - 'SHOPPER_CANCELLED'
+     *   - 'REFUSED'
+     *   - 'ERROR'
+     *
+     * If the payment is AUTHORISED, the payment transaction is
+     * updated to 'success' in the prisoner_payment_transactions table
+     * and in practice this means means that the payment has been
+     * successfully approved by the card issuer or bank, but the funds
+     * have not yet been captured or settled (debited from visitor's
+     * account).
+     *
+     * In theory, a payment can be CANCELLED after it has been
+     * AUTHORISED. However, this is not presently handled here. If
+     * a pending or failed transaction is AUTHORISED and marked as
+     * a success in the prisoner_payment_transactions table, further
+     * notifications relating to it are effectively ignored.
+     *
+     * @todo: check with Prism team how cancellations will be handled.
+     */
 
-    // Reverse DNS lookup to verify request from worldpay.com.
+    // Check request is from a Worldpay IP by performing forward and
+    // reverse DNS lookups. Deny access to non-Worldpay IP addresses.
+    $ip = $request->getClientIp();
+
+    // Reverse DNS lookup.
     $hostname = gethostbyaddr($ip);
     if (!$hostname || !str_ends_with($hostname, '.worldpay.com')) {
       \Drupal::logger('nidirect_prisons')->warning('Unrecognized hostname: @hostname from IP @ip', [
@@ -26,7 +60,7 @@ class WorldpayNotificationController extends ControllerBase {
       return new Response('Access Denied', 403);
     }
 
-    // Forward DNS verification
+    // Forward DNS lookup.
     $resolved_ips = gethostbynamel($hostname);
     if (!$resolved_ips || !in_array($ip, $resolved_ips, true)) {
       \Drupal::logger('nidirect_prisons')->warning('DNS verification failed for IP @ip with hostname @hostname.', [
@@ -40,60 +74,80 @@ class WorldpayNotificationController extends ControllerBase {
     // Get the raw XML from the request body.
     $xml_data = $request->getContent();
 
+    // Return 400 bad request if there is something wrong with the
+    // XML. Note Worldpay will retry sending notifications (for up to 7
+    // days) if the response is anything other than a 200 OK.
+
     if (empty($xml_data)) {
       \Drupal::logger('nidirect_prisons')->error('Empty Worldpay notification received.');
-      return new Response('Invalid request', 400);
+      return new Response('Bad request', 400);
     }
 
-    // Parse XML.
     $xml = simplexml_load_string($xml_data);
     if (!$xml) {
       \Drupal::logger('nidirect_prisons')->error('Invalid XML received in Worldpay notification.');
-      return new Response('Invalid XML', 400);
+      return new Response('Bad request', 400);
     }
 
-    // Validate XML.
     if (!isset($xml->notify)) {
       \Drupal::logger('worldpay')->error('Missing <notify> element in XML.');
-      return new Response('Invalid XML structure', 400);
+      return new Response('Bad request', 400);
     }
 
-    // Extract required fields.
+    // Process the notification.
     $order_code = (string) $xml->notify->orderStatusEvent['orderCode'];
     $payment_status = (string) $xml->notify->orderStatusEvent->payment->lastEvent;
     $amount = (float) $xml->notify->orderStatusEvent->payment->amount['value'] / 100; // Convert pence to pounds.
 
     \Drupal::logger('worldpay')->notice('Worldpay order notification for @order_key £@amount @payment_status', [
       '@order_key' => $order_code,
-      '@amount' => $amount,
+      '@amount' => number_format($amount, 2, '.', ''),
       '@payment_status' => $payment_status,
     ]);
 
-    // Check transaction for order_key exists.
+    // Check transaction for order_key exists. It must have a pending or
+    // failed status. We do not change the status of transactions that
+    // are marked as success.
     $db = \Drupal::database();
     $payment_transaction = $db->select('prisoner_payment_transactions', 'ppt')
       ->fields('ppt', ['order_key', 'prisoner_id', 'visitor_id', 'amount', 'status'])
       ->condition('order_key', $order_code)
-      ->condition('status', 'pending')
+      ->condition('status', ['pending', 'failed'], 'IN')
       ->execute()
       ->fetchAssoc();
 
+    // If no transaction exists, log it.
     if (!$payment_transaction) {
-      \Drupal::logger('nidirect_prisons')->error("No matching transaction found for order key: {$order_code}");
-      return new Response('Transaction not found', 404);
+      \Drupal::logger('nidirect_prisons')->notice("No pending prisoner payment transaction found for order key: {$order_code}");
+
+      // No further processing do be done. Acknowledge the notification.
+      return new Response('OK', 200);
     }
 
-    // Handle the payment status.
-    $allowed_statuses = ['AUTHORISED', 'CANCELLED', 'SHOPPER_CANCELLED', 'REFUSED', 'EXPIRED', 'REQUEST_EXPIRED', 'ERROR'];
+    // Allowed payment statuses. The payment statuses that can be
+    // sent are configured in the Worldpay Merchant Admin Interface
+    // (MAI).
+    $allowed_statuses = [
+      'AUTHORISED',
+      'CANCELLED',
+      'SHOPPER_CANCELLED',
+      'REFUSED',
+      'ERROR',
+    ];
+
+    // Log a warning if the status is not one we are expecting.
     if (!in_array($payment_status, $allowed_statuses, true)) {
-      \Drupal::logger('nidirect_prisons')->warning('Unhandled Worldpay payment status: @status', [
+      \Drupal::logger('nidirect_prisons')->warning('Unexpected Worldpay order notification status: @status. Have Merchant Channel HTTP Events been changed in the MAI?', [
         '@status' => $payment_status,
       ]);
-      return new Response('Unknown status', 400);
+
+      // No further processing do be done. Acknowledge the notification.
+      return new Response('OK', 200);
     }
 
-    // If payment was successful, update prisoner balance and send
-    // payment details to Prism.
+    // If payment was AUTHORISED, update prisoner balance and send
+    // payment details to Prism and update transaction status
+    // as 'success'. Else the transaction status is 'failed'.
     if ($payment_status === 'AUTHORISED') {
 
       // Deduct from prisoner's balance.
@@ -108,7 +162,6 @@ class WorldpayNotificationController extends ControllerBase {
       catch (\Exception $e) {
         $db_transaction->rollBack();
         \Drupal::logger('nidirect_prisons')->error('Balance update failed: @message', ['@message' => $e->getMessage()]);
-        return new Response('Transaction failed', 500);
       }
       finally {
         unset($db_transaction);
@@ -120,28 +173,21 @@ class WorldpayNotificationController extends ControllerBase {
       // Send payment details to Prism.
       $this->sendJsonToPrism($order_code, $payment_transaction['prisoner_id'], $payment_transaction['visitor_id'], $amount, $sequence_id);
 
-      // Set transaction status as success.
-      $transaction_status = 'success';
-    }
-    // Otherwise the payment was cancelled, refused or some other
-    // status which means it failed.
-    elseif ($payment_status === 'CANCELLED' || $payment_status === 'SHOPPER_CANCELLED') {
-      $transaction_status = 'cancelled';
-    }
-    elseif ($payment_status === 'REFUSED') {
-      $transaction_status = 'refused';
+      // Prisoner payment transaction success.
+      $db->update('prisoner_payment_transactions')
+        ->fields(['status' => 'success'])
+        ->condition('order_key', $order_code)
+        ->execute();
     }
     else {
-      $transaction_status = 'failed';
+      // Prisoner payment transaction failed.
+      $db->update('prisoner_payment_transactions')
+        ->fields(['status' => 'failed'])
+        ->condition('order_key', $order_code)
+        ->execute();
     }
 
-    // Update transaction table.
-    $db->update('prisoner_payment_transactions')
-      ->fields(['status' => $transaction_status])
-      ->condition('order_key', $order_code)
-      ->execute();
-
-
+    // Acknowledge the notification.
     return new Response('OK', 200);
   }
 
