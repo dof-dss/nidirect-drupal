@@ -125,10 +125,20 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
     $this->elements = WebformFormHelper::flattenElements($form);
 
     $page = $form_state->get('current_page');
+    $is_prev_triggered = isset($form_state->getTriggeringElement()['#id']) && $form_state->getTriggeringElement()['#id'] === 'edit-actions-wizard-prev';
+    $is_next_triggered = isset($form_state->getTriggeringElement()['#id']) && $form_state->getTriggeringElement()['#id'] === 'edit-actions-wizard-next';
+
     $elements = WebformFormHelper::flattenElements($form);
     $webform = $webform_submission->getWebform();
 
     if ($page === 'page_payment_amount') {
+
+      // If user hit previous on page_payment_card_details, then there
+      // is an existing order_code and pending transaction which needs
+      // to be removed.
+      if ($is_prev_triggered && $prev_order_code = $form_state->get('order_code')) {
+        $this->deleteTransaction($prev_order_code);
+      }
 
       // The prisoner_id to be paid.
       $prisoner_id = $form_state->getValue('prisoner_id');
@@ -185,8 +195,6 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
       );
 
       $response_xml = $this->sendWorldpayRequest($order_data_xml);
-
-      //ksm($response_xml);
 
       // Parse the Worldpay response to get the iframe URL.
       if ($response_xml && $response = $this->parseWorldpayResponse($response_xml)) {
@@ -820,6 +828,19 @@ XML;
 
     \Drupal::database()->insert('prisoner_payment_transactions')
       ->fields($transaction_data)
+      ->execute();
+  }
+
+  /**
+   * Method to delete transaction.
+   *
+   * @param string $order_code
+   *   The unique order code identifying the transaction to delete.
+   *
+   */
+  private function deleteTransaction(string $order_code) {
+    \Drupal::database()->delete('prisoner_payment_transactions')
+      ->condition('order_key', $order_code)
       ->execute();
   }
 
