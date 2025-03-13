@@ -67,6 +67,15 @@ elements: |-
         '#autocomplete': 'off'
         '#required': true
         '#required_error': "You must enter the prisoner's name"
+      visitor_email:
+        '#type': webform_email_confirm
+        '#title': 'Email address'
+        '#description': 'We will use your email address to notify you if your payment was successful.'
+        '#description_display': before
+        '#required': true
+        '#required_error': 'Enter your email address'
+        '#pattern': '[^@\s]+@[^@\s]+\.[^@\s]+'
+        '#pattern_error': 'Enter a valid email address'
       visitor_id:
         '#type': textfield
         '#title': 'Your visitor ID'
@@ -81,15 +90,6 @@ elements: |-
         '#pattern': '[0-9]{6}'
         '#pattern_error': 'Visitor ID is not recognised'
         '#inputmode': numeric
-      visitor_email:
-        '#type': webform_email_confirm
-        '#title': 'Your email address'
-        '#description': 'We will use this email address to notify you if your payment was successful.'
-        '#description_display': before
-        '#required': true
-        '#required_error': 'Enter your email address'
-        '#pattern': '[^@\s]+@[^@\s]+\.[^@\s]+'
-        '#pattern_error': 'Enter a valid email address'
     prisoner_details:
       '#type': fieldset
       '#title': 'Prisoner details'
@@ -116,6 +116,18 @@ elements: |-
         '#required_error': 'Enter the prisoner ID of the prisoner you want to make a payment to'
         '#pattern': '[A-FH][0-9]{1,4}'
         '#pattern_error': 'Prisoner ID is not recognised'
+  page_visitor_email:
+    '#type': webform_wizard_page
+    '#title': 'Your email address'
+    '#access': false
+    msg_visitor_email:
+      '#type': webform_markup
+      '#markup': |-
+        <div role="status">
+          <p class="info-notice">
+            We will use your email address to notify you if your payment was successful.
+          </p>
+        </div>
   page_payment_amount:
     '#type': webform_wizard_page
     '#title': 'Amount to pay'
