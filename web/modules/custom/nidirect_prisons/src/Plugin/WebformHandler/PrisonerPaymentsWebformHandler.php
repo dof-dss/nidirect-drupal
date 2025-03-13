@@ -331,6 +331,8 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
         $this->getLogger('nidirect_prisons')->error('Invalid Worldpay response: @error', [
           '@error' => json_last_error_msg(),
         ]);
+
+        \Drupal::messenger()->addError(t('Payment verification failed. Contact the administrator.'));
         return;
       }
 
