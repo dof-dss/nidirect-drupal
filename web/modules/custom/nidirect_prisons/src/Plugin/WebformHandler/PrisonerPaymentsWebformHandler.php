@@ -275,21 +275,6 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
         $form_state->setErrorByName('prisoner_id', $this->t('Check prisoner ID is correct.'));
       }
 
-      // Check for existing pending payments.
-      /*$pending_payment = \Drupal::database()->select('prisoner_payment_transactions', 't')
-        ->fields('t', ['amount'])
-        ->condition('prisoner_id', $prisoner_id)
-        ->condition('visitor_id', $visitor_id)
-        ->condition('status', ['pending'], 'IN')
-        ->condition('created_timestamp', strtotime('-7 days'), '>')
-        ->execute()
-        ->fetchField();
-
-      if ($pending_payment) {
-        $form_state->setError($form, $this->t('There is an existing payment pending. Try again later.'));
-        return;
-      }*/
-
     }
 
     if ($page === 'page_payment_amount') {
