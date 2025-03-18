@@ -514,7 +514,7 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
     $recipient_middle_name = $prisoner_names['middle'] ? '<middle>' . $prisoner_names['middle'] . '</middle>' : NULL;
 
     // Create XML structure.
-    /*$xml = <<<XML
+    $xml = <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE paymentService PUBLIC "-//Worldpay//DTD Worldpay PaymentService v1//EN" "http://dtd.worldpay.com/paymentService_v1.dtd">
 <paymentService version="1.4" merchantCode="$merchant_code">
@@ -532,7 +532,7 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
       <shopper>
         <shopperEmailAddress>$visitor_email</shopperEmailAddress>
       </shopper>
-      <fundingTransfer type="F" category="PULL_FROM_CARD">
+      <fundingTransfer type="GO" category="PULL_FROM_CARD">
         <fundingParty type="sender">
           <accountReference accountType="03">HPP-PROVIDED</accountReference>
           <fullName>
@@ -560,9 +560,9 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
   </submit>
 </paymentService>
 
-XML;*/
+XML;
 
-    $xml = <<<XML
+    /*$xml = <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE paymentService PUBLIC "-//Worldpay//DTD Worldpay PaymentService v1//EN" "http://dtd.worldpay.com/paymentService_v1.dtd">
 <paymentService version="1.4" merchantCode="$merchant_code">
@@ -584,7 +584,7 @@ XML;*/
   </submit>
 </paymentService>
 
-XML;
+XML;*/
 
     //ksm('Generated Worldpay payment request', $xml);
 
