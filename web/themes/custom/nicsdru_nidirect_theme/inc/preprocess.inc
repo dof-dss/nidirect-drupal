@@ -750,3 +750,7 @@ function nicsdru_nidirect_theme_preprocess_views_view_rss(&$variables) {
     $variables['namespaces'] = new Attribute($style->namespaces);
   }
 }
+
+function nicsdru_nidirect_theme_preprocess_geolocation_map_wrapper(array &$variables) {
+  $variables['attributes']['data-silktide'] = 'ignore';
+}
