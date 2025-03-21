@@ -160,12 +160,14 @@ elements: |-
       '#size': 6
       '#placeholder': '0.00'
       '#autocomplete': 'off'
-      '#input_mask': '[1][9][9][.99]'
+      '#input_mask': '[9][9][9][.99]'
       '#required': true
       '#required_error': 'Enter how much you want to pay the prisoner'
       '#wrapper_attributes':
         class:
           - form-item--important
+      '#attributes':
+        data-inputmask-placeholder: 0
   page_payment_card_details:
     '#type': webform_wizard_page
     '#title': 'Pay now by debit card'
@@ -176,11 +178,7 @@ elements: |-
       '#template': |-
         <div role="status">
 
-        <!--<p class="info-notice">
-        Complete your payment using Mastercard or Visa <strong>debit cards only</strong>.
-        <br>Credit cards will not be accepted.
-        </p>
-
+        <!--
         <p class="info-notice">
         <strong>Credit cards will not be accepted.</strong><br>
         Complete your payment using Mastercard or Visa debit cards only.
