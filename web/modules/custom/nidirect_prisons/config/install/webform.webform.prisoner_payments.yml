@@ -66,11 +66,11 @@ elements: |-
         '#size': 40
         '#autocomplete': 'off'
         '#required': true
-        '#required_error': "You must enter the prisoner's name"
+        '#required_error': 'You must enter your name'
       visitor_email:
         '#type': webform_email_confirm
-        '#title': 'Email address'
-        '#description': 'We will use your email address to notify you if your payment was successful.'
+        '#title': 'Your email address'
+        '#description': 'We will use this email address to notify you if your payment was successful.'
         '#description_display': before
         '#required': true
         '#required_error': 'Enter your email address'
@@ -116,18 +116,6 @@ elements: |-
         '#required_error': 'Enter the prisoner ID of the prisoner you want to make a payment to'
         '#pattern': '[A-FH][0-9]{1,4}'
         '#pattern_error': 'Prisoner ID is not recognised'
-  page_visitor_email:
-    '#type': webform_wizard_page
-    '#title': 'Your email address'
-    '#access': false
-    msg_visitor_email:
-      '#type': webform_markup
-      '#markup': |-
-        <div role="status">
-          <p class="info-notice">
-            We will use your email address to notify you if your payment was successful.
-          </p>
-        </div>
   page_payment_amount:
     '#type': webform_wizard_page
     '#title': 'Amount to pay'
@@ -191,12 +179,21 @@ elements: |-
         <!--<p class="info-notice">
         Complete your payment using Mastercard or Visa <strong>debit cards only</strong>.
         <br>Credit cards will not be accepted.
-        </p>-->
+        </p>
 
         <p class="info-notice">
         <strong>Credit cards will not be accepted.</strong><br>
         Complete your payment using Mastercard or Visa debit cards only.
         </p>
+        -->
+
+        <div class="info-notice">
+          <p>
+            Complete payment using a <strong>Mastercard or
+            Visa debit card issued by a UK bank</strong>.
+            &nbsp; Credit cards will not be accepted.
+          </p>
+        </div>
 
         <h3>Payment summary</h3>
 
@@ -368,7 +365,7 @@ settings:
   form_title: source_entity_webform
   form_submit_once: true
   form_open_message: ''
-  form_close_message: 'Go away'
+  form_close_message: 'THIS IS A TEST MESSAGE'
   form_exception_message: ''
   form_previous_submissions: true
   form_confidential: false
