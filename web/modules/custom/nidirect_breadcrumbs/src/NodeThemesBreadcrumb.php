@@ -154,7 +154,7 @@ class NodeThemesBreadcrumb implements BreadcrumbBuilderInterface {
 
     // Determine if node is part of a book and add link(s) to its
     // book parent(s).
-    if (!empty($node->book)) {
+    if (!empty($node->book) && isset($node->book['depth'])) {
 
       // Determine depth of node in the book.
       $book_depth = $node->book['depth'];
