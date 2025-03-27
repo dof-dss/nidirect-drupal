@@ -185,7 +185,6 @@ class NodeThemesBreadcrumb implements BreadcrumbBuilderInterface {
     // set of content to another.
     $breadcrumb->setLinks($links);
 
-
     // Prevent the caching of breadcrumbs on updated content and node previews.
     if ($route_match->getRouteName() === 'entity.node.preview') {
       // Node previews don't have a Node ID we can reference but instead use a
