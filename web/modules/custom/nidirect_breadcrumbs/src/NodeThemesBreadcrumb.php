@@ -130,6 +130,10 @@ class NodeThemesBreadcrumb implements BreadcrumbBuilderInterface {
     // Fetch the node or preview node object.
     $node = $route_match->getParameter('node') ?? $route_match->getParameter('node_preview');
 
+    // Fix mysterious missing breadcrumb issue (D8NID-1699, D8NID-1542).
+    // Ensure url.path cache context set prior to early return.
+    $breadcrumb->addCacheContexts(['url.path']);
+
     // Return early if it's a supporting/secondary node type:
     // feature/featured_content_list.
     if (preg_match('/^feature/', $node->getType())) {
@@ -180,7 +184,6 @@ class NodeThemesBreadcrumb implements BreadcrumbBuilderInterface {
     // a URL path cache context so it varies as you move from one
     // set of content to another.
     $breadcrumb->setLinks($links);
-    $breadcrumb->addCacheContexts(['url.path']);
 
     // Prevent the caching of breadcrumbs on updated content and node previews.
     if ($route_match->getRouteName() === 'entity.node.preview') {
