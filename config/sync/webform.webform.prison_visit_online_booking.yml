@@ -1688,7 +1688,7 @@ elements: |-
         <h2 class="legend">Booking complete</h2>
         <div class="info-notice info-notice--success">
           <p>We will send you an email shortly to let you know whether your booking has been successful.  Please allow up to 1 hour for this email to arrive.</p>
-      <p>If you need to amend this booking, use the <strong>Cancel or Amend Booking</strong> button in the email.</p>
+          <p>If you need to amend this booking, use the <strong>Cancel or Amend Booking</strong> button in the email.</p>
         </div>
         <div class="launch-service">
           <a href="/forms/book-prison-visit" class="btn btn--call-to-action" data-self-ref="true">Book another prison visit</a>
@@ -1920,6 +1920,7 @@ settings:
     visitor_1_intro: visitor_1_intro
     visitor_1_intro_amend: visitor_1_intro_amend
     visitor_1_id: visitor_1_id
+    visitor_1_id_duplicate_warning: visitor_1_id_duplicate_warning
     visitor_1_dob: visitor_1_dob
     visitor_1_email: visitor_1_email
     visitor_1_telephone: visitor_1_telephone
@@ -1973,7 +1974,6 @@ settings:
     sunday_week_4: sunday_week_4
     slots_preferred: slots_preferred
     booking_reference_processed: booking_reference_processed
-    amend_booking_data: amend_booking_data
     amend_booking_setup_complete: amend_booking_setup_complete
     prison_name: prison_name
     visit_type: visit_type
@@ -2041,7 +2041,7 @@ settings:
     <p class="info-notice" role="status">
         We will send you an email shortly to let you know whether your booking request has been successful.  Please allow up to 1 hour for this email to arrive.
     </p>
-
+    <p>If you need to amend this booking, use the <strong>Cancel or Amend Booking</strong> button in the email.</p>
     <div class="launch-service">
         <a href="/forms/book-prison-visit" class="btn btn--call-to-action" data-self-ref="true">Book another prison visit</a>
     </div>
@@ -2066,7 +2066,7 @@ settings:
   entity_limit_user_interval: null
   purge: none
   purge_days: null
-  results_disabled: false
+  results_disabled: true
   results_disabled_ignore: false
   results_customize: false
   token_view: false
@@ -2486,7 +2486,7 @@ handlers:
       enabled:
         ':input[name="environment_base_url"]':
           value:
-            pattern: '^.*(lndo\.site|localhost).*$'
+            pattern: '^.*(ddev\.site|localhost).*$'
         ':input[name="bkg_id"]':
           empty: true
     weight: -48
@@ -2983,8 +2983,6 @@ handlers:
             pattern: '^.*wcjm3mu7bacfm.*$'
         ':input[name="bkg_id"]':
           filled: true
-        ':input[name="amend_booking_options"]':
-          '!value': keep
     weight: -45
     settings:
       states:
@@ -3164,8 +3162,6 @@ handlers:
           value: 'https://www.nidirect.gov.uk'
         ':input[name="bkg_id"]':
           filled: true
-        ':input[name="amend_booking_options"]':
-          '!value': keep
     weight: -46
     settings:
       states:
@@ -3346,8 +3342,6 @@ handlers:
             pattern: '^.*(ddev\.site|lndo\.site|localhost).*$'
         ':input[name="bkg_id"]':
           filled: true
-        ':input[name="amend_booking_options"]':
-          '!value': keep
     weight: -44
     settings:
       states:
