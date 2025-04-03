@@ -4,13 +4,22 @@
  * Implements hook_cron().
  */
 function nidirect_prisons_cron() {
-  // Get the timestamp for 7 days ago.
-  $threshold = strtotime('-7 days');
 
-  // Delete transactions older than 7 days.
+  // Delete pending transactions created more than 30 minutes ago.
+  $threshold = strtotime('-30 minutes');
+  $query = \Drupal::database()->delete('prisoner_payment_transactions')
+    ->condition('status', 'pending')
+    ->condition('created_timestamp', $threshold, '<');
+  $deleted = $query->execute();
+
+  if ($deleted) {
+    \Drupal::logger('nidirect_prisons')->notice('Deleted @count pending prisoner payment transactions created more than 1 hour ago.', ['@count' => $deleted]);
+  }
+
+  // Delete transactions more than 7 days old.
+  $threshold = strtotime('-7 days');
   $query = \Drupal::database()->delete('prisoner_payment_transactions')
     ->condition('created_timestamp', $threshold, '<');
-
   $deleted = $query->execute();
 
   if ($deleted) {
