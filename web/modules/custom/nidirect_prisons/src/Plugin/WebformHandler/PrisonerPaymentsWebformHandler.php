@@ -131,14 +131,16 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
     $elements = WebformFormHelper::flattenElements($form);
     $webform = $webform_submission->getWebform();
 
-    if ($page === 'page_payment_amount') {
+    if ($page === 'page_prisoner_and_visitor_id' || $page === 'page_payment_amount') {
 
-      // If user hit previous on page_payment_card_details, then there
-      // is an existing order_code and pending transaction which needs
-      // to be removed.
+      // If user hit previous, then there is an existing order_code
+      // and pending transaction which needs to be removed.
       if ($is_prev_triggered && $prev_order_code = $form_state->get('order_code')) {
         $this->deleteTransaction($prev_order_code);
       }
+    }
+
+    if ($page === 'page_payment_amount') {
 
       // The prisoner_id to be paid.
       $prisoner_id = $form_state->getValue('prisoner_id');
@@ -149,39 +151,80 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
       // The maximum amount a prisoner can be paid.
       $prisoner_max_amount = $this->getPrisonerPaymentMaxAmount($prisoner_id);
 
-      if ($prisoner_max_amount > 0) {
-        // Set a form element value for display in the webform.
-        $this->setFormElementValue('prisoner_max_amount', $prisoner_max_amount);
+      // Set a form element value for display in the webform.
+      $this->setFormElementValue('prisoner_max_amount', $prisoner_max_amount);
 
-        // Pass to clientside JS for validation purposes.
-        $form['#attached']['drupalSettings']['prisonerPayments']['prisonerMaxAmount'] = $prisoner_max_amount;
+      // Pass to clientside JS for validation purposes.
+      $form['#attached']['drupalSettings']['prisonerPayments']['prisonerMaxAmount'] = $prisoner_max_amount;
+
+      // Stop progress if there is pending transaction from
+      // another visitor.
+      $pending_transaction = $this->getPendingTransactions($prisoner_id);
+
+      if ($pending_transaction) {
+
+        // Check if the pending transaction has expired
+        // (30 minute timeout).
+        $timeout_threshold = \Drupal::time()->getRequestTime() - 1800;
+
+        if ($pending_transaction->created_timestamp < $timeout_threshold) {
+          // Mark transaction as expired
+          $this->updateTransactionStatus($pending_transaction->order_key, 'expired');
+        } else {
+          // Visitor cannot proceed. Show payment pending message.
+          $elements['msg_payment_pending']['#access'] = TRUE;
+
+          // Prevent further progress.
+          $elements['prisoner_payment_amount']['#access'] = FALSE;
+          $elements['wizard_next']['#access'] = FALSE;
+          return;
+        }
       }
-      else {
-        // Cannot enter an amount to pay, nor proceed to next step.
+
+      // Stop progress if prisoner amount that can be paid is 0.
+      if ($prisoner_max_amount == 0) {
+
+        // Show msg_payment_limit_reached.
+        $elements['msg_payment_limit_reached']['#access'] = TRUE;
+
+        // Prevent further progress.
         $elements['prisoner_payment_amount']['#access'] = FALSE;
         $elements['wizard_next']['#access'] = FALSE;
+        return;
       }
+
+      // Get prison_id, generate order code and log pending transaction.
+      $prison_id = $this->getPrisonId($prisoner_id);
+      $order_code = $this->generateOrderCode($prison_id, $prisoner_id, $visitor_id);
+
+      // Keep order_code and prison_id for later.
+      $form_state->set('order_code', $order_code);
+      $form_state->set('prison_id', $prison_id);
+
+      // Log pending transaction of £0 (as we don't know the
+      // amount yet).
+      $this->logPendingTransaction($order_code, $prisoner_id, $visitor_id, 0);
+
+      // Show msg_maximum_amount_payable.
+      $elements['msg_maximum_amount_payable']['#access'] = TRUE;
     }
 
     if ($page === 'page_payment_card_details') {
 
       $prisoner_fullname = $form_state->getValue('prisoner_fullname');
       $prisoner_id = $form_state->getValue('prisoner_id');
-      $prison_id = $this->getPrisonId($prisoner_id);
+      $prison_id = $form_state->get('prison_id');
 
       $visitor_fullname = $form_state->getValue('visitor_fullname');
       $visitor_id = $form_state->getValue('visitor_id');
       $visitor_email = $form_state->getValue('visitor_email');
 
+      $order_code = $form_state->get('order_code');
+
       $payment_amount = (float) $form_state->getValue('prisoner_payment_amount');
 
-      // Generate and store order code needed uniquely
-      // identify transaction.
-      $order_code = $this->generateOrderCode($prison_id, $prisoner_id, $visitor_id);
-      $form_state->set('order_code', $order_code);
-
-      // Store a pending transaction before doing the Worldpay bit.
-      $this->logPendingTransaction($order_code, $prisoner_id, $visitor_id, $payment_amount);
+      // Update pending transaction with the payment amount.
+      $this->updatePendingTransactionAmount($order_code, $payment_amount);
 
       // Generate and send Worldpay order XML request.
       $order_data_xml = $this->generateOrderData(
@@ -216,8 +259,19 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
         $form['actions']['submit']['#attributes']['class'][] = 'visually-hidden';
 
       } else {
-        // Handle error cases and display messages to users.
-        $form['#attached']['drupalSettings']['worldpayError'] = 'Unable to process your payment request. Please try again later.';
+
+        // Something went wrong with the payment request to Worldpay.
+        // Update transaction status as failed.
+        $this->updateTransactionStatus($order_code, 'failed');
+
+        // Prevent further progress.
+        $elements['page_payment_card_details']['#access'] = FALSE;
+        $elements['submit']['#access'] = FALSE;
+
+        \Drupal::messenger()->addError($this->t('An error occurred while processing your request. Try again later.'));
+        $this->getLogger('nidirect_prisons')->error('Failed to parse Worldpay response: @response', [
+          '@response' => $response_xml,
+        ]);
       }
     }
 
@@ -274,7 +328,6 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
         $form_state->setErrorByName('visitor_id', $this->t('Check your visitor ID is correct and the prisoner has nominated you to make payments to them.'));
         $form_state->setErrorByName('prisoner_id', $this->t('Check prisoner ID is correct.'));
       }
-
     }
 
     if ($page === 'page_payment_amount') {
@@ -284,13 +337,10 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
       $prisoner_max_amount = $this->getPrisonerPaymentMaxAmount($prisoner_id);
 
       if ($prisoner_max_amount == 0) {
-        $form_state->setError($form, $this->t('Prisoner has reached the maximum amount payable for this week. Try again next week.'));
+        $form_state->setError($form, $this->t('The payment limit for this prisoner has been reached. Try again next week.'));
+      } elseif (!is_numeric($prisoner_payment_amount) || $prisoner_payment_amount < 0.01 || $prisoner_payment_amount > $prisoner_max_amount) {
+        $form_state->setErrorByName('prisoner_payment_amount', $this->t('Amount must be between &pound;0.01 and &pound;@max.', ['@max' => number_format($prisoner_max_amount, 2, '.', '')]));
       }
-
-      if (!is_numeric($prisoner_payment_amount) || $prisoner_payment_amount < 0.01 || $prisoner_payment_amount > $prisoner_max_amount) {
-        $form_state->setErrorByName('prisoner_payment_amount', $this->t('Amount must be between &pound;0.01 and &pound;@max.', ['@max' => $prisoner_max_amount]));
-      }
-
     }
 
   }
@@ -382,28 +432,21 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
    * Get the maximum amount a prisoner can be paid.
    */
   protected function getPrisonerPaymentMaxAmount(string $prisoner_id) {
-
-    $prisoner_max_amount = 0.00;
-
-    // Try to get the current maximum from db.
     try {
-      $connection = Database::getConnection();
+      $database = \Drupal::database();
 
-      $query = $connection->select('prisoner_payment_amount', 'pp_amount')
-        ->fields('pp_amount', ['amount'])
-        ->condition('prisoner_id', $prisoner_id);
+      // Get the maximum allowed payment amount (£100 or less).
+      $max_amount = $database->select('prisoner_payment_amount', 'ppa')
+        ->fields('ppa', ['amount'])
+        ->condition('ppa.prisoner_id', $prisoner_id)
+        ->execute()
+        ->fetchField();
 
-      $result = $query->execute()->fetchField();
-
-      if ($result) {
-        $prisoner_max_amount = floatval($result);
-      }
+      return $max_amount;
     }
     catch (\Exception $e) {
       $this->getLogger('nidirect_prisons')->error('Database error: @message', ['@message' => $e->getMessage()]);
     }
-
-    return $prisoner_max_amount;
   }
 
   /**
@@ -447,22 +490,57 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
 
     try {
       $connection = \Drupal::database();
-      $query = $connection->select('prisoner_payment_nominees', 'ppn');
-      $query->fields('ppn', ['visitor_ids']);
-      $query->condition('prisoner_id', $prisoner_id);
-      $result = $query->execute()->fetchField();
 
-      if ($result) {
-        $nominated_visitor_ids = explode(',', $result);
+      $exists = $connection->select('prisoner_payment_amount', 'a')
+        ->fields('a', ['prisoner_id'])
+        ->condition('a.prisoner_id', $prisoner_id)
+        ->execute()
+        ->fetchField();
+
+      if ($exists) {
+        $visitor_ids = $connection->select('prisoner_payment_nominees', 'n')
+          ->fields('n', ['visitor_ids'])
+          ->condition('n.prisoner_id', $prisoner_id)
+          ->execute()
+          ->fetchField();
+
+        if ($visitor_ids) {
+          $nominated_visitor_ids = explode(',', $visitor_ids);
+        }
       }
     }
     catch (\Exception $e) {
-      $this->getLogger('nidirect_prisons')->error('Database error: @message', ['@message' => $e->getMessage()]);
+      $this->getLogger('nidirect_prisons')->error('Database error getting nominated visitors for prisoner: @message', ['@message' => $e->getMessage()]);
 
       return NULL;
     }
 
     return $nominated_visitor_ids;
+  }
+
+  /**
+   * Get pending transactions for prisoner.
+   */
+  protected function getPendingTransactions(string $prisoner_id) {
+
+    $pending_transactions = FALSE;
+
+    try {
+      $connection = \Drupal::database();
+      $query = $connection->select('prisoner_payment_transactions', 'ppt')
+        ->fields('ppt', ['order_key', 'visitor_id', 'amount', 'created_timestamp'])
+        ->condition('prisoner_id', $prisoner_id)
+        ->condition('status', 'pending')
+        ->orderBy('created_timestamp', 'DESC')
+        ->range(0, 1);
+
+      $pending_transactions = $query->execute()->fetchObject();
+    }
+    catch (\Exception $e) {
+      \Drupal::logger('nidirect_prisons')->error('Error checking pending transactions: @message', ['@message' => $e->getMessage()]);
+    }
+
+    return $pending_transactions;
   }
 
   /**
@@ -561,32 +639,6 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
 </paymentService>
 
 XML;
-
-    /*$xml = <<<XML
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE paymentService PUBLIC "-//Worldpay//DTD Worldpay PaymentService v1//EN" "http://dtd.worldpay.com/paymentService_v1.dtd">
-<paymentService version="1.4" merchantCode="$merchant_code">
-  <submit>
-    <order orderCode="$order_code" installationId="1536419">
-      <description>$description</description>
-      <amount value="$amount_in_pence" currencyCode="$currency" exponent="2"/>
-      <orderContent> <![CDATA[
-      <p>ORDER_CONTENT_TEST</p>
-      ]]> </orderContent>
-      <paymentMethodMask>
-        <include code="ECMC_DEBIT-SSL"/>
-        <include code="VISA_DEBIT-SSL"/>
-      </paymentMethodMask>
-      <shopper>
-        <shopperEmailAddress>$visitor_email</shopperEmailAddress>
-      </shopper>
-    </order>
-  </submit>
-</paymentService>
-
-XML;*/
-
-    //ksm('Generated Worldpay payment request', $xml);
 
     return $xml;
   }
@@ -816,6 +868,58 @@ XML;*/
     \Drupal::database()->insert('prisoner_payment_transactions')
       ->fields($transaction_data)
       ->execute();
+  }
+
+  /**
+   * Method to update a pending transaction amount.
+   *
+   * @param string $order_code
+   *   The unique order code identifying the transaction.
+   *
+   * @param string $payment_amount
+   *   The payment amount.
+   *
+   */
+  private function updatePendingTransactionAmount(string $order_code, float $payment_amount) {
+    try {
+      // Get the database connection.
+      $connection = \Drupal::database();
+
+      // Build and execute the update query.
+      $connection->update('prisoner_payment_transactions')
+        ->fields(['amount' => $payment_amount])
+        ->condition('order_key', $order_code)
+        ->execute();
+    }
+    catch (\Exception $e) {
+      \Drupal::logger('nidirect_prisons')->error('Error updating pending transaction amount: @message', ['@message' => $e->getMessage()]);
+    }
+  }
+
+  /**
+   * Method to update a transaction status.
+   *
+   * @param string $order_code
+   *   The unique order code identifying the transaction.
+   *
+   * @param string $status
+   *   The payment status - success|failed|pending.
+   *
+   */
+  private function updateTransactionStatus(string $order_code, string $status) {
+    try {
+      // Get the database connection.
+      $connection = \Drupal::database();
+
+      // Build and execute the update query.
+      $connection->update('prisoner_payment_transactions')
+        ->fields(['status' => $status])
+        ->condition('order_key', $order_code)
+        ->execute();
+    }
+    catch (\Exception $e) {
+      \Drupal::logger('nidirect_prisons')->error('Error updating transaction status: @message', ['@message' => $e->getMessage()]);
+    }
   }
 
   /**
