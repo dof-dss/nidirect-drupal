@@ -2,6 +2,7 @@
 
 namespace Drupal\nidirect_prisons\Plugin\WebformHandler;
 
+use Drupal\Component\Transliteration\TransliterationInterface;
 use Drupal\Core\Database\Database;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\webform\Plugin\WebformHandlerBase;
@@ -53,11 +54,19 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
   protected $tokenManager;
 
   /**
+   * The transliteration service.
+   *
+   * @var \Drupal\Component\Transliteration\TransliterationInterface
+   */
+  protected $transliteration;
+
+  /**
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
     $instance = parent::create($container, $configuration, $plugin_id, $plugin_definition);
     $instance->tokenManager = $container->get('webform.token_manager');
+    $instance->transliteration = $container->get('transliteration');
     return $instance;
   }
 
@@ -584,9 +593,10 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
     // Worldpay requires the amount in the smallest currency unit (e.g., pence for GBP).
     $amount_in_pence = (int) round($payment_amount * 100);
 
-    // Split prisoner and visitor full names.
-    $prisoner_names = $this->splitFullName($prisoner_fullname);
-    $visitor_names = $this->splitFullName($visitor_fullname);
+    // Normalise (remove non A-Z characters) and split prisoner and
+    // visitor full names.
+    $prisoner_names = $this->splitFullName($this->cleanName($prisoner_fullname));
+    $visitor_names = $this->splitFullName($this->cleanName($visitor_fullname));
 
     $sender_middle_name = $visitor_names['middle'] ? '<middle>' . $visitor_names['middle'] . '</middle>' : NULL;
     $recipient_middle_name = $prisoner_names['middle'] ? '<middle>' . $prisoner_names['middle'] . '</middle>' : NULL;
@@ -939,23 +949,88 @@ XML;
    * Method to split a full name into array of first, middle and
    * last names.
    *
+   * Ensures each component is at most 35 characters long.
+   *
    * @param string $full_name
    *   The full name to be split.
    *
    * @return array
    *
    */
-  function splitFullName($full_name) {
-    $parts = explode(' ', trim($full_name));
-    $first = $parts[0] ?? '';
-    $last = count($parts) > 1 ? array_pop($parts) : '';
-    $middle = count($parts) > 1 ? trim(implode(' ', array_slice($parts, 1))) : '';
+  protected function splitFullName($full_name) {
+
+    // Remove extra spaces and normalize whitespace.
+    $full_name = trim(preg_replace('/\s+/', ' ', $full_name));
+    if ($full_name === '') {
+      return [
+        'first' => '',
+        'middle' => '',
+        'last' => '',
+      ];
+    }
+
+    $parts = explode(' ', $full_name);
+    $count = count($parts);
+
+    // Default values.
+    $first = '';
+    $middle = '';
+    $last = '';
+
+    if ($count === 1) {
+      // Only one name part — treat as first name.
+      $first = $parts[0];
+    }
+    elseif ($count === 2) {
+      // Two parts — assume first and last.
+      [$first, $last] = $parts;
+    }
+    else {
+      // More than two — assume first, middle(s), last.
+      $first = array_shift($parts);
+      $last = array_pop($parts);
+      $middle = implode(' ', $parts);
+    }
+
+    // Truncate each to max 35 characters.
+    $truncate = function ($name) {
+      return substr($name, 0, 35);
+    };
 
     return [
-      'first' => $first,
-      'middle' => $middle,
-      'last' => $last,
+      'first' => $truncate($first),
+      'middle' => $truncate($middle),
+      'last' => $truncate($last),
     ];
+  }
+
+  /**
+   * Cleans a name for use in Worldpay name fields.
+   *
+   * - Replaces hyphens with spaces.
+   * - Removes all non-Latin characters (except whitespace).
+   * - Transliterates to ASCII (e.g. É → E).
+   *
+   * @param string $string
+   *   The input name string.
+   *
+   * @return string
+   *   Cleaned name string containing only A–Z, a–z, and spaces.
+   */
+  protected function cleanName(string $string): string {
+    // Replace hyphens with spaces.
+    $string = str_replace('-', ' ', $string);
+
+    // Remove non-Latin characters except whitespace.
+    $latin_only = preg_replace('/[^\p{Latin}\s]/u', '', $string);
+
+    // Transliterate to ASCII.
+    $ascii = $this->transliteration->transliterate($latin_only, 'en');
+
+    // Normalize spaces and trim.
+    $ascii = trim(preg_replace('/\s+/', ' ', $ascii));
+
+    return $ascii;
   }
 
 }
