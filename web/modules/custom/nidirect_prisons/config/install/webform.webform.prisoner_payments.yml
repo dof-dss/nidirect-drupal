@@ -70,7 +70,7 @@ elements: |-
       visitor_email:
         '#type': webform_email_confirm
         '#title': 'Your email address'
-        '#description': 'We will use this email address to notify you if your payment was successful.'
+        '#description': 'We will use this email address to notify you if your payment was successful'
         '#description_display': before
         '#required': true
         '#required_error': 'Enter your email address'
@@ -85,11 +85,16 @@ elements: |-
         '#size': 6
         '#placeholder': '000000'
         '#autocomplete': 'off'
+        '#input_mask': '999999'
         '#required': true
         '#required_error': 'Enter your visitor ID'
         '#pattern': '[0-9]{6}'
         '#pattern_error': 'Visitor ID is not recognised'
-        '#inputmode': numeric
+        '#attributes':
+          class:
+            - monospace-text
+          data-inputmask-placeholder: ' '
+          inputmode: numeric
     prisoner_details:
       '#type': fieldset
       '#title': 'Prisoner details'
@@ -116,41 +121,59 @@ elements: |-
         '#required_error': 'Enter the prisoner ID of the prisoner you want to make a payment to'
         '#pattern': '[A-FH][0-9]{1,4}'
         '#pattern_error': 'Prisoner ID is not recognised'
+        '#attributes':
+          class:
+            - monospace-text
+          data-inputmask-placeholder: ' '
   page_payment_amount:
     '#type': webform_wizard_page
     '#title': 'Amount to pay'
     msg_maximum_amount_payable:
       '#type': webform_computed_twig
-      '#title': 'Maximum amount payable'
+      '#title': 'Maximum payment'
       '#title_display': none
+      '#access': false
       '#display_on': form
       '#template': |-
         <div role="status">
-
-          <!--<dl class="column-wrap">
-            <dt>Prisoner name</dt>
-            <dd>{{ data.prisoner_fullname }}</dd>
-            <dt>Prisoner ID</dt>
-            <dd>{{ data.prisoner_id }}</dd>
-          </dl>-->
-
-          {% if data.prisoner_max_amount > 0 %}
-            <p class="info-notice">
-              You can pay
-              <strong>{{ data.prisoner_id }}</strong>
-              ({{ data.prisoner_fullname }}) a maximum of
-
-              <strong>
-                &pound;{{ data.prisoner_max_amount|number_format(2, '.', '') }}
-              </strong>
-            </p>
-          {% else %}
-            <p class="info-notice info-notice--error">
-              {{ data.prisoner_fullname }} has
-              reached the maximum amount payable for this
-              week. Try again next week.
-            </p>
-          {% endif %}
+          <p class="info-notice">
+            You can pay
+            <strong>{{ data.prisoner_id }}</strong>
+            ({{ data.prisoner_fullname }}) a maximum of
+            <strong>
+              &pound;{{ data.prisoner_max_amount|number_format(2, '.', '') }}
+            </strong>
+          </p>
+        </div>
+    msg_payment_limit_reached:
+      '#type': webform_computed_twig
+      '#title': 'Payment limit reached'
+      '#title_display': none
+      '#access': false
+      '#display_on': form
+      '#template': |-
+        <div role="status">
+          <p class="info-notice info-notice--error">
+            Prisoner <strong>{{ data.prisoner_id }}</strong>
+            ({{ data.prisoner_fullname }}) has
+            reached the maximum amount payable for this
+            week. Try again next week.
+          </p>
+        </div>
+    msg_payment_pending:
+      '#type': webform_computed_twig
+      '#title': 'Payment pending'
+      '#title_display': none
+      '#access': false
+      '#display_on': form
+      '#template': |-
+        <div role="status">
+          <p class="info-notice info-notice--error">
+            Another visitor is attempting to make a payment to
+            <strong>{{ data.prisoner_id }}</strong>
+            ({{ data.prisoner_fullname }}).
+            Try again later.
+          </p>
         </div>
     prisoner_payment_amount:
       '#type': textfield
@@ -206,8 +229,6 @@ elements: |-
         </dl>
 
         </div>
-    msg_payment_card_details:
-      '#type': webform_markup
   prisoner_max_amount:
     '#type': value
     '#title': 'Prisoner max amount'
