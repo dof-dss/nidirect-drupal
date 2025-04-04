@@ -10,10 +10,11 @@ weight: 0
 module: nidirect_prisons
 callback: 'nidirect_prisons#cron'
 scheduler:
-  id: simple
+  id: crontab
   configuration:
     rules:
-      - '0+@ 0 * * *'
+      - '*/15 * * * *'
+    catch_up: 0
 launcher:
   id: serial
   configuration:
