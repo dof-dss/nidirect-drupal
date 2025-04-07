@@ -32,7 +32,7 @@ class WorldpayNotificationController extends ControllerBase {
      *
      * If the payment is AUTHORISED, the payment transaction is
      * updated to 'success' in the prisoner_payment_transactions table
-     * and in practice this means means that the payment has been
+     * and in practice this means that the payment has been
      * successfully approved by the card issuer or bank, but the funds
      * have not yet been captured or settled (debited from visitor's
      * account).
@@ -97,7 +97,8 @@ class WorldpayNotificationController extends ControllerBase {
     // Process the notification.
     $order_code = (string) $xml->notify->orderStatusEvent['orderCode'];
     $payment_status = (string) $xml->notify->orderStatusEvent->payment->lastEvent;
-    $amount = (float) $xml->notify->orderStatusEvent->payment->amount['value'] / 100; // Convert pence to pounds.
+    $pence = (int) $xml->notify->orderStatusEvent->payment->amount['value'];
+    $amount = round($pence / 100, 2);
 
     \Drupal::logger('worldpay')->notice('Worldpay order notification for @order_key £@amount @payment_status', [
       '@order_key' => $order_code,
@@ -147,7 +148,8 @@ class WorldpayNotificationController extends ControllerBase {
 
     // If payment was AUTHORISED, update prisoner balance and send
     // payment details to Prism and update transaction status
-    // as 'success'. Else the transaction status is 'failed'.
+    // from 'pending' to 'success'. Else the transaction status
+    // is 'failed'.
     if ($payment_status === 'AUTHORISED') {
 
       // Deduct from prisoner's balance.
@@ -158,26 +160,27 @@ class WorldpayNotificationController extends ControllerBase {
           ->expression('amount', 'GREATEST(amount - :paid_amount, 0)', [':paid_amount' => $amount])
           ->condition('prisoner_id', $payment_transaction['prisoner_id'])
           ->execute();
+
+        // Get sequence id for this payment.
+        $sequence_id = $this->getNextSequenceId();
+
+        // Send payment details to Prism.
+        $this->sendJsonToPrism($order_code, $payment_transaction['prisoner_id'], $payment_transaction['visitor_id'], $amount, $sequence_id);
+
+        // Change prisoner payment transaction status from 'pending' to
+        // 'success'.
+        $db->update('prisoner_payment_transactions')
+          ->fields(['status' => 'success'])
+          ->condition('order_key', $order_code)
+          ->execute();
       }
       catch (\Exception $e) {
         $db_transaction->rollBack();
-        \Drupal::logger('nidirect_prisons')->error('Balance update failed: @message', ['@message' => $e->getMessage()]);
+        \Drupal::logger('nidirect_prisons')->error('Authorised prisoner payment amount update failed: @message', ['@message' => $e->getMessage()]);
       }
       finally {
         unset($db_transaction);
       }
-
-      // Get sequence id for this payment.
-      $sequence_id = $this->getNextSequenceId();
-
-      // Send payment details to Prism.
-      $this->sendJsonToPrism($order_code, $payment_transaction['prisoner_id'], $payment_transaction['visitor_id'], $amount, $sequence_id);
-
-      // Prisoner payment transaction success.
-      $db->update('prisoner_payment_transactions')
-        ->fields(['status' => 'success'])
-        ->condition('order_key', $order_code)
-        ->execute();
     }
     else {
       // Prisoner payment transaction failed.
@@ -202,15 +205,25 @@ class WorldpayNotificationController extends ControllerBase {
       "SEQUENCE_ID" => $sequence_id,
     ]);
 
-    \Drupal::service('plugin.manager.mail')->mail(
-      'nidirect_prisons',
-      'prisoner_payment_notification',
-      getenv('PRISONER_PAYMENTS_PRISM_EMAIL') ?: 'prisoner_payments@mailhog.local',
-      \Drupal::languageManager()->getDefaultLanguage()->getId(),
-      ['subject' => 'PAYIN', 'body' => [$json_data]]
-    );
+    // Try sending the email
+    try {
+      \Drupal::service('plugin.manager.mail')->mail(
+        'nidirect_prisons',
+        'prisoner_payment_notification',
+        getenv('PRISONER_PAYMENTS_PRISM_EMAIL') ?: 'prisoner_payments@mailhog.local',
+        \Drupal::languageManager()->getDefaultLanguage()->getId(),
+        ['subject' => 'PAYIN', 'body' => [$json_data]]
+      );
 
-    \Drupal::logger('nidirect_prisons')->notice("Sent prisoner payment data for order {$order_code} to Prism.");
+      \Drupal::logger('nidirect_prisons')->notice("Sent prisoner payment data for order {$order_code} to Prism.");
+    } catch (\Exception $e) {
+      // If email fails, log the error and throw
+      \Drupal::logger('nidirect_prisons')->error('Failed to send email for order @order_code: @error', [
+        '@order_code' => $order_code,
+        '@error' => $e->getMessage(),
+      ]);
+      throw new \Exception('Failed to send payment data to Prism: ' . $e->getMessage());
+    }
   }
 
   protected function getNextSequenceId() {
