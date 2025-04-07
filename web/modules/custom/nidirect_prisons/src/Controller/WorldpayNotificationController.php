@@ -176,7 +176,12 @@ class WorldpayNotificationController extends ControllerBase {
       }
       catch (\Exception $e) {
         $db_transaction->rollBack();
-        \Drupal::logger('nidirect_prisons')->error('Authorised prisoner payment amount update failed: @message', ['@message' => $e->getMessage()]);
+        \Drupal::logger('nidirect_prisons')->error('Authorised payment update failed for prisoner_id @prisoner_id for order_code @order_code for amount £@amount: @message', [
+          '@amount' => $amount,
+          '@prisoner_id' => $payment_transaction['prisoner_id'],
+          '@order_code' => $order_code,
+          '@message' => $e->getMessage()
+        ]);
       }
       finally {
         unset($db_transaction);
