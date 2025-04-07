@@ -451,7 +451,7 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
         ->execute()
         ->fetchField();
 
-      return $max_amount;
+      return round((float) $max_amount, 2);
     }
     catch (\Exception $e) {
       $this->getLogger('nidirect_prisons')->error('Database error: @message', ['@message' => $e->getMessage()]);
