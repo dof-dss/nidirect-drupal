@@ -2,7 +2,7 @@ version: 2.1
 
 default_docker_image: &docker_image
   docker:
-    - image: thecodingmachine/php:8.1-v4-apache
+    - image: thecodingmachine/php:8.3-v4-apache-node14
       environment:
         PLATFORM_REGION: "uk-1.platform.sh"
         PROJECT_ROOT: "/home/docker/project"
@@ -133,7 +133,7 @@ jobs:
   # Functional tests with headless browser; run against our edge environment.
   functional_tests:
     docker:
-      - image: cimg/php:8.1.0-browsers
+      - image: cimg/php:8.3.17-browsers
         environment:
           TEST_TAGS: "search content-type-validation origins_workflow regression"
           EDGE_BUILD_BRANCH: "D8NID-edge"

@@ -1,0 +1,29 @@
+uuid: ac342dd1-1ac1-4bf2-8738-6fc629f6875e
+langcode: en
+status: true
+dependencies:
+  module:
+    - nidirect_webforms
+title: 'Default cron handler'
+id: nidirect_webforms_cron
+weight: 0
+module: nidirect_webforms
+callback: nidirect_webforms_cron
+scheduler:
+  id: simple
+  configuration:
+    rules:
+      - '0+@ 0 * * *'
+launcher:
+  id: serial
+  configuration:
+    timeouts:
+      lock_timeout: 3600
+    launcher:
+      thread: 0
+logger:
+  id: database
+  configuration:
+    method: '2'
+    expire: 604800
+    retain: 1000
