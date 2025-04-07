@@ -296,7 +296,7 @@ css: |-
       width: .5rem;
       height: 4rem;
   }
-javascript: |
+javascript: |-
   (function ($, Drupal, once) {
     Drupal.behaviors.prisonerPaymentsValidateMethods = {
       attach: function (context, settings) {
@@ -330,7 +330,10 @@ javascript: |
 
         if ($prisonerPaymentAmount.length) {
 
-          const prisonerMaxAmount = settings.prisonerPayments.prisonerMaxAmount ?? 0;
+          // Ensure prisonerMaxAmount rounded to 2 decimal places.
+          const prisonerMaxAmount = Math.round(
+            parseFloat(settings.prisonerPayments.prisonerMaxAmount ?? 0) * 100
+          ) / 100;
 
           $prisonerPaymentAmount.rules("add", {
             min: {
