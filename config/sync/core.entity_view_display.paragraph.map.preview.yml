@@ -5,7 +5,7 @@ dependencies:
   config:
     - core.entity_view_mode.paragraph.preview
     - field.field.paragraph.map.field_location
-    - filter.format.basic_html
+    - filter.format.plain_text
     - paragraphs.paragraphs_type.map
   module:
     - geolocation
@@ -18,24 +18,42 @@ content:
     type: geolocation_map
     label: hidden
     settings:
-      set_marker: true
+      set_marker: false
+      show_label: false
       common_map: true
+      show_delta_label: false
       use_overridden_map_settings: false
       title: ''
       info_text:
         value: ''
-        format: basic_html
+        format: plain_text
       centre:
         fit_bounds:
           enable: true
           weight: -101
           settings:
-            reset_zoom: true
+            reset_zoom: false
+            min_zoom: 12
           map_center_id: fit_bounds
         client_location:
           enable: false
           weight: 0
           map_center_id: client_location
+        fixed_value:
+          enable: false
+          weight: 0
+          settings:
+            location_option_id: fixed_value
+            latitude: 0.0
+            longitude: 0.0
+          map_center_id: location_plugins
+        ipstack:
+          enable: false
+          weight: 0
+          settings:
+            location_option_id: ipstack
+            access_key: ''
+          map_center_id: location_plugins
         fixed_boundaries:
           enable: false
           weight: 0
@@ -45,39 +63,32 @@ content:
             north: ''
             east: ''
           map_center_id: fixed_boundaries
-        fixed_value:
-          enable: false
-          weight: 0
-          settings:
-            location_option_id: fixed_value
-            latitude: null
-            longitude: null
-          map_center_id: location_plugins
-        ipstack:
-          enable: false
-          weight: 0
-          settings:
-            location_option_id: ipstack
-            access_key: ''
-          map_center_id: location_plugins
-        freeogeoip:
-          enable: false
-          weight: 0
-          settings:
-            location_option_id: freeogeoip
-          map_center_id: location_plugins
       map_provider_id: google_static_maps
       map_provider_settings:
         map_features:
+          geolocation_shapes:
+            weight: 0
+            settings:
+              remove_markers: false
+              polyline: true
+              polyline_title: ''
+              strokeColor: '#FF0000'
+              strokeOpacity: 0.8
+              strokeWidth: '2'
+              polygon: false
+              polygon_title: ''
+              fillColor: '#FF0000'
+              fillOpacity: 0.35
+            enabled: false
           geolocation_marker_scroll_to_id:
             weight: 0
             settings:
               scroll_target_id: ''
             enabled: false
         type: ROADMAP
-        zoom: 10
-        height: 400
-        width: 400
+        zoom: 14
+        height: 350
+        width: 450
         format: png
         scale: 1
       data_provider_settings: {  }
