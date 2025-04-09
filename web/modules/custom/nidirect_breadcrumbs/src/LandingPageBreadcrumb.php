@@ -85,6 +85,8 @@ class LandingPageBreadcrumb implements BreadcrumbBuilderInterface {
   public function build(RouteMatchInterface $route_match) {
 
     $breadcrumb = new Breadcrumb();
+    $links = [];
+    $cache_tags = [];
 
     $route_name = $route_match->getRouteName();
 
@@ -124,18 +126,17 @@ class LandingPageBreadcrumb implements BreadcrumbBuilderInterface {
             $cache_tags[] = 'taxonomy_term:' . $term->id();
           }
         }
-
-        // Assemble a new breadcrumb object, add the links and set
-        // a URL path cache context so it varies as you move from one
-        // set of content to another.
-        $breadcrumb = new Breadcrumb();
-        $breadcrumb->setLinks($links);
-        $breadcrumb->addCacheContexts(['url.path']);
-
-        if (!empty($cache_tags)) {
-          $breadcrumb->addCacheTags($cache_tags);
-        }
       }
+    }
+
+    // Assemble breadcrumb, add the links and set
+    // a URL path cache context so it varies as you move from one
+    // set of content to another.
+    $breadcrumb->setLinks($links);
+    $breadcrumb->addCacheContexts(['url.path']);
+
+    if (!empty($cache_tags)) {
+      $breadcrumb->addCacheTags($cache_tags);
     }
 
     return $breadcrumb;
