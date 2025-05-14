@@ -6,6 +6,7 @@ use Drupal\Component\Utility\Unicode;
 use Drupal\Core\Access\AccessManagerInterface;
 use Drupal\Core\Breadcrumb\Breadcrumb;
 use Drupal\Core\Breadcrumb\BreadcrumbBuilderInterface;
+use Drupal\Core\Cache\CacheableMetadata;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Controller\TitleResolverInterface;
 use Drupal\Core\Link;
@@ -90,8 +91,10 @@ class TaxonomyAdminBreadcrumb extends PathBasedBreadcrumbBuilder implements Brea
 
   /**
    * {@inheritdoc}
+   * @param \Drupal\Core\Routing\RouteMatchInterface $route_match
+   * @param \Drupal\nidirect_taxonomy_navigator\CacheableMetadata|null $cacheable_metadata
    */
-  public function applies(RouteMatchInterface $route_match) {
+  public function applies(RouteMatchInterface $route_match, CacheableMetadata|null $cacheable_metadata = NULL) {
     $match = FALSE;
 
     // Check for matching route names.
