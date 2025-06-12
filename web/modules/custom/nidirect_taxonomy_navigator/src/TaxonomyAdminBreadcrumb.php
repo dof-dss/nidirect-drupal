@@ -91,8 +91,6 @@ class TaxonomyAdminBreadcrumb extends PathBasedBreadcrumbBuilder implements Brea
 
   /**
    * {@inheritdoc}
-   * @param \Drupal\Core\Routing\RouteMatchInterface $route_match
-   * @param \Drupal\nidirect_taxonomy_navigator\CacheableMetadata|null $cacheable_metadata
    */
   public function applies(RouteMatchInterface $route_match, CacheableMetadata|null $cacheable_metadata = NULL) {
     $match = FALSE;
