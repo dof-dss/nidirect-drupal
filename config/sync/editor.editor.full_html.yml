@@ -5,77 +5,184 @@ dependencies:
   config:
     - filter.format.full_html
   module:
-    - ckeditor
-_core:
-  default_config_hash: 967ijj7p6i7rwrYl7r08WQFeCY_c23YAh0h8u-w_CXM
+    - ckeditor5
 format: full_html
-editor: ckeditor
+editor: ckeditor5
 settings:
   toolbar:
-    rows:
-      -
-        -
-          name: Formatting
-          items:
-            - Bold
-            - '-'
-            - Blockquote
-            - Superscript
-            - RemoveFormat
-        -
-          name: 'Block Formatting'
-          items:
-            - Format
-            - Styles
-            - Table
-        -
-          name: Linking
-          items:
-            - DrupalUnlink
-            - DrupalLink
-        -
-          name: Lists
-          items:
-            - BulletedList
-            - NumberedList
-        -
-          name: Media
-          items:
-            - DrupalMediaLibrary
-            - location
-        -
-          name: Tasks
-          items:
-            - Undo
-            - Redo
-        -
-          name: Tools
-          items:
-            - Cut
-            - Copy
-            - PasteText
-            - PasteFromWord
-            - SpecialChar
-            - Maximize
-            - Language
-            - CookieContentBlocker
-            - Source
+    items:
+      - bold
+      - blockQuote
+      - superscript
+      - removeFormat
+      - '|'
+      - heading
+      - style
+      - insertTable
+      - '|'
+      - link
+      - '|'
+      - bulletedList
+      - numberedList
+      - '|'
+      - drupalMedia
+      - location
+      - '|'
+      - undo
+      - redo
+      - '|'
+      - importWord
+      - specialCharacters
+      - fullScreen
+      - textPartLanguage
+      - sourceEditing
   plugins:
-    drupallink:
+    ckeditor5_heading:
+      enabled_headings:
+        - heading2
+        - heading3
+        - heading4
+        - heading5
+        - heading6
+    ckeditor5_language:
+      language_list: site_configured
+    ckeditor5_list:
+      properties:
+        reversed: true
+        startIndex: true
+      multiBlock: true
+    ckeditor5_paste_filter_pasteFilter:
+      enabled: true
+      filters:
+        -
+          enabled: true
+          weight: 0
+          search: '<o:p><\/o:p>'
+          replace: ''
+        -
+          enabled: true
+          weight: 1
+          search: '(<[^>]*) (style="[^"]*")'
+          replace: $1
+        -
+          enabled: true
+          weight: 2
+          search: '(<[^>]*) (face="[^"]*")'
+          replace: $1
+        -
+          enabled: true
+          weight: 3
+          search: '(<[^>]*) (valign="[^"]*")'
+          replace: $1
+        -
+          enabled: true
+          weight: 4
+          search: '<\/?(b\b|big|embed|font|i\b|small)[^>]*>'
+          replace: ''
+        -
+          enabled: true
+          weight: 5
+          search: '<\/?(article|aside|div|footer|header|hr|main|nav|pre|section)[^>]*>'
+          replace: ''
+        -
+          enabled: true
+          weight: 6
+          search: '<(audio|canvas|dialog|form|iframe|map|menu|object|picture|svg|video)[^>]*>(.*?)<\/(audio|canvas|dialog|form|iframe|map|menu|object|picture|svg|video)>'
+          replace: ''
+        -
+          enabled: true
+          weight: 7
+          search: '<img[^>]*>'
+          replace: ''
+        -
+          enabled: true
+          weight: 8
+          search: '<a name="OLE_LINK[^"]*">(.*?)<\/a>'
+          replace: $1
+        -
+          enabled: true
+          weight: 10
+          search: '<\/?span[^>]*>(\(external link opens in a new window \/ tab\))?'
+          replace: ''
+        -
+          enabled: true
+          weight: 11
+          search: '<(?!td|th)[^>\/]*>(<br>|&nbsp;|\s)*<\/[^>]*>'
+          replace: ''
+        -
+          enabled: true
+          weight: 12
+          search: '(<p[^>]*) (class="(?!info-notice")[^"]*")'
+          replace: $1
+        -
+          enabled: true
+          weight: 13
+          search: '(<[ou]l[^>]*) (class="(?!split-list")[^"]*")'
+          replace: $1
+        -
+          enabled: true
+          weight: 14
+          search: '(<table[^>]*) (class="(?!table-fixed-width")[^"]*")'
+          replace: $1
+        -
+          enabled: true
+          weight: 15
+          search: '<\/?thead[^>]*>'
+          replace: ''
+        -
+          enabled: true
+          weight: 16
+          search: '(<[^>]*) ((row|col)span="[^"]*")'
+          replace: $1
+        -
+          enabled: true
+          weight: 17
+          search: '(<a[^>]*) (class="(?!btn--call-to-action")[^"]*")'
+          replace: $1
+        -
+          enabled: true
+          weight: 18
+          search: '<\/?h1\b[^>]*>'
+          replace: '<h2>'
+    ckeditor5_premium_features_import_word__import_word:
+      upload_media:
+        enabled: false
+        media_bundle: image
+        media_field_name: field_media_image
+        image_destination_dir: cke5-word-import-images
+    ckeditor5_sourceEditing:
+      allowed_tags: {  }
+    ckeditor5_style:
+      styles:
+        -
+          label: 'Information notice'
+          element: '<p class="info-notice">'
+        -
+          label: 'Success notice'
+          element: '<p class="info-notice--success">'
+        -
+          label: 'Warning notice'
+          element: '<p class="info-notice--warning">'
+        -
+          label: 'Error notice'
+          element: '<p class="info-notice--error">'
+        -
+          label: 'Split bulleted list'
+          element: '<ul class="split-list">'
+        -
+          label: 'Split numbered list'
+          element: '<ol class="split-list">'
+        -
+          label: 'Equal table columns'
+          element: '<table class="table-fixed-width">'
+        -
+          label: 'Big green button'
+          element: '<a class="call-to-action">'
+    linkit_extension:
       linkit_enabled: true
       linkit_profile: default
-    language:
-      language_list: all
-    stylescombo:
-      styles: |-
-        p.info-notice|Information notice
-        p.info-notice--success|Success notice
-        p.info-notice--warning|Warning notice
-        p.info-notice--error|Error notice
-        ul.split-list|Split bulleted list
-        ol.split-list|Split numbered list
-        table.table-fixed-width|Equal table columns
-        a.btn--call-to-action|Big green button
+    media_media:
+      allow_view_mode_override: false
 image_upload:
   status: true
   scheme: public

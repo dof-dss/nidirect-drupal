@@ -1,63 +1,140 @@
-uuid: 8947c2e3-5635-4478-acde-43213c6afc1e
+uuid: 7b9515c7-d84a-4d48-aa0b-9560901ba3d0
 langcode: en
 status: true
 dependencies:
   config:
     - filter.format.layout_builder_html
   module:
-    - ckeditor
+    - ckeditor5
 format: layout_builder_html
-editor: ckeditor
+editor: ckeditor5
 settings:
   toolbar:
-    rows:
-      -
-        -
-          name: Formatting
-          items:
-            - Bold
-            - Blockquote
-            - RemoveFormat
-        -
-          name: 'Block Formatting'
-          items:
-            - Format
-            - Styles
-        -
-          name: Linking
-          items:
-            - DrupalLink
-            - DrupalUnlink
-        -
-          name: Lists
-          items:
-            - BulletedList
-            - NumberedList
-        -
-          name: Tasks
-          items:
-            - Undo
-            - Redo
-        -
-          name: Tools
-          items:
-            - Cut
-            - Copy
-            - PasteText
-            - PasteFromWord
-            - SpecialChar
-            - Language
-            - Maximize
+    items:
+      - bold
+      - blockQuote
+      - removeFormat
+      - '|'
+      - heading
+      - style
+      - '|'
+      - link
+      - '|'
+      - bulletedList
+      - numberedList
+      - '|'
+      - undo
+      - redo
+      - '|'
+      - importWord
+      - specialCharacters
+      - textPartLanguage
+      - fullScreen
   plugins:
-    drupallink:
+    ckeditor5_heading:
+      enabled_headings:
+        - heading2
+        - heading3
+        - heading4
+    ckeditor5_language:
+      language_list: all
+    ckeditor5_list:
+      properties:
+        reversed: false
+        startIndex: true
+      multiBlock: true
+    ckeditor5_paste_filter_pasteFilter:
+      enabled: false
+      filters:
+        -
+          enabled: true
+          weight: -10
+          search: '<o:p><\/o:p>'
+          replace: ''
+        -
+          enabled: true
+          weight: -9
+          search: '(<[^>]*) (style="[^"]*")'
+          replace: $1
+        -
+          enabled: true
+          weight: -8
+          search: '(<[^>]*) (face="[^"]*")'
+          replace: $1
+        -
+          enabled: true
+          weight: -7
+          search: '(<[^>]*) (class="[^"]*")'
+          replace: $1
+        -
+          enabled: true
+          weight: -6
+          search: '(<[^>]*) (valign="[^"]*")'
+          replace: $1
+        -
+          enabled: true
+          weight: -5
+          search: '<font[^>]*>'
+          replace: ''
+        -
+          enabled: true
+          weight: -4
+          search: '<\/font>'
+          replace: ''
+        -
+          enabled: true
+          weight: -3
+          search: '<span[^>]*>'
+          replace: ''
+        -
+          enabled: true
+          weight: -2
+          search: '<\/span>'
+          replace: ''
+        -
+          enabled: true
+          weight: -1
+          search: '<p>&nbsp;<\/p>'
+          replace: ''
+        -
+          enabled: true
+          weight: 0
+          search: '<p><\/p>'
+          replace: ''
+        -
+          enabled: true
+          weight: 1
+          search: '<b><\/b>'
+          replace: ''
+        -
+          enabled: true
+          weight: 2
+          search: '<i><\/i>'
+          replace: ''
+        -
+          enabled: true
+          weight: 3
+          search: '<a name="OLE_LINK[^"]*">(.*?)<\/a>'
+          replace: $1
+    ckeditor5_premium_features_import_word__import_word:
+      upload_media:
+        enabled: false
+        media_bundle: image
+        media_field_name: field_media_image
+        image_destination_dir: cke5-word-import-images
+    ckeditor5_style:
+      styles:
+        -
+          label: 'Large text'
+          element: '<p class="large-text">'
+        -
+          label: 'Extra large text'
+          element: '<p class="xl-text">'
+        -
+          label: 'Big green button'
+          element: '<a class="btn--call-to-action">'
+    linkit_extension:
       linkit_enabled: true
       linkit_profile: default
-    language:
-      language_list: all
-    stylescombo:
-      styles: |-
-        p.large-text|Large text
-        p.xl-text|Extra large text
-        a.btn--call-to-action|Big green button
 image_upload:
   status: false
