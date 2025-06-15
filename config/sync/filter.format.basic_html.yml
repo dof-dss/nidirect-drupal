@@ -8,7 +8,7 @@ dependencies:
     - core.entity_view_mode.media.article_full
     - core.entity_view_mode.media.article_full_expandable
   module:
-    - cookie_content_blocker
+    - ckeditor5_allowed_html
     - editor
     - entity_embed
     - linkit
@@ -22,13 +22,6 @@ name: 'Basic HTML'
 format: basic_html
 weight: 0
 filters:
-  cookie_content_blocker_filter:
-    id: cookie_content_blocker_filter
-    provider: cookie_content_blocker
-    status: false
-    weight: -44
-    settings:
-      disable_xss: '1'
   editor_file_reference:
     id: editor_file_reference
     provider: editor
@@ -47,6 +40,15 @@ filters:
     status: false
     weight: -39
     settings: {  }
+  filter_allowed:
+    id: filter_allowed
+    provider: ckeditor5_allowed_html
+    status: true
+    weight: 0
+    settings:
+      allowed_html: '<a class href hreflang> <em> <strong> <cite> <blockquote cite> <code> <ul class type> <ol class start type> <li> <dl> <dt> <dd> <h2 id> <h3 id> <h4 id> <div class> <p class translate> <br> <img src alt height width data-* typeof> <sup> <table class> <caption> <tbody> <thead> <tfoot> <th scope> <td> <tr> <drupal-entity data-entity-type data-entity-uuid data-entity-embed-display data-entity-embed-display-settings data-align data-caption data-embed-button alt title class> <picture data-* alt title class> <source srcset media type> <address> <drupal-media data-entity-type data-entity-uuid data-entity-embed-display data-entity-embed-display-settings data-align data-caption data-embed-button data-view-mode alt title class> <strike> <span dir lang> <iframe src width height class loading title*>'
+      filter_html_help: false
+      filter_html_nofollow: false
   filter_autop:
     id: filter_autop
     provider: filter
@@ -62,10 +64,10 @@ filters:
   filter_html:
     id: filter_html
     provider: filter
-    status: true
+    status: false
     weight: -50
     settings:
-      allowed_html: '<a class href hreflang> <em> <strong> <cite> <blockquote cite> <code> <ul class type> <ol class start type> <li> <dl> <dt> <dd> <h2 id> <h3 id> <h4 id> <div class> <p class translate> <br> <img src alt height width data-* typeof> <sup> <table class> <caption> <tbody> <thead> <tfoot> <th scope> <td> <tr> <drupal-entity data-entity-type data-entity-uuid data-entity-embed-display data-entity-embed-display-settings data-align data-caption data-embed-button alt title class> <picture data-* alt title class> <source srcset media type> <address> <drupal-media data-entity-type data-entity-uuid data-entity-embed-display data-entity-embed-display-settings data-align data-caption data-embed-button data-view-mode alt title class> <strike> <span dir lang>'
+      allowed_html: '<p class="info-notice"> <ul class="split-list"> <ol class="split-list"> <table class="table-fixed-width"> <a class="btn--call-to-action">'
       filter_html_help: false
       filter_html_nofollow: false
   filter_html_escape:
@@ -129,17 +131,10 @@ filters:
     status: true
     weight: -49
     settings: {  }
-  origins_media_cookie_content_blocker_embed_filter:
-    id: origins_media_cookie_content_blocker_embed_filter
-    provider: origins_common
-    status: false
-    weight: -48
-    settings:
-      replacement_text: 'Click here to view the video content'
   token_filter:
     id: token_filter
     provider: token_filter
     status: true
     weight: -45
     settings:
-      replace_empty: '1'
+      replace_empty: true
