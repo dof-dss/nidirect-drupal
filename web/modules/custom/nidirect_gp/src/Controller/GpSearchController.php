@@ -291,6 +291,9 @@ class GpSearchController extends ControllerBase {
     ]);
     $form_state->setMethod('get');
 
+    $mybrowser = get_browser(null, true);
+    ksm($mybrowser);
+
     return $this->formBuilder()->buildForm('Drupal\views\Form\ViewsExposedForm', $form_state);
   }
 
@@ -361,11 +364,12 @@ class GpSearchController extends ControllerBase {
   private function lookupLocation(float $latitude, float $longitude) {
     $locality = NULL;
     $url = "https://nominatim.openstreetmap.org/";
+    $headers = ['Referer' => 'www.nidirect.gov.uk'];
 
     try {
       $nominatim = new Nominatim($url);
       $reverse = $nominatim->newReverse()->latlon($latitude, $longitude);
-      $result = $nominatim->find($reverse);
+      $result = $nominatim->find($reverse, $headers);
     }
     catch (\Exception $e) {
       $this->getLogger('nidirect_gp')->error($e);
