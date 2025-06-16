@@ -291,9 +291,6 @@ class GpSearchController extends ControllerBase {
     ]);
     $form_state->setMethod('get');
 
-    $mybrowser = get_browser(null, true);
-    ksm($mybrowser);
-
     return $this->formBuilder()->buildForm('Drupal\views\Form\ViewsExposedForm', $form_state);
   }
 
