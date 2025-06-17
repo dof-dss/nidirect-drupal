@@ -249,7 +249,13 @@ function nicsdru_nidirect_theme_preprocess_page(array &$variables) {
           // Applying title as hook_block_view_alter() which applies the title
           // for canonical routes doesn't get called here.
           if ($node->hasField('field_subtheme') && !$node->get('field_subtheme')->isEmpty()) {
-            $block_label = $node->get('field_subtheme')->entity->getName();
+            $subtheme = $node->get('field_subtheme')->entity;
+
+            if (!empty($subtheme)) {
+              $block_label = $subtheme->getTitle();
+            } else {
+              $block_label = '';
+            }
           }
 
           // We have to create a block render array as $plugin_block->build()
@@ -257,12 +263,10 @@ function nicsdru_nidirect_theme_preprocess_page(array &$variables) {
           $variables['page']['sidebar_second'][] = [
             '#theme' => 'block',
             '#weight' => 0,
-            '#configuration' => [
-              'label' => $block_label,
-              'label_display' => '1',
-            ],
+            '#configuration' => $plugin_block->getConfiguration(),
             '#plugin_id' => $plugin_block->getPluginId(),
-            '#derivative_plugin_id' => NULL,
+            '#base_plugin_id' => $plugin_block->getBaseId(),
+            '#derivative_plugin_id' => $plugin_block->getDerivativeId(),
             'content' => $plugin_block->build(),
           ];
           break;
