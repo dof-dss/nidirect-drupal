@@ -244,7 +244,8 @@ function nicsdru_nidirect_theme_preprocess_page(array &$variables) {
           // plugin block instead of a content block.
           $block_manager = \Drupal::service('plugin.manager.block');
           $plugin_block = $block_manager->createInstance('nidirect_related_content_block', []);
-          $block_label = 'Related content';
+          $configuration = $plugin_block->getConfiguration();
+          $configuration['label'] = 'Related content';
 
           // Applying title as hook_block_view_alter() which applies the title
           // for canonical routes doesn't get called here.
@@ -252,9 +253,7 @@ function nicsdru_nidirect_theme_preprocess_page(array &$variables) {
             $subtheme = $node->get('field_subtheme')->entity;
 
             if (!empty($subtheme)) {
-              $block_label = $subtheme->getTitle();
-            } else {
-              $block_label = '';
+              $configuration['label'] = $subtheme->getTitle();
             }
           }
 
@@ -263,7 +262,7 @@ function nicsdru_nidirect_theme_preprocess_page(array &$variables) {
           $variables['page']['sidebar_second'][] = [
             '#theme' => 'block',
             '#weight' => 0,
-            '#configuration' => $plugin_block->getConfiguration(),
+            '#configuration' => $configuration,
             '#plugin_id' => $plugin_block->getPluginId(),
             '#base_plugin_id' => $plugin_block->getBaseId(),
             '#derivative_plugin_id' => $plugin_block->getDerivativeId(),
