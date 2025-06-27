@@ -311,14 +311,10 @@
       $weekSlots.append('<div class="time-slot-error-placement" aria-live="polite"></div>');
 
       // Add required rule to time slots
-      const $timeslots = $weekSlots.find("input.timeslot");
+      // const $timeslots = $weekSlots.find("input.timeslot");
+      const $timeslots = $(once('pvTimeSlotInputs', 'input.timeslot', context));
       $timeslots.rules("add", {
         timeSlotRequired: $timeslots
-      });
-
-      // Trigger validation on first timeslot when any checkbox is changed.
-      $timeslots.on("change", function() {
-        validator.element($timeslots.first());
       });
 
       // Update the errorPlacement function on the validator instance.
