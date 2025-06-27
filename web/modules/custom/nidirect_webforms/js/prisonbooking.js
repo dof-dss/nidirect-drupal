@@ -9,7 +9,7 @@
     attach: function (context, settings) {
 
       // Visit time slots grouped by week in details containers.
-      const $weekSlots = $(once('pvSlots', '[data-webform-key^="slots_week"]', context));
+      const $weekSlots = $(once('pvWeekSlots', '[data-webform-key^="slots_week"]', context));
 
       // One week of slots only? Force open the details container.
       if ($weekSlots.length === 1) {
@@ -20,7 +20,7 @@
       }
 
       // Visit time slots ...
-      let $timeSlots = $('input[type="checkbox"]', $weekSlots);
+      const $timeSlots = $(once('pvTimeSlots', 'input[type="checkbox"]', context));
 
       // Array for tracking slot IDs as they are checked or unchecked.
       let preferredSlotIds = [];
