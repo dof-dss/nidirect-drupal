@@ -490,6 +490,16 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
     // Show available timeslots in the form.
     if ($page === 'visit_preferred_day_and_time' && !empty($this->bookingReference)) {
 
+      // If user hit previous, re-populate hidden slot input values.
+      // Since Drupal 10.4, the rendering of hidden inputs no longer
+      // automatically repopulates values from $form_state.
+      if ($form_state->getTriggeringElement()['#value'] === "Previous") {
+        for ($i = 1; $i <= 5; $i++) {
+          $hidden_slot = &$this->elements['slot' . $i . '_datetime'];
+          $hidden_slot['#value'] = $hidden_slot['#default_value'];
+        }
+      }
+
       // Reset timeslots when user is amending a booking.
       if ($amend_booking_data && $form_state->getTriggeringElement()['#value'] === "Next") {
         $this->resetFormSlots($form, $form_state, $webform_submission);
@@ -1407,7 +1417,6 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
    * Reset form slots.
    */
   private function resetFormSlots(array &$form, FormStateInterface $form_state, WebformSubmissionInterface $webform_submission) {
-
     $elements = WebformFormHelper::flattenElements($form);
 
     $form_values = array_filter($form_state->getValues(), function ($key) {
