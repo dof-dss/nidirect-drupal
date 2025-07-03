@@ -312,7 +312,7 @@
 
       // Add required rule to time slots
       // const $timeslots = $weekSlots.find("input.timeslot");
-      const $timeslots = $(once('pvTimeSlotInputs', 'input.timeslot', context));
+      const $timeslots = $(once('pvTimeSlotValidationRules', 'input.timeslot', context));
       $timeslots.rules("add", {
         timeSlotRequired: $timeslots
       });
