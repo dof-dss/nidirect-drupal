@@ -260,6 +260,10 @@ jobs:
             platform environment:drush sapi-r -p $PLATFORM_PROJECT -e $EDGE_BUILD_BRANCH
             platform environment:drush sapi-i -p $PLATFORM_PROJECT -e $EDGE_BUILD_BRANCH
           when: always
+      - run:
+          name: Reset QA account passwords
+          command: |
+            platform environment:drush password_qa_accounts -e $EDGE_BUILD_BRANCH
 
   # Create new release marker in New Relic
   mark_release:
