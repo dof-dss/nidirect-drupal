@@ -1407,7 +1407,6 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
    * Reset form slots.
    */
   private function resetFormSlots(array &$form, FormStateInterface $form_state, WebformSubmissionInterface $webform_submission) {
-
     $elements = WebformFormHelper::flattenElements($form);
 
     $form_values = array_filter($form_state->getValues(), function ($key) {
