@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "0a98af8d40883d8a2593d8dd26352ddc",
+    "content-hash": "777e40c0e72166924efdcf03c5bc0f60",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -6197,39 +6197,47 @@
         },
         {
             "name": "drupal/geolocation",
-            "version": "dev-4.x",
+            "version": "3.14.0",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/geolocation.git",
-                "reference": "7cfa6555fb970175d00dae27541f72597ded7e7b"
+                "reference": "8.x-3.14"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://ftp.drupal.org/files/projects/geolocation-8.x-3.14.zip",
+                "reference": "8.x-3.14",
+                "shasum": "2f7cda9ce6ca1c03e30405f892714ae6f6a04bfd"
             },
             "require": {
-                "drupal/core": "^10 || ^11 || ^12"
+                "drupal/core": "^10.3 || ^11",
+                "drupal/jquery_ui": "*",
+                "drupal/jquery_ui_autocomplete": "^2.0",
+                "php": "^8.0"
             },
             "require-dev": {
                 "drupal/address": "*",
                 "drupal/geofield": "*",
                 "drupal/geolocation_demo": "*",
                 "drupal/geolocation_geometry": "*",
+                "drupal/geolocation_geometry_data": "*",
                 "drupal/geolocation_google_maps": "*",
                 "drupal/geolocation_google_maps_demo": "*",
                 "drupal/geolocation_google_static_maps": "*",
                 "drupal/geolocation_leaflet": "*",
-                "drupal/migrate_plus": "*",
-                "drupal/migrate_tools": "*",
-                "drupal/search_api": "*"
+                "drupal/geolocation_leaflet_demo": "*",
+                "drupal/search_api": "*",
+                "drupal/search_api_location": "*",
+                "drupal/search_api_location_views": "*"
             },
             "type": "drupal-module",
             "extra": {
-                "branch-alias": {
-                    "dev-4.x": "4.x-dev"
-                },
                 "drupal": {
-                    "version": "4.0.0-beta2+13-dev",
-                    "datestamp": "1747723163",
+                    "version": "8.x-3.14",
+                    "datestamp": "1729420964",
                     "security-coverage": {
-                        "status": "not-covered",
-                        "message": "Dev releases are not covered by Drupal security advisories."
+                        "status": "covered",
+                        "message": "Covered by Drupal's security advisory policy"
                     }
                 }
             },
@@ -22676,7 +22684,6 @@
         "drupal/feeds_tamper": 10,
         "drupal/file_delete_ui": 15,
         "drupal/flag": 20,
-        "drupal/geolocation": 20,
         "drupal/inline_entity_form": 5,
         "drupal/search_api_location": 15,
         "drupal/search_api_solr": 20,
