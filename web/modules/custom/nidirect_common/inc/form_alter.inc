@@ -133,10 +133,10 @@ function nidirect_common_form_node_form_alter(&$form, FormStateInterface $form_s
 
   // Replace legacy view modes used by embedded media images so that
   // authors are seeing the newer correct image style in ckeditor5.
-  /** @var \Drupal\node\NodeInterface $node */
-  $node = $form_state->getFormObject()->getEntity();
+  if (\Drupal::routeMatch()->getRouteName() === 'entity.node.edit_form') {
 
-  if ($node instanceof NodeInterface && $node->hasField('body') && !$node->isNew()) {
+    // $node is an upcast, full object from the routing service.
+    $node = \Drupal::routeMatch()->getParameter('node');
     $body = $node->get('body')->value;
 
     // Map legacy to new view modes.
