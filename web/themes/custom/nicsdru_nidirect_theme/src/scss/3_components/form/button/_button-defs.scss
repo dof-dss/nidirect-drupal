@@ -62,37 +62,37 @@
   // the amount of side padding the button it is given - bigger left or right padding = bigger arrow.
   @if $size == 'small' {
     @include responsive-typo-map($btn-small);
-    @include _btn(3.2rem, 3.2rem, (.4rem .4rem), $arrow-direction);
+    @include _btn(32px, 32px, (4px 4px), $arrow-direction);
     @include breakpoint($tab) {
-      @include _btn(3.6rem, 3.6rem, (.4rem .8rem), $arrow-direction);
+      @include _btn(36px, 36px, (4px 8px), $arrow-direction);
     }
   }
   @else if $size == 'standard' {
     @include responsive-typo-map($btn-default);
-    @include _btn(4.4rem, 4.4rem, (.8rem 1.2rem), $arrow-direction);
+    @include _btn(44px, 44px, (8px 12px), $arrow-direction);
     @include breakpoint($tab) {
-      @include _btn(4.5rem, 4.5rem, (.8rem 1.3rem), $arrow-direction);
+      @include _btn(45px, 45px, (8px 13px), $arrow-direction);
     }
   }
   @else if $size == 'medium' {
     @include responsive-typo-map($btn-medium);
-    @include _btn(6rem, 4.4rem, (.7rem 1.4rem), $arrow-direction);
+    @include _btn(60px, 44px, (7px 14px), $arrow-direction);
     @include breakpoint($tab) {
-      @include _btn(9rem, 4.5rem, (.6rem 1.7rem), $arrow-direction);
+      @include _btn(9px, 45px, (6px 17px), $arrow-direction);
     }
   }
   @else if $size == 'large' {
     @include responsive-typo-map($btn-large);
-    @include _btn(8rem, 4.8rem, (.7rem 1.6rem), $arrow-direction);
+    @include _btn(80px, 48px, (7px 16px), $arrow-direction);
     @include breakpoint($tab) {
-      @include _btn(15rem, 5.4rem, (.8rem 1.9rem), $arrow-direction);
+      @include _btn(150px, 54px, (8px 19px), $arrow-direction);
     }
   }
   @else {
     @include responsive-typo-map($btn-default);
-    @include _btn(4.4rem, 4.4rem, (.8rem 1.2rem), $arrow-direction);
+    @include _btn(44px, 44px, (8px 12px), $arrow-direction);
     @include breakpoint($tab) {
-      @include _btn(4.5rem, 4.5rem, (.8rem 1.3rem), $arrow-direction);
+      @include _btn(45px, 45px, (8px 13px), $arrow-direction);
     }
   }
 }
@@ -139,9 +139,9 @@
 }
 
 @mixin _btn($min-width, $min-height, $padding, $arrow-direction) {
-  min-width: $min-width;
-  min-height: $min-height;
-  padding: $padding;
+  @include adjust-property-size-to($min-width, min-width);
+  @include adjust-property-size-to($min-height, min-height);
+  @include adjust-property-size-to($padding, padding);
 
   @if $arrow-direction {
 
@@ -168,12 +168,14 @@
 
     // Set the padding and background-position depending on arrow direction.
     @if $arrow-direction == left {
-      padding-left: $padding-side;
+      @include adjust-property-size-to($padding-side, padding-left);
+      //padding-left: $padding-side;
       background-position: left $background-position-x-offset top 50%;
     }
 
     @if $arrow-direction == right {
-      padding-right: $padding-side;
+      @include adjust-property-size-to($padding-side, padding-right);
+      //padding-right: $padding-side;
       background-position: right $background-position-x-offset top 50%;
     }
   }

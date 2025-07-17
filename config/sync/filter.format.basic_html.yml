@@ -8,7 +8,8 @@ dependencies:
     - core.entity_view_mode.media.article_full
     - core.entity_view_mode.media.article_full_expandable
   module:
-    - cookie_content_blocker
+    - ckeditor5_allowed_html
+    - ckeditor5_premium_features
     - editor
     - entity_embed
     - linkit
@@ -22,95 +23,103 @@ name: 'Basic HTML'
 format: basic_html
 weight: 0
 filters:
-  cookie_content_blocker_filter:
-    id: cookie_content_blocker_filter
-    provider: cookie_content_blocker
+  ckeditor5_premium_features_collaboration_filter:
+    id: ckeditor5_premium_features_collaboration_filter
+    provider: ckeditor5_premium_features
     status: false
-    weight: -44
-    settings:
-      disable_xss: '1'
+    weight: -43
+    settings: {  }
   editor_file_reference:
     id: editor_file_reference
     provider: editor
     status: false
-    weight: -36
+    weight: -34
     settings: {  }
   entity_embed:
     id: entity_embed
     provider: entity_embed
     status: true
-    weight: -46
+    weight: -47
     settings: {  }
   filter_align:
     id: filter_align
     provider: filter
     status: false
-    weight: -39
+    weight: -37
     settings: {  }
+  filter_allowed:
+    id: filter_allowed
+    provider: ckeditor5_allowed_html
+    status: true
+    weight: -50
+    settings:
+      allowed_html: '<a class href hreflang> <em> <strong> <cite> <blockquote cite> <code> <ul class type> <ol class start type> <li> <dl> <dt> <dd> <h2 id> <h3 id> <h4 id> <p class translate> <br> <img src alt height width data-* typeof> <sup> <table class> <caption> <tbody> <thead> <tfoot> <th scope> <td> <tr> <drupal-entity data-entity-type data-entity-uuid data-entity-embed-display data-entity-embed-display-settings data-align data-caption data-embed-button alt title class> <picture data-* alt title class> <source srcset media type> <address> <drupal-media data-entity-type data-entity-uuid data-entity-embed-display data-entity-embed-display-settings data-align data-caption data-embed-button data-view-mode alt title class> <strike> <span dir lang> <iframe src width height class loading title*> <div class role data-drupal-selector id> <input class data-drupal-selector type id name value autocomplete> <label for> <form role class data-drupal-selector action method accept-charset>'
+      filter_html_help: false
+      filter_html_nofollow: false
   filter_autop:
     id: filter_autop
     provider: filter
     status: false
-    weight: -41
+    weight: -39
     settings: {  }
   filter_caption:
     id: filter_caption
     provider: filter
     status: false
-    weight: -38
+    weight: -36
     settings: {  }
   filter_html:
     id: filter_html
     provider: filter
-    status: true
-    weight: -50
+    status: false
+    weight: -42
     settings:
-      allowed_html: '<a class href hreflang> <em> <strong> <cite> <blockquote cite> <code> <ul class type> <ol class start type> <li> <dl> <dt> <dd> <h2 id> <h3 id> <h4 id> <div class> <p class translate> <br> <img src alt height width data-* typeof> <sup> <table class> <caption> <tbody> <thead> <tfoot> <th scope> <td> <tr> <drupal-entity data-entity-type data-entity-uuid data-entity-embed-display data-entity-embed-display-settings data-align data-caption data-embed-button alt title class> <picture data-* alt title class> <source srcset media type> <address> <drupal-media data-entity-type data-entity-uuid data-entity-embed-display data-entity-embed-display-settings data-align data-caption data-embed-button data-view-mode alt title class> <strike> <span dir lang>'
+      allowed_html: '<p class="info-notice"> <ul class="split-list"> <ol class="split-list"> <table class="table-fixed-width"> <a class="btn--call-to-action">'
       filter_html_help: false
       filter_html_nofollow: false
   filter_html_escape:
     id: filter_html_escape
     provider: filter
     status: false
-    weight: -40
+    weight: -38
     settings: {  }
   filter_html_image_secure:
     id: filter_html_image_secure
     provider: filter
     status: false
-    weight: -37
+    weight: -35
     settings: {  }
   filter_htmlcorrector:
     id: filter_htmlcorrector
     provider: filter
     status: false
-    weight: -42
+    weight: -40
     settings: {  }
   filter_image_lazy_load:
     id: filter_image_lazy_load
     provider: filter
     status: true
-    weight: -35
+    weight: -44
     settings: {  }
   filter_url:
     id: filter_url
     provider: filter
     status: false
-    weight: -43
+    weight: -41
     settings:
       filter_url_length: 72
   linkit:
     id: linkit
     provider: linkit
-    status: false
-    weight: -34
+    status: true
+    weight: -49
     settings:
       title: true
   media_embed:
     id: media_embed
     provider: media
     status: true
-    weight: -47
+    weight: -45
     settings:
       default_view_mode: article_full
       allowed_view_modes:
@@ -127,19 +136,19 @@ filters:
     id: noreferrer
     provider: noreferrer
     status: true
-    weight: -49
+    weight: -48
     settings: {  }
   origins_media_cookie_content_blocker_embed_filter:
     id: origins_media_cookie_content_blocker_embed_filter
     provider: origins_common
     status: false
-    weight: -48
+    weight: -33
     settings:
       replacement_text: 'Click here to view the video content'
   token_filter:
     id: token_filter
     provider: token_filter
     status: true
-    weight: -45
+    weight: -46
     settings:
-      replace_empty: '1'
+      replace_empty: true
