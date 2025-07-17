@@ -9,6 +9,7 @@ use Drupal\webform\Plugin\WebformHandlerBase;
 use Drupal\webform\Utility\WebformFormHelper;
 use Drupal\webform\WebformInterface;
 use Drupal\webform\WebformSubmissionInterface;
+use GuzzleHttp\Exception\RequestException;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -708,8 +709,8 @@ XML;
    * @throws \Exception
    */
   protected function generateOrderCode(string $prison_id, string $prisoner_id, string $visitor_id) {
-    $uuid_short = substr(\Drupal::service('uuid')->generate(), 0, 8); // 8-character UUID segment
-    $random_part = random_int(1000, 9999); // 4-digit random number
+    $uuid_short = substr(\Drupal::service('uuid')->generate(), 0, 8);
+    $random_part = random_int(1000, 9999);
     return "{$prison_id}_{$prisoner_id}_{$visitor_id}_{$uuid_short}{$random_part}";
   }
 
@@ -755,22 +756,22 @@ XML;
         }
         else {
           $this->getLogger('nidirect_prisons')->error('Worldpay response is not valid XML: @response', [
-            '@response' => substr($xml_string, 0, 500), // Log first 500 chars for debugging.
+            '@response' => substr($xml_string, 0, 500),
           ]);
         }
       }
       else {
         $this->getLogger('nidirect_prisons')->error('sendWorldpayRequest received unexpected status code: @code | Response: @response', [
           '@code' => $status_code,
-          '@response' => substr($xml_string, 0, 500), // Log first 500 chars.
+          '@response' => substr($xml_string, 0, 500),
         ]);
       }
     }
-    catch (\GuzzleHttp\Exception\RequestException $e) {
+    catch (RequestException $e) {
       $response_body = $e->hasResponse() ? $e->getResponse()->getBody()->getContents() : 'No response';
       $this->getLogger('nidirect_prisons')->error('sendWorldpayRequest error: @message | Response: @response', [
         '@message' => $e->getMessage(),
-        '@response' => substr($response_body, 0, 500), // Avoid logging excessive data.
+        '@response' => substr($response_body, 0, 500),
       ]);
     }
 
@@ -806,7 +807,7 @@ XML;
         $order_status = $order_status[0];
         $result['order_code'] = (string) $order_status['orderCode'];
 
-        // Extract the reference URL
+        // Extract the reference URL.
         $reference = $order_status->xpath('reference');
         if (!empty($reference)) {
           $result['reference_url'] = (string) $reference[0];
@@ -816,16 +817,18 @@ XML;
               '@url' => $result['reference_url'],
             ]);
             $result['error'] = 'Invalid reference URL returned by Worldpay.';
-          } else {
+          }
+          else {
             $result['success'] = TRUE;
           }
-        } else {
+        }
+        else {
           $result['error'] = 'Missing reference URL in Worldpay response.';
           $this->getLogger('nidirect_prisons')->warning('parseWorldpayResponse: Missing reference URL in Worldpay response.');
         }
       }
       else {
-        // Handle error response from Worldpay
+        // Handle error response from Worldpay.
         $error = $xml->xpath('//error');
         if (!empty($error)) {
           $result['error'] = (string) $error[0];
@@ -915,7 +918,7 @@ XML;
    *
    * @param float $payment_amount
    *   The payment amount.
-   *
+   * @throws \Exception
    */
   private function logPendingTransaction(string $order_code, string $prisoner_id, string $visitor_id, float $payment_amount) {
     $transaction_data = [
@@ -923,7 +926,7 @@ XML;
       'prisoner_id' => $prisoner_id,
       'visitor_id' => $visitor_id,
       'amount' => $payment_amount,
-      'status' => 'pending', // Or any other status you want to set
+      'status' => 'pending',
       'created_timestamp' => time(),
     ];
 
