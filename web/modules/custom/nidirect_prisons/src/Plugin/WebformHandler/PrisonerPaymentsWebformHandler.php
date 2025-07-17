@@ -177,9 +177,10 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
         $timeout_threshold = \Drupal::time()->getRequestTime() - 1800;
 
         if ($pending_transaction->created_timestamp < $timeout_threshold) {
-          // Mark transaction as expired
+          // Mark transaction as expired.
           $this->updateTransactionStatus($pending_transaction->order_key, 'expired');
-        } else {
+        }
+        else {
           // Visitor cannot proceed. Show payment pending message.
           $elements['msg_payment_pending']['#access'] = TRUE;
 
@@ -267,7 +268,8 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
         // Hide submit.
         $form['actions']['submit']['#attributes']['class'][] = 'visually-hidden';
 
-      } else {
+      }
+      else {
 
         // Something went wrong with the payment request to Worldpay.
         // Update transaction status as failed.
@@ -347,7 +349,8 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
 
       if ($prisoner_max_amount == 0) {
         $form_state->setError($form, $this->t('The payment limit for this prisoner has been reached. Try again next week.'));
-      } elseif (!is_numeric($prisoner_payment_amount) || $prisoner_payment_amount < 0.01 || $prisoner_payment_amount > $prisoner_max_amount) {
+      }
+      elseif (!is_numeric($prisoner_payment_amount) || $prisoner_payment_amount < 0.01 || $prisoner_payment_amount > $prisoner_max_amount) {
         $form_state->setErrorByName('prisoner_payment_amount', $this->t('Amount must be between &pound;0.01 and &pound;@max.', ['@max' => number_format($prisoner_max_amount, 2, '.', '')]));
       }
     }
@@ -357,7 +360,6 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
   /**
    * {@inheritdoc}
    */
-
   public function submitForm(array &$form, FormStateInterface $form_state, WebformSubmissionInterface $webform_submission) {
     $this->debug(__FUNCTION__);
 
@@ -395,7 +397,8 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
 
       if ($order_status === 'success') {
         $webform->setSetting('confirmation_message', $webform->getElement('webform_confirmation_success')['#markup']);
-      } else {
+      }
+      else {
         $webform->setSetting('confirmation_message', $webform->getElement('webform_confirmation_failure')['#markup']);
       }
     }
@@ -439,6 +442,9 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
 
   /**
    * Get the maximum amount a prisoner can be paid.
+   *
+   * @param string $prisoner_id
+   * @return float|void
    */
   protected function getPrisonerPaymentMaxAmount(string $prisoner_id) {
     try {
@@ -461,6 +467,9 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
   /**
    * Get the prison id for the prison which receives payments
    * for the prisoner.
+   *
+   * @param string $prisoner_id
+   * @return mixed|null
    */
   protected function getPrisonId(string $prisoner_id) {
 
@@ -492,6 +501,9 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
 
   /**
    * Get nominated visitor IDs who can make payments to a prisoner ID.
+   *
+   * @param string $prisoner_id
+   * @return array|string[]|null
    */
   protected function getPrisonerNominatedVisitorIds(string $prisoner_id) {
 
@@ -529,6 +541,9 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
 
   /**
    * Get pending transactions for prisoner.
+   *
+   * @param string $prisoner_id
+   * @return false|mixed
    */
   protected function getPendingTransactions(string $prisoner_id) {
 
@@ -537,7 +552,12 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
     try {
       $connection = \Drupal::database();
       $query = $connection->select('prisoner_payment_transactions', 'ppt')
-        ->fields('ppt', ['order_key', 'visitor_id', 'amount', 'created_timestamp'])
+        ->fields('ppt', [
+          'order_key',
+          'visitor_id',
+          'amount',
+          'created_timestamp'
+        ])
         ->condition('prisoner_id', $prisoner_id)
         ->condition('status', 'pending')
         ->orderBy('created_timestamp', 'DESC')
@@ -667,6 +687,7 @@ XML;
    *
    * @return string
    *   A unique order code.
+   * @throws \Exception
    */
   protected function generateOrderCode(string $prison_id, string $prisoner_id, string $visitor_id) {
     $uuid_short = substr(\Drupal::service('uuid')->generate(), 0, 8); // 8-character UUID segment
@@ -674,6 +695,12 @@ XML;
     return "{$prison_id}_{$prisoner_id}_{$visitor_id}_{$uuid_short}{$random_part}";
   }
 
+  /**
+   * Sends xml payment request order to Worldpay.
+   *
+   * @param string $order_data
+   * @return \SimpleXMLElement|null
+   */
   protected function sendWorldpayRequest(string $order_data) {
     $xml = NULL;
     $client = \Drupal::service('http_client');
@@ -704,13 +731,11 @@ XML;
         // Validate response is XML before parsing.
         if (str_starts_with($xml_string, '<?xml')) {
           $xml = simplexml_load_string($xml_string);
-          //ksm('Worldpay payment request response 200 OK', $xml);
         }
         else {
           $this->getLogger('nidirect_prisons')->error('Worldpay response is not valid XML: @response', [
             '@response' => substr($xml_string, 0, 500), // Log first 500 chars for debugging.
           ]);
-          //ksm('Worldpay payment request invalid XML', $xml_string);
         }
       }
       else {
@@ -718,7 +743,6 @@ XML;
           '@code' => $status_code,
           '@response' => substr($xml_string, 0, 500), // Log first 500 chars.
         ]);
-        //ksm('Worldpay payment request unexpected status code', $status_code, $xml_string);
       }
     }
     catch (\GuzzleHttp\Exception\RequestException $e) {
@@ -727,12 +751,17 @@ XML;
         '@message' => $e->getMessage(),
         '@response' => substr($response_body, 0, 500), // Avoid logging excessive data.
       ]);
-      //ksm('Worldpay payment request exception', $e->getMessage(), $response_body);
     }
 
     return $xml;
   }
 
+  /**
+   * Parse Worldpay payment request response.
+   * 
+   * @param \SimpleXMLElement $xml
+   * @return array
+   */
   protected function parseWorldpayResponse(\SimpleXMLElement $xml) {
     $result = [
       'success' => FALSE,
