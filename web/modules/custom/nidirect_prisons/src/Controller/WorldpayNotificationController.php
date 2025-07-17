@@ -12,13 +12,14 @@ class WorldpayNotificationController extends ControllerBase {
    * Handle notifications from Worldpay to track if a payment has
    * succeeded or failed.
    *
-   * @param Request $request
-   * @return Response
+   * @param \Symfony\Component\HttpFoundation\Request $request
+   *   The Request.
+   * @return \Symfony\Component\HttpFoundation\Response
+   *   The Response.
    */
   public function handleNotification(Request $request) {
 
-    /**
-     * See https://docs.worldpay.com/apis/wpg/manage for information
+    /* See https://docs.worldpay.com/apis/wpg/manage for information
      * on configuring Worldpay order notifications.
      *
      * When a payment request is initialised, the payment transaction is
@@ -206,11 +207,15 @@ class WorldpayNotificationController extends ControllerBase {
    * JSON format via email.
    *
    * @param string $order_code
+   *   The order code for the transaction.
    * @param string $prisoner_id
+   *   The prisoner id the transaction relates to.
    * @param string $visitor_id
+   *   The visitor id the transaction relates to.
    * @param float $amount
+   *   The amount paid in the transaction.
    * @param int $sequence_id
-   * @return void
+   *   The sequence id for the transaction.
    * @throws \Exception
    */
   private function sendJsonToPrism($order_code, $prisoner_id, $visitor_id, $amount, $sequence_id) {
@@ -250,6 +255,7 @@ class WorldpayNotificationController extends ControllerBase {
    * Get the next sequential ID for each payment made to a prisoner.
    *
    * @return int
+   *   The sequence id.
    * @throws \Exception
    */
   protected function getNextSequenceId() {

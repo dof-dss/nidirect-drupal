@@ -444,7 +444,9 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
    * Get the maximum amount a prisoner can be paid.
    *
    * @param string $prisoner_id
+   *   The prisoner id.
    * @return float|void
+   *   The amount.
    */
   protected function getPrisonerPaymentMaxAmount(string $prisoner_id) {
     try {
@@ -469,7 +471,9 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
    * for the prisoner.
    *
    * @param string $prisoner_id
+   *   The prisoner id.
    * @return mixed|null
+   *   The prison id that receives payments to the prisoner.
    */
   protected function getPrisonId(string $prisoner_id) {
 
@@ -503,7 +507,11 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
    * Get nominated visitor IDs who can make payments to a prisoner ID.
    *
    * @param string $prisoner_id
+   *   The prison id.
    * @return array|string[]|null
+   *   Return an array of visitor ids who can make payments to a
+   *   prisoner or an empty array if there are no visitor ids
+   *   nominated or null if an exception occurs.
    */
   protected function getPrisonerNominatedVisitorIds(string $prisoner_id) {
 
@@ -543,7 +551,10 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
    * Get pending transactions for prisoner.
    *
    * @param string $prisoner_id
+   *   The prisoner id.
    * @return false|mixed
+   *   Returns false when there are no pending transactions. Otherwise,
+   *   the pending transactions are returned (result object).
    */
   protected function getPendingTransactions(string $prisoner_id) {
 
@@ -576,12 +587,19 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
    * Generate the XML data for a Worldpay payment request.
    *
    * @param string $order_code
+   *   The unique order code for the request.
    * @param string $prison_id
+   *   The prison id which will receive the payment.
    * @param string $prisoner_id
+   *   The prisoner id who will receive the payment.
    * @param string $prisoner_fullname
+   *   The prisoner's full name.
    * @param float $payment_amount
+   *   The amount to be paid.
    * @param string $visitor_fullname
+   *   The visitor's (payee) full name.
    * @param string $visitor_email
+   *   The visitor's email.
    *
    * @return string
    *   The XML string for the Worldpay payment request.
@@ -699,7 +717,10 @@ XML;
    * Sends xml payment request order to Worldpay.
    *
    * @param string $order_data
+   *   The order data (xml).
    * @return \SimpleXMLElement|null
+   *   Returns response from Worldpay as SimpleXMLElement or null if
+   *   a problem occurs.
    */
   protected function sendWorldpayRequest(string $order_data) {
     $xml = NULL;
@@ -760,7 +781,9 @@ XML;
    * Parse Worldpay payment request response.
    *
    * @param \SimpleXMLElement $xml
+   *   The xml response from Worldpay to be parsed.
    * @return array
+   *   The response parsed into an array.
    */
   protected function parseWorldpayResponse(\SimpleXMLElement $xml) {
     $result = [
@@ -984,7 +1007,7 @@ XML;
    *   The full name to be split.
    *
    * @return array
-   *
+   *   An array with three elements: first, middle and last name.
    */
   protected function splitFullName($full_name) {
 
