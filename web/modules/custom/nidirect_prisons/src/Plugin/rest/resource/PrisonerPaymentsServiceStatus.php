@@ -96,7 +96,8 @@ class PrisonerPaymentsServiceStatus extends ResourceBase implements ContainerFac
 
         try {
           $webform->save();
-        } catch (\Exception $e) {
+        }
+        catch (\Exception $e) {
           $this->logger->error('Failed to update webform status: {message}', ['message' => $e->getMessage()]);
           return new ResourceResponse(['error' => 'Failed to update service status'], 500);
         }
@@ -109,7 +110,8 @@ class PrisonerPaymentsServiceStatus extends ResourceBase implements ContainerFac
 
         try {
           $webform->save();
-        } catch (\Exception $e) {
+        }
+        catch (\Exception $e) {
           $this->logger->error('Failed to update webform status: {message}', ['message' => $e->getMessage()]);
           return new ResourceResponse(['error' => 'Failed to update service status'], 500);
         }

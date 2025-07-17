@@ -106,7 +106,8 @@ class PrisonerAmountsResource extends ResourceBase implements ContainerFactoryPl
         }
       }
 
-    } catch (\Exception $e) {
+    }
+    catch (\Exception $e) {
       // Rollback the transaction if an error occurs.
       $transaction->rollback();
 
