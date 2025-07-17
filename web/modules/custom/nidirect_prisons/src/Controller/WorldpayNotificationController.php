@@ -8,12 +8,16 @@ use Drupal\Core\Controller\ControllerBase;
 
 class WorldpayNotificationController extends ControllerBase {
 
+  /**
+   * Handle notifications from Worldpay to track if a payment has
+   * succeeded or failed.
+   *
+   * @param Request $request
+   * @return Response
+   */
   public function handleNotification(Request $request) {
 
-    /*
-     * Handle notifications from Worldpay to track if a payment has
-     * succeeded or failed.
-     *
+    /**
      * See https://docs.worldpay.com/apis/wpg/manage for information
      * on configuring Worldpay order notifications.
      *
@@ -36,14 +40,6 @@ class WorldpayNotificationController extends ControllerBase {
      * successfully approved by the card issuer or bank, but the funds
      * have not yet been captured or settled (debited from visitor's
      * account).
-     *
-     * In theory, a payment can be CANCELLED after it has been
-     * AUTHORISED. However, this is not presently handled here. If
-     * a pending or failed transaction is AUTHORISED and marked as
-     * a success in the prisoner_payment_transactions table, further
-     * notifications relating to it are effectively ignored.
-     *
-     * @todo: check with Prism team how cancellations will be handled.
      */
 
     // Check request is from a Worldpay IP by performing forward and
@@ -62,7 +58,7 @@ class WorldpayNotificationController extends ControllerBase {
 
     // Forward DNS lookup.
     $resolved_ips = gethostbynamel($hostname);
-    if (!$resolved_ips || !in_array($ip, $resolved_ips, true)) {
+    if (!$resolved_ips || !in_array($ip, $resolved_ips, TRUE)) {
       \Drupal::logger('nidirect_prisons')->warning('DNS verification failed for IP @ip with hostname @hostname.', [
         '@ip' => $ip,
         '@hostname' => $hostname,
@@ -111,7 +107,13 @@ class WorldpayNotificationController extends ControllerBase {
     // are marked as success.
     $db = \Drupal::database();
     $payment_transaction = $db->select('prisoner_payment_transactions', 'ppt')
-      ->fields('ppt', ['order_key', 'prisoner_id', 'visitor_id', 'amount', 'status'])
+      ->fields('ppt', [
+        'order_key',
+        'prisoner_id',
+        'visitor_id',
+        'amount',
+        'status'
+      ])
       ->condition('order_key', $order_code)
       ->condition('status', ['pending', 'failed'], 'IN')
       ->execute()
@@ -137,7 +139,7 @@ class WorldpayNotificationController extends ControllerBase {
     ];
 
     // Log a warning if the status is not one we are expecting.
-    if (!in_array($payment_status, $allowed_statuses, true)) {
+    if (!in_array($payment_status, $allowed_statuses, TRUE)) {
       \Drupal::logger('nidirect_prisons')->warning('Unexpected Worldpay order notification status: @status. Have Merchant Channel HTTP Events been changed in the MAI?', [
         '@status' => $payment_status,
       ]);
@@ -199,6 +201,18 @@ class WorldpayNotificationController extends ControllerBase {
     return new Response('OK', 200);
   }
 
+  /**
+   * Sends details of a successful payment transaction to Prism in
+   * JSON format via email.
+   *
+   * @param string $order_code
+   * @param string $prisoner_id
+   * @param string $visitor_id
+   * @param float $amount
+   * @param int $sequence_id
+   * @return void
+   * @throws \Exception
+   */
   private function sendJsonToPrism($order_code, $prisoner_id, $visitor_id, $amount, $sequence_id) {
 
     $json_data = json_encode([
@@ -210,7 +224,7 @@ class WorldpayNotificationController extends ControllerBase {
       "SEQUENCE_ID" => $sequence_id,
     ]);
 
-    // Try sending the email
+    // Try sending the email.
     try {
       \Drupal::service('plugin.manager.mail')->mail(
         'nidirect_prisons',
@@ -221,8 +235,9 @@ class WorldpayNotificationController extends ControllerBase {
       );
 
       \Drupal::logger('nidirect_prisons')->notice("Sent prisoner payment data for order {$order_code} to Prism.");
-    } catch (\Exception $e) {
-      // If email fails, log the error and throw
+    }
+    catch (\Exception $e) {
+      // If email fails, log the error and throw.
       \Drupal::logger('nidirect_prisons')->error('Failed to send email for order @order_code: @error', [
         '@order_code' => $order_code,
         '@error' => $e->getMessage(),
@@ -231,6 +246,12 @@ class WorldpayNotificationController extends ControllerBase {
     }
   }
 
+  /**
+   * Get the next sequential ID for each payment made to a prisoner.
+   *
+   * @return int
+   * @throws \Exception
+   */
   protected function getNextSequenceId() {
     $database = \Drupal::database();
     $query = $database->insert('prisoner_payment_sequence')->fields(['id' => NULL]);

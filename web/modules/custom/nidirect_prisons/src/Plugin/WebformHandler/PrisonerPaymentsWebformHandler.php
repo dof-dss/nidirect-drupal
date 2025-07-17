@@ -861,7 +861,7 @@ XML;
    * @param string $visitor_id
    *   The visitor id who is making the payment.
    *
-   * @param string $payment_amount
+   * @param float $payment_amount
    *   The payment amount.
    *
    */
@@ -886,7 +886,7 @@ XML;
    * @param string $order_code
    *   The unique order code identifying the transaction.
    *
-   * @param string $payment_amount
+   * @param float $payment_amount
    *   The payment amount.
    *
    */
