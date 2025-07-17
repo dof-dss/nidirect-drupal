@@ -20,7 +20,8 @@
     float: right;
     width: 48.3871%;
     max-width: 300px;
-    margin-left: 1.8rem;
+    margin-top: 0;
+    margin-left: 1em;
   }
 }
 
@@ -28,7 +29,7 @@
 .media-image {
   width: 100%;
   position: relative;
-  margin: 1em 0 1.5em;
+  margin: 0;
 
   // It can act as a modal wrapper for full size expandable images.
   &.thwooped-modal {
@@ -65,7 +66,7 @@
   figure {
     width: 100%;
     height: auto;
-    margin: 0;
+    margin: 1em 0 1.5em;
   }
 
   // Floated styles.
@@ -80,9 +81,6 @@
 
   &[data-picture-mapping='inline_expandable'],
   &[data-picture-mapping='portrait_float_expandable'] {
-
-    // Remove margin from .media-image wrapper. Margin is added to the .thwooper wrapped image instead.
-    margin: 0;
 
     > .thwooper {
       margin: 0 0 1.5em;
@@ -107,7 +105,6 @@
         animation-fill-mode: backwards;
 
         &.thwooped {
-          margin: 0 0 1.5em;
           width: 100%;
           max-width: 100%;
           animation: thwoop-expand .3s;
