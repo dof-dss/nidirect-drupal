@@ -8,6 +8,7 @@
 use Drupal\Component\Utility\NestedArray;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\media\MediaInterface;
+use Drupal\node\NodeInterface;
 use Nette\Utils\Arrays;
 
 /**
@@ -126,6 +127,31 @@ function nidirect_common_form_node_form_alter(&$form, FormStateInterface $form_s
           Title should be descriptive and concise (60 characters or less). A good title is essential to helping users decide if the
           content will be relevant to them. Google truncates titles longer than 60 to 70 characters.
         ');
+      }
+    }
+  }
+
+  // Replace legacy view modes used by embedded media images so that
+  // authors are seeing the newer correct image style in ckeditor5.
+  if (\Drupal::routeMatch()->getRouteName() === 'entity.node.edit_form') {
+
+    // $node is an upcast, full object from the routing service.
+    $node = \Drupal::routeMatch()->getParameter('node');
+    $body = $node->get('body')->value;
+
+    // Map legacy to new view modes.
+    $replacements = [
+      'data-view-mode="landscape_float"' => 'data-view-mode="article_float"',
+      'data-view-mode="landscape_float_xp"' => 'data-view-mode="article_float_expandable"',
+      'data-view-mode="landscape_full"' => 'data-view-mode="article_full"',
+      'data-view-mode="landscape_full_xp"' => 'data-view-mode="article_full_expandable"',
+    ];
+
+    $new_body = strtr($body, $replacements);
+
+    if ($new_body !== $body) {
+      if (isset($form['body']['widget'][0]['#default_value'])) {
+        $form['body']['widget'][0]['#default_value'] = $new_body;
       }
     }
   }
