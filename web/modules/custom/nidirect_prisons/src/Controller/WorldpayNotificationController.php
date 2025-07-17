@@ -62,7 +62,7 @@ class WorldpayNotificationController extends ControllerBase {
       \Drupal::logger('nidirect_prisons')->warning('DNS verification failed for IP @ip with hostname @hostname.', [
         '@ip' => $ip,
         '@hostname' => $hostname,
-        '@resolved_ips' => implode(', ', $resolved_ips ?? []),
+        '@resolved_ips' => implode(', ', $resolved_ips),
       ]);
       return new Response('Access Denied', 403);
     }

@@ -758,7 +758,7 @@ XML;
 
   /**
    * Parse Worldpay payment request response.
-   * 
+   *
    * @param \SimpleXMLElement $xml
    * @return array
    */
