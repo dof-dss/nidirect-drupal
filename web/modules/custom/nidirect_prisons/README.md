@@ -21,21 +21,20 @@ See:
 
 1. Preamble (fraud warning, terms and conditions, etc)
 2. Visitor and Prisoner details
-   * User enters visitor name, visitor ID and prisoner name, prisoner ID.
+   * User enters visitor name, visitor ID, visitor email and prisoner name, prisoner ID.
    * Visitor and prisoner ids are validated by the webform handler against stored details of nominated visitor ids who can make payments to a prisoner id (`table prisoner_payment_nominees`).
-3. Visitor email (for receiving notification of payment)
-4. Payment amount:
+3. Payment amount:
    * Webform displays maximum amount that can be paid to the prisoner (by checking `table prisoner_payment_amount`)
    * User enters the payment amount, which is validated to check it does not exceed the maximum.
-5. Payment card details ([Worldpay Hosted Payment Page – HPP](https://docs.worldpay.com/apis/wpg)):
+4. Payment card details ([Worldpay Hosted Payment Page – HPP](https://docs.worldpay.com/apis/wpg)):
    * HPP is embedded into an iframe via [Worldpay Javacript SDK](https://docs.worldpay.com/apis/wpg/hostedintegration/javascriptsdk)
    * User submits debit card details via the HPP
    * Worldpay processes and returns a response via a JS callback
    * If the response status indicates the payment is refused or some other error occurs, the user can try again.
    * If the response status indicates the payment is authorised, the JS callback stores the response in a hidden input and submits the webform.
-   * Worldpay also sends a (serverside) [payment status notification](https://docs.worldpay.com/apis/wpg/manage) to `WorldpayNotificationController.php`
+   * Worldpay sends a (serverside) [payment status notification](https://docs.worldpay.com/apis/wpg/manage) to `WorldpayNotificationController.php`
    * `WorldpayNotificationController.php` handles updating the `prisoner_payment_transactions` and `prisoner_payment_amount` tables and sends an email to Prism with data on the payment transaction to enable Prism to update prisoner account balances.
-6. Confirmation:
+5. Confirmation:
    * JS callback response is [verified to check integrity](https://docs.worldpay.com/apis/wpg/hostedintegration/securingpayments).
    * User is shown a success message
    * User receives [email notification from Worldpay](http://support.worldpay.com/support/kb/gg/merchantadmininterface/Merchant%20Interface%20Guide.htm#7integration/merchant_channel.htm) confirming the payment.
