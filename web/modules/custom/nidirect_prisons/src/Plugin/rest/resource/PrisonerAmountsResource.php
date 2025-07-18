@@ -39,8 +39,8 @@ class PrisonerAmountsResource extends ResourceBase implements ContainerFactoryPl
    */
   public function __construct(
     array $configuration,
-          $plugin_id,
-          $plugin_definition,
+    $plugin_id,
+    $plugin_definition,
     array $serializer_formats,
     LoggerInterface $logger
   ) {
