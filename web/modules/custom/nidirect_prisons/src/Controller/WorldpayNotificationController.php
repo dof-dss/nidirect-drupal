@@ -2,15 +2,17 @@
 
 namespace Drupal\nidirect_prisons\Controller;
 
+use Drupal\Core\Controller\ControllerBase;
+use Drupal\nidirect_prisons\Enum\PaymentStatus;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Drupal\Core\Controller\ControllerBase;
 
 class WorldpayNotificationController extends ControllerBase {
 
   /**
    * Handle notifications from Worldpay to track if a payment has
-   * succeeded or failed.
+   * succeeded or failed. See https://docs.worldpay.com/apis/wpg/manage
+   * for information on configuring Worldpay order notifications.
    *
    * @param \Symfony\Component\HttpFoundation\Request $request
    *   The Request.
@@ -19,21 +21,10 @@ class WorldpayNotificationController extends ControllerBase {
    */
   public function handleNotification(Request $request) {
 
-    /* See https://docs.worldpay.com/apis/wpg/manage for information
-     * on configuring Worldpay order notifications.
-     *
-     * When a payment request is initialised, the payment transaction is
+    /* When a payment request is initialised, the payment transaction is
      * recorded as 'pending' in the prisoner_payment_transactions table.
      * When the hosted payment page is submitted, Worldpay sends
      * notifications on the status of the payment.
-     *
-     * At present, notifications for the following statuses are
-     * configured:
-     *   - 'AUTHORISED'
-     *   - 'CANCELLED'
-     *   - 'SHOPPER_CANCELLED'
-     *   - 'REFUSED'
-     *   - 'ERROR'
      *
      * If the payment is AUTHORISED, the payment transaction is
      * updated to 'success' in the prisoner_payment_transactions table
@@ -128,19 +119,8 @@ class WorldpayNotificationController extends ControllerBase {
       return new Response('OK', 200);
     }
 
-    // Allowed payment statuses. The payment statuses that can be
-    // sent are configured in the Worldpay Merchant Admin Interface
-    // (MAI).
-    $allowed_statuses = [
-      'AUTHORISED',
-      'CANCELLED',
-      'SHOPPER_CANCELLED',
-      'REFUSED',
-      'ERROR',
-    ];
-
     // Log a warning if the status is not one we are expecting.
-    if (!in_array($payment_status, $allowed_statuses, TRUE)) {
+    if (!PaymentStatus::isAllowed($payment_status)) {
       \Drupal::logger('nidirect_prisons')->warning('Unexpected Worldpay order notification status: @status. Have Merchant Channel HTTP Events been changed in the MAI?', [
         '@status' => $payment_status,
       ]);
