@@ -45,6 +45,7 @@ enum PaymentStatus: string {
    */
   public static function isAllowed(string $status): bool {
     $enum = self::tryFrom($status);
-    return $enum !== null && in_array($enum, self::allowed(), TRUE);
+    return $enum !== NULL && in_array($enum, self::allowed(), TRUE);
   }
+
 }
