@@ -58,10 +58,11 @@
   &--floating-right {
     position: absolute;
     top: 0;
-    right: 0;
+    right: auto;
     bottom: auto;
-    left: auto;
-    width: calc(33% - .9rem);
+    left: calc(100% + .9rem);
+    width: calc(50% - .9rem);
+    min-width: 160px;
 
     // The bubble arrow needs to point left.
     &::before {

@@ -79,20 +79,64 @@
 }
 
 /*
- * Definition list - side by side.
- *
- * Terms and descriptions appear side by side.
+ * Definition lists.
  */
-dl.side-by-side {
-  display: grid;
-  grid-template-columns: max-content auto;
 
-  dt {
-    text-align: right;
-    white-space: nowrap;
+dl {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: .6rem;
+
+  // Definition term (dt) and definition description
+  // (dd) are side by side.
+  &.side-by-side {
+    grid-template-columns: max-content auto;
+
+    dt {
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    dd {
+      grid-column-start: 2;
+    }
   }
 
+  // Definition list has a fixed height causing multiple columns of
+  // term and description pairs.
+  &.column-wrap {
+    @include breakpoint($phab) {
+      display: flex;
+      flex-flow: column wrap;
+      justify-content: flex-start;
+      max-height: 5.5em;
+    }
+  }
+
+  // Compact definition list.
+  &.compact {
+    dd,
+    dt {
+      @include responsive-typo-map($small-text);
+    }
+  }
+
+  dt,
   dd {
-    grid-column-start: 2;
+    padding: .25em .5em;
+    margin: 0;
+
+    @include breakpoint($tab) {
+      padding: .3334em .5em;
+    }
+  }
+
+  dt {
+    font-weight: bold;
+    background-color: $brand-primary-lighter;
+
+    &.error {
+      background-color: $error-bg;
+    }
   }
 }

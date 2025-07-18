@@ -1,0 +1,596 @@
+uuid: 63c402bf-969a-49cb-8dc0-9a44ddedacbd
+langcode: en
+status: open
+dependencies:
+  module:
+    - nidirect_prisons
+weight: 0
+open: null
+close: null
+uid: 24
+template: false
+archive: false
+id: prisoner_payments
+title: 'Make a payment to prisoner'
+description: ''
+categories: {  }
+elements: |-
+  msg_confirmation:
+    '#type': webform_markup
+    '#display_on': view
+    '#markup': |-
+      <div role="status">
+        <p class="info-notice" data-once="emptyTags nicsdruNoticesAndMessages"><strong class="visually-hidden">Important information </strong>
+          Review the information you have provided. Select <strong>Make payment</strong> to proceed to the next step.
+        </p>
+      </div>
+  page_before_you_continue:
+    '#type': webform_wizard_page
+    '#title': 'Before you continue'
+    '#next_button_label': Continue
+    msg_before_you_continue:
+      '#type': webform_markup
+      '#markup': |-
+        <div role="status" class="info-notice">
+        <p>
+        Checks are performed on this service to prevent fraud and other criminal behaviour.
+        </p>
+        <p>
+        By selecting <strong>Continue</strong>, you're agreeing to the <a href="#">terms and conditions</a> and <a href="#">privacy policy</a>.
+        </p>
+        </div>
+  page_prisoner_and_visitor_id:
+    '#type': webform_wizard_page
+    '#title': 'Visitor and prisoner details'
+    msg_prisoner_and_visitor_id:
+      '#type': webform_markup
+      '#markup': |-
+        <div class="info-notice" role="status">
+          <p>
+        To make a payment to a prisoner in Northern Ireland, you must:
+        </p>
+        <ul>
+        <li>be registered as a visitor with the prison</li>
+        <li>be nominated by a prisoner to make payments to them</li>
+        <ul>
+        </div>
+    visitor_details:
+      '#type': fieldset
+      '#title': 'Your details'
+      visitor_fullname:
+        '#type': textfield
+        '#title': 'Your name'
+        '#description': 'Include your first and last name'
+        '#description_display': before
+        '#maxlength': 105
+        '#size': 40
+        '#autocomplete': 'off'
+        '#required': true
+        '#required_error': 'You must enter your name'
+      visitor_email:
+        '#type': webform_email_confirm
+        '#title': 'Your email address'
+        '#description': 'We will use this email address to notify you if your payment was successful'
+        '#description_display': before
+        '#required': true
+        '#required_error': 'Enter your email address'
+        '#pattern': '[^@\s]+@[^@\s]+\.[^@\s]+'
+        '#pattern_error': 'Enter a valid email address'
+      visitor_id:
+        '#type': textfield
+        '#title': 'Your visitor ID'
+        '#description': 'Enter the 6 digit visitor ID number issued to you by the prison'
+        '#description_display': before
+        '#maxlength': 6
+        '#size': 6
+        '#placeholder': '000000'
+        '#autocomplete': 'off'
+        '#input_mask': '999999'
+        '#required': true
+        '#required_error': 'Enter your visitor ID'
+        '#pattern': '[0-9]{6}'
+        '#pattern_error': 'Visitor ID is not recognised'
+        '#attributes':
+          class:
+            - monospace-text
+          data-inputmask-placeholder: ' '
+          inputmode: numeric
+    prisoner_details:
+      '#type': fieldset
+      '#title': 'Prisoner details'
+      prisoner_fullname:
+        '#type': textfield
+        '#title': 'Prisoner name'
+        '#description': 'Include their first name and last name'
+        '#description_display': before
+        '#maxlength': 105
+        '#size': 40
+        '#autocomplete': 'off'
+        '#required': true
+        '#required_error': "You must enter the prisoner's name"
+      prisoner_id:
+        '#type': textfield
+        '#title': 'Prisoner ID'
+        '#description': 'For example, A9999'
+        '#description_display': before
+        '#maxlength': 5
+        '#size': 5
+        '#autocomplete': 'off'
+        '#input_mask': 'A9[9][9][9]'
+        '#required': true
+        '#required_error': 'Enter the prisoner ID of the prisoner you want to make a payment to'
+        '#pattern': '[A-FH][0-9]{1,4}'
+        '#pattern_error': 'Prisoner ID is not recognised'
+        '#attributes':
+          class:
+            - monospace-text
+          data-inputmask-placeholder: ' '
+  page_payment_amount:
+    '#type': webform_wizard_page
+    '#title': 'Amount to pay'
+    msg_maximum_amount_payable:
+      '#type': webform_computed_twig
+      '#title': 'Maximum payment'
+      '#title_display': none
+      '#access': false
+      '#display_on': form
+      '#template': |-
+        <div role="status">
+          <p class="info-notice">
+            You can pay
+            <strong>{{ data.prisoner_id }}</strong>
+            ({{ data.prisoner_fullname }}) a maximum of
+            <strong>
+              &pound;{{ data.prisoner_max_amount|number_format(2, '.', '') }}
+            </strong>
+          </p>
+        </div>
+    msg_payment_limit_reached:
+      '#type': webform_computed_twig
+      '#title': 'Payment limit reached'
+      '#title_display': none
+      '#access': false
+      '#display_on': form
+      '#template': |-
+        <div role="status">
+          <p class="info-notice info-notice--error">
+            Prisoner <strong>{{ data.prisoner_id }}</strong>
+            ({{ data.prisoner_fullname }}) has
+            reached the maximum amount payable for this
+            week. Try again next week.
+          </p>
+        </div>
+    msg_payment_pending:
+      '#type': webform_computed_twig
+      '#title': 'Payment pending'
+      '#title_display': none
+      '#access': false
+      '#display_on': form
+      '#template': |-
+        <div role="status">
+          <p class="info-notice info-notice--error">
+            Another visitor is attempting to make a payment to
+            <strong>{{ data.prisoner_id }}</strong>
+            ({{ data.prisoner_fullname }}).
+            Try again later.
+          </p>
+        </div>
+    prisoner_payment_amount:
+      '#type': textfield
+      '#title': 'How much do you want to pay?'
+      '#field_prefix': £
+      '#maxlength': 6
+      '#size': 6
+      '#placeholder': '0.00'
+      '#autocomplete': 'off'
+      '#input_mask': '[9][9][9][.99]'
+      '#required': true
+      '#required_error': 'Enter how much you want to pay the prisoner'
+      '#wrapper_attributes':
+        class:
+          - form-item--important
+      '#attributes':
+        data-inputmask-placeholder: 0
+  page_payment_card_details:
+    '#type': webform_wizard_page
+    '#title': 'Pay now by debit card'
+    twig_payment_card_details:
+      '#type': webform_computed_twig
+      '#title': 'Payment card details'
+      '#title_display': none
+      '#template': |-
+        <div role="status">
+
+        <!--
+        <p class="info-notice">
+        <strong>Credit cards will not be accepted.</strong><br>
+        Complete your payment using Mastercard or Visa debit cards only.
+        </p>
+        -->
+
+        <div class="info-notice">
+          <p>
+            Complete payment using a <strong>Mastercard or
+            Visa debit card issued by a UK bank</strong>.
+            &nbsp; Credit cards will not be accepted.
+          </p>
+        </div>
+
+        <h3>Payment summary</h3>
+
+        <dl class="side-by-side">
+          <dt>Pay prisoner</dt>
+          <dd>
+            {{ data.prisoner_id }}
+            ({{ data.prisoner_fullname }})
+          </dd>
+          <dt>Amount</dt>
+          <dd>&pound;{{ data.prisoner_payment_amount|number_format(2, '.', '') }}</dd>
+        </dl>
+
+        </div>
+  prisoner_max_amount:
+    '#type': value
+    '#title': 'Prisoner max amount'
+  wp_response:
+    '#type': hidden
+    '#title': wp_response
+  webform_confirmation_success:
+    '#type': webform_markup
+    '#access': false
+    '#markup': |-
+      <div role="status">
+        <h2 class="legend">Payment success</h2>
+        <p class="info-notice info-notice--success">
+           You will receive an email shortly with confirmation of your payment.  It may take a few minutes for the email to arrive.
+        </p>
+
+        <div class="launch-service">
+          <a href="/forms/prisoner-payment" class="btn btn--call-to-action" data-self-ref="true">Make another payment to a prisoner</a>
+        </div>
+      </div>
+  webform_confirmation_failure:
+    '#type': webform_markup
+    '#access': false
+    '#markup': |-
+      <div role="status">
+        <h2 class="legend">Payment failed</h2>
+        <p class="info-notice info-notice--error">
+           Payment could not be processed. Try again later.
+        </p>
+
+        <div class="launch-service">
+          <a href="/forms/prisoner-payment" class="btn btn--call-to-action" data-self-ref="true">Try again</a>
+        </div>
+      </div>
+  actions:
+    '#type': webform_actions
+    '#title': 'Submit button(s)'
+    '#attributes':
+      class:
+        - test-class
+css: |-
+  #worldpay-html {
+    position: relative;
+    max-width: 540px;
+    padding: 0.5em 0 0;
+    margin: 1em 0 2em;
+    box-shadow: 0 2px 0 #0a78cd, 0 -2px 0 #0a78cd;
+  }
+
+  #worldpay-html .ajax-spinner--fill-container {
+      position:  absolute;
+      top: 0;
+      left: 0;
+      display: flex;
+      width: 100%;
+      height: 100%;
+      text-align: center;
+      align-items: center;
+      justify-content: center;
+      background: #fff;
+  }
+
+  #worldpay-html .ajax-spinner--fill-container div {
+      background-color: #666666;
+      width: .5rem;
+      height: 4rem;
+  }
+javascript: |-
+  (function ($, Drupal, once) {
+    Drupal.behaviors.prisonerPaymentsValidateMethods = {
+      attach: function (context, settings) {
+
+        if (typeof $.validator === 'undefined') {
+          console.warn('jQuery Validate is not available. Skipping prisonerPaymentsValidateMethods.');
+          return;
+        }
+
+        // Add validation methods once globally for the page.
+        once('prisonerPaymentsValidateMethods', 'html').forEach(function (element) {
+
+          // Custom method for valid characters in names
+          $.validator.addMethod("fullNameValidCharacters", function (value, element) {
+            const regex = /^[\p{Script=Latin}\-.'\s]+$/u;
+            return this.optional(element) || regex.test(value);
+          }, "Name must contain letters (A–Z), hyphens (-), periods (.), apostrophes (') and spaces only.");
+
+          // Custom method to check if both first and last names are provided
+          $.validator.addMethod("firstAndLastName", function (value, element) {
+            const nameParts = value.split(" ").map(part => part.replace(/[^\p{Script=Latin} ]/ug, '').trim()).filter(part => part !== "");
+            return this.optional(element) || nameParts.length >= 2;
+          }, "Name must include first and last name separated by a space.");
+
+        });
+
+        // Apply jquery validation methods once to individual elements.
+        const $prisonerPaymentAmount = $(once('prisonerPaymentAmount', 'form input[name="prisoner_payment_amount"]', context));
+        const $visitorFullname = $(once('visitorFullName', 'form input[name="visitor_fullname"]', context));
+        const $prisonerFullname = $(once('prisonerFullName', 'form input[name="prisoner_fullname"]', context));
+
+        if ($prisonerPaymentAmount.length) {
+
+          // Ensure prisonerMaxAmount rounded to 2 decimal places.
+          const prisonerMaxAmount = Math.round(
+            parseFloat(settings.prisonerPayments.prisonerMaxAmount ?? 0) * 100
+          ) / 100;
+
+          $prisonerPaymentAmount.rules("add", {
+            min: {
+              param: 0.01
+            },
+            max: {
+              param: prisonerMaxAmount
+            },
+            messages: {
+              min: "Amount must be more than &pound;0",
+              max: "Amount must be &pound;" + prisonerMaxAmount + " or less"
+            }
+          });
+        }
+
+        if ($visitorFullname.length) {
+          $visitorFullname.rules("add", {
+            fullNameValidCharacters: true,
+            firstAndLastName: true,
+            messages: {
+              fullNameValidCharacters: "Your name must contain letters (A–Z), hyphens (-), periods (.), apostrophes (') and spaces only.",
+              firstAndLastName: "Your name must include first and last name separated by a space."
+            }
+          });
+        }
+
+        if ($prisonerFullname.length) {
+          $prisonerFullname.rules("add", {
+            fullNameValidCharacters: true,
+            firstAndLastName: true,
+            messages: {
+              fullNameValidCharacters: "Prisoner name must contain letters (A–Z), hyphens (-), periods (.), apostrophes (') and spaces only.",
+              firstAndLastName: "Prisoner name must include first and last name separated by a space."
+            }
+          });
+        }
+
+      }
+    }
+  })(jQuery, Drupal, once);
+settings:
+  ajax: false
+  ajax_scroll_top: form
+  ajax_progress_type: ''
+  ajax_effect: ''
+  ajax_speed: null
+  page: true
+  page_submit_path: ''
+  page_confirm_path: ''
+  page_theme_name: ''
+  form_title: source_entity_webform
+  form_submit_once: true
+  form_open_message: ''
+  form_close_message: 'THIS IS A TEST MESSAGE'
+  form_exception_message: ''
+  form_previous_submissions: true
+  form_confidential: false
+  form_confidential_message: ''
+  form_disable_remote_addr: false
+  form_convert_anonymous: false
+  form_prepopulate: false
+  form_prepopulate_source_entity: false
+  form_prepopulate_source_entity_required: false
+  form_prepopulate_source_entity_type: ''
+  form_unsaved: false
+  form_disable_back: true
+  form_submit_back: false
+  form_disable_autocomplete: false
+  form_novalidate: false
+  form_disable_inline_errors: false
+  form_required: false
+  form_autofocus: false
+  form_details_toggle: false
+  form_reset: false
+  form_access_denied: default
+  form_access_denied_title: ''
+  form_access_denied_message: ''
+  form_access_denied_attributes: {  }
+  form_file_limit: ''
+  form_attributes: {  }
+  form_method: ''
+  form_action: ''
+  share: false
+  share_node: false
+  share_theme_name: ''
+  share_title: true
+  share_page_body_attributes: {  }
+  submission_label: ''
+  submission_exception_message: ''
+  submission_locked_message: ''
+  submission_log: false
+  submission_excluded_elements: {  }
+  submission_exclude_empty: false
+  submission_exclude_empty_checkbox: false
+  submission_views: {  }
+  submission_views_replace: {  }
+  submission_user_columns: {  }
+  submission_user_duplicate: false
+  submission_access_denied: default
+  submission_access_denied_title: ''
+  submission_access_denied_message: ''
+  submission_access_denied_attributes: {  }
+  previous_submission_message: ''
+  previous_submissions_message: ''
+  autofill: false
+  autofill_message: ''
+  autofill_excluded_elements: {  }
+  wizard_progress_bar: false
+  wizard_progress_pages: false
+  wizard_progress_percentage: false
+  wizard_progress_link: false
+  wizard_progress_states: false
+  wizard_start_label: ''
+  wizard_preview_link: false
+  wizard_confirmation: true
+  wizard_confirmation_label: ''
+  wizard_auto_forward: true
+  wizard_auto_forward_hide_next_button: false
+  wizard_keyboard: true
+  wizard_track: ''
+  wizard_prev_button_label: ''
+  wizard_next_button_label: ''
+  wizard_toggle: false
+  wizard_toggle_show_label: ''
+  wizard_toggle_hide_label: ''
+  wizard_page_type: webform_section
+  wizard_page_title_tag: h2
+  preview: 0
+  preview_label: 'Confirm and make payment'
+  preview_title: 'Confirm and make payment'
+  preview_message: '[none]'
+  preview_attributes: {  }
+  preview_excluded_elements:
+    msg_before_you_continue: msg_before_you_continue
+    msg_prisoner_and_visitor_id: msg_prisoner_and_visitor_id
+    visitor_first_name: visitor_first_name
+    visitor_middle_name: visitor_middle_name
+    visitor_last_name: visitor_last_name
+    prisoner_first_name: prisoner_first_name
+    prisoner_middle_name: prisoner_middle_name
+    prisoner_last_name: prisoner_last_name
+    twig_payment_card_details: twig_payment_card_details
+    prisoner_max_amount: prisoner_max_amount
+    wp_response: wp_response
+    webform_confirmation_success: webform_confirmation_success
+    webform_confirmation_failure: webform_confirmation_failure
+  preview_exclude_empty: true
+  preview_exclude_empty_checkbox: false
+  draft: none
+  draft_multiple: false
+  draft_auto_save: false
+  draft_saved_message: ''
+  draft_loaded_message: ''
+  draft_pending_single_message: ''
+  draft_pending_multiple_message: ''
+  confirmation_type: inline
+  confirmation_url: ''
+  confirmation_title: 'Confirmation page title'
+  confirmation_message: |-
+    <p class="info-notice info-notice--success" role="status">
+        You will receive an email shortly confirming your payment.  It may take a few minutes for the email to arrive.
+    </p>
+    <div class="launch-service">
+        <a href="/forms/prisoner-payment" class="btn btn--call-to-action" data-self-ref="true">Make another payment to a prisoner</a>
+    </div>
+  confirmation_attributes: {  }
+  confirmation_back: false
+  confirmation_back_label: ''
+  confirmation_back_attributes: {  }
+  confirmation_exclude_query: false
+  confirmation_exclude_token: false
+  confirmation_update: false
+  limit_total: null
+  limit_total_interval: null
+  limit_total_message: ''
+  limit_total_unique: false
+  limit_user: null
+  limit_user_interval: null
+  limit_user_message: ''
+  limit_user_unique: false
+  entity_limit_total: null
+  entity_limit_total_interval: null
+  entity_limit_user: null
+  entity_limit_user_interval: null
+  purge: none
+  purge_days: null
+  results_disabled: true
+  results_disabled_ignore: true
+  results_customize: false
+  token_view: false
+  token_update: false
+  token_delete: false
+  serial_disabled: false
+access:
+  create:
+    roles:
+      - anonymous
+      - authenticated
+    users: {  }
+    permissions: {  }
+  view_any:
+    roles: {  }
+    users: {  }
+    permissions: {  }
+  update_any:
+    roles: {  }
+    users: {  }
+    permissions: {  }
+  delete_any:
+    roles: {  }
+    users: {  }
+    permissions: {  }
+  purge_any:
+    roles: {  }
+    users: {  }
+    permissions: {  }
+  view_own:
+    roles: {  }
+    users: {  }
+    permissions: {  }
+  update_own:
+    roles: {  }
+    users: {  }
+    permissions: {  }
+  delete_own:
+    roles: {  }
+    users: {  }
+    permissions: {  }
+  administer:
+    roles: {  }
+    users: {  }
+    permissions: {  }
+  test:
+    roles: {  }
+    users: {  }
+    permissions: {  }
+  configuration:
+    roles: {  }
+    users: {  }
+    permissions: {  }
+handlers:
+  prisoner_payments:
+    id: prisoner_payments
+    handler_id: prisoner_payments
+    label: 'Prisoner Payments'
+    notes: ''
+    status: true
+    conditions: {  }
+    weight: 0
+    settings:
+      debug: false
+      prisoner_maximum_payment_amount: 0
+      worldpay_payment_service_url: 'https://secure-test.worldpay.com/jsp/merchant/xml/paymentService.jsp'
+      worldpay_username: wp-test-user
+      worldpay_password: password
+      worldpay_merchant_codes:
+        MY: MERCHANT_CODE_MY
+        MN: MERCHANT_CODE_MN
+        HW: MERCHANT_CODE_HW
+variants: {  }

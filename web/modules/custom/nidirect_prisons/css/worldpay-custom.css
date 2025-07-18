@@ -1,0 +1,741 @@
+/*
+    Payment Pages - Customisation - Public CSS
+    Version:    1.18.0
+    --------------------------------------------------------------------------------------------------------------------
+    This is an example style sheet of page elements which can be customized.
+
+    You may:
+    - Change the value for any property.
+    - Remove properties or rule-sets not needed for your customisation.
+
+    You may not:
+    - Link or load external resources.
+    - Embed data.
+    - Use expressions (IE).
+    - Use media queries, since this may break the responsive design.
+
+    It is recommended your payment page integration customisation is tested in the
+    secure test environment before being used in production. We also suggest using
+    em as a measurement unit, except for borders.
+    --------------------------------------------------------------------------------------------------------------------
+
+
+
+    Customisation rules
+
+
+    Restrictions
+
+    Asset type | Maximum dimensions | Allowed file types | Maximum file size
+    -----------|--------------------|--------------------|------------------
+    Logo       | Width: 700 pixels  | .gif               | 512 KB
+               | Height: 200 pixels | .jpg               |
+               |                    | .png               |
+               |                    | .jpeg              |
+    -----------|--------------------|--------------------|------------------
+    Stylesheet | N/A                | .css               | 30 KB
+    -----------|--------------------|--------------------|------------------
+    Font       | N/A                | .woff              | 512 KB
+    ------------------------------------------------------------------------
+
+
+    Supported CSS properties
+
+    -----------------------------------------------------------------------------------------------------------------------------------------
+    | property                   | notes                                                                                                    |
+    |----------------------------|----------------------------------------------------------------------------------------------------------|
+    | background-color           |                                                                                                          |
+    |----------------------------|----------------------------------------------------------------------------------------------------------|
+    | border                     |                                                                                                          |
+    |----------------------------|----------------------------------------------------------------------------------------------------------|
+    | border-bottom-left-radius  |                                                                                                          |
+    |----------------------------|----------------------------------------------------------------------------------------------------------|
+    | border-bottom-right-radius |                                                                                                          |
+    |----------------------------|----------------------------------------------------------------------------------------------------------|
+    | border-radius              |                                                                                                          |
+    |----------------------------|----------------------------------------------------------------------------------------------------------|
+    | border-style               |                                                                                                          |
+    |----------------------------|----------------------------------------------------------------------------------------------------------|
+    | border-top-left-radius     |                                                                                                          |
+    |----------------------------|----------------------------------------------------------------------------------------------------------|
+    | border-top-right-radius    |                                                                                                          |
+    |----------------------------|----------------------------------------------------------------------------------------------------------|
+    | border-width               |                                                                                                          |
+    |----------------------------|----------------------------------------------------------------------------------------------------------|
+    | color                      |                                                                                                          |
+    |----------------------------|----------------------------------------------------------------------------------------------------------|
+    | font-family                | You can choose to upload your own font, rather than specifying a generic font                            |
+    |                            | within the font-family property.                                                                         |
+    |                            | If you're using your own font, then you won't need to specify this within the font-family property.      |
+    |                            | If you want to use more than one font in your stylesheet,                                                |
+    |                            | you'll need to assign each font to a font-family.                                                        |
+    |                            |                                                                                                          |
+    |                            | Note: You can use an alternative font that does not include Latin characters.                            |
+    |                            |       If you use this alternative font and the Payment Page needs a Latin character,                     |
+    |                            |       the Payment Page uses the font specified within the font-family property.                          |
+    |                            |       If there is no font specified within the font-family property,                                     |
+    |                            |       then the Payment Page uses the default HPP font.                                                   |
+    |----------------------------|----------------------------------------------------------------------------------------------------------|
+    | font icons                 | Expand/collapse field icons                                                                              |
+    |                            | Navigation icons - To scroll through payment methods in a carousel type of webpage feature               |
+    |                            | Field validation indicator icons - These show a tick (check mark) for correct, and a cross for incorrect |
+    |----------------------------|----------------------------------------------------------------------------------------------------------|
+    | font-weight                |                                                                                                          |
+    |----------------------------|----------------------------------------------------------------------------------------------------------|
+    | text-shadow                |                                                                                                          |
+    |----------------------------|----------------------------------------------------------------------------------------------------------|
+    | box-shadow                 |                                                                                                          |
+    |----------------------------|----------------------------------------------------------------------------------------------------------|
+    | linear-gradient            |                                                                                                          |
+    |----------------------------|----------------------------------------------------------------------------------------------------------|
+    | radial-gradient            |                                                                                                          |
+    -----------------------------------------------------------------------------------------------------------------------------------------
+*/
+
+
+/*
+    Surrounding page
+    ********************************************************************************************************************
+*/
+
+body
+{
+  font-family: Lato, Helvetica, sans-serif;
+  background-color: #FFF;
+  color: #333333;
+}
+
+/*
+    Warning Messages
+    ********************************************************************************************************************
+*/
+
+/* Currently used for test payment warning message in sandbox and session timeout warning message. */
+.warning-message
+{
+  background: #FFF;
+  color: #d1431f;
+  border: 1px solid #DDD;
+  border-radius: 0;
+  font-weight: bold;
+}
+
+
+/*
+    Headers
+    ********************************************************************************************************************
+*/
+
+/* Style shared by section and sub-section headers. */
+#main .section-header,
+#main .subsection-header
+{
+  font-weight: bold;
+}
+
+/* Style used by all section headers. */
+#main .section-header
+{
+  color: #535759;
+}
+
+/* Style applied to sub-section headers. */
+#main .subsection-header
+{
+  color: #535759;
+}
+
+/* Successful header style, for a successful order. */
+#main .section-header.tick
+{
+  color: #007867;
+}
+
+/* The tick icon for the successful header style. */
+#main .section-header.tick .icon
+{
+  color: inherit;
+}
+
+/* Incomplete/processing header style, for when an order is either: cancelled, pending, processing or expired. */
+#main .section-header.black-cross,
+#main .section-header.gear,
+#main .section-header.processed,
+#main .section-header.cancelled,
+#main .section-header.expired
+{
+  color: #535759;
+}
+
+/* Incomplete/processing/cancelled header icons. */
+#main .section-header.black-cross .icon,
+#main .section-header.gear .icon,
+#main .section-header.processed .icon,
+#main .section-header.cancelled .icon,
+#main .section-header.expired .icon
+{
+  color: inherit;
+}
+
+/* Error section header style, for errors and declined orders. */
+#main .section-header.cross,
+#main .section-header.error
+{
+  color: #d1431f;
+}
+
+/* The cross icon displayed in the error section header. */
+#main .section-header.cross .icon,
+#main .section-header.error .icon
+{
+  color: inherit;
+}
+
+
+/*
+    Content area
+    ********************************************************************************************************************
+*/
+
+/* The parent frame used to hold all content. */
+#main
+{
+  background-color: #fff;
+  border: solid 1px #fff;
+  border-radius: 0;
+}
+
+/* The boxes used to hold content. */
+.box
+{
+  background-color: #FFF;
+  border: 0;
+  border-radius: 0;
+}
+
+
+/*
+    Currency conversion
+    ********************************************************************************************************************
+*/
+
+/* The style used for the panel holding the conversion header/currency and amount. */
+.currency-box .panel
+{
+  background-color: #E4E3DE;
+  border: solid 1px #E4E3DE;
+}
+
+/* Used to style each row in the currency conversion boxes. */
+.currency-box .panel .row
+{
+  border: solid 1px #E4E3DE;
+}
+
+/* Used to style the currency row in the currency conversion boxes. */
+.currency-box .panel .row.currency
+{
+  color: #535759;
+  background-color: #FFF;
+}
+
+/* Used to style the amount row in the currency conversion boxes */
+.currency-box .panel .row.amount
+{
+  color: #666;
+  background-color: #FFF;
+}
+
+
+/*
+    Content Elements
+    ********************************************************************************************************************
+*/
+
+/* Used to style paragraphs for the start, payment and error pages. */
+#main .payment-method p,
+#main .payment-details p,
+#main .error-result p,
+#main .currency-box p
+{
+  color: inherit;
+}
+
+/*
+    Tables
+    --------------------------------------------------------------------------------------------------------------------
+*/
+
+/* The table's parent element. */
+.tbl
+{
+  color: #535759;
+}
+
+/* Shared style between table headers and rows. */
+.tbl .th,
+.tbl .td
+{
+  border: solid 1px #DDD;
+}
+
+/* Table headers. */
+.tbl .th
+{
+  background-color: #EEE;
+  color: #535759;
+  font-weight: normal;
+}
+
+/* Table rows. */
+.tbl .td
+{
+  background-color: inherit;
+  color: #535759;
+}
+
+/* Hyper-links embedded in a row. */
+.tbl .td a
+{
+  color: inherit !important;
+}
+
+
+/*
+    Card details page
+    ********************************************************************************************************************
+*/
+
+/* The helper text next to the security code. */
+.security-code-text
+{
+  color: #595959;
+}
+
+
+/*
+    Drop-downs
+    ********************************************************************************************************************
+*/
+
+/* Style applied to the language drop-down. */
+#main #language
+{
+  background-color: #FFF;
+  color: inherit;
+  border: solid 1px #CCC;
+}
+
+/* Style applied to the country drop-down. */
+#main #country
+{
+  background-color: #FFF;
+  color: inherit;
+  border: solid 1px #CCC;
+}
+
+#main #language:focus,
+#main #country:focus
+{
+  outline: none;
+  border: 1px solid #105ea0;
+}
+
+/* Style applied to the payment method drop-down. */
+#main #pm-dropdown
+{
+  background-color: #FFF;
+  color: inherit;
+  border: solid 1px #CCC;
+}
+
+
+/*
+    Payment Details
+    ********************************************************************************************************************
+*/
+
+/* The label for fields. */
+#main .payment-details .field-label
+{
+  color: inherit;
+}
+
+/* Text at the top of the page indicating required fields. */
+#main .payment-details .note
+{
+  color: #595959;
+}
+
+/* Styles asterisks to indicate a required field. */
+#main .payment-details .required-field
+{
+  color: #d1431f;
+  font-weight: bold;
+}
+
+
+/*
+    Validation
+    --------------------------------------------------------------------------------------------------------------------
+*/
+
+/*
+    Used for the error hint displayed below invalid form fields.
+*/
+#main .payment-details .error-hint
+{
+  color: #d1431f;
+  font-weight: bold;
+}
+
+/* Default style applied to form fields. */
+.form-validation .textbox,
+.form-validation .dropdown
+{
+  border: 0;
+  box-shadow: 0 0 0 1px #333;
+  color: inherit;
+  background-color: #FFF;
+}
+
+/* Style applied to form fields when focused. */
+.form-validation .textbox:focus,
+.form-validation .dropdown:focus,
+.form-validation .ok .dropdown:focus,
+.form-validation .error .dropdown:focus
+{
+  border: 0;
+  box-shadow: 0 0 0 1px #0a78cd;
+  outline: 2px solid #0a78cd;
+}
+/* Style applied to checkbox when focused. */
+.form-validation .checkbox:focus
+{
+  border: 0;
+  box-shadow: 0 0 0 1px #0a78cd;
+  outline: 2px solid #0a78cd;
+}
+
+/* Style applied to disabled fields. */
+.form-validation .textbox[disabled],
+.form-validation .dropdown[disabled]
+{
+  border: 0;
+  box-shadow: 0 0 0 1px #CCC;
+  color: #CCC;
+  background-color: #FFF;
+}
+
+/* Style applied to form fields with invalid input. */
+.form-validation .error .textbox,
+.form-validation .error .dropdown
+{
+  border: solid 1px #d1431f;
+  color: inherit;
+  background-color: #FFF;
+}
+
+/* The (cross) icon for invalid fields. */
+.form-validation .error .icon
+{
+  color: #d1431f;
+}
+
+/* Style applied to form fields with valid input. */
+.form-validation .ok .textbox,
+.form-validation .ok .dropdown
+{
+  border: 0;
+  box-shadow: 0 0 0 1px #048a05;
+  color: inherit;
+  background-color: #FFF;
+}
+
+/* The (tick) icon for valid fields. */
+.form-validation .ok .icon
+{
+  color: #048a05;
+}
+
+
+/*
+    Buttons
+    ********************************************************************************************************************
+*/
+
+/* Style used by all buttons. */
+.button
+{
+  background-color: #048a05;
+  border: solid 1px #048a05;
+  border-radius: 0;
+}
+
+/* Style used for all buttons, including visited links. */
+.button,
+.button:visited
+{
+  color: #FFF;
+}
+
+.button:hover,
+.button:focus
+{
+  background-color: #0c6325;
+  color: #FFF;
+  outline: none;
+  border: solid 1px #0c6325;
+}
+
+.button:focus {
+  outline: 2px solid #000;
+}
+
+/* Style applied to disabled buttons. */
+.button[disabled],
+.button.btn-cancel[disabled],
+.button.btn-cancel[disabled]:hover
+{
+  color: #CCC;
+  border: solid 1px #CCC;
+  background-color: #EEE;
+}
+
+/* Button focus style. */
+.button.btn-cancel:focus,
+.button.js-hide:focus,
+.button.btn-print:focus,
+.button.btn-change-payment:focus,
+.button.btn-secondary:focus
+{
+  color: #535759;
+  background-color: #EEE;
+}
+
+
+/*
+    Style used by the following buttons:
+    - Cancel
+    - JavaScript-off/disabled buttons - displayed for updating the country and language
+    - Print
+    - Change payment
+
+    It's also used as a secondary button, for non-primary actions.
+*/
+.button.btn-cancel,
+.button.js-hide,
+.button.btn-print,
+.button.btn-change-payment,
+.button.btn-secondary
+{
+  background-color: #DCDCDC;
+}
+
+/* Same as the above, but also for visited links. */
+.button.btn-cancel,
+.button.btn-cancel:visited,
+.button.js-hide,
+.button.js-hide:visited,
+.button.btn-print,
+.button.btn-print:visited,
+.button.btn-change-payment,
+.button.btn-change-payment:visited,
+.button.btn-secondary,
+.button.btn-secondary:visited
+{
+  color: #393939;
+}
+
+/* Same as the above, but for hover/focus style. */
+.button.btn-cancel:hover,
+.button.js-hide:hover,
+.button.btn-print:hover,
+.button.btn-change-payment:hover,
+.button.btn-secondary:hover
+{
+  color: #535759;
+  background-color: #EEE;
+}
+
+
+/*
+    Order summary
+    ********************************************************************************************************************
+*/
+
+/* The style applied to the top summary section. */
+#main .summary
+{
+  background-color: #FFF;
+  color: inherit;
+}
+
+/* The style applied to summary section headers. */
+#main .order-summary .section-header
+{
+  color: #535759;
+}
+
+/* The style applied to the labels of the order summary. */
+#main .order-summary .field-label
+{
+  font-weight: bold;
+  color: #535759;
+}
+
+#main .order-summary .collapsible-section-header .text:focus
+{
+  outline: 1px dotted #105ea0;
+  color: #105ea0;
+}
+
+/* The arrow icon for collapsing/expanding the order summary. */
+#main .order-summary .icon
+{
+  color: inherit;
+}
+
+
+/*
+    Card Details - Address/contact details panel
+    ********************************************************************************************************************
+*/
+
+/* Styling for edit button for addresses/contact details. */
+.panel-icon-edit
+{
+  color: #393939;
+}
+.panel-icon-edit:focus
+{
+  outline: 1px dotted #105ea0;
+  color: #105ea0;
+}
+.panel-icon-edit .icon
+{
+  color: inherit;
+}
+
+/* Styling for close button for addresses/contact details. */
+.panel-icon-close
+{
+  color: #393939;
+}
+.panel-icon-close:focus
+{
+  outline: 1px dotted #105ea0;
+  color: #105ea0;
+}
+.panel-icon-close .icon
+{
+  color: inherit;
+}
+
+
+/*
+    Carousel - payment method selection page
+    ********************************************************************************************************************
+*/
+
+/* Previous/Next buttons. */
+.pm-menu .pm-prev,
+.pm-menu .pm-next
+{
+  background-color: #048a05;
+  border-radius: 1.2em;
+  color: #FFF;
+}
+
+/* Page controls (the dots below the carousel). */
+.pm-menu .pm-dots button
+{
+  background-color: #048a05;
+  border-radius: 1em;
+}
+
+/* The payment method icon, which sits next to the back button. */
+.pm-menu .pm-icon
+{
+  border: solid 1px #DDDDDD;
+  border-radius: 0.4em;
+  background: #FFF;
+}
+
+/* The payment method icon on hover. */
+.pm-menu .pm-icon:hover,
+.pm-menu .pm-select:hover .pm-icon
+{
+  border: solid 1px #048a05;
+  border-radius: 0.4em;
+}
+
+/* The text shown below the payment method icons. */
+.pm-menu .pm-text
+{
+  color: #535759;
+  font-weight : bold;
+}
+
+/* The text shown below the payment method icons when the item has focus. */
+.pm-menu .pm-select:hover .pm-text
+{
+  color: #048a05;
+  font-weight: bold;
+}
+
+/* payment method focus indicator */
+.pm-menu .pm-select:focus .pm-text span
+{
+  outline: dotted 1px #105EA0;
+  color: #105ea0;
+}
+
+/* Payment Method Selector row separator */
+#pms-selector .pms-item
+{
+  border-top-style: solid;
+  border-bottom-style: solid;
+  border-color: #f7f7f7;
+  border-width: thin;
+}
+
+/*
+    Footer
+    ********************************************************************************************************************
+*/
+
+/* Style applied to the footer at the bottom of the page. */
+.wp-footer
+{
+  color: inherit;
+}
+
+.wp-footer a
+{
+  color: inherit;
+  text-decoration: underline;
+}
+
+.wp-footer a:hover,
+.wp-footer a:focus
+{
+  color: #105ea0;
+}
+
+.wp-footer .copyright
+{
+  font-weight: bold;
+}
+
+
+/*
+    Loading Bar
+    ********************************************************************************************************************
+*/
+
+/* The dots displayed in the loading box, shared by the main and three-ds pages. */
+.loading-box .loading-dots
+{
+  color: #535759;
+}
