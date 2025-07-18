@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Defines the PaymentStatus enum for valid Worldpay payment statuses.
+ */
+
 namespace Drupal\nidirect_prisons\Enum;
 
 /**
