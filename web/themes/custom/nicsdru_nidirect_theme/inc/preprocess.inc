@@ -252,8 +252,9 @@ function nicsdru_nidirect_theme_preprocess_page(array &$variables) {
           if ($node->hasField('field_subtheme') && !$node->get('field_subtheme')->isEmpty()) {
             $subtheme = $node->get('field_subtheme')->entity;
 
+
             if (!empty($subtheme)) {
-              $configuration['label'] = $subtheme->getTitle();
+              $configuration['label'] = $subtheme->getName();
             }
           }
 
