@@ -18,7 +18,7 @@ function nidirect_prisons_cron() {
   $deleted = $query->execute();
 
   if ($deleted) {
-    \Drupal::logger('nidirect_prisons')->notice('Deleted @count pending prisoner payment transactions created more than 1 hour ago.', ['@count' => $deleted]);
+    \Drupal::logger('nidirect_prisons')->notice('Deleted @count pending prisoner payment transactions created more than 30 minutes ago.', ['@count' => $deleted]);
   }
 
   // Delete transactions more than 7 days old.
