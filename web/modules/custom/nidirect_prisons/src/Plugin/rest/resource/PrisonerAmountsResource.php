@@ -26,7 +26,6 @@ class PrisonerAmountsResource extends ResourceBase implements ContainerFactoryPl
   /**
    * Constructs a new PrisonerAmountsResource object.
    *
-   *
    * @param array $configuration
    *   A configuration array containing information about the plugin instance.
    * @param string $plugin_id
@@ -72,37 +71,52 @@ class PrisonerAmountsResource extends ResourceBase implements ContainerFactoryPl
       return new ResourceResponse(['error' => 'Invalid JSON payload'], 400);
     }
 
-    // Process each prison.
-    foreach ($data as $prison_key => $prisoners) {
+    // Start a database transaction.
+    $transaction = \Drupal::database()->startTransaction();
 
-      // Each prison must be an array (of prisoners).
-      if (empty($prisoners) || !is_array($prisoners)) {
-        return new ResourceResponse(['error' => 'Invalid JSON payload: missing prison and/or prisoner data'], 400);
-      }
+    try {
+      // Process each prison.
+      foreach ($data as $prison_key => $prisoners) {
 
-      // Process each prisoner.
-      foreach ($prisoners as $prisoner) {
-
-        // Each prisoner must contain an ID and AMT (Amount).
-        if (!array_key_exists('ID', $prisoner) || !array_key_exists('AMT', $prisoner)) {
-          return new ResourceResponse(['error' => 'Missing required prisoner data'], 400);
+        // Each prison must be an array (of prisoners).
+        if (empty($prisoners) || !is_array($prisoners)) {
+          return new ResourceResponse(['error' => 'Invalid JSON payload: missing prison and/or prisoner data'], 400);
         }
 
-        try {
+        // Delete existing prisoner amounts for the current prison before inserting new data.
+        \Drupal::database()->delete('prisoner_payment_amount')
+          ->condition('prison_id', $prison_key)
+          ->execute();
+
+        // Process each prisoner.
+        foreach ($prisoners as $prisoner) {
+
+          // Each prisoner must contain an ID and AMT (Amount).
+          if (!array_key_exists('ID', $prisoner) || !array_key_exists('AMT', $prisoner)) {
+            return new ResourceResponse(['error' => 'Missing required prisoner data'], 400);
+          }
+
           \Drupal::database()->merge('prisoner_payment_amount')
             ->key('prisoner_id', $prisoner['ID'])
             ->fields([
               'prison_id' => $prison_key,
-              'amount' => $prisoner['AMT'],
+              'amount' => number_format($prisoner['AMT'], 2, '.', ''),
             ])
             ->execute();
         }
-        catch (\Exception $e) {
-          \Drupal::logger('nidirect_prisons')->error('Database error: @message', ['@message' => $e->getMessage()]);
-          return new ResourceResponse(['error' => 'Database error: ' . $e->getMessage()], 500);
-        }
       }
+
     }
+    catch (\Exception $e) {
+      // Rollback the transaction if an error occurs.
+      $transaction->rollback();
+
+      \Drupal::logger('nidirect_prisons')->error('Database error: @message', ['@message' => $e->getMessage()]);
+      return new ResourceResponse(['error' => 'Database error: ' . $e->getMessage()], 500);
+    }
+
+    // Commit the transaction by unsetting the $transaction variable.
+    unset($transaction);
 
     return new ResourceResponse(['message' => 'Data successfully updated'], 200);
   }
