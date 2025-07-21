@@ -719,6 +719,8 @@ XML;
    *
    * @param string $order_data
    *   The order data (xml).
+   * @param string $prison_id
+   *   The id of the prison to which the payment request order relates.
    * @return \SimpleXMLElement|null
    *   Returns response from Worldpay as SimpleXMLElement or null if
    *   a problem occurs.
