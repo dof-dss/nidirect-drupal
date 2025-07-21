@@ -248,7 +248,8 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
         $visitor_email
       );
 
-      $response_xml = $this->sendWorldpayRequest($order_data_xml);
+      $response_xml = $this->sendWorldpayRequest($order_data_xml, $prison_id);
+      ksm($response_xml);
 
       // Parse the Worldpay response to get the iframe URL.
       if ($response_xml && $response = $this->parseWorldpayResponse($response_xml)) {
@@ -723,12 +724,12 @@ XML;
    *   Returns response from Worldpay as SimpleXMLElement or null if
    *   a problem occurs.
    */
-  protected function sendWorldpayRequest(string $order_data) {
+  protected function sendWorldpayRequest(string $order_data, string $prison_id) {
     $xml = NULL;
     $client = \Drupal::service('http_client');
     $url = getenv('PRISONER_PAYMENTS_WP_SERVICE_URL') ?: 'https://secure-test.worldpay.com/jsp/merchant/xml/paymentService.jsp';
-    $api_username = getenv('PRISONER_PAYMENTS_WP_USERNAME');
-    $api_password = getenv('PRISONER_PAYMENTS_WP_PASSWORD');
+    $api_username = getenv('PRISONER_PAYMENTS_WP_USERNAME_' . $prison_id);
+    $api_password = getenv('PRISONER_PAYMENTS_WP_PASSWORD_' . $prison_id);
 
     // Validate credentials before making request.
     if (empty($api_username) || empty($api_password)) {
