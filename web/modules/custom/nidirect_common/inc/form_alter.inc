@@ -137,21 +137,24 @@ function nidirect_common_form_node_form_alter(&$form, FormStateInterface $form_s
 
     // $node is an upcast, full object from the routing service.
     $node = \Drupal::routeMatch()->getParameter('node');
-    $body = $node->get('body')->value;
 
-    // Map legacy to new view modes.
-    $replacements = [
-      'data-view-mode="landscape_float"' => 'data-view-mode="article_float"',
-      'data-view-mode="landscape_float_xp"' => 'data-view-mode="article_float_expandable"',
-      'data-view-mode="landscape_full"' => 'data-view-mode="article_full"',
-      'data-view-mode="landscape_full_xp"' => 'data-view-mode="article_full_expandable"',
-    ];
+    if ($node->hasField('body')) {
+      $body = $node->get('body')->value;
 
-    $new_body = strtr($body, $replacements);
+      // Map legacy to new view modes.
+      $replacements = [
+        'data-view-mode="landscape_float"' => 'data-view-mode="article_float"',
+        'data-view-mode="landscape_float_xp"' => 'data-view-mode="article_float_expandable"',
+        'data-view-mode="landscape_full"' => 'data-view-mode="article_full"',
+        'data-view-mode="landscape_full_xp"' => 'data-view-mode="article_full_expandable"',
+      ];
 
-    if ($new_body !== $body) {
-      if (isset($form['body']['widget'][0]['#default_value'])) {
-        $form['body']['widget'][0]['#default_value'] = $new_body;
+      $new_body = strtr($body, $replacements);
+
+      if ($new_body !== $body) {
+        if (isset($form['body']['widget'][0]['#default_value'])) {
+          $form['body']['widget'][0]['#default_value'] = $new_body;
+        }
       }
     }
   }
