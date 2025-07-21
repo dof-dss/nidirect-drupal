@@ -249,7 +249,6 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
       );
 
       $response_xml = $this->sendWorldpayRequest($order_data_xml, $prison_id);
-      ksm($response_xml);
 
       // Parse the Worldpay response to get the iframe URL.
       if ($response_xml && $response = $this->parseWorldpayResponse($response_xml)) {
