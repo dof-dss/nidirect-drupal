@@ -42,14 +42,33 @@ See:
 
 ## Environment variables
 
-### Worldpay service URL and authentication
+### Worldpay service URL
 
-The following environment variables must be set to enable integration
-with Worldpay (see https://docs.worldpay.com/apis/wpg/hostedintegration/quickstart#setup):
+The following environment variable must be set to enable sending API requests to Worldpay (see https://docs.worldpay.com/apis/wpg/hostedintegration/quickstart#setup).
 
-* `PRISONER_PAYMENTS_WP_SERVICE_URL`
-* `PRISONER_PAYMENTS_WP_USERNAME` (sensitive)
-* `PRISONER_PAYMENTS_WP_PASSWORD` (sensitive)
+`PRISONER_PAYMENTS_WP_SERVICE_URL`
+
+**For development/test environments**:
+https://secure-test.worldpay.com/jsp/merchant/xml/paymentService.jsp
+
+**For production**:
+https://secure.worldpay.com/jsp/merchant/xml/paymentService.jsp
+
+### Worldpay authentication
+
+The following environment variables must be set to enable authentication for Worldpay API requests (see https://docs.worldpay.com/apis/wpg/hostedintegration/quickstart#setup). Note there are separate authentication credentials for each prison (because each prison has its own Worldpay merchant code).
+
+For HMP Hydebank Wood:
+* `PRISONER_PAYMENTS_WP_USERNAME_HW` (sensitive)
+* `PRISONER_PAYMENTS_WP_PASSWORD_HW` (sensitive)
+
+For HMP Magilligan:
+* `PRISONER_PAYMENTS_WP_USERNAME_MN` (sensitive)
+* `PRISONER_PAYMENTS_WP_PASSWORD_MN` (sensitive)
+
+For HMP Maghaberry:
+* `PRISONER_PAYMENTS_WP_USERNAME_MY` (sensitive)
+* `PRISONER_PAYMENTS_WP_PASSWORD_MY` (sensitive)
 
 ### Payment requests
 
@@ -73,7 +92,7 @@ The following environment variable is required for verifying the MAC digital sig
 
 `PRISONER_PAYMENTS_PRISM_EMAIL`
 
-NOTE the email address will be different for production and non-production environments.
+**NOTE:** the email address will be different for production and non-production environments.
 
 ## Prisoner Payment REST API endpoints
 
