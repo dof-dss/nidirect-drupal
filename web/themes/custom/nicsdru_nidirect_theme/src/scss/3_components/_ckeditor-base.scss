@@ -76,6 +76,8 @@
 
   .ck .ck-content {
     // applied to body in ckeditor
+    @include responsive-typo-map($body-text);
+    font-family: $base-font-family;
     position: relative;
     overflow: hidden;
     max-width: $article-max-width;
@@ -209,6 +211,13 @@
       width: 100%;
       margin-left: 0;
 
+      > figcaption {
+        @include responsive-typo-map($body-text);
+        background: none;
+        padding: 0 0 .5em;
+        color: $text;
+      }
+
       table {
         overflow: scroll;
 
@@ -225,13 +234,15 @@
         & > thead > tr > th,
         & > tfoot > tr > td,
         & > tfoot > tr > th {
-          border: 1px solid $table-border-color !important; // Makes table visible in the editor interface.
+          border: 1px solid $table-border-color; // Makes table visible in the editor interface.
         }
 
         td,
         th {
           @include adjust-font-size-to(14px, 4);
           @include adjust-property-size-to(4px 4px 3px, padding);
+          height: unset;
+          color: $text;
 
           @include breakpoint($phab, $no-query: true) {
             @include adjust-font-size-to(16px, 4);
@@ -246,6 +257,24 @@
           & * {
             font-size: inherit;
             line-height: inherit;
+          }
+        }
+
+        th {
+          background-color: $brand-primary-light;
+        }
+
+        td {
+          background-color: #fff;
+        }
+
+        tr {
+          &:nth-child(odd) td {
+            background: $grey-lightest;
+          }
+
+          &:nth-child(even) td {
+            background: #fff;
           }
         }
 
