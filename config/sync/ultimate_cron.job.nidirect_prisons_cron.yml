@@ -1,0 +1,30 @@
+uuid: bfc748c6-444a-453e-b061-61c4cfb90b73
+langcode: en
+status: true
+dependencies:
+  module:
+    - nidirect_prisons
+title: 'Default cron handler'
+id: nidirect_prisons_cron
+weight: 0
+module: nidirect_prisons
+callback: 'nidirect_prisons#cron'
+scheduler:
+  id: crontab
+  configuration:
+    rules:
+      - '*/15 * * * *'
+    catch_up: 0
+launcher:
+  id: serial
+  configuration:
+    timeouts:
+      lock_timeout: 3600
+    launcher:
+      thread: 0
+logger:
+  id: database
+  configuration:
+    method: '3'
+    expire: 1209600
+    retain: 1000
