@@ -1,0 +1,395 @@
+/* =====================================================
+ * Styling unique to CKEditor
+ * =====================================================*/
+
+@import '../init';
+@import 'form/button/button-defs';
+
+@mixin ckeditor-base($base-font-size) {
+  .ck .ck-editor__main {
+    border: 1px solid transparent;
+    background: var(--ck-color-base-background);
+    position: relative;
+    overflow: hidden;
+    font-size: $base-font-size;
+
+    &:has(.ck-rounded-corners) {
+      border-radius: var(--ck-border-radius);
+      border-top-right-radius: 0;
+      border-top-left-radius: 0;
+    }
+
+    &:has(.ck.ck-editor__editable.ck-focused) {
+      border: var(--ck-focus-ring);
+      box-shadow: var(--ck-inner-shadow), 0 0;
+      outline: none;
+    }
+
+    &:not(:has(.ck-content.ck-focused)) {
+      border-color: var(--ck-color-base-border);
+    }
+
+    >.ck-content.ck-editor__editable {
+      border: 0;
+
+      &.ck-focused {
+        border: 0;
+        box-shadow: none;
+      }
+    }
+
+    &::before {
+      content: '';
+      display: block;
+      width: 130px;
+      height: 100%;
+      padding: 15px 100% 15px 15px;
+      text-align: center;
+      position: absolute;
+      top: 0;
+      left: $article-max-width + 36px;
+      z-index: 1;
+      background-color: rgba($black, .5);
+      background-clip: padding-box;
+      border-left: 18px solid rgba(255, 255, 255, .5);
+
+    }
+
+    &::after {
+      @include responsive-typo-map($small-text);
+      content: 'Content must not cross the margin into this area';
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-sizing: content-box;
+      width: 130px;
+      height: 100%;
+      padding: 0 100% 0 30px;
+      text-align: center;
+      position: absolute;
+      top: 0;
+      left: $article-max-width + 54px;
+      z-index: 2;
+      color: $white;
+    }
+  }
+
+  .ck .ck-content {
+    // applied to body in ckeditor
+    @include responsive-typo-map($body-text);
+    font-family: $base-font-family;
+    position: relative;
+    overflow: hidden;
+    max-width: $article-max-width;
+
+    * {
+      overflow-wrap: break-word;
+      max-width: $article-max-width;
+      box-sizing: border-box;
+      -moz-osx-font-smoothing: grayscale;
+      -webkit-font-smoothing: antialiased; // more subtle on larger fonts, makes smaller fonts more substantial.
+
+      @include breakpoint($tab) {
+        word-break: break-word;
+      }
+    }
+
+    // Headings
+    //
+    // All HTML headings, `<h1>` through `<h6>`, are available. `%h1` through `%h6`
+    // classes are also available, for when you want to match the font styling of a
+    // heading but still want your text to be displayed inline.
+    #{headings()} {
+      font-weight: normal;
+      //color: $text;
+
+      strong,
+      b {
+        font-weight: normal;
+      }
+    }
+
+    h2,
+    %h2 {
+      @include responsive-typo-map($h2-text);
+    }
+
+    h3,
+    %h3 {
+      @include responsive-typo-map($h3-text);
+    }
+
+    h4,
+    %h4 {
+      @include responsive-typo-map($h4-text);
+    }
+
+    h5,
+    %h5 {
+      @include responsive-typo-map($h5-text);
+    }
+
+    h6,
+    %h6 {
+      @include responsive-typo-map($h6-text);
+    }
+
+
+    // Body copy
+    //
+    // The default `font-size` and `line-height` properties are applied to the `<body>` element and all paragraphs.
+    // In addition, `<p>` (paragraphs) receive a top and bottom margin.
+    //
+    // Markup: kss-templates/grouping-p.twig
+    //
+    // Style guide: base.text.p
+
+    p,
+    pre,
+    blockquote,
+    address,
+    li {
+      @include responsive-typo-map($body-text);
+    }
+
+    // Tighten lists up closer to the preceding paragraph.
+    p + ul,
+    p + ol {
+      @include adjust-property-size-to(-12px, margin-top);
+    }
+
+    ol,
+    ul {
+      @include adjust-property-size-to(18px, padding-left);
+      margin: 1em 0 1.5em;
+
+      ul,
+      ol {
+        margin: 0;
+      }
+    }
+
+    li {
+      margin: 0 0 .5em;
+    }
+
+    // Code
+    //
+    // The `<code>` element represents a fragment of computer code. The `<var>`
+    // element represents a variable. The `<samp>` element represents (sample)
+    // output from a program or computing system. The `<kbd>` element represents
+    // user input (typically keyboard input.)
+
+    %monospace,
+    code,
+    kbd,
+    samp,
+    var {
+      // Correct the inheritance and scaling of font size in all browsers.
+      // The font-family value ends with ", serif".
+      @include adjust-font-size-to($base-font-size);
+    }
+
+    // Superscript / Subscript
+    //
+    // The `<sup>` element represents a superscript and the `<sub>` element
+    // represents a subscript.
+
+    sub,
+    sup {
+      // Prevent `sub` and `sup` elements from affecting the line height in
+      // all browsers.
+      @include adjust-font-size-to(14px);
+    }
+
+    // Make sure ckeditor magicline does not cross into out-of-bounds.
+    span[data-cke-magic-line] {
+      max-width: $article-max-width + 36px;
+    }
+
+    .table {
+      width: 100%;
+      margin-left: 0;
+
+      > figcaption {
+        @include responsive-typo-map($body-text);
+        background: none;
+        padding: 0 0 .5em;
+        color: $text;
+      }
+
+      table {
+        overflow: scroll;
+
+        &.table-fixed-width {
+          table-layout: fixed;
+        }
+
+        &,
+        & > tr > td,
+        & > tr > th,
+        & > tbody > tr > td,
+        & > tbody > tr > th,
+        & > thead > tr > td,
+        & > thead > tr > th,
+        & > tfoot > tr > td,
+        & > tfoot > tr > th {
+          border: 1px solid $table-border-color; // Makes table visible in the editor interface.
+        }
+
+        td,
+        th {
+          @include adjust-font-size-to(14px, 4);
+          @include adjust-property-size-to(4px 4px 3px, padding);
+          height: unset;
+          color: $text;
+
+          @include breakpoint($phab, $no-query: true) {
+            @include adjust-font-size-to(16px, 4);
+            @include adjust-property-size-to(8px 8px 7px, padding);
+          }
+
+          @include breakpoint($tab, $no-query: true) {
+            @include adjust-font-size-to(16px, 4.5); // need 27px line height for vertical rhythm now.
+            @include adjust-property-size-to(9px 9px 8px, padding);
+          }
+
+          & * {
+            font-size: inherit;
+            line-height: inherit;
+          }
+        }
+
+        th {
+          background-color: $brand-primary-light;
+        }
+
+        td {
+          background-color: #fff;
+        }
+
+        tr {
+          &:nth-child(odd) td {
+            background: $grey-lightest;
+          }
+
+          &:nth-child(even) td {
+            background: #fff;
+          }
+        }
+
+        p {
+          @include adjust-property-size-to(9px 0, margin);
+
+          &:first-child {
+            margin-top: 0;
+          }
+
+          &:last-child {
+            margin-bottom: 0;
+          }
+        }
+      }
+    }
+
+    /*
+    Add box-shadow to blockquote.
+    */
+    blockquote {
+      border: 0;
+      box-shadow: 0 -1.5px 0 0 #e8e7e7, 0 1.5px 0 0 #e8e7e7;
+      padding: .5em 1.5em;
+      margin: 2em 0;
+      font-style: normal;
+
+      /*
+      If first in chain, only top box-shadow
+       */
+      &:has(+ blockquote) {
+        padding: .5em 1.5em 0;
+        margin: 2em 0 0;
+        box-shadow: 0 -1.5px 0 0 #e8e7e7;
+      }
+
+      /*
+      Remove box-shadow from subsequent blockquotes in a chain.
+      */
+      & + blockquote {
+        box-shadow: none;
+        padding: 0 1.5em;
+        margin: 0;
+
+        /*
+        Add bottom box-shadow to blockquote if it
+        is the last one or it is not followed by
+        another blockquote and it is not the first in the chain.
+        */
+        &:not(:first-of-type) {
+          &:last-of-type,
+          &:has(+ *:not(blockquote)) {
+            box-shadow: 0 1.5px 0 0 #e8e7e7;
+            padding: 0 1.5em .5em;
+            margin-bottom: 2em;
+          }
+        }
+      }
+
+      &::before,
+      &::after {
+        content: none;
+      }
+
+      cite {
+        display: block;
+        font-style: italic;
+        text-align: right;
+      }
+    }
+
+    // Replacement for .call-to-action suitable for use in CKEditor.
+    .btn--call-to-action,
+    .call-to-action {
+      @include btn(large, right);
+      @include btn-color($btn-action);
+      @include responsive-typo-map($btn-large);
+      text-align: left;
+    }
+
+    .drupal-media {
+      display: block;
+
+      figcaption {
+        @include responsive-typo-map($small-text);
+      }
+    }
+  }
+
+  .media-image,
+  .media-video,
+  .media-audio {
+    display: block;
+    position: relative;
+
+    // Styling for the Edit media button
+    .media-library-item__edit {
+      position: absolute;
+      top: 0;
+      right: 0;
+      z-index: 1000;
+      margin: 0;
+      min-height: 30px;
+      border: 0;
+      border-radius: 0;
+      -webkit-appearance: none;
+      cursor: pointer;
+      background-color: $btn-primary;
+      color: #fff;
+      font-size: 14px;
+    }
+  }
+
+  a strong,
+  strong a {
+    font-weight: normal;
+  }
+}

@@ -6,7 +6,7 @@
 @import 'responsive-images';
 
 // In ckeditor, responsive images are wrapped in drupal-media.
-drupal-media {
+.drupal-media {
   clear: both;
   margin: 1em 0 1.5em;
 
@@ -27,17 +27,17 @@ drupal-media {
 }
 
 // Floated styles.
-drupal-media[data-view-mode^='article_float'],
-drupal-media[data-view-mode^='landscape_float'],
-drupal-media[data-view-mode^='portrait_float'] {
+.drupal-media[data-view-mode^='article_float'],
+.drupal-media[data-view-mode^='landscape_float'],
+.drupal-media[data-view-mode^='portrait_float'] {
   @include media-image-float;
   margin: 0 0 1.5em 1em;
 }
 
 // Non-floated styles.
-drupal-media[data-view-mode^='article_full'],
-drupal-media[data-view-mode^='landscape_full'],
-drupal-media[data-view-mode^='portrait_full'] {
+.drupal-media[data-view-mode^='article_full'],
+.drupal-media[data-view-mode^='landscape_full'],
+.drupal-media[data-view-mode^='portrait_full'] {
   float: none;
   width: 100%;
   max-width: none;
