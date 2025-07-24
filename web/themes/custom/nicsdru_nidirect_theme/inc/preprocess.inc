@@ -697,13 +697,13 @@ function nicsdru_nidirect_theme_preprocess_responsive_image_formatter(array &$va
     return;
   }
 
-  // If we've got a parent media entity and caption field value
-  // then inject the value into the responsive image attributes collection.
+  // If we have a parent media entity and caption field value inject the text
+  // into the responsive image attributes collection.
   // We're relying on Drupal input sanitising from the media form as
   // well as safe Twig rendering in responsive-image.html.twig to cover
   // any content that is migrated in from the legacy db and could
   // potentially contain dodgy html.
-  $caption = $media_image->field_caption->value;
+  $caption = $media_image->get('field_caption')->value;
 
   if (!empty($caption)) {
     $variables['responsive_image']['#attributes']['caption'] = $caption;
@@ -749,4 +749,8 @@ function nicsdru_nidirect_theme_preprocess_views_view_rss(&$variables) {
     $style->namespaces['xmlns:atom'] = 'http://www.w3.org/2005/Atom';
     $variables['namespaces'] = new Attribute($style->namespaces);
   }
+}
+
+function nicsdru_nidirect_theme_preprocess_geolocation_map_wrapper(array &$variables) {
+  $variables['attributes']['data-silktide'] = 'ignore';
 }
