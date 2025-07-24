@@ -191,6 +191,10 @@
   --notice-border-color: #{$brand-primary-light};
   box-shadow: inset 0 0 0 var(--notice-border-width) var(--notice-border-color);
 
+  @at-root body:not(.path-frontpage) .region--highlighted .messages {
+    margin-bottom: 0;
+  }
+
   &--error {
     --notice-border-color: #e34f4f;
     background: #fff resolve('wrong.svg') no-repeat .9rem .9rem / 24px 24px;

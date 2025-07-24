@@ -244,12 +244,18 @@ function nicsdru_nidirect_theme_preprocess_page(array &$variables) {
           // plugin block instead of a content block.
           $block_manager = \Drupal::service('plugin.manager.block');
           $plugin_block = $block_manager->createInstance('nidirect_related_content_block', []);
-          $block_label = 'Related content';
+          $configuration = $plugin_block->getConfiguration();
+          $configuration['label'] = 'Related content';
 
           // Applying title as hook_block_view_alter() which applies the title
           // for canonical routes doesn't get called here.
           if ($node->hasField('field_subtheme') && !$node->get('field_subtheme')->isEmpty()) {
-            $block_label = $node->get('field_subtheme')->entity->getName();
+            $subtheme = $node->get('field_subtheme')->entity;
+
+
+            if (!empty($subtheme)) {
+              $configuration['label'] = $subtheme->getName();
+            }
           }
 
           // We have to create a block render array as $plugin_block->build()
@@ -257,12 +263,10 @@ function nicsdru_nidirect_theme_preprocess_page(array &$variables) {
           $variables['page']['sidebar_second'][] = [
             '#theme' => 'block',
             '#weight' => 0,
-            '#configuration' => [
-              'label' => $block_label,
-              'label_display' => '1',
-            ],
+            '#configuration' => $configuration,
             '#plugin_id' => $plugin_block->getPluginId(),
-            '#derivative_plugin_id' => NULL,
+            '#base_plugin_id' => $plugin_block->getBaseId(),
+            '#derivative_plugin_id' => $plugin_block->getDerivativeId(),
             'content' => $plugin_block->build(),
           ];
           break;

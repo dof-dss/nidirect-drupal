@@ -1,0 +1,8 @@
+nidirect_prisons.worldpay_order_notifications:
+  path: '/prisoner-payments/worldpay/notification'
+  defaults:
+    _controller: '\Drupal\nidirect_prisons\Controller\WorldpayNotificationController::handleNotification'
+    _title: 'Worldpay Order Notification'
+  methods: ['POST']
+  requirements:
+    _access: 'TRUE'
