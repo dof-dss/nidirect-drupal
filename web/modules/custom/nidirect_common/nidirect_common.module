@@ -733,12 +733,9 @@ function nidirect_common_moderation_sidebar_alter(array &$build, EntityInterface
  */
 function nidirect_common_theme_registry_alter(&$theme_registry) {
   $theme_registry['fieldset']['theme path'] = 'themes/custom/nicsdru_nidirect_theme';
-  $theme_registry['fieldset']['path'] = 'themes/custom/nicsdru_nidirect_theme/templates/form';
-  $fieldset_suggestions = drupal_find_theme_templates($theme_registry, '.html.twig', 'themes/custom/nicsdru_nidirect_theme/templates/form');
-  foreach ($fieldset_suggestions as $key => $suggestion) {
-    if (!empty($suggestion['base hook']) && $suggestion['base hook'] === 'theme path') {
-      $suggestion = array_merge($theme_registry['fieldset'], $suggestion);
-      $theme_registry[$key] = $suggestion;
-    }
+
+  if (isset($theme_registry['fieldset'])) {
+    $theme_registry['fieldset']['path'] = 'themes/custom/nicsdru_nidirect_theme/templates/form';
+    $theme_registry['fieldset']['template'] = 'fieldset';
   }
 }
