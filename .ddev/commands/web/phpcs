@@ -1,8 +1,18 @@
 #!/usr/bin/env bash
 
 ## Description: Execute local PHPCS static analysis checks.
-## Usage: phpcs
-## Example: "ddev phpcs"
+## Usage: phpcs [directory]
+## Example: "ddev phpcs" or "ddev phpcs web/modules/custom"
 ## HostWorkingDir: true
 
-/var/www/html/phpcs.sh /var/www/html ./
+DRUPAL_DEPLOY_PATH="/var/www/html"
+IGNORE="/web/themes/origins/node_modules,/web/themes/custom/nicsdru_nidirect_theme/node_modules"
+
+# If an argument is provided, use it; otherwise, use the current working directory
+if [ -n "$1" ]; then
+  PHPCS_CHECK_DIR="$1"
+else
+  PHPCS_CHECK_DIR="."
+fi
+
+${DRUPAL_DEPLOY_PATH}/phpcs.sh "${DRUPAL_DEPLOY_PATH}" "${PHPCS_CHECK_DIR}" "${IGNORE}"
