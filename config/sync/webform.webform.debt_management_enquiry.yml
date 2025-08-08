@@ -12,7 +12,7 @@ id: debt_management_enquiry
 title: 'Debt Management enquiry'
 description: ''
 categories: {  }
-elements: |
+elements: |-
   your_details:
     '#type': fieldset
     '#title': 'Your details'
@@ -33,7 +33,7 @@ elements: |
       '#required_error': 'You must choose an option.'
     what_is_the_customer_s_full_name_:
       '#type': textfield
-      '#title': 'What is the customer''s full name?'
+      '#title': "What is the customer's full name?"
       '#maxlength': '100'
       '#states':
         visible:
@@ -43,13 +43,13 @@ elements: |
     what_is_your_relationship_to_the_customer_:
       '#type': textfield
       '#title': 'What is your relationship to the customer?'
-      '#description': 'Please note, Debt Management will only respond to your query if we hold the respective customer consent for you to act on their behalf or if you are a Next of Kin dealing with deceased affairs.'
+      '#description': 'Debt Management will only respond to your query if it holds the respective customer consent for you to act on their behalf or if you are a Next of Kin dealing with deceased affairs.'
       '#description_display': before
+      '#required': true
       '#states':
         visible:
           ':input[name="are_you_the_customer_"]':
             value: 'no'
-      '#required': true
     debt_reference_number:
       '#type': textfield
       '#title': 'Debt reference number (optional)'
@@ -114,16 +114,16 @@ elements: |
         compensation_recovery_scheme: 'Compensation Recovery Scheme'
         discretionary_support_social_fund: 'Discretionary Support / Social Fund'
         welfare_supplementary_payment: 'Welfare Supplementary Payment'
-      '#empty_option': '- Please select - '
-      '#other__option_label': 'Other (please specify)'
-      '#other__title': 'Please briefly specify the subject of your query'
+      '#empty_option': '- Select - '
+      '#other__option_label': 'Other (specify)'
+      '#other__title': 'Briefly specify the subject of your query'
       '#other__placeholder': ''
       '#required': true
       '#wrapper_type': form_element
     please_tell_us_your_query:
       '#type': textarea
-      '#title': 'Please tell us your query'
-      '#description': 'Please give us as much information as you can as this will help us to get back to to you as soon as possible. DO NOT include personal or financial information such as date of birth, National Insurance number, or bank and credit card details.'
+      '#title': 'Enter your query'
+      '#description': 'Give as much information as you can. That will help Debt Management to get back to you as soon as possible. Do not include personal or financial information such as date of birth, National Insurance number, or bank and credit card details.'
       '#description_display': before
       '#maxlength': 3000
       '#required': true
@@ -329,15 +329,35 @@ handlers:
   email:
     id: email
     handler_id: email
-    label: Email
+    label: 'Email complains or other'
     notes: ''
     status: true
-    conditions: {  }
+    conditions:
+      enabled:
+        -
+          ':input[name="what_is_you_query_about_[select]"]':
+            value: overpayment_recovery
+        - or
+        -
+          ':input[name="what_is_you_query_about_[select]"]':
+            value: recovery_from_estates
+        - or
+        -
+          ':input[name="what_is_you_query_about_[select]"]':
+            value: civil_proceedings
+        - or
+        -
+          ':input[name="what_is_you_query_about_[select]"]':
+            value: making_a_payment
+        - or
+        -
+          ':input[name="what_is_you_query_about_[select]"]':
+            value: welfare_supplementary_payment
     weight: 0
     settings:
       states:
         - completed
-      to_mail: BELFASTCOLLEGESTREETDCNI.DEBTMANAGEMENTCUSTOMERENQUIRIES@DFCNI.GOV.UK
+      to_mail: DEBTMANAGEMENT.SERVICECENTRETEAMLEADERS@DFCNI.GOV.UK
       to_options: {  }
       bcc_mail: ''
       bcc_options: {  }
@@ -351,10 +371,209 @@ handlers:
       sender_mail: ''
       sender_name: ''
       subject: 'Debt Management Enquiry from nidirect.gov.uk'
-      body: |-
-        Submitted on [current-date:long]<br />
-        Submitted values are:<br />
-        [webform_submission:values]
+      body: "Submitted on [current-date:long]<br />\r\nSubmitted values are:<br />\r\n[webform_submission:values]"
+      excluded_elements: {  }
+      ignore_access: false
+      exclude_empty: true
+      exclude_empty_checkbox: false
+      exclude_attachments: false
+      html: true
+      attachments: false
+      twig: false
+      theme_name: ''
+      parameters: {  }
+      debug: false
+  email_loan_management:
+    id: email
+    handler_id: email_loan_management
+    label: 'Email: Loan management '
+    notes: ''
+    status: true
+    conditions:
+      enabled:
+        ':input[name="what_is_you_query_about_[select]"]':
+          value: loan_management
+    weight: 1
+    settings:
+      states:
+        - completed
+      to_mail: DFCDEBTMANAGEMENT.LOANMANAGEMENT@DFCNI.GOV.UK
+      to_options: {  }
+      bcc_mail: ''
+      bcc_options: {  }
+      cc_mail: ''
+      cc_options: {  }
+      from_mail: _default
+      from_options: {  }
+      from_name: nidirect
+      reply_to: ''
+      return_path: ''
+      sender_mail: ''
+      sender_name: ''
+      subject: 'Debt Management Enquiry from nidirect.gov.uk'
+      body: "Submitted on [current-date:long]<br />\r\nSubmitted values are:<br />\r\n[webform_submission:values]"
+      excluded_elements: {  }
+      ignore_access: false
+      exclude_empty: true
+      exclude_empty_checkbox: false
+      exclude_attachments: false
+      html: true
+      attachments: false
+      twig: false
+      theme_name: ''
+      parameters: {  }
+      debug: false
+  email_3rd_party_deductions:
+    id: email
+    handler_id: email_3rd_party_deductions
+    label: 'Email: 3rd party deductions'
+    notes: ''
+    status: true
+    conditions:
+      enabled:
+        ':input[name="what_is_you_query_about_[select]"]':
+          value: third_party_deductions
+    weight: 2
+    settings:
+      states:
+        - completed
+      to_mail: DEBTMANAGEMENT.TPD@DFCNI.GOV.UK
+      to_options: {  }
+      bcc_mail: ''
+      bcc_options: {  }
+      cc_mail: ''
+      cc_options: {  }
+      from_mail: _default
+      from_options: {  }
+      from_name: nidirect
+      reply_to: ''
+      return_path: ''
+      sender_mail: ''
+      sender_name: ''
+      subject: 'Debt Management Enquiry from nidirect.gov.uk'
+      body: "Submitted on [current-date:long]<br />\r\nSubmitted values are:<br />\r\n[webform_submission:values]"
+      excluded_elements: {  }
+      ignore_access: false
+      exclude_empty: true
+      exclude_empty_checkbox: false
+      exclude_attachments: false
+      html: true
+      attachments: false
+      twig: false
+      theme_name: ''
+      parameters: {  }
+      debug: false
+  email_complaints_or_other:
+    id: email
+    handler_id: email_complaints_or_other
+    label: 'Email: complaints or other'
+    notes: ''
+    status: true
+    conditions:
+      enabled:
+        ':input[name="what_is_you_query_about_[select]"]':
+          value: complaint
+        ':input[name="what_is_you_query_about_[other]"]':
+          filled: true
+    weight: 3
+    settings:
+      states:
+        - completed
+      to_mail: belfastcollegestreetdcni.debtmanagementcustomerenquiries@dfcni.gov.uk
+      to_options: {  }
+      bcc_mail: ''
+      bcc_options: {  }
+      cc_mail: ''
+      cc_options: {  }
+      from_mail: _default
+      from_options: {  }
+      from_name: nidirect
+      reply_to: ''
+      return_path: ''
+      sender_mail: ''
+      sender_name: ''
+      subject: 'Debt Management Enquiry from nidirect.gov.uk'
+      body: "Submitted on [current-date:long]<br />\r\nSubmitted values are:<br />\r\n[webform_submission:values]"
+      excluded_elements: {  }
+      ignore_access: false
+      exclude_empty: true
+      exclude_empty_checkbox: false
+      exclude_attachments: false
+      html: true
+      attachments: false
+      twig: false
+      theme_name: ''
+      parameters: {  }
+      debug: false
+  email_compensation_recovery:
+    id: email
+    handler_id: email_compensation_recovery
+    label: 'Email: compensation recovery'
+    notes: ''
+    status: true
+    conditions:
+      enabled:
+        ':input[name="what_is_you_query_about_[select]"]':
+          value: compensation_recovery_scheme
+    weight: 4
+    settings:
+      states:
+        - completed
+      to_mail: CRSTEAM.BELFAST@DFCNI.GOV.UK
+      to_options: {  }
+      bcc_mail: ''
+      bcc_options: {  }
+      cc_mail: ''
+      cc_options: {  }
+      from_mail: _default
+      from_options: {  }
+      from_name: nidirect
+      reply_to: ''
+      return_path: ''
+      sender_mail: ''
+      sender_name: ''
+      subject: 'Debt Management Enquiry from nidirect.gov.uk'
+      body: "Submitted on [current-date:long]<br />\r\nSubmitted values are:<br />\r\n[webform_submission:values]"
+      excluded_elements: {  }
+      ignore_access: false
+      exclude_empty: true
+      exclude_empty_checkbox: false
+      exclude_attachments: false
+      html: true
+      attachments: false
+      twig: false
+      theme_name: ''
+      parameters: {  }
+      debug: false
+  email_discretionary_support:
+    id: email
+    handler_id: email_discretionary_support
+    label: 'Email: Discretionary support'
+    notes: ''
+    status: true
+    conditions:
+      enabled:
+        ':input[name="what_is_you_query_about_[select]"]':
+          value: discretionary_support_social_fund
+    weight: 5
+    settings:
+      states:
+        - completed
+      to_mail: DS.RECOVERY@DFCNI.GOV.UK
+      to_options: {  }
+      bcc_mail: ''
+      bcc_options: {  }
+      cc_mail: ''
+      cc_options: {  }
+      from_mail: _default
+      from_options: {  }
+      from_name: nidirect
+      reply_to: ''
+      return_path: ''
+      sender_mail: ''
+      sender_name: ''
+      subject: 'Debt Management Enquiry from nidirect.gov.uk'
+      body: "Submitted on [current-date:long]<br />\r\nSubmitted values are:<br />\r\n[webform_submission:values]"
       excluded_elements: {  }
       ignore_access: false
       exclude_empty: true
