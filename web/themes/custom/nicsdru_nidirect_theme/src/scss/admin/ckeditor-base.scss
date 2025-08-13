@@ -1,0 +1,46 @@
+///* =====================================================
+// * Styling unique to CKEditor
+// * =====================================================*/
+
+/*
+This file compiles all required stylesheets into one CSS file
+for use in CKEditor. It acts as a base to be compiled with a
+different $base-font-size for use in CKEditor where the admin
+theme is used, and as the main stylesheet for CKEditor in
+layout builder (which uses the same $base-font-size as the
+nicsdru_nidirect_theme).
+
+It will be autoprefixed with
+'.layout-builder-configure-block .ck .ck-content' using postcss
+into the file css/admin/ckeditor-theme-layout.css.
+ */
+
+@import '../init';
+@import '../1_base/root';
+@import '../1_base/html5';
+@import '../1_base/headings';
+@import '../1_base/links';
+@import '../1_base/grouping';
+@import '../1_base/tables';
+@import '../1_base/text';
+@import '../3_components/field/field-summary';
+@import '../3_components/content/icons-messages';
+@import '../3_components/content/lists';
+@import '../3_components/content/responsive-images';
+@import '../3_components/content/responsive-images-ckeditor';
+@import '../3_components/content/text';
+@import '../3_components/content/video';
+@import '../3_components/form/buttons';
+
+figure {
+  &.table {
+    width: 100%;
+    margin: 1em 0 2em;
+
+    figcaption {
+      @include responsive-typo-map($body-text);
+      background: unset;
+      color: $text;
+    }
+  }
+}

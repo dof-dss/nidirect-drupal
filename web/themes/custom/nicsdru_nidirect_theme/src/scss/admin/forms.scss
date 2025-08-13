@@ -14,3 +14,88 @@ $base-font-size: 16px;
   }
 }
 
+.ck .ck-editor__main {
+  border: 1px solid transparent;
+  background: var(--ck-color-base-background);
+  position: relative;
+  overflow: hidden;
+  font-size: $base-font-size;
+
+  &:has(.ck-rounded-corners) {
+    border-radius: var(--ck-border-radius);
+    border-top-right-radius: 0;
+    border-top-left-radius: 0;
+  }
+
+  &:has(.ck.ck-editor__editable.ck-focused) {
+    border: var(--ck-focus-ring);
+    box-shadow: var(--ck-inner-shadow), 0 0;
+    outline: none;
+  }
+
+  &:not(:has(.ck-content.ck-focused)) {
+    border-color: var(--ck-color-base-border);
+  }
+
+  >.ck-content.ck-editor__editable {
+    border: 0;
+
+    &.ck-focused {
+      border: 0;
+      box-shadow: none;
+    }
+  }
+
+  &::before {
+    content: '';
+    display: block;
+    width: 130px;
+    height: 100%;
+    padding: 15px 100% 15px 15px;
+    text-align: center;
+    position: absolute;
+    top: 0;
+    left: $article-max-width + 36px;
+    z-index: 1;
+    background-color: rgba($black, .5);
+    background-clip: padding-box;
+    border-left: 18px solid rgba(255, 255, 255, .5);
+
+  }
+
+  &::after {
+    @include responsive-typo-map($small-text);
+    content: 'Content must not cross the margin into this area';
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-sizing: content-box;
+    width: 130px;
+    height: 100%;
+    padding: 0 100% 0 30px;
+    text-align: center;
+    position: absolute;
+    top: 0;
+    left: $article-max-width + 54px;
+    z-index: 2;
+    color: $white;
+  }
+}
+
+.ck .ck-content {
+  position: relative;
+  overflow: hidden;
+  max-width: $article-max-width;
+
+  * {
+    overflow-wrap: break-word;
+    max-width: $article-max-width;
+    box-sizing: border-box;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-font-smoothing: antialiased; // more subtle on larger fonts, makes smaller fonts more substantial.
+
+    @include breakpoint($tab) {
+      word-break: break-word;
+    }
+  }
+}
