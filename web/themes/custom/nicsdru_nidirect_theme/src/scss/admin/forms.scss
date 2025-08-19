@@ -14,6 +14,23 @@ $base-font-size: 16px;
   }
 }
 
+.node-form .layout-form {
+  display: block;
+
+  @include breakpoint($desk) {
+    display: grid;
+    grid-template-columns: minmax(45rem, 55rem) minmax(22.5rem, 1fr);
+
+    .layout-region--secondary {
+      max-width: 30rem;
+    }
+  }
+
+  .layout-region--node-main {
+    margin-inline: unset;
+  }
+}
+
 .ck .ck-editor__main {
   border: 1px solid transparent;
   background: var(--ck-color-base-background);
