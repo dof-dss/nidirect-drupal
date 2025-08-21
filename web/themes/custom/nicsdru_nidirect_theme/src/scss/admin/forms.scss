@@ -31,6 +31,36 @@ $base-font-size: 16px;
   }
 }
 
+.draggable-table {
+  td {
+    .form-item {
+      > .form-element--type-select {
+        &.telephone-predefined {
+          width: 100%;
+        }
+      }
+
+      &[class*='-telephone-container-telephone-supplementary'] {
+        .form-text {
+          width: 100%;
+        }
+
+        .form-item__description {
+          @include breakpoint($lap) {
+            padding-left: var(--space-xs);
+          }
+        }
+      }
+
+      &[class*='-telephone-container-telephone-extension'] {
+        @include breakpoint($lap) {
+          padding-left: var(--space-xs);
+        }
+      }
+    }
+  }
+}
+
 .ck .ck-editor__main {
   border: 1px solid transparent;
   background: var(--ck-color-base-background);
@@ -116,3 +146,4 @@ $base-font-size: 16px;
     }
   }
 }
+
