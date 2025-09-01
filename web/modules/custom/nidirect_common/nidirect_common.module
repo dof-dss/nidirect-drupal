@@ -410,6 +410,12 @@ function nidirect_common_clientside_validation_should_validate($element, FormSta
     return TRUE;
   }
 
+  // If node or media form, clientside validation won't validate.
+  if (str_starts_with($form_id, 'node_')
+    || str_starts_with($form_id, 'media_')) {
+    return TRUE;
+  }
+
   // Turn off clientside validation jquery functionality on anything that isn't
   // a webform form.
   // Also see: nidirect_common_page_attachments_alter.
@@ -719,5 +725,17 @@ function nidirect_common_moderation_sidebar_alter(array &$build, EntityInterface
   // Solution provided by: https://www.drupal.org/project/moderation_sidebar/issues/3130572
   if (isset($build["actions"]['secondary']["entity.node.canonical"]["#url"])) {
     $build["actions"]['secondary']["entity.node.canonical"]["#url"] = Url::fromRoute('entity.node.canonical', ['node' => $entity->id()]);
+  }
+}
+
+/**
+ * Implements hook_theme_registry_alter().
+ */
+function nidirect_common_theme_registry_alter(&$theme_registry) {
+  $theme_registry['fieldset']['theme path'] = 'themes/custom/nicsdru_nidirect_theme';
+
+  if (isset($theme_registry['fieldset'])) {
+    $theme_registry['fieldset']['path'] = 'themes/custom/nicsdru_nidirect_theme/templates/form';
+    $theme_registry['fieldset']['template'] = 'fieldset';
   }
 }

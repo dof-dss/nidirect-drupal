@@ -1,382 +1,49 @@
 version: 2.1
 
-default_docker_image: &docker_image
-  docker:
-    - image: thecodingmachine/php:8.3-v4-apache-node14
-      environment:
-        PLATFORM_REGION: "uk-1.platform.sh"
-        PROJECT_ROOT: "/home/docker/project"
-        PHP_EXTENSION_GD: 1
-        PHP_EXTENSIONS: "gd"
-        PHP_INI_MEMORY_LIMIT: 1g
+setup: true
 
-# Re-usable commands.
-commands:
-  checkout_code:
-    description: "Handle composer access tokens, SSH key fingerprints and code checkout"
-    steps:
-      # Add SSH user key so we can access related repositories as part of our initial clone + composer install command.
-      # f8:f0 >> private fingerprint to allow Circle CI to talk to platform.sh.
-      # 89:cc >> GitHub user key fingerprint.
-      - add_ssh_keys:
-          fingerprints:
-            - "f8:f0:34:a1:0e:51:56:44:2b:9c:db:b7:2f:26:3b:48"
-            - "89:cc:6e:61:6a:0e:13:ab:47:0b:25:d6:bc:90:d4:d2"
-      - checkout
-  composer_tasks:
-    description: "Validate and install dependencies using composer"
-    steps:
-      - run:
-          name: Validate composer.json and composer.lock file for consistency
-          command: composer validate --no-check-all --strict
-      - restore_cache:
-          keys:
-            - composer-{{ checksum "composer.lock" }}
-      - run:
-          name: Fetch dependencies with composer
-          command: |
-            composer install --no-interaction --optimize-autoloader
-      - save_cache:
-          key: composer-{{ checksum "composer.lock" }}
-          paths:
-            - $HOME/.composer/cache
-  composer_tasks__no_cache:
-    description: "Validate and install dependencies using composer"
-    steps:
-      - run:
-          name: Validate composer.json and composer.lock file for consistency
-          command: composer validate --no-check-all --strict
-      - run:
-          name: Fetch dependencies with composer
-          command: |
-            composer install --no-interaction --optimize-autoloader
-  composer_tasks__edge_packages:
-    description: "Switch dof-dss packages to HEAD on development branch"
-    steps:
-      - run:
-          name: Switch dof-dss packages to HEAD on appropriate development branch
-          command: |
-            composer require dof-dss/nicsdru_origins_theme:dev-10.x-dev \
-                             dof-dss/nicsdru_origins_modules:dev-10.x-dev
-  hosts_keyscan:
-    description: "Keyscan for hosts that require SSH access"
-    steps:
-      - run:
-          name: Keyscan for hosts that require SSH access
-          command: |
-            mkdir -p ~/.ssh
-            ssh-keyscan -H github.com >> ~/.ssh/known_hosts
-            ssh-keyscan -H ssh.$PLATFORM_REGION >> ~/.ssh/known_hosts
-  install_psh_cli:
-    description: "Install the Platform.sh CLI tool"
-    steps:
-      - run:
-          name: Install the Platform.sh CLI tool
-          command: curl -fsSL https://raw.githubusercontent.com/platformsh/cli/main/installer.sh | bash
-      - run:
-          name: Add platform cli tool to $PATH
-          command: echo 'export PATH="$HOME/"'.platformsh/bin':"$PATH"' >> $BASH_ENV
-
-jobs:
-  # Tests the integrity of the build, stores the results in a workspace for re-use in later jobs.
-  build:
-    <<: *docker_image
-    steps:
-      - checkout_code
-      - composer_tasks
-      - persist_to_workspace:
-          root: ./
-          paths:
-            - ./
-  # Test for coding standards - will inherit the workspace/filesystem changes from build step, above.
-  coding_standards:
-    <<: *docker_image
-    steps:
-      - attach_workspace:
-          at: ./
-      - run:
-          name: PHPCS analysis
-          command: |
-            CHECK_DIRS="${PROJECT_ROOT}/web/modules/custom"
-            CHECK_DIRS="${CHECK_DIRS} ${PROJECT_ROOT}/web/modules/origins"
-            CHECK_DIRS="${CHECK_DIRS} ${PROJECT_ROOT}/web/themes/custom"
-            $PROJECT_ROOT/phpcs.sh ${PROJECT_ROOT} $CHECK_DIRS
-
-  deprecated_code:
-    <<: *docker_image
-    steps:
-      - attach_workspace:
-          at: ./
-      - run:
-          name: Deprecated code check
-          command: |
-            cd $PROJECT_ROOT
-            CHECK_DIRS="${PROJECT_ROOT}/web/modules/custom"
-            CHECK_DIRS="$CHECK_DIRS ${PROJECT_ROOT}/web/modules/origins"
-            CHECK_DIRS="$CHECK_DIRS ${PROJECT_ROOT}/web/themes/custom"
-            vendor/bin/drupal-check $CHECK_DIRS
-
-  disallowed_functions:
-    <<: *docker_image
-    steps:
-      - attach_workspace:
-          at: ./
-      - run:
-          name: Check for disallowed function calls
-          command: |
-            cd $PROJECT_ROOT
-            CHECK_DIRS="${PROJECT_ROOT}/web/modules/custom"
-            CHECK_DIRS="$CHECK_DIRS ${PROJECT_ROOT}/web/modules/origins"
-            CHECK_DIRS="${PROJECT_ROOT}/web/themes/custom"
-            vendor/bin/phpstan analyse $CHECK_DIRS -c .circleci/phpstan.neon
-
-  # Functional tests with headless browser; run against our edge environment.
-  functional_tests:
-    docker:
-      - image: cimg/php:8.3.17-browsers
-        environment:
-          TEST_TAGS: "search content-type-validation origins_workflow regression"
-          EDGE_BUILD_BRANCH: "D8NID-edge"
-      - image: drupalci/chromedriver:production
-        environment:
-          CHROMEDRIVER_WHITELISTED_IPS: ""
-          CHROMEDRIVER_URL_BASE: "/wd/hub"
-    steps:
-      - attach_workspace:
-          at: ./
-      - hosts_keyscan
-      - install_php_os_extensions
-      - install_psh_cli
-      - run:
-          name: Get our environment URL and store as a local shell variable
-          command: |
-            # Chromedriver won't use https so we dibble around with sed/grep to find the http url we want.
-            echo 'export PLATFORM_ENV_URL=$(platform url -p $PLATFORM_PROJECT -e $EDGE_BUILD_BRANCH --pipe | sed -e "s|\/$||" | grep -e "^http://[^www]")' >> $BASH_ENV
-      - run:
-          name: Configure nightwatch settings and files
-          command: |
-            # Create a folder to store our nightwatch reports and screenshots
-            mkdir -p ~/nightwatch-reports
-            # Copy PHPUnit config into core folder.
-            cp ~/project/.circleci/phpunit.circleci.xml ~/project/web/core/
-            # Copy Nightwatch conf files into place.
-            cat ~/project/web/core/.env.example | sed -e "s|\(^DRUPAL_TEST_BASE_URL\)\(.\+\)|\1=$PLATFORM_ENV_URL|g" > ~/project/web/core/.env
-            sed -i -e "s|\(#\)\(DRUPAL_NIGHTWATCH_SEARCH_DIRECTORY\)=|\2=../|g" ~/project/web/core/.env
-            sed -i -e "s|\(^DRUPAL_TEST_WEBDRIVER_HOSTNAME\)=localhost|\1=127.0.0.1|g" ~/project/web/core/.env
-            sed -i -e "s|^DRUPAL_TEST_CHROMEDRIVER_AUTOSTART=true|DRUPAL_TEST_CHROMEDRIVER_AUTOSTART=false|g" ~/project/web/core/.env
-            sed -i -e "s|\(#\)\(DRUPAL_TEST_WEBDRIVER_CHROME_ARGS\)=|\2=\"--disable-gpu --headless --no-sandbox\"|g" ~/project/web/core/.env
-            sed -i -e "s|\(^DRUPAL_NIGHTWATCH_OUTPUT\)=reports/nightwatch|\1=/home/circleci/nightwatch-reports|g" ~/project/web/core/.env
-
-            # Install npm packages for the projects/repos we know need them.
-            for dir in core modules/custom; do
-              cd ~/project/web/$dir
-              npm install
-            done
-      - run:
-          name: Switch off antibot module
-          command: |
-            platform environment:drush pmu antibot -y -p $PLATFORM_PROJECT -e $EDGE_BUILD_BRANCH
-      - run:
-          name: Run tests with Nightwatch.js
-          command: |
-            yarn --cwd=/home/circleci/project/web/core test:nightwatch $(for tag in $TEST_TAGS; do echo --tag $tag; done)
-      - store_artifacts:
-          path: /home/circleci/nightwatch-reports
-
-  # Edge build: all dof-dss packages use HEAD on development branch, pushes to fixed non-integrating branch.
-  edge_build:
-    <<: *docker_image
-    environment:
-      # git variables to avoid empty committer identity errors
-      EMAIL: "circleci@localhost"
-      GIT_COMMITTER_NAME: "Circle CI"
-      GIT_AUTHOR_NAME: "Circle CI"
-      EDGE_BUILD_BRANCH: "D8NID-edge"
-      CPPFLAGS: "-DPNG_ARM_NEON_OPT=0"
-      NODE_VERSION: 14.21.3
-    steps:
-      - hosts_keyscan
-      - checkout_code
-      - install_psh_cli
-      - run:
-          name: Switch to edge branch
-          # -b flag is important; this checkout won't have a local branch of that name
-          # (although origin/$EDGE_BUILD_BRANCH does exist) so this always works and
-          # lets us push -f to include everything at th end. If we use a plain checkout
-          # command we miss any recent config commits and only end up bumping the
-          # composer package versions after this step.
-          command: git checkout -b $EDGE_BUILD_BRANCH
-      - composer_tasks__edge_packages
-      - run:
-          name: Re-point dof-dss packages to use latest development code and push.
-          command: |
-            git add composer.*
-            git commit -m "Set dof-dss packages to HEAD development for build"
-      - run:
-          name: Push changes back to GitHub
-          command: |
-            git push -f origin $EDGE_BUILD_BRANCH
-
-  # Separate task to allow us to sync data on PSH environments, without pauses in other jobs.
-  sync_data:
-    <<: *docker_image
-    steps:
-      - hosts_keyscan
-      - checkout_code
-      - install_psh_cli
-      - run:
-          name: Trigger a data sync from production environment to an edge build.
-          command: |
-            platform sync data -p $PLATFORM_PROJECT -e $EDGE_BUILD_BRANCH -y
-      - run:
-          name: Backup data sync if the previous attempt failed.
-          command: |
-            # Pause for the blocking activity to finish.
-            sleep 90s
-            platform sync data -p $PLATFORM_PROJECT -e $EDGE_BUILD_BRANCH -y
-          when: on_fail
-      - run:
-          name: Refresh configuration as our db will contain active prod config after sync operation
-          command: |
-            platform environment:drush cim -y -p $PLATFORM_PROJECT -e $EDGE_BUILD_BRANCH
-          when: always
-      - run:
-          name: Set GAC state variable
-          command: |
-            platform environment:drush "sset google_analytics_counter.access_token ${GAC_ACCESS_TOKEN}" \
-              -p $PLATFORM_PROJECT -e $EDGE_BUILD_BRANCH
-          when: always
-      - run:
-          name: Force purge of Solr index
-          command: |
-            platform ssh -p $PLATFORM_PROJECT -e $EDGE_BUILD_BRANCH \
-              "curl http://${PLATFORM_SOLR_HOST}/solr/default/update --data '<delete><query>*:*</query></delete>' -H 'Content-type:text/xml; charset=utf-8' && curl http://${PLATFORM_SOLR_HOST}/solr/default/update --data '<commit/>' -H 'Content-type:text/xml; charset=utf-8'"
-          when: always
-      - run:
-          name: Rebuild the Solr index
-          command: |
-            platform environment:drush sapi-rt -p $PLATFORM_PROJECT -e $EDGE_BUILD_BRANCH
-            platform environment:drush sapi-c -p $PLATFORM_PROJECT -e $EDGE_BUILD_BRANCH
-            platform environment:drush sapi-r -p $PLATFORM_PROJECT -e $EDGE_BUILD_BRANCH
-            platform environment:drush sapi-i -p $PLATFORM_PROJECT -e $EDGE_BUILD_BRANCH
-          when: always
-      - run:
-          name: Reset QA account passwords
-          command: |
-            platform environment:drush password_qa_accounts -e $EDGE_BUILD_BRANCH
-
-  # Create new release marker in New Relic
-  mark_release:
-    docker:
-      - image: cimg/base:2021.04
-    steps:
-      - run:
-          name: Create a new release marker in New Relic
-          command: |
-            curl -X POST "https://api.${NEW_RELIC_REGION}.newrelic.com/v2/applications/${NEW_RELIC_APPLICATION_ID}/deployments.json" \
-                 -H "Api-Key:${NEW_RELIC_API_KEY}" \
-                 -H "Content-Type: application/json" \
-                 -i \
-                 -d \
-            '{
-              "deployment": {
-                "revision": "'"${CIRCLE_TAG}"'",
-                "description": "Deployment marker set from Circle CI"
-              }
-            }'
-
-
-  # Ensure defined PSH environments remain awake.
-  env_caffeine:
-    <<: *docker_image
-    environment:
-      # Comma separated list of envs to keep alive.
-      # Platformsh CLI token and project id securely
-      # injected from Circle CI env variable storage.
-      KEEP_ALIVE_ENVS: "prison-visits-online-form"
-    steps:
-      - checkout_code
-      - install_psh_cli
-      - run:
-          name: Keep alive envs
-          command: |
-            # Take env var and add to shell array variable to loop over later.
-            IFS=', ' read -r -a envs \<<< "$KEEP_ALIVE_ENVS"
-            for env in "${envs[@]}"; do
-              platform environment:resume -p $PLATFORM_PROJECT -e $env -y
-            done
-
-            exit_code=$?
-            # Adjust exit code to 0 if non-zero
-            if [ $exit_code -ne 0 ]; then
-              echo "Environment resume command exited with non-zero exit code, catching to avoid false error on CI task"
-              exit_code=0
-            fi
-            exit $exit_code
+orbs:
+  continuation: circleci/continuation@0.4.0
 
 workflows:
-  version: 2
-  # Our default pipeline that tests the integrity of our code.
-  build-test-deploy:
+  setup:
     jobs:
-      - build
-      - coding_standards:
-          requires:
-            - build
-      - deprecated_code:
-          requires:
-            - build
-      - disallowed_functions:
-          requires:
-            - build
+      - fetch-and-continue
 
-  # Workflow that instructs New Relic about new release tags in the repo.
-  release-marker:
-    jobs:
-      - mark_release:
-          filters:
-            branches:
-              ignore: /.*/
-            tags:
-              only: /.*/
+jobs:
+  fetch-and-continue:
+    docker:
+      - image: cimg/base:stable
+    steps:
+      - checkout
+      - run:
+          name: Download shared config
+          command: |
+            wget \
+              --header="Cache-Control: no-cache" \
+              --header="Pragma: no-cache" \
+              "https://raw.githubusercontent.com/dof-dss/webdev-ci/development/shared-config.yml?nocache=$(date +%s)" \
+              -O shared-config.yml
 
-  # A daily build of the project, using all dof-dss packages at HEAD from development branch.
-  edge-build:
-    triggers:
-      - schedule:
-          # At 00:00 on every day-of-week from Monday through Friday
-          cron: "0 0 * * 1-5"
-          filters:
-            branches:
-              only:
-                - development
-    jobs:
-      - edge_build
+      - run:
+          name: Combine shared jobs and local workflows
+          command: |
+            # Remove the 'version: 2.1' from workflows config (since it's in shared config)
+            tail -n +2 .circleci/workflow-config.yml > workflows-only.yml
+            # Concatenate shared jobs+commands with repo workflows
+            cat shared-config.yml workflows-only.yml > full-config.yml
 
-  # A separate scheduled workflow to sync the data after the edge build completes.
-  # This is separate to avoid using build time/compute units with arbitrary sleep commands;
-  # platform.sh deploy hooks can take a few minutes to execute after commits are relayed to it.
-  edge-build-post-build-tasks:
-    triggers:
-      - schedule:
-          # At 00:30 on every day-of-week from Monday through Friday
-          cron: "30 1 * * 1-5"
-          filters:
-            branches:
-              only:
-                - D8NID-edge
-    jobs:
-      - sync_data
-
-  # Workflow which re-activates any defined paused environments on platform.sh
-  environment-stay-awake:
-    triggers:
-      - schedule:
-          # “At 05:00 on Sunday.”
-          cron: "0 5 * * 0"
-          filters:
-            branches:
-              only:
-                - development
-    jobs:
-      - env_caffeine
+      - continuation/continue:
+          configuration_path: full-config.yml
+          parameters: |
+            {
+              "php_version": "8.3",
+              "drupal_core_version": "10.4",
+              "coding_standards_dirs": "${PROJECT_ROOT}/web/modules/custom ${PROJECT_ROOT}/web/modules/origins ${PROJECT_ROOT}/web/themes/custom",
+              "custom_code_dirs": "${PROJECT_ROOT}/web/modules/custom ${PROJECT_ROOT}/web/modules/origins",
+              "deprecated_code_dirs": "${PROJECT_ROOT}/web/modules/custom ${PROJECT_ROOT}/web/modules/origins ${PROJECT_ROOT}/web/themes/custom",
+              "edge_branch": "DEPT-edge",
+              "edge_build_dofdss_packages": "dof-dss/nicsdru_origins_theme:dev-10.x-dev dof-dss/nicsdru_origins_modules:dev-10.x-dev",
+              "ignore_dirs": "/web/themes/origins/node_modules,/web/themes/custom/nicsdru_dept_theme/node_modules",
+              "ssh_fingerprint": "f8:f0:34:a1:0e:51:56:44:2b:9c:db:b7:2f:26:3b:48"
+            }

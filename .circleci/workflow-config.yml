@@ -1,0 +1,66 @@
+version: 2.1
+
+workflows:
+  build-test:
+    when:
+      and:
+        - not:
+            equal: [ development, << pipeline.git.branch >> ]
+        - not:
+            equal: [ scheduled_pipeline, << pipeline.trigger_source >> ]
+        - not:
+            equal: [ api, << pipeline.trigger_source >> ]
+    jobs:
+      - build:
+          php_version: << pipeline.parameters.php_version >>
+          ssh_fingerprint: << pipeline.parameters.ssh_fingerprint >>
+      - coding_standards:
+          requires:
+            - build
+          php_version: << pipeline.parameters.php_version >>
+          coding_standards_dirs: << pipeline.parameters.coding_standards_dirs >>
+          ignore_dirs: << pipeline.parameters.ignore_dirs >>
+      - deprecated_code:
+          requires:
+            - build
+          php_version: << pipeline.parameters.php_version >>
+          deprecated_code_dirs: << pipeline.parameters.deprecated_code_dirs >>
+      - disallowed_functions:
+          requires:
+            - build
+          php_version: << pipeline.parameters.php_version >>
+          custom_code_dirs: << pipeline.parameters.custom_code_dirs >>
+  build-edge:
+    when:
+      and:
+        - equal: [ scheduled_pipeline, << pipeline.trigger_source >> ]
+        - equal: [ edge_build, << pipeline.schedule.name >> ]
+    jobs:
+      - build_edge:
+          edge_branch: << pipeline.parameters.edge_branch >>
+          edge_build_dofdss_packages: << pipeline.parameters.edge_build_dofdss_packages >>
+          php_version: << pipeline.parameters.php_version >>
+  build-edge-finalise:
+    when:
+      and:
+        - equal: [ scheduled_pipeline, << pipeline.trigger_source >> ]
+        - equal: [ edge_build_finalise, << pipeline.schedule.name >> ]
+    jobs:
+      - sync_data:
+          edge_branch: << pipeline.parameters.edge_branch >>
+          php_version: << pipeline.parameters.php_version >>
+  manual-edge-build:
+    when:
+      and:
+        - equal: [ api, << pipeline.trigger_source >> ]
+        - equal: [ DEPT-edge, << pipeline.git.branch >> ]
+    jobs:
+      - build_edge:
+          php_version: << pipeline.parameters.php_version >>
+          edge_branch: << pipeline.parameters.edge_branch >>
+          edge_build_dofdss_packages: << pipeline.parameters.edge_build_dofdss_packages >>
+      - sync_data:
+          requires:
+            - build_edge
+          php_version: << pipeline.parameters.php_version >>
+          edge_branch: << pipeline.parameters.edge_branch >>
