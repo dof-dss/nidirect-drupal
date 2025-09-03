@@ -609,6 +609,7 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
     $temp_store = $this->tempStoreFactory->get('nidirect_webforms.prison_visit_booking');
 
     // Retrieve visitor data, but not for virtual bookings.
+    $visitor_data = [];
     if (!empty($this->bookingReference) && $this->bookingReference['visit_type'] !== 'virtual') {
       $visitor_data = $temp_store->get('visitor_data');
     }
@@ -618,7 +619,7 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
       $visitor_data_is_valid = TRUE;
 
       // It's not valid if user decides not to remember it.
-      if ($visitor_data['additional_visitors_remember'] === 'no') {
+      if ($visitor_data['additional_visitors_remember'] === 'No') {
         $visitor_data_is_valid = FALSE;
       }
       // It's not valid if it's missing.
