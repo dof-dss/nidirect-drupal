@@ -625,10 +625,6 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
       elseif (empty($visitor_data['visitor_1_id']) || empty($visitor_data['visitor_1_dob'])) {
         $visitor_data_is_valid = FALSE;
       }
-      // It's not valid if additional_visitor_number is 0.
-      elseif ((int) $visitor_data['additional_visitor_number'] === 0) {
-        $visitor_data_is_valid = FALSE;
-      }
       // It's not valid if main visitor id and dob in the present booking
       // differs from remembered values.  This indicates someone else
       // is making a booking using the same device, and they should not
@@ -824,20 +820,24 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
     if ($form_state->isValidationComplete() && $page === 'webform_preview') {
 
       $temp_store = $this->tempStoreFactory->get('nidirect_webforms.prison_visit_booking');
-      $remember_visitors = $form_state->getValue('additional_visitors_remember') === 'Yes' ?? FALSE;
-      $visitor_data = [];
+      $remember_visitors = $form_state->getValue('additional_visitors_remember');
       $form_values = $form_state->getValues();
 
-      foreach ($form_values as $element_name => $element_value) {
-        // Special requirements textarea needs to be encoded for JSON.
-        if (str_contains($element_name, 'special_requirements_details')) {
-          $special_requirements = Json::encode($element_value);
-          $form_state->setValue('special_requirements_json', $special_requirements);
-          $webform_submission->setElementData('special_requirements_json', $special_requirements);
-        }
+      // Special requirements textarea needs to be encoded for JSON.
+      if (!empty($form_values['special_requirements_details'])) {
+        $special_requirements = Json::encode($form_values['special_requirements_details']);
+        $form_state->setValue('special_requirements_json', $special_requirements);
+        $webform_submission->setElementData('special_requirements_json', $special_requirements);
+      }
 
-        // Capture non-sensitive visitor data in session temp store.
-        if ($remember_visitors) {
+      // If user wants to remember additional visitors...
+      if ($remember_visitors === 'Yes') {
+
+        // Capture non-sensitive visitor data and
+        // store in PrivateTempStore.
+        $visitor_data = [];
+
+        foreach ($form_values as $element_name => $element_value) {
           if ($element_name === 'visitor_1_id' ||
             $element_name === 'visitor_1_dob' ||
             str_starts_with($element_name, 'additional_visitor') ||
@@ -845,9 +845,13 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
             $visitor_data[$element_name] = $element_value;
           }
         }
-      }
 
-      $temp_store->set('visitor_data', $visitor_data);
+        $temp_store->set('visitor_data', $visitor_data);
+      }
+      // Otherwise delete visitor data.
+      elseif ($remember_visitors === 'No') {
+        $temp_store->delete('visitor_data');
+      }
 
       // The form accommodates two additional adults and five
       // additional children.
@@ -1499,48 +1503,58 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
    * @param string $element_key
    *   The key of the element whose value you want to set.
    * @param mixed|null $element_value
-   *   The value to set. If NULL, a type-appropriate "empty" value will be used.
+   *   The value to set. If NULL, a type-appropriate "empty" value
+   *   will be used.
    */
   protected function setFormElementValue(string $element_key, mixed $element_value = NULL): void {
-    // If no explicit value given, determine a sensible empty value.
-    if ($element_value === NULL && isset($this->elements[$element_key])) {
+
+    if (isset($this->elements[$element_key])) {
+
+      // Determine element type.
       $type = $this->elements[$element_key]['#type'] ?? NULL;
 
-      switch ($type) {
-        case 'checkboxes':
-        case 'webform_checkbox_other':
-          $element_value = [];
-          break;
+      // If no element value given, determine a sensible empty value.
+      if ($element_value === NULL) {
+        switch ($type) {
+          case 'checkboxes':
+          case 'webform_checkbox_other':
+            $element_value = [];
+            break;
 
-        case 'hidden':
-        case 'textfield':
-        case 'date':
-        case 'datetime':
-        case 'webform_time':
-        case 'webform_datetime':
-          $element_value = '';
-          break;
+          case 'hidden':
+          case 'textfield':
+          case 'date':
+          case 'datetime':
+          case 'webform_time':
+          case 'webform_datetime':
+            $element_value = '';
+            break;
 
-        default:
-          $element_value = NULL;
+          default:
+            $element_value = NULL;
+        }
       }
-    }
 
-    // Update form state.
-    if ($element_value === NULL) {
-      $this->formState->unsetValue($element_key);
-    }
-    else {
-      $this->formState->setValue($element_key, $element_value);
-    }
+      // Update element value in form state.
+      if ($element_value === NULL) {
+        $this->formState->unsetValue($element_key);
+      }
+      else {
+        $this->formState->setValue($element_key, $element_value);
+      }
 
-    // Update submission object.
-    $this->webformSubmission->setElementData($element_key, $element_value);
+      // Update submission object.
+      $this->webformSubmission->setElementData($element_key, $element_value);
 
-    // Update element definition if it exists.
-    if (isset($this->elements[$element_key])) {
-      $this->elements[$element_key]['#default_value'] = $element_value;
-      $this->elements[$element_key]['#value'] = $element_value;
+      // Update rendered element.
+      if (isset($this->elements[$element_key])) {
+        // Always update the #default_value.
+        $this->elements[$element_key]['#default_value'] = $element_value;
+        // Update #value only if it is hidden or value element.
+        if (in_array($type, ['hidden', 'value'], TRUE)) {
+          $this->elements[$element_key]['#value'] = $element_value;
+        }
+      }
     }
   }
 
