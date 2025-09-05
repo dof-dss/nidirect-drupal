@@ -732,10 +732,18 @@ function nidirect_common_moderation_sidebar_alter(array &$build, EntityInterface
  * Implements hook_theme_registry_alter().
  */
 function nidirect_common_theme_registry_alter(&$theme_registry) {
-  $theme_registry['fieldset']['theme path'] = 'themes/custom/nicsdru_nidirect_theme';
+  // Override Claro theme's fieldset twig.
+  $active_theme = \Drupal::theme()->getActiveTheme()->getName();
 
-  if (isset($theme_registry['fieldset'])) {
-    $theme_registry['fieldset']['path'] = 'themes/custom/nicsdru_nidirect_theme/templates/form';
-    $theme_registry['fieldset']['template'] = 'fieldset';
+  // If Claro is active, override it's fieldset.html.twig.
+  if ($active_theme === 'claro' && isset($theme_registry['fieldset'])) {
+    $module_path = \Drupal::service('extension.path.resolver')->getPath('module', 'nidirect_common');
+    $custom_template = $module_path . '/templates/form/fieldset.html.twig';
+
+    if (file_exists(DRUPAL_ROOT . '/' . $custom_template)) {
+      $theme_registry['fieldset']['theme path'] = $module_path;
+      $theme_registry['fieldset']['path'] = $module_path . '/templates/form';
+      $theme_registry['fieldset']['template'] = 'fieldset';
+    }
   }
 }
