@@ -1541,12 +1541,7 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
 
       // Update rendered element.
       if (isset($this->elements[$element_key])) {
-        // Always update the #default_value.
         $this->elements[$element_key]['#default_value'] = $element_value;
-        // Update #value only if it is hidden or value element.
-        if (in_array($type, ['hidden', 'value'], TRUE)) {
-          $this->elements[$element_key]['#value'] = $element_value;
-        }
       }
     }
   }
