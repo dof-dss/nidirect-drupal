@@ -273,7 +273,7 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
     $curr_ref = $form_state->getValue('visitor_order_number');
 
     // First-time set.
-    if ($last_ref === NULL && !empty($curr_ref)) {
+    if (empty($last_ref) && !empty($curr_ref)) {
       $form_state->set('last_visitor_order_number', $curr_ref);
     }
     // Changed.
