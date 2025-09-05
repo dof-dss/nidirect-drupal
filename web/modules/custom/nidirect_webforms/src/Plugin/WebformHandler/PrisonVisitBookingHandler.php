@@ -492,14 +492,6 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
       $this->setFormElementValue('additional_visitor_number', $additional_visitor_number);
     }
 
-    // If additional_visitor_number is null,
-    if ($page === 'additional_visitor_details') {
-      $additional_visitor_number = (int) $this->formState->getValue('additional_visitor_number');
-      if ($additional_visitor_number < 0) {
-        $this->setFormElementValue('additional_visitor_number', '0');
-      }
-    }
-
     // If user is amending a booking, timeslots are always reset and
     // the original timeslot restored if user chose not to amend it.
     $choose_changes = $form_state->getValue('choose_changes') ?? $form_state->getValue('choose_changes_virtual') ?? NULL;
