@@ -241,7 +241,10 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
     $this->elements = WebformFormHelper::flattenElements($form);
 
     $page = $form_state->get('current_page');
-    $pages = $form_state->get('pages');
+    $page_trigger = $form_state->getTriggeringElement()['#value'] ?? NULL;
+    $page_trigger_is_next = $page_trigger === 'Next';
+    $page_trigger_is_previous = $page_trigger === 'Previous';
+
     $elements = $this->elements;
     $webform = $webform_submission->getWebform();
 
@@ -265,12 +268,37 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
     $form['#attached']['drupalSettings']['prisonVisitBooking'] = $this->configuration;
     $form['#attached']['drupalSettings']['prisonVisitBooking']['booking_ref'] = $this->bookingReference;
 
+    // Detect if booking reference (visit_order_number) is changed.
+    $last_ref = $form_state->get('last_visitor_order_number');
+    $curr_ref = $form_state->getValue('visitor_order_number');
+
+    // First-time set.
+    if (empty($last_ref) && !empty($curr_ref)) {
+      $form_state->set('last_visitor_order_number', $curr_ref);
+    }
+    // Changed.
+    elseif (!empty($last_ref) && $curr_ref !== $last_ref) {
+      $form_state->set('last_visitor_order_number', $curr_ref);
+
+      // Reset time slots user might have selected.
+      $this->resetFormSlots($form, $form_state, $webform_submission);
+
+      // If it's a virtual visit reset elements applicable only to
+      // face-to-face visits.
+      if ($this->bookingReference['visit_type'] === 'virtual') {
+        // Virtual visits have no additional visitors.
+        $this->resetAdditionalVisitors();
+        // Virtual visits have no special_requirements.
+        $this->setFormElementValue('visitor_special_requirements_details');
+      }
+    }
+
     // Pre-populate the form with any booking amendment data. Only do
     // this once.
     $amend_booking_data = $form_state->get('amend_booking_data');
     $amend_booking_setup_complete = $form_state->get('amend_booking_setup_complete');
 
-    if ($page === 'amend_booking_page' && $amend_booking_data && ($amend_booking_setup_complete !== TRUE || $form_state->getTriggeringElement()['#value'] === "Previous")) {
+    if ($page === 'amend_booking_page' && $amend_booking_data && ($amend_booking_setup_complete !== TRUE || $page_trigger_is_previous)) {
       $this->alterFormToAmendBooking();
     }
 
@@ -420,8 +448,7 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
       }
     }
 
-    // To enable clientside checking for duplicate IDs, pass any
-    // visitor IDs to clientside.
+    // Pass all visitor IDs to clientside for duplication checks.
     $visitor_1_id = $form_state->getValue('visitor_1_id');
     $additional_visitor_ids = array_filter($form_state->getValues(), function ($v, $k) {
       return preg_match("/additional_visitor_[1-5]_id/", $k);
@@ -430,19 +457,14 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
     $form['#attached']['drupalSettings']['prisonVisitBooking']['visitorOneId'] = ['visitor_1_id' => $visitor_1_id];
     $form['#attached']['drupalSettings']['prisonVisitBooking']['additionalVisitorIds'] = $additional_visitor_ids;
 
-    // When amending a booking, and the main visitor ID is changed so
-    // that it duplicates an existing additional visitor ID, then the
-    // additional visitor is removed.
+    // If the main visitor ID duplicates an existing additional
+    // visitor ID, remove the additional visitor.
 
-    // If a duplicate ID is found ...
-    if ($duplicate_visitor_id_key = array_search($visitor_1_id, $additional_visitor_ids)) {
+    if (!empty($visitor_1_id) && $duplicate_visitor_id_key = array_search($visitor_1_id, $additional_visitor_ids)) {
 
       // Determine the additional visitor number from the key for
       // the duplicate ID.
       $duplicate_visitor_number = (int) filter_var($duplicate_visitor_id_key, FILTER_SANITIZE_NUMBER_INT);
-
-      // Determine the key for the corresponding DOB for duplicate visitor.
-      $duplicate_visitor_dob_key = str_replace('_id', '_dob', $duplicate_visitor_id_key);
 
       // Erase the duplicate visitor values.
       $this->setFormElementValue('additional_visitor_' . $duplicate_visitor_number . '_id', '');
@@ -466,8 +488,8 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
 
       // Subtract 1 from the form element tracking the number of
       // additional visitors.
-      $additional_visitor_number = (int) $this->formState->getValue('additional_visitor_number');
-      $this->setFormElementValue('additional_visitor_number', $additional_visitor_number - 1);
+      $additional_visitor_number = (string) ($this->formState->getValue('additional_visitor_number') - 1);
+      $this->setFormElementValue('additional_visitor_number', $additional_visitor_number);
     }
 
     // If user is amending a booking, timeslots are always reset and
@@ -479,33 +501,13 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
       $this->setFormElementValue('slot1_datetime', $amend_booking_data['SLOTDATETIME']);
     }
 
-    // Fix additional_visitor_number issue.
-    if ($page === 'additional_visitor_details') {
-      $additional_visitor_number = $this->formState->getValue('additional_visitor_number');
-      if ($additional_visitor_number === -1) {
-        $this->setFormElementValue('additional_visitor_number', 0);
-      }
-    }
-
     // Show available timeslots in the form.
     if ($page === 'visit_preferred_day_and_time' && !empty($this->bookingReference)) {
 
       // Reset timeslots when user is amending a booking.
-      if ($amend_booking_data && $form_state->getTriggeringElement()['#value'] === "Next") {
+      if ($amend_booking_data && $page_trigger_is_next) {
         $this->resetFormSlots($form, $form_state, $webform_submission);
       }
-
-      // Reset timeslots if visitor_order_number has changed.
-      $last_visitor_order_number = $form_state->get('last_visitor_order_number');
-
-      if (!empty($last_visitor_order_number)
-        && $last_visitor_order_number !== $form_state->getValue('visitor_order_number')
-        && $form_state->getTriggeringElement()['#value'] === "Next") {
-        $this->resetFormSlots($form, $form_state, $webform_submission);
-      }
-
-      // Update last_visitor_order_number.
-      $form_state->set('last_visitor_order_number', $form_state->getValue('visitor_order_number'));
 
       // Get available slots and show only those slots on the form.
       $available_slots = $this->bookingReference['available_slots'];
@@ -597,16 +599,19 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
 
     // Remembered additional visitors are stored in a private tempstore.
     $temp_store = $this->tempStoreFactory->get('nidirect_webforms.prison_visit_booking');
-    $visitor_data = $temp_store->get('visitor_data');
 
-    // If there is remembered visitor data from a previous booking...
-    if (!empty($visitor_data) && $page === 'additional_visitor_details') {
+    // Retrieve visitor data, but not for virtual bookings.
+    $visitor_data = [];
+    if (!empty($this->bookingReference) && $this->bookingReference['visit_type'] !== 'virtual') {
+      $visitor_data = $temp_store->get('visitor_data');
+    }
 
+    if (!empty($visitor_data) && $page === 'additional_visitor_details' && $page_trigger_is_next) {
       // Assume it is valid.
       $visitor_data_is_valid = TRUE;
 
       // It's not valid if user decides not to remember it.
-      if ($visitor_data['additional_visitors_remember'] === 'no') {
+      if ($visitor_data['additional_visitors_remember'] === 'No') {
         $visitor_data_is_valid = FALSE;
       }
       // It's not valid if it's missing.
@@ -615,23 +620,21 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
       }
       // It's not valid if main visitor id and dob in the present booking
       // differs from remembered values.  This indicates someone else
-      // is making a booking using the same device and they should not
-      // see remembered visitor data belonging to another visitor.
+      // is making a booking using the same device, and they should not
+      // see data belonging to another visitor.
       elseif ($visitor_data['visitor_1_id'] !== $form_state->getValue('visitor_1_id') || $visitor_data['visitor_1_dob'] !== $form_state->getValue('visitor_1_dob')) {
         $visitor_data_is_valid = FALSE;
       }
 
       if ($visitor_data_is_valid) {
-
-        // Remembered visitor data is valid and can be used.
-
         // If we are not amending a booking, we just prepopulate
-        // all additional visitor fields with the remembered data.
+        // additional visitor fields with the remembered data.
         if (empty($amend_booking_data)) {
 
-          // Retrieve existing visitor data.
           foreach ($visitor_data as $key => $value) {
-            $this->setFormElementValue($key, $value);
+            if (empty($form_state->getValue($key))) {
+              $this->setFormElementValue($key, $value);
+            }
           }
 
           // Show msg that existing visitor data found.
@@ -651,13 +654,13 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
       else {
 
         // Remembered visitor data is not valid.
-        // @TODO - remove all visitor data?
+        // Delete it.
         $temp_store->delete('visitor_data');
 
         // Reset form state for additional visitors.
         foreach ($visitor_data as $key => $value) {
           if (str_starts_with($key, 'additional_visitor')) {
-            $this->setFormElementValue($key, $value);
+            $this->setFormElementValue($key);
           }
         }
 
@@ -671,13 +674,13 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
       $elements['msg_amend_additional_visitors']['#access'] = TRUE;
     }
     else {
-      // No remembered data from a previous booking and we are not
+      // No remembered data from a previous booking, and we are not
       // amending a booking...
       // Show the standard additional visitor message.
       $elements['msg_additional_visitors']['#access'] = TRUE;
     }
 
-    // Alter webform confirmation message.
+    // Alterations for webform confirmation step.
     if ($page === 'webform_confirmation') {
 
       // Default confirmation message.
@@ -735,7 +738,7 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
     $additional_visitors_count = count($additional_visitors);
 
     if ($additional_visitors_count > 0) {
-      $this->setFormElementValue('additional_visitor_number', $additional_visitors_count);
+      $this->setFormElementValue('additional_visitor_number', (string) $additional_visitors_count);
 
       for ($i = 0; $i < $additional_visitors_count; $i++) {
         $form_key_stub = 'additional_visitor_' . ($i + 1);
@@ -810,20 +813,24 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
     if ($form_state->isValidationComplete() && $page === 'webform_preview') {
 
       $temp_store = $this->tempStoreFactory->get('nidirect_webforms.prison_visit_booking');
-      $remember_visitors = $form_state->getValue('additional_visitors_remember') === 'Yes' ?? FALSE;
-      $visitor_data = [];
+      $remember_visitors = $form_state->getValue('additional_visitors_remember');
       $form_values = $form_state->getValues();
 
-      foreach ($form_values as $element_name => $element_value) {
-        // Special requirements textarea needs to be encoded for JSON.
-        if (str_contains($element_name, 'special_requirements_details')) {
-          $special_requirements = Json::encode($element_value);
-          $form_state->setValue('special_requirements_json', $special_requirements);
-          $webform_submission->setElementData('special_requirements_json', $special_requirements);
-        }
+      // Special requirements textarea needs to be encoded for JSON.
+      if (!empty($form_values['special_requirements_details'])) {
+        $special_requirements = Json::encode($form_values['special_requirements_details']);
+        $form_state->setValue('special_requirements_json', $special_requirements);
+        $webform_submission->setElementData('special_requirements_json', $special_requirements);
+      }
 
-        // Capture non-sensitive visitor data in session temp store.
-        if ($remember_visitors) {
+      // If user wants to remember additional visitors...
+      if ($remember_visitors === 'Yes') {
+
+        // Capture non-sensitive visitor data and
+        // store in PrivateTempStore.
+        $visitor_data = [];
+
+        foreach ($form_values as $element_name => $element_value) {
           if ($element_name === 'visitor_1_id' ||
             $element_name === 'visitor_1_dob' ||
             str_starts_with($element_name, 'additional_visitor') ||
@@ -831,9 +838,13 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
             $visitor_data[$element_name] = $element_value;
           }
         }
-      }
 
-      $temp_store->set('visitor_data', $visitor_data);
+        $temp_store->set('visitor_data', $visitor_data);
+      }
+      // Otherwise delete visitor data.
+      elseif ($remember_visitors === 'No') {
+        $temp_store->delete('visitor_data');
+      }
 
       // The form accommodates two additional adults and five
       // additional children.
@@ -891,7 +902,6 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
         }
       }
     }
-
   }
 
   /**
@@ -1404,6 +1414,20 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
   }
 
   /**
+   * Reset any additional visitor data entered into the form.
+   */
+  private function resetAdditionalVisitors() {
+    $num_additional_visitors = (int) $this->formState->getValue('additional_visitor_number');
+
+    for ($i = 1; $i <= $num_additional_visitors; $i++) {
+      $this->setFormElementValue('additional_visitor_' . $i . '_id');
+      $this->setFormElementValue('additional_visitor_' . $i . '_dob');
+    }
+
+    $this->setFormElementValue('additional_visitor_number', '0');
+  }
+
+  /**
    * Reset form slots.
    */
   private function resetFormSlots(array &$form, FormStateInterface $form_state, WebformSubmissionInterface $webform_submission) {
@@ -1414,15 +1438,15 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
     }, ARRAY_FILTER_USE_KEY);
 
     foreach ($form_values as $element_name => $element_value) {
-      $this->setFormElementValue($element_name, []);
+      $this->setFormElementValue($element_name);
     }
 
     $form_values = array_filter($form_state->getValues(), function ($key) {
-      return str_starts_with($key, 'slot') && str_ends_with($key, 'datetime');
+      return str_starts_with($key, 'slot') && (str_ends_with($key, 'datetime') || str_ends_with($key, 'datetime_submission'));
     }, ARRAY_FILTER_USE_KEY);
 
     foreach ($form_values as $element_name => $element_value) {
-      $this->setFormElementValue($element_name, '');
+      $this->setFormElementValue($element_name);
     }
 
     // Some of the logic for setting timeslot preferences is handled
@@ -1466,18 +1490,59 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
   }
 
   /**
-   * Sets the value of a form element in $form, $form_state, and $webform_submission.
+   * Sets or clears the value of a form element across $form, $form_state,
+   * and $webform_submission.
    *
    * @param string $element_key
    *   The key of the element whose value you want to set.
-   * @param mixed $element_value
-   *   The value to set for the element.
+   * @param mixed|null $element_value
+   *   The value to set. If NULL, a type-appropriate "empty" value
+   *   will be used.
    */
-  protected function setFormElementValue(string $element_key, mixed $element_value) {
-    $this->formState->setValue($element_key, $element_value);
-    $this->webformSubmission->setElementData($element_key, $element_value);
+  protected function setFormElementValue(string $element_key, mixed $element_value = NULL): void {
+
     if (isset($this->elements[$element_key])) {
-      $this->elements[$element_key]['#default_value'] = $element_value;
+
+      // Determine element type.
+      $type = $this->elements[$element_key]['#type'] ?? NULL;
+
+      // If no element value given, determine a sensible empty value.
+      if ($element_value === NULL) {
+        switch ($type) {
+          case 'checkboxes':
+          case 'webform_checkbox_other':
+            $element_value = [];
+            break;
+
+          case 'hidden':
+          case 'textfield':
+          case 'date':
+          case 'datetime':
+          case 'webform_time':
+          case 'webform_datetime':
+            $element_value = '';
+            break;
+
+          default:
+            $element_value = NULL;
+        }
+      }
+
+      // Update element value in form state.
+      if ($element_value === NULL) {
+        $this->formState->unsetValue($element_key);
+      }
+      else {
+        $this->formState->setValue($element_key, $element_value);
+      }
+
+      // Update submission object.
+      $this->webformSubmission->setElementData($element_key, $element_value);
+
+      // Update rendered element.
+      if (isset($this->elements[$element_key])) {
+        $this->elements[$element_key]['#default_value'] = $element_value;
+      }
     }
   }
 
