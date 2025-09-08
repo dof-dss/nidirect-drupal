@@ -55,6 +55,22 @@ section.webform-section {
     margin: 2em 0;
   }
 
+  &.form-item--card {
+    padding: 0;
+    background-color: #fff;
+    max-width: 100%;
+
+    .fieldset__wrapper,
+    .fieldset-wrapper {
+      padding: .5em;
+      background-color: $grey-lightest;
+
+      > *:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+
   legend {
     @include responsive-typo-map($form-legend);
     color: $peacock-blue;
@@ -79,7 +95,6 @@ section.webform-section {
       font-weight: bold;
       color: $text;
     }
-
   }
 }
 
@@ -471,6 +486,7 @@ textarea,
     display: inline-block;
     width: auto;
     padding: 0;
+    max-width: 100%;
 
     .form-item--error-message {
       @extend %error-bubble--floating-below;
