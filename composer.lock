@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "9198bef3edf406010c1fd870695b12ea",
+    "content-hash": "9e52787b84efee930cc548bdc068d72c",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -2620,6 +2620,54 @@
             "time": "2025-01-24T12:20:03+00:00"
         },
         {
+            "name": "drupal/a11y_form_helpers",
+            "version": "2.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://git.drupalcode.org/project/a11y_form_helpers.git",
+                "reference": "2.1.0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://ftp.drupal.org/files/projects/a11y_form_helpers-2.1.0.zip",
+                "reference": "2.1.0",
+                "shasum": "95267bd4a881912cb2d630dc84b331d9ebc433a7"
+            },
+            "require": {
+                "drupal/core": "^10 || ^11"
+            },
+            "type": "drupal-module",
+            "extra": {
+                "drupal": {
+                    "version": "2.1.0",
+                    "datestamp": "1737371454",
+                    "security-coverage": {
+                        "status": "covered",
+                        "message": "Covered by Drupal's security advisory policy"
+                    }
+                }
+            },
+            "notification-url": "https://packages.drupal.org/8/downloads",
+            "license": [
+                "GPL-2.0-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "marloes_bosch",
+                    "homepage": "https://www.drupal.org/user/3424313"
+                },
+                {
+                    "name": "tess bakker",
+                    "homepage": "https://www.drupal.org/user/592104"
+                }
+            ],
+            "description": "Make forms more accessible.",
+            "homepage": "https://www.drupal.org/project/a11y_form_helpers",
+            "support": {
+                "source": "https://git.drupalcode.org/project/a11y_form_helpers"
+            }
+        },
+        {
             "name": "drupal/address",
             "version": "2.0.4",
             "source": {
@@ -3139,26 +3187,27 @@
         },
         {
             "name": "drupal/book",
-            "version": "1.0.0",
+            "version": "2.0.2",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/book.git",
-                "reference": "1.0.0"
+                "reference": "2.0.2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/book-1.0.0.zip",
-                "reference": "1.0.0",
-                "shasum": "8838e4a314e54dff2bc34a0ae4f0a85ac03b6fb8"
+                "url": "https://ftp.drupal.org/files/projects/book-2.0.2.zip",
+                "reference": "2.0.2",
+                "shasum": "32a2c216de59d901cfefdaec264ab7bcd908a174"
             },
             "require": {
-                "drupal/core": ">=10.0"
+                "drupal/core": "^10.3 || ^11",
+                "ext-pdo": "*"
             },
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "1.0.0",
-                    "datestamp": "1712238320",
+                    "version": "2.0.2",
+                    "datestamp": "1750804798",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -3171,22 +3220,25 @@
             ],
             "authors": [
                 {
-                    "name": "mdranove",
-                    "homepage": "https://www.drupal.org/user/3695874"
+                    "name": "Peter Wolanin (pwolanin)",
+                    "homepage": "https://www.drupal.org/u/pwolanin",
+                    "role": "Maintainer"
                 },
                 {
-                    "name": "pwolanin",
-                    "homepage": "https://www.drupal.org/user/49851"
+                    "name": "Stephen Mustgrave (smustgrave)",
+                    "homepage": "https://www.drupal.org/u/smustgrave",
+                    "role": "Co-Maintainer"
                 },
                 {
                     "name": "smustgrave",
                     "homepage": "https://www.drupal.org/user/3252890"
                 }
             ],
-            "description": "Allows users to create and organize related content in an outline.",
-            "homepage": "https://www.drupal.org/project/book",
+            "description": "A book is a set of nodes tied together in a hierarchical structure, with chapters, sections, and subsections.",
+            "homepage": "https://drupal.org/project/book",
             "support": {
-                "source": "https://git.drupalcode.org/project/book"
+                "source": "https://git.drupalcode.org/project/book",
+                "issues": "https://drupal.org/project/issues/book"
             }
         },
         {
@@ -4010,84 +4062,6 @@
             "homepage": "https://www.drupal.org/project/config_update",
             "support": {
                 "source": "https://git.drupalcode.org/project/config_update"
-            }
-        },
-        {
-            "name": "drupal/cookie_content_blocker",
-            "version": "2.5.0",
-            "source": {
-                "type": "git",
-                "url": "https://git.drupalcode.org/project/cookie_content_blocker.git",
-                "reference": "2.5.0"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/cookie_content_blocker-2.5.0.zip",
-                "reference": "2.5.0",
-                "shasum": "f52e8b6dc3593fd172f217233c92633f4f8c52e1"
-            },
-            "require": {
-                "drupal/core": "^9.4 || ^10 || ^11",
-                "drupal/js_cookie": "^1.0",
-                "ext-json": "*",
-                "php": "^8.0"
-            },
-            "type": "drupal-module",
-            "extra": {
-                "drupal": {
-                    "version": "2.5.0",
-                    "datestamp": "1747907988",
-                    "security-coverage": {
-                        "status": "covered",
-                        "message": "Covered by Drupal's security advisory policy"
-                    }
-                }
-            },
-            "notification-url": "https://packages.drupal.org/8/downloads",
-            "license": [
-                "GPL-2.0+"
-            ],
-            "authors": [
-                {
-                    "name": "Steven Buteneers",
-                    "homepage": "https://www.drupal.org/u/steven-buteneers",
-                    "role": "Maintainer"
-                },
-                {
-                    "name": "Daniël Smidt",
-                    "homepage": "https://www.drupal.org/u/dmsmidt",
-                    "role": "Maintainer"
-                },
-                {
-                    "name": "Marc Janson",
-                    "homepage": "https://www.drupal.org/u/scorpid",
-                    "role": "Developer"
-                },
-                {
-                    "name": "sebastian.wegerer",
-                    "homepage": "https://www.drupal.org/user/3768762"
-                },
-                {
-                    "name": "steven buteneers",
-                    "homepage": "https://www.drupal.org/user/3301055"
-                },
-                {
-                    "name": "thomasdik",
-                    "homepage": "https://www.drupal.org/user/1718070"
-                }
-            ],
-            "description": "Prevent loading of content with a privacy impact until consent is given. This module needs a separate cookie consent manager.",
-            "homepage": "https://www.drupal.org/project/cookie_content_blocker",
-            "keywords": [
-                "Content",
-                "Content Access Control",
-                "Content Display",
-                "Drupal",
-                "Spam Prevention"
-            ],
-            "support": {
-                "source": "http://cgit.drupalcode.org/cookie_content_blocker",
-                "issues": "https://www.drupal.org/project/issues/cookie_content_blocker?version=8.x"
             }
         },
         {
@@ -5319,26 +5293,26 @@
         },
         {
             "name": "drupal/eu_cookie_compliance",
-            "version": "1.24.0",
+            "version": "1.28.0",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/eu-cookie-compliance.git",
-                "reference": "8.x-1.24"
+                "reference": "8.x-1.28"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/eu_cookie_compliance-8.x-1.24.zip",
-                "reference": "8.x-1.24",
-                "shasum": "ab8dcd866e5ad95cde6fdf9cbca509c7f399bd23"
+                "url": "https://ftp.drupal.org/files/projects/eu_cookie_compliance-8.x-1.28.zip",
+                "reference": "8.x-1.28",
+                "shasum": "963991f5ead59e5fcf57fb100f30267ded5929f2"
             },
             "require": {
-                "drupal/core": "^8.9 || ^9 || ^10"
+                "drupal/core": "^8.9 || ^9 || ^10 || ^11"
             },
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "8.x-1.24",
-                    "datestamp": "1665158185",
+                    "version": "8.x-1.28",
+                    "datestamp": "1753332673",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -5388,17 +5362,17 @@
         },
         {
             "name": "drupal/facets",
-            "version": "2.0.9",
+            "version": "2.0.10",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/facets.git",
-                "reference": "2.0.9"
+                "reference": "2.0.10"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/facets-2.0.9.zip",
-                "reference": "2.0.9",
-                "shasum": "54512df3448c2464ef2bee7eefa825115562c9d5"
+                "url": "https://ftp.drupal.org/files/projects/facets-2.0.10.zip",
+                "reference": "2.0.10",
+                "shasum": "d7deeefd5a0c96c5f3715e236a4b766aaade945c"
             },
             "require": {
                 "drupal/core": "^10 || ^11"
@@ -5418,8 +5392,8 @@
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "2.0.9",
-                    "datestamp": "1728492418",
+                    "version": "2.0.10",
+                    "datestamp": "1756314567",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -7077,20 +7051,20 @@
         },
         {
             "name": "drupal/linkit",
-            "version": "6.1.6",
+            "version": "6.1.8",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/linkit.git",
-                "reference": "6.1.6"
+                "reference": "6.1.8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/linkit-6.1.6.zip",
-                "reference": "6.1.6",
-                "shasum": "113d8e569cfb92f8d7feb0a2f7713953c0715e92"
+                "url": "https://ftp.drupal.org/files/projects/linkit-6.1.8.zip",
+                "reference": "6.1.8",
+                "shasum": "32036424df7d5daf4293a225675294b4ad34880e"
             },
             "require": {
-                "drupal/core": "^10.1"
+                "drupal/core": ">10.1.0 <10.5.0"
             },
             "require-dev": {
                 "drupal/ckeditor": "*",
@@ -7099,8 +7073,8 @@
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "6.1.6",
-                    "datestamp": "1729189029",
+                    "version": "6.1.8",
+                    "datestamp": "1752533567",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
