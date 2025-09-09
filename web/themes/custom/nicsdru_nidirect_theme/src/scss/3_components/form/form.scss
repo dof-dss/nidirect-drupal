@@ -60,9 +60,14 @@ section.webform-section {
     background-color: #fff;
     max-width: 100%;
 
+    &.compact {
+      max-width: 30em;
+    }
+
+
     .fieldset__wrapper,
     .fieldset-wrapper {
-      padding: .5em;
+      padding: 1em;
       background-color: $grey-lightest;
 
       > *:last-child {
@@ -98,6 +103,10 @@ section.webform-section {
   }
 }
 
+.form-wrapper {
+  margin: 0 0 1.5em;
+}
+
 .form-actions {
   position: relative;
   margin: 2.5em 0;
@@ -117,13 +126,13 @@ section.webform-section {
   }
 }
 
-.form-wrapper {
-  margin: 0 0 1.5em;
-}
-
 .form-item:not(.form-wrapper) {
   padding: 0;
   margin: 0 0 1em;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
 }
 
 .form-item {
@@ -131,10 +140,6 @@ section.webform-section {
 
   .container-inline {
     margin: 0;
-  }
-
-  &:last-child {
-    margin-bottom: 0;
   }
 
   &.form-type-checkbox,
