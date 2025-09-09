@@ -510,7 +510,8 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
       }
 
       // Get available slots and show only those slots on the form.
-      $available_slots = $this->bookingReference['available_slots'];
+      $available_slots = $this->getAvailableSlots();
+      $slots_error = $slots['error'] ?? FALSE;
 
       // Determine dates.
       $visit_booking_ref_valid_from = $this->bookingReference['date_valid_from'];
@@ -521,7 +522,7 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
       }
 
       // Alter form slots to correspond with available slots.
-      if (!empty($available_slots)) {
+      if (!empty($available_slots) && !$slots_error) {
 
         for ($i = 4; $i >= 1; $i--) {
 
@@ -587,6 +588,19 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
 
           }
         }
+      }
+      else {
+        // There are no slots available.
+        // Disable all slots.
+        $elements['slots']['#access'] = FALSE;
+
+        // Show a message.
+        $elements['msg_no_slots_available']['#access'] = TRUE;
+
+        // Prevent further progression.
+        $elements['wizard_prev']['#access'] = FALSE;
+        $elements['wizard_next']['#access'] = FALSE;
+        $elements['preview_next']['#access'] = FALSE;
       }
     }
 
@@ -1005,6 +1019,13 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
     $visit_earliest_date = clone $now;
     $visit_earliest_date->modify('+' . $booking_advance_notice);
 
+    // If the current time is > 45 minutes past the hour, round up.
+    if ((int) $now->format('i') > 0) {
+      $visit_earliest_date->modify('+1 hour');
+      // Normalise to the top of the hour.
+      $visit_earliest_date->setTime((int) $visit_earliest_date->format('H'), 0,0);
+    }
+
     // Date from now when slot cannot be booked.
     $visit_latest_date = clone $now;
     $visit_latest_date->modify('+' . $booking_ref_max_advance_issue);
@@ -1211,20 +1232,11 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
       return;
     }
 
-    $slotPicked = FALSE;
+    $form_values = array_filter($form_state->getValues(), function ($value, $key) {
+      return str_contains($key, '_week_') && is_array($value) && !empty($value);
+    }, ARRAY_FILTER_USE_BOTH);
 
-    $form_values = array_filter($form_state->getValues(), function ($key) {
-      return str_contains($key, '_week_');
-    }, ARRAY_FILTER_USE_KEY);
-
-    foreach ($form_values as $element_name => $element_value) {
-      if (is_array($element_value) && !empty($element_value)) {
-        $slotPicked = TRUE;
-        break;
-      }
-    }
-
-    if ($slotPicked === FALSE) {
+    if (empty($form_values)) {
       $form_state->setErrorByName('slots_week_1', $this->t('You did not choose a time slot for your visit.'));
     }
   }
