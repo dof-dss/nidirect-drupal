@@ -20,9 +20,11 @@ class TokenAndIpAddressAuth implements AuthenticationProviderInterface {
       return FALSE;
     }
 
-    // Apply to endpoints under /api/{version}/prisoner-payments.
+    // Apply to endpoints under:
+    //   /api/{version}/prisoner-payments and
+    //   /api/{version}/prisoner-visits.
     $path = $request->getPathInfo();
-    return preg_match('#^/api/v\d+/prisoner-payments#', $path);
+    return preg_match('#^/api/v\d+/prisoner-payments#', $path) || preg_match('#^/api/v\d+/prison-visits#', $path);
   }
 
   /**
