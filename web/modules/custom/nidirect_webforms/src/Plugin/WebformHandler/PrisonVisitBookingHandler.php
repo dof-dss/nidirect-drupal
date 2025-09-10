@@ -511,7 +511,7 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
 
       // Get available slots and show only those slots on the form.
       $available_slots = $this->getAvailableSlots();
-      $slots_error = $slots['error'] ?? FALSE;
+      $slots_error = $available_slots['error'] ?? FALSE;
 
       // Determine dates.
       $visit_booking_ref_valid_from = $this->bookingReference['date_valid_from'];
@@ -1023,7 +1023,7 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
     if ((int) $now->format('i') > 0) {
       $visit_earliest_date->modify('+1 hour');
       // Normalise to the top of the hour.
-      $visit_earliest_date->setTime((int) $visit_earliest_date->format('H'), 0,0);
+      $visit_earliest_date->setTime((int) $visit_earliest_date->format('H'), 0, 0);
     }
 
     // Date from now when slot cannot be booked.
