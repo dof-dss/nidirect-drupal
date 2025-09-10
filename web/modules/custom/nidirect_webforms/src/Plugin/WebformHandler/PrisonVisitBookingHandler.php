@@ -1019,7 +1019,7 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
     $visit_earliest_date = clone $now;
     $visit_earliest_date->modify('+' . $booking_advance_notice);
 
-    // If the current time is > 45 minutes past the hour, round up.
+    // Round up to the nearest hour.
     if ((int) $now->format('i') > 0) {
       $visit_earliest_date->modify('+1 hour');
       // Normalise to the top of the hour.
