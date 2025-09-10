@@ -1,0 +1,17 @@
+uuid: 66ad4390-b669-4d90-9bd1-168b35731eff
+langcode: en
+status: true
+dependencies:
+  module:
+    - nidirect_prisons
+    - serialization
+id: prison_visits_service_status
+plugin_id: prison_visits_service_status
+granularity: resource
+configuration:
+  methods:
+    - POST
+  formats:
+    - json
+  authentication:
+    - nidirect_prisons_token_ip_auth
