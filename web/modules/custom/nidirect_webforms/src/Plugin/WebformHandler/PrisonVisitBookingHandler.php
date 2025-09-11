@@ -817,7 +817,7 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
       $form_values = $form_state->getValues();
 
       // Special requirements textarea needs to be encoded for JSON.
-      $special_requirements =  Json::encode($form_state->getValue('visitor_special_requirements_details')) ?? '""';
+      $special_requirements = Json::encode($form_state->getValue('visitor_special_requirements_details')) ?? '""';
       $form_state->setValue('special_requirements_json', $special_requirements);
       $webform_submission->setElementData('special_requirements_json', $special_requirements);
 
