@@ -660,12 +660,14 @@ input[type='checkbox'],
     color: color(text);
   }
 
-  @at-root .form-checkboxes:has(.error) [type='checkbox'] ~ label {
+  // sass-lint:disable space-after-colon
+  @at-root .form-checkboxes:has(.error) [type='checkbox']:not(:checked) ~ label {
     box-shadow: inset 0 0 0 1px $error;
     outline-color: $error;
     background-color: $error-bg;
     color: color(text);
   }
+  // sass-lint:enable space-after-colon
 
   &:checked ~ label {
     background-color: $brand-primary-lightest;
