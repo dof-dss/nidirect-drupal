@@ -817,11 +817,9 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
       $form_values = $form_state->getValues();
 
       // Special requirements textarea needs to be encoded for JSON.
-      if (!empty($form_values['special_requirements_details'])) {
-        $special_requirements = Json::encode($form_values['special_requirements_details']);
-        $form_state->setValue('special_requirements_json', $special_requirements);
-        $webform_submission->setElementData('special_requirements_json', $special_requirements);
-      }
+      $special_requirements = Json::encode($form_state->getValue('visitor_special_requirements_details')) ?? '""';
+      $form_state->setValue('special_requirements_json', $special_requirements);
+      $webform_submission->setElementData('special_requirements_json', $special_requirements);
 
       // If user wants to remember additional visitors...
       if ($remember_visitors === 'Yes') {
@@ -1516,6 +1514,7 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
 
           case 'hidden':
           case 'textfield':
+          case 'textarea':
           case 'date':
           case 'datetime':
           case 'webform_time':
@@ -1527,22 +1526,22 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
             $element_value = NULL;
         }
       }
+    }
 
-      // Update element value in form state.
-      if ($element_value === NULL) {
-        $this->formState->unsetValue($element_key);
-      }
-      else {
-        $this->formState->setValue($element_key, $element_value);
-      }
+    // Update element value in form state.
+    if ($element_value === NULL) {
+      $this->formState->unsetValue($element_key);
+    }
+    else {
+      $this->formState->setValue($element_key, $element_value);
+    }
 
-      // Update submission object.
-      $this->webformSubmission->setElementData($element_key, $element_value);
+    // Update submission object.
+    $this->webformSubmission->setElementData($element_key, $element_value);
 
-      // Update rendered element.
-      if (isset($this->elements[$element_key])) {
-        $this->elements[$element_key]['#default_value'] = $element_value;
-      }
+    // Update rendered element.
+    if (isset($this->elements[$element_key])) {
+      $this->elements[$element_key]['#default_value'] = $element_value;
     }
   }
 
