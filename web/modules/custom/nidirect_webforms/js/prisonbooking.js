@@ -64,6 +64,7 @@
           // Restore from hidden inputs (e.g. after AJAX rebuild).
           $hiddenTimeSlots.each(function (index) {
             const value = $(this).val();
+            let now = Date.now();
             if (value) {
               const $checkbox = $timeSlots.filter('[value="' + value + '"]');
               if ($checkbox.length) {
