@@ -278,6 +278,9 @@ function nidirect_common_form_node_form_alter(&$form, FormStateInterface $form_s
   if (array_key_exists('field_attachment', $form)) {
     $form['#attached']['library'][] = 'nicsdru_origins_theme/media_library_styles';
   }
+
+  // Attach admin theme fixes.
+  $form['#attached']['library'][] = 'nicsdru_nidirect_theme/admin-forms';
 }
 
 /**
