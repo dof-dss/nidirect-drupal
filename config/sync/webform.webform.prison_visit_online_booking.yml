@@ -63,9 +63,15 @@ elements: |-
     '#display_on': view
     '#markup': |-
       <div role="status">
-        <p class="info-notice info-notice--warning">
-          <strong>Are you sure you want to cancel this booking?</strong><br>If you are sure you want to cancel, choose <strong>Cancel booking</strong> below.
-        </p>
+        <div class="info-notice info-notice--warning">
+          <h3>Are you sure you want to cancel this booking?</h3>
+          <p>
+             If you cancel, <strong>the visit will be lost and you will not be able to reuse the visit reference number</strong>.
+          </p>
+          <p>
+             If you are sure you want to cancel, choose <strong>Cancel booking</strong> below.
+          </p>
+        </div>
       </div>
   confirmation_visit_details:
     '#type': webform_computed_twig
@@ -1202,6 +1208,21 @@ elements: |-
               <dd>{{ data.prisoner_id }}</dd>
             </dl>
         </div>
+    msg_no_slots_available:
+      '#type': webform_markup
+      '#access': false
+      '#markup': |-
+        <div class="visit-details" role="status">
+          <div class="info-notice info-notice--error" role="status">
+            <p>
+              There are no more visit dates and times available.
+            </p>
+          </div>
+          <hr>
+          <p>
+            You can <a href="/forms/book-prison-visit" data-self-ref="true">make a new booking using a different visit reference number</a> if you have one.
+          </p>
+        </div>
     slots:
       '#type': container
       time_slot_restrictions:
@@ -1920,7 +1941,6 @@ settings:
     visitor_1_intro: visitor_1_intro
     visitor_1_intro_amend: visitor_1_intro_amend
     visitor_1_id: visitor_1_id
-    visitor_1_id_duplicate_warning: visitor_1_id_duplicate_warning
     visitor_1_dob: visitor_1_dob
     visitor_1_email: visitor_1_email
     visitor_1_telephone: visitor_1_telephone

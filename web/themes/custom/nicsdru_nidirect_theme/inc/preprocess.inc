@@ -252,7 +252,6 @@ function nicsdru_nidirect_theme_preprocess_page(array &$variables) {
           if ($node->hasField('field_subtheme') && !$node->get('field_subtheme')->isEmpty()) {
             $subtheme = $node->get('field_subtheme')->entity;
 
-
             if (!empty($subtheme)) {
               $configuration['label'] = $subtheme->getName();
             }
@@ -755,6 +754,9 @@ function nicsdru_nidirect_theme_preprocess_views_view_rss(&$variables) {
   }
 }
 
+/**
+ * Implements hook_preprocess_geolocation_map_wrapper().
+ */
 function nicsdru_nidirect_theme_preprocess_geolocation_map_wrapper(array &$variables) {
   $variables['attributes']['data-silktide'] = 'ignore';
 }

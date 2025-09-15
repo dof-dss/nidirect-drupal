@@ -46,6 +46,7 @@
         "cweagans/composer-patches": "^1.6.5",
         "dof-dss/nicsdru_origins_modules": "^10.5",
         "dof-dss/nicsdru_origins_theme": "^10.1",
+        "drupal/a11y_form_helpers": "^2.1",
         "drupal/address": "^2.0",
         "drupal/admin_toolbar": "^3.5",
         "drupal/adminimal_theme": "^1.7",
@@ -55,7 +56,7 @@
         "drupal/block_content_permissions": "^1.10",
         "drupal/block_field": "^1.0@RC",
         "drupal/block_list_override": "^1.0",
-        "drupal/book": "^1.0",
+        "drupal/book": "^2.0",
         "drupal/chosen": "^4.0",
         "drupal/chosen_lib": "^4.0",
         "drupal/ckeditor": "^1.0",
@@ -68,7 +69,6 @@
         "drupal/config_readonly": "^1.0",
         "drupal/config_split": "^2.0",
         "drupal/config_update": "^2.0@alpha",
-        "drupal/cookie_content_blocker": "^2.4",
         "drupal/core-composer-scaffold": "10.4.8",
         "drupal/core-dev": "^10.4",
         "drupal/core-project-message": "10.4.8",
@@ -85,8 +85,8 @@
         "drupal/entity_reference_revisions": "^1.12",
         "drupal/entity_reference_unpublished": "^2.0",
         "drupal/entityqueue": "^1.0",
-        "drupal/eu_cookie_compliance": "1.24",
-        "drupal/facets": "^2.0.9",
+        "drupal/eu_cookie_compliance": "^1.28",
+        "drupal/facets": "^2.0",
         "drupal/facets_pretty_paths": "^2.0",
         "drupal/fastly": "^4.0",
         "drupal/feeds": "3.x-dev@dev",
@@ -210,8 +210,8 @@
             "drupal/antibot": {
                 "Antibot blocks multistep webform submission if user fails to move mouse pointer": "https://git.drupalcode.org/project/antibot/-/merge_requests/23.diff"
             },
-            "drupal/cookie_content_blocker": {
-                "Disable XSS for tag settings to allow HTML output": "https://gist.githubusercontent.com/omahm/eb99bc8278b57798a7d82bf06c27b8d1/raw/d9d75e06300a102b072dd8166f82ec381f211b9d/cookie_content_blocker_disable_xss"
+            "drupal/book": {
+                "Fix WSOD when using Book and Moderation Sidebar": "https://gist.githubusercontent.com/omahm/5374256e61975d871b7620e51c0fa8c7/raw/731c218ab4b4c4b371efd85f7ba568d007e2bc15/book_mod_sidebar.patch"
             },
             "drupal/core": {
                 "Cannot save unpublished versions of published content for users without manage book privileges": "https://www.drupal.org/files/issues/2022-12-14/2918537-92.patch",
@@ -222,9 +222,6 @@
             },
             "drupal/easy_install": {
                 "Handle missing core version": "https://www.drupal.org/files/issues/2019-12-19/easy_install_core_version-3101883-0.patch"
-            },
-            "drupal/eu_cookie_compliance": {
-                "JS Aggregation breaks in 10.1 when disabling other javascripts": "https://git.drupalcode.org/issue/eu_cookie_compliance-3412431/-/commit/3433c67b039e2319206ab68fd83a32cd161a99cb.diff"
             },
             "drupal/feeds": {
                 "Use uuid as GUID for Drupal entities": "https://www.drupal.org/files/issues/2022-09-23/feeds-3306725-18.patch"
