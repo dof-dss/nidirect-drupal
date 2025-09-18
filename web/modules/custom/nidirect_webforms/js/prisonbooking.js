@@ -158,18 +158,19 @@
           // Announce the most recent change.
           if (clickOrder.length) {
             const last = clickOrder[clickOrder.length - 1];
-            const $checkbox = $timeSlots.filter('[value="' + last.value + '"]');
-            const labelText = $checkbox.next('label').clone()
+            const $timeSlot = $timeSlots.filter('[value="' + last.value + '"]');
+            const timeSlotDay = $timeSlot.closest('fieldset').find('legend span').text().trim();
+            const timeSlotTime = $timeSlot.next('label').clone()
               .children('.rank').remove().end()
               .text().trim();
 
-            if ($checkbox.is(':checked')) {
+            if ($timeSlot.is(':checked')) {
               // Added.
               const rank = orderedSlots.indexOf(last.value) + 1;
-              Drupal.announce('Added ' + labelText + ' as choice ' + rank, 'assertive');
+              Drupal.announce('Added ' + timeSlotTime + ' ' + timeSlotDay + ' as choice ' + rank, 'assertive');
             } else {
               // Removed.
-              Drupal.announce('Removed ' + labelText + ' from your choices', 'assertive');
+              Drupal.announce('Removed ' + timeSlotTime + ' ' + timeSlotDay + ' from your choices', 'assertive');
             }
           } else {
             Drupal.announce('No timeslots selected', 'polite');
