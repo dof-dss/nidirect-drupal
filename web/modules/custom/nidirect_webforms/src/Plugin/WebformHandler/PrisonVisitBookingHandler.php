@@ -813,7 +813,7 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
     }
 
     if ($page === 'visit_preferred_day_and_time') {
-      $this->validateSlotPicked($form, $form_state);
+      $this->validateSlotPicked($form, $form_state, $webform_submission);
     }
   }
 
@@ -1220,7 +1220,7 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
   /**
    * Validate visitor one DOB.
    */
-  private function validateSlotPicked(array &$form, FormStateInterface $form_state) {
+  private function validateSlotPicked(array &$form, FormStateInterface $form_state, WebformSubmissionInterface $webform_submission) {
 
     if ($form_state->get('current_page') !== 'visit_preferred_day_and_time') {
       return;
@@ -1230,11 +1230,20 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
       return;
     }
 
+    // Validate time slots have been selected.
+    // Time slots are checkboxes with keys like monday_week_1,
+    // tuesday_week_2, etc., and whose value must be an array.
     $form_values = array_filter($form_state->getValues(), function ($value, $key) {
       return str_contains($key, '_week_') && is_array($value) && !empty($value);
     }, ARRAY_FILTER_USE_BOTH);
 
     if (empty($form_values)) {
+      $form_state->setErrorByName('slots_week_1', $this->t('You did not choose a time slot for your visit.'));
+    }
+    elseif (empty($form_state->getValue('slot1_datetime'))) {
+      // Hidden time slot elements (populated by JS) should not be
+      // empty. Belt and braces, reset slots.
+      $this->resetFormSlots($form, $form_state, $webform_submission);
       $form_state->setErrorByName('slots_week_1', $this->t('You did not choose a time slot for your visit.'));
     }
   }
