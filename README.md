@@ -1,6 +1,6 @@
 [![CircleCI](https://circleci.com/gh/dof-dss/nidirect-drupal.svg?style=svg)](https://circleci.com/gh/dof-dss/nidirect-drupal)
 
-# NI Direct Drupal
+# NIDirect Drupal
 
 Drupal source code for the NIDirect website: https://www.nidirect.gov.uk.
 

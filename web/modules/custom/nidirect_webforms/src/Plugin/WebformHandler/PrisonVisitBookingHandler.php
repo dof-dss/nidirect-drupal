@@ -1452,7 +1452,7 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
     }
 
     $form_values = array_filter($form_state->getValues(), function ($key) {
-      return str_starts_with($key, 'slot') && (str_ends_with($key, 'datetime') || str_ends_with($key, 'datetime_submission'));
+      return str_starts_with($key, 'slot') && str_ends_with($key, 'datetime');
     }, ARRAY_FILTER_USE_KEY);
 
     foreach ($form_values as $element_name => $element_value) {
