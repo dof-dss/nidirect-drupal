@@ -8,9 +8,39 @@ css:
   gzip: true
 fast_404:
   enabled: true
-  paths: '/\.(?:txt|png|gif|jpe?g|css|js|ico|swf|flv|cgi|bat|pl|dll|exe|asp)$/i'
+  paths: '/.*/'
   exclude_paths: '/\/(?:styles|imagecache)\//'
-  html: '<!DOCTYPE html><html><head><title>404 Not Found</title></head><body><h1>Not Found</h1><p>The requested URL "@path" was not found on this server.</p></body></html>'
+  html: |-
+    <!DOCTYPE html>
+    <html lang="en">
+      <head>
+        <meta charset="utf-8">
+        <title>Page not found</title>
+        <style>
+          * { box-sizing: border-box; }
+          body { font-family: sans-serif; padding: 0 10px; margin: 0; line-height: 1.5; background-color: #fff; color: #222; }
+          header, main { width: 100%; max-width: 980px; margin: 0 auto; padding: 20px 15px 32px; }
+          header { padding-top: 40px; }
+          header img { max-width: 100%; }
+          main { box-shadow: 0 -1px 0 0 #888; padding-top: 1.5em; }
+          h1 { font-size: 1.625em; line-height: 1.25; }
+          h2 { font-size: 1.125em; line-height: 1.125 }
+          p { max-width: 65ch; }
+        </style>
+      </head>
+      <body>
+        <header>
+          <img src="/themes/custom/nicsdru_nidirect_theme/logo.svg" width="391" height="55" alt="N I Direct government services">
+        </header>
+        <main>
+          <h1>Page not found</h1>
+          <h2>Sorry, we can't find the page you are looking for</h2>
+          <p>If you have typed the URL directly into the address bar in your browser please check it's right. If you
+          got here following a link from another website, that link may no longer be correct.</p>
+          <p>Try <a href="/search">searching</a> for what you're looking for or try the <a href="/">home page</a>.</p>
+        </main>
+      </body>
+    </html>
 js:
   preprocess: true
   gzip: true
