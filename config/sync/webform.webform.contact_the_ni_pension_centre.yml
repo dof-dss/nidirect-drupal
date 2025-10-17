@@ -1,0 +1,594 @@
+uuid: a525c08a-c702-4310-a46a-c72b4a851d32
+langcode: en
+status: open
+dependencies: {  }
+weight: 0
+open: null
+close: null
+uid: 24
+template: false
+archive: false
+id: contact_the_ni_pension_centre
+title: 'Contact the Northern Ireland Pension Centre'
+description: ''
+categories: {  }
+elements: |-
+  intro:
+    '#type': processed_text
+    '#text': '<div role="status"><p class="page-summary">If you have a query about Pension Credit, you can use this form to contact the Northern Ireland Pension Centre.</p><p>You can find out how personal information you give to the Northern Ireland Pension Centre when using this form will be handled by viewing its <a href="https://www.communities-ni.gov.uk/publications/supplementary-privacy-notices-dfc-business-areas">privacy notice</a>.</p></div>'
+    '#format': full_html
+  do_you_live_in_northern_ireland:
+    '#type': radios
+    '#title': 'Do you live in Northern Ireland?'
+    '#options': yes_no
+    '#options_display': side_by_side
+    '#required': true
+    '#required_error': 'You must choose one of these options'
+  ni_only_notice:
+    '#type': processed_text
+    '#states':
+      visible:
+        ':input[name="do_you_live_in_northern_ireland"]':
+          value: 'No'
+    '#text': '<p class="info-notice" role="status">This service is only for people in Northern Ireland. If you live in Great Britain you should visit <a href="http://www.gov.uk">www.gov.uk</a> instead.</p>'
+    '#format': full_html
+  can_use_a_phone:
+    '#type': radios
+    '#title': 'Can you use a phone or can someone use a phone on your behalf?'
+    '#options': yes_no
+    '#options_display': side_by_side
+    '#required': true
+    '#required_error': 'You must choose one of these options'
+    '#states':
+      visible:
+        ':input[name="do_you_live_in_northern_ireland"]':
+          value: 'Yes'
+  no_phone_details:
+    '#type': processed_text
+    '#states':
+      visible:
+        ':input[name="can_use_a_phone"]':
+          value: 'No'
+    '#text': '<p class="info-notice" role="status">If you can’t use a phone due to a language, speech or hearing difficulty, fill in the sections below.</p>'
+    '#format': full_html
+  phone_details:
+    '#type': processed_text
+    '#states':
+      visible:
+        ':input[name="can_use_a_phone"]':
+          value: 'Yes'
+    '#text': '<p class="info-notice" role="status">Enter your details below and an agent will call you back.</p>'
+    '#format': full_html
+  your_details:
+    '#type': fieldset
+    '#title': 'Your details'
+    '#states':
+      visible:
+        - ':input[name="can_use_a_phone"]':
+            value: 'Yes'
+        - or
+        - ':input[name="can_use_a_phone"]':
+            value: 'No'
+    name:
+      '#type': textfield
+      '#title': Name
+      '#maxlength': 100
+      '#autocomplete': name
+      '#required': true
+    phone_number:
+      '#type': textfield
+      '#title': 'Telephone number'
+      '#description': 'Enter your telephone or mobile number.'
+      '#description_display': before
+      '#maxlength': 20
+      '#size': 22
+      '#autocomplete': tel
+      '#required': true
+      '#required_error': 'Enter your telephone or mobile number'
+      '#pattern': '^[\+0-9\s\-\(\)]+$'
+      '#pattern_error': 'Enter a valid telephone or mobile number'
+      '#attributes':
+        class:
+          - monospace-text
+      '#states':
+        visible:
+          ':input[name="can_use_a_phone"]':
+            value: 'Yes'
+        required:
+          ':input[name="can_use_a_phone"]':
+            value: 'Yes'
+    email_address:
+      '#type': email
+      '#title': 'Email address (optional)'
+      '#description': 'Enter your email address if you would like a response by email.'
+      '#description_display': before
+      '#autocomplete': email
+      '#pattern': '[^@\s]+@[^@\s]+\.[^@\s]+'
+      '#pattern_error': 'Enter a valid email address.'
+    dob:
+      '#type': textfield
+      '#title': 'Date of birth for the person this query relates to'
+      '#description_display': before
+      '#maxlength': 10
+      '#size': 10
+      '#placeholder': dd/mm/yyyy
+      '#input_mask': 99/99/9999
+      '#required': true
+      '#required_error': 'Enter your date of birth'
+      '#pattern': '[0-3][0-9]\/(0[0-9]|1[0-2])\/[0-9]{4}'
+      '#pattern_error': 'Enter a valid date, for example 31/01/2000'
+      '#states':
+        visible:
+          ':input[name="can_use_a_phone"]':
+            value: 'Yes'
+      '#attributes':
+        class:
+          - monospace-text
+        autocomplete: bday
+        data-inputmask-placeholder: ' '
+        inputmode: numeric
+    national_insurance_number:
+      '#type': textfield
+      '#title': 'National Insurance number for the person this query relates to'
+      '#description': 'For example, QQ 12 34 56 C'
+      '#description_display': before
+      '#maxlength': 13
+      '#size': 14
+      '#autocomplete': 'off'
+      '#input_mask': 'AA[ ]99[ ]99[ ]99[ ]A'
+      '#required': true
+      '#required_error': 'Enter your National Insurance number'
+      '#pattern': '[A-Z]{2} ?[0-9]{2} ?[0-9]{2} ?[0-9]{2} ?[ABCD]'
+      '#pattern_error': 'Enter a valid National Insurance number, for example QQ 12 34 56 C'
+      '#states':
+        visible:
+          ':input[name="can_use_a_phone"]':
+            value: 'Yes'
+      '#attributes':
+        class:
+          - monospace-text
+        data-inputmask-placeholder: ' '
+  your_address:
+    '#type': fieldset
+    '#title': 'Your address'
+    '#required': true
+    '#states':
+      visible:
+        ':input[name="can_use_a_phone"]':
+          value: 'No'
+    address_line_1:
+      '#type': textfield
+      '#title': 'Address line 1'
+      '#title_display': invisible
+      '#maxlength': 100
+      '#placeholder': 'Address line 1'
+      '#autocomplete': address-line1
+      '#states':
+        required:
+          ':input[name="can_use_a_phone"]':
+            value: 'No'
+    address_line_2:
+      '#type': textfield
+      '#title': 'Address line 2'
+      '#title_display': invisible
+      '#maxlength': 100
+      '#placeholder': 'Address line 2'
+      '#autocomplete': address-line2
+      '#states':
+        required:
+          ':input[name="can_use_a_phone"]':
+            value: 'No'
+    address_county:
+      '#type': textfield
+      '#title': 'County (optional)'
+      '#title_display': invisible
+      '#maxlength': 50
+      '#size': 20
+      '#placeholder': 'County (optional)'
+    postcode:
+      '#type': textfield
+      '#title': Postcode
+      '#title_display': invisible
+      '#maxlength': 8
+      '#size': 8
+      '#placeholder': Postcode
+      '#autocomplete': postal-code
+      '#states':
+        required:
+          ':input[name="can_use_a_phone"]':
+            value: 'No'
+  your_query:
+    '#type': fieldset
+    '#title': 'Your query'
+    '#required': true
+    '#states':
+      visible:
+        ':input[name="can_use_a_phone"]':
+          value: 'Yes'
+    your_query_text:
+      '#type': textarea
+      '#title': 'Enter a brief summary of your query'
+      '#title_display': before
+      '#description_display': before
+      '#required': true
+      '#required_error': 'You must enter a brief summary of your query.'
+      '#counter_type': word
+      '#counter_minimum': 1
+      '#counter_maximum': 200
+  explain_why_you_cannot_phone:
+    '#type': fieldset
+    '#title': 'Explain why you cannot phone'
+    '#required': true
+    '#states':
+      visible:
+        ':input[name="can_use_a_phone"]':
+          value: 'No'
+    explain_why_you_cannot_phone_text:
+      '#type': textarea
+      '#title': 'Briefly explain why you cannot make contact by phone so arrangements to get in touch can be made. Do not include your Date of birth or National Insurance number.'
+      '#title_display': before
+      '#description_display': before
+      '#required': true
+      '#required_error': 'You must explain why you cannot make contact by phone'
+      '#counter_type': word
+      '#counter_minimum': 1
+      '#counter_maximum': 200
+  additional_information:
+    '#type': fieldset
+    '#title': 'Additional information (optional)'
+    '#required': false
+    '#states':
+      visible:
+        ':input[name="can_use_a_phone"]':
+          value: 'No'
+    additional_information_text:
+      '#type': textarea
+      '#title': 'Add any additional information if you need to'
+      '#description': ''
+      '#title_display': before
+      '#description_display': before
+      '#counter_type': word
+      '#counter_minimum': 1
+      '#counter_maximum': 200
+  extra_comments_for_pooh_bear:
+    '#type': textfield
+    '#title': 'Extra comments (optional)'
+    '#pattern': '^(?![\s\S])'
+    '#pattern_error': 'There was a problem with the extra comments you have entered'
+    '#wrapper_attributes':
+      class:
+        - for-pooh-bear
+  actions:
+    '#type': webform_actions
+    '#title': 'Submit button(s)'
+    '#states':
+      visible:
+        ':input[name="do_you_live_in_northern_ireland"]':
+          value: 'Yes'
+        ':input[name="can_use_a_phone"]':
+          checked: true
+    '#submit__label': Send
+css: ''
+javascript: ''
+settings:
+  ajax: false
+  ajax_scroll_top: form
+  ajax_progress_type: ''
+  ajax_effect: ''
+  ajax_speed: null
+  page: true
+  page_submit_path: ''
+  page_confirm_path: ''
+  page_theme_name: ''
+  form_title: source_entity_webform
+  form_submit_once: false
+  form_open_message: ''
+  form_close_message: ''
+  form_exception_message: ''
+  form_previous_submissions: true
+  form_confidential: false
+  form_confidential_message: ''
+  form_disable_remote_addr: false
+  form_convert_anonymous: false
+  form_prepopulate: false
+  form_prepopulate_source_entity: false
+  form_prepopulate_source_entity_required: false
+  form_prepopulate_source_entity_type: ''
+  form_unsaved: false
+  form_disable_back: false
+  form_submit_back: false
+  form_disable_autocomplete: false
+  form_novalidate: false
+  form_disable_inline_errors: false
+  form_required: false
+  form_autofocus: false
+  form_details_toggle: false
+  form_reset: false
+  form_access_denied: default
+  form_access_denied_title: ''
+  form_access_denied_message: ''
+  form_access_denied_attributes: {  }
+  form_file_limit: ''
+  form_attributes: {  }
+  form_method: ''
+  form_action: ''
+  share: false
+  share_node: false
+  share_theme_name: ''
+  share_title: true
+  share_page_body_attributes: {  }
+  submission_label: ''
+  submission_exception_message: ''
+  submission_locked_message: ''
+  submission_log: false
+  submission_excluded_elements: {  }
+  submission_exclude_empty: false
+  submission_exclude_empty_checkbox: false
+  submission_views: {  }
+  submission_views_replace: {  }
+  submission_user_columns: {  }
+  submission_user_duplicate: false
+  submission_access_denied: default
+  submission_access_denied_title: ''
+  submission_access_denied_message: ''
+  submission_access_denied_attributes: {  }
+  previous_submission_message: ''
+  previous_submissions_message: ''
+  autofill: false
+  autofill_message: ''
+  autofill_excluded_elements: {  }
+  wizard_progress_bar: false
+  wizard_progress_pages: false
+  wizard_progress_percentage: false
+  wizard_progress_link: false
+  wizard_progress_states: false
+  wizard_start_label: ''
+  wizard_preview_link: false
+  wizard_confirmation: true
+  wizard_confirmation_label: ''
+  wizard_auto_forward: true
+  wizard_auto_forward_hide_next_button: false
+  wizard_keyboard: true
+  wizard_track: ''
+  wizard_prev_button_label: ''
+  wizard_next_button_label: ''
+  wizard_toggle: false
+  wizard_toggle_show_label: ''
+  wizard_toggle_hide_label: ''
+  wizard_page_type: container
+  wizard_page_title_tag: h2
+  preview: 0
+  preview_label: ''
+  preview_title: ''
+  preview_message: ''
+  preview_attributes: {  }
+  preview_excluded_elements: {  }
+  preview_exclude_empty: true
+  preview_exclude_empty_checkbox: false
+  draft: none
+  draft_multiple: false
+  draft_auto_save: false
+  draft_saved_message: ''
+  draft_loaded_message: ''
+  draft_pending_single_message: ''
+  draft_pending_multiple_message: ''
+  confirmation_type: page
+  confirmation_url: ''
+  confirmation_title: ''
+  confirmation_message: |-
+    <h2>Thank you for your contact request</h2>
+
+    <p class="info-notice info-notice--success">A pensions agent will be in touch with you shortly.</p>
+  confirmation_attributes: {  }
+  confirmation_back: false
+  confirmation_back_label: ''
+  confirmation_back_attributes: {  }
+  confirmation_exclude_query: false
+  confirmation_exclude_token: false
+  confirmation_update: false
+  limit_total: null
+  limit_total_interval: null
+  limit_total_message: ''
+  limit_total_unique: false
+  limit_user: null
+  limit_user_interval: null
+  limit_user_message: ''
+  limit_user_unique: false
+  entity_limit_total: null
+  entity_limit_total_interval: null
+  entity_limit_user: null
+  entity_limit_user_interval: null
+  purge: none
+  purge_days: null
+  results_disabled: true
+  results_disabled_ignore: false
+  results_customize: false
+  token_view: false
+  token_update: false
+  token_delete: false
+  serial_disabled: false
+access:
+  create:
+    roles:
+      - anonymous
+      - authenticated
+    users: {  }
+    permissions: {  }
+  view_any:
+    roles: {  }
+    users: {  }
+    permissions: {  }
+  update_any:
+    roles: {  }
+    users: {  }
+    permissions: {  }
+  delete_any:
+    roles: {  }
+    users: {  }
+    permissions: {  }
+  purge_any:
+    roles: {  }
+    users: {  }
+    permissions: {  }
+  view_own:
+    roles: {  }
+    users: {  }
+    permissions: {  }
+  update_own:
+    roles: {  }
+    users: {  }
+    permissions: {  }
+  delete_own:
+    roles: {  }
+    users: {  }
+    permissions: {  }
+  administer:
+    roles: {  }
+    users: {  }
+    permissions: {  }
+  test:
+    roles: {  }
+    users: {  }
+    permissions: {  }
+  configuration:
+    roles: {  }
+    users: {  }
+    permissions: {  }
+handlers:
+  email:
+    id: email
+    handler_id: email
+    label: Email
+    notes: ''
+    status: false
+    conditions: {  }
+    weight: 0
+    settings:
+      states:
+        - completed
+      to_mail: PENSIONSERVICE@DFCNI.GOV.UK
+      to_options: {  }
+      bcc_mail: ''
+      bcc_options: {  }
+      cc_mail: ''
+      cc_options: {  }
+      from_mail: _default
+      from_options: {  }
+      from_name: _default
+      reply_to: '[webform_submission:values:email_address:raw]'
+      return_path: ''
+      sender_mail: ''
+      sender_name: ''
+      subject: 'Contact request from nidirect.gov.uk'
+      body: |-
+        <p>Submitted on [webform_submission:created:long]</p>
+        <p>Submitted values are:</p>
+        [webform_submission:values]
+      excluded_elements:
+        do_you_live_in_northern_ireland: do_you_live_in_northern_ireland
+        ni_only_notice: ni_only_notice
+      ignore_access: false
+      exclude_empty: true
+      exclude_empty_checkbox: false
+      exclude_attachments: false
+      html: true
+      attachments: false
+      twig: false
+      theme_name: ''
+      parameters: {  }
+      debug: false
+  email_1:
+    id: email
+    handler_id: email_1
+    label: 'Copy for visitor'
+    notes: ''
+    status: true
+    conditions: {  }
+    weight: 0
+    settings:
+      states:
+        - completed
+      to_mail: '[webform_submission:values:email_address:raw]'
+      to_options: {  }
+      bcc_mail: ''
+      bcc_options: {  }
+      cc_mail: ''
+      cc_options: {  }
+      from_mail: noreply@nidirect.gov.uk
+      from_options: {  }
+      from_name: noreply@nidirect.gov.uk
+      reply_to: ''
+      return_path: ''
+      sender_mail: ''
+      sender_name: ''
+      subject: 'NI Pension Centre - confirmation of contact request'
+      body: |-
+        <p>Dear [webform_submission:values:name],</p>
+
+        <p>Thank you for your contact request.</p>
+        <p>A pensions adviser will be in touch with you shortly.</p>
+        <p>
+        Regards,<br />
+        Northern Ireland Pension Centre<br />
+        </p>
+        <hr>
+        <p>
+        <small>
+        <em>Please note</em>: This email was been sent from a notification-only email address that can&rsquo;t accept replies. Please do not reply to this message.
+        </small>
+        </p>
+      excluded_elements: {  }
+      ignore_access: false
+      exclude_empty: true
+      exclude_empty_checkbox: false
+      exclude_attachments: false
+      html: true
+      attachments: false
+      twig: false
+      theme_name: ''
+      parameters: {  }
+      debug: false
+  email_2:
+    id: email
+    handler_id: email_2
+    label: Email_test
+    notes: ''
+    status: true
+    conditions: {  }
+    weight: 2
+    settings:
+      states:
+        - completed
+      to_mail: neil.blair@finance-ni.gov.uk
+      to_options: {  }
+      bcc_mail: ''
+      bcc_options: {  }
+      cc_mail: ''
+      cc_options: {  }
+      from_mail: _default
+      from_options: {  }
+      from_name: _default
+      reply_to: '[webform_submission:values:email_address:raw]'
+      return_path: ''
+      sender_mail: ''
+      sender_name: ''
+      subject: 'Contact request from nidirect.gov.uk'
+      body: |-
+        <p>Submitted on [webform_submission:created]</p>
+        <p>Submitted by: [webform_submission:user]</p>
+        <p>Submitted values are:</p>
+        [webform_submission:values]
+      excluded_elements:
+        do_you_live_in_northern_ireland: do_you_live_in_northern_ireland
+        ni_only_notice: ni_only_notice
+      ignore_access: false
+      exclude_empty: true
+      exclude_empty_checkbox: false
+      exclude_attachments: false
+      html: true
+      attachments: false
+      twig: false
+      theme_name: ''
+      parameters: {  }
+      debug: false
+variants: {  }
