@@ -18,13 +18,13 @@ db:
           main: admin
 
 # Fudging the service name forces a full rebuild with any new config.
-solr_8_11:
-  type: solr:8.11
+solr_9_6:
+  type: solr:9.6
   disk: 1024
   configuration:
     cores:
       default:
-        conf_dir: !archive "solr_config/"
+        conf_dir: !archive "solr_9.x_config/"
     endpoints:
       solr:
         core: default
