@@ -97,6 +97,7 @@ display:
         type: full
         options:
           offset: 0
+          pagination_heading_level: h4
           items_per_page: 50
           total_pages: null
           id: 0
@@ -114,7 +115,6 @@ display:
             offset: false
             offset_label: Offset
           quantity: 9
-          pagination_heading_level: h4
       exposed_form:
         type: input_required
         options:
@@ -144,7 +144,7 @@ display:
           plugin_id: search_api_spellcheck_did_you_mean
           empty: true
           search_api_spellcheck_count: 1
-          search_api_spellcheck_hide_on_result: 1
+          search_api_spellcheck_hide_on_result: true
           search_api_spellcheck_collate: true
         area:
           id: area
@@ -227,9 +227,12 @@ display:
               health_condition_author_user: '0'
               health_condition_supervisor_user: '0'
               driving_instructor_supervisor_user: '0'
+              qa_user: '0'
+              qa: '0'
             expose_fields: false
             placeholder: 'Search contacts'
             searched_fields_id: ''
+            value_maxlength: 128
           is_grouped: false
           group_info:
             label: ''
@@ -242,7 +245,7 @@ display:
             default_group: All
             default_group_multiple: {  }
             group_items: {  }
-          parse_mode: sloppy_terms
+          parse_mode: terms
           min_length: 2
           fields:
             - address_line1
@@ -250,6 +253,9 @@ display:
             - body
             - field_supplementary_contact
             - title_fulltext
+            - title_ngram
+            - title_spellcheck
+            - title_txtedge
       style:
         type: html_list
       row:
@@ -286,6 +292,7 @@ display:
         - 'user.node_grants:view'
       tags:
         - 'config:search_api.index.contacts'
+        - 'search_api_list:contacts'
   contact_search:
     id: contact_search
     display_title: 'Embed: Contacts search'
@@ -310,3 +317,4 @@ display:
         - 'user.node_grants:view'
       tags:
         - 'config:search_api.index.contacts'
+        - 'search_api_list:contacts'

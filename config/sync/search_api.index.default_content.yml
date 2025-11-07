@@ -3,12 +3,14 @@ langcode: en
 status: true
 dependencies:
   config:
-    - field.storage.node.field_address
+    - core.entity_view_mode.node.full
     - field.storage.node.body
+    - field.storage.node.field_address
     - field.storage.node.field_contact_category
     - field.storage.node.field_email_address
+    - field.storage.node.field_gp_practice_lead
+    - field.storage.node.field_gp_practice_member
     - field.storage.node.field_hc_body_location
-    - field.storage.taxonomy_term.field_term_hc_synonyms
     - field.storage.node.field_hc_body_system
     - field.storage.node.field_hc_condition_type
     - field.storage.node.field_hc_primary_symptom_1
@@ -21,17 +23,14 @@ dependencies:
     - field.storage.node.field_site_themes
     - field.storage.node.field_subtheme
     - field.storage.node.field_summary
-    - field.storage.node.field_gp_practice_member
-    - field.storage.node.field_gp_practice_lead
+    - field.storage.taxonomy_term.field_term_hc_synonyms
     - search_api.server.solr_default
-    - core.entity_view_mode.node.full
   module:
-    - search_api_solr
-    - node
-    - taxonomy
-    - search_api_location
     - nidirect_gp
-    - search_api
+    - node
+    - search_api_location
+    - search_api_solr
+    - taxonomy
 third_party_settings:
   search_api_solr:
     finalize: false
@@ -478,6 +477,24 @@ field_settings:
     dependencies:
       module:
         - node
+  title_ngram:
+    label: Title
+    datasource_id: 'entity:node'
+    property_path: title
+    type: 'solr_text_custom:ngramstring'
+    boost: 3.0
+    dependencies:
+      module:
+        - node
+  title_spellcheck:
+    label: Title
+    datasource_id: 'entity:node'
+    property_path: title
+    type: solr_text_spellcheck
+    boost: 21.0
+    dependencies:
+      module:
+        - node
   type:
     label: 'Content type'
     datasource_id: 'entity:node'
@@ -558,6 +575,8 @@ processor_settings:
       - rendered_item
       - rendered_item_spellcheck
       - title
+      - title_ngram
+      - title_spellcheck
       - type
     title: false
     alt: true
@@ -579,6 +598,7 @@ tracker_settings:
     indexing_order: fifo
 options:
   cron_limit: 50
+  delete_on_fail: true
   index_directly: true
   track_changes_in_references: true
 server: solr_default

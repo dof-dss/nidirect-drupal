@@ -3,20 +3,19 @@ langcode: en
 status: true
 dependencies:
   config:
+    - field.storage.node.body
     - field.storage.node.field_address
     - field.storage.node.field_di_adi_no
     - field.storage.node.field_di_areas
-    - field.storage.node.body
     - field.storage.node.field_di_categories
     - field.storage.node.field_di_firstname
     - field.storage.node.field_di_lastname
     - field.storage.node.field_supplementary_contact
     - search_api.server.solr_default
   module:
+    - node
     - search_api_solr
     - taxonomy
-    - node
-    - search_api
 third_party_settings:
   search_api_solr:
     finalize: false
@@ -265,15 +264,24 @@ field_settings:
     dependencies:
       module:
         - node
-  title_fulltext:
-    label: 'Title fulltext'
-    property_path: aggregated_field
-    type: text
-    boost: 13.0
-    configuration:
-      type: concat
-      fields:
-        - 'entity:node/title'
+  title_ngram:
+    label: Title
+    datasource_id: 'entity:node'
+    property_path: title
+    type: 'solr_text_custom:ngram'
+    boost: 21.0
+    dependencies:
+      module:
+        - node
+  title_spellcheck:
+    label: Title
+    datasource_id: 'entity:node'
+    property_path: title
+    type: solr_text_spellcheck
+    boost: 21.0
+    dependencies:
+      module:
+        - node
   type:
     label: 'Content type'
     datasource_id: 'entity:node'
@@ -295,7 +303,10 @@ datasource_settings:
 processor_settings:
   add_url: {  }
   aggregated_field: {  }
+  auto_aggregated_fulltext_field: {  }
+  custom_value: {  }
   entity_status: {  }
+  entity_type: {  }
   hierarchy:
     weights:
       preprocess_index: -45
@@ -329,7 +340,8 @@ processor_settings:
       - postal_code
       - sorting_code
       - title
-      - title_fulltext
+      - title_ngram
+      - title_spellcheck
       - type
     title: true
     alt: true
@@ -349,5 +361,7 @@ tracker_settings:
     indexing_order: fifo
 options:
   cron_limit: 50
+  delete_on_fail: true
   index_directly: true
+  track_changes_in_references: true
 server: solr_default
