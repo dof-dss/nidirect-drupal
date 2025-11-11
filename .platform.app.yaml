@@ -25,6 +25,7 @@ runtime:
   extensions:
     - apcu
     - redis
+    - blackfire
   # Sizing hints.
   sizing_hints:
     request_memory: 55
@@ -105,6 +106,11 @@ hooks:
     drush -y config-import
     # Final cache rebuild.
     drush -y cache-rebuild
+  post_deploy: |
+    set -e
+    echo "Import any pending config changes"
+    cd web
+    drush config-import -y
 # The configuration of app when it is exposed to the web.
 web:
   # Specific parameters for different URL prefixes.
