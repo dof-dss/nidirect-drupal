@@ -1,21 +1,17 @@
 uuid: b726fd57-07c2-4cdc-b640-cfb433c65f8b
 langcode: en
 status: true
-dependencies: {  }
+dependencies:
+  module:
+    - symfony_mailer_log
 _core:
   default_config_hash: DFUx4b0nNPB5fhmZ-OpidH3bHbBGm3G0_3KmJIyl19g
 id: symfony_mailer.test
 configuration:
   email_body:
     content:
-      value: |-
-        <h4>You have mail</h4>
-        <p>This is a test email from <a href="[site:url]">[site:name]</a>.</p>
-        <p>Have a great <span class="day">{{ day }}</span>!</p>
-        <h4 class="text-small">
-          <a href="https://www.drupal.org/project/symfony_mailer">Drupal Symfony Mailer</a>
-          <img class="symfony-mailer-logo" src="{{ logo_url }}">
-        </h4>
+      value: "<h4>You have mail</h4>\r\n<p>This is a test email from <a href=\"[site:url]\">[site:name]</a>.</p>\r\n<p>Have a great <span class=\"day\">{{ day }}</span>!</p>\r\n<h4 class=\"text-small\">\r\n  <a href=\"https://www.drupal.org/project/symfony_mailer\">Drupal Symfony Mailer</a>\r\n  <img class=\"symfony-mailer-logo\" src=\"{{ logo_url }}\">\r\n</h4>"
       format: email_html
+  symfony_mailer_log: {  }
   email_subject:
     value: 'Test email from [site:name]'
