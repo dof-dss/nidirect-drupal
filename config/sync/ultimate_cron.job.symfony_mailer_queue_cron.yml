@@ -1,0 +1,17 @@
+uuid: a9738216-a454-4aea-af00-a7481a4bc81f
+langcode: en
+status: true
+dependencies:
+  module:
+    - symfony_mailer_queue
+title: 'Default cron handler'
+id: symfony_mailer_queue_cron
+weight: 0
+module: symfony_mailer_queue
+callback: 'symfony_mailer_queue#cron'
+scheduler:
+  id: simple
+launcher:
+  id: serial
+logger:
+  id: database
