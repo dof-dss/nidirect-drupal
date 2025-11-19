@@ -5,6 +5,7 @@ dependencies:
   config:
     - field.field.node.webform.body
     - field.field.node.webform.field_meta_tags
+    - field.field.node.webform.field_search_elevation
     - field.field.node.webform.field_site_themes
     - field.field.node.webform.field_subtheme
     - field.field.node.webform.field_teaser
@@ -17,6 +18,7 @@ dependencies:
     - content_moderation
     - metatag
     - path
+    - search_api_best_bets
     - shs
     - text
     - webform
@@ -50,6 +52,19 @@ content:
     settings:
       sidebar: true
       use_details: true
+    third_party_settings: {  }
+  field_search_elevation:
+    type: search_api_best_bets_widget
+    weight: 33
+    region: content
+    settings:
+      elevate_label: 'Elevate query'
+      elevate_placeholder: 'Write search queries....'
+      elevate_description: 'Specify queries that will elevate this entity to the top of the result. Separate multiple by comma.'
+      exclude_label: 'Exclude query'
+      exclude_placeholder: 'Write search queries....'
+      exclude_description: 'Specify queries that will exclude this entity from the search result. Separate multiple by comma.'
+      disable_exclude: false
     third_party_settings: {  }
   field_site_themes:
     type: options_shs
@@ -125,6 +140,11 @@ content:
   publish_state:
     type: scheduler_moderation
     weight: 30
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  simple_sitemap:
+    weight: 10
     region: content
     settings: {  }
     third_party_settings: {  }

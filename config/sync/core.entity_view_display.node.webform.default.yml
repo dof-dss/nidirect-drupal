@@ -5,6 +5,7 @@ dependencies:
   config:
     - field.field.node.webform.body
     - field.field.node.webform.field_meta_tags
+    - field.field.node.webform.field_search_elevation
     - field.field.node.webform.field_site_themes
     - field.field.node.webform.field_subtheme
     - field.field.node.webform.field_teaser
@@ -13,6 +14,7 @@ dependencies:
     - node.type.webform
   module:
     - metatag
+    - search_api_best_bets
     - text
     - user
     - webform
@@ -36,6 +38,13 @@ content:
     settings: {  }
     third_party_settings: {  }
     weight: 6
+    region: content
+  field_search_elevation:
+    type: search_api_best_bets_formatter
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    weight: 17
     region: content
   field_site_themes:
     type: entity_reference_label
