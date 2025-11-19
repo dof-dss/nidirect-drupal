@@ -17,6 +17,7 @@ dependencies:
     - field.field.node.contact.field_next_audit_due
     - field.field.node.contact.field_phone
     - field.field.node.contact.field_related_info
+    - field.field.node.contact.field_search_elevation
     - field.field.node.contact.field_site_themes
     - field.field.node.contact.field_summary
     - field.field.node.contact.field_supplementary_contact
@@ -150,8 +151,8 @@ content:
           weight: 0
           settings:
             location_option_id: fixed_value
-            latitude: '0'
-            longitude: '0'
+            latitude: 0.0
+            longitude: 0.0
           map_center_id: location_plugins
         ipstack:
           enable: false
@@ -162,26 +163,21 @@ content:
           map_center_id: location_plugins
       map_provider_id: google_maps
       map_provider_settings:
-        conditional_initialization: viewport
-        conditional_description: 'Clicking this button will embed a map.'
-        conditional_label: 'Show map'
-        conditional_viewport_threshold: 0.8
         map_features:
           google_maps_layer_bicycling:
-            enabled: false
             weight: 0
+            enabled: false
           client_location_indicator:
-            enabled: false
             weight: 0
-          context_popup:
             enabled: false
+          context_popup:
             weight: 0
             settings:
               content:
                 value: ''
                 format: basic_html
-          geolocation_google_maps_control_directions:
             enabled: false
+          geolocation_google_maps_control_directions:
             weight: 0
             settings:
               position: RIGHT_CENTER
@@ -192,17 +188,17 @@ content:
               travel_mode: exposed
               directions_container: below
               directions_container_custom_id: ''
+            enabled: false
           map_disable_tilt:
-            enabled: false
             weight: 0
+            enabled: false
           map_disable_poi:
-            enabled: false
             weight: 0
+            enabled: false
           map_disable_user_interaction:
-            enabled: false
             weight: 0
-          geolocation_shapes:
             enabled: false
+          geolocation_shapes:
             weight: 0
             settings:
               remove_markers: false
@@ -215,13 +211,13 @@ content:
               polygon_title: ''
               fillColor: '#FF0000'
               fillOpacity: 0.35
-          control_fullscreen:
             enabled: false
+          control_fullscreen:
             weight: 0
             settings:
               position: RIGHT_CENTER
-          control_geocoder:
             enabled: false
+          control_geocoder:
             weight: 0
             settings:
               position: TOP_LEFT
@@ -242,50 +238,50 @@ content:
                   north: ''
                   east: ''
                 region: gb
-          control_loading_indicator:
             enabled: false
+          control_loading_indicator:
             weight: 0
             settings:
               position: TOP_LEFT
               loading_label: Loading
+            enabled: false
           control_locate:
-            enabled: true
             weight: 0
             settings:
               position: TOP_LEFT
-          control_maptype:
             enabled: true
+          control_maptype:
             weight: 0
             settings:
               position: RIGHT_BOTTOM
               style: DEFAULT
-          control_recenter:
-            enabled: false
-            weight: 0
-            settings:
-              position: TOP_LEFT
-          control_rotate:
-            enabled: false
-            weight: 0
-            settings:
-              position: RIGHT_CENTER
-          control_streetview:
-            enabled: false
-            weight: 0
-            settings:
-              position: RIGHT_CENTER
-          control_tile_layers:
-            enabled: false
-            weight: 0
-            settings:
-              position: TOP_LEFT
-          control_zoom:
             enabled: true
+          control_recenter:
+            weight: 0
+            settings:
+              position: TOP_LEFT
+            enabled: false
+          control_rotate:
             weight: 0
             settings:
               position: RIGHT_CENTER
-          map_restriction:
             enabled: false
+          control_streetview:
+            weight: 0
+            settings:
+              position: RIGHT_CENTER
+            enabled: false
+          control_tile_layers:
+            weight: 0
+            settings:
+              position: TOP_LEFT
+            enabled: false
+          control_zoom:
+            weight: 0
+            settings:
+              position: RIGHT_CENTER
+            enabled: true
+          map_restriction:
             weight: 0
             settings:
               north: ''
@@ -293,17 +289,29 @@ content:
               east: ''
               west: ''
               strict: true
-          map_type_style:
             enabled: false
+          map_type_style:
             weight: 0
             settings:
               style: '[]'
+            enabled: false
           google_maps_layer_traffic:
-            enabled: false
             weight: 0
+            enabled: false
           google_maps_layer_transit:
-            enabled: false
             weight: 0
+            enabled: false
+        type: ROADMAP
+        zoom: 10
+        minZoom: 0
+        maxZoom: 20
+        height: 400px
+        width: 100%
+        gestureHandling: auto
+        conditional_initialization: viewport
+        conditional_description: 'Clicking this button will embed a map.'
+        conditional_label: 'Show map'
+        conditional_viewport_threshold: 0.8
         data_layers:
           'geolocation_default_layer:default':
             enabled: true
@@ -420,13 +428,6 @@ content:
                 enabled: 0
               'geolocation_tile_thunderforest:neighbourhood':
                 enabled: 0
-        type: ROADMAP
-        zoom: 10
-        minZoom: 0
-        maxZoom: 20
-        height: 400px
-        width: 100%
-        gestureHandling: auto
       data_provider_settings: {  }
     third_party_settings: {  }
     weight: 6
@@ -463,6 +464,7 @@ hidden:
   field_contact_group: true
   field_meta_tags: true
   field_next_audit_due: true
+  field_search_elevation: true
   field_site_themes: true
   field_summary: true
   field_supplementary_contact: true
