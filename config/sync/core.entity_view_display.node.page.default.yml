@@ -6,6 +6,7 @@ dependencies:
     - field.field.node.page.body
     - field.field.node.page.field_meta_tags
     - field.field.node.page.field_next_audit_due
+    - field.field.node.page.field_search_elevation
     - field.field.node.page.layout_builder__layout
     - node.type.page
   module:
@@ -13,6 +14,7 @@ dependencies:
     - layout_builder_restrictions
     - layout_discovery
     - metatag
+    - search_api_best_bets
     - text
     - user
 third_party_settings:
@@ -64,6 +66,21 @@ third_party_settings:
                 settings: {  }
                 third_party_settings: {  }
             weight: 4
+            additional: {  }
+          9aa36f04-1fbf-47a5-9ed3-c4c53836d0f0:
+            uuid: 9aa36f04-1fbf-47a5-9ed3-c4c53836d0f0
+            region: content
+            configuration:
+              id: 'field_block:node:page:field_search_elevation'
+              label_display: '0'
+              context_mapping:
+                entity: layout_builder.entity
+              formatter:
+                type: search_api_best_bets_formatter
+                label: above
+                settings: {  }
+                third_party_settings: {  }
+            weight: 5
             additional: {  }
         third_party_settings: {  }
   layout_builder_restrictions:
@@ -119,6 +136,13 @@ content:
     settings: {  }
     third_party_settings: {  }
     weight: 4
+    region: content
+  field_search_elevation:
+    type: search_api_best_bets_formatter
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    weight: 17
     region: content
   links:
     settings: {  }

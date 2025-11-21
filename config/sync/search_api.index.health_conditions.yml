@@ -5,22 +5,22 @@ dependencies:
   config:
     - field.storage.node.body
     - field.storage.node.field_hc_body_location
-    - field.storage.node.field_hc_condition_type
-    - field.storage.node.field_summary
-    - field.storage.node.field_teaser
-    - field.storage.taxonomy_term.field_term_hc_synonyms
     - field.storage.node.field_hc_body_system
+    - field.storage.node.field_hc_condition_type
     - field.storage.node.field_hc_primary_symptom_1
     - field.storage.node.field_hc_primary_symptom_2
     - field.storage.node.field_hc_primary_symptom_3
     - field.storage.node.field_hc_primary_symptom_4
     - field.storage.node.field_hc_secondary_symptoms
+    - field.storage.node.field_summary
+    - field.storage.node.field_teaser
+    - field.storage.taxonomy_term.field_term_hc_synonyms
     - search_api.server.solr_default
   module:
+    - node
+    - search_api_best_bets
     - search_api_solr
     - taxonomy
-    - node
-    - search_api
 third_party_settings:
   search_api_solr:
     finalize: false
@@ -319,7 +319,10 @@ datasource_settings:
 processor_settings:
   add_url: {  }
   aggregated_field: {  }
+  auto_aggregated_fulltext_field: {  }
+  custom_value: {  }
   entity_status: {  }
+  entity_type: {  }
   html_filter:
     weights:
       preprocess_index: -15
@@ -351,6 +354,15 @@ processor_settings:
     tags: {  }
   language_with_fallback: {  }
   rendered_item: {  }
+  search_api_best_bets_processor:
+    fields:
+      node:
+        - field_search_elevation
+    query_handler: solr
+    result_elevated_flag: local
+    weights:
+      preprocess_query: 99
+      postprocess_query: 10
   solr_date_range:
     weights:
       preprocess_index: 0
@@ -359,5 +371,7 @@ tracker_settings:
     indexing_order: fifo
 options:
   cron_limit: 50
+  delete_on_fail: true
   index_directly: true
+  track_changes_in_references: true
 server: solr_default
