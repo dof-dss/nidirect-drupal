@@ -1142,10 +1142,15 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
 
     $booking_ref = !empty($form_state->getValue('visitor_order_number')) ? $form_state->getValue('visitor_order_number') : NULL;
 
-    $this->processVisitBookingReference($booking_ref, $form, $form_state, $webform_submission);
+    if ($booking_ref) {
+      $this->processVisitBookingReference($booking_ref, $form, $form_state, $webform_submission);
 
-    if (!empty($this->bookingReference['error_status'])) {
-      $form_state->setErrorByName('visitor_order_number', $this->bookingReference['error_status_msg']);
+      if (!empty($this->bookingReference['error_status'])) {
+        $form_state->setErrorByName('visitor_order_number', $this->bookingReference['error_status_msg']);
+      }
+    }
+    else {
+      $form_state->setErrorByName('visitor_order_number', $this->t('Visit reference number is required'));
     }
   }
 
