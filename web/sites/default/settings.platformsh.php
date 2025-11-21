@@ -39,9 +39,10 @@ if (isset($platformsh->branch)) {
   }
 }
 
-// Prevent sendmail from using smtp server mode (-bs) which Upsun doesn't like.
-// Take recipients and details from headers instead (-t).
-$settings['symfony_mailer_dsn'] = 'sendmail://default?command=/usr/sbin/sendmail%20-t';
+// Upsun/platform.sh workaround for sendmail message intercept.
+$settings['mailer_sendmail_commands'] = [
+  ini_get('sendmail_path') . ' -t -i',
+];
 
 // Enable Redis caching.
 // Set redis configuration.
