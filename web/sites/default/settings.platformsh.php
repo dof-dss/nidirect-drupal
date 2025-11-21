@@ -39,6 +39,10 @@ if (isset($platformsh->branch)) {
   }
 }
 
+// Prevent sendmail from using smtp server mode (-bs) which Upsun doesn't like.
+// Take recipients and details from headers instead (-t).
+$settings['symfony_mailer_dsn'] = 'sendmail://default?command=/usr/sbin/sendmail%20-t';
+
 // Enable Redis caching.
 // Set redis configuration.
 if ($platformsh->hasRelationship('redis') && !\Drupal\Core\Installer\InstallerKernel::installationAttempted() && extension_loaded('redis')) {
