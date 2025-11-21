@@ -10,6 +10,7 @@ dependencies:
     - field.field.node.article.field_next_audit_due
     - field.field.node.article.field_photo
     - field.field.node.article.field_related_info
+    - field.field.node.article.field_search_elevation
     - field.field.node.article.field_site_themes
     - field.field.node.article.field_subtheme
     - field.field.node.article.field_summary
@@ -19,6 +20,7 @@ dependencies:
   module:
     - link
     - metatag
+    - search_api_best_bets
     - smart_trim
     - text
     - user
@@ -85,6 +87,13 @@ content:
     third_party_settings: {  }
     weight: 16
     region: content
+  field_search_elevation:
+    type: search_api_best_bets_formatter
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    weight: 17
+    region: content
   field_site_themes:
     type: entity_reference_label
     label: above
@@ -149,6 +158,7 @@ content:
     weight: -10
     region: content
 hidden:
+  book_navigation: true
   content_moderation_control: true
   field_next_audit_due: true
   langcode: true

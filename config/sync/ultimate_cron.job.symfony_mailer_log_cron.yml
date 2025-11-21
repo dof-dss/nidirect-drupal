@@ -1,0 +1,17 @@
+uuid: a1f750dc-e916-42dd-b4c6-90ead5ecfa22
+langcode: en
+status: true
+dependencies:
+  module:
+    - symfony_mailer_log
+title: 'Default cron handler'
+id: symfony_mailer_log_cron
+weight: 0
+module: symfony_mailer_log
+callback: 'symfony_mailer_log#cron'
+scheduler:
+  id: simple
+launcher:
+  id: serial
+logger:
+  id: database

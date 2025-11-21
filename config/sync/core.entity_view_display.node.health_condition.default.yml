@@ -25,6 +25,7 @@ dependencies:
     - field.field.node.health_condition.field_published_date
     - field.field.node.health_condition.field_related_conditions
     - field.field.node.health_condition.field_related_info
+    - field.field.node.health_condition.field_search_elevation
     - field.field.node.health_condition.field_site_themes
     - field.field.node.health_condition.field_subtheme
     - field.field.node.health_condition.field_summary
@@ -33,6 +34,7 @@ dependencies:
     - node.type.health_condition
   module:
     - metatag
+    - search_api_best_bets
     - smart_trim
     - text
     - user
@@ -100,6 +102,13 @@ content:
       link: true
     third_party_settings: {  }
     weight: 11
+    region: content
+  field_search_elevation:
+    type: search_api_best_bets_formatter
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    weight: 17
     region: content
   field_site_themes:
     type: entity_reference_label
