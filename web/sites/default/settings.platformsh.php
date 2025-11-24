@@ -39,6 +39,11 @@ if (isset($platformsh->branch)) {
   }
 }
 
+// Upsun/platform.sh workaround for sendmail message intercept.
+$settings['mailer_sendmail_commands'] = [
+  ini_get('sendmail_path') . ' -t -i',
+];
+
 // Enable Redis caching.
 // Set redis configuration.
 if ($platformsh->hasRelationship('redis') && !\Drupal\Core\Installer\InstallerKernel::installationAttempted() && extension_loaded('redis')) {
