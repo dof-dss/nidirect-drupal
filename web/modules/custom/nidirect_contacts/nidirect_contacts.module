@@ -223,7 +223,7 @@ function nidirect_contacts_preprocess_views_view(&$variables) {
 function nidirect_contacts_preprocess_block(&$variables) {
   $block_id = 'nicsdru_nidirect_theme_contactsintroduction';
 
-  if ($variables['elements']['#id'] === $block_id) {
+  if (isset($variables['elements']['#id']) && $variables['elements']['#id'] === $block_id) {
     $variables['#cache']['contexts'][] = 'url.query_args';
     $variables['attributes']['class'][] = 'block--contacts-intro';
     if (!empty(\Drupal::request()->query->all())) {
