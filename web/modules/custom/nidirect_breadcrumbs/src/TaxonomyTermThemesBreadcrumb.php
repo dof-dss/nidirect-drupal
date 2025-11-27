@@ -97,7 +97,7 @@ class TaxonomyTermThemesBreadcrumb implements BreadcrumbBuilderInterface {
     // set of content to another.
     $breadcrumb = new Breadcrumb();
     $breadcrumb->setLinks($links);
-    $breadcrumb->addCacheContexts(['url.path']);
+    $breadcrumb->addCacheContexts(['url.path', 'route']);
 
     if (!empty($cache_tags)) {
       $breadcrumb->addCacheTags($cache_tags);
