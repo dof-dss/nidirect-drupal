@@ -41,7 +41,7 @@ if (isset($platformsh->branch)) {
 
 // Upsun/platform.sh workaround for sendmail message intercept.
 $settings['mailer_sendmail_commands'] = [
-  ini_get('sendmail_path') . ' -t -i',
+  ini_get('sendmail_path'),
 ];
 
 // Enable Redis caching.
