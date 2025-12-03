@@ -106,6 +106,39 @@ function nidirect_common_entity_presave(EntityInterface $entity) {
       }
     }
   }
+
+  // Redact or obfuscate any symfony mailer log entity entries before save.
+  // Available fields on the symfony_mailer_log entity:
+  // * - id
+  // * - uuid
+  // * - langcode
+  // * - type
+  // * - sub_type
+  // * - from
+  // * - to
+  // * - reply_to
+  // * - cc
+  // * - bcc
+  // * - headers
+  // * - subject
+  // * - html_body
+  // * - text_body
+  // * - account        (entity reference)
+  // * - theme
+  // * - transport_dsn
+  // * - created
+  // * - error_message
+  // * - metatag        (metatag field)
+  if ($entity->getEntityTypeId() === 'symfony_mailer_log') {
+    if ($entity->hasField('html_body') && !$entity->get('html_body')->isEmpty()) {
+      $entity->set('html_body', t('[redacted email body]'));
+    }
+
+    // If there is a plain-text body field, do the same.
+    if ($entity->hasField('text_body') && !$entity->get('text_body')->isEmpty()) {
+      $entity->set('text_body', t('[redacted email body]'));
+    }
+  }
 }
 
 /**
