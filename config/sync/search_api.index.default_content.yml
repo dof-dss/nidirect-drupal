@@ -3,12 +3,14 @@ langcode: en
 status: true
 dependencies:
   config:
-    - field.storage.node.field_address
+    - core.entity_view_mode.node.full
     - field.storage.node.body
+    - field.storage.node.field_address
     - field.storage.node.field_contact_category
     - field.storage.node.field_email_address
+    - field.storage.node.field_gp_practice_lead
+    - field.storage.node.field_gp_practice_member
     - field.storage.node.field_hc_body_location
-    - field.storage.taxonomy_term.field_term_hc_synonyms
     - field.storage.node.field_hc_body_system
     - field.storage.node.field_hc_condition_type
     - field.storage.node.field_hc_primary_symptom_1
@@ -21,17 +23,15 @@ dependencies:
     - field.storage.node.field_site_themes
     - field.storage.node.field_subtheme
     - field.storage.node.field_summary
-    - field.storage.node.field_gp_practice_member
-    - field.storage.node.field_gp_practice_lead
+    - field.storage.taxonomy_term.field_term_hc_synonyms
     - search_api.server.solr_default
-    - core.entity_view_mode.node.full
   module:
-    - search_api_solr
-    - node
-    - taxonomy
-    - search_api_location
     - nidirect_gp
-    - search_api
+    - node
+    - search_api_best_bets
+    - search_api_location
+    - search_api_solr
+    - taxonomy
 third_party_settings:
   search_api_solr:
     finalize: false
@@ -562,15 +562,23 @@ processor_settings:
     title: false
     alt: true
     tags:
-      b: 2
-      em: 1
-      h1: 5
-      h2: 3
-      h3: 2
-      strong: 2
-      u: 1
+      b: 2.0
+      h1: 5.0
+      h2: 3.0
+      h3: 2.0
+      strong: 2.0
   language_with_fallback: {  }
   rendered_item: {  }
+  search_api_best_bets_processor:
+    fields:
+      gp: {  }
+      node:
+        - field_search_elevation
+    query_handler: solr
+    result_elevated_flag: local
+    weights:
+      preprocess_query: 99
+      postprocess_query: 10
   solr_date_range:
     weights:
       preprocess_index: 0
@@ -579,6 +587,7 @@ tracker_settings:
     indexing_order: fifo
 options:
   cron_limit: 50
+  delete_on_fail: true
   index_directly: true
   track_changes_in_references: true
 server: solr_default
