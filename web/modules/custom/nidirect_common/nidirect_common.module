@@ -15,6 +15,7 @@ use Drupal\Core\Cache\Cache;
 use Drupal\Core\Datetime\DrupalDateTime;
 use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
 use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Entity\FieldableEntityInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Link;
 use Drupal\Core\Render\Markup;
@@ -130,6 +131,11 @@ function nidirect_common_entity_presave(EntityInterface $entity) {
   // * - error_message
   // * - metatag        (metatag field)
   if ($entity->getEntityTypeId() === 'symfony_mailer_log') {
+    // Make sure it's fieldable, so ->get() etc register as valid calls.
+    if (!$entity instanceof FieldableEntityInterface) {
+      return;
+    }
+
     if ($entity->hasField('html_body') && !$entity->get('html_body')->isEmpty()) {
       $entity->set('html_body', t('[redacted email body]'));
     }
