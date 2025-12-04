@@ -1,7 +1,32 @@
 #!/usr/bin/env bash
 
-## Description: Run phpunit to execute local tests.
-## Usage: phpunit
-## Example: "ddev phpunit"
+## Description: Run unit tests via PHPUnit inside DDEV.
+## How to use:
+##   ddev phpunit                                   # all unit tests
+##   ddev phpunit web/modules/custom                # unit tests under custom modules
+##   ddev phpunit web/modules/custom/nidirect_common/tests/src/Unit
 
-php /app/vendor/bin/phpunit -c /app/phpunit.xml
+set -e
+
+cd /var/www/html
+
+CONFIG="phpunit.xml"
+
+SUITE="unit"
+
+if [ -n "$1" ]; then
+  TARGET="$1"
+  echo "Running PHPUnit (suite: $SUITE)"
+  echo "Config: $CONFIG"
+  echo "Target: $TARGET"
+  echo
+  php vendor/bin/phpunit -c "$CONFIG" --testsuite "$SUITE" "$TARGET"
+else
+  # Default to your custom code directory if no path is given.
+  TARGET="web/modules/custom"
+  echo "Running PHPUnit (suite: $SUITE)"
+  echo "Config: $CONFIG"
+  echo "Target: $TARGET"
+  echo
+  php vendor/bin/phpunit -c "$CONFIG" --testsuite "$SUITE" "$TARGET"
+fi

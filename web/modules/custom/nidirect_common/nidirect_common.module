@@ -140,7 +140,7 @@ function nidirect_common_entity_presave(EntityInterface $entity) {
     foreach (['from', 'to', 'cc', 'bcc'] as $field_id) {
       if ($entity->hasField($field_id) && !$entity->get($field_id)->isEmpty()) {
         // s/johnsmith@example.com/j*******h@example.com/g.
-        $obfuscated_value = nidirect_common_obfuscate_email($entity->get($field_id)->value);
+        $obfuscated_value = nidirect_common_obfuscate_emails($entity->get($field_id)->value);
         $entity->set($field_id, $obfuscated_value);
       }
     }
@@ -161,7 +161,7 @@ function nidirect_common_entity_presave(EntityInterface $entity) {
  * Idempotent function so will handle text with *** in the address or
  * pre-obfuscated things in equal measure.
  */
-function nidirect_common_obfuscate_email(string $text) {
+function nidirect_common_obfuscate_emails(string $text) {
   return preg_replace_callback(
   // Allow * in the local part so already-obfuscated emails still match as a whole.
     '/([a-zA-Z0-9._%+\-*]+@[a-zA-Z0-9.-]+\.[A-Za-z]{2,})/',
