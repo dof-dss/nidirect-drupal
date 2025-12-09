@@ -1,0 +1,5 @@
+services:
+  solr:
+    volumes:
+      # We mount our platform.sh config to the place ddev-solr expects it.
+      - ../.platform/solr_9.x_config:/mnt/ddev_config/solr/configsets/default
