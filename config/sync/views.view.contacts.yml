@@ -156,7 +156,7 @@ display:
           plugin_id: text
           empty: true
           content:
-            value: 'Sorry no contacts were found.'
+            value: '<p>Sorry no contacts were found.</p>'
             format: basic_html
           tokenize: false
       sorts:
@@ -209,7 +209,7 @@ display:
             operator_limit_selection: false
             operator_list: {  }
             identifier: query_contacts_az
-            required: false
+            required: true
             remember: false
             multiple: false
             remember_roles:
@@ -233,6 +233,7 @@ display:
             placeholder: 'Search contacts'
             searched_fields_id: ''
             value_maxlength: 128
+            value_max_words: null
           is_grouped: false
           group_info:
             label: ''

@@ -28,6 +28,7 @@ dependencies:
   module:
     - nidirect_gp
     - node
+    - search_api_best_bets
     - search_api_location
     - search_api_solr
     - taxonomy
@@ -581,15 +582,23 @@ processor_settings:
     title: false
     alt: true
     tags:
-      b: 2
-      em: 1
-      h1: 5
-      h2: 3
-      h3: 2
-      strong: 2
-      u: 1
+      b: 2.0
+      h1: 5.0
+      h2: 3.0
+      h3: 2.0
+      strong: 2.0
   language_with_fallback: {  }
   rendered_item: {  }
+  search_api_best_bets_processor:
+    fields:
+      gp: {  }
+      node:
+        - field_search_elevation
+    query_handler: solr
+    result_elevated_flag: local
+    weights:
+      preprocess_query: 99
+      postprocess_query: 10
   solr_date_range:
     weights:
       preprocess_index: 0
