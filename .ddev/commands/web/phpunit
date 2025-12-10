@@ -1,32 +1,24 @@
 #!/usr/bin/env bash
+# Run PHPUnit inside the web container, from the project root.
+# Inspired by https://github.com/ddev/ddev-drupal-contrib/blob/main/commands/web/phpunit
+# but not using this as we're not using the add-on for contrib development.
+#
+# How to use:
+# - ddev phpunit (runs all tests defined/mapped in phpunit.xml)
+# - ddev phpunit --testsuite unit (only run unit tests [is fast])
+# - ddev phpunit --testsuite kernel (only kernel tests)
+#
+# Available test suite(s):
+# - unit
+# - kernel
+# - functional
+# - functional-javascript
 
-## Description: Run unit tests via PHPUnit inside DDEV.
-## How to use:
-##   ddev phpunit                                   # all unit tests
-##   ddev phpunit web/modules/custom                # unit tests under custom modules
-##   ddev phpunit web/modules/custom/nidirect_common/tests/src/Unit
+set -eu -o pipefail
 
-set -e
-
-cd /var/www/html
-
-CONFIG="phpunit.xml"
-
-SUITE="unit"
-
-if [ -n "$1" ]; then
-  TARGET="$1"
-  echo "Running PHPUnit (suite: $SUITE)"
-  echo "Config: $CONFIG"
-  echo "Target: $TARGET"
-  echo
-  php vendor/bin/phpunit -c "$CONFIG" --testsuite "$SUITE" "$TARGET"
-else
-  # Default to your custom code directory if no path is given.
-  TARGET="web/modules/custom"
-  echo "Running PHPUnit (suite: $SUITE)"
-  echo "Config: $CONFIG"
-  echo "Target: $TARGET"
-  echo
-  php vendor/bin/phpunit -c "$CONFIG" --testsuite "$SUITE" "$TARGET"
+if ! command -v phpunit >/dev/null; then
+  echo "phpunit is not available. You may need to 'ddev composer install'"
+  exit 1
 fi
+
+phpunit -c /var/www/html/phpunit.xml "$@"
