@@ -417,8 +417,13 @@ function nidirect_landing_pages_create_theme_to_landing_page_redirect(EntityInte
   $redirect_url = nidirect_landing_pages_get_redirect_url($taxonomy_term_path);
   if (empty($redirect_url)) {
     Redirect::create([
-      'redirect_source' => $taxonomy_term_path,
-      'redirect_redirect' => 'internal:/node/' . $entity->id(),
+      'redirect_source' => [
+        'path' => $taxonomy_term_path,
+        'query' => [],
+      ],
+      'redirect_redirect' => [
+        'uri' => 'internal:/node/' . $entity->id(),
+      ],
       'language' => Language::LANGCODE_NOT_SPECIFIED,
       'status_code' => '301',
     ])->save();
@@ -670,7 +675,7 @@ function nidirect_landing_pages_render_article_teasers_by_term(int $tid, int $cu
       '#url' => $row['url'],
     ];
 
-    $this_result['summary_text'] = ['#markup' => $row->entity->field_summary->value];
+    $this_result['summary_text'] = ['#markup' => $row->entity->field_summary->value ?? ''];
     $this_result['key'] = 'a:' . $row['entity']->id();
     // Place in an array keyed by lower case title (for sorting).
     $title = strtolower($row['title']);
