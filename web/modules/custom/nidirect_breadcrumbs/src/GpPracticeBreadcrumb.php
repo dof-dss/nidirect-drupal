@@ -16,15 +16,15 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *
  * In the format:
  * > Home
- * > Health and well-being
+ * > Health and wellbeing
  * > Health services
- * > Doctors, dentists and other health services
+ * > Doctors (GPs)
  * > Find a GP practice
  * as URL:
  * > <front>
  * > information-and-services/health-and-well-being
  * > information-and-services/health-and-well-being/health-services
- * > information-and-services/health-services/doctors-dentists-and-other-health-services
+ * > information-and-services/health-services/doctors-gps
  * > services/gp-practices.
  *
  * @package Drupal\nidirect_breadcrumbs
@@ -105,9 +105,9 @@ class GpPracticeBreadcrumb implements BreadcrumbBuilderInterface {
 
     $breadcrumb = new Breadcrumb();
     $links[] = Link::createFromRoute(t('Home'), '<front>');
-    $links[] = Link::fromTextandUrl(t('Health and well-being'), Url::fromUri('entity:taxonomy_term/22'));
+    $links[] = Link::fromTextandUrl(t('Health and wellbeing'), Url::fromUri('entity:taxonomy_term/22'));
     $links[] = Link::fromTextandUrl(t('Health services'), Url::fromUri('entity:taxonomy_term/262'));
-    $links[] = Link::fromTextandUrl(t('Doctors, dentists and other health services'), Url::fromUri('entity:taxonomy_term/263'));
+    $links[] = Link::fromTextandUrl(t('Doctors (GPs)'), Url::fromUri('entity:taxonomy_term/1387'));
     $links[] = Link::fromTextandUrl(
       t('Find a GP practice'), Url::fromRoute(($this->node) ? 'nidirect_gp.gp_search' : '<none>')
     );
@@ -120,7 +120,7 @@ class GpPracticeBreadcrumb implements BreadcrumbBuilderInterface {
     $breadcrumb->addCacheTags([
       'taxonomy_term:22',
       'taxonomy_term:262',
-      'taxonomy_term:263',
+      'taxonomy_term:1387',
     ]);
 
     return $breadcrumb;

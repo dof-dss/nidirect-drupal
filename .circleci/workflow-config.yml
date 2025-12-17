@@ -30,6 +30,11 @@ workflows:
             - build
           php_version: << pipeline.parameters.php_version >>
           custom_code_dirs: << pipeline.parameters.custom_code_dirs >>
+      - unit_tests:
+          requires:
+            - build
+          php_version: << pipeline.parameters.php_version >>
+          custom_code_dirs: << pipeline.parameters.custom_code_dirs >>
   build-edge:
     when:
       and:

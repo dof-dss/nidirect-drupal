@@ -1,15 +1,18 @@
 uuid: 7f337417-c594-4bb5-af24-984574b83bd3
 langcode: en
 status: true
-dependencies: {  }
+dependencies:
+  module:
+    - symfony_mailer_log
 _core:
   default_config_hash: oUtf135g-IPzmggtfsOOX5ZINxbSe5Kno64BN2NUKn0
 id: _
 configuration:
-  mailer_url_to_absolute: {  }
   mailer_inline_css: {  }
+  symfony_mailer_log: {  }
+  email_theme:
+    theme: _active_fallback
+  mailer_url_to_absolute: {  }
   mailer_wrap_and_convert:
     plain: false
     swiftmailer: false
-  email_theme:
-    theme: _active_fallback
