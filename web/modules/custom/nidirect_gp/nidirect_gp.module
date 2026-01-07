@@ -233,8 +233,8 @@ function nidirect_gp_entity_presave(EntityInterface $entity) {
   // This will fire when nodes are created or edited.
   if ($entity instanceof NodeInterface && $entity->bundle() === 'gp_practice') {
     // Construct the title.
-    $practice = Xss::filter($entity->get('field_gp_practice_name')->value);
-    $surgery = Xss::filter($entity->get('field_gp_surgery_name')->value);
+    $practice = Xss::filter((string) $entity->get('field_gp_practice_name')->value) ?? '';
+    $surgery = Xss::filter((string) $entity->get('field_gp_surgery_name')->value) ?? '';
     $title = nidirect_gp_build_gp_practice_title($practice, $surgery);
     $entity->setTitle($title);
   }
