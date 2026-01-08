@@ -6,7 +6,7 @@ use Drupal\KernelTests\Core\Entity\EntityKernelTestBase;
 use Drupal\node\Entity\Node;
 
 /**
- * Tests Driving Instructor title generation.
+ * Tests GP practice title generation.
  *
  * @group nidirect_gp
  * @group nidirect
@@ -16,52 +16,74 @@ class GPPracticeTest extends EntityKernelTestBase {
   /**
    * Modules to install.
    *
-   * @var array
+   * @var string[]
    */
-  protected static $modules = ['node', 'nidirect_gp', 'nidirect_common'];
+  protected static $modules = [
+    // Core modules commonly required for node entities + fields in kernel tests.
+    'system',
+    'user',
+    'field',
+    'text',
+    'filter',
+    'node',
+
+    // Your modules.
+    'nidirect_common',
+    'nidirect_gp',
+  ];
 
   /**
    * {@inheritdoc}
    */
-  public function setUp(): void {
+  protected function setUp(): void {
     parent::setUp();
 
-    $this->installConfig('nidirect_gp');
+    // Schemas required for creating/loading nodes.
+    $this->installEntitySchema('user');
+    $this->installEntitySchema('node');
+
+    // Install module config (content type, fields, etc) if provided as config/install.
+    $this->installConfig([
+      'nidirect_common',
+      'nidirect_gp',
+    ]);
   }
 
   /**
    * Tests the behavior when creating the node with two fields.
    */
-  public function testVanillaNodeCreate() {
-    // Create a node to view.
+  public function testVanillaNodeCreate(): void {
     $node = Node::create([
       'type' => 'gp_practice',
       'field_gp_practice_name' => [['value' => 'Practice']],
       'field_gp_surgery_name' => [['value' => 'Surgery']],
     ]);
     $node->save();
-    $this->assertEquals('Surgery - Practice', $node->getTitle());
+
+    $this->assertSame('Surgery - Practice', $node->getTitle());
   }
 
   /**
    * Tests the behavior when creating the node with one field.
    */
-  public function testOneFieldNodeCreate() {
-    // Create a node with just one field filled in.
+  public function testOneFieldNodeCreate(): void {
+    // Practice name only.
     $node = Node::create([
       'type' => 'gp_practice',
       'field_gp_practice_name' => [['value' => 'Practice']],
     ]);
     $node->save();
-    $this->assertEquals('Practice', $node->getTitle());
 
-    // Create a node with the other field filled in.
+    $this->assertSame('Practice', $node->getTitle());
+
+    // Surgery name only.
     $node = Node::create([
       'type' => 'gp_practice',
       'field_gp_surgery_name' => [['value' => 'Surgery']],
     ]);
     $node->save();
-    $this->assertEquals('Surgery', $node->getTitle());
+
+    $this->assertSame('Surgery', $node->getTitle());
   }
 
 }

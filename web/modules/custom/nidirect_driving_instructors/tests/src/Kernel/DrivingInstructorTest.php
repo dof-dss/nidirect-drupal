@@ -14,33 +14,31 @@ use Drupal\node\Entity\Node;
 class DrivingInstructorTest extends EntityKernelTestBase {
 
   /**
-   * {@inheritdoc}
+   * Modules to install.
+   * @var string[]
    */
   protected static $modules = [
-    'user',
     'system',
-    'node',
+    'user',
     'field',
     'text',
     'filter',
-    'entity_test',
+    'node',
     'nidirect_driving_instructors',
   ];
 
   /**
-   * {@inheritdoc}
+   * @inheritDoc
    */
-  public function setUp(): void {
+  protected function setUp(): void {
     parent::setUp();
 
-    $this->installConfig('nidirect_driving_instructors');
+    $this->installConfig(['nidirect_driving_instructors']);
+    $this->installEntitySchema('node');
+    $this->installEntitySchema('user');
   }
 
-  /**
-   * Tests that the correct title is generated when creating a new node.
-   */
-  public function testNodeCreate() {
-    // Create a driving instructor.
+  public function testNodeCreateSetsTitle(): void {
     $node = Node::create([
       'type' => 'driving_instructor',
       'field_di_firstname' => [['value' => 'Firstname']],
@@ -48,8 +46,10 @@ class DrivingInstructorTest extends EntityKernelTestBase {
       'field_di_adi_no' => [['value' => '222']],
     ]);
     $node->save();
-    // Title should have been automatically set to a combination of fields.
-    $this->assertEquals('Firstname Lastname (ADI No. 222)', $node->getTitle());
+
+    $reloaded = Node::load($node->id());
+    $this->assertNotNull($reloaded, 'Node created.');
+    $this->assertSame('Firstname Lastname (ADI No. 222)', $reloaded->getTitle());
   }
 
 }
