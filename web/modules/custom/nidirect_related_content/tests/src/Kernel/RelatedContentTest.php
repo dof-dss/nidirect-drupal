@@ -93,44 +93,42 @@ class RelatedContentTest extends ViewsKernelTestBase {
   /**
    * Test related content manager service.
    */
-  /*
   public function testSubThemeRelated() {
-  $this->createThemeVocab();
-  $this->createNodeTypes();
+    $this->createThemeVocab();
+    $this->createNodeTypes();
 
-  $this->createUser([], 'admin', TRUE);
+    $this->createUser([], 'admin', TRUE);
 
-  $taxonomy_storage = \Drupal::entityTypeManager()->getStorage('taxonomy_term');
+    $taxonomy_storage = \Drupal::entityTypeManager()->getStorage('taxonomy_term');
 
-  $term = $taxonomy_storage->loadByProperties(['name' => 'Motoring']);
+    $term = $taxonomy_storage->loadByProperties(['name' => 'Motoring']);
 
-  $term = current($term);
+    $term = current($term);
 
-  $node1 = Node::create([
-  'type' => 'article',
-  'title' => 'Motoring article 1',
-  'field_subtheme' => [$term->id()],
-  ]);
-  $node1->save();
+    $node1 = Node::create([
+    'type' => 'article',
+    'title' => 'Motoring article 1',
+    'field_subtheme' => [$term->id()],
+    ]);
+    $node1->save();
 
-  $node2 = Node::create([
-  'type' => 'article',
-  'title' => 'Motoring article 2',
-  'field_subtheme' => [$term->id()],
-  ]);
-  $node2->save();
+    $node2 = Node::create([
+    'type' => 'article',
+    'title' => 'Motoring article 2',
+    'field_subtheme' => [$term->id()],
+    ]);
+    $node2->save();
 
-  // For dev/testing purposes
-  $view = Views::getView('related_content_manager__content');
-  $view->setDisplay('by_supplementary_term');
-  $view->setArguments([$term->id()]);
-  $view->execute();
+    // For dev/testing purposes
+    $view = Views::getView('related_content_manager__content');
+    $view->setDisplay('by_supplementary_term');
+    $view->setArguments([$term->id()]);
+    $view->execute();
 
-  $results = $this->relatedContentManager->getSubThemes()->forTheme($term->id())->asArray();
+    $results = $this->relatedContentManager->getSubThemes()->forTheme($term->id())->asArray();
 
-  self::assertEquals($term->id(), $node1->get('field_subtheme')->getString());
+    self::assertEquals($term->id(), $node1->get('field_subtheme')->getString());
   }
-   */
 
   /**
    * Create a Theme vocabulary and terms.
