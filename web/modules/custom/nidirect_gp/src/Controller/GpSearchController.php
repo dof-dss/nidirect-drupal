@@ -110,7 +110,7 @@ class GpSearchController extends ControllerBase {
     int $proximity_max_distance,
     string $geocoding_service_id,
     FormBuilderInterface $form_builder,
-    EntityTypeManagerInterface $entity_type_manager
+    EntityTypeManagerInterface $entity_type_manager,
   ) {
 
     $this->requestStack = $request_stack;

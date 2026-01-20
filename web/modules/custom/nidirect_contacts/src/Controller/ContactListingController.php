@@ -45,10 +45,12 @@ class ContactListingController extends ControllerBase {
   /**
    * Constructs a new ContactListingController object.
    */
-  public function __construct(EntityTypeManagerInterface $entity_type_manager,
-                              BlockManagerInterface $block_manager,
-                              RequestStack $request,
-                              ViewsMetatagManager $views_metatag_manager) {
+  public function __construct(
+    EntityTypeManagerInterface $entity_type_manager,
+    BlockManagerInterface $block_manager,
+    RequestStack $request,
+    ViewsMetatagManager $views_metatag_manager,
+  ) {
 
     $this->entityTypeManager = $entity_type_manager;
     $this->blockManager = $block_manager;
@@ -133,7 +135,7 @@ class ContactListingController extends ControllerBase {
    * @return array
    *   Render array for Drupal to convert to HTML.
    */
-  public function filterByLetter(string $letter = NULL) {
+  public function filterByLetter(?string $letter = NULL) {
     // Trim letter parameter if, for whatever reason, it's > 1.
     if (strlen($letter) > 1) {
       $letter = substr($letter, 0, 1);

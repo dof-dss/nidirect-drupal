@@ -75,11 +75,14 @@ class LandingPagesChooseBlockController implements ContainerInjectionInterface {
    * @param \Drupal\Core\File\FileSystemInterface $file_system
    *   File system service object.
    */
-  public function __construct(BlockManagerInterface $block_manager,
-                              EntityTypeManagerInterface $entity_type_manager,
-                              AccountInterface $current_user,
-                              ModuleHandlerInterface $module_handler,
-                              FileSystemInterface $file_system) {
+  public function __construct(
+    BlockManagerInterface $block_manager,
+    EntityTypeManagerInterface $entity_type_manager,
+    AccountInterface $current_user,
+    ModuleHandlerInterface $module_handler,
+    FileSystemInterface $file_system,
+  ) {
+
     $this->blockManager = $block_manager;
     $this->entityTypeManager = $entity_type_manager;
     $this->currentUser = $current_user;

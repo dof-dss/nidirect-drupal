@@ -25,8 +25,10 @@ class ViewsMetatagManager {
   /**
    * {@inheritdoc}
    */
-  public function __construct(EntityTypeManagerInterface $entity_type_manager,
-                              MetatagTagPluginManager $metatag_tag_plugin_manager) {
+  public function __construct(
+    EntityTypeManagerInterface $entity_type_manager,
+    MetatagTagPluginManager $metatag_tag_plugin_manager,
+  ) {
 
     $this->entityTypeManager = $entity_type_manager;
     $this->metatagTagPluginManager = $metatag_tag_plugin_manager;

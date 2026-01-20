@@ -74,7 +74,7 @@ class FileLogSettingsTest extends BrowserTestBase {
    *
    * @dataProvider providerTestSettingsForm
    */
-  public function testSettingsForm(array $settings, array $expected, string $error = NULL): void {
+  public function testSettingsForm(array $settings, array $expected, ?string $error = NULL): void {
     $this->drupalLogin($this->adminUser);
 
     // Alter the filelog settings.

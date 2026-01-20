@@ -45,13 +45,14 @@ class ColdWeatherPaymentResource extends ResourceBase {
    *   Entity Type Manager instance.
    */
   public function __construct(
-      array $configuration,
-      $plugin_id,
-      $plugin_definition,
-      array $serializer_formats,
-      LoggerInterface $logger,
-      ColdWeatherPaymentsService $payments_service
+    array $configuration,
+    $plugin_id,
+    $plugin_definition,
+    array $serializer_formats,
+    LoggerInterface $logger,
+    ColdWeatherPaymentsService $payments_service,
   ) {
+
     parent::__construct($configuration, $plugin_id, $plugin_definition, $serializer_formats, $logger);
     $this->paymentsService = $payments_service;
   }

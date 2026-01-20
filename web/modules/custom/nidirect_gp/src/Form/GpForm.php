@@ -27,7 +27,7 @@ class GpForm extends ContentEntityForm {
   /**
    * {@inheritdoc}
    */
-  public function __construct(EntityRepositoryInterface $entity_repository, EntityTypeBundleInfoInterface $entity_type_bundle_info = NULL, TimeInterface $time = NULL, MessengerInterface $messenger = NULL) {
+  public function __construct(EntityRepositoryInterface $entity_repository, ?EntityTypeBundleInfoInterface $entity_type_bundle_info = NULL, ?TimeInterface $time = NULL, ?MessengerInterface $messenger = NULL) {
     $this->messenger = $messenger;
     parent::__construct($entity_repository, $entity_type_bundle_info, $time);
   }

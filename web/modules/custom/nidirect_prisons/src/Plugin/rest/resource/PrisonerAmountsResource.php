@@ -42,7 +42,7 @@ class PrisonerAmountsResource extends ResourceBase implements ContainerFactoryPl
     $plugin_id,
     $plugin_definition,
     array $serializer_formats,
-    LoggerInterface $logger
+    LoggerInterface $logger,
   ) {
     parent::__construct($configuration, $plugin_id, $plugin_definition, $serializer_formats, $logger);
   }

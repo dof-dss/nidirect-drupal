@@ -612,7 +612,8 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
     string $prisoner_fullname,
     float $payment_amount,
     string $visitor_fullname,
-    string $visitor_email) {
+    string $visitor_email,
+  ) {
 
     $merchant_code = getenv('PRISONER_PAYMENTS_WP_MERCHANT_CODE_' . $prison_id) ?: 'DEFAULT_MERCHANT_CODE';
 

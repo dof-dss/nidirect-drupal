@@ -48,8 +48,9 @@ class ColdWeatherPaymentCheckerForm extends FormBase {
   public function __construct(
     ClientFactory $http_client_factory,
     Renderer $renderer,
-    RequestStack $request
+    RequestStack $request,
   ) {
+
     $this->httpClientFactory = $http_client_factory;
     $this->renderer = $renderer;
     $this->request = $request;

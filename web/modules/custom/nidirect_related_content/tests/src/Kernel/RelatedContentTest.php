@@ -106,20 +106,20 @@ class RelatedContentTest extends ViewsKernelTestBase {
     $term = current($term);
 
     $node1 = Node::create([
-    'type' => 'article',
-    'title' => 'Motoring article 1',
-    'field_subtheme' => [$term->id()],
+      'type' => 'article',
+      'title' => 'Motoring article 1',
+      'field_subtheme' => [$term->id()],
     ]);
     $node1->save();
 
     $node2 = Node::create([
-    'type' => 'article',
-    'title' => 'Motoring article 2',
-    'field_subtheme' => [$term->id()],
+      'type' => 'article',
+      'title' => 'Motoring article 2',
+      'field_subtheme' => [$term->id()],
     ]);
     $node2->save();
 
-    // For dev/testing purposes
+    // For dev/testing purposes.
     $view = Views::getView('related_content_manager__content');
     $view->setDisplay('by_supplementary_term');
     $view->setArguments([$term->id()]);

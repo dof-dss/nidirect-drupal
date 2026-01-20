@@ -202,7 +202,7 @@ class CampaignImporterImportController extends ControllerBase {
         $section_class = $domnode->getAttribute('class');
 
         switch ($section_class) {
-          case 'three-cols';
+          case 'three-cols':
             $section = new Section('teasers_x3');
             $region = ['one', 'two', 'three'];
             foreach ($xpath->query('div[contains(@class,\'col\')]/div[contains(@class,\'col-content\')]', $domnode) as $child) {
@@ -220,7 +220,7 @@ class CampaignImporterImportController extends ControllerBase {
 
             break;
 
-          case 'two-cols';
+          case 'two-cols':
             $section = new Section('teasers_x2');
             $region = ['one', 'two'];
             foreach ($xpath->query('div[contains(@class,\'col\')]/div[contains(@class,\'col-content\')]', $domnode) as $child) {
@@ -238,7 +238,7 @@ class CampaignImporterImportController extends ControllerBase {
 
             break;
 
-          case 'article-topic-teaser-wrap';
+          case 'article-topic-teaser-wrap':
             $section = new Section('teasers_x2');
             $region = ['one', 'two'];
             foreach ($xpath->query('div[contains(@class,\'columnItem\')]', $domnode) as $child) {

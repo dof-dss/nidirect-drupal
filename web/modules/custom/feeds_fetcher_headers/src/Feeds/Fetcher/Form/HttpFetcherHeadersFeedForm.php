@@ -14,7 +14,12 @@ class HttpFetcherHeadersFeedForm extends HttpFetcherFeedForm {
   /**
    * {@inheritdoc}
    */
-  public function buildConfigurationForm(array $form, FormStateInterface $form_state, FeedInterface $feed = NULL) {
+  public function buildConfigurationForm(
+    array $form,
+    FormStateInterface $form_state,
+    ?FeedInterface $feed = NULL,
+  ) {
+
     parent::buildConfigurationForm($form, $form_state, $feed);
 
     $form = parent::buildConfigurationForm($form, $form_state, $feed);
@@ -40,7 +45,7 @@ class HttpFetcherHeadersFeedForm extends HttpFetcherFeedForm {
   /**
    * {@inheritdoc}
    */
-  public function submitConfigurationForm(array &$form, FormStateInterface $form_state, FeedInterface $feed = NULL) {
+  public function submitConfigurationForm(array &$form, FormStateInterface $form_state, ?FeedInterface $feed = NULL) {
     parent::submitConfigurationForm($form, $form_state, $feed);
     $feed_config = $feed->getConfigurationFor($this->plugin);
     $feed_config['headers'] = $form_state->getValue('headers');

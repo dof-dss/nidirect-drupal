@@ -43,10 +43,12 @@ class NewsListingController extends ControllerBase {
   /**
    * Constructs a new NewsListingController object.
    */
-  public function __construct(EntityTypeManagerInterface $entity_type_manager,
-                              BlockManagerInterface $plugin_manager_block,
-                              RequestStack $request_stack,
-                              ViewsMetatagManager $views_metatag_manager) {
+  public function __construct(
+    EntityTypeManagerInterface $entity_type_manager,
+    BlockManagerInterface $plugin_manager_block,
+    RequestStack $request_stack,
+    ViewsMetatagManager $views_metatag_manager,
+  ) {
 
     $this->entityTypeManager = $entity_type_manager;
     $this->pluginManagerBlock = $plugin_manager_block;

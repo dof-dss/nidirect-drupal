@@ -48,8 +48,11 @@ class FileShouldLogEvent extends Event {
    * ShouldLogEvent constructor.
    *
    * @param int $level
+   *   Log level value.
    * @param string $message
+   *   Log message.
    * @param array $context
+   *   Context object.
    */
   public function __construct($level, $message, array $context = []) {
     $this->setLevel($level);
@@ -59,6 +62,7 @@ class FileShouldLogEvent extends Event {
 
   /**
    * @return bool
+   *   Decision value.
    */
   public function getDecision() {
     return $this->decision;
@@ -66,6 +70,7 @@ class FileShouldLogEvent extends Event {
 
   /**
    * @param mixed $decision
+   *   Decision value?
    */
   public function setDecision($decision) {
     $this->decision = $decision;
@@ -91,9 +96,10 @@ class FileShouldLogEvent extends Event {
    * has, as well as level and message itself. It is also possible to get
    * message placeholders with `logger.log_message_parser` service.
    *
-   * @see \Drupal\dblog\Logger\DbLog::log for more details.
+   * @see \Drupal\dblog\Logger\DbLog::log
    *
    * @return array
+   *   Message log context.
    */
   public function getContext() {
     return $this->context;
@@ -101,6 +107,7 @@ class FileShouldLogEvent extends Event {
 
   /**
    * @param mixed $context
+   *   Potentially anything returned.
    */
   public function setContext($context) {
     $this->context = $context;
@@ -108,6 +115,7 @@ class FileShouldLogEvent extends Event {
 
   /**
    * @return string
+   *   The message content.
    */
   public function getMessage() {
     return $this->message;
@@ -115,6 +123,7 @@ class FileShouldLogEvent extends Event {
 
   /**
    * @param mixed $message
+   *   Potentially anything returned.
    */
   public function setMessage($message) {
     $this->message = $message;
@@ -122,13 +131,17 @@ class FileShouldLogEvent extends Event {
 
   /**
    * @return int
+   *   The log level value.
    */
   public function getLevel() {
     return $this->level;
   }
 
   /**
-   * @param mixed $level
+   * @param int $level
+   *   The level to set.
+   * @return void
+   *   Nada
    */
   public function setLevel($level): void {
     $this->level = $level;

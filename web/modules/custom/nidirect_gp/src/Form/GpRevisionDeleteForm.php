@@ -65,7 +65,7 @@ class GpRevisionDeleteForm extends ConfirmFormBase {
    * @param \Drupal\Core\Datetime\DateFormatterInterface $date_formatter
    *   Drupal date formatter service.
    */
-  public function __construct(EntityStorageInterface $entity_storage, Connection $connection, MessengerInterface $messenger = NULL, DateFormatterInterface $date_formatter) {
+  public function __construct(EntityStorageInterface $entity_storage, Connection $connection, ?MessengerInterface $messenger = NULL, DateFormatterInterface $date_formatter) {
     $this->entityStorage = $entity_storage;
     $this->connection = $connection;
     $this->messenger = $messenger;
