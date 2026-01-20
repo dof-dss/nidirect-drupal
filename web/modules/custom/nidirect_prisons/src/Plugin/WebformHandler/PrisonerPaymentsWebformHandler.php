@@ -62,6 +62,14 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
   protected $transliteration;
 
   /**
+   * Timeouts for making a payment in seconds.
+   * HARD_TIMEOUT for completing the entire process 30 mins.
+   * SOFT_TIMEOUT for inactivity 10 mins.
+   */
+  private const HARD_TIMEOUT = 1800;
+  private const SOFT_TIMEOUT = 600;
+
+  /**
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
@@ -167,25 +175,26 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
       // Pass to clientside JS for validation purposes.
       $form['#attached']['drupalSettings']['prisonerPayments']['prisonerMaxAmount'] = $prisoner_max_amount;
 
-      // Stop progress if there is pending transaction from
-      // another visitor.
+      // Stop progress if there is an unexpired pending transaction
+      // from another visitor.
       $pending_transaction = $this->getPendingTransactions($prisoner_id);
 
       if ($pending_transaction) {
 
-        // Check if the pending transaction has expired
-        // (30 minute timeout).
-        $timeout_threshold = \Drupal::time()->getRequestTime() - 1800;
+        // Check if it has timed out.
+        $now = \Drupal::time()->getRequestTime();
 
-        if ($pending_transaction->created_timestamp < $timeout_threshold) {
-          // Mark transaction as expired.
+        $hard_expired = ($pending_transaction->created_timestamp < ($now - self::HARD_TIMEOUT));
+        $soft_expired = ($pending_transaction->updated_timestamp < ($now - self::SOFT_TIMEOUT));
+
+        if ($hard_expired || $soft_expired) {
           $this->updateTransactionStatus($pending_transaction->order_key, 'expired');
+          $this->cancelWorldpayOrder($pending_transaction->order_key, $prisoner_id);
         }
         else {
-          // Visitor cannot proceed. Show payment pending message.
+          // It hasn't timed out. Prevent further progress.
           $elements['msg_payment_pending']['#access'] = TRUE;
 
-          // Prevent further progress.
           $elements['prisoner_payment_amount']['#access'] = FALSE;
           $elements['wizard_next']['#access'] = FALSE;
           return;
@@ -231,11 +240,28 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
       $visitor_email = $form_state->getValue('visitor_email');
 
       $order_code = $form_state->get('order_code');
-
       $payment_amount = (float) $form_state->getValue('prisoner_payment_amount');
 
       // Update pending transaction with the payment amount.
       $this->updatePendingTransactionAmount($order_code, $payment_amount);
+
+      // Update pending transaction activity timestamp.
+      $this->updatePendingTransactionTimestamp(
+        $order_code,
+        \Drupal::time()->getRequestTime()
+      );
+
+      // Pass pending transaction expire timestamp to clientside.
+      $pending_transaction = $this->getPendingTransactions($prisoner_id);
+      $expires_at = $pending_transaction->created_timestamp + (self::HARD_TIMEOUT);
+      $form['#attached']['library'][] = 'nidirect_prisons/prisoner_payments_timeout';
+      $form['#attached']['drupalSettings']['prisonerPayments']['expiresAt'] = $expires_at;
+
+      $form['elements']['page_payment_card_details']['payment_expiry_notice'] = [
+        '#markup' => '<div id="payment-countdown" aria-live="polite"></div>',
+        '#allowed_tags' => ['div', 'h2', 'h3'],
+        '#weight' => -10,
+      ];
 
       // Generate and send Worldpay order XML request.
       $order_data_xml = $this->generateOrderData(
@@ -715,18 +741,18 @@ XML;
   }
 
   /**
-   * Sends xml payment request order to Worldpay.
+   * Sends xml request to Worldpay and returns the response.
    *
-   * @param string $order_data
-   *   The order data (xml).
+   * @param string $request_xml
+   *   The request xml.
    * @param string $prison_id
-   *   The id of the prison to which the payment request order relates.
+   *   The id of the prison.
    * @return \SimpleXMLElement|null
    *   Returns response from Worldpay as SimpleXMLElement or null if
    *   a problem occurs.
    */
-  protected function sendWorldpayRequest(string $order_data, string $prison_id) {
-    $xml = NULL;
+  protected function sendWorldpayRequest(string $request_xml, string $prison_id) {
+    $response_xml = NULL;
     $client = \Drupal::service('http_client');
     $url = getenv('PRISONER_PAYMENTS_WP_SERVICE_URL') ?: 'https://secure-test.worldpay.com/jsp/merchant/xml/paymentService.jsp';
     $api_username = getenv('PRISONER_PAYMENTS_WP_USERNAME_' . $prison_id);
@@ -745,7 +771,7 @@ XML;
           'Content-Type' => 'application/xml',
           'Accept' => 'application/xml',
         ],
-        'body' => $order_data,
+        'body' => $request_xml,
       ]);
 
       $status_code = $response->getStatusCode();
@@ -754,7 +780,7 @@ XML;
       if ($status_code == 200) {
         // Validate response is XML before parsing.
         if (str_starts_with($xml_string, '<?xml')) {
-          $xml = simplexml_load_string($xml_string);
+          $response_xml = simplexml_load_string($xml_string);
         }
         else {
           $this->getLogger('nidirect_prisons')->error('Worldpay response is not valid XML: @response', [
@@ -777,7 +803,7 @@ XML;
       ]);
     }
 
-    return $xml;
+    return $response_xml;
   }
 
   /**
@@ -923,13 +949,16 @@ XML;
    * @throws \Exception
    */
   private function logPendingTransaction(string $order_code, string $prisoner_id, string $visitor_id, float $payment_amount) {
+    $timestamp = time();
+
     $transaction_data = [
       'order_key' => $order_code,
       'prisoner_id' => $prisoner_id,
       'visitor_id' => $visitor_id,
       'amount' => $payment_amount,
       'status' => 'pending',
-      'created_timestamp' => time(),
+      'created_timestamp' => $timestamp,
+      'updated_timestamp' => $timestamp,
     ];
 
     \Drupal::database()->insert('prisoner_payment_transactions')
@@ -964,6 +993,27 @@ XML;
   }
 
   /**
+   * Method to update a pending transaction updated_timestamp.
+   *
+   * @param string $order_code
+   *   The unique order code identifying the transaction.
+   *
+   * @param int $timestamp
+   *   The timestamp for when .
+   *
+   */
+  protected function updatePendingTransactionTimestamp(string $order_code, int $timestamp): void {
+    \Drupal::database()->update('prisoner_payment_transactions')
+      ->fields([
+        'updated_timestamp' => $timestamp,
+      ])
+      ->condition('order_key', $order_code)
+      ->condition('status', 'pending')
+      ->execute();
+  }
+
+
+  /**
    * Method to update a transaction status.
    *
    * @param string $order_code
@@ -990,6 +1040,42 @@ XML;
   }
 
   /**
+   * Get transaction by order key.
+   *
+   * @param string $order_code
+   *   The unique order code identifying the transaction.
+   * @return false|mixed
+   *   Returns false if no transaction found. Otherwise,
+   *   the transaction is returned (result object).
+   */
+  protected function getTransaction(string $order_code) {
+
+    $transaction = FALSE;
+
+    try {
+      $connection = \Drupal::database();
+      $query = $connection->select('prisoner_payment_transactions', 'ppt')
+        ->fields('ppt', [
+          'order_key',
+          'prisoner_id',
+          'visitor_id',
+          'amount',
+          'status',
+          'created_timestamp',
+          'updated_timestamp',
+        ])
+        ->condition('order_key', $order_code);
+
+      $transaction = $query->execute()->fetchObject();
+    }
+    catch (\Exception $e) {
+      \Drupal::logger('nidirect_prisons')->error('Error getting transaction: @message', ['@message' => $e->getMessage()]);
+    }
+
+    return $transaction;
+  }
+
+  /**
    * Method to delete transaction.
    *
    * @param string $order_code
@@ -1000,6 +1086,87 @@ XML;
     \Drupal::database()->delete('prisoner_payment_transactions')
       ->condition('order_key', $order_code)
       ->execute();
+  }
+
+  /**
+   * Cancel a Worldpay order.
+   *
+   * Cancels the order at Worldpay if it exists and has not already
+   * been AUTHORISED (authorised for payment by the cardholder bank).
+   *
+   * Safe to call even if:
+   * - The Worldpay order was never created
+   * - The order was already cancelled
+   * - The order was already paid
+   *
+   * @param string $order_code
+   *   The Worldpay order code.
+   * @param string $prison_id
+   *   The prison id which would have received the payment.
+   */
+  protected function cancelWorldpayOrder(string $order_code, string $prison_id): void {
+    // Load transaction to confirm state.
+    $transaction = $this->getTransaction($order_code);
+
+    if (!$transaction || $transaction->status !== 'expired') {
+      // Nothing to cancel, can only cancel expired transactions.
+      return;
+    }
+
+    $merchant_code = getenv('PRISONER_PAYMENTS_WP_MERCHANT_CODE_' . $prison_id) ?: 'DEFAULT_MERCHANT_CODE';
+
+    // Log an error if merchant code could not be retrieved.
+    if (!$merchant_code || $merchant_code === 'DEFAULT_MERCHANT_CODE') {
+      $this->getLogger('nidirect_prisons')->error('Missing merchant code for prison ID: @prison_id', [
+        '@prison_id' => $prison_id,
+      ]);
+    }
+
+    $xml = <<<XML
+<paymentService merchantCode="{$merchant_code}" version="1.4">
+  <modify>
+    <orderModification orderCode="{$order_code}">
+      <cancel/>
+    </orderModification>
+  </modify>
+</paymentService>
+XML;
+
+    try {
+      $response = $this->sendWorldpayRequest($xml, $prison_id);
+
+      // Optional: inspect response for success/failure
+      if (!$this->isWorldpayCancelSuccessful($response)) {
+        \Drupal::logger('nidirect_prisons')
+          ->warning('Worldpay cancel failed for order @order', [
+            '@order' => $order_code,
+          ]);
+      }
+    }
+    catch (\Throwable $e) {
+      // Never break execution on cleanup.
+      \Drupal::logger('nidirect_prisons')
+        ->error('Exception cancelling Worldpay order @order: @message', [
+          '@order' => $order_code,
+          '@message' => $e->getMessage(),
+        ]);
+    }
+  }
+
+  /**
+   * Helper to parse a Worldpay cancel order response.
+   *
+   * @param string $response_xml
+   *   The response xml from Worldpay to parse.
+   */
+  protected function isWorldpayCancelSuccessful(string $response_xml): bool {
+    try {
+      $doc = new \SimpleXMLElement($response_xml);
+      return isset($doc->reply->orderStatus->cancellation);
+    }
+    catch (\Throwable $e) {
+      return false;
+    }
   }
 
   /**
