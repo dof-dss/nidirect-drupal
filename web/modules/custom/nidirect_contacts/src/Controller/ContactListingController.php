@@ -82,7 +82,7 @@ class ContactListingController extends ControllerBase {
   public function getTitle($route_type) {
     if ($route_type == 'contacts') {
       // Is there a text search string?
-      $search_string = \Drupal::request()->get('query_contacts_az');
+      $search_string = \Drupal::request()->request->get('query_contacts_az');
       if (!empty($search_string)) {
         return t('Contacts search');
       }

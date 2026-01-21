@@ -1400,7 +1400,7 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
    */
   private function getRequestBookingData() {
 
-    $booking_data_encrypted = $this->request->get("booking");
+    $booking_data_encrypted = $this->request->request->get("booking");
 
     // Decrypt it.
     $key = getenv('PRISON_VISIT_BOOKING_AMEND_AES_256_CBC_KEY');

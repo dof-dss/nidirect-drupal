@@ -79,12 +79,12 @@ class TaxonomyAdminBreadcrumb extends PathBasedBreadcrumbBuilder implements Brea
    *   The current user object.
    * @param \Drupal\Core\Path\CurrentPathStack $current_path
    *   The current path.
-   * @param \Drupal\Core\Path\PathMatcherInterface $path_matcher
-   *   The path matcher service.
    * @param array $route_matches
    *   Matching routes injected from service parameters.
+   * @param \Drupal\Core\Path\PathMatcherInterface $path_matcher
+   *   The path matcher service.
    */
-  public function __construct(RequestContext $context, AccessManagerInterface $access_manager, RequestMatcherInterface $router, InboundPathProcessorInterface $path_processor, ConfigFactoryInterface $config_factory, TitleResolverInterface $title_resolver, AccountInterface $current_user, CurrentPathStack $current_path, ?PathMatcherInterface $path_matcher = NULL, array $route_matches) {
+  public function __construct(RequestContext $context, AccessManagerInterface $access_manager, RequestMatcherInterface $router, InboundPathProcessorInterface $path_processor, ConfigFactoryInterface $config_factory, TitleResolverInterface $title_resolver, AccountInterface $current_user, CurrentPathStack $current_path, array $route_matches, ?PathMatcherInterface $path_matcher = NULL) {
     parent::__construct($context, $access_manager, $router, $path_processor, $config_factory, $title_resolver, $current_user, $current_path, $path_matcher);
     $this->routeMatches = $route_matches;
   }
