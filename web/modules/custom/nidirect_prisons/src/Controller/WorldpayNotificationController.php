@@ -107,13 +107,12 @@ class WorldpayNotificationController extends ControllerBase {
         'status'
       ])
       ->condition('order_key', $order_code)
-      ->condition('status', ['pending', 'failed'], 'IN')
       ->execute()
       ->fetchAssoc();
 
     // If no transaction exists, log it.
     if (!$payment_transaction) {
-      \Drupal::logger('nidirect_prisons')->notice("No pending prisoner payment transaction found for order key: {$order_code}");
+      \Drupal::logger('nidirect_prisons')->notice("No prisoner payment transaction found for Worldpay notification: {$order_code}");
 
       // No further processing do be done. Acknowledge the notification.
       return new Response('OK', 200);
