@@ -6,47 +6,33 @@
  */
 
 use Drupal\Core\Database\Database;
-use Drupal\nidirect_prisons\Plugin\WebformHandler\PrisonerPaymentsWebformHandler;
+use Drupal\nidirect_prisons\Service\PrisonerPaymentManager;
 
 /**
  * Implements hook_cron().
  */
 function nidirect_prisons_cron() {
 
+  /** @var \Drupal\nidirect_prisons\Service\PrisonerPaymentManager $payment_manager */
+  $payment_manager = \Drupal::service('nidirect_prisons.prisoner_payment_manager');
+
   /**
    * Mark pending transactions older than SOFT_TIMEOUT/HARD_TIMEOUT as
-   * expired and send a Worldpay cancel request. Delete transactions
-   * older than 7 days regardless of status.
+   * expired and send a Worldpay cancel request.
    */
 
   $now = \Drupal::time()->getRequestTime();
 
-  // Pull timeouts from the webform handler constants.
-  $hard_timeout = PrisonerPaymentsWebformHandler::HARD_TIMEOUT;
-  $soft_timeout = PrisonerPaymentsWebformHandler::SOFT_TIMEOUT;
+  // Pull timeouts from PrisonerPaymentManager constants.
+  $hard_timeout = PrisonerPaymentManager::HARD_TIMEOUT;
+  $soft_timeout = PrisonerPaymentManager::SOFT_TIMEOUT;
 
-  $connection = Database::getConnection();
+  // Get all pending transactions.
+  $pending_transactions = $payment_manager->getPendingTransactions();
 
-  // Find expired pending transactions.
-  $query = $connection->select('prisoner_payment_transactions', 'ppt')
-    ->fields('ppt', [
-      'order_key',
-      'prisoner_id',
-      'created_timestamp',
-      'updated_timestamp',
-    ])
-    ->condition('status', 'pending');
+  if ($pending_transactions) {
 
-  $results = $query->execute();
-
-  if ($results->rowCount() > 0) {
-
-    // Instantiate prisoner payments webform handler.
-    /** @var PrisonerPaymentsWebformHandler $handler */
-    $handler = \Drupal::service('plugin.manager.webform.handler')
-      ->createInstance('prisoner_payments_webform_handler', []);
-
-    foreach ($results as $transaction) {
+    foreach ($pending_transactions as $transaction) {
       $hard_expired = ($transaction->created_timestamp < ($now - $hard_timeout));
       $soft_expired = ($transaction->updated_timestamp < ($now - $soft_timeout));
 
@@ -55,16 +41,12 @@ function nidirect_prisons_cron() {
       }
 
       // Expire transaction.
-      $connection->update('prisoner_payment_transactions')
-        ->fields(['status' => 'expired'])
-        ->condition('order_key', $transaction->order_key)
-        ->condition('status', 'pending')
-        ->execute();
+      $payment_manager->updateTransactionStatus($transaction->order_key, 'expired');
 
       // Cancel Worldpay order.
       try {
-        $prison_id = $handler->getPrisonId($transaction->prisoner_id);
-        $handler->cancelWorldpayOrder($transaction->order_key, $prison_id);
+        $prison_id = $payment_manager->getPrisonId($transaction->prisoner_id);
+        $payment_manager->cancelWorldpayOrder($transaction->order_key, $prison_id);
       }
       catch (\Throwable $e) {
         \Drupal::logger('nidirect_prisons')->error(
@@ -78,7 +60,11 @@ function nidirect_prisons_cron() {
     }
   }
 
-  // Delete all transactions more than 7 days old.
+  /**
+   * Delete all transactions more than 7 days old.
+   */
+
+  $connection = Database::getConnection();
   $threshold = strtotime('-7 days');
   $query = $connection->delete('prisoner_payment_transactions')
     ->condition('created_timestamp', $threshold, '<');
