@@ -243,6 +243,18 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
 
     if ($page === 'page_payment_card_details') {
 
+      $prisoner_fullname = $form_state->getValue('prisoner_fullname');
+      $prisoner_id = $form_state->getValue('prisoner_id');
+      $prison_id = $form_state->get('prison_id');
+
+      $visitor_fullname = $form_state->getValue('visitor_fullname');
+      $visitor_id = $form_state->getValue('visitor_id');
+      $visitor_email = $form_state->getValue('visitor_email');
+
+      $order_code = $form_state->get('order_code');
+      $payment_amount = (float) $form_state->getValue('prisoner_payment_amount');
+
+      // Halt progress if transaction has expired.
       $transaction = $this->paymentManager->getTransaction($order_code);
 
       if (!$transaction || $this->paymentManager->expireIfTimedOut($transaction)) {
@@ -254,18 +266,6 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
         );
         return;
       }
-
-
-      $prisoner_fullname = $form_state->getValue('prisoner_fullname');
-      $prisoner_id = $form_state->getValue('prisoner_id');
-      $prison_id = $form_state->get('prison_id');
-
-      $visitor_fullname = $form_state->getValue('visitor_fullname');
-      $visitor_id = $form_state->getValue('visitor_id');
-      $visitor_email = $form_state->getValue('visitor_email');
-
-      $order_code = $form_state->get('order_code');
-      $payment_amount = (float) $form_state->getValue('prisoner_payment_amount');
 
       // Update pending transaction with the payment amount.
       $this->paymentManager->updatePendingTransactionAmount($order_code, $payment_amount);
