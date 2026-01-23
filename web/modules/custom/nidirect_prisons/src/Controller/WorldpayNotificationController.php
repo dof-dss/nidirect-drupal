@@ -4,10 +4,31 @@ namespace Drupal\nidirect_prisons\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\nidirect_prisons\Enum\PaymentStatus;
+use Drupal\nidirect_prisons\Service\PrisonerPaymentManager;
+use Psr\Log\LoggerInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class WorldpayNotificationController extends ControllerBase {
+
+  protected PrisonerPaymentManager $paymentManager;
+  protected LoggerInterface $logger;
+
+  public function __construct(
+    PrisonerPaymentManager $payment_manager,
+    LoggerInterface $logger
+  ) {
+    $this->paymentManager = $payment_manager;
+    $this->logger = $logger;
+  }
+
+  public static function create(ContainerInterface $container) {
+    return new static(
+      $container->get('nidirect_prisons.prisoner_payment_manager'),
+      $container->get('logger.channel.nidirect_prisons')
+    );
+  }
 
   /**
    * Handle notifications from Worldpay to track if a payment has
@@ -41,7 +62,7 @@ class WorldpayNotificationController extends ControllerBase {
     // Reverse DNS lookup.
     $hostname = gethostbyaddr($ip);
     if (!$hostname || !str_ends_with($hostname, '.worldpay.com')) {
-      \Drupal::logger('nidirect_prisons')->warning('Unrecognized hostname: @hostname from IP @ip', [
+      $this->logger->warning('Unrecognized hostname: @hostname from IP @ip', [
         '@hostname' => $hostname,
         '@ip' => $ip,
       ]);
@@ -51,7 +72,7 @@ class WorldpayNotificationController extends ControllerBase {
     // Forward DNS lookup.
     $resolved_ips = gethostbynamel($hostname);
     if (!$resolved_ips || !in_array($ip, $resolved_ips, TRUE)) {
-      \Drupal::logger('nidirect_prisons')->warning('DNS verification failed for IP @ip with hostname @hostname.', [
+      $this->logger->warning('DNS verification failed for IP @ip with hostname @hostname.', [
         '@ip' => $ip,
         '@hostname' => $hostname,
         '@resolved_ips' => implode(', ', $resolved_ips),
@@ -67,13 +88,13 @@ class WorldpayNotificationController extends ControllerBase {
     // days) if the response is anything other than a 200 OK.
 
     if (empty($xml_data)) {
-      \Drupal::logger('nidirect_prisons')->error('Empty Worldpay notification received.');
+      $this->logger->error('Empty Worldpay notification received.');
       return new Response('Bad request', 400);
     }
 
     $xml = simplexml_load_string($xml_data);
     if (!$xml) {
-      \Drupal::logger('nidirect_prisons')->error('Invalid XML received in Worldpay notification.');
+      $this->logger->error('Invalid XML received in Worldpay notification.');
       return new Response('Bad request', 400);
     }
 
@@ -98,21 +119,11 @@ class WorldpayNotificationController extends ControllerBase {
     // failed status. We do not change the status of transactions that
     // are marked as success.
     $db = \Drupal::database();
-    $payment_transaction = $db->select('prisoner_payment_transactions', 'ppt')
-      ->fields('ppt', [
-        'order_key',
-        'prisoner_id',
-        'visitor_id',
-        'amount',
-        'status'
-      ])
-      ->condition('order_key', $order_code)
-      ->execute()
-      ->fetchAssoc();
+    $payment_transaction = $this->paymentManager->getTransaction($order_code);
 
     // If no transaction exists, log it.
     if (!$payment_transaction) {
-      \Drupal::logger('nidirect_prisons')->notice("No prisoner payment transaction found for Worldpay notification: {$order_code}");
+      $this->logger->notice("No prisoner payment transaction found for Worldpay notification: {$order_code}");
 
       // No further processing do be done. Acknowledge the notification.
       return new Response('OK', 200);
@@ -120,7 +131,7 @@ class WorldpayNotificationController extends ControllerBase {
 
     // Log a warning if the status is not one we are expecting.
     if (!PaymentStatus::isAllowed($payment_status)) {
-      \Drupal::logger('nidirect_prisons')->warning('Unexpected Worldpay order notification status: @status. Have Merchant Channel HTTP Events been changed in the MAI?', [
+      $this->logger->warning('Unexpected Worldpay order notification status: @status. Have Merchant Channel HTTP Events been changed in the MAI?', [
         '@status' => $payment_status,
       ]);
 
@@ -158,7 +169,7 @@ class WorldpayNotificationController extends ControllerBase {
       }
       catch (\Exception $e) {
         $db_transaction->rollBack();
-        \Drupal::logger('nidirect_prisons')->error('Authorised payment update failed for prisoner_id @prisoner_id for order_code @order_code for amount £@amount: @message', [
+        $this->logger->error('Authorised payment update failed for prisoner_id @prisoner_id for order_code @order_code for amount £@amount: @message', [
           '@amount' => $amount,
           '@prisoner_id' => $payment_transaction['prisoner_id'],
           '@order_code' => $order_code,
@@ -171,10 +182,7 @@ class WorldpayNotificationController extends ControllerBase {
     }
     else {
       // Prisoner payment transaction failed.
-      $db->update('prisoner_payment_transactions')
-        ->fields(['status' => 'failed'])
-        ->condition('order_key', $order_code)
-        ->execute();
+      $this->paymentManager->updateTransactionStatus($order_code, 'failed');
     }
 
     // Acknowledge the notification.
@@ -218,11 +226,11 @@ class WorldpayNotificationController extends ControllerBase {
         ['subject' => 'PAYIN', 'body' => [$json_data]]
       );
 
-      \Drupal::logger('nidirect_prisons')->notice("Sent prisoner payment data for order {$order_code} to Prism.");
+      $this->logger->notice("Sent prisoner payment data for order {$order_code} to Prism.");
     }
     catch (\Exception $e) {
       // If email fails, log the error and throw.
-      \Drupal::logger('nidirect_prisons')->error('Failed to send email for order @order_code: @error', [
+      $this->logger->error('Failed to send email for order @order_code: @error', [
         '@order_code' => $order_code,
         '@error' => $e->getMessage(),
       ]);
