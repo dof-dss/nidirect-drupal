@@ -151,14 +151,14 @@ class WorldpayNotificationController extends ControllerBase {
       try {
         $db->update('prisoner_payment_amount')
           ->expression('amount', 'GREATEST(amount - :paid_amount, 0)', [':paid_amount' => $amount])
-          ->condition('prisoner_id', $payment_transaction['prisoner_id'])
+          ->condition('prisoner_id', $payment_transaction->prisoner_id)
           ->execute();
 
         // Get sequence id for this payment.
         $sequence_id = $this->getNextSequenceId();
 
         // Send payment details to Prism.
-        $this->sendJsonToPrism($order_code, $payment_transaction['prisoner_id'], $payment_transaction['visitor_id'], $amount, $sequence_id);
+        $this->sendJsonToPrism($order_code, $payment_transaction->prisoner_id, $payment_transaction->visitor_id, $amount, $sequence_id);
 
         // Change prisoner payment transaction status from 'pending' to
         // 'success'.
@@ -171,7 +171,7 @@ class WorldpayNotificationController extends ControllerBase {
         $db_transaction->rollBack();
         $this->logger->error('Authorised payment update failed for prisoner_id @prisoner_id for order_code @order_code for amount £@amount: @message', [
           '@amount' => $amount,
-          '@prisoner_id' => $payment_transaction['prisoner_id'],
+          '@prisoner_id' => $payment_transaction->prisoner_id,
           '@order_code' => $order_code,
           '@message' => $e->getMessage()
         ]);
