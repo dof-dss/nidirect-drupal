@@ -3,10 +3,28 @@
 namespace Drupal\nidirect_prisons\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
+use Drupal\nidirect_prisons\Service\PrisonerPaymentManager;
+use Psr\Log\LoggerInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 class PrisonerPaymentsController extends ControllerBase {
+
+  protected PrisonerPaymentManager $paymentManager;
+  protected LoggerInterface $logger;
+
+  public function __construct(PrisonerPaymentManager $payment_manager, LoggerInterface $logger) {
+    $this->paymentManager = $payment_manager;
+    $this->logger = $logger;
+  }
+
+  public static function create(ContainerInterface $container) {
+    return new static(
+      $container->get('nidirect_prisons.prisoner_payment_manager'),
+      $container->get('logger.channel.nidirect_prisons')
+    );
+  }
 
   /**
    * Handle periodic pings from clientside js to update
@@ -22,21 +40,7 @@ class PrisonerPaymentsController extends ControllerBase {
       return new JsonResponse(['status' => 'error'], 400);
     }
 
-    $updated = \Drupal::database()
-      ->update('prisoner_payment_transactions')
-      ->fields([
-        'updated_timestamp' => \Drupal::time()->getRequestTime(),
-      ])
-      ->condition('order_key', $data['order_code'])
-      ->condition('status', 'pending')
-      ->execute();
-
-    if ($updated === 0) {
-      \Drupal::logger('nidirect_prisons')->debug(
-        'Heartbeat ignored for order @order',
-        ['@order' => $data['order_code']]
-      );
-    }
+    $this->paymentManager->touchTransaction($data['order_code']);
 
     return new JsonResponse(['status' => 'ok']);
   }
