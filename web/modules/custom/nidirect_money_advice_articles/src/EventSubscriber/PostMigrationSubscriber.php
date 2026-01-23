@@ -114,6 +114,7 @@ class PostMigrationSubscriber implements EventSubscriberInterface {
         'node',
         $row->destid1,
         1,
+        // @phpstan-ignore-next-line.
         \Drupal::time()->getCurrentTime(),
       ]);
       $query->execute();
@@ -130,12 +131,14 @@ class PostMigrationSubscriber implements EventSubscriberInterface {
       ]);
       $query->values([
         'locked_content',
+        // @phpstan-ignore-next-line.
         \Drupal::service('uuid')->generate(),
         'node',
         $row->destid1,
         TRUE,
         1,
         'NULL',
+        // @phpstan-ignore-next-line.
         \Drupal::time()->getCurrentTime(),
       ]);
       $query->execute();

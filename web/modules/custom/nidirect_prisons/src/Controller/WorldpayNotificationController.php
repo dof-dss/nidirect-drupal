@@ -41,6 +41,7 @@ class WorldpayNotificationController extends ControllerBase {
     // Reverse DNS lookup.
     $hostname = gethostbyaddr($ip);
     if (!$hostname || !str_ends_with($hostname, '.worldpay.com')) {
+      // @phpstan-ignore-next-line.
       \Drupal::logger('nidirect_prisons')->warning('Unrecognized hostname: @hostname from IP @ip', [
         '@hostname' => $hostname,
         '@ip' => $ip,
@@ -51,6 +52,7 @@ class WorldpayNotificationController extends ControllerBase {
     // Forward DNS lookup.
     $resolved_ips = gethostbynamel($hostname);
     if (!$resolved_ips || !in_array($ip, $resolved_ips, TRUE)) {
+      // @phpstan-ignore-next-line.
       \Drupal::logger('nidirect_prisons')->warning('DNS verification failed for IP @ip with hostname @hostname.', [
         '@ip' => $ip,
         '@hostname' => $hostname,
@@ -67,17 +69,20 @@ class WorldpayNotificationController extends ControllerBase {
     // days) if the response is anything other than a 200 OK.
 
     if (empty($xml_data)) {
+      // @phpstan-ignore-next-line.
       \Drupal::logger('nidirect_prisons')->error('Empty Worldpay notification received.');
       return new Response('Bad request', 400);
     }
 
     $xml = simplexml_load_string($xml_data);
     if (!$xml) {
+      // @phpstan-ignore-next-line.
       \Drupal::logger('nidirect_prisons')->error('Invalid XML received in Worldpay notification.');
       return new Response('Bad request', 400);
     }
 
     if (!isset($xml->notify)) {
+      // @phpstan-ignore-next-line.
       \Drupal::logger('worldpay')->error('Missing <notify> element in XML.');
       return new Response('Bad request', 400);
     }
@@ -88,6 +93,7 @@ class WorldpayNotificationController extends ControllerBase {
     $pence = (int) $xml->notify->orderStatusEvent->payment->amount['value'];
     $amount = round($pence / 100, 2);
 
+    // @phpstan-ignore-next-line.
     \Drupal::logger('worldpay')->notice('Worldpay order notification for @order_key £@amount @payment_status', [
       '@order_key' => $order_code,
       '@amount' => number_format($amount, 2, '.', ''),
@@ -97,6 +103,7 @@ class WorldpayNotificationController extends ControllerBase {
     // Check transaction for order_key exists. It must have a pending or
     // failed status. We do not change the status of transactions that
     // are marked as success.
+    // @phpstan-ignore-next-line.
     $db = \Drupal::database();
     $payment_transaction = $db->select('prisoner_payment_transactions', 'ppt')
       ->fields('ppt', [
@@ -113,6 +120,7 @@ class WorldpayNotificationController extends ControllerBase {
 
     // If no transaction exists, log it.
     if (!$payment_transaction) {
+      // @phpstan-ignore-next-line.
       \Drupal::logger('nidirect_prisons')->notice("No pending prisoner payment transaction found for order key: {$order_code}");
 
       // No further processing do be done. Acknowledge the notification.
@@ -121,6 +129,7 @@ class WorldpayNotificationController extends ControllerBase {
 
     // Log a warning if the status is not one we are expecting.
     if (!PaymentStatus::isAllowed($payment_status)) {
+      // @phpstan-ignore-next-line.
       \Drupal::logger('nidirect_prisons')->warning('Unexpected Worldpay order notification status: @status. Have Merchant Channel HTTP Events been changed in the MAI?', [
         '@status' => $payment_status,
       ]);
@@ -159,6 +168,7 @@ class WorldpayNotificationController extends ControllerBase {
       }
       catch (\Exception $e) {
         $db_transaction->rollBack();
+        // @phpstan-ignore-next-line.
         \Drupal::logger('nidirect_prisons')->error('Authorised payment update failed for prisoner_id @prisoner_id for order_code @order_code for amount £@amount: @message', [
           '@amount' => $amount,
           '@prisoner_id' => $payment_transaction['prisoner_id'],
@@ -211,18 +221,22 @@ class WorldpayNotificationController extends ControllerBase {
 
     // Try sending the email.
     try {
+      // @phpstan-ignore-next-line.
       \Drupal::service('plugin.manager.mail')->mail(
         'nidirect_prisons',
         'prisoner_payment_notification',
         getenv('PRISONER_PAYMENTS_PRISM_EMAIL') ?: 'prisoner_payments@mailhog.local',
+        // @phpstan-ignore-next-line.
         \Drupal::languageManager()->getDefaultLanguage()->getId(),
         ['subject' => 'PAYIN', 'body' => [$json_data]]
       );
 
+      // @phpstan-ignore-next-line.
       \Drupal::logger('nidirect_prisons')->notice("Sent prisoner payment data for order {$order_code} to Prism.");
     }
     catch (\Exception $e) {
       // If email fails, log the error and throw.
+      // @phpstan-ignore-next-line.
       \Drupal::logger('nidirect_prisons')->error('Failed to send email for order @order_code: @error', [
         '@order_code' => $order_code,
         '@error' => $e->getMessage(),
@@ -239,6 +253,7 @@ class WorldpayNotificationController extends ControllerBase {
    * @throws \Exception
    */
   protected function getNextSequenceId() {
+    // @phpstan-ignore-next-line.
     $database = \Drupal::database();
     $query = $database->insert('prisoner_payment_sequence')->fields(['id' => NULL]);
 

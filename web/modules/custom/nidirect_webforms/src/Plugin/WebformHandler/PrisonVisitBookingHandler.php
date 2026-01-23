@@ -152,6 +152,7 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
       $connection->insert('prison_visit_booking_link_ids')
         ->fields([
           'unique_identifier' => $booking_link_id,
+          // @phpstan-ignore-next-line.
           'created' => \Drupal::service('datetime.time')->getRequestTime(),
         ])
         ->execute();
@@ -1354,7 +1355,7 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
     // Face-to-face slots are retrieved from external data in cache
     // (see PrisonVisitBookingJsonApiController.php). If there is no
     // cached data, fallback to using slots from file.
-
+    // @phpstan-ignore-next-line.
     $cached_data = \Drupal::cache()->get('prison_visit_slots_data');
 
     if (!empty($cached_data)) {

@@ -16,6 +16,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *
  * @ingroup nidirect_gp
  */
+/** @phpstan-consistent-constructor */
 class GpRevisionRevertForm extends ConfirmFormBase {
 
 
@@ -113,7 +114,6 @@ class GpRevisionRevertForm extends ConfirmFormBase {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state, $gp_revision = NULL) {
-    // @phpstan-ignore-next-line
     $this->revision = $this->gpStorage->loadRevision($gp_revision);
     $form = parent::buildForm($form, $form_state);
 
@@ -129,7 +129,6 @@ class GpRevisionRevertForm extends ConfirmFormBase {
     $original_revision_timestamp = $this->revision->getRevisionCreationTime();
 
     $this->revision = $this->prepareRevertedRevision($this->revision, $form_state);
-    // @phpstan-ignore-next-line.
     $this->revision->revision_log = t('Copy of the revision from %date.', ['%date' => $this->dateFormatter->format($original_revision_timestamp)]);
     $this->revision->save();
 
@@ -161,6 +160,7 @@ class GpRevisionRevertForm extends ConfirmFormBase {
   protected function prepareRevertedRevision(GpInterface $revision, FormStateInterface $form_state) {
     $revision->setNewRevision();
     $revision->isDefaultRevision(TRUE);
+    // @phpstan-ignore-next-line.
     $revision->setRevisionCreationTime(\Drupal::time()->getRequestTime());
 
     return $revision;

@@ -10,7 +10,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 /**
  * Controller for handing GP Autocomplete requests.
  */
-class GpAutocompleteController extends EntityAutocompleteController {
+final class GpAutocompleteController extends EntityAutocompleteController {
 
   /**
    * Autocomplete matcher for GP entities.

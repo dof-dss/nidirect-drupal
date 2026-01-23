@@ -10,7 +10,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 /**
  * Configure example settings for this site.
  */
-class SchoolClosuresSettingsForm extends ConfigFormBase {
+final class SchoolClosuresSettingsForm extends ConfigFormBase {
 
   const SETTINGS = 'nidirect_school_closures.settings';
 

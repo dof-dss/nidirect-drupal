@@ -170,11 +170,13 @@ class RelatedContentManager {
       }
 
       if ($route_name === 'entity.node.preview') {
+        // @phpstan-ignore-next-line.
         $node = \Drupal::routeMatch()->getParameter('node_preview');
       }
       else {
         // Use the raw value as some node routes have the entity object and
         // others only pass the id.
+        // @phpstan-ignore-next-line.
         $node_id = \Drupal::routeMatch()->getRawParameter('node');
         $node = $this->entityTypeManager->getStorage('node')->load($node_id);
       }

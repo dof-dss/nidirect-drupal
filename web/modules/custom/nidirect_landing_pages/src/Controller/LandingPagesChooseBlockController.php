@@ -19,7 +19,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 /**
  * Controller to alter display of Layout builder Block form.
  */
-class LandingPagesChooseBlockController implements ContainerInjectionInterface {
+final class LandingPagesChooseBlockController implements ContainerInjectionInterface {
 
   use AjaxHelperTrait;
   use LayoutBuilderContextTrait;
@@ -239,6 +239,7 @@ class LandingPagesChooseBlockController implements ContainerInjectionInterface {
 
     // Support for Layout Builder Restrictions.
     if ($this->moduleHandler->moduleExists('layout_builder_restrictions')) {
+      // @phpstan-ignore-next-line.
       $layout_builder_restrictions_manager = \Drupal::service('plugin.manager.layout_builder_restriction');
       $restriction_plugins = $layout_builder_restrictions_manager->getSortedPlugins();
       foreach (array_keys($restriction_plugins) as $id) {

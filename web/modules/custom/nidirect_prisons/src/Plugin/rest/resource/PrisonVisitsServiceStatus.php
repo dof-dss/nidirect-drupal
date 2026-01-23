@@ -25,7 +25,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *   }
  * )
  */
-class PrisonVisitsServiceStatus extends ResourceBase implements ContainerFactoryPluginInterface {
+final class PrisonVisitsServiceStatus extends ResourceBase implements ContainerFactoryPluginInterface {
 
   /**
    * Constructs a new PrisonVisitsServiceStatus object.

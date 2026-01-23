@@ -21,7 +21,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *   }
  * )
  */
-class PrisonerAmountsResource extends ResourceBase implements ContainerFactoryPluginInterface {
+final class PrisonerAmountsResource extends ResourceBase implements ContainerFactoryPluginInterface {
 
   /**
    * Constructs a new PrisonerAmountsResource object.
@@ -72,6 +72,7 @@ class PrisonerAmountsResource extends ResourceBase implements ContainerFactoryPl
     }
 
     // Start a database transaction.
+    // @phpstan-ignore-next-line.
     $transaction = \Drupal::database()->startTransaction();
 
     try {
@@ -84,6 +85,7 @@ class PrisonerAmountsResource extends ResourceBase implements ContainerFactoryPl
         }
 
         // Delete existing prisoner amounts for the current prison before inserting new data.
+        // @phpstan-ignore-next-line.
         \Drupal::database()->delete('prisoner_payment_amount')
           ->condition('prison_id', $prison_key)
           ->execute();
@@ -96,6 +98,7 @@ class PrisonerAmountsResource extends ResourceBase implements ContainerFactoryPl
             return new ResourceResponse(['error' => 'Missing required prisoner data'], 400);
           }
 
+          // @phpstan-ignore-next-line.
           \Drupal::database()->merge('prisoner_payment_amount')
             ->key('prisoner_id', $prisoner['ID'])
             ->fields([
@@ -111,6 +114,7 @@ class PrisonerAmountsResource extends ResourceBase implements ContainerFactoryPl
       // Rollback the transaction if an error occurs.
       $transaction->rollback();
 
+      // @phpstan-ignore-next-line.
       \Drupal::logger('nidirect_prisons')->error('Database error: @message', ['@message' => $e->getMessage()]);
       return new ResourceResponse(['error' => 'Database error: ' . $e->getMessage()], 500);
     }

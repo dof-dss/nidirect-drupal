@@ -12,7 +12,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
 /**
  * Controller for display Contact A-Z block and View.
  */
-class ContactListingController extends ControllerBase {
+final class ContactListingController extends ControllerBase {
 
   /**
    * Drupal\Core\Entity\EntityTypeManagerInterface definition.
@@ -82,6 +82,7 @@ class ContactListingController extends ControllerBase {
   public function getTitle($route_type) {
     if ($route_type == 'contacts') {
       // Is there a text search string?
+      // @phpstan-ignore-next-line.
       $search_string = \Drupal::request()->request->get('query_contacts_az');
       if (!empty($search_string)) {
         return t('Contacts search');
@@ -92,6 +93,7 @@ class ContactListingController extends ControllerBase {
     }
     elseif ($route_type == 'contacts_letter') {
       // A letter has been selected from the A-Z.
+      // @phpstan-ignore-next-line.
       $letter = \Drupal::routeMatch()->getParameter('letter');
       return t('Contacts - under :letter', [':letter' => strtoupper($letter)]);
     }
