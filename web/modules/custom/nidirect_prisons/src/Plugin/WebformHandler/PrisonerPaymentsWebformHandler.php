@@ -2,14 +2,11 @@
 
 namespace Drupal\nidirect_prisons\Plugin\WebformHandler;
 
-use Drupal\Component\Transliteration\TransliterationInterface;
-use Drupal\Core\Database\Database;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\nidirect_prisons\Service\PrisonerPaymentManager;
 use Drupal\webform\Plugin\WebformHandlerBase;
 use Drupal\webform\Utility\WebformFormHelper;
-use Drupal\webform\WebformInterface;
 use Drupal\webform\WebformSubmissionInterface;
-use GuzzleHttp\Exception\RequestException;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -26,6 +23,11 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * )
  */
 class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
+
+  /**
+   * @var \Drupal\nidirect_prisons\Service\PrisonerPaymentManager
+   */
+  protected PrisonerPaymentManager $paymentManager;
 
   /**
    * @var array
@@ -76,6 +78,8 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
     $instance = parent::create($container, $configuration, $plugin_id, $plugin_definition);
     $instance->tokenManager = $container->get('webform.token_manager');
     $instance->transliteration = $container->get('transliteration');
+    /** @var \Drupal\nidirect_prisons\Service\PrisonerPaymentManager $paymentManager */
+    $instance->paymentManager = $container->get('nidirect_prisons.prisoner_payment_manager');
     return $instance;
   }
 
@@ -158,7 +162,7 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
         $prisoner_id = $form_state->get('prisoner_id');
 
         if ($prev_order_code && $prisoner_id) {
-          $this->deleteTransaction($prev_order_code);
+          $this->paymentManager->deleteTransaction($prev_order_code);
           $this->cancelWorldpayOrder($prev_order_code, $prisoner_id);
         }
       }
@@ -173,7 +177,7 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
       $visitor_id = $form_state->getValue('visitor_id');
 
       // The maximum amount a prisoner can be paid.
-      $prisoner_max_amount = $this->getPrisonerPaymentMaxAmount($prisoner_id);
+      $prisoner_max_amount = $this->paymentManager->getPrisonerPaymentMaxAmount($prisoner_id);
 
       // Set a form element value for display in the webform.
       $this->setFormElementValue('prisoner_max_amount', $prisoner_max_amount);
@@ -195,25 +199,15 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
 
       // Stop progress if there is an unexpired pending transaction
       // from another visitor.
-      $pending_transaction = $this->getPendingTransactionForPrisoner($prisoner_id);
-
-      $now = \Drupal::time()->getRequestTime();
-      $hard_expired = FALSE;
-      $soft_expired = FALSE;
+      $pending_transaction = $this->paymentManager->getPendingTransactionForPrisoner($prisoner_id);
 
       if ($pending_transaction) {
-        $hard_expired = ($pending_transaction->created_timestamp < ($now - self::HARD_TIMEOUT));
-        $soft_expired = ($pending_transaction->updated_timestamp < ($now - self::SOFT_TIMEOUT));
 
-        // Expired - clean up.
-        if ($hard_expired || $soft_expired) {
-          if ($pending_transaction->status === 'pending') {
-            $this->updateTransactionStatus($pending_transaction->order_key, 'expired');
-            $this->cancelWorldpayOrder($pending_transaction->order_key, $prisoner_id);
-          }
+        // Expire if needed.
+        if ($this->paymentManager->expireIfTimedOut($pending_transaction)) {
           $pending_transaction = NULL;
         }
-        // Not expired and owned by someone else - block.
+        // Still active and owned by someone else → block.
         elseif ($pending_transaction->visitor_id !== $visitor_id) {
           $elements['msg_payment_pending']['#access'] = TRUE;
           $elements['prisoner_payment_amount']['#access'] = FALSE;
@@ -222,7 +216,7 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
         }
       }
 
-      $prison_id = $this->getPrisonId($prisoner_id);
+      $prison_id = $this->paymentManager->getPrisonId($prisoner_id);
 
       if ($pending_transaction && $pending_transaction->visitor_id === $visitor_id) {
         // Resume existing transaction.
@@ -230,8 +224,13 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
       }
       else {
         // Create new transaction.
-        $order_code = $this->generateOrderCode($prison_id, $prisoner_id, $visitor_id);
-        $this->logPendingTransaction($order_code, $prisoner_id, $visitor_id, 0);
+        $order_code = $this->paymentManager->generateOrderCode($prison_id, $prisoner_id, $visitor_id);
+        $this->paymentManager->logPendingTransaction(
+          $order_code,
+          $prisoner_id,
+          $visitor_id,
+          0
+        );
       }
 
       // Keep order_code and prison_id for later.
@@ -243,6 +242,19 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
     }
 
     if ($page === 'page_payment_card_details') {
+
+      $transaction = $this->paymentManager->getTransaction($order_code);
+
+      if (!$transaction || $this->paymentManager->expireIfTimedOut($transaction)) {
+        $elements['page_payment_card_details']['#access'] = FALSE;
+        $elements['submit']['#access'] = FALSE;
+
+        \Drupal::messenger()->addError(
+          $this->t('Your payment session has expired. Please start again.')
+        );
+        return;
+      }
+
 
       $prisoner_fullname = $form_state->getValue('prisoner_fullname');
       $prisoner_id = $form_state->getValue('prisoner_id');
@@ -256,13 +268,10 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
       $payment_amount = (float) $form_state->getValue('prisoner_payment_amount');
 
       // Update pending transaction with the payment amount.
-      $this->updatePendingTransactionAmount($order_code, $payment_amount);
+      $this->paymentManager->updatePendingTransactionAmount($order_code, $payment_amount);
 
-      // Update pending transaction activity timestamp.
-      $this->updatePendingTransactionTimestamp(
-        $order_code,
-        \Drupal::time()->getRequestTime()
-      );
+      // Update transaction timestamp.
+      $this->paymentManager->touchTransaction($order_code);
 
       // Add clientside timeout countdown.
       $form['#attached']['library'][] = 'nidirect_prisons/prisoner_payments_timeout';
@@ -272,7 +281,7 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
       ];
 
       // Generate and send Worldpay order XML request.
-      $order_data_xml = $this->generateOrderData(
+      $order_data_xml = $this->paymentManager->generateOrderData(
         $order_code,
         $prison_id,
         $prisoner_id,
@@ -282,10 +291,10 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
         $visitor_email
       );
 
-      $response_xml = $this->sendWorldpayRequest($order_data_xml, $prison_id);
+      $response_xml = $this->paymentManager->sendWorldpayRequest($order_data_xml, $prison_id);
 
       // Parse the Worldpay response to get the iframe URL.
-      if ($response_xml && $response = $this->parseWorldpayResponse($response_xml)) {
+      if ($response_xml && $response = $this->paymentManager->parseWorldpayResponse($response_xml)) {
 
         // Attach the Worldpay JS library and pass the iframe URL to drupalSettings.
         $form['#attached']['library'][] = 'nidirect_prisons/prisoner_payments_worldpay';
@@ -308,7 +317,7 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
 
         // Something went wrong with the payment request to Worldpay.
         // Update transaction status as failed.
-        $this->updateTransactionStatus($order_code, 'failed');
+        $this->paymentManager->updateTransactionStatus($order_code, 'expired');
 
         // Prevent further progress.
         $elements['page_payment_card_details']['#access'] = FALSE;
@@ -368,7 +377,7 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
 
       // Validate the visitor_id is nominated by prisoner_id to
       // make payments.
-      $visitor_ids = $this->getPrisonerNominatedVisitorIds($prisoner_id) ?? [];
+      $visitor_ids = $this->paymentManager->getPrisonerNominatedVisitorIds($prisoner_id) ?? [];
 
       if (!in_array($visitor_id, $visitor_ids)) {
         $form_state->setErrorByName('visitor_id', $this->t('Check your visitor ID is correct and the prisoner has nominated you to make payments to them.'));
@@ -380,7 +389,7 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
 
       $prisoner_id = $form_state->getValue('prisoner_id');
       $prisoner_payment_amount = $form_state->getValue('prisoner_payment_amount');
-      $prisoner_max_amount = $this->getPrisonerPaymentMaxAmount($prisoner_id);
+      $prisoner_max_amount = $this->paymentManager->getPrisonerPaymentMaxAmount($prisoner_id);
 
       if ($prisoner_max_amount == 0) {
         $form_state->setError($form, $this->t('The payment limit for this prisoner has been reached. Try again next week.'));
@@ -418,7 +427,7 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
       }
 
       // Verify response integrity.
-      if (!$this->isValidWorldpayResponse($response_data)) {
+      if (!$this->paymentManager->isValidWorldpayResponse($response_data)) {
         $this->getLogger('nidirect_prisons')->alert('Worldpay response verification failed for order key: @orderKey', [
           '@orderKey' => $response_data['order']['orderKey'],
         ]);
@@ -473,796 +482,6 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
     if (isset($this->elements[$element_key])) {
       $this->elements[$element_key]['#default_value'] = $element_value;
     }
-  }
-
-  /**
-   * Get the maximum amount a prisoner can be paid.
-   *
-   * @param string $prisoner_id
-   *   The prisoner id.
-   * @return float|void
-   *   The amount.
-   */
-  protected function getPrisonerPaymentMaxAmount(string $prisoner_id) {
-    try {
-      $database = \Drupal::database();
-
-      // Get the maximum allowed payment amount (£100 or less).
-      $max_amount = $database->select('prisoner_payment_amount', 'ppa')
-        ->fields('ppa', ['amount'])
-        ->condition('ppa.prisoner_id', $prisoner_id)
-        ->execute()
-        ->fetchField();
-
-      return round((float) $max_amount, 2);
-    }
-    catch (\Exception $e) {
-      $this->getLogger('nidirect_prisons')->error('Database error: @message', ['@message' => $e->getMessage()]);
-    }
-  }
-
-  /**
-   * Get the prison id for the prison which receives payments
-   * for the prisoner.
-   *
-   * @param string $prisoner_id
-   *   The prisoner id.
-   * @return mixed|null
-   *   The prison id that receives payments to the prisoner.
-   */
-  public function getPrisonId(string $prisoner_id) {
-
-    $prison_id = NULL;
-
-    // Try to get the prison ID from db.
-    // The prisoner_payment_amount table stores the amount that
-    // can be paid to a prisoner and the prison id which receives
-    // payments.
-    try {
-      $connection = Database::getConnection();
-
-      $query = $connection->select('prisoner_payment_amount', 'pp_amount')
-        ->fields('pp_amount', ['prison_id'])
-        ->condition('prisoner_id', $prisoner_id);
-
-      $result = $query->execute()->fetchField();
-
-      if ($result) {
-        $prison_id = $result;
-      }
-    }
-    catch (\Exception $e) {
-      $this->getLogger('nidirect_prisons')->error('Database error: @message', ['@message' => $e->getMessage()]);
-    }
-
-    return $prison_id;
-  }
-
-  /**
-   * Get nominated visitor IDs who can make payments to a prisoner ID.
-   *
-   * @param string $prisoner_id
-   *   The prison id.
-   * @return array|string[]|null
-   *   Return an array of visitor ids who can make payments to a
-   *   prisoner or an empty array if there are no visitor ids
-   *   nominated or null if an exception occurs.
-   */
-  protected function getPrisonerNominatedVisitorIds(string $prisoner_id) {
-
-    $nominated_visitor_ids = [];
-
-    try {
-      $connection = \Drupal::database();
-
-      $exists = $connection->select('prisoner_payment_amount', 'a')
-        ->fields('a', ['prisoner_id'])
-        ->condition('a.prisoner_id', $prisoner_id)
-        ->execute()
-        ->fetchField();
-
-      if ($exists) {
-        $visitor_ids = $connection->select('prisoner_payment_nominees', 'n')
-          ->fields('n', ['visitor_ids'])
-          ->condition('n.prisoner_id', $prisoner_id)
-          ->execute()
-          ->fetchField();
-
-        if ($visitor_ids) {
-          $nominated_visitor_ids = explode(',', $visitor_ids);
-        }
-      }
-    }
-    catch (\Exception $e) {
-      $this->getLogger('nidirect_prisons')->error('Database error getting nominated visitors for prisoner: @message', ['@message' => $e->getMessage()]);
-
-      return NULL;
-    }
-
-    return $nominated_visitor_ids;
-  }
-
-  /**
-   * Get pending transaction for prisoner.
-   *
-   * @param string $prisoner_id
-   *   The prisoner id.
-   * @return false|mixed
-   *   Returns false when there are no pending transactions. Otherwise,
-   *   the pending transactions are returned (result object).
-   */
-  protected function getPendingTransactionForPrisoner(string $prisoner_id) {
-
-    $pending_transaction = FALSE;
-
-    try {
-      $connection = \Drupal::database();
-      $query = $connection->select('prisoner_payment_transactions', 'ppt')
-        ->fields('ppt', [
-          'order_key',
-          'prisoner_id',
-          'visitor_id',
-          'amount',
-          'status',
-          'created_timestamp',
-          'updated_timestamp',
-        ])
-        ->condition('prisoner_id', $prisoner_id)
-        ->condition('status', 'pending')
-        ->orderBy('created_timestamp', 'DESC')
-        ->range(0, 1);
-
-      $pending_transaction = $query->execute()->fetchObject();
-    }
-    catch (\Exception $e) {
-      \Drupal::logger('nidirect_prisons')->error('Error checking for pending transaction: @message', ['@message' => $e->getMessage()]);
-    }
-
-    return $pending_transaction;
-  }
-
-  /**
-   * Generate the XML data for a Worldpay payment request.
-   *
-   * @param string $order_code
-   *   The unique order code for the request.
-   * @param string $prison_id
-   *   The prison id which will receive the payment.
-   * @param string $prisoner_id
-   *   The prisoner id who will receive the payment.
-   * @param string $prisoner_fullname
-   *   The prisoner's full name.
-   * @param float $payment_amount
-   *   The amount to be paid.
-   * @param string $visitor_fullname
-   *   The visitor's (payee) full name.
-   * @param string $visitor_email
-   *   The visitor's email.
-   *
-   * @return string
-   *   The XML string for the Worldpay payment request.
-   */
-  protected function generateOrderData(
-    string $order_code,
-    string $prison_id,
-    string $prisoner_id,
-    string $prisoner_fullname,
-    float $payment_amount,
-    string $visitor_fullname,
-    string $visitor_email) {
-
-    $merchant_code = getenv('PRISONER_PAYMENTS_WP_MERCHANT_CODE_' . $prison_id) ?: 'DEFAULT_MERCHANT_CODE';
-
-    // Log an error if merchant code could not be retrieved.
-    if (!$merchant_code || $merchant_code === 'DEFAULT_MERCHANT_CODE') {
-      $this->getLogger('nidirect_prisons')->error('Missing merchant code for prison ID: @prison_id', [
-        '@prison_id' => $prison_id,
-      ]);
-    }
-
-    // Generate a meaningful description for the payment request.
-    $description = htmlspecialchars("Payment for prisoner ID: $prisoner_id", ENT_XML1);
-
-    // The currency for the payment request must be pounds sterling.
-    $currency = 'GBP';
-
-    // Worldpay requires the amount in the smallest currency unit (e.g., pence for GBP).
-    $amount_in_pence = (int) round($payment_amount * 100);
-
-    // Normalise (remove non A-Z characters) and split prisoner and
-    // visitor full names.
-    $prisoner_names = $this->splitFullName($this->cleanName($prisoner_fullname));
-    $visitor_names = $this->splitFullName($this->cleanName($visitor_fullname));
-
-    $sender_middle_name = $visitor_names['middle'] ? '<middle>' . $visitor_names['middle'] . '</middle>' : NULL;
-    $recipient_middle_name = $prisoner_names['middle'] ? '<middle>' . $prisoner_names['middle'] . '</middle>' : NULL;
-
-    // Create XML structure.
-    $xml = <<<XML
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE paymentService PUBLIC "-//Worldpay//DTD Worldpay PaymentService v1//EN" "http://dtd.worldpay.com/paymentService_v1.dtd">
-<paymentService version="1.4" merchantCode="$merchant_code">
-  <submit>
-    <order orderCode="$order_code" installationId="1536419">
-      <description>$description</description>
-      <amount value="$amount_in_pence" currencyCode="$currency" exponent="2"/>
-      <orderContent> <![CDATA[
-      <p>Hello?</p>
-      ]]> </orderContent>
-      <paymentMethodMask>
-        <include code="ECMC_DEBIT-SSL"/>
-        <include code="VISA_DEBIT-SSL"/>
-      </paymentMethodMask>
-      <shopper>
-        <shopperEmailAddress>$visitor_email</shopperEmailAddress>
-      </shopper>
-      <fundingTransfer type="GO" category="PULL_FROM_CARD">
-        <fundingParty type="sender">
-          <accountReference accountType="03">HPP-PROVIDED</accountReference>
-          <fullName>
-            <first>{$visitor_names['first']}</first>
-            $sender_middle_name
-            <last>{$visitor_names['last']}</last>
-          </fullName>
-          <fundingAddress>
-            <countryCode>GB</countryCode>
-          </fundingAddress>
-        </fundingParty>
-        <fundingParty type="recipient">
-          <accountReference accountType="07">NIPS-ACC-REFERENCE</accountReference>
-          <fullName>
-            <first>{$prisoner_names['first']}</first>
-            $recipient_middle_name
-            <last>{$prisoner_names['last']}</last>
-          </fullName>
-          <fundingAddress>
-            <countryCode>GB</countryCode>
-          </fundingAddress>
-        </fundingParty>
-      </fundingTransfer>
-    </order>
-  </submit>
-</paymentService>
-
-XML;
-
-    return $xml;
-  }
-
-  /**
-   * Generate a unique order code for Worldpay.
-   *
-   * @param string $prison_id
-   *   The prison ID for the payment.
-   *
-   * @param string $prisoner_id
-   *   The prisoner ID for the payment.
-   *
-   * @param string $visitor_id
-   *   The visitor ID for the payment.
-   *
-   * @return string
-   *   A unique order code.
-   * @throws \Exception
-   */
-  protected function generateOrderCode(string $prison_id, string $prisoner_id, string $visitor_id) {
-    $uuid_short = substr(\Drupal::service('uuid')->generate(), 0, 8);
-    $random_part = random_int(1000, 9999);
-    return "{$prison_id}_{$prisoner_id}_{$visitor_id}_{$uuid_short}{$random_part}";
-  }
-
-  /**
-   * Sends xml request to Worldpay and returns the response.
-   *
-   * @param string $request_xml
-   *   The request xml.
-   * @param string $prison_id
-   *   The id of the prison.
-   * @return \SimpleXMLElement|null
-   *   Returns response from Worldpay as SimpleXMLElement or null if
-   *   a problem occurs.
-   */
-  protected function sendWorldpayRequest(string $request_xml, string $prison_id) {
-    $response_xml = NULL;
-    $client = \Drupal::service('http_client');
-    $url = getenv('PRISONER_PAYMENTS_WP_SERVICE_URL') ?: 'https://secure-test.worldpay.com/jsp/merchant/xml/paymentService.jsp';
-    $api_username = getenv('PRISONER_PAYMENTS_WP_USERNAME_' . $prison_id);
-    $api_password = getenv('PRISONER_PAYMENTS_WP_PASSWORD_' . $prison_id);
-
-    // Validate credentials before making request.
-    if (empty($api_username) || empty($api_password)) {
-      $this->getLogger('nidirect_prisons')->error('Missing Worldpay API credentials.');
-      return NULL;
-    }
-
-    try {
-      $response = $client->post($url, [
-        'headers' => [
-          'Authorization' => 'Basic ' . base64_encode("$api_username:$api_password"),
-          'Content-Type' => 'application/xml',
-          'Accept' => 'application/xml',
-        ],
-        'body' => $request_xml,
-      ]);
-
-      $status_code = $response->getStatusCode();
-      $xml_string = $response->getBody()->getContents();
-
-      if ($status_code == 200) {
-        // Validate response is XML before parsing.
-        if (str_starts_with($xml_string, '<?xml')) {
-          $response_xml = simplexml_load_string($xml_string);
-        }
-        else {
-          $this->getLogger('nidirect_prisons')->error('Worldpay response is not valid XML: @response', [
-            '@response' => substr($xml_string, 0, 500),
-          ]);
-        }
-      }
-      else {
-        $this->getLogger('nidirect_prisons')->error('sendWorldpayRequest received unexpected status code: @code | Response: @response', [
-          '@code' => $status_code,
-          '@response' => substr($xml_string, 0, 500),
-        ]);
-      }
-    }
-    catch (RequestException $e) {
-      $response_body = $e->hasResponse() ? $e->getResponse()->getBody()->getContents() : 'No response';
-      $this->getLogger('nidirect_prisons')->error('sendWorldpayRequest error: @message | Response: @response', [
-        '@message' => $e->getMessage(),
-        '@response' => substr($response_body, 0, 500),
-      ]);
-    }
-
-    return $response_xml;
-  }
-
-  /**
-   * Parse Worldpay payment request response.
-   *
-   * @param \SimpleXMLElement $xml
-   *   The xml response from Worldpay to be parsed.
-   * @return array
-   *   The response parsed into an array.
-   */
-  protected function parseWorldpayResponse(\SimpleXMLElement $xml) {
-    $result = [
-      'success' => FALSE,
-      'order_code' => NULL,
-      'reference_url' => NULL,
-      'error' => NULL,
-    ];
-
-    if (!$xml || !($xml instanceof \SimpleXMLElement)) {
-      $result['error'] = 'Invalid or empty XML response from Worldpay.';
-      $this->getLogger('nidirect_prisons')->error('parseWorldpayResponse: Invalid or empty XML response.');
-      return $result;
-    }
-
-    try {
-      // Check if response contains an orderStatus node.
-      $order_status = $xml->xpath('//orderStatus');
-      if (!empty($order_status)) {
-        $order_status = $order_status[0];
-        $result['order_code'] = (string) $order_status['orderCode'];
-
-        // Extract the reference URL.
-        $reference = $order_status->xpath('reference');
-        if (!empty($reference)) {
-          $result['reference_url'] = (string) $reference[0];
-
-          if (!filter_var($result['reference_url'], FILTER_VALIDATE_URL)) {
-            $this->getLogger('nidirect_prisons')->warning('parseWorldpayResponse: Reference URL is not a valid URL: @url', [
-              '@url' => $result['reference_url'],
-            ]);
-            $result['error'] = 'Invalid reference URL returned by Worldpay.';
-          }
-          else {
-            $result['success'] = TRUE;
-          }
-        }
-        else {
-          $result['error'] = 'Missing reference URL in Worldpay response.';
-          $this->getLogger('nidirect_prisons')->warning('parseWorldpayResponse: Missing reference URL in Worldpay response.');
-        }
-      }
-      else {
-        // Handle error response from Worldpay.
-        $error = $xml->xpath('//error');
-        if (!empty($error)) {
-          $result['error'] = (string) $error[0];
-          $this->getLogger('nidirect_prisons')->error('parseWorldpayResponse: Worldpay error - @error', [
-            '@error' => $result['error'],
-          ]);
-        }
-        else {
-          $result['error'] = 'Unexpected response format from Worldpay.';
-          $this->getLogger('nidirect_prisons')->error('parseWorldpayResponse: Unexpected response format. Raw XML: @xml', [
-            '@xml' => $xml->asXML(),
-          ]);
-        }
-      }
-    }
-    catch (\Exception $e) {
-      $result['error'] = 'Exception parsing Worldpay response: ' . $e->getMessage();
-      $this->getLogger('nidirect_prisons')->error('parseWorldpayResponse exception: @message', [
-        '@message' => $e->getMessage(),
-      ]);
-    }
-
-    return $result;
-  }
-
-  /**
-   * Validates the Worldpay response using HMAC (MAC2).
-   *
-   * @param array $response_data
-   *   The decoded response data.
-   *
-   * @return bool
-   *   TRUE if the response is valid, FALSE otherwise.
-   */
-  private function isValidWorldpayResponse(array $response_data) {
-
-    // Retrieve the secret key.
-    $secret_key = getenv('PRISONER_PAYMENTS_WP_MAC_SECRET');
-
-    if (empty($secret_key)) {
-      $this->getLogger('nidirect_prisons')->error('Worldpay secret key is missing from configuration.');
-      return FALSE;
-    }
-
-    // Ensure required fields exist.
-    if (!isset(
-      $response_data['gateway']['orderKey'],
-      $response_data['gateway']['paymentAmount'],
-      $response_data['gateway']['paymentCurrency'],
-      $response_data['gateway']['paymentStatus'],
-      $response_data['gateway']['mac2']
-    )) {
-      return FALSE;
-    }
-
-    // Extract values needed for signature verification.
-    $order_key = $response_data['gateway']['orderKey'];
-    $payment_amount = $response_data['gateway']['paymentAmount'];
-    $payment_currency = $response_data['gateway']['paymentCurrency'];
-    $payment_status = $response_data['gateway']['paymentStatus'];
-    $mac2_received = $response_data['gateway']['mac2'];
-
-    // Compute the expected MAC.
-    $data_string  = $order_key . ':';
-    $data_string .= $payment_amount . ':';
-    $data_string .= $payment_currency . ':';
-    $data_string .= $payment_status;
-
-    // Compute the HMAC using SHA-256.
-    $computed_mac = hash_hmac('sha256', $data_string, $secret_key);
-
-    // Compare computed MAC with received MAC.
-    return hash_equals($computed_mac, $mac2_received);
-  }
-
-  /**
-   * Method to log the pending transaction.
-   *
-   * @param string $order_code
-   *   The unique order code identifying the transaction.
-   *
-   * @param string $prisoner_id
-   *   The prisoner id to receive payment.
-   *
-   * @param string $visitor_id
-   *   The visitor id who is making the payment.
-   *
-   * @param float $payment_amount
-   *   The payment amount.
-   * @throws \Exception
-   */
-  private function logPendingTransaction(string $order_code, string $prisoner_id, string $visitor_id, float $payment_amount) {
-    $timestamp = time();
-
-    $transaction_data = [
-      'order_key' => $order_code,
-      'prisoner_id' => $prisoner_id,
-      'visitor_id' => $visitor_id,
-      'amount' => $payment_amount,
-      'status' => 'pending',
-      'created_timestamp' => $timestamp,
-      'updated_timestamp' => $timestamp,
-    ];
-
-    \Drupal::database()->insert('prisoner_payment_transactions')
-      ->fields($transaction_data)
-      ->execute();
-  }
-
-  /**
-   * Method to update a pending transaction amount.
-   *
-   * @param string $order_code
-   *   The unique order code identifying the transaction.
-   *
-   * @param float $payment_amount
-   *   The payment amount.
-   *
-   */
-  private function updatePendingTransactionAmount(string $order_code, float $payment_amount) {
-    try {
-      // Get the database connection.
-      $connection = \Drupal::database();
-
-      // Build and execute the update query.
-      $connection->update('prisoner_payment_transactions')
-        ->fields(['amount' => $payment_amount])
-        ->condition('order_key', $order_code)
-        ->execute();
-    }
-    catch (\Exception $e) {
-      \Drupal::logger('nidirect_prisons')->error('Error updating pending transaction amount: @message', ['@message' => $e->getMessage()]);
-    }
-  }
-
-  /**
-   * Method to update a pending transaction updated_timestamp.
-   *
-   * @param string $order_code
-   *   The unique order code identifying the transaction.
-   *
-   * @param int $timestamp
-   *   The timestamp for when .
-   *
-   */
-  protected function updatePendingTransactionTimestamp(string $order_code, int $timestamp): void {
-    \Drupal::database()->update('prisoner_payment_transactions')
-      ->fields([
-        'updated_timestamp' => $timestamp,
-      ])
-      ->condition('order_key', $order_code)
-      ->condition('status', 'pending')
-      ->execute();
-  }
-
-
-  /**
-   * Method to update a transaction status.
-   *
-   * @param string $order_code
-   *   The unique order code identifying the transaction.
-   *
-   * @param string $status
-   *   The payment status - success|failed|pending.
-   *
-   */
-  private function updateTransactionStatus(string $order_code, string $status) {
-    try {
-      // Get the database connection.
-      $connection = \Drupal::database();
-
-      // Build and execute the update query.
-      $connection->update('prisoner_payment_transactions')
-        ->fields(['status' => $status])
-        ->condition('order_key', $order_code)
-        ->execute();
-    }
-    catch (\Exception $e) {
-      \Drupal::logger('nidirect_prisons')->error('Error updating transaction status: @message', ['@message' => $e->getMessage()]);
-    }
-  }
-
-  /**
-   * Get transaction by order key.
-   *
-   * @param string $order_code
-   *   The unique order code identifying the transaction.
-   * @return false|mixed
-   *   Returns false if no transaction found. Otherwise,
-   *   the transaction is returned (result object).
-   */
-  public function getTransaction(string $order_code) {
-
-    $transaction = FALSE;
-
-    try {
-      $connection = \Drupal::database();
-      $query = $connection->select('prisoner_payment_transactions', 'ppt')
-        ->fields('ppt', [
-          'order_key',
-          'prisoner_id',
-          'visitor_id',
-          'amount',
-          'status',
-          'created_timestamp',
-          'updated_timestamp',
-        ])
-        ->condition('order_key', $order_code);
-
-      $transaction = $query->execute()->fetchObject();
-    }
-    catch (\Exception $e) {
-      \Drupal::logger('nidirect_prisons')->error('Error getting transaction: @message', ['@message' => $e->getMessage()]);
-    }
-
-    return $transaction;
-  }
-
-  /**
-   * Method to delete transaction.
-   *
-   * @param string $order_code
-   *   The unique order code identifying the transaction to delete.
-   *
-   */
-  private function deleteTransaction(string $order_code) {
-    \Drupal::database()->delete('prisoner_payment_transactions')
-      ->condition('order_key', $order_code)
-      ->execute();
-  }
-
-  /**
-   * Cancel a Worldpay order.
-   *
-   * IMPORTANT - Only ever cancel pending or expired transactions.
-   * Never cancel authorised or completed payments because PRISM
-   * is notified immediately on authorisation.
-   *
-   * @param string $order_code
-   *   The Worldpay order code.
-   * @param string $prison_id
-   *   The prison id which would have received the payment.
-   */
-  public function cancelWorldpayOrder(string $order_code, string $prison_id): void {
-
-    // Load transaction to confirm state.
-    $transaction = $this->getTransaction($order_code);
-
-    // Transaction must be pending or expired. Early return otherwise.
-    if (!$transaction || $transaction->status !== 'pending' || $transaction->status !== 'expired') {
-      return;
-    }
-
-    $merchant_code = getenv('PRISONER_PAYMENTS_WP_MERCHANT_CODE_' . $prison_id) ?: 'DEFAULT_MERCHANT_CODE';
-
-    // Log an error if merchant code could not be retrieved.
-    if (!$merchant_code || $merchant_code === 'DEFAULT_MERCHANT_CODE') {
-      $this->getLogger('nidirect_prisons')->error('Missing merchant code for prison ID: @prison_id', [
-        '@prison_id' => $prison_id,
-      ]);
-    }
-
-    $xml = <<<XML
-<paymentService merchantCode="{$merchant_code}" version="1.4">
-  <modify>
-    <orderModification orderCode="{$order_code}">
-      <cancel/>
-    </orderModification>
-  </modify>
-</paymentService>
-XML;
-
-    try {
-      $response = $this->sendWorldpayRequest($xml, $prison_id);
-
-      // Optional: inspect response for success/failure
-      if (!$this->isWorldpayCancelSuccessful($response)) {
-        \Drupal::logger('nidirect_prisons')
-          ->warning('Worldpay cancel failed for order @order', [
-            '@order' => $order_code,
-          ]);
-      }
-    }
-    catch (\Throwable $e) {
-      // Never break execution on cleanup.
-      \Drupal::logger('nidirect_prisons')
-        ->error('Exception cancelling Worldpay order @order: @message', [
-          '@order' => $order_code,
-          '@message' => $e->getMessage(),
-        ]);
-    }
-  }
-
-  /**
-   * Helper to parse a Worldpay cancel order response.
-   *
-   * @param string $response_xml
-   *   The response xml from Worldpay to parse.
-   */
-  protected function isWorldpayCancelSuccessful(string $response_xml): bool {
-    try {
-      $doc = new \SimpleXMLElement($response_xml);
-      return isset($doc->reply->orderStatus->cancellation);
-    }
-    catch (\Throwable $e) {
-      return false;
-    }
-  }
-
-  /**
-   * Method to split a full name into array of first, middle and
-   * last names.
-   *
-   * Ensures each component is at most 35 characters long.
-   *
-   * @param string $full_name
-   *   The full name to be split.
-   *
-   * @return array
-   *   An array with three elements: first, middle and last name.
-   */
-  protected function splitFullName($full_name) {
-
-    // Remove extra spaces and normalize whitespace.
-    $full_name = trim(preg_replace('/\s+/', ' ', $full_name));
-    if ($full_name === '') {
-      return [
-        'first' => '',
-        'middle' => '',
-        'last' => '',
-      ];
-    }
-
-    $parts = explode(' ', $full_name);
-    $count = count($parts);
-
-    // Default values.
-    $first = '';
-    $middle = '';
-    $last = '';
-
-    if ($count === 1) {
-      // Only one name part — treat as first name.
-      $first = $parts[0];
-    }
-    elseif ($count === 2) {
-      // Two parts — assume first and last.
-      [$first, $last] = $parts;
-    }
-    else {
-      // More than two — assume first, middle(s), last.
-      $first = array_shift($parts);
-      $last = array_pop($parts);
-      $middle = implode(' ', $parts);
-    }
-
-    // Truncate each to max 35 characters.
-    $truncate = function ($name) {
-      return substr($name, 0, 35);
-    };
-
-    return [
-      'first' => $truncate($first),
-      'middle' => $truncate($middle),
-      'last' => $truncate($last),
-    ];
-  }
-
-  /**
-   * Cleans a name for use in Worldpay name fields.
-   *
-   * - Replaces hyphens with spaces.
-   * - Removes all non-Latin characters (except whitespace).
-   * - Transliterates to ASCII (e.g. É → E).
-   *
-   * @param string $string
-   *   The input name string.
-   *
-   * @return string
-   *   Cleaned name string containing only A–Z, a–z, and spaces.
-   */
-  protected function cleanName(string $string): string {
-    // Replace hyphens with spaces.
-    $string = str_replace('-', ' ', $string);
-
-    // Remove non-Latin characters except whitespace.
-    $latin_only = preg_replace('/[^\p{Latin}\s]/u', '', $string);
-
-    // Transliterate to ASCII.
-    $ascii = $this->transliteration->transliterate($latin_only, 'en');
-
-    // Normalize spaces and trim.
-    $ascii = trim(preg_replace('/\s+/', ' ', $ascii));
-
-    return $ascii;
   }
 
 }
