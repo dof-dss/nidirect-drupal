@@ -13,5 +13,10 @@ scheduler:
   id: simple
 launcher:
   id: serial
+  configuration:
+    timeouts:
+      lock_timeout: 300
+    launcher:
+      thread: 2
 logger:
   id: database
