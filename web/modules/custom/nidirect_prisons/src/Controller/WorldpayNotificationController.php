@@ -55,7 +55,7 @@ class WorldpayNotificationController extends ControllerBase {
      * account).
      */
 
-    // Check request is from a Worldpay IP by performing forward and
+    /*// Check request is from a Worldpay IP by performing forward and
     // reverse DNS lookups. Deny access to non-Worldpay IP addresses.
     $ip = $request->getClientIp();
 
@@ -78,7 +78,7 @@ class WorldpayNotificationController extends ControllerBase {
         '@resolved_ips' => implode(', ', $resolved_ips),
       ]);
       return new Response('Access Denied', 403);
-    }
+    }*/
 
     // Get the raw XML from the request body.
     $xml_data = $request->getContent();
@@ -109,19 +109,27 @@ class WorldpayNotificationController extends ControllerBase {
     $pence = (int) $xml->notify->orderStatusEvent->payment->amount['value'];
     $amount = round($pence / 100, 2);
 
+    // Early return if the status is not one we are expecting.
+    if (!PaymentStatus::isAllowed($payment_status)) {
+      $this->logger->warning('Unexpected Worldpay order notification status: @status. Have Merchant Channel HTTP Events been changed in the MAI?', [
+        '@status' => $payment_status,
+      ]);
+
+      // No further processing do be done. Acknowledge the notification.
+      return new Response('OK', 200);
+    }
+
     \Drupal::logger('worldpay')->notice('Worldpay order notification for @order_key £@amount @payment_status', [
       '@order_key' => $order_code,
       '@amount' => number_format($amount, 2, '.', ''),
       '@payment_status' => $payment_status,
     ]);
 
-    // Check transaction for order_key exists. It must have a pending or
-    // failed status. We do not change the status of transactions that
-    // are marked as success.
+    // Check transaction for order_key exists.
     $db = \Drupal::database();
     $payment_transaction = $this->paymentManager->getTransaction($order_code);
 
-    // If no transaction exists, log it.
+    // Early return if transaction does not exist.
     if (!$payment_transaction) {
       $this->logger->notice("No prisoner payment transaction found for Worldpay notification: {$order_code}");
 
@@ -129,11 +137,8 @@ class WorldpayNotificationController extends ControllerBase {
       return new Response('OK', 200);
     }
 
-    // Log a warning if the status is not one we are expecting.
-    if (!PaymentStatus::isAllowed($payment_status)) {
-      $this->logger->warning('Unexpected Worldpay order notification status: @status. Have Merchant Channel HTTP Events been changed in the MAI?', [
-        '@status' => $payment_status,
-      ]);
+    // Early return if transaction already marked 'success'.
+    if ($payment_transaction->status === 'success') {
 
       // No further processing do be done. Acknowledge the notification.
       return new Response('OK', 200);
@@ -145,10 +150,39 @@ class WorldpayNotificationController extends ControllerBase {
     // is 'failed'.
     if ($payment_status === 'AUTHORISED') {
 
-      // Deduct from prisoner's balance.
+      // Detect late authorisation (expired locally but authorised
+      // by Worldpay).
+      $is_late_authorisation = ($payment_transaction->status === 'expired');
+
+      if ($is_late_authorisation) {
+        $this->logger->warning(
+          'Late Worldpay AUTHORISED received for expired transaction @order',
+          ['@order' => $order_code]
+        );
+      }
+
+      // Validate amount integrity (non-negotiable).
+      if ((float) $payment_transaction->amount !== (float) $amount) {
+        $this->logger->error(
+          'Amount mismatch for Worldpay AUTHORISED order @order. Expected £@expected, got £@actual',
+          [
+            '@order' => $order_code,
+            '@expected' => number_format($payment_transaction->amount, 2, '.', ''),
+            '@actual' => number_format($amount, 2, '.', ''),
+          ]
+        );
+
+        // Mark as failed.
+        $this->paymentManager->updateTransactionStatus($order_code, 'failed');
+
+        return new Response('OK', 200);
+      }
+
+      // Process the authorised payment atomically.
       $db_transaction = $db->startTransaction();
 
       try {
+        // Deduct from prisoner's balance.
         $db->update('prisoner_payment_amount')
           ->expression('amount', 'GREATEST(amount - :paid_amount, 0)', [':paid_amount' => $amount])
           ->condition('prisoner_id', $payment_transaction->prisoner_id)
@@ -157,24 +191,36 @@ class WorldpayNotificationController extends ControllerBase {
         // Get sequence id for this payment.
         $sequence_id = $this->getNextSequenceId();
 
-        // Send payment details to Prism.
-        $this->sendJsonToPrism($order_code, $payment_transaction->prisoner_id, $payment_transaction->visitor_id, $amount, $sequence_id);
+        // Notify PRISM.
+        $this->sendJsonToPrism(
+          $order_code,
+          $payment_transaction->prisoner_id,
+          $payment_transaction->visitor_id,
+          $amount,
+          $sequence_id
+        );
 
-        // Change prisoner payment transaction status from 'pending' to
-        // 'success'.
+        // Mark transaction as successful.
         $db->update('prisoner_payment_transactions')
-          ->fields(['status' => 'success'])
+          ->fields([
+            'status' => 'success',
+            'updated_timestamp' => \Drupal::time()->getRequestTime(),
+          ])
           ->condition('order_key', $order_code)
           ->execute();
       }
-      catch (\Exception $e) {
+      catch (\Throwable $e) {
         $db_transaction->rollBack();
-        $this->logger->error('Authorised payment update failed for prisoner_id @prisoner_id for order_code @order_code for amount £@amount: @message', [
-          '@amount' => $amount,
-          '@prisoner_id' => $payment_transaction->prisoner_id,
-          '@order_code' => $order_code,
-          '@message' => $e->getMessage()
-        ]);
+
+        $this->logger->error(
+          'Failed processing AUTHORISED Worldpay payment for order @order: @message',
+          [
+            '@order' => $order_code,
+            '@message' => $e->getMessage(),
+          ]
+        );
+
+        // Important: do NOT return non-200 here, or Worldpay will retry.
       }
       finally {
         unset($db_transaction);
