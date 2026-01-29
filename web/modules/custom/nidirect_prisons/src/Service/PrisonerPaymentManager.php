@@ -38,7 +38,7 @@ class PrisonerPaymentManager {
    */
   protected TransliterationInterface $transliteration;
 
-  public const HARD_TIMEOUT = 1800;
+  public const HARD_TIMEOUT = 1200;
   public const SOFT_TIMEOUT = 600;
 
   public function __construct(
@@ -97,8 +97,15 @@ class PrisonerPaymentManager {
     // Load transaction to confirm state.
     $transaction = $this->getTransaction($order_code);
 
-    // Transaction must exist and be pending or expired.
-    if (!$transaction || !in_array($transaction->status, ['pending', 'expired'], TRUE)) {
+    // Early return if transaction non-existent.
+    if (!$transaction) {
+      $this->logger->debug('Worldpay cancel skipped: @order could not be found.', ['@order' => $order_code]);
+      return;
+    }
+
+    // Early return if transaction already complete.
+    if ($transaction->status === 'success') {
+      $this->logger->debug('Worldpay cancel skipped: @order already complete (status = success).', ['@order' => $order_code]);
       return;
     }
 
@@ -113,6 +120,8 @@ class PrisonerPaymentManager {
     }
 
     $xml = <<<XML
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE paymentService PUBLIC "-//Worldpay//DTD Worldpay PaymentService v1//EN" "http://dtd.worldpay.com/paymentService_v1.dtd">
 <paymentService merchantCode="{$merchant_code}" version="1.4">
   <modify>
     <orderModification orderCode="{$order_code}">
@@ -120,18 +129,27 @@ class PrisonerPaymentManager {
     </orderModification>
   </modify>
 </paymentService>
+
 XML;
 
     try {
-      // Temporarily log when a cancel happens
-      $this->logger->notice('Cancelling Worldpay order @order', ['@order' => $order_code]);
-
       $response = $this->sendWorldpayRequest($xml, $prison_id);
 
       if (!$this->isWorldpayCancelSuccessful($response)) {
         $this->logger->warning(
-          'Worldpay cancel failed for order @order',
-          ['@order' => $order_code]
+          'Worldpay cancel failed for order @order. Response was: @response',
+          [
+            '@order' => $order_code,
+            '@response' => $response->asXML()
+          ]
+        );
+      }
+      else {
+        $this->logger->debug(
+          'Worldpay cancelled @order.',
+          [
+            '@order' => $order_code
+          ]
         );
       }
     }
@@ -150,13 +168,16 @@ XML;
   /**
    * Helper to parse a Worldpay cancel order response.
    *
-   * @param string $response_xml
+   * @param \SimpleXMLElement $response_xml
    *   The response xml from Worldpay to parse.
+   * @return bool
    */
-  protected function isWorldpayCancelSuccessful(string $response_xml): bool {
+  protected function isWorldpayCancelSuccessful(\SimpleXMLElement $response_xml): bool {
     try {
-      $doc = new \SimpleXMLElement($response_xml);
-      return isset($doc->reply->orderStatus->cancellation);
+      return (
+        isset($response_xml->reply->ok->cancelReceived)
+        && isset($response_xml->reply->ok->cancelReceived['orderCode'])
+      );
     }
     catch (\Throwable $e) {
       return false;
@@ -237,6 +258,7 @@ XML;
 
     // Cancel Worldpay.
     $prison_id = $this->getPrisonId($transaction->prisoner_id);
+
     if ($prison_id) {
       $this->cancelWorldpayOrder($transaction->order_key, $prison_id);
     }
@@ -247,12 +269,12 @@ XML;
   /**
    * Get all pending transactions.
    *
-   * @return object|null
-   *   Pending transactions or NULL if none.
+   * @return array
+   *   Array of pending transaction objects.
    */
-  public function getPendingTransactions(): ?object {
+  public function getPendingTransactions(): array {
     try {
-      $query = $this->database->select('prisoner_payment_transactions', 'ppt')
+      return $this->database->select('prisoner_payment_transactions', 'ppt')
         ->fields('ppt', [
           'order_key',
           'prisoner_id',
@@ -263,18 +285,16 @@ XML;
           'updated_timestamp',
         ])
         ->condition('status', 'pending')
-        ->orderBy('created_timestamp', 'DESC');
-
-      return $query->execute()->fetchObject() ?: NULL;
+        ->orderBy('created_timestamp', 'DESC')
+        ->execute()
+        ->fetchAll();
     }
     catch (\Throwable $e) {
       $this->logger->error(
         'Error getting pending transactions: @message',
-        [
-          '@message' => $e->getMessage(),
-        ]
+        ['@message' => $e->getMessage()]
       );
-      return NULL;
+      return [];
     }
   }
 
@@ -409,14 +429,25 @@ XML;
    *
    * @param float $payment_amount
    *   The payment amount.
+   *
+   * @param int $created_timestamp
+   *   The created timestamp (optional).
+   *
+   * @return object
+   *   Return the inserted transaction details.
    * @throws \Exception
    */
   public function logPendingTransaction(
     string $order_code,
     string $prisoner_id,
     string $visitor_id,
-    float $amount
-  ): void {
+    float $amount,
+    ?int $created_timestamp = NULL
+  ): \stdClass {
+
+    $now = $this->time->getRequestTime();
+    $created_timestamp = $created_timestamp ?? $now;
+
     $this->database->insert('prisoner_payment_transactions')
       ->fields([
         'order_key' => $order_code,
@@ -424,10 +455,22 @@ XML;
         'visitor_id' => $visitor_id,
         'amount' => $amount,
         'status' => 'pending',
-        'created_timestamp' => $this->time->getRequestTime(),
-        'updated_timestamp' => $this->time->getRequestTime(),
+        'created_timestamp' => $created_timestamp,
+        'updated_timestamp' => $now,
       ])
       ->execute();
+
+
+    // Return transaction object.
+    return (object) [
+      'order_key' => $order_code,
+      'prisoner_id' => $prisoner_id,
+      'visitor_id' => $visitor_id,
+      'amount' => $amount,
+      'status' => 'pending',
+      'created_timestamp' => $created_timestamp,
+      'updated_timestamp' => $now,
+    ];
   }
 
 
@@ -504,20 +547,49 @@ XML;
   }
 
   /**
-   * Method to update a pending transaction updated_timestamp.
+   * Touch a pending transaction, enforcing soft and hard timeouts.
    *
    * @param string $order_code
    *   The unique order code identifying the transaction.
    *
+   * @return bool
+   *   TRUE if the transaction was successfully kept alive.
+   *   FALSE if the transaction is missing, expired, or no longer pending.
    */
-  public function touchTransaction(string $order_code): void {
+  public function touchTransaction(string $order_code): bool {
+
+    $transaction = $this->getTransaction($order_code);
+
+    if (!$transaction || $transaction->status !== 'pending') {
+      return false;
+    }
+
+    $now = $this->time->getRequestTime();
+
+    // Enforce hard timeout (absolute lifetime).
+    $age = $now - (int) $transaction->created_timestamp;
+    if ($age > self::HARD_TIMEOUT) {
+      $this->updateTransactionStatus($order_code, 'expired');
+      return false;
+    }
+
+    // Enforce soft timeout (inactivity window).
+    $idle = $now - (int) $transaction->updated_timestamp;
+    if ($idle > self::SOFT_TIMEOUT) {
+      $this->updateTransactionStatus($order_code, 'expired');
+      return false;
+    }
+
+    // Transaction is still valid — touch it.
     $this->database->update('prisoner_payment_transactions')
       ->fields([
-        'updated_timestamp' => $this->time->getRequestTime(),
+        'updated_timestamp' => $now,
       ])
       ->condition('order_key', $order_code)
       ->condition('status', 'pending')
       ->execute();
+
+    return true;
   }
 
   /**
