@@ -7,8 +7,8 @@
     attach(context, settings) {
 
       const container = once(
-        'prisoner-payment-countdown',
-        '#worldpay-html',
+        'prisonerPaymentCountdown',
+        '.webform-submission-prisoner-payments-form',
         context
       );
 
@@ -17,66 +17,75 @@
       }
 
       const cfg = settings.prisonerPayments || {};
-      const softTimeoutMs = (cfg.softTimeout || 0) * 1000; // Convert to milliseconds.
+      const softTimeoutMs = (cfg.softTimeout || 0) * 1000;
+      const hardTimeoutMs = (cfg.hardTimeout || 0) * 1000;
+      const startTimeMs = Number.isFinite(cfg.startTime) ? cfg.startTime * 1000 : Date.now();
+
       const restartUrl = cfg.restartUrl || '/forms/prisoner-payment';
 
       if (!softTimeoutMs) {
         return;
       }
 
-      // Create countdown UI
+      // Create a fixed countdown display.
       const countdownEl = document.createElement('div');
-      countdownEl.id = 'payment-countdown';
+      countdownEl.id = 'prisoner-payment-countdown';
       countdownEl.className = 'payment-countdown';
+
       countdownEl.setAttribute('aria-live', 'polite');
-
-      container[0].prepend(countdownEl);
-
-      const startTime = Date.now();
-      let warningShown = false;
+      document.querySelector(
+        '[data-webform-key="page_payment_amount"], ' +
+        '[data-webform-key="page_payment_card_details"]'
+      ).append(countdownEl);
 
       function formatTime(ms) {
         const totalSeconds = Math.max(0, Math.floor(ms / 1000));
         const minutes = Math.floor(totalSeconds / 60);
         const seconds = totalSeconds % 60;
-        return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+        return `${minutes} minutes ${seconds.toString().padStart(2, '0')} seconds`;
       }
 
       function expireSession() {
         prisonerPaymentSessionExpired = true;
 
-        // Replace Worldpay iframe/container
+        // Tear down Worldpay iframe cleanly
+        if (Drupal.worldpayLibrary && typeof Drupal.worldpayLibrary.destroy === 'function') {
+          Drupal.worldpayLibrary.destroy();
+          Drupal.worldpayLibrary = null;
+        }
+
+        // Replace webform with session timeout message.
         container[0].innerHTML = `
-          <div class="payment-expired-message info-notice info-notice--error">
-            <p><strong>Your payment session has expired.</strong></p>
-            <p>Please restart the payment process.</p>
-            <p><a href="${restartUrl}">Start a new payment</a></p>
+          <p class="info-notice info-notice--error">
+             Your payment session has expired. Please start again.
+          </p>
+          <div class="launch-service">
+            <a href="${restartUrl}" class="btn btn-large btn--primary" data-self-ref="true">Start again</a>
           </div>
         `;
+
+        if (countdownEl && countdownEl.parentNode) {
+          countdownEl.parentNode.removeChild(countdownEl);
+        }
 
         clearInterval(timer);
         timer = null;
       }
 
       function tick() {
-        const elapsed = Date.now() - startTime;
-        const remaining = softTimeoutMs - elapsed;
-
-        console.log(`Elapsed: ${elapsed}, Remaining: ${remaining}`);
-
+        const elapsed = Date.now() - startTimeMs;
+        const remaining = hardTimeoutMs - elapsed;
+        if (remaining < 2 * 60 * 1000) {
+          countdownEl.classList.add('payment-countdown-warning');
+          countdownEl.innerHTML = `<span class="visually-hidden">Warning!</span>You have ${formatTime(remaining)} left to make a payment`;
+        }
         if (remaining <= 0) {
           expireSession();
           return;
         }
-
-        // 2-minute warning (once)
-        if (!warningShown && remaining <= 2 * 60 * 1000) {
-          countdownEl.classList.add('payment-countdown--warning');
-          warningShown = true;
+        else {
+          countdownEl.innerHTML = `You have ${formatTime(remaining)} left to make a payment`;
         }
-
-        countdownEl.textContent =
-          `Time remaining to complete payment: ${formatTime(remaining)}`;
       }
 
       let timer = null;
@@ -105,11 +114,17 @@
         return;
       }
 
+      const softTimeoutMs = (settings.prisonerPayments.softTimeout || 0) * 1000;
+
+      // Fallback: 30s if misconfigured
+      const heartbeatIntervalMs = softTimeoutMs
+        ? Math.floor(softTimeoutMs / 2)
+        : 30000;
+
       let heartbeatTimer = null;
 
       heartbeatTimer = setInterval(() => {
 
-        // Stop heartbeats if session expired client-side
         if (prisonerPaymentSessionExpired) {
           clearInterval(heartbeatTimer);
           heartbeatTimer = null;
@@ -127,7 +142,7 @@
           credentials: 'same-origin',
         });
 
-      }, 30000);
+      }, heartbeatIntervalMs);
     }
   };
 })(Drupal, once);

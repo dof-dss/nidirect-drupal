@@ -2,6 +2,7 @@
 
 namespace Drupal\nidirect_prisons\Plugin\WebformHandler;
 
+use Drupal\Component\Datetime\TimeInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\nidirect_prisons\Service\PrisonerPaymentManager;
 use Drupal\webform\Plugin\WebformHandlerBase;
@@ -45,6 +46,13 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
   protected $webformSubmission;
 
   /**
+   * The time service.
+   *
+   * @var \Drupal\Component\Datetime\TimeInterface
+   */
+  protected TimeInterface $time;
+
+  /**
    * @var array
    */
   protected array $elements = [];
@@ -64,14 +72,6 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
   protected $transliteration;
 
   /**
-   * Timeouts for making a payment in seconds.
-   * HARD_TIMEOUT for completing the entire process 30 mins.
-   * SOFT_TIMEOUT for inactivity 10 mins.
-   */
-  public const HARD_TIMEOUT = 1800;
-  public const SOFT_TIMEOUT = 600;
-
-  /**
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
@@ -80,6 +80,7 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
     $instance->transliteration = $container->get('transliteration');
     /** @var \Drupal\nidirect_prisons\Service\PrisonerPaymentManager $paymentManager */
     $instance->paymentManager = $container->get('nidirect_prisons.prisoner_payment_manager');
+    $instance->time = $container->get('datetime.time');
     return $instance;
   }
 
@@ -147,28 +148,40 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
     $this->elements = WebformFormHelper::flattenElements($form);
 
     $page = $form_state->get('current_page');
-    $is_prev_triggered = isset($form_state->getTriggeringElement()['#id']) && $form_state->getTriggeringElement()['#id'] === 'edit-actions-wizard-prev';
-    $is_next_triggered = isset($form_state->getTriggeringElement()['#id']) && $form_state->getTriggeringElement()['#id'] === 'edit-actions-wizard-next';
-
-    $elements = WebformFormHelper::flattenElements($form);
+    $elements = $this->elements;
     $webform = $webform_submission->getWebform();
 
-    /*if ($page === 'page_prisoner_and_visitor_id' || $page === 'page_payment_amount') {
+    if ($page === 'page_prisoner_and_visitor_id' && $form_state->get('order_code')) {
+      $elements['msg_payment_in_progress']['#access'] = TRUE;
+      $elements['wizard_next']['#access'] = FALSE;
+    }
 
-      // If user hit previous, then there is an existing order_code
-      // and pending transaction which needs to be removed.
-      if ($is_prev_triggered) {
-        $prev_order_code = $form_state->get('order_code');
-        $prisoner_id = $form_state->get('prisoner_id');
+    if ($page === 'page_payment_amount' || $page === 'page_payment_card_details') {
+      // Add clientside timeout countdown.
+      $form['#attached']['library'][] = 'nidirect_prisons/prisoner_payments_timeout';
 
-        if ($prev_order_code && $prisoner_id) {
-          $this->paymentManager->deleteTransaction($prev_order_code);
-          $this->cancelWorldpayOrder($prev_order_code, $prisoner_id);
-        }
+      // Hide Previous once a transaction exists.
+      if ($form_state->get('order_code')) {
+        $elements['wizard_prev']['#access'] = FALSE;
+
+        // Add Cancel button.
+        $form['actions']['cancel_payment'] = [
+          '#type' => 'submit',
+          '#value' => $this->t('Cancel payment'),
+          '#submit' => [[static::class, 'cancelPaymentSubmit']],
+          '#limit_validation_errors' => [],
+          '#weight' => -10,
+          '#attributes' => [
+            'onclick' => "return confirm('Are you sure you want to cancel this payment? Any details you’ve entered will be lost and you’ll be taken back to the start.');",
+          ],
+        ];
       }
-    }*/
+    }
 
     if ($page === 'page_payment_amount') {
+
+      // Created timestamp for tracking timeout on pending transactions.
+      $created_timestamp = $this->time->getRequestTime();
 
       // The prisoner_id to be paid.
       $prisoner_id = $form_state->getValue('prisoner_id');
@@ -204,10 +217,10 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
       if ($pending_transaction) {
 
         // Expire if needed.
-        if ($this->paymentManager->expireIfTimedOut($pending_transaction)) {
+        if ($pending_transaction->status !== 'pending') {
           $pending_transaction = NULL;
         }
-        // Still active and owned by someone else → block.
+        // Still active and owned by someone else, halt progress.
         elseif ($pending_transaction->visitor_id !== $visitor_id) {
           $elements['msg_payment_pending']['#access'] = TRUE;
           $elements['prisoner_payment_amount']['#access'] = FALSE;
@@ -218,24 +231,69 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
 
       $prison_id = $this->paymentManager->getPrisonId($prisoner_id);
 
+      // Check for existing pending transaction from the current
+      // visitor. Since we are on page_payment_amount, the visitor can
+      // change the amount. Worldpay does not allow the amount in
+      // existing orders to be changed.  So cancel the order and expire
+      // the transaction before creating a new one.
       if ($pending_transaction && $pending_transaction->visitor_id === $visitor_id) {
-        // Resume existing transaction.
-        $order_code = $pending_transaction->order_key;
-      }
-      else {
-        // Create new transaction.
-        $order_code = $this->paymentManager->generateOrderCode($prison_id, $prisoner_id, $visitor_id);
-        $this->paymentManager->logPendingTransaction(
-          $order_code,
-          $prisoner_id,
-          $visitor_id,
-          0
+
+        $old_order_code = $pending_transaction->order_key;
+        $now = $this->time->getRequestTime();
+
+        // Preserve original created time ONLY if still within
+        // hard timeout. This prevents resurrecting a transaction that
+        // is already hard-expired (e.g. if cron has not run).
+        if (($now - $pending_transaction->created_timestamp) < $this->paymentManager::HARD_TIMEOUT) {
+          $created_timestamp = $pending_transaction->created_timestamp;
+        }
+        else {
+          // Hard timeout exceeded — start a fresh attempt.
+          $created_timestamp = $now;
+        }
+
+        // Cancel Worldpay order for the pending transaction
+        $this->paymentManager->cancelWorldpayOrder(
+          $old_order_code,
+          $prison_id
+        );
+
+        // Expire the pending transaction
+        $this->paymentManager->updateTransactionStatus(
+          $old_order_code,
+          'expired'
         );
       }
+
+      $order_code = $this->paymentManager->generateOrderCode(
+        $prison_id,
+        $prisoner_id,
+        $visitor_id
+      );
+
+      $new_transaction = $this->paymentManager->logPendingTransaction(
+        $order_code,
+        $prisoner_id,
+        $visitor_id,
+        0,
+        $created_timestamp
+      );
+
+      // Clientside timeout countdown needs order code, timeout values
+      // and the start time for the new transaction.
+      $form['#attached']['drupalSettings']['prisonerPayments'] = [
+        'orderCode' => $order_code,
+        'softTimeout' => $this->paymentManager::SOFT_TIMEOUT,
+        'hardTimeout' => $this->paymentManager::HARD_TIMEOUT,
+        'startTime' => (int) $new_transaction->created_timestamp,
+      ];
 
       // Keep order_code and prison_id for later.
       $form_state->set('order_code', $order_code);
       $form_state->set('prison_id', $prison_id);
+
+      // Set flag to indicate new order not sent to worldpay yet.
+      $form_state->set('worldpay_order_sent', FALSE);
 
       // Show msg_maximum_amount_payable.
       $elements['msg_maximum_amount_payable']['#access'] = TRUE;
@@ -254,16 +312,15 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
       $order_code = $form_state->get('order_code');
       $payment_amount = (float) $form_state->getValue('prisoner_payment_amount');
 
-      // Halt progress if transaction has expired.
+      // Get the transaction.
       $transaction = $this->paymentManager->getTransaction($order_code);
 
-      if (!$transaction || $this->paymentManager->expireIfTimedOut($transaction)) {
-        $elements['page_payment_card_details']['#access'] = FALSE;
+      // Halt progress if transaction expired.
+      if (!$transaction || $transaction->status === 'expired') {
+        $elements['twig_payment_card_details']['#access'] = FALSE;
+        $elements['msg_session_expired']['#access'] = TRUE;
+        $elements['wizard_prev']['#access'] = FALSE;
         $elements['submit']['#access'] = FALSE;
-
-        \Drupal::messenger()->addError(
-          $this->t('Your payment session has expired. Please start again.')
-        );
         return;
       }
 
@@ -273,11 +330,13 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
       // Update transaction timestamp.
       $this->paymentManager->touchTransaction($order_code);
 
-      // Add clientside timeout countdown.
-      $form['#attached']['library'][] = 'nidirect_prisons/prisoner_payments_timeout';
+      // Clientside timeout countdown needs order code, timeout values
+      // and the start time for the transaction.
       $form['#attached']['drupalSettings']['prisonerPayments'] = [
         'orderCode' => $order_code,
-        'softTimeout' => self::SOFT_TIMEOUT,
+        'softTimeout' => $this->paymentManager::SOFT_TIMEOUT,
+        'hardTimeout' => $this->paymentManager::HARD_TIMEOUT,
+        'startTime' => (int) $transaction->created_timestamp,
       ];
 
       // Generate and send Worldpay order XML request.
@@ -291,7 +350,21 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
         $visitor_email
       );
 
-      $response_xml = $this->paymentManager->sendWorldpayRequest($order_data_xml, $prison_id);
+      // Prevent duplicate Worldpay order creation on form rebuilds.
+      if (!$form_state->get('worldpay_order_sent')) {
+
+        $response_xml = $this->paymentManager->sendWorldpayRequest(
+          $order_data_xml,
+          $prison_id
+        );
+
+        // Mark as sent for this form/session.
+        $form_state->set('worldpay_order_sent', TRUE);
+      }
+      else {
+        // Order already sent; do not resend.
+        $response_xml = NULL;
+      }
 
       // Parse the Worldpay response to get the iframe URL.
       if ($response_xml && $response = $this->paymentManager->parseWorldpayResponse($response_xml)) {
@@ -304,7 +377,7 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
         ];
 
         // Add a container for the iframe.
-        $form['elements']['page_payment_card_details']['worldpay_container'] = [
+        $form['elements']['page_payment_card_details']['worldpay_container']['card_details'] = [
           '#markup' => '<h3>Debit card details</h3><div id="worldpay-html"></div>',
           '#allowed_tags' => ['div', 'h3'],
         ];
@@ -317,7 +390,7 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
 
         // Something went wrong with the payment request to Worldpay.
         // Update transaction status as failed.
-        $this->paymentManager->updateTransactionStatus($order_code, 'expired');
+        $this->paymentManager->updateTransactionStatus($order_code, 'failed');
 
         // Prevent further progress.
         $elements['page_payment_card_details']['#access'] = FALSE;
@@ -422,6 +495,7 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
           '@error' => json_last_error_msg(),
         ]);
 
+        $webform->setSetting('confirmation_message', $webform->getElement('webform_confirmation_failure')['#markup']);
         \Drupal::messenger()->addError(t('Payment verification failed. Contact the administrator.'));
         return;
       }
@@ -432,6 +506,7 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
           '@orderKey' => $response_data['order']['orderKey'],
         ]);
 
+        $webform->setSetting('confirmation_message', $webform->getElement('webform_confirmation_failure')['#markup']);
         \Drupal::messenger()->addError(t('Payment verification failed. Contact the administrator.'));
         return;
       }
@@ -446,6 +521,53 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
         $webform->setSetting('confirmation_message', $webform->getElement('webform_confirmation_failure')['#markup']);
       }
     }
+  }
+
+  /**
+   * Submit handler for cancelling a payment.
+   */
+  public static function cancelPaymentSubmit(array &$form, FormStateInterface $form_state) {
+    /** @var \Drupal\nidirect_prisons\Plugin\WebformHandler\PrisonerPaymentsWebformHandler $handler */
+    $handler = $form_state->getFormObject()->getWebform()->getHandler('prisoner_payments');
+
+    $order_code = $form_state->get('order_code');
+    $prison_id = $form_state->get('prison_id');
+
+    if ($order_code && $prison_id) {
+      $handler->cancelTransaction($order_code, $prison_id);
+    }
+
+    // Clear wizard state.
+    $form_state->set('order_code', NULL);
+    $form_state->set('prison_id', NULL);
+    $form_state->set('worldpay_order_sent', FALSE);
+
+    // Restart the form.
+    $form_state->setRedirect('<current>');
+    $form_state->setRebuild(FALSE);
+  }
+
+  /**
+   * Cancels a pending transaction and cleans up external state.
+   */
+  protected function cancelTransaction(string $order_code, string $prison_id): void {
+
+    $transaction = $this->paymentManager->getTransaction($order_code);
+
+    if (!$transaction || $transaction->status !== 'pending') {
+      return;
+    }
+
+    // Cancel Worldpay order if created.
+    $this->paymentManager->cancelWorldpayOrder($order_code, $prison_id);
+
+    // Mark transaction as cancelled (not expired).
+    $this->paymentManager->updateTransactionStatus($order_code, 'cancelled');
+
+    $this->getLogger('nidirect_prisons')->info(
+      'Payment cancelled by user for order @order',
+      ['@order' => $order_code]
+    );
   }
 
   /**
