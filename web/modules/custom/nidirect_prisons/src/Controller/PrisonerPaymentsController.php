@@ -36,11 +36,14 @@ class PrisonerPaymentsController extends ControllerBase {
    */
   public function heartbeat(Request $request): JsonResponse {
     $data = json_decode($request->getContent(), TRUE);
+
     if (empty($data['order_code'])) {
       return new JsonResponse(['status' => 'error'], 400);
     }
 
-    $this->paymentManager->touchTransaction($data['order_code']);
+    if (!$this->paymentManager->touchTransaction($data['order_code'])) {
+      return new JsonResponse(['status' => 'expired'], 410);
+    }
 
     return new JsonResponse(['status' => 'ok']);
   }
