@@ -13,40 +13,37 @@ use Drupal\nidirect_prisons\Service\PrisonerPaymentManager;
  */
 function nidirect_prisons_cron() {
 
-  /** @var \Drupal\nidirect_prisons\Service\PrisonerPaymentManager $payment_manager */
-  $payment_manager = \Drupal::service('nidirect_prisons.prisoner_payment_manager');
-
-  /**
-   * Mark pending transactions older than SOFT_TIMEOUT/HARD_TIMEOUT as
-   * expired and send a Worldpay cancel request.
+  /*
+   * Enforce transaction timeouts and cancel expired Worldpay orders.
    */
 
-  $now = \Drupal::time()->getRequestTime();
-
-  // Pull timeouts from PrisonerPaymentManager constants.
-  $hard_timeout = PrisonerPaymentManager::HARD_TIMEOUT;
-  $soft_timeout = PrisonerPaymentManager::SOFT_TIMEOUT;
+  /** @var \Drupal\nidirect_prisons\Service\PrisonerPaymentManager $payment_manager */
+  $payment_manager = \Drupal::service('nidirect_prisons.prisoner_payment_manager');
 
   // Get all pending transactions.
   $pending_transactions = $payment_manager->getPendingTransactions();
 
   if ($pending_transactions) {
 
-    foreach ($pending_transactions as $transaction) {
-      $hard_expired = ($transaction->created_timestamp < ($now - $hard_timeout));
-      $soft_expired = ($transaction->updated_timestamp < ($now - $soft_timeout));
+    \Drupal::logger('nidirect_prisons')->debug(
+      'Cron ran: @count pending transactions checked',
+      ['@count' => count($pending_transactions)]
+    );
 
-      if (!$hard_expired && !$soft_expired) {
+    foreach ($pending_transactions as $transaction) {
+
+      // Attempt to keep transaction alive; if it fails, it's expired.
+      if ($payment_manager->touchTransaction($transaction->order_key)) {
         continue;
       }
 
-      // Expire transaction.
-      $payment_manager->updateTransactionStatus($transaction->order_key, 'expired');
-
-      // Cancel Worldpay order.
+      // Transaction expired — cancel Worldpay order.
       try {
         $prison_id = $payment_manager->getPrisonId($transaction->prisoner_id);
-        $payment_manager->cancelWorldpayOrder($transaction->order_key, $prison_id);
+        $payment_manager->cancelWorldpayOrder(
+          $transaction->order_key,
+          $prison_id
+        );
       }
       catch (\Throwable $e) {
         \Drupal::logger('nidirect_prisons')->error(
