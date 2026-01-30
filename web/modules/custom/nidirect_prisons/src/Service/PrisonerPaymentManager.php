@@ -41,6 +41,12 @@ class PrisonerPaymentManager {
   public const HARD_TIMEOUT = 1200;
   public const SOFT_TIMEOUT = 600;
 
+  /**
+   * @param \Drupal\Core\Database\Connection $database
+   * @param \Psr\Log\LoggerInterface $logger
+   * @param \Drupal\Component\Datetime\TimeInterface $time
+   * @param \Drupal\Component\Transliteration\TransliterationInterface $transliteration
+   */
   public function __construct(
     Connection $database,
     LoggerInterface $logger,
@@ -171,6 +177,7 @@ XML;
    * @param \SimpleXMLElement $response_xml
    *   The response xml from Worldpay to parse.
    * @return bool
+   *   TRUE if Worldpay received cancellation order ok, FALSE otherwise.
    */
   protected function isWorldpayCancelSuccessful(\SimpleXMLElement $response_xml): bool {
     try {
@@ -180,7 +187,7 @@ XML;
       );
     }
     catch (\Throwable $e) {
-      return false;
+      return FALSE;
     }
   }
 
@@ -427,10 +434,10 @@ XML;
    * @param string $visitor_id
    *   The visitor id who is making the payment.
    *
-   * @param float $payment_amount
+   * @param float $amount
    *   The payment amount.
    *
-   * @param int $created_timestamp
+   * @param int|null $created_timestamp
    *   The created timestamp (optional).
    *
    * @return object
@@ -472,7 +479,6 @@ XML;
       'updated_timestamp' => $now,
     ];
   }
-
 
   /**
    * Method to update a pending transaction amount.
@@ -561,7 +567,7 @@ XML;
     $transaction = $this->getTransaction($order_code);
 
     if (!$transaction || $transaction->status !== 'pending') {
-      return false;
+      return FALSE;
     }
 
     $now = $this->time->getRequestTime();
@@ -570,14 +576,14 @@ XML;
     $age = $now - (int) $transaction->created_timestamp;
     if ($age > self::HARD_TIMEOUT) {
       $this->updateTransactionStatus($order_code, 'expired');
-      return false;
+      return FALSE;
     }
 
     // Enforce soft timeout (inactivity window).
     $idle = $now - (int) $transaction->updated_timestamp;
     if ($idle > self::SOFT_TIMEOUT) {
       $this->updateTransactionStatus($order_code, 'expired');
-      return false;
+      return FALSE;
     }
 
     // Transaction is still valid — touch it.
@@ -589,7 +595,7 @@ XML;
       ->condition('status', 'pending')
       ->execute();
 
-    return true;
+    return TRUE;
   }
 
   /**
@@ -989,7 +995,7 @@ XML;
    * Validate Worldpay Hosted Payment Page response data to verify
    * it originated from Worldpay and has not been modified.
    *
-   * @see https://docs.worldpay.com/apis/wpg/hostedintegration/securingpayments.
+   * @see https://docs.worldpay.com/apis/wpg/hostedintegration/securingpayments
    *
    * @param array $response_data
    *   The decoded response data.

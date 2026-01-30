@@ -12,9 +12,22 @@ use Symfony\Component\HttpFoundation\Response;
 
 class WorldpayNotificationController extends ControllerBase {
 
+  /**
+   * @var PrisonerPaymentManager
+   *  The Prisoner Payment Manager service.
+   */
   protected PrisonerPaymentManager $paymentManager;
+
+  /**
+   * @var LoggerInterface
+   *   The logging service.
+   */
   protected LoggerInterface $logger;
 
+  /**
+   * @param \Drupal\nidirect_prisons\Service\PrisonerPaymentManager $payment_manager
+   * @param \Psr\Log\LoggerInterface $logger
+   */
   public function __construct(
     PrisonerPaymentManager $payment_manager,
     LoggerInterface $logger
@@ -23,6 +36,10 @@ class WorldpayNotificationController extends ControllerBase {
     $this->logger = $logger;
   }
 
+  /**
+   * @param ContainerInterface $container
+   * @return WorldpayNotificationController|static
+   */
   public static function create(ContainerInterface $container) {
     return new static(
       $container->get('nidirect_prisons.prisoner_payment_manager'),
@@ -42,20 +59,21 @@ class WorldpayNotificationController extends ControllerBase {
    */
   public function handleNotification(Request $request) {
 
-    /* When a payment request is initialised, the payment transaction is
-     * recorded as 'pending' in the prisoner_payment_transactions table.
-     * When the hosted payment page is submitted, Worldpay sends
-     * notifications on the status of the payment.
-     *
-     * If the payment is AUTHORISED, the payment transaction is
-     * updated to 'success' in the prisoner_payment_transactions table
-     * and in practice this means that the payment has been
-     * successfully approved by the card issuer or bank, but the funds
-     * have not yet been captured or settled (debited from visitor's
-     * account).
-     */
+    /*
+    When a payment request is initialised, the payment transaction is
+    recorded as 'pending' in the prisoner_payment_transactions table.
+    When the hosted payment page is submitted, Worldpay sends
+    notifications on the status of the payment.
 
-    /*// Check request is from a Worldpay IP by performing forward and
+    If the payment is AUTHORISED, the payment transaction updates to
+    'success' in the prisoner_payment_transactions table
+    and in practice this means that the payment has been
+    successfully approved by the card issuer or bank, but the funds
+    have not yet been captured or settled (debited from visitor's
+    account).
+    */
+
+    // Check request is from a Worldpay IP by performing forward and
     // reverse DNS lookups. Deny access to non-Worldpay IP addresses.
     $ip = $request->getClientIp();
 
@@ -78,7 +96,7 @@ class WorldpayNotificationController extends ControllerBase {
         '@resolved_ips' => implode(', ', $resolved_ips),
       ]);
       return new Response('Access Denied', 403);
-    }*/
+    }
 
     // Get the raw XML from the request body.
     $xml_data = $request->getContent();

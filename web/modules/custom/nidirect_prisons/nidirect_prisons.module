@@ -57,9 +57,7 @@ function nidirect_prisons_cron() {
     }
   }
 
-  /**
-   * Delete all transactions more than 7 days old.
-   */
+  // Delete all transactions more than 7 days old.
 
   $connection = Database::getConnection();
   $threshold = strtotime('-7 days');

@@ -252,13 +252,13 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
           $created_timestamp = $now;
         }
 
-        // Cancel Worldpay order for the pending transaction
+        // Cancel Worldpay order for the pending transaction.
         $this->paymentManager->cancelWorldpayOrder(
           $old_order_code,
           $prison_id
         );
 
-        // Expire the pending transaction
+        // Expire the pending transaction.
         $this->paymentManager->updateTransactionStatus(
           $old_order_code,
           'expired'
