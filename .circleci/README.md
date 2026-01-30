@@ -17,7 +17,7 @@ See https://circleci.com/docs/2.0/local-cli/ for installation and further detail
 TL;DR:
 
 - Install with: `brew install circleci`
-- Run individual jobs like this: `circleci local execute --job YOUR_JOB_NAME -e GITHUB_TOKEN=YOUR-TOKEN-VALUE -e DB_NAME=circle_test -e DB_USER=root -e DB_PASS= -e DB_PREFIX= -e DB_HOST=127.0.0.1 -e DB_PORT=3306 -e DB_NAMESPACE=Drupal\\Core\\Database\\Driver\\mysql -e DB_DRIVER=mysql -e CONFIG_SYNC_DIRECTORY=../config/sync`
+- Run individual jobs like this: `circleci local execute YOUR_JOB_NAME -e GITHUB_TOKEN=YOUR-TOKEN-VALUE -e DB_NAME=circle_test -e DB_USER=root -e DB_PASS= -e DB_PREFIX= -e DB_HOST=127.0.0.1 -e DB_PORT=3306 -e DB_NAMESPACE=Drupal\\Core\\Database\\Driver\\mysql -e DB_DRIVER=mysql -e CONFIG_SYNC_DIRECTORY=../config/sync`
   - Note how environmental variables from CircleCI are not accessible outside of that platform. You need to pass them in as per above when running locally. That might be tricky if you don't have a certain key value; CircleCI's environment variable browser will not show you the raw value once the variable has been created.
 - Features such as parallelism, workspace sharing and directory caching won't work. You may need to adjust your job's execution steps to compensate for this.
 

@@ -97,6 +97,7 @@ display:
         type: full
         options:
           offset: 0
+          pagination_heading_level: h4
           items_per_page: 50
           total_pages: null
           id: 0
@@ -114,7 +115,6 @@ display:
             offset: false
             offset_label: Offset
           quantity: 9
-          pagination_heading_level: h4
       exposed_form:
         type: input_required
         options:
@@ -144,7 +144,7 @@ display:
           plugin_id: search_api_spellcheck_did_you_mean
           empty: true
           search_api_spellcheck_count: 1
-          search_api_spellcheck_hide_on_result: 1
+          search_api_spellcheck_hide_on_result: true
           search_api_spellcheck_collate: true
         area:
           id: area
@@ -156,7 +156,7 @@ display:
           plugin_id: text
           empty: true
           content:
-            value: 'Sorry no contacts were found.'
+            value: '<p>Sorry no contacts were found.</p>'
             format: basic_html
           tokenize: false
       sorts:
@@ -209,7 +209,7 @@ display:
             operator_limit_selection: false
             operator_list: {  }
             identifier: query_contacts_az
-            required: false
+            required: true
             remember: false
             multiple: false
             remember_roles:
@@ -227,9 +227,13 @@ display:
               health_condition_author_user: '0'
               health_condition_supervisor_user: '0'
               driving_instructor_supervisor_user: '0'
+              qa_user: '0'
+              qa: '0'
             expose_fields: false
             placeholder: 'Search contacts'
             searched_fields_id: ''
+            value_maxlength: 128
+            value_max_words: null
           is_grouped: false
           group_info:
             label: ''
@@ -286,6 +290,7 @@ display:
         - 'user.node_grants:view'
       tags:
         - 'config:search_api.index.contacts'
+        - 'search_api_list:contacts'
   contact_search:
     id: contact_search
     display_title: 'Embed: Contacts search'
@@ -310,3 +315,4 @@ display:
         - 'user.node_grants:view'
       tags:
         - 'config:search_api.index.contacts'
+        - 'search_api_list:contacts'

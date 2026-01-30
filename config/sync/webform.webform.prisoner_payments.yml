@@ -194,40 +194,59 @@ elements: |-
   page_payment_card_details:
     '#type': webform_wizard_page
     '#title': 'Pay now by debit card'
-    twig_payment_card_details:
-      '#type': webform_computed_twig
-      '#title': 'Payment card details'
-      '#title_display': none
-      '#template': |-
-        <div role="status">
+    worldpay_container:
+      '#type': container
+      '#attributes':
+        class:
+          - worldpay-container
+        role: status
+      twig_payment_card_details:
+        '#type': webform_computed_twig
+        '#title': 'Payment card details'
+        '#title_display': none
+        '#template': |-
+          <div role="status">
 
-        <!--
-        <p class="info-notice">
-        <strong>Credit cards will not be accepted.</strong><br>
-        Complete your payment using Mastercard or Visa debit cards only.
-        </p>
-        -->
-
-        <div class="info-notice">
-          <p>
-            Complete payment using a <strong>Mastercard or
-            Visa debit card issued by a UK bank</strong>.
-            &nbsp; Credit cards will not be accepted.
+          <!--
+          <p class="info-notice">
+          <strong>Credit cards will not be accepted.</strong><br>
+          Complete your payment using Mastercard or Visa debit cards only.
           </p>
-        </div>
+          -->
 
-        <h3>Payment summary</h3>
+          <div class="info-notice">
+            <p>
+              Complete payment using a <strong>Mastercard or
+              Visa debit card issued by a UK bank</strong>.
+              &nbsp; Credit cards will not be accepted.
+            </p>
+          </div>
 
-        <dl class="side-by-side">
-          <dt>Pay prisoner</dt>
-          <dd>
-            {{ data.prisoner_id }}
-            ({{ data.prisoner_fullname }})
-          </dd>
-          <dt>Amount</dt>
-          <dd>&pound;{{ data.prisoner_payment_amount|number_format(2, '.', '') }}</dd>
-        </dl>
+          <h3>Payment summary</h3>
 
+          <dl class="side-by-side">
+            <dt>Pay prisoner</dt>
+            <dd>
+              {{ data.prisoner_id }}
+              ({{ data.prisoner_fullname }})
+            </dd>
+            <dt>Amount</dt>
+            <dd>&pound;{{ data.prisoner_payment_amount|number_format(2, '.', '') }}</dd>
+          </dl>
+
+          </div>
+    msg_session_expired:
+      '#type': webform_markup
+      '#access': false
+      '#markup': |-
+        <div role="status">
+          <p class="info-notice info-notice--error">
+             Your payment session has expired. Please start again.
+          </p>
+
+          <div class="launch-service">
+            <a href="/forms/prisoner-payment" class="btn btn-large btn--primary" data-self-ref="true">Start again</a>
+          </div>
         </div>
   prisoner_max_amount:
     '#type': value
@@ -276,6 +295,7 @@ css: |-
     padding: 0.5em 0 0;
     margin: 1em 0 2em;
     box-shadow: 0 2px 0 #0a78cd, 0 -2px 0 #0a78cd;
+    scroll-margin-top: 6em; /* header height */
   }
 
   #worldpay-html .ajax-spinner--fill-container {
@@ -296,7 +316,135 @@ css: |-
       width: .5rem;
       height: 4rem;
   }
-javascript: |-
+
+  .payment-countdown {
+    position: sticky;
+    bottom: 0;
+    z-index: 2;
+    padding: .5em;
+    margin: 2em 0 0 0;
+    width: 100%;
+    text-align: center;
+    background-color: #048a05; /* green */
+    color: white;
+  }
+
+  .payment-countdown-urgent {
+    background-color: #d1431f; /* red */
+  }
+
+  .ui-dialog.payment-cancel-modal {
+    width: 80% !important;
+    max-width: 500px !important;
+    min-width: 300px !important;
+    margin: 0 auto;
+    padding: 1em;
+    border: 0;
+  }
+
+  /* Remove rounded corners from the dialog container and header */
+  .ui-dialog.payment-cancel-modal,
+  .ui-dialog.payment-cancel-modal .ui-dialog-titlebar {
+    border-radius: 0 !important;
+  }
+
+  /* Adjust dialog header padding */
+  .ui-dialog.payment-cancel-modal .ui-dialog-titlebar {
+    padding: 1em;
+  }
+
+  .ui-dialog.payment-cancel-modal .ui-dialog-titlebar.info-notice {
+    padding: 1em 1em 1em 3.5em;
+    margin: 0;
+  }
+
+  /* Remove rounded corners from the close button itself */
+  .ui-dialog.payment-cancel-modal .ui-dialog-titlebar-close {
+    border-radius: 0 !important;
+    border: none;
+    background: none;
+  }
+
+  /* Hide the default jQuery UI icon span */
+  .payment-cancel-modal .ui-dialog-titlebar-close .ui-icon {
+    display: none !important;
+  }
+
+  /* Style the close button as a square container */
+  .payment-cancel-modal .ui-dialog-titlebar-close {
+    width: 2em;
+    height: 2em;
+    position: absolute;
+    right: 1em;
+    top: calc(50% - .5em) !important;
+    cursor: pointer;
+  }
+
+  /* Create the "X" using pseudo-elements */
+  .payment-cancel-modal .ui-dialog-titlebar-close:before,
+  .payment-cancel-modal .ui-dialog-titlebar-close:after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 2px; /* Thickness of the X */
+    height: 20px; /* Size of the X */
+    background-color: #0b0c0c; /* GOV.UK Text Colour */
+  }
+
+  .payment-cancel-modal .ui-dialog-titlebar-close:before {
+    transform: translate(-50%, -50%) rotate(45deg);
+  }
+
+  .payment-cancel-modal .ui-dialog-titlebar-close:after {
+    transform: translate(-50%, -50%) rotate(-45deg);
+  }
+
+  /* Hover state for accessibility */
+  .payment-cancel-modal .ui-dialog-titlebar-close:hover,
+  .payment-cancel-modal .ui-dialog-titlebar-close:focus {
+    background-color: #f3f2f1; /* Light grey hover */
+    border: 0 !important;
+    outline: 3px solid #000 !important;
+  }
+
+  .ui-dialog.payment-cancel-modal .ui-dialog-content {
+    padding: 0 1em;
+  }
+
+  .ui-dialog.payment-cancel-modal .ui-dialog-buttonpane {
+    border-width: 0;
+    padding: 0;
+  }
+
+  .ui-dialog.payment-cancel-modal .ui-widget.button:last-child {
+      margin-right: 0;
+  }
+
+  .test-badge {
+    display: inline-block;
+    background-color: orangered;
+    color: white;
+    font-size: medium;
+    padding: .25em .5em;
+    margin: .5em 0 0 .5em;
+    border-radius: 1em;
+    line-height: 1em;
+    vertical-align: top;
+    letter-spacing: 1px;
+    font-weight: normal;
+  }
+javascript: |
+  if (!document.location.hostname.includes('nidirect.gov.uk')) {
+    const h1 = document.querySelector('h1.page-title');
+    const testIndicator = document.createElement("span");
+    testIndicator.classList.add('test-badge');
+    testIndicator.textContent = 'TEST';
+    if (h1) {
+      h1.append(testIndicator);
+    }
+  }
+
   (function ($, Drupal, once) {
     Drupal.behaviors.prisonerPaymentsValidateMethods = {
       attach: function (context, settings) {
@@ -387,7 +535,7 @@ settings:
   form_title: source_entity_webform
   form_submit_once: true
   form_open_message: ''
-  form_close_message: 'THIS IS A TEST MESSAGE'
+  form_close_message: 'Service unavaible due to technical issues'
   form_exception_message: ''
   form_previous_submissions: true
   form_confidential: false

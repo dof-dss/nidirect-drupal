@@ -32,9 +32,11 @@ blockquote {
   position: relative;
   color: lighten($charcoal, 10%);
   padding: 0 1em;
+  font-style: normal;
 
   border-top: .3334em solid $grey-light;
   border-bottom: .3334em solid $grey-light;
+  border-left: 0;
 
   cite {
     display: block;
@@ -178,10 +180,9 @@ figure {
 // Style guide: base.grouping.hr
 
 hr {
-  border: 0;
-  border-top: 1px solid color(border);
-  padding-bottom: -1px;
-  margin: 6px 0;
+  border: 1px solid $brand-primary-medium;
+  // Subtract border-width from top and bottom margin to maintain vertical rhythm.
+  margin: calc(1em - 1px) 0;
 }
 
 // Pre-formatted text

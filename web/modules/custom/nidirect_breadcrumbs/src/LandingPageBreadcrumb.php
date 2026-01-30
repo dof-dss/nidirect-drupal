@@ -133,7 +133,7 @@ class LandingPageBreadcrumb implements BreadcrumbBuilderInterface {
     // a URL path cache context so it varies as you move from one
     // set of content to another.
     $breadcrumb->setLinks($links);
-    $breadcrumb->addCacheContexts(['url.path']);
+    $breadcrumb->addCacheContexts(['url.path', 'route']);
 
     if (!empty($cache_tags)) {
       $breadcrumb->addCacheTags($cache_tags);
