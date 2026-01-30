@@ -73,12 +73,13 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
 
   /**
    * {@inheritdoc}
+   *
+   * @return \Drupal\nidirect_prisons\Plugin\WebformHandler\PrisonerPaymentsWebformHandler|\Drupal\webform\Plugin\WebformHandlerBase
    */
   public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
     $instance = parent::create($container, $configuration, $plugin_id, $plugin_definition);
     $instance->tokenManager = $container->get('webform.token_manager');
     $instance->transliteration = $container->get('transliteration');
-    /** @var \Drupal\nidirect_prisons\Service\PrisonerPaymentManager $paymentManager */
     $instance->paymentManager = $container->get('nidirect_prisons.prisoner_payment_manager');
     $instance->time = $container->get('datetime.time');
     return $instance;

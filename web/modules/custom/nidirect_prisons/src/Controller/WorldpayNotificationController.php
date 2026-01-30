@@ -2,16 +2,13 @@
 
 namespace Drupal\nidirect_prisons\Controller;
 
-use Drupal;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\nidirect_prisons\Enum\PaymentStatus;
 use Drupal\nidirect_prisons\Service\PrisonerPaymentManager;
-use Exception;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Throwable;
 
 class WorldpayNotificationController extends ControllerBase {
 

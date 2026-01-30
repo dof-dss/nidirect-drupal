@@ -444,7 +444,7 @@ XML;
    * @param int|null $created_timestamp
    *   The created timestamp (optional).
    *
-   * @return object
+   * @return \stdClass
    *   Return the inserted transaction details.
    * @throws \Exception
    */
