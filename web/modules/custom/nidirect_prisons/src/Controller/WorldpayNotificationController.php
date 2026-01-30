@@ -13,20 +13,22 @@ use Symfony\Component\HttpFoundation\Response;
 class WorldpayNotificationController extends ControllerBase {
 
   /**
-   * @var PrisonerPaymentManager
+   * @var \Drupal\nidirect_prisons\Service\PrisonerPaymentManager
    *  The Prisoner Payment Manager service.
    */
   protected PrisonerPaymentManager $paymentManager;
 
   /**
-   * @var LoggerInterface
+   * @var \Psr\Log\LoggerInterface
    *   The logging service.
    */
   protected LoggerInterface $logger;
 
   /**
    * @param \Drupal\nidirect_prisons\Service\PrisonerPaymentManager $payment_manager
+   *   The Payment Manager Service.
    * @param \Psr\Log\LoggerInterface $logger
+   *  The Logger service.
    */
   public function __construct(
     PrisonerPaymentManager $payment_manager,
@@ -37,8 +39,11 @@ class WorldpayNotificationController extends ControllerBase {
   }
 
   /**
-   * @param ContainerInterface $container
-   * @return WorldpayNotificationController|static
+   * {@inheritdoc}
+   *
+   * @param \Symfony\Component\DependencyInjection\ContainerInterface $container
+   *   The service container.
+   * @return static
    */
   public static function create(ContainerInterface $container) {
     return new static(

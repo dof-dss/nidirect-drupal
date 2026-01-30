@@ -12,13 +12,13 @@ use Symfony\Component\HttpFoundation\Request;
 class PrisonerPaymentsController extends ControllerBase {
 
   /**
-   * @var PrisonerPaymentManager
+   * @var \Drupal\nidirect_prisons\Service\PrisonerPaymentManager
    *   The Prisoner Payment Management service.
    */
   protected PrisonerPaymentManager $paymentManager;
 
   /**
-   * @var LoggerInterface
+   * @var \Psr\Log\LoggerInterface
    *   The logging service.
    *
    */
@@ -26,7 +26,9 @@ class PrisonerPaymentsController extends ControllerBase {
 
   /**
    * @param \Drupal\nidirect_prisons\Service\PrisonerPaymentManager $payment_manager
+   *   The payment manager service.
    * @param \Psr\Log\LoggerInterface $logger
+   *   The logging service.
    */
   public function __construct(PrisonerPaymentManager $payment_manager, LoggerInterface $logger) {
     $this->paymentManager = $payment_manager;
@@ -35,7 +37,9 @@ class PrisonerPaymentsController extends ControllerBase {
 
   /**
    * @param \Symfony\Component\DependencyInjection\ContainerInterface $container
-   * @return PrisonerPaymentsController|static
+   *   The container.
+   * @return \Drupal\nidirect_prisons\Controller\PrisonerPaymentsController|static
+   *   The Prisoner Payment Manager.
    */
   public static function create(ContainerInterface $container) {
     return new static(
@@ -50,7 +54,11 @@ class PrisonerPaymentsController extends ControllerBase {
    * expiry of the transaction whilst the user is making a payment.
    *
    * @param \Symfony\Component\HttpFoundation\Request $request
-   * @return JsonResponse
+   *   The request.
+   * @return \Symfony\Component\HttpFoundation\JsonResponse
+   *   Return status indicator in a JSON response to indicate
+   *   if a transaction updated_timestamp was updated ok or has expired
+   *   or an error occurred.
    */
   public function heartbeat(Request $request): JsonResponse {
     $data = json_decode($request->getContent(), TRUE);

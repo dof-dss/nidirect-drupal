@@ -43,9 +43,13 @@ class PrisonerPaymentManager {
 
   /**
    * @param \Drupal\Core\Database\Connection $database
+   *   The DB connection.
    * @param \Psr\Log\LoggerInterface $logger
+   *   The logging service.
    * @param \Drupal\Component\Datetime\TimeInterface $time
+   *   The time service.
    * @param \Drupal\Component\Transliteration\TransliterationInterface $transliteration
+   *   The transliteration service.
    */
   public function __construct(
     Connection $database,
