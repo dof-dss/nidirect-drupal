@@ -194,40 +194,59 @@ elements: |-
   page_payment_card_details:
     '#type': webform_wizard_page
     '#title': 'Pay now by debit card'
-    twig_payment_card_details:
-      '#type': webform_computed_twig
-      '#title': 'Payment card details'
-      '#title_display': none
-      '#template': |-
-        <div role="status">
+    worldpay_container:
+      '#type': container
+      '#attributes':
+        class:
+          - worldpay-container
+        role: status
+      twig_payment_card_details:
+        '#type': webform_computed_twig
+        '#title': 'Payment card details'
+        '#title_display': none
+        '#template': |-
+          <div role="status">
 
-        <!--
-        <p class="info-notice">
-        <strong>Credit cards will not be accepted.</strong><br>
-        Complete your payment using Mastercard or Visa debit cards only.
-        </p>
-        -->
-
-        <div class="info-notice">
-          <p>
-            Complete payment using a <strong>Mastercard or
-            Visa debit card issued by a UK bank</strong>.
-            &nbsp; Credit cards will not be accepted.
+          <!--
+          <p class="info-notice">
+          <strong>Credit cards will not be accepted.</strong><br>
+          Complete your payment using Mastercard or Visa debit cards only.
           </p>
-        </div>
+          -->
 
-        <h3>Payment summary</h3>
+          <div class="info-notice">
+            <p>
+              Complete payment using a <strong>Mastercard or
+              Visa debit card issued by a UK bank</strong>.
+              &nbsp; Credit cards will not be accepted.
+            </p>
+          </div>
 
-        <dl class="side-by-side">
-          <dt>Pay prisoner</dt>
-          <dd>
-            {{ data.prisoner_id }}
-            ({{ data.prisoner_fullname }})
-          </dd>
-          <dt>Amount</dt>
-          <dd>&pound;{{ data.prisoner_payment_amount|number_format(2, '.', '') }}</dd>
-        </dl>
+          <h3>Payment summary</h3>
 
+          <dl class="side-by-side">
+            <dt>Pay prisoner</dt>
+            <dd>
+              {{ data.prisoner_id }}
+              ({{ data.prisoner_fullname }})
+            </dd>
+            <dt>Amount</dt>
+            <dd>&pound;{{ data.prisoner_payment_amount|number_format(2, '.', '') }}</dd>
+          </dl>
+
+          </div>
+    msg_session_expired:
+      '#type': webform_markup
+      '#access': false
+      '#markup': |-
+        <div role="status">
+          <p class="info-notice info-notice--error">
+             Your payment session has expired. Please start again.
+          </p>
+
+          <div class="launch-service">
+            <a href="/forms/prisoner-payment" class="btn btn-large btn--primary" data-self-ref="true">Start again</a>
+          </div>
         </div>
   prisoner_max_amount:
     '#type': value
@@ -270,110 +289,29 @@ elements: |-
       class:
         - test-class
 css: |-
-  #worldpay-html {
-    position: relative;
-    max-width: 540px;
-    padding: 0.5em 0 0;
-    margin: 1em 0 2em;
-    box-shadow: 0 2px 0 #0a78cd, 0 -2px 0 #0a78cd;
-  }
-
-  #worldpay-html .ajax-spinner--fill-container {
-      position:  absolute;
-      top: 0;
-      left: 0;
-      display: flex;
-      width: 100%;
-      height: 100%;
-      text-align: center;
-      align-items: center;
-      justify-content: center;
-      background: #fff;
-  }
-
-  #worldpay-html .ajax-spinner--fill-container div {
-      background-color: #666666;
-      width: .5rem;
-      height: 4rem;
+  .test-badge {
+    display: inline-block;
+    background-color: orangered;
+    color: white;
+    font-size: medium;
+    padding: .25em .5em;
+    margin: .5em 0 0 .5em;
+    border-radius: 1em;
+    line-height: 1em;
+    vertical-align: top;
+    letter-spacing: 1px;
+    font-weight: normal;
   }
 javascript: |-
-  (function ($, Drupal, once) {
-    Drupal.behaviors.prisonerPaymentsValidateMethods = {
-      attach: function (context, settings) {
-
-        if (typeof $.validator === 'undefined') {
-          console.warn('jQuery Validate is not available. Skipping prisonerPaymentsValidateMethods.');
-          return;
-        }
-
-        // Add validation methods once globally for the page.
-        once('prisonerPaymentsValidateMethods', 'html').forEach(function (element) {
-
-          // Custom method for valid characters in names
-          $.validator.addMethod("fullNameValidCharacters", function (value, element) {
-            const regex = /^[\p{Script=Latin}\-.'\s]+$/u;
-            return this.optional(element) || regex.test(value);
-          }, "Name must contain letters (A–Z), hyphens (-), periods (.), apostrophes (') and spaces only.");
-
-          // Custom method to check if both first and last names are provided
-          $.validator.addMethod("firstAndLastName", function (value, element) {
-            const nameParts = value.split(" ").map(part => part.replace(/[^\p{Script=Latin} ]/ug, '').trim()).filter(part => part !== "");
-            return this.optional(element) || nameParts.length >= 2;
-          }, "Name must include first and last name separated by a space.");
-
-        });
-
-        // Apply jquery validation methods once to individual elements.
-        const $prisonerPaymentAmount = $(once('prisonerPaymentAmount', 'form input[name="prisoner_payment_amount"]', context));
-        const $visitorFullname = $(once('visitorFullName', 'form input[name="visitor_fullname"]', context));
-        const $prisonerFullname = $(once('prisonerFullName', 'form input[name="prisoner_fullname"]', context));
-
-        if ($prisonerPaymentAmount.length) {
-
-          // Ensure prisonerMaxAmount rounded to 2 decimal places.
-          const prisonerMaxAmount = Math.round(
-            parseFloat(settings.prisonerPayments.prisonerMaxAmount ?? 0) * 100
-          ) / 100;
-
-          $prisonerPaymentAmount.rules("add", {
-            min: {
-              param: 0.01
-            },
-            max: {
-              param: prisonerMaxAmount
-            },
-            messages: {
-              min: "Amount must be more than &pound;0",
-              max: "Amount must be &pound;" + prisonerMaxAmount + " or less"
-            }
-          });
-        }
-
-        if ($visitorFullname.length) {
-          $visitorFullname.rules("add", {
-            fullNameValidCharacters: true,
-            firstAndLastName: true,
-            messages: {
-              fullNameValidCharacters: "Your name must contain letters (A–Z), hyphens (-), periods (.), apostrophes (') and spaces only.",
-              firstAndLastName: "Your name must include first and last name separated by a space."
-            }
-          });
-        }
-
-        if ($prisonerFullname.length) {
-          $prisonerFullname.rules("add", {
-            fullNameValidCharacters: true,
-            firstAndLastName: true,
-            messages: {
-              fullNameValidCharacters: "Prisoner name must contain letters (A–Z), hyphens (-), periods (.), apostrophes (') and spaces only.",
-              firstAndLastName: "Prisoner name must include first and last name separated by a space."
-            }
-          });
-        }
-
-      }
+  if (!document.location.hostname.includes('nidirect.gov.uk')) {
+    const h1 = document.querySelector('h1.page-title');
+    const testIndicator = document.createElement("span");
+    testIndicator.classList.add('test-badge');
+    testIndicator.textContent = 'TEST';
+    if (h1) {
+      h1.append(testIndicator);
     }
-  })(jQuery, Drupal, once);
+  }
 settings:
   ajax: false
   ajax_scroll_top: form
@@ -387,7 +325,7 @@ settings:
   form_title: source_entity_webform
   form_submit_once: true
   form_open_message: ''
-  form_close_message: 'THIS IS A TEST MESSAGE'
+  form_close_message: 'Service unavaible due to technical issues'
   form_exception_message: ''
   form_previous_submissions: true
   form_confidential: false
