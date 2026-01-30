@@ -512,7 +512,7 @@ XML;
    */
   public function updateTransactionStatus(string $order_code, string $status): bool {
 
-    $allowed_statuses = ['pending', 'expired', 'failed', 'success'];
+    $allowed_statuses = ['pending', 'expired', 'cancelled', 'failed', 'success'];
 
     if (!in_array($status, $allowed_statuses, TRUE)) {
       $this->logger->error(
