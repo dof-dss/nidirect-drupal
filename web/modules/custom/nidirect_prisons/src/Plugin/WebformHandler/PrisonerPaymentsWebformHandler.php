@@ -171,9 +171,6 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
           '#submit' => [[static::class, 'cancelPaymentSubmit']],
           '#limit_validation_errors' => [],
           '#weight' => -10,
-          '#attributes' => [
-            'onclick' => "return confirm('Are you sure you want to cancel this payment? Any details you’ve entered will be lost and you’ll be taken back to the start.');",
-          ],
         ];
       }
     }
