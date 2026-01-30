@@ -151,6 +151,9 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
     $elements = $this->elements;
     $webform = $webform_submission->getWebform();
 
+    // Attach library.
+    $form['#attached']['library'][] = 'nidirect_prisons/prisoner_payments';
+
     if ($page === 'page_prisoner_and_visitor_id' && $form_state->get('order_code')) {
       $elements['msg_payment_in_progress']['#access'] = TRUE;
       $elements['wizard_next']['#access'] = FALSE;
