@@ -471,7 +471,6 @@ XML;
       ])
       ->execute();
 
-
     // Return transaction object.
     return (object) [
       'order_key' => $order_code,

@@ -2,13 +2,16 @@
 
 namespace Drupal\nidirect_prisons\Controller;
 
+use Drupal;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\nidirect_prisons\Enum\PaymentStatus;
 use Drupal\nidirect_prisons\Service\PrisonerPaymentManager;
+use Exception;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Throwable;
 
 class WorldpayNotificationController extends ControllerBase {
 
@@ -28,7 +31,7 @@ class WorldpayNotificationController extends ControllerBase {
    * @param \Drupal\nidirect_prisons\Service\PrisonerPaymentManager $payment_manager
    *   The Payment Manager Service.
    * @param \Psr\Log\LoggerInterface $logger
-   *  The Logger service.
+   *   The Logger service.
    */
   public function __construct(
     PrisonerPaymentManager $payment_manager,
@@ -65,18 +68,18 @@ class WorldpayNotificationController extends ControllerBase {
   public function handleNotification(Request $request) {
 
     /*
-    When a payment request is initialised, the payment transaction is
-    recorded as 'pending' in the prisoner_payment_transactions table.
-    When the hosted payment page is submitted, Worldpay sends
-    notifications on the status of the payment.
-
-    If the payment is AUTHORISED, the payment transaction updates to
-    'success' in the prisoner_payment_transactions table
-    and in practice this means that the payment has been
-    successfully approved by the card issuer or bank, but the funds
-    have not yet been captured or settled (debited from visitor's
-    account).
-    */
+     * When a payment request is initialised, the payment transaction is
+     * recorded as 'pending' in the prisoner_payment_transactions table.
+     * When the hosted payment page is submitted, Worldpay sends
+     * notifications on the status of the payment.
+     *
+     * If the payment is AUTHORISED, the payment transaction updates to
+     * 'success' in the prisoner_payment_transactions table
+     * and in practice this means that the payment has been
+     * successfully approved by the card issuer or bank, but the funds
+     * have not yet been captured or settled (debited from visitor's
+     * account).
+     */
 
     // Check request is from a Worldpay IP by performing forward and
     // reverse DNS lookups. Deny access to non-Worldpay IP addresses.
@@ -122,7 +125,7 @@ class WorldpayNotificationController extends ControllerBase {
     }
 
     if (!isset($xml->notify)) {
-      \Drupal::logger('worldpay')->error('Missing <notify> element in XML.');
+      Drupal::logger('worldpay')->error('Missing <notify> element in XML.');
       return new Response('Bad request', 400);
     }
 
@@ -142,14 +145,14 @@ class WorldpayNotificationController extends ControllerBase {
       return new Response('OK', 200);
     }
 
-    \Drupal::logger('worldpay')->notice('Worldpay order notification for @order_key £@amount @payment_status', [
+    Drupal::logger('worldpay')->notice('Worldpay order notification for @order_key £@amount @payment_status', [
       '@order_key' => $order_code,
       '@amount' => number_format($amount, 2, '.', ''),
       '@payment_status' => $payment_status,
     ]);
 
     // Check transaction for order_key exists.
-    $db = \Drupal::database();
+    $db = Drupal::database();
     $payment_transaction = $this->paymentManager->getTransaction($order_code);
 
     // Early return if transaction does not exist.
@@ -227,12 +230,12 @@ class WorldpayNotificationController extends ControllerBase {
         $db->update('prisoner_payment_transactions')
           ->fields([
             'status' => 'success',
-            'updated_timestamp' => \Drupal::time()->getRequestTime(),
+            'updated_timestamp' => Drupal::time()->getRequestTime(),
           ])
           ->condition('order_key', $order_code)
           ->execute();
       }
-      catch (\Throwable $e) {
+      catch (Throwable $e) {
         $db_transaction->rollBack();
 
         $this->logger->error(
@@ -287,23 +290,23 @@ class WorldpayNotificationController extends ControllerBase {
 
     // Try sending the email.
     try {
-      \Drupal::service('plugin.manager.mail')->mail(
+      Drupal::service('plugin.manager.mail')->mail(
         'nidirect_prisons',
         'prisoner_payment_notification',
         getenv('PRISONER_PAYMENTS_PRISM_EMAIL') ?: 'prisoner_payments@mailhog.local',
-        \Drupal::languageManager()->getDefaultLanguage()->getId(),
+        Drupal::languageManager()->getDefaultLanguage()->getId(),
         ['subject' => 'PAYIN', 'body' => [$json_data]]
       );
 
       $this->logger->notice("Sent prisoner payment data for order {$order_code} to Prism.");
     }
-    catch (\Exception $e) {
+    catch (Exception $e) {
       // If email fails, log the error and throw.
       $this->logger->error('Failed to send email for order @order_code: @error', [
         '@order_code' => $order_code,
         '@error' => $e->getMessage(),
       ]);
-      throw new \Exception('Failed to send payment data to Prism: ' . $e->getMessage());
+      throw new Exception('Failed to send payment data to Prism: ' . $e->getMessage());
     }
   }
 
@@ -315,7 +318,7 @@ class WorldpayNotificationController extends ControllerBase {
    * @throws \Exception
    */
   protected function getNextSequenceId() {
-    $database = \Drupal::database();
+    $database = Drupal::database();
     $query = $database->insert('prisoner_payment_sequence')->fields(['id' => NULL]);
 
     return $query->execute();
