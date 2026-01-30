@@ -3,6 +3,7 @@
 namespace Drupal\nidirect_prisons\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
+use Drupal\Core\Database\Connection;
 use Drupal\nidirect_prisons\Enum\PaymentStatus;
 use Drupal\nidirect_prisons\Service\PrisonerPaymentManager;
 use Psr\Log\LoggerInterface;
@@ -11,6 +12,13 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class WorldpayNotificationController extends ControllerBase {
+
+  /**
+   * The database connection.
+   *
+   * @var \Drupal\Core\Database\Connection
+   */
+  protected Connection $database;
 
   /**
    * @var \Drupal\nidirect_prisons\Service\PrisonerPaymentManager
@@ -25,15 +33,19 @@ class WorldpayNotificationController extends ControllerBase {
   protected LoggerInterface $logger;
 
   /**
+   * @param \Drupal\Core\Database\Connection $database
+   *   The DB connection.
    * @param \Drupal\nidirect_prisons\Service\PrisonerPaymentManager $payment_manager
    *   The Payment Manager Service.
    * @param \Psr\Log\LoggerInterface $logger
    *   The Logger service.
    */
   public function __construct(
+    Connection $database,
     PrisonerPaymentManager $payment_manager,
     LoggerInterface $logger
   ) {
+    $this->database = $database;
     $this->paymentManager = $payment_manager;
     $this->logger = $logger;
   }
@@ -122,7 +134,7 @@ class WorldpayNotificationController extends ControllerBase {
     }
 
     if (!isset($xml->notify)) {
-      Drupal::logger('worldpay')->error('Missing <notify> element in XML.');
+      $this->logger->error('Missing <notify> element in XML.');
       return new Response('Bad request', 400);
     }
 
@@ -142,14 +154,13 @@ class WorldpayNotificationController extends ControllerBase {
       return new Response('OK', 200);
     }
 
-    Drupal::logger('worldpay')->notice('Worldpay order notification for @order_key £@amount @payment_status', [
+    $this->logger->notice('Worldpay order notification for @order_key £@amount @payment_status', [
       '@order_key' => $order_code,
       '@amount' => number_format($amount, 2, '.', ''),
       '@payment_status' => $payment_status,
     ]);
 
     // Check transaction for order_key exists.
-    $db = Drupal::database();
     $payment_transaction = $this->paymentManager->getTransaction($order_code);
 
     // Early return if transaction does not exist.
@@ -202,11 +213,11 @@ class WorldpayNotificationController extends ControllerBase {
       }
 
       // Process the authorised payment atomically.
-      $db_transaction = $db->startTransaction();
+      $db_transaction = $this->database->startTransaction();
 
       try {
         // Deduct from prisoner's balance.
-        $db->update('prisoner_payment_amount')
+        $this->database->update('prisoner_payment_amount')
           ->expression('amount', 'GREATEST(amount - :paid_amount, 0)', [':paid_amount' => $amount])
           ->condition('prisoner_id', $payment_transaction->prisoner_id)
           ->execute();
@@ -224,7 +235,7 @@ class WorldpayNotificationController extends ControllerBase {
         );
 
         // Mark transaction as successful.
-        $db->update('prisoner_payment_transactions')
+        $this->database->update('prisoner_payment_transactions')
           ->fields([
             'status' => 'success',
             'updated_timestamp' => Drupal::time()->getRequestTime(),
@@ -232,7 +243,7 @@ class WorldpayNotificationController extends ControllerBase {
           ->condition('order_key', $order_code)
           ->execute();
       }
-      catch (Throwable $e) {
+      catch (\Throwable $e) {
         $db_transaction->rollBack();
 
         $this->logger->error(
