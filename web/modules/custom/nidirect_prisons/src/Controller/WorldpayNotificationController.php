@@ -59,6 +59,7 @@ class WorldpayNotificationController extends ControllerBase {
    */
   public static function create(ContainerInterface $container) {
     return new static(
+      $container->get('database'),
       $container->get('nidirect_prisons.prisoner_payment_manager'),
       $container->get('logger.channel.nidirect_prisons')
     );
