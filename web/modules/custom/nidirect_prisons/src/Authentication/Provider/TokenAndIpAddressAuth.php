@@ -41,11 +41,13 @@ class TokenAndIpAddressAuth implements AuthenticationProviderInterface {
     $client_ip = $request->getClientIp();
 
     if (!in_array($token, $allowed_tokens)) {
+      // @phpstan-ignore-next-line.
       \Drupal::logger('nidirect_prisons')->debug('Supplied X-Auth-Token not found in PRISONS_API_PERMITTED_TOKENS');
       return NULL;
     }
 
     if (!in_array($client_ip, $allowed_ip_addresses)) {
+      // @phpstan-ignore-next-line.
       \Drupal::logger('nidirect_prisons')->debug('IP address @client_ip not found in PRISONS_API_PERMITTED_IPS.', ['@client_ip' => $client_ip]);
       return NULL;
     }
@@ -60,6 +62,7 @@ class TokenAndIpAddressAuth implements AuthenticationProviderInterface {
     }
 
     // There must have been a problem loading nidirect_prisons_api_user.
+    // @phpstan-ignore-next-line.
     \Drupal::logger('nidirect_prisons')->error('Service account with username @username could not be loaded.', ['@username' => $username]);
 
     // Authentication has failed.

@@ -19,7 +19,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
 /**
  * Form for checking cold weather payments.
  */
-class ColdWeatherPaymentCheckerForm extends FormBase {
+final class ColdWeatherPaymentCheckerForm extends FormBase {
 
   /**
    * Drupal\Core\Http\ClientFactory definition.
@@ -48,8 +48,9 @@ class ColdWeatherPaymentCheckerForm extends FormBase {
   public function __construct(
     ClientFactory $http_client_factory,
     Renderer $renderer,
-    RequestStack $request
+    RequestStack $request,
   ) {
+
     $this->httpClientFactory = $http_client_factory;
     $this->renderer = $renderer;
     $this->request = $request;
@@ -269,6 +270,7 @@ class ColdWeatherPaymentCheckerForm extends FormBase {
     catch (RequestException $e) {
       $data['has_error'] = TRUE;
       $data['response'] = $e->getResponse();
+      // @phpstan-ignore-next-line.
       \Drupal::logger('type')->error($e->getMessage());
     }
     finally {

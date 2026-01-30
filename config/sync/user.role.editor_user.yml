@@ -3,6 +3,15 @@ langcode: en
 status: true
 dependencies:
   config:
+    - block_content.type.accordion_menu
+    - block_content.type.banner_deep
+    - block_content.type.card_deck_plain
+    - block_content.type.card_plain
+    - block_content.type.card_standard
+    - block_content.type.card_wide
+    - block_content.type.text
+    - block_content.type.video
+    - block_content.type.video_and_caption
     - core.entity_view_display.node.landing_page.full
     - entity_browser.browser.location_browser
     - filter.format.basic_html
@@ -37,7 +46,7 @@ dependencies:
     - taxonomy.vocabulary.site_themes
     - workflows.workflow.nics_editorial_workflow
   module:
-    - block_content_permissions
+    - block_content
     - book
     - content_moderation
     - contextual
@@ -257,6 +266,7 @@ permissions:
   - 'flag hide_content'
   - 'flag promote_to_all_pages'
   - 'flag show_listing'
+  - 'rebuild node access permissions'
   - 'reorder terms in hc_body_location'
   - 'reorder terms in hc_body_system'
   - 'reorder terms in hc_condition_type'
@@ -299,14 +309,6 @@ permissions:
   - 'unflag hide_content'
   - 'unflag promote_to_all_pages'
   - 'unflag show_listing'
-  - 'update any accordion_menu block content'
-  - 'update any banner_deep block content'
-  - 'update any card_plain block content'
-  - 'update any card_standard block content'
-  - 'update any card_wide block content'
-  - 'update any text block content'
-  - 'update any video block content'
-  - 'update any video_and_caption block content'
   - 'use moderation sidebar'
   - 'use nics_editorial_workflow transition archive'
   - 'use nics_editorial_workflow transition create_new_draft'

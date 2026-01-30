@@ -138,7 +138,7 @@ class RelatedContentManager {
    *
    * @return $this
    */
-  public function forTheme(int $term_id = NULL) {
+  public function forTheme(?int $term_id = NULL) {
     // If term_id isn't passed in try and extract from the current request.
     if ($term_id === NULL && $this->routeMatch->getRouteName() === 'entity.taxonomy_term.canonical') {
       $this->termId = (int) $this->routeMatch->getRawParameter('taxonomy_term');
@@ -159,7 +159,7 @@ class RelatedContentManager {
    *
    * @return $this
    */
-  public function forNode(int $node_id = NULL) {
+  public function forNode(?int $node_id = NULL) {
 
     if ($node_id === NULL) {
       $route_name = $this->routeMatch->getRouteName();
@@ -170,11 +170,13 @@ class RelatedContentManager {
       }
 
       if ($route_name === 'entity.node.preview') {
+        // @phpstan-ignore-next-line.
         $node = \Drupal::routeMatch()->getParameter('node_preview');
       }
       else {
         // Use the raw value as some node routes have the entity object and
         // others only pass the id.
+        // @phpstan-ignore-next-line.
         $node_id = \Drupal::routeMatch()->getRawParameter('node');
         $node = $this->entityTypeManager->getStorage('node')->load($node_id);
       }

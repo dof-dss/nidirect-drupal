@@ -15,7 +15,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *
  * @ingroup nidirect_gp
  */
-class GpRevisionRevertTranslationForm extends GpRevisionRevertForm {
+final class GpRevisionRevertTranslationForm extends GpRevisionRevertForm {
 
 
   /**
@@ -114,6 +114,7 @@ class GpRevisionRevertTranslationForm extends GpRevisionRevertForm {
 
     $latest_revision_translation->setNewRevision();
     $latest_revision_translation->isDefaultRevision(TRUE);
+    // @phpstan-ignore-next-line.
     $revision->setRevisionCreationTime(\Drupal::time()->getRequestTime());
 
     return $latest_revision_translation;

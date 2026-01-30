@@ -16,7 +16,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *
  * @ingroup nidirect_gp
  */
-class GpRevisionDeleteForm extends ConfirmFormBase {
+final class GpRevisionDeleteForm extends ConfirmFormBase {
 
   /**
    * The Messenger service.
@@ -60,12 +60,12 @@ class GpRevisionDeleteForm extends ConfirmFormBase {
    *   The entity storage.
    * @param \Drupal\Core\Database\Connection $connection
    *   The database connection.
-   * @param \Drupal\Core\Messenger\MessengerInterface $messenger
-   *   Drupal messenger service.
    * @param \Drupal\Core\Datetime\DateFormatterInterface $date_formatter
    *   Drupal date formatter service.
+   * @param \Drupal\Core\Messenger\MessengerInterface $messenger
+   *   Drupal messenger service.
    */
-  public function __construct(EntityStorageInterface $entity_storage, Connection $connection, MessengerInterface $messenger = NULL, DateFormatterInterface $date_formatter) {
+  public function __construct(EntityStorageInterface $entity_storage, Connection $connection, DateFormatterInterface $date_formatter, ?MessengerInterface $messenger = NULL) {
     $this->entityStorage = $entity_storage;
     $this->connection = $connection;
     $this->messenger = $messenger;
@@ -117,7 +117,6 @@ class GpRevisionDeleteForm extends ConfirmFormBase {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state, $gp_revision = NULL) {
-    // @phpstan-ignore-next-line
     $this->revision = $this->entityStorage->loadRevision($gp_revision);
     $form = parent::buildForm($form, $form_state);
 
@@ -128,7 +127,6 @@ class GpRevisionDeleteForm extends ConfirmFormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-    // @phpstan-ignore-next-line
     $this->entityStorage->deleteRevision($this->revision->getRevisionId());
 
     $this->logger('content')->notice('GP: deleted %title revision %revision.', [

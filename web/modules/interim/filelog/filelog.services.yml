@@ -1,0 +1,26 @@
+services:
+  logger.filelog:
+    class: Drupal\filelog\Logger\FileLog
+    arguments:
+      - '@config.factory'
+      - '@state'
+      - '@datetime.time'
+      - '@logger.log_message_parser'
+      - '@filelog.file_manager'
+      - '@event_dispatcher'
+    tags:
+      - { name: logger }
+  filelog.file_manager:
+    class: Drupal\filelog\LogFileManager
+    arguments:
+      - '@config.factory'
+      - '@file_system'
+    lazy: true
+  filelog.rotator:
+    class: Drupal\filelog\LogRotator
+    arguments:
+      - '@config.factory'
+      - '@state'
+      - '@datetime.time'
+      - '@filelog.file_manager'
+      - '@file_system'

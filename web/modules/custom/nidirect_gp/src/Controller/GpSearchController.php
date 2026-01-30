@@ -20,7 +20,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
  *
  * Generates View results for fulltext and location based GP searches.
  */
-class GpSearchController extends ControllerBase {
+final class GpSearchController extends ControllerBase {
 
   /**
    * Symfony\Component\HttpFoundation\RequestStack definition.
@@ -110,7 +110,7 @@ class GpSearchController extends ControllerBase {
     int $proximity_max_distance,
     string $geocoding_service_id,
     FormBuilderInterface $form_builder,
-    EntityTypeManagerInterface $entity_type_manager
+    EntityTypeManagerInterface $entity_type_manager,
   ) {
 
     $this->requestStack = $request_stack;
@@ -203,6 +203,7 @@ class GpSearchController extends ControllerBase {
         // Ensure that the geocoder provider api key is correct (as the api key
         // cannot be held in config, it may be necessary to update it here with
         // the api key that is held in the environment variable).
+        // @phpstan-ignore-next-line.
         $config_update_service = \Drupal::service('nidirect_common.update_config_from_environment');
         $config_update_service->updateApiKey('geocoder.geocoder_provider.googlemaps', 'apiKey', 'GOOGLE_MAP_API_SERVER_KEY');
         // Retrieve geocode provider.

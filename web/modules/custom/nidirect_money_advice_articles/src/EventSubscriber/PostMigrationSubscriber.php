@@ -45,8 +45,11 @@ class PostMigrationSubscriber implements EventSubscriberInterface {
    * @param \Drupal\Core\Logger\LoggerChannelFactory $logger
    *   Drupal logger.
    */
-  public function __construct(EntityTypeManagerInterface $entity_type_manager,
-                              LoggerChannelFactory $logger) {
+  public function __construct(
+    EntityTypeManagerInterface $entity_type_manager,
+    LoggerChannelFactory $logger,
+  ) {
+
     $this->entityTypeManager = $entity_type_manager;
     $this->logger = $logger->get('nidirect_money_advice_articles');
     $this->dbConnDrupal8 = Database::getConnection('default', 'default');
@@ -111,6 +114,7 @@ class PostMigrationSubscriber implements EventSubscriberInterface {
         'node',
         $row->destid1,
         1,
+        // @phpstan-ignore-next-line.
         \Drupal::time()->getCurrentTime(),
       ]);
       $query->execute();
@@ -127,12 +131,14 @@ class PostMigrationSubscriber implements EventSubscriberInterface {
       ]);
       $query->values([
         'locked_content',
+        // @phpstan-ignore-next-line.
         \Drupal::service('uuid')->generate(),
         'node',
         $row->destid1,
         TRUE,
         1,
         'NULL',
+        // @phpstan-ignore-next-line.
         \Drupal::time()->getCurrentTime(),
       ]);
       $query->execute();

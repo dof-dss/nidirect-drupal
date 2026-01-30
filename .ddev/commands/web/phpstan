@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+## Description: Run phpstan locally to detect deprecated code and ensure future compliance.
+## Usage: phpstan
+## Example: "ddev phpstan web/modules/custom"
+## HostWorkingDir: true
+
+cd /var/www/html
+vendor/bin/phpstan analyse $1

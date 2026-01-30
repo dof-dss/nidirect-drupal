@@ -19,7 +19,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 /**
  * Controller to alter display of Layout builder Block form.
  */
-class LandingPagesChooseBlockController implements ContainerInjectionInterface {
+final class LandingPagesChooseBlockController implements ContainerInjectionInterface {
 
   use AjaxHelperTrait;
   use LayoutBuilderContextTrait;
@@ -75,11 +75,14 @@ class LandingPagesChooseBlockController implements ContainerInjectionInterface {
    * @param \Drupal\Core\File\FileSystemInterface $file_system
    *   File system service object.
    */
-  public function __construct(BlockManagerInterface $block_manager,
-                              EntityTypeManagerInterface $entity_type_manager,
-                              AccountInterface $current_user,
-                              ModuleHandlerInterface $module_handler,
-                              FileSystemInterface $file_system) {
+  public function __construct(
+    BlockManagerInterface $block_manager,
+    EntityTypeManagerInterface $entity_type_manager,
+    AccountInterface $current_user,
+    ModuleHandlerInterface $module_handler,
+    FileSystemInterface $file_system,
+  ) {
+
     $this->blockManager = $block_manager;
     $this->entityTypeManager = $entity_type_manager;
     $this->currentUser = $current_user;
@@ -236,6 +239,7 @@ class LandingPagesChooseBlockController implements ContainerInjectionInterface {
 
     // Support for Layout Builder Restrictions.
     if ($this->moduleHandler->moduleExists('layout_builder_restrictions')) {
+      // @phpstan-ignore-next-line.
       $layout_builder_restrictions_manager = \Drupal::service('plugin.manager.layout_builder_restriction');
       $restriction_plugins = $layout_builder_restrictions_manager->getSortedPlugins();
       foreach (array_keys($restriction_plugins) as $id) {
