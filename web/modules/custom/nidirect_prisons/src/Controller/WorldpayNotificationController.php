@@ -238,7 +238,7 @@ class WorldpayNotificationController extends ControllerBase {
         $this->database->update('prisoner_payment_transactions')
           ->fields([
             'status' => 'success',
-            'updated_timestamp' => Drupal::time()->getRequestTime(),
+            'updated_timestamp' => \Drupal::time()->getRequestTime(),
           ])
           ->condition('order_key', $order_code)
           ->execute();
@@ -298,23 +298,23 @@ class WorldpayNotificationController extends ControllerBase {
 
     // Try sending the email.
     try {
-      Drupal::service('plugin.manager.mail')->mail(
+      \Drupal::service('plugin.manager.mail')->mail(
         'nidirect_prisons',
         'prisoner_payment_notification',
         getenv('PRISONER_PAYMENTS_PRISM_EMAIL') ?: 'prisoner_payments@mailhog.local',
-        Drupal::languageManager()->getDefaultLanguage()->getId(),
+        \Drupal::languageManager()->getDefaultLanguage()->getId(),
         ['subject' => 'PAYIN', 'body' => [$json_data]]
       );
 
       $this->logger->notice("Sent prisoner payment data for order {$order_code} to Prism.");
     }
-    catch (Exception $e) {
+    catch (\Exception $e) {
       // If email fails, log the error and throw.
       $this->logger->error('Failed to send email for order @order_code: @error', [
         '@order_code' => $order_code,
         '@error' => $e->getMessage(),
       ]);
-      throw new Exception('Failed to send payment data to Prism: ' . $e->getMessage());
+      throw new \Exception('Failed to send payment data to Prism: ' . $e->getMessage());
     }
   }
 
@@ -326,8 +326,7 @@ class WorldpayNotificationController extends ControllerBase {
    * @throws \Exception
    */
   protected function getNextSequenceId() {
-    $database = Drupal::database();
-    $query = $database->insert('prisoner_payment_sequence')->fields(['id' => NULL]);
+    $query = $this->database->insert('prisoner_payment_sequence')->fields(['id' => NULL]);
 
     return $query->execute();
   }
