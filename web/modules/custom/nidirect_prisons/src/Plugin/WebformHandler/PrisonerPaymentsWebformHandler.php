@@ -7,6 +7,7 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\nidirect_prisons\Service\PrisonerPaymentManager;
 use Drupal\webform\Plugin\WebformHandlerBase;
 use Drupal\webform\Utility\WebformFormHelper;
+use Drupal\webform\WebformSubmissionForm;
 use Drupal\webform\WebformSubmissionInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -75,6 +76,7 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
    * {@inheritdoc}
    *
    * @return \Drupal\nidirect_prisons\Plugin\WebformHandler\PrisonerPaymentsWebformHandler|\Drupal\webform\Plugin\WebformHandlerBase
+   *   Return instance of PrisonerPaymentsWebformHandler.
    */
   public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
     $instance = parent::create($container, $configuration, $plugin_id, $plugin_definition);
@@ -528,8 +530,13 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
    * Submit handler for cancelling a payment.
    */
   public static function cancelPaymentSubmit(array &$form, FormStateInterface $form_state) {
+
+    $form_object = $form_state->getFormObject();
+
     /** @var \Drupal\nidirect_prisons\Plugin\WebformHandler\PrisonerPaymentsWebformHandler $handler */
-    $handler = $form_state->getFormObject()->getWebform()->getHandler('prisoner_payments');
+    $handler = $form_object
+      ->getWebform()
+      ->getHandler('prisoner_payments');
 
     $order_code = $form_state->get('order_code');
     $prison_id = $form_state->get('prison_id');
