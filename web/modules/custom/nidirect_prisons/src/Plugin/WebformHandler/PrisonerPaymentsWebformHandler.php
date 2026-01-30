@@ -529,8 +529,9 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
   /**
    * Submit handler for cancelling a payment.
    */
-  public static function cancelPaymentSubmit(array &$form, FormStateInterface $form_state) {
+  public static function cancelPaymentSubmit(array &$form, FormStateInterface $form_state): void {
 
+    /** @var WebformSubmissionForm $form_object */
     $form_object = $form_state->getFormObject();
 
     /** @var \Drupal\nidirect_prisons\Plugin\WebformHandler\PrisonerPaymentsWebformHandler $handler */
