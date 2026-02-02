@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "12a1ee5a413725bf820d5772a96c74c0",
+    "content-hash": "ab5f7adff309be88636a43bb0cc79ce7",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -22688,58 +22688,6 @@
             }
         },
         {
-            "name": "drupal/devel_kint_extras",
-            "version": "1.1.6",
-            "source": {
-                "type": "git",
-                "url": "https://git.drupalcode.org/project/devel_kint_extras.git",
-                "reference": "1.1.6"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/devel_kint_extras-1.1.6.zip",
-                "reference": "1.1.6",
-                "shasum": "b1bd34276f0e0bf924710f3c6a7feccff11f158b"
-            },
-            "require": {
-                "drupal/core": "^9 || ^10 || ^11",
-                "drupal/devel": "^5.4",
-                "kint-php/kint": "^3.3 || ^4.0 || ^5.0 || ^6.0"
-            },
-            "type": "drupal-module",
-            "extra": {
-                "drupal": {
-                    "version": "1.1.6",
-                    "datestamp": "1759998789",
-                    "security-coverage": {
-                        "status": "covered",
-                        "message": "Covered by Drupal's security advisory policy"
-                    }
-                }
-            },
-            "notification-url": "https://packages.drupal.org/8/downloads",
-            "license": [
-                "GPL-2.0-or-later"
-            ],
-            "authors": [
-                {
-                    "name": "Jan Chojnacki",
-                    "homepage": "https://www.drupal.org/u/janchojnacki"
-                },
-                {
-                    "name": "Other contributors",
-                    "homepage": "https://www.drupal.org/node/3164492/committers"
-                }
-            ],
-            "description": "Shows methods and statics available for an object when using Kint with Devel",
-            "homepage": "https://www.drupal.org/project/devel_kint_extras",
-            "support": {
-                "source": "http://git.drupal.org/project/devel_kint_extras.git",
-                "issues": "https://www.drupal.org/project/issues/devel_kint_extras",
-                "chat": "irc://irc.freenode.org/drupal-contribute"
-            }
-        },
-        {
             "name": "drupal/easy_install_d10",
             "version": "dev-10.x",
             "source": {
@@ -22777,6 +22725,80 @@
             "homepage": "https://www.drupal.org/project/easy_install_d10",
             "support": {
                 "source": "https://git.drupalcode.org/project/easy_install_d10"
+            }
+        },
+        {
+            "name": "drupal/kint-kint",
+            "version": "2.3.3",
+            "source": {
+                "type": "git",
+                "url": "https://git.drupalcode.org/project/kint.git",
+                "reference": "2.3.3"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://ftp.drupal.org/files/projects/kint-2.3.3.zip",
+                "reference": "2.3.3",
+                "shasum": "f7e8a9919e017ace0107fe5d5cc08974bc0b2a73"
+            },
+            "require": {
+                "drupal/core": ">= 9",
+                "kint-php/kint": "^6.0.1",
+                "kint-php/kint-twig": "^6",
+                "php": ">= 8"
+            },
+            "conflict": {
+                "drupal/devel": "<5.3.0"
+            },
+            "require-dev": {
+                "drupal/coder": "^8.3",
+                "drupal/csp": "^2",
+                "drupal/devel": "^5",
+                "mglaman/phpstan-drupal": "^2",
+                "phpstan/extension-installer": "^1.4",
+                "phpstan/phpstan": "^2",
+                "phpstan/phpstan-deprecation-rules": "^2"
+            },
+            "suggest": {
+                "drupal/devel": "Various blocks, pages, and functions for developers."
+            },
+            "type": "drupal-module",
+            "extra": {
+                "drupal": {
+                    "version": "2.3.3",
+                    "datestamp": "1769536755",
+                    "security-coverage": {
+                        "status": "covered",
+                        "message": "Covered by Drupal's security advisory policy"
+                    }
+                },
+                "kint": {
+                    "disable-helpers": true
+                }
+            },
+            "autoload": {
+                "files": [
+                    "init.php"
+                ]
+            },
+            "notification-url": "https://packages.drupal.org/8/downloads",
+            "license": [
+                "GPL-2.0-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "alexander_danilenko",
+                    "homepage": "https://www.drupal.org/user/1072104"
+                },
+                {
+                    "name": "jnvsor",
+                    "homepage": "https://www.drupal.org/user/254489"
+                }
+            ],
+            "description": "Kint dumping tool, drupal-specific kint configs, and devel integration",
+            "homepage": "https://www.drupal.org/project/kint",
+            "support": {
+                "source": "https://git.drupalcode.org/project/kint"
             }
         },
         {
@@ -23186,6 +23208,59 @@
                 "source": "https://github.com/kint-php/kint/tree/6.1.0"
             },
             "time": "2025-11-08T12:59:43+00:00"
+        },
+        {
+            "name": "kint-php/kint-twig",
+            "version": "6.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/kint-php/kint-twig.git",
+                "reference": "bff198664d985fed6a911ae7762880ce4fc3c826"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/kint-php/kint-twig/zipball/bff198664d985fed6a911ae7762880ce4fc3c826",
+                "reference": "bff198664d985fed6a911ae7762880ce4fc3c826",
+                "shasum": ""
+            },
+            "require": {
+                "kint-php/kint": "^6",
+                "php": ">=7.4",
+                "twig/twig": "^2.4 || ^3"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "^3",
+                "phpunit/phpunit": "^9",
+                "vimeo/psalm": "^5"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Kint\\Twig\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-3.0"
+            ],
+            "authors": [
+                {
+                    "name": "Jonathan Vollebregt",
+                    "email": "jnvsor@gmail.com"
+                }
+            ],
+            "description": "Twig extension for Kint integration",
+            "homepage": "https://kint-php.github.io/kint/",
+            "keywords": [
+                "debug",
+                "dump",
+                "twig"
+            ],
+            "support": {
+                "issues": "https://github.com/kint-php/kint-twig/issues",
+                "source": "https://github.com/kint-php/kint-twig/tree/6.0"
+            },
+            "time": "2024-11-20T18:01:12+00:00"
         },
         {
             "name": "mglaman/drupal-check",
