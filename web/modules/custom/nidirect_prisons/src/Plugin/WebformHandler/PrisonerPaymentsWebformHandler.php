@@ -157,28 +157,9 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
     // Attach library.
     $form['#attached']['library'][] = 'nidirect_prisons/prisoner_payments';
 
-    if ($page === 'page_prisoner_and_visitor_id' && $form_state->get('order_code')) {
-      $elements['msg_payment_in_progress']['#access'] = TRUE;
-      $elements['wizard_next']['#access'] = FALSE;
-    }
-
     if ($page === 'page_payment_amount' || $page === 'page_payment_card_details') {
       // Add clientside timeout countdown.
       $form['#attached']['library'][] = 'nidirect_prisons/prisoner_payments_timeout';
-
-      // Hide Previous once a transaction exists.
-      if ($form_state->get('order_code')) {
-        $elements['wizard_prev']['#access'] = FALSE;
-
-        // Add Cancel button.
-        $form['actions']['cancel_payment'] = [
-          '#type' => 'submit',
-          '#value' => $this->t('Cancel payment'),
-          '#submit' => [[static::class, 'cancelPaymentSubmit']],
-          '#limit_validation_errors' => [],
-          '#weight' => -10,
-        ];
-      }
     }
 
     if ($page === 'page_payment_amount') {
@@ -325,6 +306,22 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
         $elements['wizard_prev']['#access'] = FALSE;
         $elements['submit']['#access'] = FALSE;
         return;
+      }
+      // Transaction underway, hide previous because we can't
+      // let user go back and change anything.  Instead, they
+      // can cancel and start again.
+      else {
+
+        $elements['wizard_prev']['#access'] = FALSE;
+
+        // Add Cancel button.
+        $form['actions']['cancel_payment'] = [
+          '#type' => 'submit',
+          '#value' => $this->t('Cancel payment'),
+          '#submit' => [[static::class, 'cancelPaymentSubmit']],
+          '#limit_validation_errors' => [],
+          '#weight' => -10,
+        ];
       }
 
       // Update pending transaction with the payment amount.
