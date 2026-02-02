@@ -191,6 +191,7 @@ elements: |-
           - form-item--important
       '#attributes':
         data-inputmask-placeholder: 0
+        inputmode: decimal
   page_payment_card_details:
     '#type': webform_wizard_page
     '#title': 'Pay now by debit card'
@@ -301,6 +302,14 @@ css: |-
     vertical-align: top;
     letter-spacing: 1px;
     font-weight: normal;
+  }
+
+  .payment-countdown {
+    background-color: #4c586d !important; /* slate */
+  }
+
+  .payment-countdown-urgent {
+    background-color: #bf5803 !important; /* orange */
   }
 javascript: |-
   if (!document.location.hostname.includes('nidirect.gov.uk')) {

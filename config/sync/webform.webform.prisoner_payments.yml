@@ -191,6 +191,7 @@ elements: |-
           - form-item--important
       '#attributes':
         data-inputmask-placeholder: 0
+        inputmode: decimal
   page_payment_card_details:
     '#type': webform_wizard_page
     '#title': 'Pay now by debit card'
@@ -289,138 +290,6 @@ elements: |-
       class:
         - test-class
 css: |-
-  #worldpay-html {
-    position: relative;
-    max-width: 540px;
-    padding: 0.5em 0 0;
-    margin: 1em 0 2em;
-    box-shadow: 0 2px 0 #0a78cd, 0 -2px 0 #0a78cd;
-    scroll-margin-top: 6em; /* header height */
-  }
-
-  #worldpay-html .ajax-spinner--fill-container {
-      position:  absolute;
-      top: 0;
-      left: 0;
-      display: flex;
-      width: 100%;
-      height: 100%;
-      text-align: center;
-      align-items: center;
-      justify-content: center;
-      background: #fff;
-  }
-
-  #worldpay-html .ajax-spinner--fill-container div {
-      background-color: #666666;
-      width: .5rem;
-      height: 4rem;
-  }
-
-  .payment-countdown {
-    position: sticky;
-    bottom: 0;
-    z-index: 2;
-    padding: .5em;
-    margin: 2em 0 0 0;
-    width: 100%;
-    text-align: center;
-    background-color: #048a05; /* green */
-    color: white;
-  }
-
-  .payment-countdown-urgent {
-    background-color: #d1431f; /* red */
-  }
-
-  .ui-dialog.payment-cancel-modal {
-    width: 80% !important;
-    max-width: 500px !important;
-    min-width: 300px !important;
-    margin: 0 auto;
-    padding: 1em;
-    border: 0;
-  }
-
-  /* Remove rounded corners from the dialog container and header */
-  .ui-dialog.payment-cancel-modal,
-  .ui-dialog.payment-cancel-modal .ui-dialog-titlebar {
-    border-radius: 0 !important;
-  }
-
-  /* Adjust dialog header padding */
-  .ui-dialog.payment-cancel-modal .ui-dialog-titlebar {
-    padding: 1em;
-  }
-
-  .ui-dialog.payment-cancel-modal .ui-dialog-titlebar.info-notice {
-    padding: 1em 1em 1em 3.5em;
-    margin: 0;
-  }
-
-  /* Remove rounded corners from the close button itself */
-  .ui-dialog.payment-cancel-modal .ui-dialog-titlebar-close {
-    border-radius: 0 !important;
-    border: none;
-    background: none;
-  }
-
-  /* Hide the default jQuery UI icon span */
-  .payment-cancel-modal .ui-dialog-titlebar-close .ui-icon {
-    display: none !important;
-  }
-
-  /* Style the close button as a square container */
-  .payment-cancel-modal .ui-dialog-titlebar-close {
-    width: 2em;
-    height: 2em;
-    position: absolute;
-    right: 1em;
-    top: calc(50% - .5em) !important;
-    cursor: pointer;
-  }
-
-  /* Create the "X" using pseudo-elements */
-  .payment-cancel-modal .ui-dialog-titlebar-close:before,
-  .payment-cancel-modal .ui-dialog-titlebar-close:after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 2px; /* Thickness of the X */
-    height: 20px; /* Size of the X */
-    background-color: #0b0c0c; /* GOV.UK Text Colour */
-  }
-
-  .payment-cancel-modal .ui-dialog-titlebar-close:before {
-    transform: translate(-50%, -50%) rotate(45deg);
-  }
-
-  .payment-cancel-modal .ui-dialog-titlebar-close:after {
-    transform: translate(-50%, -50%) rotate(-45deg);
-  }
-
-  /* Hover state for accessibility */
-  .payment-cancel-modal .ui-dialog-titlebar-close:hover,
-  .payment-cancel-modal .ui-dialog-titlebar-close:focus {
-    background-color: #f3f2f1; /* Light grey hover */
-    border: 0 !important;
-    outline: 3px solid #000 !important;
-  }
-
-  .ui-dialog.payment-cancel-modal .ui-dialog-content {
-    padding: 0 1em;
-  }
-
-  .ui-dialog.payment-cancel-modal .ui-dialog-buttonpane {
-    border-width: 0;
-    padding: 0;
-  }
-
-  .ui-dialog.payment-cancel-modal .ui-widget.button:last-child {
-      margin-right: 0;
-  }
-
   .test-badge {
     display: inline-block;
     background-color: orangered;
@@ -434,7 +303,15 @@ css: |-
     letter-spacing: 1px;
     font-weight: normal;
   }
-javascript: |
+
+  .payment-countdown {
+    background-color: #4c586d !important; /* slate */
+  }
+
+  .payment-countdown-urgent {
+    background-color: #bf5803 !important; /* orange */
+  }
+javascript: |-
   if (!document.location.hostname.includes('nidirect.gov.uk')) {
     const h1 = document.querySelector('h1.page-title');
     const testIndicator = document.createElement("span");
@@ -444,84 +321,6 @@ javascript: |
       h1.append(testIndicator);
     }
   }
-
-  (function ($, Drupal, once) {
-    Drupal.behaviors.prisonerPaymentsValidateMethods = {
-      attach: function (context, settings) {
-
-        if (typeof $.validator === 'undefined') {
-          console.warn('jQuery Validate is not available. Skipping prisonerPaymentsValidateMethods.');
-          return;
-        }
-
-        // Add validation methods once globally for the page.
-        once('prisonerPaymentsValidateMethods', 'html').forEach(function (element) {
-
-          // Custom method for valid characters in names
-          $.validator.addMethod("fullNameValidCharacters", function (value, element) {
-            const regex = /^[\p{Script=Latin}\-.'\s]+$/u;
-            return this.optional(element) || regex.test(value);
-          }, "Name must contain letters (A–Z), hyphens (-), periods (.), apostrophes (') and spaces only.");
-
-          // Custom method to check if both first and last names are provided
-          $.validator.addMethod("firstAndLastName", function (value, element) {
-            const nameParts = value.split(" ").map(part => part.replace(/[^\p{Script=Latin} ]/ug, '').trim()).filter(part => part !== "");
-            return this.optional(element) || nameParts.length >= 2;
-          }, "Name must include first and last name separated by a space.");
-
-        });
-
-        // Apply jquery validation methods once to individual elements.
-        const $prisonerPaymentAmount = $(once('prisonerPaymentAmount', 'form input[name="prisoner_payment_amount"]', context));
-        const $visitorFullname = $(once('visitorFullName', 'form input[name="visitor_fullname"]', context));
-        const $prisonerFullname = $(once('prisonerFullName', 'form input[name="prisoner_fullname"]', context));
-
-        if ($prisonerPaymentAmount.length) {
-
-          // Ensure prisonerMaxAmount rounded to 2 decimal places.
-          const prisonerMaxAmount = Math.round(
-            parseFloat(settings.prisonerPayments.prisonerMaxAmount ?? 0) * 100
-          ) / 100;
-
-          $prisonerPaymentAmount.rules("add", {
-            min: {
-              param: 0.01
-            },
-            max: {
-              param: prisonerMaxAmount
-            },
-            messages: {
-              min: "Amount must be more than &pound;0",
-              max: "Amount must be &pound;" + prisonerMaxAmount + " or less"
-            }
-          });
-        }
-
-        if ($visitorFullname.length) {
-          $visitorFullname.rules("add", {
-            fullNameValidCharacters: true,
-            firstAndLastName: true,
-            messages: {
-              fullNameValidCharacters: "Your name must contain letters (A–Z), hyphens (-), periods (.), apostrophes (') and spaces only.",
-              firstAndLastName: "Your name must include first and last name separated by a space."
-            }
-          });
-        }
-
-        if ($prisonerFullname.length) {
-          $prisonerFullname.rules("add", {
-            fullNameValidCharacters: true,
-            firstAndLastName: true,
-            messages: {
-              fullNameValidCharacters: "Prisoner name must contain letters (A–Z), hyphens (-), periods (.), apostrophes (') and spaces only.",
-              firstAndLastName: "Prisoner name must include first and last name separated by a space."
-            }
-          });
-        }
-
-      }
-    }
-  })(jQuery, Drupal, once);
 settings:
   ajax: false
   ajax_scroll_top: form
