@@ -5,30 +5,68 @@
  * Contains nidirect_prisons.module.
  */
 
+use Drupal\Core\Database\Database;
+use Drupal\nidirect_prisons\Service\PrisonerPaymentManager;
+
 /**
  * Implements hook_cron().
  */
 function nidirect_prisons_cron() {
 
-  // Delete pending transactions created more than 30 minutes ago.
-  $threshold = strtotime('-30 minutes');
-  $query = \Drupal::database()->delete('prisoner_payment_transactions')
-    ->condition('status', 'pending')
-    ->condition('created_timestamp', $threshold, '<');
-  $deleted = $query->execute();
+  /*
+   * Enforce transaction timeouts and cancel expired Worldpay orders.
+   */
 
-  if ($deleted) {
-    \Drupal::logger('nidirect_prisons')->notice('Deleted @count pending prisoner payment transactions created more than 30 minutes ago.', ['@count' => $deleted]);
+  /** @var \Drupal\nidirect_prisons\Service\PrisonerPaymentManager $payment_manager */
+  $payment_manager = \Drupal::service('nidirect_prisons.prisoner_payment_manager');
+
+  // Get all pending transactions.
+  $pending_transactions = $payment_manager->getPendingTransactions();
+
+  if ($pending_transactions) {
+
+    \Drupal::logger('nidirect_prisons')->debug(
+      'Cron ran: @count pending transactions checked',
+      ['@count' => count($pending_transactions)]
+    );
+
+    foreach ($pending_transactions as $transaction) {
+
+      // Attempt to keep transaction alive; if it fails, it's expired.
+      if ($payment_manager->touchTransaction($transaction->order_key)) {
+        continue;
+      }
+
+      // Transaction expired — cancel Worldpay order.
+      try {
+        $prison_id = $payment_manager->getPrisonId($transaction->prisoner_id);
+        $payment_manager->cancelWorldpayOrder(
+          $transaction->order_key,
+          $prison_id
+        );
+      }
+      catch (\Throwable $e) {
+        \Drupal::logger('nidirect_prisons')->error(
+          'Cron failed cancelling Worldpay order @order: @message',
+          [
+            '@order' => $transaction->order_key,
+            '@message' => $e->getMessage(),
+          ]
+        );
+      }
+    }
   }
 
-  // Delete transactions more than 7 days old.
+  // Delete all transactions more than 7 days old.
+
+  $connection = Database::getConnection();
   $threshold = strtotime('-7 days');
-  $query = \Drupal::database()->delete('prisoner_payment_transactions')
+  $query = $connection->delete('prisoner_payment_transactions')
     ->condition('created_timestamp', $threshold, '<');
   $deleted = $query->execute();
 
   if ($deleted) {
-    \Drupal::logger('nidirect_prisons')->notice('Deleted @count old prisoner payment transactions.', ['@count' => $deleted]);
+    \Drupal::logger('nidirect_prisons')->info('Deleted @count old prisoner payment transactions.', ['@count' => $deleted]);
   }
 }
 

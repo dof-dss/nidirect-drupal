@@ -213,6 +213,31 @@ function nidirect_landing_pages_entity_presave(EntityInterface $entity) {
   // This will fire when nodes are created or edited.
   if ($entity->getEntityTypeId() === 'block_content') {
     /** @var \Drupal\block_content\BlockContentInterface $entity */
+
+    // Ensure the block entity UUID is genuinely unique; see D8NID-1857.
+    $uuid = $entity->uuid() ?? '';
+
+    if (!$entity->isNew() && !empty($uuid)) {
+      // Does this UUID already exist?
+      $existing = \Drupal::entityQuery('block_content')
+        ->condition('uuid', $uuid)
+        ->accessCheck(FALSE)
+        ->range(0, 1)
+        ->execute();
+
+      if ($existing) {
+        // Regenerate UUID to guarantee uniqueness and allow insert to succeed.
+        $entity->set('uuid', \Drupal::service('uuid')->generate());
+
+        // Log this instance, so we can track frequency and correlate with any
+        // other editorial activity on the site.
+        \Drupal::logger('nidirect_landing_pages')->warning(
+          'Regenerated duplicate UUID for new block_content during presave. Old UUID: @old. Existing block IDs: @ids',
+          ['@old' => $uuid, '@ids' => implode(',', $existing)]
+        );
+      }
+    }
+
     if ($entity->hasField('field_manually_control_listing')) {
       $manual_field = $entity->get('field_manually_control_listing');
       if ($manual_field->getValue()[0]['value'] == 0) {
@@ -417,8 +442,13 @@ function nidirect_landing_pages_create_theme_to_landing_page_redirect(EntityInte
   $redirect_url = nidirect_landing_pages_get_redirect_url($taxonomy_term_path);
   if (empty($redirect_url)) {
     Redirect::create([
-      'redirect_source' => $taxonomy_term_path,
-      'redirect_redirect' => 'internal:/node/' . $entity->id(),
+      'redirect_source' => [
+        'path' => $taxonomy_term_path,
+        'query' => [],
+      ],
+      'redirect_redirect' => [
+        'uri' => 'internal:/node/' . $entity->id(),
+      ],
       'language' => Language::LANGCODE_NOT_SPECIFIED,
       'status_code' => '301',
     ])->save();
@@ -670,7 +700,7 @@ function nidirect_landing_pages_render_article_teasers_by_term(int $tid, int $cu
       '#url' => $row['url'],
     ];
 
-    $this_result['summary_text'] = ['#markup' => $row->entity->field_summary->value];
+    $this_result['summary_text'] = ['#markup' => $row->entity->field_summary->value ?? ''];
     $this_result['key'] = 'a:' . $row['entity']->id();
     // Place in an array keyed by lower case title (for sorting).
     $title = strtolower($row['title']);

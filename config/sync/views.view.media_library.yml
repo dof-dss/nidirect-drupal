@@ -141,6 +141,7 @@ display:
         type: full
         options:
           offset: 0
+          pagination_heading_level: h4
           items_per_page: 24
           total_pages: null
           id: 0
@@ -158,7 +159,6 @@ display:
             offset: false
             offset_label: Offset
           quantity: 9
-          pagination_heading_level: h4
       exposed_form:
         type: basic
         options:
@@ -203,6 +203,22 @@ display:
           expose:
             label: 'Newest first'
             field_identifier: created
+          exposed: true
+          granularity: second
+        created_1:
+          id: created_1
+          table: media_field_data
+          field: created
+          relationship: none
+          group_type: group
+          admin_label: ''
+          entity_type: media
+          entity_field: created
+          plugin_id: date
+          order: ASC
+          expose:
+            label: 'Oldest first'
+            field_identifier: created_1
           exposed: true
           granularity: second
         name:
@@ -468,42 +484,7 @@ display:
         - 'url.query_args:sort_by'
         - user
         - user.permissions
-      tags:
-        - 'config:core.entity_view_display.media.audio.default'
-        - 'config:core.entity_view_display.media.audio.embed'
-        - 'config:core.entity_view_display.media.audio.media_library'
-        - 'config:core.entity_view_display.media.audio.preview'
-        - 'config:core.entity_view_display.media.document.default'
-        - 'config:core.entity_view_display.media.document.embed'
-        - 'config:core.entity_view_display.media.document.media_library'
-        - 'config:core.entity_view_display.media.document.preview'
-        - 'config:core.entity_view_display.media.image.article_full'
-        - 'config:core.entity_view_display.media.image.banner_deep'
-        - 'config:core.entity_view_display.media.image.banner_thin'
-        - 'config:core.entity_view_display.media.image.card_large'
-        - 'config:core.entity_view_display.media.image.card_small'
-        - 'config:core.entity_view_display.media.image.default'
-        - 'config:core.entity_view_display.media.image.embed'
-        - 'config:core.entity_view_display.media.image.feature_card'
-        - 'config:core.entity_view_display.media.image.full'
-        - 'config:core.entity_view_display.media.image.landing_full'
-        - 'config:core.entity_view_display.media.image.landscape_float'
-        - 'config:core.entity_view_display.media.image.landscape_float_xp'
-        - 'config:core.entity_view_display.media.image.landscape_full'
-        - 'config:core.entity_view_display.media.image.landscape_full_xp'
-        - 'config:core.entity_view_display.media.image.media_library'
-        - 'config:core.entity_view_display.media.image.news_thumbnail'
-        - 'config:core.entity_view_display.media.image.portrait_float'
-        - 'config:core.entity_view_display.media.image.portrait_float_xp'
-        - 'config:core.entity_view_display.media.image.portrait_full'
-        - 'config:core.entity_view_display.media.image.preview'
-        - 'config:core.entity_view_display.media.remote_video.default'
-        - 'config:core.entity_view_display.media.remote_video.embed'
-        - 'config:core.entity_view_display.media.remote_video.media_library'
-        - 'config:core.entity_view_display.media.remote_video.preview'
-        - 'config:core.entity_view_display.media.video.default'
-        - 'config:core.entity_view_display.media.video.embed'
-        - 'config:core.entity_view_display.media.video.media_library'
+      tags: {  }
   default_page:
     id: default_page
     display_title: 'Default Page'
@@ -1001,6 +982,7 @@ display:
         type: full
         options:
           offset: 0
+          pagination_heading_level: h4
           items_per_page: 25
           total_pages: null
           id: 0
@@ -1018,7 +1000,6 @@ display:
             offset: false
             offset_label: Offset
           quantity: 9
-          pagination_heading_level: h4
       style:
         type: table
         options:
@@ -1416,42 +1397,7 @@ display:
         - 'url.query_args:sort_by'
         - user
         - user.permissions
-      tags:
-        - 'config:core.entity_view_display.media.audio.default'
-        - 'config:core.entity_view_display.media.audio.embed'
-        - 'config:core.entity_view_display.media.audio.media_library'
-        - 'config:core.entity_view_display.media.audio.preview'
-        - 'config:core.entity_view_display.media.document.default'
-        - 'config:core.entity_view_display.media.document.embed'
-        - 'config:core.entity_view_display.media.document.media_library'
-        - 'config:core.entity_view_display.media.document.preview'
-        - 'config:core.entity_view_display.media.image.article_full'
-        - 'config:core.entity_view_display.media.image.banner_deep'
-        - 'config:core.entity_view_display.media.image.banner_thin'
-        - 'config:core.entity_view_display.media.image.card_large'
-        - 'config:core.entity_view_display.media.image.card_small'
-        - 'config:core.entity_view_display.media.image.default'
-        - 'config:core.entity_view_display.media.image.embed'
-        - 'config:core.entity_view_display.media.image.feature_card'
-        - 'config:core.entity_view_display.media.image.full'
-        - 'config:core.entity_view_display.media.image.landing_full'
-        - 'config:core.entity_view_display.media.image.landscape_float'
-        - 'config:core.entity_view_display.media.image.landscape_float_xp'
-        - 'config:core.entity_view_display.media.image.landscape_full'
-        - 'config:core.entity_view_display.media.image.landscape_full_xp'
-        - 'config:core.entity_view_display.media.image.media_library'
-        - 'config:core.entity_view_display.media.image.news_thumbnail'
-        - 'config:core.entity_view_display.media.image.portrait_float'
-        - 'config:core.entity_view_display.media.image.portrait_float_xp'
-        - 'config:core.entity_view_display.media.image.portrait_full'
-        - 'config:core.entity_view_display.media.image.preview'
-        - 'config:core.entity_view_display.media.remote_video.default'
-        - 'config:core.entity_view_display.media.remote_video.embed'
-        - 'config:core.entity_view_display.media.remote_video.media_library'
-        - 'config:core.entity_view_display.media.remote_video.preview'
-        - 'config:core.entity_view_display.media.video.default'
-        - 'config:core.entity_view_display.media.video.embed'
-        - 'config:core.entity_view_display.media.video.media_library'
+      tags: {  }
   widget:
     id: widget
     display_title: Widget
@@ -1606,46 +1552,6 @@ display:
           transform_dash: false
           break_phrase: false
       filters:
-        status:
-          id: status
-          table: media_field_data
-          field: status
-          relationship: none
-          group_type: group
-          admin_label: ''
-          entity_type: media
-          entity_field: status
-          plugin_id: boolean
-          operator: '='
-          value: '1'
-          group: 1
-          exposed: false
-          expose:
-            operator_id: ''
-            label: ''
-            description: ''
-            use_operator: false
-            operator: ''
-            operator_limit_selection: false
-            operator_list: {  }
-            identifier: ''
-            required: false
-            remember: false
-            multiple: false
-            remember_roles:
-              authenticated: authenticated
-          is_grouped: false
-          group_info:
-            label: ''
-            description: ''
-            identifier: ''
-            optional: true
-            widget: select
-            multiple: false
-            remember: false
-            default_group: All
-            default_group_multiple: {  }
-            group_items: {  }
         name:
           id: name
           table: media_field_data
@@ -1688,6 +1594,61 @@ display:
               health_condition_supervisor_user: '0'
               driving_instructor_supervisor_user: '0'
             placeholder: 'Contains text...'
+          is_grouped: false
+          group_info:
+            label: ''
+            description: ''
+            identifier: ''
+            optional: true
+            widget: select
+            multiple: false
+            remember: false
+            default_group: All
+            default_group_multiple: {  }
+            group_items: {  }
+        status:
+          id: status
+          table: media_field_data
+          field: status
+          relationship: none
+          group_type: group
+          admin_label: ''
+          entity_type: media
+          entity_field: status
+          plugin_id: boolean
+          operator: '='
+          value: '1'
+          group: 1
+          exposed: true
+          expose:
+            operator_id: ''
+            label: Published
+            description: ''
+            use_operator: false
+            operator: status_op
+            operator_limit_selection: false
+            operator_list: {  }
+            identifier: status
+            required: false
+            remember: false
+            multiple: false
+            remember_roles:
+              authenticated: authenticated
+              anonymous: '0'
+              administrator: '0'
+              gp_author_user: '0'
+              author_user: '0'
+              gp_supervisor_user: '0'
+              news_supervisor: '0'
+              supervisor_user: '0'
+              editor_user: '0'
+              admin_user: '0'
+              apps_user: '0'
+              health_condition_author_user: '0'
+              health_condition_supervisor_user: '0'
+              driving_instructor_supervisor_user: '0'
+              qa_user: '0'
+              qa: '0'
           is_grouped: false
           group_info:
             label: ''
@@ -1782,42 +1743,7 @@ display:
         - url.query_args
         - 'url.query_args:sort_by'
         - user.permissions
-      tags:
-        - 'config:core.entity_view_display.media.audio.default'
-        - 'config:core.entity_view_display.media.audio.embed'
-        - 'config:core.entity_view_display.media.audio.media_library'
-        - 'config:core.entity_view_display.media.audio.preview'
-        - 'config:core.entity_view_display.media.document.default'
-        - 'config:core.entity_view_display.media.document.embed'
-        - 'config:core.entity_view_display.media.document.media_library'
-        - 'config:core.entity_view_display.media.document.preview'
-        - 'config:core.entity_view_display.media.image.article_full'
-        - 'config:core.entity_view_display.media.image.banner_deep'
-        - 'config:core.entity_view_display.media.image.banner_thin'
-        - 'config:core.entity_view_display.media.image.card_large'
-        - 'config:core.entity_view_display.media.image.card_small'
-        - 'config:core.entity_view_display.media.image.default'
-        - 'config:core.entity_view_display.media.image.embed'
-        - 'config:core.entity_view_display.media.image.feature_card'
-        - 'config:core.entity_view_display.media.image.full'
-        - 'config:core.entity_view_display.media.image.landing_full'
-        - 'config:core.entity_view_display.media.image.landscape_float'
-        - 'config:core.entity_view_display.media.image.landscape_float_xp'
-        - 'config:core.entity_view_display.media.image.landscape_full'
-        - 'config:core.entity_view_display.media.image.landscape_full_xp'
-        - 'config:core.entity_view_display.media.image.media_library'
-        - 'config:core.entity_view_display.media.image.news_thumbnail'
-        - 'config:core.entity_view_display.media.image.portrait_float'
-        - 'config:core.entity_view_display.media.image.portrait_float_xp'
-        - 'config:core.entity_view_display.media.image.portrait_full'
-        - 'config:core.entity_view_display.media.image.preview'
-        - 'config:core.entity_view_display.media.remote_video.default'
-        - 'config:core.entity_view_display.media.remote_video.embed'
-        - 'config:core.entity_view_display.media.remote_video.media_library'
-        - 'config:core.entity_view_display.media.remote_video.preview'
-        - 'config:core.entity_view_display.media.video.default'
-        - 'config:core.entity_view_display.media.video.embed'
-        - 'config:core.entity_view_display.media.video.media_library'
+      tags: {  }
   widget_table:
     id: widget_table
     display_title: 'Widget (table)'
@@ -1992,46 +1918,6 @@ display:
           transform_dash: false
           break_phrase: false
       filters:
-        status:
-          id: status
-          table: media_field_data
-          field: status
-          relationship: none
-          group_type: group
-          admin_label: ''
-          entity_type: media
-          entity_field: status
-          plugin_id: boolean
-          operator: '='
-          value: '1'
-          group: 1
-          exposed: false
-          expose:
-            operator_id: ''
-            label: ''
-            description: ''
-            use_operator: false
-            operator: ''
-            operator_limit_selection: false
-            operator_list: {  }
-            identifier: ''
-            required: false
-            remember: false
-            multiple: false
-            remember_roles:
-              authenticated: authenticated
-          is_grouped: false
-          group_info:
-            label: ''
-            description: ''
-            identifier: ''
-            optional: true
-            widget: select
-            multiple: false
-            remember: false
-            default_group: All
-            default_group_multiple: {  }
-            group_items: {  }
         name:
           id: name
           table: media_field_data
@@ -2062,6 +1948,75 @@ display:
               authenticated: authenticated
               anonymous: '0'
               administrator: '0'
+              gp_author_user: '0'
+              author_user: '0'
+              gp_supervisor_user: '0'
+              news_supervisor: '0'
+              supervisor_user: '0'
+              editor_user: '0'
+              admin_user: '0'
+              apps_user: '0'
+              health_condition_author_user: '0'
+              health_condition_supervisor_user: '0'
+              driving_instructor_supervisor_user: '0'
+              qa_user: '0'
+              qa: '0'
+            placeholder: 'Contains text...'
+          is_grouped: false
+          group_info:
+            label: ''
+            description: ''
+            identifier: ''
+            optional: true
+            widget: select
+            multiple: false
+            remember: false
+            default_group: All
+            default_group_multiple: {  }
+            group_items: {  }
+        status:
+          id: status
+          table: media_field_data
+          field: status
+          relationship: none
+          group_type: group
+          admin_label: ''
+          entity_type: media
+          entity_field: status
+          plugin_id: boolean
+          operator: '='
+          value: '1'
+          group: 1
+          exposed: true
+          expose:
+            operator_id: ''
+            label: Published
+            description: ''
+            use_operator: false
+            operator: status_op
+            operator_limit_selection: false
+            operator_list: {  }
+            identifier: status
+            required: false
+            remember: false
+            multiple: false
+            remember_roles:
+              authenticated: authenticated
+              anonymous: '0'
+              administrator: '0'
+              gp_author_user: '0'
+              author_user: '0'
+              gp_supervisor_user: '0'
+              news_supervisor: '0'
+              supervisor_user: '0'
+              editor_user: '0'
+              admin_user: '0'
+              apps_user: '0'
+              health_condition_author_user: '0'
+              health_condition_supervisor_user: '0'
+              driving_instructor_supervisor_user: '0'
+              qa_user: '0'
+              qa: '0'
           is_grouped: false
           group_info:
             label: ''

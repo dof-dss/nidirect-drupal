@@ -15,6 +15,7 @@ use Drupal\Core\Cache\Cache;
 use Drupal\Core\Datetime\DrupalDateTime;
 use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
 use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Entity\FieldableEntityInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Link;
 use Drupal\Core\Render\Markup;
@@ -106,6 +107,90 @@ function nidirect_common_entity_presave(EntityInterface $entity) {
       }
     }
   }
+
+  // Redact or obfuscate any symfony mailer log entity entries before save.
+  // Available fields on the symfony_mailer_log entity:
+  // * - id
+  // * - uuid
+  // * - langcode
+  // * - type
+  // * - sub_type
+  // * - from
+  // * - to
+  // * - reply_to
+  // * - cc
+  // * - bcc
+  // * - headers
+  // * - subject
+  // * - html_body
+  // * - text_body
+  // * - account        (entity reference)
+  // * - theme
+  // * - transport_dsn
+  // * - created
+  // * - error_message
+  // * - metatag        (metatag field)
+  if ($entity->getEntityTypeId() === 'symfony_mailer_log') {
+    // Make sure it's fieldable, so ->get() etc register as valid calls.
+    if (!$entity instanceof FieldableEntityInterface) {
+      return;
+    }
+
+    // Obfuscate email addresses in the fields for from, to, css, bcc.
+    foreach (['from', 'to', 'cc', 'bcc'] as $field_id) {
+      if ($entity->hasField($field_id) && !$entity->get($field_id)->isEmpty()) {
+        // s/johnsmith@example.com/j*******h@example.com/g.
+        $obfuscated_value = nidirect_common_obfuscate_emails($entity->get($field_id)->value);
+        $entity->set($field_id, $obfuscated_value);
+      }
+    }
+
+    if ($entity->hasField('html_body') && !$entity->get('html_body')->isEmpty()) {
+      $entity->set('html_body', t('[redacted email body]'));
+    }
+
+    // If there is a plain-text body field, do the same.
+    if ($entity->hasField('text_body') && !$entity->get('text_body')->isEmpty()) {
+      $entity->set('text_body', t('[redacted email body]'));
+    }
+  }
+}
+
+/**
+ * Obfuscate email addresses in a string while keeping their general shape.
+ * Idempotent function so will handle text with *** in the address or
+ * pre-obfuscated things in equal measure.
+ */
+function nidirect_common_obfuscate_emails(string $text) {
+  return preg_replace_callback(
+  // Allow * in the local part so already-obfuscated emails still match as a whole.
+    '/([a-zA-Z0-9._%+\-*]+@[a-zA-Z0-9.-]+\.[A-Za-z]{2,})/',
+    function (array $matches): string {
+      $email = $matches[1];
+
+      // Split into local part and domain.
+      [$local, $domain] = explode('@', $email, 2);
+
+      // If the local part already looks like it's obfuscated (e.g. j***e), skip it.
+      if (preg_match('/^[A-Za-z0-9._%+\-]?\*+[A-Za-z0-9._%+\-]?$/', $local)) {
+        return $email;
+      }
+
+      $length = strlen($local);
+
+      // For 1–2 char local parts, just fully mask them.
+      if ($length <= 2) {
+        return str_repeat('*', $length) . '@' . $domain;
+      }
+
+      $first = $local[0];
+      $last = $local[$length - 1];
+      $mask = str_repeat('*', $length - 2);
+
+      return $first . $mask . $last . '@' . $domain;
+    },
+    $text
+  );
 }
 
 /**

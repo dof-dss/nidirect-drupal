@@ -44,7 +44,7 @@
         "ext-simplexml": "*",
         "composer/installers": "^2.0",
         "cweagans/composer-patches": "^1.6.5",
-        "dof-dss/nicsdru_origins_modules": "^10.5",
+        "dof-dss/nicsdru_origins_modules": "^10.6",
         "dof-dss/nicsdru_origins_theme": "^10.1",
         "drupal/a11y_form_helpers": "^2.1",
         "drupal/address": "^2.0",
@@ -123,6 +123,7 @@
         "drupal/paragraphs": "^1.18",
         "drupal/pathauto": "^1.13",
         "drupal/permissions_filter": "^1.2",
+        "drupal/queue_ui": "^3.2",
         "drupal/redirect": "^1.11",
         "drupal/redis": "^1.10",
         "drupal/scheduled_transitions": "^2.7",
@@ -130,6 +131,7 @@
         "drupal/schema_metatag": "^3.0",
         "drupal/search_api": "^1.37",
         "drupal/search_api_autocomplete": "^1.10",
+        "drupal/search_api_best_bets": "^3.0",
         "drupal/search_api_location": "^1.0@alpha",
         "drupal/search_api_solr": "4.x-dev@dev",
         "drupal/search_api_spellcheck": "4.0.x-dev@dev",
@@ -142,6 +144,8 @@
         "drupal/smart_trim": "^2.2",
         "drupal/stable": "^2.1",
         "drupal/structure_sync": "^2.0",
+        "drupal/symfony_mailer_log": "^1.2",
+        "drupal/symfony_mailer_queue": "^1.2",
         "drupal/tamper": "^1.0@alpha",
         "drupal/taxonomy_access_fix": "^4.0",
         "drupal/taxonomy_entity_index": "^1.20",
@@ -173,8 +177,8 @@
     "require-dev": {
         "drupal/coder": "^8.3",
         "drupal/devel": "^5.3",
-        "drupal/devel_kint_extras": "^1.1",
         "drupal/easy_install_d10": "^10.0@dev",
+        "drupal/kint-kint": "^2.3",
         "drupal/masquerade": "^2.0",
         "drupal/restui": "^1.22",
         "drupal/stage_file_proxy": "^3.1",
@@ -210,10 +214,7 @@
     "extra": {
         "patches": {
             "drupal/antibot": {
-                "Antibot blocks multistep webform submission if user fails to move mouse pointer": "https://git.drupalcode.org/project/antibot/-/merge_requests/23.diff"
-            },
-            "drupal/book": {
-                "Fix WSOD when using Book and Moderation Sidebar": "https://gist.githubusercontent.com/omahm/5374256e61975d871b7620e51c0fa8c7/raw/731c218ab4b4c4b371efd85f7ba568d007e2bc15/book_mod_sidebar.patch"
+                "Antibot blocks multistep webform submission if user fails to move mouse pointer)": "patches/antibot-mr-23.patch"
             },
             "drupal/core": {
                 "Cannot save unpublished versions of published content for users without manage book privileges": "https://www.drupal.org/files/issues/2022-12-14/2918537-92.patch",

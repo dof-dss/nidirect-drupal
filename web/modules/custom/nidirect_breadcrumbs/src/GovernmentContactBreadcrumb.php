@@ -87,7 +87,7 @@ class GovernmentContactBreadcrumb implements BreadcrumbBuilderInterface {
     $links[] = Link::createFromRoute(t('Contacts'), 'nidirect_contacts.default');
 
     $breadcrumb->setLinks($links);
-    $breadcrumb->addCacheContexts(['url.path']);
+    $breadcrumb->addCacheContexts(['url.path', 'route']);
 
     return $breadcrumb;
   }
