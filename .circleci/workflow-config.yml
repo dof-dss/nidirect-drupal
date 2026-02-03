@@ -53,7 +53,7 @@ workflows:
     when:
       and:
         - equal: [ api, << pipeline.trigger_source >> ]
-        - equal: [ DEPT-edge, << pipeline.git.branch >> ]
+        - equal: [ D8NID-edge, << pipeline.git.branch >> ]
     jobs:
       - build_edge:
           php_version: << pipeline.parameters.php_version >>

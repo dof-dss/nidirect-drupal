@@ -42,7 +42,7 @@ elements: |-
       link_button_video: 'A link, button or video is not working'
       spelling: 'There is a spelling mistake'
       info_missing: 'Information is missing, outdated or wrong'
-      cannot_find: 'I can''t find what I''m looking for'
+      cannot_find: "I can't find what I'm looking for"
       other: 'Another issue'
     '#states':
       visible:
@@ -67,18 +67,16 @@ elements: |-
           - or
           - ':input[name="is_your_feedback_about"]':
               value: report_problem
-      '#text': |-
-        <p class="info-notice info-notice--warning">You will not receive a reply. We will consider your feedback to help improve the site.<br />
-        <br />
-        Don't include any personal or financial information, for example National Insurance, credit card numbers, or phone numbers.</p>
+      '#text': '<p class="info-notice--warning info-notice" data-renderer-start-pos="777">This is the official government website for Northern Ireland. You will not receive a reply. nidirect will consider your feedback to help improve the site.&nbsp;<br><br>Do not include any personal or financial information, for example National Insurance, credit card, or phone numbers.&nbsp;<br><br>If information about a GP practice is missing, outdated or wrong, email Business Services Organisation (BSO) at: <a href="mailto:professionalsupportteam@hscni.net" title="mailto:professionalsupportteam@hscni.net" data-renderer-mark="true">professionalsupportteam@hscni.net</a>.</p>'
       '#format': full_html
   provide_more_information:
     '#type': textarea
-    '#title': 'Tell us more about the problem you''re having with the nidirect website.'
+    '#title': "Tell nidirect more about the problem you're having with the website."
     '#title_display': before
     '#description_display': before
     '#help_display': element_before
     '#maxlength': 3000
+    '#required': true
     '#counter_type': character
     '#counter_minimum': 1
     '#counter_maximum': 3000
@@ -86,7 +84,6 @@ elements: |-
       visible:
         ':input[name="is_your_feedback_about"]':
           value: report_problem
-    '#required': true
   enter_your_feedback:
     '#type': textarea
     '#title': 'Enter your feedback'
@@ -123,13 +120,12 @@ elements: |-
           claiming_compensation_roads: 'Compensation due to a road problem'
           child_maintenance: 'Child Maintenance'
           groni_civil_partnerships: 'Civil partnership certificates'
-          covid_19: 'Coronavirus (COVID-19)'
-          covid_19_certificate: 'COVID vaccination certificate'
           criminal_record_checks: 'Criminal record checks (AccessNI)'
           groni_death: 'Death certificates'
           educational_maintenance_allowance: 'Educational Maintenance Allowance'
           employment_rights: 'Employment rights'
-          high_street_voucher: 'High Street Spend Local Scheme'
+          gp_practice: 'GP practice'
+          groni_account: 'GRONI Account'
           groni_marriage: 'Marriage certificates'
           motoring: Motoring
           nidirect_account: 'nidirect account'
@@ -160,7 +156,7 @@ elements: |-
         visible:
           ':input[name="feedback_about"]':
             value: angling
-      '#text': |-
+      '#text': |
         <div class="no-submit">
 
         <p>Comments or queries about angling can be emailed to <a href="mailto:anglingcorrespondence@daera-ni.gov.uk">anglingcorrespondence@daera-ni.gov.uk&nbsp;</a></p>
@@ -172,7 +168,7 @@ elements: |-
         visible:
           ':input[name="feedback_about"]':
             value: benefits
-      '#text': |-
+      '#text': |
         <div class="no-submit">
 
         <p>If you have a comment or query about benefits, you will need to contact the government department&nbsp;or&nbsp;agency which handles that benefit.&nbsp; Contacts for common benefits are listed below.</p>
@@ -198,7 +194,7 @@ elements: |-
 
         <h3>Jobseeker’s Allowance</h3>
 
-        <p>Contact your local <a href="/node/2739">Jobs &amp; Benefits office</a></p>
+        <p>Contact your local <a href="/contacts/jobs-and-benefits-offices">Jobs &amp; Benefits office</a></p>
 
         <h3>Personal Independence Payment</h3>
 
@@ -213,7 +209,7 @@ elements: |-
         visible:
           ':input[name="feedback_about"]':
             value: blue_badge
-      '#text': |-
+      '#text': |
         <div class="no-submit">
 
         <p>Comments or queries about the Blue Badge scheme can be emailed to <a href="mailto:bluebadges@infrastructure-ni.gov.uk">bluebadges@infrastructure-ni.gov.uk</a> or you can also call 0300 200 7818.</p>
@@ -225,7 +221,7 @@ elements: |-
         visible:
           ':input[name="feedback_about"]':
             value: careers
-      '#text': |-
+      '#text': |
         <p>For queries or advice about careers, contact the <a data-entity-substitution="canonical" data-entity-type="node" data-entity-uuid="4849e4ec-9cbb-4ff9-a26b-7e2397f748b7" href="/careers-service">Careers Service</a>.</p>
       '#format': full_html
     child_maintenance:
@@ -234,7 +230,7 @@ elements: |-
         visible:
           ':input[name="feedback_about"]':
             value: child_maintenance
-      '#text': '<div class="no-submit"><p>For queries or advice about Child Maintenance, contact the <a href="/node/4185">Child Maintenance Service</a>.</p></div>'
+      '#text': '<div class="no-submit"><p>For queries or advice about Child Maintenance, contact the <a href="/contacts/child-maintenance-service-northern-ireland">Child Maintenance Service</a>.</p></div>'
       '#format': full_html
     claiming_compensation_road_problem:
       '#type': processed_text
@@ -242,10 +238,10 @@ elements: |-
         visible:
           ':input[name="feedback_about"]':
             value: claiming_compensation_roads
-      '#text': |-
+      '#text': |
         <div class="no-submit">
 
-        <p>For queries or advice about claiming compensation due to a road problem, contact <a href="/node/125">DFI Roads claim unit</a>.</p>
+        <p>For queries or advice about claiming compensation due to a road problem, contact <a href="/contacts/dfi-roads-claims-unit">DFI Roads claim unit</a>.</p>
         </div>
       '#format': full_html
     covid_19:
@@ -254,7 +250,7 @@ elements: |-
         visible:
           ':input[name="feedback_about"]':
             value: covid_19
-      '#text': |-
+      '#text': |
         <div class="no-submit">
         <p>If you can’t find the information you’re looking for in the&nbsp;<a data-entity-substitution="canonical" data-entity-type="node" data-entity-uuid="9fbac1c3-b232-4b5b-a7ad-a150c1760a8b" href="/campaigns/coronavirus-covid-19">Coronavirus (COVID-19) section</a>, then for queries about:</p>
 
@@ -273,7 +269,7 @@ elements: |-
         visible:
           ':input[name="feedback_about"]':
             value: covid_19_certificate
-      '#text': |-
+      '#text': |
         <div class="no-submit">
 
         <p>For queries about your identity check, email <a href="mailto:nida@nidirect.gov.uk">nida@nidirect.gov.uk</a> and for queries about your certificate, email <a href="mailto:covidcertni@hscni.net">covidcertni@hscni.net</a>.</p>
@@ -301,10 +297,21 @@ elements: |-
         visible:
           ':input[name="feedback_about"]':
             value: employment_rights
-      '#text': |-
+      '#text': |
         <div class="no-submit">
 
-        <p>For queries or advice about employment rights, contact the <a href="/node/866">Labour Relations Agency</a>.</p>
+        <p>For queries or advice about employment rights, contact the <a href="/contacts/labour-relations-agency">Labour Relations Agency</a>.</p>
+        </div>
+      '#format': full_html
+    gp_practice:
+      '#type': processed_text
+      '#states':
+        visible:
+          ':input[name="feedback_about"]':
+            value: gp_practice
+      '#text': |
+        <div class="no-submit">
+        <p>For queries or comments about a GP practice, contact the practice directly. If information about the GP practice is missing, outdated or wrong, email Business Services Organisation (BSO) at: <a href="mailto:professionalsupportteam@hscni.net">professionalsupportteam@hscni.net</a>.</p>
         </div>
       '#format': full_html
     groni:
@@ -324,13 +331,24 @@ elements: |-
               value: groni_marriage
       '#text': '<div class="no-submit"><p>For queries or advice about birth, death, marriage and civil partnership certificates and research, contact the General Register Office Northern Ireland (GRONI) by email&nbsp;<a href="mailto:gro_nisra@finance-ni.gov.uk">gro_nisra@finance-ni.gov.uk</a></p></div>'
       '#format': full_html
+    groni_account:
+      '#type': processed_text
+      '#states':
+        visible:
+          ':input[name="feedback_about"]':
+            value: groni_account
+      '#text': |
+        <div class="no-submit">
+        <p>For queries about your GRONI account, email <a href="mailto:gro_nisra@finance-ni.gov.uk?subject=GRONI account">gro_nisra@finance-ni.gov.uk</a>.</p>
+        </div>
+      '#format': full_html
     high_street_voucher_scheme:
       '#type': processed_text
       '#states':
         visible:
           ':input[name="feedback_about"]':
             value: high_street_voucher
-      '#text': |-
+      '#text': |
         <div class="no-submit">
 
         <p>For queries about the High Street Spend Local Scheme,&nbsp; email&nbsp;<a href="mailto:HSSS.mail@economy-ni.gov.uk">HSSS.mail@economy-ni.gov.uk</a>.</p>
@@ -342,7 +360,7 @@ elements: |-
         visible:
           ':input[name="feedback_about"]':
             value: motoring
-      '#text': '<div class="no-submit"><p>For queries about:</p><ul><li>Car tax, vehicle registration and SORN<br>contact the <a href="https://www.gov.uk/contact-the-dvla">Driver and Vehicle Licensing Agency (DVLA), Swansea</a><br>&nbsp;</li><li>Driver licensing and tests, MOT and vehicle testing<br>contact the <a href="/node/4236">Driver &amp; Vehicle Agency (DVA), Northern Ireland</a></li></ul><p>If your query is about another topic, select ‘Other’ from the drop-down menu above.</p></div>'
+      '#text': '<div class="no-submit"><p>For queries about:</p><ul><li>Car tax, vehicle registration and SORN<br>contact the <a href="https://www.gov.uk/contact-the-dvla">Driver and Vehicle Licensing Agency (DVLA), Swansea</a><br>&nbsp;</li><li>Driver licensing and tests, MOT and vehicle testing<br>contact the <a href="/contacts/driver-vehicle-agency-dva-northern-ireland">Driver &amp; Vehicle Agency (DVA), Northern Ireland</a></li></ul><p>If your query is about another topic, select ‘Other’ from the drop-down menu above.</p></div>'
       '#format': full_html
     nidirect_account:
       '#type': processed_text
@@ -350,7 +368,7 @@ elements: |-
         visible:
           ':input[name="feedback_about"]':
             value: nidirect_account
-      '#text': |-
+      '#text': |
         <div class="no-submit">
 
         <p>For queries about your identity check, email <a href="mailto:nida@nidirect.gov.uk">nida@nidirect.gov.uk</a>.</p>
@@ -380,7 +398,7 @@ elements: |-
         visible:
           ':input[name="feedback_about"]':
             value: pensions
-      '#text': '<div class="no-submit"><p>For queries or advice about pensions, contact the&nbsp;<a href="/node/10799">Northern Ireland Pension Centre</a>.</p></div>'
+      '#text': '<div class="no-submit"><p>For queries or advice about pensions, contact the&nbsp;<a href="/contacts/northern-ireland-pension-centre">Northern Ireland Pension Centre</a>.</p></div>'
       '#format': full_html
     problems_roads:
       '#type': processed_text
@@ -388,7 +406,7 @@ elements: |-
         visible:
           ':input[name="feedback_about"]':
             value: report_a_fault
-      '#text': '<div class="no-submit"><p>If you wish to report a problem with a road or street you can do so online <a href="/taxonomy/term/235">in this section</a>.</p><p>If you wish to check on a problem or fault you have already reported, contact <a href="/node/3710">DfI Roads</a>.</p></div>'
+      '#text': '<div class="no-submit"><p>If you wish to report a problem with a road or street you can do so online <a href="/taxonomy/term/235">in this section</a>.</p><p>If you wish to check on a problem or fault you have already reported, contact <a href="/contacts/dfi-roads">DfI Roads</a>.</p></div>'
       '#format': full_html
     proni:
       '#type': processed_text
@@ -396,7 +414,7 @@ elements: |-
         visible:
           ':input[name="feedback_about"]':
             value: proni
-      '#text': '<div class="no-submit"><p>For queries or advice about historical, social or cultural records relating to Northern Ireland, use the <a href="/node/4683">Public Record Office of Northern Ireland (PRONI) enquiry service</a>.</p></div>'
+      '#text': '<div class="no-submit"><p>For queries or advice about historical, social or cultural records relating to Northern Ireland, use the <a href="/forms/submit-enquiry">Public Record Office of Northern Ireland (PRONI) enquiry service</a>.</p></div>'
       '#format': full_html
     rates:
       '#type': processed_text
@@ -412,7 +430,7 @@ elements: |-
         visible:
           ':input[name="feedback_about"]':
             value: smartpass
-      '#text': '<div class="no-submit"><p>For queries or advice about &nbsp;60+ and Senior Citizen SmartPasses (which can be used to get concessionary travel on public transport), contact&nbsp;<a href="/node/623">Smartpass - Translink</a>.</p></div>'
+      '#text': '<div class="no-submit"><p>For queries or advice about &nbsp;60+ and Senior Citizen SmartPasses (which can be used to get concessionary travel on public transport), contact&nbsp;<a href="/contacts/smartpass-translink">Smartpass - Translink</a>.</p></div>'
       '#format': full_html
     something_else:
       '#type': processed_text
@@ -420,8 +438,7 @@ elements: |-
         visible:
           ':input[name="feedback_about"]':
             value: something_else
-      '#text': |-
-        <p>If you have a question about a government service or policy, you should <a href="/contacts">contact the relevant government organisation directly</a>.&nbsp; We don't have access to information about you.</p>
+      '#text': '<p>If you have a question about a government service or policy, you should <a href="/contacts">contact the relevant government organisation directly</a>.&nbsp;</p>'
       '#format': full_html
   extra_comments_for_pooh_bear:
     '#type': textfield
