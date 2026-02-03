@@ -132,7 +132,7 @@ class NodeThemesBreadcrumb implements BreadcrumbBuilderInterface {
 
     // Fix mysterious missing breadcrumb issue (D8NID-1699, D8NID-1542).
     // Ensure url.path cache context set prior to early return.
-    $breadcrumb->addCacheContexts(['url.path']);
+    $breadcrumb->addCacheContexts(['url.path', 'route']);
 
     // Return early if it's a supporting/secondary node type:
     // feature/featured_content_list.
