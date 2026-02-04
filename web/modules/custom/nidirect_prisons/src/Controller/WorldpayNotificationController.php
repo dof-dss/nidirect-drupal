@@ -295,7 +295,7 @@ class WorldpayNotificationController extends ControllerBase {
       "TRANSACTION_TIME" => date('d/m/Y H:i:s'),
       "AMOUNT_PAID" => number_format($amount, 2, '.', ''),
       "SEQUENCE_ID" => $sequence_id,
-    ]);
+    ], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
 
     // Try sending the email.
     try {
