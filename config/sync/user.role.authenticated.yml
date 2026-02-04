@@ -6,12 +6,16 @@ dependencies:
     - filter.format.basic_html
     - filter.format.webform_default
     - rest.resource.cold_weather_payment_resource
+    - rest.resource.prison_visits_service_status
     - rest.resource.prisoner_amounts_resource
     - rest.resource.prisoner_nominees_resource
     - rest.resource.prisoner_payments_service_status
     - search_api_autocomplete.search.contacts
     - search_api_autocomplete.search.search
     - taxonomy.vocabulary.drive_instr_categories
+    - taxonomy.vocabulary.hc_body_location
+    - taxonomy.vocabulary.hc_body_system
+    - taxonomy.vocabulary.hc_condition_type
     - taxonomy.vocabulary.hc_info_sources
     - taxonomy.vocabulary.hc_symptoms
     - taxonomy.vocabulary.landing_pages_contact_card_colou
@@ -42,6 +46,7 @@ permissions:
   - 'delete own files'
   - 'notify of path changes'
   - 'restful get cold_weather_payment_resource'
+  - 'restful post prison_visits_service_status'
   - 'restful post prisoner_amounts_resource'
   - 'restful post prisoner_nominees_resource'
   - 'restful post prisoner_payments_service_status'
@@ -67,6 +72,9 @@ permissions:
   - 'view term names in ni_postcodes'
   - 'view term names in site_themes'
   - 'view terms in drive_instr_categories'
+  - 'view terms in hc_body_location'
+  - 'view terms in hc_body_system'
+  - 'view terms in hc_condition_type'
   - 'view terms in hc_info_sources'
   - 'view terms in hc_symptoms'
   - 'view terms in landing_pages_contact_card_colou'

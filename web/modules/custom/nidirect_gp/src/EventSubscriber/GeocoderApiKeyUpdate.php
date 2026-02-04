@@ -59,7 +59,7 @@ class GeocoderApiKeyUpdate implements EventSubscriberInterface {
     $change_list = $event->getChangelist();
     if (!empty($change_list)) {
       if ((isset($change_list['update']) && ($change_list['update'][0] == 'geocoder.geocoder_provider.googlemaps')) ||
-        (isset($change_list['create']) && ($change_list['create'][0] == 'geocoder.geocoder_provider.googlemaps'))) {
+        (array_key_exists(0, $change_list['create']) && ($change_list['create'][0] == 'geocoder.geocoder_provider.googlemaps'))) {
         $this->updateEnvService->updateApiKey('geocoder.geocoder_provider.googlemaps', 'apiKey', 'GOOGLE_MAP_API_SERVER_KEY');
       }
     }

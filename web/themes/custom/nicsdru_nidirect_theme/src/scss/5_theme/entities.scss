@@ -104,7 +104,7 @@
 
 .webform-submission-prison-visit-online-booking-form {
 
-  [data-drupal-selector='edit-slots']:has([type='checkbox'].error) [type='checkbox'] ~ label {
+  [data-drupal-selector='edit-slots']:has([type='checkbox'].error) [type='checkbox']:not(:checked) ~ label {
     box-shadow: inset 0 0 0 1px $error;
     outline-color: $error;
     background-color: $error-bg;
@@ -206,19 +206,23 @@
   .visitor-badge {
     position: absolute;
     right: 0;
-    transform: translateY(2em);
+    transform: translateY(2.5em);
     display: inline-block;
     background-color: $prussian-blue;
     color: white;
-    font-size: 1em;
-    padding: 0 .5em;
+    font-size: 1.6rem;
+    padding: 0 1em;
     margin: .5em;
     border-radius: 1em;
-    line-height: 1.5em;
+    line-height: 2em;
     font-weight: normal;
 
     &--child {
       background-color: $blue-violet;
+    }
+
+    @include breakpoint($tab) {
+      transform: translateY(3em);
     }
   }
 

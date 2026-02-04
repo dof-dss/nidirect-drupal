@@ -55,6 +55,27 @@ section.webform-section {
     margin: 2em 0;
   }
 
+  &.form-item--card {
+    padding: 0;
+    background-color: #fff;
+    max-width: 100%;
+
+    &.compact {
+      max-width: 30em;
+    }
+
+
+    .fieldset__wrapper,
+    .fieldset-wrapper {
+      padding: 1em;
+      background-color: $grey-lightest;
+
+      > *:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+
   legend {
     @include responsive-typo-map($form-legend);
     color: $peacock-blue;
@@ -79,8 +100,11 @@ section.webform-section {
       font-weight: bold;
       color: $text;
     }
-
   }
+}
+
+.form-wrapper {
+  margin: 0 0 1.5em;
 }
 
 .form-actions {
@@ -102,13 +126,13 @@ section.webform-section {
   }
 }
 
-.form-wrapper {
-  margin: 0 0 1.5em;
-}
-
 .form-item:not(.form-wrapper) {
   padding: 0;
   margin: 0 0 1em;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
 }
 
 .form-item {
@@ -116,10 +140,6 @@ section.webform-section {
 
   .container-inline {
     margin: 0;
-  }
-
-  &:last-child {
-    margin-bottom: 0;
   }
 
   &.form-type-checkbox,
@@ -471,6 +491,7 @@ textarea,
     display: inline-block;
     width: auto;
     padding: 0;
+    max-width: 100%;
 
     .form-item--error-message {
       @extend %error-bubble--floating-below;
@@ -639,12 +660,14 @@ input[type='checkbox'],
     color: color(text);
   }
 
-  @at-root .form-checkboxes:has(.error) [type='checkbox'] ~ label {
+  // sass-lint:disable space-after-colon
+  @at-root .form-checkboxes:has(.error) [type='checkbox']:not(:checked) ~ label {
     box-shadow: inset 0 0 0 1px $error;
     outline-color: $error;
     background-color: $error-bg;
     color: color(text);
   }
+  // sass-lint:enable space-after-colon
 
   &:checked ~ label {
     background-color: $brand-primary-lightest;
