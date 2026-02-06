@@ -3,11 +3,67 @@
 namespace Drupal\nidirect_prisons\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
+use Drupal\Core\Database\Connection;
 use Drupal\nidirect_prisons\Enum\PaymentStatus;
+use Drupal\nidirect_prisons\Service\PrisonerPaymentManager;
+use Psr\Log\LoggerInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class WorldpayNotificationController extends ControllerBase {
+
+  /**
+   * The database connection.
+   *
+   * @var \Drupal\Core\Database\Connection
+   */
+  protected Connection $database;
+
+  /**
+   * @var \Drupal\nidirect_prisons\Service\PrisonerPaymentManager
+   *  The Prisoner Payment Manager service.
+   */
+  protected PrisonerPaymentManager $paymentManager;
+
+  /**
+   * @var \Psr\Log\LoggerInterface
+   *   The logging service.
+   */
+  protected LoggerInterface $logger;
+
+  /**
+   * @param \Drupal\Core\Database\Connection $database
+   *   The DB connection.
+   * @param \Drupal\nidirect_prisons\Service\PrisonerPaymentManager $payment_manager
+   *   The Payment Manager Service.
+   * @param \Psr\Log\LoggerInterface $logger
+   *   The Logger service.
+   */
+  public function __construct(
+    Connection $database,
+    PrisonerPaymentManager $payment_manager,
+    LoggerInterface $logger
+  ) {
+    $this->database = $database;
+    $this->paymentManager = $payment_manager;
+    $this->logger = $logger;
+  }
+
+  /**
+   * {@inheritdoc}
+   *
+   * @param \Symfony\Component\DependencyInjection\ContainerInterface $container
+   *   The service container.
+   * @return static
+   */
+  public static function create(ContainerInterface $container) {
+    return new static(
+      $container->get('database'),
+      $container->get('nidirect_prisons.prisoner_payment_manager'),
+      $container->get('logger.channel.nidirect_prisons')
+    );
+  }
 
   /**
    * Handle notifications from Worldpay to track if a payment has
@@ -21,13 +77,14 @@ class WorldpayNotificationController extends ControllerBase {
    */
   public function handleNotification(Request $request) {
 
-    /* When a payment request is initialised, the payment transaction is
+    /*
+     * When a payment request is initialised, the payment transaction is
      * recorded as 'pending' in the prisoner_payment_transactions table.
      * When the hosted payment page is submitted, Worldpay sends
      * notifications on the status of the payment.
      *
-     * If the payment is AUTHORISED, the payment transaction is
-     * updated to 'success' in the prisoner_payment_transactions table
+     * If the payment is AUTHORISED, the payment transaction updates to
+     * 'success' in the prisoner_payment_transactions table
      * and in practice this means that the payment has been
      * successfully approved by the card issuer or bank, but the funds
      * have not yet been captured or settled (debited from visitor's
@@ -41,7 +98,7 @@ class WorldpayNotificationController extends ControllerBase {
     // Reverse DNS lookup.
     $hostname = gethostbyaddr($ip);
     if (!$hostname || !str_ends_with($hostname, '.worldpay.com')) {
-      \Drupal::logger('nidirect_prisons')->warning('Unrecognized hostname: @hostname from IP @ip', [
+      $this->logger->warning('Unrecognized hostname: @hostname from IP @ip', [
         '@hostname' => $hostname,
         '@ip' => $ip,
       ]);
@@ -51,7 +108,7 @@ class WorldpayNotificationController extends ControllerBase {
     // Forward DNS lookup.
     $resolved_ips = gethostbynamel($hostname);
     if (!$resolved_ips || !in_array($ip, $resolved_ips, TRUE)) {
-      \Drupal::logger('nidirect_prisons')->warning('DNS verification failed for IP @ip with hostname @hostname.', [
+      $this->logger->warning('DNS verification failed for IP @ip with hostname @hostname.', [
         '@ip' => $ip,
         '@hostname' => $hostname,
         '@resolved_ips' => implode(', ', $resolved_ips),
@@ -67,18 +124,18 @@ class WorldpayNotificationController extends ControllerBase {
     // days) if the response is anything other than a 200 OK.
 
     if (empty($xml_data)) {
-      \Drupal::logger('nidirect_prisons')->error('Empty Worldpay notification received.');
+      $this->logger->error('Empty Worldpay notification received.');
       return new Response('Bad request', 400);
     }
 
     $xml = simplexml_load_string($xml_data);
     if (!$xml) {
-      \Drupal::logger('nidirect_prisons')->error('Invalid XML received in Worldpay notification.');
+      $this->logger->error('Invalid XML received in Worldpay notification.');
       return new Response('Bad request', 400);
     }
 
     if (!isset($xml->notify)) {
-      \Drupal::logger('worldpay')->error('Missing <notify> element in XML.');
+      $this->logger->error('Missing <notify> element in XML.');
       return new Response('Bad request', 400);
     }
 
@@ -88,42 +145,35 @@ class WorldpayNotificationController extends ControllerBase {
     $pence = (int) $xml->notify->orderStatusEvent->payment->amount['value'];
     $amount = round($pence / 100, 2);
 
-    \Drupal::logger('worldpay')->notice('Worldpay order notification for @order_key £@amount @payment_status', [
-      '@order_key' => $order_code,
-      '@amount' => number_format($amount, 2, '.', ''),
-      '@payment_status' => $payment_status,
-    ]);
-
-    // Check transaction for order_key exists. It must have a pending or
-    // failed status. We do not change the status of transactions that
-    // are marked as success.
-    $db = \Drupal::database();
-    $payment_transaction = $db->select('prisoner_payment_transactions', 'ppt')
-      ->fields('ppt', [
-        'order_key',
-        'prisoner_id',
-        'visitor_id',
-        'amount',
-        'status'
-      ])
-      ->condition('order_key', $order_code)
-      ->condition('status', ['pending', 'failed'], 'IN')
-      ->execute()
-      ->fetchAssoc();
-
-    // If no transaction exists, log it.
-    if (!$payment_transaction) {
-      \Drupal::logger('nidirect_prisons')->notice("No pending prisoner payment transaction found for order key: {$order_code}");
+    // Early return if the status is not one we are expecting.
+    if (!PaymentStatus::isAllowed($payment_status)) {
+      $this->logger->warning('Unexpected Worldpay order notification status: @status. Have Merchant Channel HTTP Events been changed in the MAI?', [
+        '@status' => $payment_status,
+      ]);
 
       // No further processing do be done. Acknowledge the notification.
       return new Response('OK', 200);
     }
 
-    // Log a warning if the status is not one we are expecting.
-    if (!PaymentStatus::isAllowed($payment_status)) {
-      \Drupal::logger('nidirect_prisons')->warning('Unexpected Worldpay order notification status: @status. Have Merchant Channel HTTP Events been changed in the MAI?', [
-        '@status' => $payment_status,
-      ]);
+    $this->logger->notice('Worldpay order notification for @order_key £@amount @payment_status', [
+      '@order_key' => $order_code,
+      '@amount' => number_format($amount, 2, '.', ''),
+      '@payment_status' => $payment_status,
+    ]);
+
+    // Check transaction for order_key exists.
+    $payment_transaction = $this->paymentManager->getTransaction($order_code);
+
+    // Early return if transaction does not exist.
+    if (!$payment_transaction) {
+      $this->logger->notice("No prisoner payment transaction found for Worldpay notification: {$order_code}");
+
+      // No further processing do be done. Acknowledge the notification.
+      return new Response('OK', 200);
+    }
+
+    // Early return if transaction already marked 'success'.
+    if ($payment_transaction->status === 'success') {
 
       // No further processing do be done. Acknowledge the notification.
       return new Response('OK', 200);
@@ -135,36 +185,77 @@ class WorldpayNotificationController extends ControllerBase {
     // is 'failed'.
     if ($payment_status === 'AUTHORISED') {
 
-      // Deduct from prisoner's balance.
-      $db_transaction = $db->startTransaction();
+      // Detect late authorisation (expired locally but authorised
+      // by Worldpay).
+      $is_late_authorisation = ($payment_transaction->status === 'expired');
+
+      if ($is_late_authorisation) {
+        $this->logger->warning(
+          'Late Worldpay AUTHORISED received for expired transaction @order',
+          ['@order' => $order_code]
+        );
+      }
+
+      // Validate amount integrity (non-negotiable).
+      if ((float) $payment_transaction->amount !== (float) $amount) {
+        $this->logger->error(
+          'Amount mismatch for Worldpay AUTHORISED order @order. Expected £@expected, got £@actual',
+          [
+            '@order' => $order_code,
+            '@expected' => number_format($payment_transaction->amount, 2, '.', ''),
+            '@actual' => number_format($amount, 2, '.', ''),
+          ]
+        );
+
+        // Mark as failed.
+        $this->paymentManager->updateTransactionStatus($order_code, 'failed');
+
+        return new Response('OK', 200);
+      }
+
+      // Process the authorised payment atomically.
+      $db_transaction = $this->database->startTransaction();
 
       try {
-        $db->update('prisoner_payment_amount')
+        // Deduct from prisoner's balance.
+        $this->database->update('prisoner_payment_amount')
           ->expression('amount', 'GREATEST(amount - :paid_amount, 0)', [':paid_amount' => $amount])
-          ->condition('prisoner_id', $payment_transaction['prisoner_id'])
+          ->condition('prisoner_id', $payment_transaction->prisoner_id)
           ->execute();
 
         // Get sequence id for this payment.
         $sequence_id = $this->getNextSequenceId();
 
-        // Send payment details to Prism.
-        $this->sendJsonToPrism($order_code, $payment_transaction['prisoner_id'], $payment_transaction['visitor_id'], $amount, $sequence_id);
+        // Notify PRISM.
+        $this->sendJsonToPrism(
+          $order_code,
+          $payment_transaction->prisoner_id,
+          $payment_transaction->visitor_id,
+          $amount,
+          $sequence_id
+        );
 
-        // Change prisoner payment transaction status from 'pending' to
-        // 'success'.
-        $db->update('prisoner_payment_transactions')
-          ->fields(['status' => 'success'])
+        // Mark transaction as successful.
+        $this->database->update('prisoner_payment_transactions')
+          ->fields([
+            'status' => 'success',
+            'updated_timestamp' => \Drupal::time()->getRequestTime(),
+          ])
           ->condition('order_key', $order_code)
           ->execute();
       }
-      catch (\Exception $e) {
+      catch (\Throwable $e) {
         $db_transaction->rollBack();
-        \Drupal::logger('nidirect_prisons')->error('Authorised payment update failed for prisoner_id @prisoner_id for order_code @order_code for amount £@amount: @message', [
-          '@amount' => $amount,
-          '@prisoner_id' => $payment_transaction['prisoner_id'],
-          '@order_code' => $order_code,
-          '@message' => $e->getMessage()
-        ]);
+
+        $this->logger->error(
+          'Failed processing AUTHORISED Worldpay payment for order @order: @message',
+          [
+            '@order' => $order_code,
+            '@message' => $e->getMessage(),
+          ]
+        );
+
+        // Important: do NOT return non-200 here, or Worldpay will retry.
       }
       finally {
         unset($db_transaction);
@@ -172,10 +263,7 @@ class WorldpayNotificationController extends ControllerBase {
     }
     else {
       // Prisoner payment transaction failed.
-      $db->update('prisoner_payment_transactions')
-        ->fields(['status' => 'failed'])
-        ->condition('order_key', $order_code)
-        ->execute();
+      $this->paymentManager->updateTransactionStatus($order_code, 'failed');
     }
 
     // Acknowledge the notification.
@@ -219,11 +307,11 @@ class WorldpayNotificationController extends ControllerBase {
         ['subject' => 'PAYIN', 'body' => [$json_data]]
       );
 
-      \Drupal::logger('nidirect_prisons')->notice("Sent prisoner payment data for order {$order_code} to Prism.");
+      $this->logger->notice("Sent prisoner payment data for order {$order_code} to Prism.");
     }
     catch (\Exception $e) {
       // If email fails, log the error and throw.
-      \Drupal::logger('nidirect_prisons')->error('Failed to send email for order @order_code: @error', [
+      $this->logger->error('Failed to send email for order @order_code: @error', [
         '@order_code' => $order_code,
         '@error' => $e->getMessage(),
       ]);
@@ -239,8 +327,7 @@ class WorldpayNotificationController extends ControllerBase {
    * @throws \Exception
    */
   protected function getNextSequenceId() {
-    $database = \Drupal::database();
-    $query = $database->insert('prisoner_payment_sequence')->fields(['id' => NULL]);
+    $query = $this->database->insert('prisoner_payment_sequence')->fields(['id' => NULL]);
 
     return $query->execute();
   }

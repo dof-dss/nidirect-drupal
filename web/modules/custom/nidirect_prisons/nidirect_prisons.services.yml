@@ -3,3 +3,13 @@ services:
     class: Drupal\nidirect_prisons\Authentication\Provider\TokenAndIpAddressAuth
     tags:
       - { name: authentication_provider, provider_id: 'nidirect_prisons_token_ip_auth', priority: 10 }
+  nidirect_prisons.prisoner_payment_manager:
+    class: Drupal\nidirect_prisons\Service\PrisonerPaymentManager
+    arguments:
+      - '@database'
+      - '@logger.channel.nidirect_prisons'
+      - '@datetime.time'
+      - '@transliteration'
+  logger.channel.nidirect_prisons:
+    parent: logger.channel_base
+    arguments: [ 'nidirect_prisons' ]
