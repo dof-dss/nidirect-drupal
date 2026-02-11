@@ -15,19 +15,25 @@
           target: 'worldpay-html',
           accessibility: true,
           disableScrolling: true,
-          debug: true,
+          debug: false,
           language: 'en',
           country: 'gb',
           resultCallback: Drupal.behaviors.prisonerPaymentsWorldpay.handleResult,
         };
 
-        const libraryObject = new WPCL.Library();
-        libraryObject.setup(options);
+        Drupal.worldpayLibrary = new WPCL.Library();
+        Drupal.worldpayLibrary.setup(options);
       });
 
     },
     handleResult: function(responseData) {
       const iframeContainer = document.getElementById('worldpay-html');
+
+      if (!iframeContainer) {
+        console.warn('Worldpay callback received after session expiry.');
+        return;
+      }
+
       const overlay = document.createElement('div');
       overlay.className = 'payment-processing-overlay';
       overlay.ariaLive = 'assertive';
