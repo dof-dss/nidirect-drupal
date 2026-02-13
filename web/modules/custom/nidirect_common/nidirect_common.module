@@ -715,7 +715,7 @@ function nidirect_common_preprocess_node(array &$variables) {
     }
   }
 
-  // PRONI MIGRATION
+  // PRONI MIGRATION.
   $config = \Drupal::config('nidirect_common.proni_settings');
 
   // Check UI Toggle OR Environment Variable.
@@ -895,13 +895,13 @@ function nidirect_common_block_access(Block $block, $operation, AccountInterface
 
       // Check if we are on a Node page.
       $node = \Drupal::routeMatch()->getParameter('node');
-      if ($node instanceof \Drupal\node\NodeInterface && _nidirect_common_is_proni_content($node)) {
+      if ($node instanceof NodeInterface && _nidirect_common_is_proni_content($node)) {
         return AccessResult::forbidden()->addCacheableDependency($block);
       }
 
       // Check if we are on a Taxonomy Term page.
       $term = \Drupal::routeMatch()->getParameter('taxonomy_term');
-      if ($term instanceof \Drupal\taxonomy\TermInterface && _nidirect_common_is_proni_term($term)) {
+      if ($term instanceof TermInterface && _nidirect_common_is_proni_term($term)) {
         return AccessResult::forbidden()->addCacheableDependency($block);
       }
     }
@@ -952,7 +952,7 @@ function _nidirect_common_is_proni_content(NodeInterface $node) {
 /**
  * Helper to check if a term is PRONI (362) or one of its descendants.
  */
-function _nidirect_common_is_proni_term(\Drupal\taxonomy\TermInterface $term) {
+function _nidirect_common_is_proni_term($term) {
   $target_parent_tid = 362;
 
   // If it's the parent itself, return TRUE.
