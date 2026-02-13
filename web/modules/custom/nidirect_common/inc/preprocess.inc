@@ -130,7 +130,7 @@ function nidirect_common_preprocess_taxonomy_term(array &$variables) {
 
   $variables['information_services_output'] = $content;
 
-  // PRONI MIGRATION
+  // PRONI MIGRATION.
   $config = \Drupal::config('nidirect_common.proni_settings');
 
   // 1. Check if the feature is enabled.
