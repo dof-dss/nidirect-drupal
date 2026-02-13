@@ -170,6 +170,9 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
       // The prisoner_id to be paid.
       $prisoner_id = $form_state->getValue('prisoner_id');
 
+      // The prison_id that will receive the payment.
+      $prison_id = $this->paymentManager->getPrisonId($prisoner_id);
+
       // The visitor_id making the payment.
       $visitor_id = $form_state->getValue('visitor_id');
 
@@ -194,61 +197,56 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
         return;
       }
 
-      // Stop progress if there is an unexpired pending transaction
-      // from another visitor.
+      // Handle existing pending transactions for the prisoner.
       $pending_transaction = $this->paymentManager->getPendingTransactionForPrisoner($prisoner_id);
 
-      if ($pending_transaction) {
+      if ($pending_transaction && !$this->paymentManager->expireIfTimedOut($pending_transaction)) {
 
-        // Expire if needed.
-        if ($pending_transaction->status !== 'pending') {
-          $pending_transaction = NULL;
-        }
-        // Still active and owned by someone else, halt progress.
-        elseif ($pending_transaction->visitor_id !== $visitor_id) {
+        // Stop progress if pending transaction is from another visitor.
+        if ($pending_transaction->visitor_id !== $visitor_id ) {
           $elements['msg_payment_pending']['#access'] = TRUE;
           $elements['prisoner_payment_amount']['#access'] = FALSE;
           $elements['wizard_next']['#access'] = FALSE;
           return;
         }
-      }
-
-      $prison_id = $this->paymentManager->getPrisonId($prisoner_id);
-
-      // Check for existing pending transaction from the current
-      // visitor. Since we are on page_payment_amount, the visitor can
-      // change the amount. Worldpay does not allow the amount in
-      // existing orders to be changed.  So cancel the order and expire
-      // the transaction before creating a new one.
-      if ($pending_transaction && $pending_transaction->visitor_id === $visitor_id) {
-
-        $old_order_code = $pending_transaction->order_key;
-        $now = $this->time->getRequestTime();
-
-        // Preserve original created time ONLY if still within
-        // hard timeout. This prevents resurrecting a transaction that
-        // is already hard-expired (e.g. if cron has not run).
-        if (($now - $pending_transaction->created_timestamp) < $this->paymentManager::HARD_TIMEOUT) {
-          $created_timestamp = $pending_transaction->created_timestamp;
-        }
+        // Else recreate pending transaction with a new order code
+        // just in case the visitor decides to change the amount to pay
+        // (which means the existing Worldpay order is no longer valid).
         else {
-          // Hard timeout exceeded — start a fresh attempt.
-          $created_timestamp = $now;
-        }
 
-        // Expire the pending transaction.
-        $this->paymentManager->updateTransactionStatus(
-          $old_order_code,
-          'expired'
-        );
+          $old_order_code = $pending_transaction->order_key;
+          $now = $this->time->getRequestTime();
+
+          // The new order should use the created time of the old order
+          // if still within timeout limits. This prevents resurrecting
+          // a transaction that is already hard-expired (e.g. if cron
+          // has not run).
+          if (($now - $pending_transaction->created_timestamp) < $this->paymentManager::HARD_TIMEOUT) {
+            $created_timestamp = $pending_transaction->created_timestamp;
+          }
+          else {
+            // Hard timeout exceeded — start a fresh attempt.
+            $created_timestamp = $now;
+          }
+
+          // Cancel the old pending transaction. Note we do not cancel
+          // the Worldpay order that was generated. Worldpay will expire
+          // and cancel that itself.
+          $this->paymentManager->updateTransactionStatus(
+            $old_order_code,
+            'cancelled'
+          );
+        }
       }
 
+      // Generate a new order code.
       $order_code = $this->paymentManager->generateOrderCode(
         $prison_id,
         $prisoner_id,
         $visitor_id
       );
 
+      // Generate a new pending transaction.
       $new_transaction = $this->paymentManager->logPendingTransaction(
         $order_code,
         $prisoner_id,
@@ -534,7 +532,7 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
     $prison_id = $form_state->get('prison_id');
 
     if ($order_code && $prison_id) {
-      $handler->cancelTransaction($order_code, $prison_id);
+      $handler->cancelTransaction($order_code);
     }
 
     // Clear wizard state.
@@ -550,7 +548,7 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
   /**
    * Cancels a pending transaction and cleans up external state.
    */
-  protected function cancelTransaction(string $order_code, string $prison_id): void {
+  protected function cancelTransaction(string $order_code): void {
 
     $transaction = $this->paymentManager->getTransaction($order_code);
 
