@@ -7,14 +7,29 @@ use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
 
 class ProniMigrationSettingsForm extends ConfigFormBase {
+
+  /**
+   * Drupal\Core\Http\ClientFactory definition.
+   *
+   * @return string[]
+   */
   protected function getEditableConfigNames() {
     return ['nidirect_common.proni_settings'];
   }
 
+  /**
+   * @return string
+   */
   public function getFormId() {
     return 'nidirect_common_proni_settings';
   }
 
+  /**
+   * @param array $form
+   * @param \Drupal\Core\Form\FormStateInterface $form_state
+   *
+   * @return array
+   */
   public function buildForm(array $form, FormStateInterface $form_state) {
     $config = $this->config('nidirect_common.proni_settings');
     $proni_message = $this->t('<div class="info-notice">
@@ -39,6 +54,12 @@ class ProniMigrationSettingsForm extends ConfigFormBase {
     return parent::buildForm($form, $form_state);
   }
 
+  /**
+   * @param array $form
+   * @param \Drupal\Core\Form\FormStateInterface $form_state
+   *
+   * @return void
+   */
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $this->config('nidirect_common.proni_settings')
       ->set('enabled', $form_state->getValue('enabled'))
@@ -59,4 +80,5 @@ class ProniMigrationSettingsForm extends ConfigFormBase {
 
     parent::submitForm($form, $form_state);
   }
+
 }
