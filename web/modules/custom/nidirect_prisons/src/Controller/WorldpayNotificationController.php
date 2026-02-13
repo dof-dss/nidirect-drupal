@@ -152,7 +152,7 @@ class WorldpayNotificationController extends ControllerBase {
       ]);
 
       // No further processing do be done. Acknowledge the notification.
-      return new Response('OK', 200);
+      return new Response('[OK]', 200, ['Content-Type' => 'text/plain']);
     }
 
     $this->logger->notice('Worldpay order notification for @order_key £@amount @payment_status', [
@@ -169,14 +169,14 @@ class WorldpayNotificationController extends ControllerBase {
       $this->logger->notice("No prisoner payment transaction found for Worldpay notification: {$order_code}");
 
       // No further processing do be done. Acknowledge the notification.
-      return new Response('OK', 200);
+      return new Response('[OK]', 200, ['Content-Type' => 'text/plain']);
     }
 
     // Early return if transaction already marked 'success'.
     if ($payment_transaction->status === 'success') {
 
       // No further processing do be done. Acknowledge the notification.
-      return new Response('OK', 200);
+      return new Response('[OK]', 200, ['Content-Type' => 'text/plain']);
     }
 
     // If payment was AUTHORISED, update prisoner balance and send
@@ -210,7 +210,7 @@ class WorldpayNotificationController extends ControllerBase {
         // Mark as failed.
         $this->paymentManager->updateTransactionStatus($order_code, 'failed');
 
-        return new Response('OK', 200);
+        return new Response('[OK]', 200, ['Content-Type' => 'text/plain']);
       }
 
       // Process the authorised payment atomically.
@@ -267,7 +267,7 @@ class WorldpayNotificationController extends ControllerBase {
     }
 
     // Acknowledge the notification.
-    return new Response('OK', 200);
+    return new Response('[OK]', 200, ['Content-Type' => 'text/plain']);
   }
 
   /**
