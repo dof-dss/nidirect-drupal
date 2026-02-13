@@ -5,3 +5,11 @@ nidirect.admin_config:
     _title: 'NIDirect'
   requirements:
     _permission: 'access administration pages'
+
+nidirect_common.proni_settings:
+  path: '/admin/config/nidirect/proni-migration'
+  defaults:
+    _form: '\Drupal\nidirect_common\Form\ProniMigrationSettingsForm'
+    _title: 'PRONI Migration Settings'
+  requirements:
+    _permission: 'administer site configuration'

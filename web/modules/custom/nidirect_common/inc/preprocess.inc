@@ -129,6 +129,43 @@ function nidirect_common_preprocess_taxonomy_term(array &$variables) {
     ->asRenderArray();
 
   $variables['information_services_output'] = $content;
+
+  // PRONI MIGRATION
+  $config = \Drupal::config('nidirect_common.proni_settings');
+
+  // 1. Check if the feature is enabled.
+  $is_enabled = $config->get('enabled') || (getenv('PRONI_CONTENT_REDIRECT') === 'enabled');
+
+  // Add cache context and tags.
+  $variables['#cache']['contexts'][] = 'user.roles:anonymous';
+  $variables['#cache']['tags'][] = 'config:nidirect_common.proni_settings';
+
+  if ($is_enabled && \Drupal::currentUser()->isAnonymous()) {
+    $term = $variables['term'];
+
+    // 2. Check if this specific term is PRONI (362) or a child of PRONI.
+    if (_nidirect_common_is_proni_term($term)) {
+      $variables['hide_proni_social_links'] = TRUE;
+
+      // 3. Replace the content/description with the message.
+      $message = $config->get('message_text');
+      $variables['information_services_output'] = [
+        '#type' => 'processed_text',
+        '#text' => $message['value'],
+        '#format' => $message['format'],
+      ];
+
+      // 4. Add Noindex Tag.
+      $noindex = [
+        '#tag' => 'meta',
+        '#attributes' => [
+          'name' => 'robots',
+          'content' => 'noindex, follow',
+        ],
+      ];
+      $variables['#attached']['html_head'][] = [$noindex, 'robots_noindex'];
+    }
+  }
 }
 
 /**
