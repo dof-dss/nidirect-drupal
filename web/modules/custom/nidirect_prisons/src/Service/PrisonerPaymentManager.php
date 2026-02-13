@@ -147,8 +147,8 @@ class PrisonerPaymentManager {
   public function expireIfTimedOut(object $transaction): bool {
     $now = $this->time->getRequestTime();
 
-    $hard_expired = $transaction->created_timestamp < ($now - self::HARD_TIMEOUT);
-    $soft_expired = $transaction->updated_timestamp < ($now - self::SOFT_TIMEOUT);
+    $hard_expired = $now - $transaction->created_timestamp >= self::HARD_TIMEOUT;
+    $soft_expired = $now - $transaction->updated_timestamp >= self::SOFT_TIMEOUT;
 
     if (!$hard_expired && !$soft_expired) {
       return FALSE;
@@ -160,11 +160,6 @@ class PrisonerPaymentManager {
     }
 
     // Mark expired.
-    $this->database->update('prisoner_payment_transactions')
-      ->fields(['status' => 'expired'])
-      ->condition('order_key', $transaction->order_key)
-      ->execute();
-
     $this->updateTransactionStatus($transaction->order_key, 'expired');
 
     return TRUE;
@@ -352,19 +347,32 @@ class PrisonerPaymentManager {
     $now = $this->time->getRequestTime();
     $created_timestamp = $created_timestamp ?? $now;
 
-    $this->database->insert('prisoner_payment_transactions')
-      ->fields([
-        'order_key' => $order_code,
-        'prisoner_id' => $prisoner_id,
-        'visitor_id' => $visitor_id,
-        'amount' => $amount,
-        'status' => 'pending',
-        'created_timestamp' => $created_timestamp,
-        'updated_timestamp' => $now,
-      ])
-      ->execute();
+    try {
+      $this->database->insert('prisoner_payment_transactions')
+        ->fields([
+          'order_key' => $order_code,
+          'prisoner_id' => $prisoner_id,
+          'visitor_id' => $visitor_id,
+          'amount' => $amount,
+          'status' => 'pending',
+          'created_timestamp' => $created_timestamp,
+          'updated_timestamp' => $now,
+        ])
+        ->execute();
+    }
+    catch (\Throwable $e) {
+      $this->logger->critical(
+        'Failed to insert pending transaction for prisoner @pid (order @order). Error: @message',
+        [
+          '@pid' => $prisoner_id,
+          '@order' => $order_code,
+          '@message' => $e->getMessage(),
+        ]
+      );
 
-    // Return transaction object.
+      throw $e; // Re-throw so upstream logic handles it.
+    }
+
     return (object) [
       'order_key' => $order_code,
       'prisoner_id' => $prisoner_id,
@@ -375,6 +383,7 @@ class PrisonerPaymentManager {
       'updated_timestamp' => $now,
     ];
   }
+
 
   /**
    * Method to update a pending transaction amount.
@@ -401,7 +410,9 @@ class PrisonerPaymentManager {
   }
 
   /**
-   * Update the status of a transaction.
+   * Update the status of a transaction. Only 'pending' transactions
+   * or (in exceptional cases) 'expired' transactions should have
+   * their status updated.
    *
    * @param string $order_code
    *   The unique order code identifying the transaction.
@@ -431,6 +442,7 @@ class PrisonerPaymentManager {
       $updated = $this->database->update('prisoner_payment_transactions')
         ->fields(['status' => $status])
         ->condition('order_key', $order_code)
+        ->condition('status', ['pending', 'expired'], 'IN')
         ->execute();
 
       return (bool) $updated;
@@ -461,24 +473,13 @@ class PrisonerPaymentManager {
   public function touchTransaction(string $order_code): bool {
 
     $transaction = $this->getTransaction($order_code);
+    $now = $this->time->getRequestTime();
 
     if (!$transaction || $transaction->status !== 'pending') {
       return FALSE;
     }
 
-    $now = $this->time->getRequestTime();
-
-    // Enforce hard timeout (absolute lifetime).
-    $age = $now - (int) $transaction->created_timestamp;
-    if ($age > self::HARD_TIMEOUT) {
-      $this->updateTransactionStatus($order_code, 'expired');
-      return FALSE;
-    }
-
-    // Enforce soft timeout (inactivity window).
-    $idle = $now - (int) $transaction->updated_timestamp;
-    if ($idle > self::SOFT_TIMEOUT) {
-      $this->updateTransactionStatus($order_code, 'expired');
+    if ($this->expireIfTimedOut($transaction)) {
       return FALSE;
     }
 
