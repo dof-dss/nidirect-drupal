@@ -96,106 +96,6 @@ class PrisonerPaymentManager {
   }
 
   /**
-   * Cancel a Worldpay order.
-   *
-   * IMPORTANT - Only ever cancel pending or expired transactions.
-   * Never cancel authorised or completed payments because PRISM
-   * is notified immediately on authorisation.
-   */
-  public function cancelWorldpayOrder(string $order_code, string $prison_id): void {
-
-    // Load transaction to confirm state.
-    $transaction = $this->getTransaction($order_code);
-
-    // Early return if transaction non-existent.
-    if (!$transaction) {
-      $this->logger->debug('Worldpay cancel skipped: @order could not be found.', ['@order' => $order_code]);
-      return;
-    }
-
-    // Early return if transaction already complete.
-    if ($transaction->status === 'success') {
-      $this->logger->debug('Worldpay cancel skipped: @order already complete (status = success).', ['@order' => $order_code]);
-      return;
-    }
-
-    $merchant_code = getenv('PRISONER_PAYMENTS_WP_MERCHANT_CODE_' . $prison_id) ?: NULL;
-
-    if (!$merchant_code) {
-      $this->logger->error(
-        'Missing merchant code for prison ID: @prison_id',
-        ['@prison_id' => $prison_id]
-      );
-      return;
-    }
-
-    $xml = <<<XML
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE paymentService PUBLIC "-//Worldpay//DTD Worldpay PaymentService v1//EN" "http://dtd.worldpay.com/paymentService_v1.dtd">
-<paymentService merchantCode="{$merchant_code}" version="1.4">
-  <modify>
-    <orderModification orderCode="{$order_code}">
-      <cancel/>
-    </orderModification>
-  </modify>
-</paymentService>
-
-XML;
-
-    try {
-      $response = $this->sendWorldpayRequest($xml, $prison_id);
-
-      if (!$this->isWorldpayCancelSuccessful($response)) {
-        $this->logger->warning(
-          'Worldpay cancel failed for order @order. Response was: @response',
-          [
-            '@order' => $order_code,
-            '@response' => $response->asXML()
-          ]
-        );
-      }
-      else {
-        $this->logger->debug(
-          'Worldpay cancelled @order.',
-          [
-            '@order' => $order_code
-          ]
-        );
-      }
-    }
-    catch (\Throwable $e) {
-      // Never break execution on cleanup.
-      $this->logger->error(
-        'Exception cancelling Worldpay order @order: @message',
-        [
-          '@order' => $order_code,
-          '@message' => $e->getMessage(),
-        ]
-      );
-    }
-  }
-
-  /**
-   * Helper to parse a Worldpay cancel order response.
-   *
-   * @param \SimpleXMLElement $response_xml
-   *   The response xml from Worldpay to parse.
-   * @return bool
-   *   TRUE if Worldpay received cancellation order ok, FALSE otherwise.
-   */
-  protected function isWorldpayCancelSuccessful(\SimpleXMLElement $response_xml): bool {
-    try {
-      return (
-        isset($response_xml->reply->ok->cancelReceived)
-        && isset($response_xml->reply->ok->cancelReceived['orderCode'])
-      );
-    }
-    catch (\Throwable $e) {
-      return FALSE;
-    }
-  }
-
-  /**
    * Get transaction by order key.
    *
    * @param string $order_code
@@ -266,13 +166,6 @@ XML;
       ->execute();
 
     $this->updateTransactionStatus($transaction->order_key, 'expired');
-
-    // Cancel Worldpay.
-    $prison_id = $this->getPrisonId($transaction->prisoner_id);
-
-    if ($prison_id) {
-      $this->cancelWorldpayOrder($transaction->order_key, $prison_id);
-    }
 
     return TRUE;
   }
