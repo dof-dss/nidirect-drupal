@@ -410,7 +410,7 @@ class PrisonerPaymentManager {
   }
 
   /**
-   * Update the status of a transaction. Only 'pending' transactions
+   * Update the status of a transaction. Only 'pending', 'processing'
    * or (in exceptional cases) 'expired' transactions should have
    * their status updated.
    *
@@ -425,7 +425,7 @@ class PrisonerPaymentManager {
    */
   public function updateTransactionStatus(string $order_code, string $status): bool {
 
-    $allowed_statuses = ['pending', 'expired', 'cancelled', 'failed', 'success'];
+    $allowed_statuses = ['pending', 'processing', 'expired', 'cancelled', 'failed', 'success'];
 
     if (!in_array($status, $allowed_statuses, TRUE)) {
       $this->logger->error(
@@ -442,7 +442,7 @@ class PrisonerPaymentManager {
       $updated = $this->database->update('prisoner_payment_transactions')
         ->fields(['status' => $status])
         ->condition('order_key', $order_code)
-        ->condition('status', ['pending', 'expired'], 'IN')
+        ->condition('status', ['pending', 'processing', 'expired'], 'IN')
         ->execute();
 
       return (bool) $updated;
