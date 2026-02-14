@@ -221,7 +221,7 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
           // if still within timeout limits. This prevents resurrecting
           // a transaction that is already hard-expired (e.g. if cron
           // has not run).
-          if (($now - $pending_transaction->created_timestamp) < $this->paymentManager::HARD_TIMEOUT) {
+          if (($now - $pending_transaction->created_timestamp) < $this->paymentManager->hardTimeout) {
             $created_timestamp = $pending_transaction->created_timestamp;
           }
           else {
@@ -259,8 +259,8 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
       // and the start time for the new transaction.
       $form['#attached']['drupalSettings']['prisonerPayments'] = [
         'orderCode' => $order_code,
-        'softTimeout' => $this->paymentManager::SOFT_TIMEOUT,
-        'hardTimeout' => $this->paymentManager::HARD_TIMEOUT,
+        'softTimeout' => $this->paymentManager->softTimeout,
+        'hardTimeout' => $this->paymentManager->hardTimeout,
         'startTime' => (int) $new_transaction->created_timestamp,
       ];
 
@@ -326,8 +326,8 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
       // and the start time for the transaction.
       $form['#attached']['drupalSettings']['prisonerPayments'] = [
         'orderCode' => $order_code,
-        'softTimeout' => $this->paymentManager::SOFT_TIMEOUT,
-        'hardTimeout' => $this->paymentManager::HARD_TIMEOUT,
+        'softTimeout' => $this->paymentManager->softTimeout,
+        'hardTimeout' => $this->paymentManager->hardTimeout,
         'startTime' => (int) $transaction->created_timestamp,
       ];
 
