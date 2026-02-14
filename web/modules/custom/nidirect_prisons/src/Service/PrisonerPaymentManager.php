@@ -38,8 +38,10 @@ class PrisonerPaymentManager {
    */
   protected TransliterationInterface $transliteration;
 
-  public const HARD_TIMEOUT = 1200;
-  public const SOFT_TIMEOUT = 600;
+  public const HARD_TIMEOUT = 120;
+  public const SOFT_TIMEOUT = 60;
+  public int $hardTimeout;
+  public int $softTimeout;
 
   /**
    * @param \Drupal\Core\Database\Connection $database
@@ -61,6 +63,8 @@ class PrisonerPaymentManager {
     $this->logger = $logger;
     $this->time = $time;
     $this->transliteration = $transliteration;
+    $this->hardTimeout = (int) (getenv('PRISONER_PAYMENTS_HARD_TIMEOUT') ?: self::HARD_TIMEOUT);
+    $this->softTimeout = (int) (getenv('PRISONER_PAYMENTS_SOFT_TIMEOUT') ?: self::SOFT_TIMEOUT);
   }
 
   /**
@@ -147,8 +151,8 @@ class PrisonerPaymentManager {
   public function expireIfTimedOut(object $transaction): bool {
     $now = $this->time->getRequestTime();
 
-    $hard_expired = $now - $transaction->created_timestamp >= self::HARD_TIMEOUT;
-    $soft_expired = $now - $transaction->updated_timestamp >= self::SOFT_TIMEOUT;
+    $hard_expired = $now - $transaction->created_timestamp >= $this->hardTimeout;
+    $soft_expired = $now - $transaction->updated_timestamp >= $this->softTimeout;
 
     if (!$hard_expired && !$soft_expired) {
       return FALSE;
