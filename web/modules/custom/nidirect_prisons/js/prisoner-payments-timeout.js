@@ -5,7 +5,8 @@
     expired: false,
     heartbeatTimer: null,
     countdownTimer: null,
-    expireUI: null
+    expireUI: null,
+    sendHeartbeat: null
   };
 
   function stopHeartbeat() {
@@ -86,7 +87,6 @@
 
       state.expireUI = function () {
 
-        // Destroy Worldpay if present
         if (Drupal.worldpayLibrary && typeof Drupal.worldpayLibrary.destroy === 'function') {
           Drupal.worldpayLibrary.destroy();
           Drupal.worldpayLibrary = null;
@@ -117,10 +117,13 @@
         const remaining = hardTimeoutMs - elapsed;
 
         if (remaining <= 0) {
-          // HARD timeout reached — stop local timers
-          // Do NOT expire immediately.
-          // Let server confirm via next heartbeat.
           stopCountdown();
+
+          // Force immediate server expiry check
+          if (typeof state.sendHeartbeat === 'function') {
+            state.sendHeartbeat();
+          }
+
           return;
         }
 
@@ -163,7 +166,8 @@
         ? Math.max(10000, Math.floor(softTimeoutMs / 2))
         : 30000;
 
-      function sendHeartbeat() {
+      state.sendHeartbeat = function () {
+
         if (state.expired) {
           stopHeartbeat();
           return;
@@ -183,13 +187,13 @@
             }
           })
           .catch(() => {
-            // Network failure → stop heartbeats defensively
-            stopHeartbeat();
+            // Ignore transient network failures.
+            // Heartbeat continues on next interval.
           });
-      }
+      };
 
-      sendHeartbeat(); // initial check
-      state.heartbeatTimer = setInterval(sendHeartbeat, heartbeatIntervalMs);
+      state.sendHeartbeat(); // Initial check
+      state.heartbeatTimer = setInterval(state.sendHeartbeat, heartbeatIntervalMs);
     }
   };
 
