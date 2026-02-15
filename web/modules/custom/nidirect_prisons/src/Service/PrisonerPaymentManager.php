@@ -38,9 +38,21 @@ class PrisonerPaymentManager {
    */
   protected TransliterationInterface $transliteration;
 
-  public const HARD_TIMEOUT = 120;
-  public const SOFT_TIMEOUT = 60;
+  public const HARD_TIMEOUT = 1200;
+  public const SOFT_TIMEOUT = 600;
+
+  /**
+   * Hard timeout for making a payment.
+   *
+   * @var int
+   */
   public int $hardTimeout;
+
+  /**
+   * Soft timeout for inactivity making a payment.
+   *
+   * @var int
+   */
   public int $softTimeout;
 
   /**
@@ -374,7 +386,8 @@ class PrisonerPaymentManager {
         ]
       );
 
-      throw $e; // Re-throw so upstream logic handles it.
+      // Re-throw so upstream logic handles it.
+      throw $e;
     }
 
     return (object) [
@@ -387,7 +400,6 @@ class PrisonerPaymentManager {
       'updated_timestamp' => $now,
     ];
   }
-
 
   /**
    * Method to update a pending transaction amount.
@@ -429,7 +441,14 @@ class PrisonerPaymentManager {
    */
   public function updateTransactionStatus(string $order_code, string $status): bool {
 
-    $allowed_statuses = ['pending', 'processing', 'expired', 'cancelled', 'failed', 'success'];
+    $allowed_statuses = [
+      'pending',
+      'processing',
+      'expired',
+      'cancelled',
+      'failed',
+      'success',
+    ];
 
     if (!in_array($status, $allowed_statuses, TRUE)) {
       $this->logger->error(

@@ -203,7 +203,7 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
       if ($pending_transaction && !$this->paymentManager->expireIfTimedOut($pending_transaction)) {
 
         // Stop progress if pending transaction is from another visitor.
-        if ($pending_transaction->visitor_id !== $visitor_id ) {
+        if ($pending_transaction->visitor_id !== $visitor_id) {
           $elements['msg_payment_pending']['#access'] = TRUE;
           $elements['prisoner_payment_amount']['#access'] = FALSE;
           $elements['wizard_next']['#access'] = FALSE;

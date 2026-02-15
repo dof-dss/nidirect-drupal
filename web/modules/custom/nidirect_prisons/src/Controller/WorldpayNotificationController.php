@@ -213,10 +213,11 @@ class WorldpayNotificationController extends ControllerBase {
 
       $sequence_id = NULL;
       $should_send_prism = FALSE;
-
-      $db_transaction = $this->database->startTransaction();
+      $db_transaction = NULL;
 
       try {
+        $db_transaction = $this->database->startTransaction();
+
         // Attempt atomic status transition first.
         $updated = $this->database->update('prisoner_payment_transactions')
           ->fields([
@@ -229,7 +230,6 @@ class WorldpayNotificationController extends ControllerBase {
 
         if ($updated === 0) {
           // Another process already handled it.
-          unset($db_transaction);
           return new Response('[OK]', 200, ['Content-Type' => 'text/plain']);
         }
 
@@ -248,7 +248,10 @@ class WorldpayNotificationController extends ControllerBase {
 
       }
       catch (\Throwable $e) {
-        $db_transaction->rollBack();
+
+        if ($db_transaction !== NULL) {
+          $db_transaction->rollBack();
+        }
 
         $this->logger->error(
           'Failed processing AUTHORISED Worldpay payment for order @order: @message',
@@ -290,7 +293,6 @@ class WorldpayNotificationController extends ControllerBase {
       // Payment failed.
       $this->paymentManager->updateTransactionStatus($order_code, 'failed');
     }
-
 
     // Acknowledge the notification.
     return new Response('[OK]', 200, ['Content-Type' => 'text/plain']);
