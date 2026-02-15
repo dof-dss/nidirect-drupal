@@ -42,6 +42,20 @@ class PrisonerPaymentManager {
   public const SOFT_TIMEOUT = 600;
 
   /**
+   * Hard timeout for making a payment.
+   *
+   * @var int
+   */
+  public int $hardTimeout;
+
+  /**
+   * Soft timeout for inactivity making a payment.
+   *
+   * @var int
+   */
+  public int $softTimeout;
+
+  /**
    * @param \Drupal\Core\Database\Connection $database
    *   The DB connection.
    * @param \Psr\Log\LoggerInterface $logger
@@ -61,6 +75,8 @@ class PrisonerPaymentManager {
     $this->logger = $logger;
     $this->time = $time;
     $this->transliteration = $transliteration;
+    $this->hardTimeout = (int) (getenv('PRISONER_PAYMENTS_HARD_TIMEOUT') ?: self::HARD_TIMEOUT);
+    $this->softTimeout = (int) (getenv('PRISONER_PAYMENTS_SOFT_TIMEOUT') ?: self::SOFT_TIMEOUT);
   }
 
   /**
@@ -92,106 +108,6 @@ class PrisonerPaymentManager {
         ]
       );
       return NULL;
-    }
-  }
-
-  /**
-   * Cancel a Worldpay order.
-   *
-   * IMPORTANT - Only ever cancel pending or expired transactions.
-   * Never cancel authorised or completed payments because PRISM
-   * is notified immediately on authorisation.
-   */
-  public function cancelWorldpayOrder(string $order_code, string $prison_id): void {
-
-    // Load transaction to confirm state.
-    $transaction = $this->getTransaction($order_code);
-
-    // Early return if transaction non-existent.
-    if (!$transaction) {
-      $this->logger->debug('Worldpay cancel skipped: @order could not be found.', ['@order' => $order_code]);
-      return;
-    }
-
-    // Early return if transaction already complete.
-    if ($transaction->status === 'success') {
-      $this->logger->debug('Worldpay cancel skipped: @order already complete (status = success).', ['@order' => $order_code]);
-      return;
-    }
-
-    $merchant_code = getenv('PRISONER_PAYMENTS_WP_MERCHANT_CODE_' . $prison_id) ?: NULL;
-
-    if (!$merchant_code) {
-      $this->logger->error(
-        'Missing merchant code for prison ID: @prison_id',
-        ['@prison_id' => $prison_id]
-      );
-      return;
-    }
-
-    $xml = <<<XML
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE paymentService PUBLIC "-//Worldpay//DTD Worldpay PaymentService v1//EN" "http://dtd.worldpay.com/paymentService_v1.dtd">
-<paymentService merchantCode="{$merchant_code}" version="1.4">
-  <modify>
-    <orderModification orderCode="{$order_code}">
-      <cancel/>
-    </orderModification>
-  </modify>
-</paymentService>
-
-XML;
-
-    try {
-      $response = $this->sendWorldpayRequest($xml, $prison_id);
-
-      if (!$this->isWorldpayCancelSuccessful($response)) {
-        $this->logger->warning(
-          'Worldpay cancel failed for order @order. Response was: @response',
-          [
-            '@order' => $order_code,
-            '@response' => $response->asXML()
-          ]
-        );
-      }
-      else {
-        $this->logger->debug(
-          'Worldpay cancelled @order.',
-          [
-            '@order' => $order_code
-          ]
-        );
-      }
-    }
-    catch (\Throwable $e) {
-      // Never break execution on cleanup.
-      $this->logger->error(
-        'Exception cancelling Worldpay order @order: @message',
-        [
-          '@order' => $order_code,
-          '@message' => $e->getMessage(),
-        ]
-      );
-    }
-  }
-
-  /**
-   * Helper to parse a Worldpay cancel order response.
-   *
-   * @param \SimpleXMLElement $response_xml
-   *   The response xml from Worldpay to parse.
-   * @return bool
-   *   TRUE if Worldpay received cancellation order ok, FALSE otherwise.
-   */
-  protected function isWorldpayCancelSuccessful(\SimpleXMLElement $response_xml): bool {
-    try {
-      return (
-        isset($response_xml->reply->ok->cancelReceived)
-        && isset($response_xml->reply->ok->cancelReceived['orderCode'])
-      );
-    }
-    catch (\Throwable $e) {
-      return FALSE;
     }
   }
 
@@ -247,8 +163,8 @@ XML;
   public function expireIfTimedOut(object $transaction): bool {
     $now = $this->time->getRequestTime();
 
-    $hard_expired = $transaction->created_timestamp < ($now - self::HARD_TIMEOUT);
-    $soft_expired = $transaction->updated_timestamp < ($now - self::SOFT_TIMEOUT);
+    $hard_expired = $now - $transaction->created_timestamp >= $this->hardTimeout;
+    $soft_expired = $now - $transaction->updated_timestamp >= $this->softTimeout;
 
     if (!$hard_expired && !$soft_expired) {
       return FALSE;
@@ -260,19 +176,7 @@ XML;
     }
 
     // Mark expired.
-    $this->database->update('prisoner_payment_transactions')
-      ->fields(['status' => 'expired'])
-      ->condition('order_key', $transaction->order_key)
-      ->execute();
-
     $this->updateTransactionStatus($transaction->order_key, 'expired');
-
-    // Cancel Worldpay.
-    $prison_id = $this->getPrisonId($transaction->prisoner_id);
-
-    if ($prison_id) {
-      $this->cancelWorldpayOrder($transaction->order_key, $prison_id);
-    }
 
     return TRUE;
   }
@@ -459,19 +363,33 @@ XML;
     $now = $this->time->getRequestTime();
     $created_timestamp = $created_timestamp ?? $now;
 
-    $this->database->insert('prisoner_payment_transactions')
-      ->fields([
-        'order_key' => $order_code,
-        'prisoner_id' => $prisoner_id,
-        'visitor_id' => $visitor_id,
-        'amount' => $amount,
-        'status' => 'pending',
-        'created_timestamp' => $created_timestamp,
-        'updated_timestamp' => $now,
-      ])
-      ->execute();
+    try {
+      $this->database->insert('prisoner_payment_transactions')
+        ->fields([
+          'order_key' => $order_code,
+          'prisoner_id' => $prisoner_id,
+          'visitor_id' => $visitor_id,
+          'amount' => $amount,
+          'status' => 'pending',
+          'created_timestamp' => $created_timestamp,
+          'updated_timestamp' => $now,
+        ])
+        ->execute();
+    }
+    catch (\Throwable $e) {
+      $this->logger->critical(
+        'Failed to insert pending transaction for prisoner @pid (order @order). Error: @message',
+        [
+          '@pid' => $prisoner_id,
+          '@order' => $order_code,
+          '@message' => $e->getMessage(),
+        ]
+      );
 
-    // Return transaction object.
+      // Re-throw so upstream logic handles it.
+      throw $e;
+    }
+
     return (object) [
       'order_key' => $order_code,
       'prisoner_id' => $prisoner_id,
@@ -508,7 +426,9 @@ XML;
   }
 
   /**
-   * Update the status of a transaction.
+   * Update the status of a transaction. Only 'pending', 'processing'
+   * or (in exceptional cases) 'expired' transactions should have
+   * their status updated.
    *
    * @param string $order_code
    *   The unique order code identifying the transaction.
@@ -521,7 +441,14 @@ XML;
    */
   public function updateTransactionStatus(string $order_code, string $status): bool {
 
-    $allowed_statuses = ['pending', 'expired', 'cancelled', 'failed', 'success'];
+    $allowed_statuses = [
+      'pending',
+      'processing',
+      'expired',
+      'cancelled',
+      'failed',
+      'success',
+    ];
 
     if (!in_array($status, $allowed_statuses, TRUE)) {
       $this->logger->error(
@@ -538,6 +465,7 @@ XML;
       $updated = $this->database->update('prisoner_payment_transactions')
         ->fields(['status' => $status])
         ->condition('order_key', $order_code)
+        ->condition('status', ['pending', 'processing', 'expired'], 'IN')
         ->execute();
 
       return (bool) $updated;
@@ -568,24 +496,13 @@ XML;
   public function touchTransaction(string $order_code): bool {
 
     $transaction = $this->getTransaction($order_code);
+    $now = $this->time->getRequestTime();
 
     if (!$transaction || $transaction->status !== 'pending') {
       return FALSE;
     }
 
-    $now = $this->time->getRequestTime();
-
-    // Enforce hard timeout (absolute lifetime).
-    $age = $now - (int) $transaction->created_timestamp;
-    if ($age > self::HARD_TIMEOUT) {
-      $this->updateTransactionStatus($order_code, 'expired');
-      return FALSE;
-    }
-
-    // Enforce soft timeout (inactivity window).
-    $idle = $now - (int) $transaction->updated_timestamp;
-    if ($idle > self::SOFT_TIMEOUT) {
-      $this->updateTransactionStatus($order_code, 'expired');
+    if ($this->expireIfTimedOut($transaction)) {
       return FALSE;
     }
 
