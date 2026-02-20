@@ -26,11 +26,6 @@ function nidirect_prisons_cron() {
 
   if ($pending_transactions) {
 
-    \Drupal::logger('nidirect_prisons')->debug(
-      'Cron ran: @count pending transactions checked',
-      ['@count' => count($pending_transactions)]
-    );
-
     foreach ($pending_transactions as $transaction) {
       if ($payment_manager->expireIfTimedOut($transaction)) {
         \Drupal::logger('nidirect_prisons')->debug(
@@ -95,12 +90,6 @@ function nidirect_prisons_mail($key, &$message, $params) {
       $message['subject'] = $params['subject'];
       $message['body'] = is_array($params['body']) ? $params['body'] : [$params['body']];
       $message['headers']['Content-Type'] = 'text/plain; charset=UTF-8';
-
-      \Drupal::logger('nidirect_prisons')->notice('Email subject: @subject, body: @body', [
-        '@subject' => $message['subject'],
-        '@body' => implode("\n", $message['body']),
-      ]);
-
       break;
   }
 }
