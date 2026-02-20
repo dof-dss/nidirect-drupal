@@ -152,7 +152,7 @@ class WorldpayNotificationController extends ControllerBase {
       ]);
 
       // No further processing do be done. Acknowledge the notification.
-      return new Response('OK', 200);
+      return new Response('[OK]', 200, ['Content-Type' => 'text/plain']);
     }
 
     $this->logger->notice('Worldpay order notification for @order_key £@amount @payment_status', [
@@ -169,14 +169,14 @@ class WorldpayNotificationController extends ControllerBase {
       $this->logger->notice("No prisoner payment transaction found for Worldpay notification: {$order_code}");
 
       // No further processing do be done. Acknowledge the notification.
-      return new Response('OK', 200);
+      return new Response('[OK]', 200, ['Content-Type' => 'text/plain']);
     }
 
     // Early return if transaction already marked 'success'.
     if ($payment_transaction->status === 'success') {
 
       // No further processing do be done. Acknowledge the notification.
-      return new Response('OK', 200);
+      return new Response('[OK]', 200, ['Content-Type' => 'text/plain']);
     }
 
     // If payment was AUTHORISED, update prisoner balance and send
@@ -185,8 +185,7 @@ class WorldpayNotificationController extends ControllerBase {
     // is 'failed'.
     if ($payment_status === 'AUTHORISED') {
 
-      // Detect late authorisation (expired locally but authorised
-      // by Worldpay).
+      // Detect late authorisation (expired locally but authorised by Worldpay).
       $is_late_authorisation = ($payment_transaction->status === 'expired');
 
       if ($is_late_authorisation) {
@@ -207,45 +206,52 @@ class WorldpayNotificationController extends ControllerBase {
           ]
         );
 
-        // Mark as failed.
         $this->paymentManager->updateTransactionStatus($order_code, 'failed');
 
-        return new Response('OK', 200);
+        return new Response('[OK]', 200, ['Content-Type' => 'text/plain']);
       }
 
-      // Process the authorised payment atomically.
-      $db_transaction = $this->database->startTransaction();
+      $sequence_id = NULL;
+      $should_send_prism = FALSE;
+      $db_transaction = NULL;
 
       try {
+        $db_transaction = $this->database->startTransaction();
+
+        // Attempt atomic status transition first.
+        $updated = $this->database->update('prisoner_payment_transactions')
+          ->fields([
+            'status' => 'success',
+            'updated_timestamp' => \Drupal::time()->getRequestTime(),
+          ])
+          ->condition('order_key', $order_code)
+          ->condition('status', ['pending', 'expired'], 'IN')
+          ->execute();
+
+        if ($updated === 0) {
+          // Another process already handled it.
+          return new Response('[OK]', 200, ['Content-Type' => 'text/plain']);
+        }
+
+        // Only the winning process continues below.
+
         // Deduct from prisoner's balance.
         $this->database->update('prisoner_payment_amount')
           ->expression('amount', 'GREATEST(amount - :paid_amount, 0)', [':paid_amount' => $amount])
           ->condition('prisoner_id', $payment_transaction->prisoner_id)
           ->execute();
 
-        // Get sequence id for this payment.
+        // Generate sequence ID.
         $sequence_id = $this->getNextSequenceId();
 
-        // Notify PRISM.
-        $this->sendJsonToPrism(
-          $order_code,
-          $payment_transaction->prisoner_id,
-          $payment_transaction->visitor_id,
-          $amount,
-          $sequence_id
-        );
+        $should_send_prism = TRUE;
 
-        // Mark transaction as successful.
-        $this->database->update('prisoner_payment_transactions')
-          ->fields([
-            'status' => 'success',
-            'updated_timestamp' => \Drupal::time()->getRequestTime(),
-          ])
-          ->condition('order_key', $order_code)
-          ->execute();
       }
       catch (\Throwable $e) {
-        $db_transaction->rollBack();
+
+        if ($db_transaction !== NULL) {
+          $db_transaction->rollBack();
+        }
 
         $this->logger->error(
           'Failed processing AUTHORISED Worldpay payment for order @order: @message',
@@ -255,19 +261,41 @@ class WorldpayNotificationController extends ControllerBase {
           ]
         );
 
-        // Important: do NOT return non-200 here, or Worldpay will retry.
+        return new Response('[OK]', 200, ['Content-Type' => 'text/plain']);
       }
       finally {
         unset($db_transaction);
       }
+
+      // Now email Prism.
+      if ($should_send_prism && $sequence_id !== NULL) {
+        try {
+          $this->sendJsonToPrism(
+            $order_code,
+            $payment_transaction->prisoner_id,
+            $payment_transaction->visitor_id,
+            $amount,
+            $sequence_id
+          );
+        }
+        catch (\Throwable $e) {
+          $this->logger->error(
+            'PRISM notification failed for order @order after successful DB commit: @message',
+            [
+              '@order' => $order_code,
+              '@message' => $e->getMessage(),
+            ]
+          );
+        }
+      }
     }
     else {
-      // Prisoner payment transaction failed.
+      // Payment failed.
       $this->paymentManager->updateTransactionStatus($order_code, 'failed');
     }
 
     // Acknowledge the notification.
-    return new Response('OK', 200);
+    return new Response('[OK]', 200, ['Content-Type' => 'text/plain']);
   }
 
   /**
@@ -295,7 +323,7 @@ class WorldpayNotificationController extends ControllerBase {
       "TRANSACTION_TIME" => date('d/m/Y H:i:s'),
       "AMOUNT_PAID" => number_format($amount, 2, '.', ''),
       "SEQUENCE_ID" => $sequence_id,
-    ]);
+    ], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
 
     // Try sending the email.
     try {
