@@ -14,52 +14,31 @@ use Drupal\nidirect_prisons\Service\PrisonerPaymentManager;
 function nidirect_prisons_cron() {
 
   /*
-   * Enforce transaction timeouts and cancel expired Worldpay orders.
+   * Enforce transaction timeouts.
    */
 
   /** @var \Drupal\nidirect_prisons\Service\PrisonerPaymentManager $payment_manager */
   $payment_manager = \Drupal::service('nidirect_prisons.prisoner_payment_manager');
 
-  // Get all pending transactions.
+  // Get all pending transactions and expire them if they have
+  // timed out.
   $pending_transactions = $payment_manager->getPendingTransactions();
 
   if ($pending_transactions) {
 
-    \Drupal::logger('nidirect_prisons')->debug(
-      'Cron ran: @count pending transactions checked',
-      ['@count' => count($pending_transactions)]
-    );
-
     foreach ($pending_transactions as $transaction) {
-
-      // Attempt to keep transaction alive; if it fails, it's expired.
-      if ($payment_manager->touchTransaction($transaction->order_key)) {
-        continue;
-      }
-
-      // Transaction expired — cancel Worldpay order.
-      try {
-        $prison_id = $payment_manager->getPrisonId($transaction->prisoner_id);
-        $payment_manager->cancelWorldpayOrder(
-          $transaction->order_key,
-          $prison_id
-        );
-      }
-      catch (\Throwable $e) {
-        \Drupal::logger('nidirect_prisons')->error(
-          'Cron failed cancelling Worldpay order @order: @message',
-          [
-            '@order' => $transaction->order_key,
-            '@message' => $e->getMessage(),
-          ]
+      if ($payment_manager->expireIfTimedOut($transaction)) {
+        \Drupal::logger('nidirect_prisons')->debug(
+          'Cron expired transaction @order_key',
+          ['@order_key' => $transaction->order_key]
         );
       }
     }
   }
 
-  // Delete all transactions more than 7 days old.
-
   $connection = Database::getConnection();
+
+  // Delete all transactions more than 7 days old.
   $threshold = strtotime('-7 days');
   $query = $connection->delete('prisoner_payment_transactions')
     ->condition('created_timestamp', $threshold, '<');
@@ -68,6 +47,38 @@ function nidirect_prisons_cron() {
   if ($deleted) {
     \Drupal::logger('nidirect_prisons')->info('Deleted @count old prisoner payment transactions.', ['@count' => $deleted]);
   }
+
+  // Log (hopefully very rare) cases where a prisoner has
+  // more than one pending transaction.
+  $query = $connection->select('prisoner_payment_transactions', 'ppt');
+  $query->addField('ppt', 'prisoner_id');
+  $query->addExpression('COUNT(*)', 'pending_count');
+  $query->condition('ppt.status', 'pending');
+  $query->groupBy('ppt.prisoner_id');
+  $query->having('COUNT(*) > :count', [':count' => 1]);
+
+  $result = $query->execute();
+
+  foreach ($result as $row) {
+
+    // Fetch order keys for this prisoner.
+    $orders = $connection->select('prisoner_payment_transactions', 'ppt')
+      ->fields('ppt', ['order_key'])
+      ->condition('prisoner_id', $row->prisoner_id)
+      ->condition('status', 'pending')
+      ->execute()
+      ->fetchCol();
+
+    \Drupal::logger('nidirect_prisons')->critical(
+      'Invariant violation: @count pending transactions detected for prisoner @pid. Orders: @orders',
+      [
+        '@count' => $row->pending_count,
+        '@pid' => $row->prisoner_id,
+        '@orders' => implode(', ', $orders),
+      ]
+    );
+  }
+
 }
 
 /**
@@ -79,12 +90,6 @@ function nidirect_prisons_mail($key, &$message, $params) {
       $message['subject'] = $params['subject'];
       $message['body'] = is_array($params['body']) ? $params['body'] : [$params['body']];
       $message['headers']['Content-Type'] = 'text/plain; charset=UTF-8';
-
-      \Drupal::logger('nidirect_prisons')->notice('Email subject: @subject, body: @body', [
-        '@subject' => $message['subject'],
-        '@body' => implode("\n", $message['body']),
-      ]);
-
       break;
   }
 }
