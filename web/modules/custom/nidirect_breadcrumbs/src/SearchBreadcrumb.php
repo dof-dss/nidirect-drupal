@@ -57,7 +57,7 @@ class SearchBreadcrumb implements BreadcrumbBuilderInterface {
 
     $breadcrumb = new Breadcrumb();
     $breadcrumb->setLinks([]);
-    $breadcrumb->addCacheContexts(['url.path']);
+    $breadcrumb->addCacheContexts(['url.path', 'route']);
 
     return $breadcrumb;
   }

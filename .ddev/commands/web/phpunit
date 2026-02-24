@@ -1,7 +1,24 @@
 #!/usr/bin/env bash
+# Run PHPUnit inside the web container, from the project root.
+# Inspired by https://github.com/ddev/ddev-drupal-contrib/blob/main/commands/web/phpunit
+# but not using this as we're not using the add-on for contrib development.
+#
+# How to use:
+# - ddev phpunit (runs all tests defined/mapped in phpunit.xml)
+# - ddev phpunit --testsuite unit (only run unit tests [is fast])
+# - ddev phpunit --testsuite kernel (only kernel tests)
+#
+# Available test suite(s):
+# - unit
+# - kernel
+# - functional
+# - functional-javascript
 
-## Description: Run phpunit to execute local tests.
-## Usage: phpunit
-## Example: "ddev phpunit"
+set -eu -o pipefail
 
-php /app/vendor/bin/phpunit -c /app/phpunit.xml
+if ! command -v phpunit >/dev/null; then
+  echo "phpunit is not available. You may need to 'ddev composer install'"
+  exit 1
+fi
+
+phpunit -c /var/www/html/phpunit.xml "$@"
