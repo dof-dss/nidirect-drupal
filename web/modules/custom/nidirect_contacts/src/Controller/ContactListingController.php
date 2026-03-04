@@ -133,7 +133,7 @@ class ContactListingController extends ControllerBase {
    * @return array
    *   Render array for Drupal to convert to HTML.
    */
-  public function filterByLetter(string $letter = NULL) {
+  public function filterByLetter(?string $letter = NULL) {
     // Trim letter parameter if, for whatever reason, it's > 1.
     if (strlen($letter) > 1) {
       $letter = substr($letter, 0, 1);
