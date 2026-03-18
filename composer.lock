@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "120a5b1c0656d194755e89439d920ebe",
+    "content-hash": "baacad2523767ae809ae0952930500ce",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -6099,6 +6099,63 @@
             }
         },
         {
+            "name": "drupal/flood_control",
+            "version": "3.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://git.drupalcode.org/project/flood_control.git",
+                "reference": "3.0.1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://ftp.drupal.org/files/projects/flood_control-3.0.1.zip",
+                "reference": "3.0.1",
+                "shasum": "02f601483022c7defc057dab121180507d821d06"
+            },
+            "require": {
+                "drupal/core": "^10.2 || ^11"
+            },
+            "type": "drupal-module",
+            "extra": {
+                "drupal": {
+                    "version": "3.0.1",
+                    "datestamp": "1771613535",
+                    "security-coverage": {
+                        "status": "covered",
+                        "message": "Covered by Drupal's security advisory policy"
+                    }
+                },
+                "drush": {
+                    "services": {
+                        "drush.services.yml": ">=9"
+                    }
+                }
+            },
+            "notification-url": "https://packages.drupal.org/8/downloads",
+            "license": [
+                "GPL-2.0-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "batigolix",
+                    "homepage": "https://www.drupal.org/user/22175"
+                },
+                {
+                    "name": "dave reid",
+                    "homepage": "https://www.drupal.org/user/53892"
+                },
+                {
+                    "name": "fabianderijk",
+                    "homepage": "https://www.drupal.org/user/278745"
+                }
+            ],
+            "description": "Provides administration possibilities for hidden flood control variables",
+            "homepage": "https://www.drupal.org/project/flood_control",
+            "support": {
+                "source": "https://git.drupalcode.org/project/flood_control"
+            }
+        },
+        {
             "name": "drupal/geocoder",
             "version": "4.31.0",
             "source": {
@@ -8048,6 +8105,61 @@
             "homepage": "https://www.drupal.org/project/redis",
             "support": {
                 "source": "https://git.drupalcode.org/project/redis"
+            }
+        },
+        {
+            "name": "drupal/revision_manager",
+            "version": "1.0.0-beta5",
+            "source": {
+                "type": "git",
+                "url": "https://git.drupalcode.org/project/revision_manager.git",
+                "reference": "1.0.0-beta5"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://ftp.drupal.org/files/projects/revision_manager-1.0.0-beta5.zip",
+                "reference": "1.0.0-beta5",
+                "shasum": "c989a7114d480ceabc6c968bc3bc616a4cdcf4aa"
+            },
+            "require": {
+                "drupal/core": "^10.3 || ^11"
+            },
+            "require-dev": {
+                "drupal/group": "^2 || ^3 || ^4"
+            },
+            "type": "drupal-module",
+            "extra": {
+                "drupal": {
+                    "version": "1.0.0-beta5",
+                    "datestamp": "1769100613",
+                    "security-coverage": {
+                        "status": "not-covered",
+                        "message": "Beta releases are not covered by Drupal security advisories."
+                    }
+                }
+            },
+            "notification-url": "https://packages.drupal.org/8/downloads",
+            "license": [
+                "GPL-2.0-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "Jordan Barnes (j-barnes)",
+                    "homepage": "https://www.drupal.org/u/j-barnes",
+                    "email": "jb8893@gmail.com",
+                    "role": "Maintainer"
+                }
+            ],
+            "description": "Track and prune entity revisions.",
+            "homepage": "https://www.drupal.org/project/revision_manager",
+            "keywords": [
+                "Drupal",
+                "Entity",
+                "Revisions"
+            ],
+            "support": {
+                "source": "http://cgit.drupalcode.org/revision_manager",
+                "issues": "https://www.drupal.org/project/issues/revision_manager"
             }
         },
         {
@@ -23462,6 +23574,7 @@
         "drupal/flag": 20,
         "drupal/geolocation": 10,
         "drupal/inline_entity_form": 5,
+        "drupal/revision_manager": 10,
         "drupal/search_api_location": 15,
         "drupal/search_api_solr": 20,
         "drupal/search_api_spellcheck": 20,
