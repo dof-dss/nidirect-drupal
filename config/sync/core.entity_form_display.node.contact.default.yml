@@ -29,7 +29,6 @@ dependencies:
     - datetime
     - field_group
     - geolocation
-    - geolocation_address
     - link
     - linkit
     - metatag
@@ -158,37 +157,7 @@ content:
     weight: 4
     region: content
     settings: {  }
-    third_party_settings:
-      geolocation_address:
-        enable: false
-        address_field: field_address
-        geocoder: google_geocoding_api
-        sync_mode: auto
-        button_position: LEFT_TOP
-        direction: duplex
-        ignore:
-          organization: false
-          address-line1: false
-          address-line2: false
-          locality: false
-          administrative-area: false
-          postal-code: false
-        geocoder_settings:
-          label: Address
-          description: 'Enter an address to be localized.'
-          autocomplete_min_length: 1
-          component_restrictions:
-            route: ''
-            country: UK
-            administrative_area: ''
-            locality: ''
-            postal_code: ''
-          boundary_restriction:
-            south: ''
-            west: ''
-            north: ''
-            east: ''
-          region: gb
+    third_party_settings: {  }
   field_meta_tags:
     type: metatag_firehose
     weight: 11

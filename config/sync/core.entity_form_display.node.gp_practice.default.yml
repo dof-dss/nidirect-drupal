@@ -25,7 +25,6 @@ dependencies:
     - content_moderation
     - field_group
     - geolocation
-    - geolocation_address
     - link
     - metatag
     - path
@@ -229,86 +228,11 @@ content:
       placeholder: ''
     third_party_settings: {  }
   field_location:
-    type: geolocation_map
+    type: geolocation_html5
     weight: 7
     region: content
-    settings:
-      map_provider_id: google_maps
-      map_provider_settings: {  }
-      allow_override_map_settings: 0
-      hide_inputs: false
-      centre:
-        client_location:
-          enable: false
-          weight: 0
-          map_center_id: client_location
-        fixed_boundaries:
-          enable: false
-          weight: 0
-          settings:
-            south: ''
-            west: ''
-            north: ''
-            east: ''
-          map_center_id: fixed_boundaries
-        fit_bounds:
-          enable: true
-          weight: 0
-          settings:
-            reset_zoom: false
-            min_zoom: null
-          map_center_id: fit_bounds
-        fixed_value:
-          enable: false
-          weight: 0
-          settings:
-            location_option_id: fixed_value
-            latitude: null
-            longitude: null
-          map_center_id: location_plugins
-        ipstack:
-          enable: false
-          weight: 0
-          settings:
-            location_option_id: ipstack
-            access_key: ''
-          map_center_id: location_plugins
-        freeogeoip:
-          enable: false
-          weight: 0
-          settings:
-            location_option_id: freeogeoip
-          map_center_id: location_plugins
-    third_party_settings:
-      geolocation_address:
-        enable: true
-        address_field: field_address
-        geocoder: google_geocoding_api
-        sync_mode: auto
-        button_position: LEFT_TOP
-        direction: duplex
-        ignore:
-          organization: false
-          address-line1: false
-          address-line2: false
-          locality: false
-          administrative-area: false
-          postal-code: false
-        settings:
-          label: Address
-          description: 'Enter an address to be localized.'
-          autocomplete_min_length: 1
-          component_restrictions:
-            route: ''
-            country: UK
-            administrative_area: ''
-            locality: ''
-            postal_code: ''
-          boundary_restriction:
-            south: ''
-            west: ''
-            north: ''
-            east: ''
+    settings: {  }
+    third_party_settings: {  }
   field_meta_tags:
     type: metatag_firehose
     weight: 10
