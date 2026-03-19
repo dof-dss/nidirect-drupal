@@ -1,0 +1,99 @@
+# .github/workflows/ci.yml
+name: CI
+
+on:
+  pull_request:
+    paths:
+      - 'composer.json'
+      - 'composer.lock'
+      - 'phpcs.xml'
+      - 'phpcs.xml.dist'
+      - 'web/modules/custom'
+      - 'web/themes/custom'
+      - 'web/profiles/**'
+      - '.github/workflows/ci.yml'
+  push:
+    branches:
+      - main
+      - development
+    paths:
+      - 'composer.json'
+      - 'composer.lock'
+      - 'phpcs.xml'
+      - 'phpcs.xml.dist'
+      - 'web/modules/custom'
+      - 'web/themes/custom'
+      - 'web/profiles/**'
+      - '.github/workflows/ci.yml'
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  COMPOSER_NO_INTERACTION: 1
+  COMPOSER_PROCESS_TIMEOUT: 0
+
+jobs:
+  phpcs:
+    name: PHPCS
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: mbstring, xml
+          coverage: none
+          tools: composer
+
+      - name: Cache Composer files
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.composer/cache/files
+            ~/.cache/composer/files
+          key: composer-${{ runner.os }}-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            composer-${{ runner.os }}-
+
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress
+
+      - name: Show PHPCS version
+        run: vendor/bin/phpcs --version
+
+      - name: Run PHPCS on changed PHP files in pull requests
+        if: github.event_name == 'pull_request'
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          BASE_REF="${{ github.event.pull_request.base.ref }}"
+          git fetch origin "${BASE_REF}" --depth=1
+
+          mapfile -t FILES < <(
+            git diff --name-only "origin/${BASE_REF}...HEAD" \
+              | grep -E '^(web/modules|web/themes|web/profiles)/.*\.(php|module|inc|install|theme|profile)$' || true
+          )
+
+          if [ "${#FILES[@]}" -eq 0 ]; then
+            echo "No changed PHP files requiring PHPCS."
+            exit 0
+          fi
+
+          printf 'Changed files:\n%s\n' "${FILES[@]}"
+          vendor/bin/phpcs "${FILES[@]}"
+
+      - name: Run full PHPCS scan on push
+        if: github.event_name == 'push'
+        run: vendor/bin/phpcs
