@@ -194,20 +194,6 @@ function nidirect_gp_unique_cypher(array &$form, FormStateInterface $form_state)
 }
 
 /**
- * Implements hook_entity_presave().
- */
-function nidirect_gp_entity_presave(EntityInterface $entity) {
-  // This will fire when nodes are created or edited.
-  if ($entity instanceof NodeInterface && $entity->bundle() === 'gp_practice') {
-    // Construct the title.
-    $practice = Xss::filter($entity->get('field_gp_practice_name')->value);
-    $surgery = Xss::filter($entity->get('field_gp_surgery_name')->value);
-    $title = nidirect_gp_build_gp_practice_title($practice, $surgery);
-    $entity->setTitle($title);
-  }
-}
-
-/**
  * Implements hook_views_pre_render().
  */
 function nidirect_gp_views_pre_render(ViewExecutable $view) {
@@ -247,44 +233,6 @@ function nidirect_gp_preprocess_views_view_field(&$variables) {
 
     $variables['output'] = \Drupal::service('renderer')->render($item_list);
   }
-}
-
-/**
- * Utility function to handle GP Practice submit.
- */
-function nidirect_gp_build_gp_practice_title($practiceName = '', $surgeryName = '') {
-  /*
-  For GP Practice nodes, the node title is a combination of the
-  practice name and the surgery
-  name, e.g. Dr. Jekyll & Partners - Hyde Park Surgery.
-  One or other can be blank but not both.
-
-  There are four permutations:
-  1. Both provided
-  2. practiceName provided, surgeryName not provided
-  3. practiceName not provided, surgeryName provided
-  4. Neither provided
-   */
-
-  $title = '';
-  // 1. Both provided.
-  if ($practiceName != '' && $surgeryName != '') {
-    $title = $surgeryName . ' - ' . $practiceName;
-  }
-  // 2. practiceName provided, surgeryName not provided.
-  if ($practiceName != '' && $surgeryName == '') {
-    $title = $practiceName;
-  }
-  // 3. practiceName not provided, surgeryName provided.
-  if ($practiceName == '' && $surgeryName != '') {
-    $title = $surgeryName;
-  }
-  // 4. Neither provided - this generates an error that
-  // will be caught by validation.
-  // Re-encode &amp; to just &.
-  $title = str_replace('&amp;', '&', $title);
-
-  return $title;
 }
 
 /**
