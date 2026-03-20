@@ -1105,13 +1105,11 @@ display:
           entity_type: node
           entity_field: title
           plugin_id: field
-          label: 'Practice name'
+          label: Title
           exclude: false
           alter:
             alter_text: true
-            text: |-
-              {{ title }}
-              <br><a class="edit-node-link" href="/node/{{ nid }}/edit">edit</a>
+            text: "{{ title }}\r\n<br><a class=\"edit-node-link\" href=\"/node/{{ nid }}/edit\">edit</a>"
             make_link: false
             path: ''
             absolute: false
@@ -2072,13 +2070,11 @@ display:
           entity_type: node
           entity_field: title
           plugin_id: field
-          label: Practice
+          label: Title
           exclude: false
           alter:
             alter_text: true
-            text: |-
-              {{ title }}
-              <br><a class="edit-node-link" href="/node/{{ nid }}/edit">edit</a>
+            text: "{{ title }}\r\n<br><a class=\"edit-node-link\" href=\"/node/{{ nid }}/edit\">edit</a>"
             make_link: false
             path: ''
             absolute: false
