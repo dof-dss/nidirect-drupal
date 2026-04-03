@@ -60,16 +60,16 @@ class GpRevisionDeleteForm extends ConfirmFormBase {
    *   The entity storage.
    * @param \Drupal\Core\Database\Connection $connection
    *   The database connection.
-   * @param \Drupal\Core\Messenger\MessengerInterface $messenger
-   *   Drupal messenger service.
    * @param \Drupal\Core\Datetime\DateFormatterInterface $date_formatter
    *   Drupal date formatter service.
+   * @param \Drupal\Core\Messenger\MessengerInterface $messenger
+   *   Drupal messenger service.
    */
-  public function __construct(EntityStorageInterface $entity_storage, Connection $connection, MessengerInterface $messenger = NULL, DateFormatterInterface $date_formatter) {
+  public function __construct(EntityStorageInterface $entity_storage, Connection $connection, DateFormatterInterface $date_formatter, ?MessengerInterface $messenger = NULL) {
     $this->entityStorage = $entity_storage;
     $this->connection = $connection;
-    $this->messenger = $messenger;
     $this->dateFormatter = $date_formatter;
+    $this->messenger = $messenger;
   }
 
   /**
@@ -80,8 +80,8 @@ class GpRevisionDeleteForm extends ConfirmFormBase {
     return new static(
       $entity_manager->getStorage('gp'),
       $container->get('database'),
-      $container->get('messenger'),
-      $container->get('date.formatter')
+      $container->get('date.formatter'),
+      $container->get('messenger')
     );
   }
 
