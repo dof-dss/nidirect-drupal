@@ -9,6 +9,7 @@ use Drupal\Component\Utility\Html;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Link;
 use Drupal\Core\Url;
+use Drupal\node\NodeInterface;
 use Drupal\views\Plugin\views\query\QueryPluginBase;
 use Drupal\views\ViewExecutable;
 
@@ -333,4 +334,36 @@ function nidirect_contacts_views_pre_render(ViewExecutable $view) {
 function nidirect_contacts_camel_to_underscore(string $input_string, string $separator = "-") {
   return strtolower(preg_replace(
     '/(?<=\d)(?=[A-Za-z])|(?<=[A-Za-z])(?=\d)|(?<=[a-z])(?=[A-Z])/', $separator, $input_string));
+}
+
+/**
+ * Implements hook_preprocess_views_view_field().
+ */
+function nidirect_contacts_preprocess_views_view_field(&$variables) {
+  $view = $variables['view'];
+
+  if ($view->id() === 'contacts_a_z') {
+    if ($variables['field']->field !== 'title') {
+      return;
+    }
+    if (!in_array($view->current_display, ['contacts_by_letter', 'contact_search'], TRUE)) {
+      return;
+    }
+
+    // Get the node from the row.
+    $node = $variables['row']->_entity ?? NULL;
+    if ($node instanceof NodeInterface === FALSE) {
+      return;
+    }
+
+    $contact_website_url = $node->get('field_contact_website')->uri ?? '';
+
+    if (str_starts_with($contact_website_url, 'http')) {
+      $variables['external_contact_website_url'] = TRUE;
+      $contact_website_link = Link::fromTextAndUrl($node->getTitle(), Url::fromUri($contact_website_url));
+
+      // Replace the internal contact node link with the website URL.
+      $variables['output'] = $contact_website_link->toRenderable();
+    }
+  }
 }
