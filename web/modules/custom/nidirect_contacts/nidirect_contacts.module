@@ -9,7 +9,9 @@ use Drupal\Component\Utility\Html;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Link;
 use Drupal\Core\Url;
+use Drupal\node\Entity\Node;
 use Drupal\node\NodeInterface;
+use Drupal\search_api_autocomplete\Suggestion\Suggestion;
 use Drupal\views\Plugin\views\query\QueryPluginBase;
 use Drupal\views\ViewExecutable;
 
@@ -365,5 +367,50 @@ function nidirect_contacts_preprocess_views_view_field(&$variables) {
       // Replace the internal contact node link with the website URL.
       $variables['output'] = $contact_website_link->toRenderable();
     }
+  }
+}
+
+/**
+ * Implements hook_search_api_autocomplete_suggestions_alter().
+ */
+function nidirect_contacts_search_api_autocomplete_suggestions_alter(array &$suggestions, array $alter_params) {
+  foreach ($suggestions as $suggestion) {
+    if ($suggestion instanceof Suggestion === FALSE) {
+      continue;
+    }
+
+    $url = $suggestion->getUrl();
+    if ($url instanceof Url === FALSE || $url->isExternal() || $url->getRouteName() !== 'entity.node.canonical') {
+      continue;
+    }
+
+    $route_parameters = $url->getRouteParameters();
+    $node = NULL;
+
+    if (!empty($route_parameters['node'])) {
+      // Depending on how the route param is built, this may already be a node
+      // or just a node ID.
+      if ($route_parameters['node'] instanceof NodeInterface) {
+        $node = $route_parameters['node'];
+      }
+      elseif (is_numeric($route_parameters['node'])) {
+        $node = Node::load((int) $route_parameters['node']);
+      }
+    }
+
+    if ($node instanceof NodeInterface === FALSE || $node->bundle() !== 'contact') {
+      continue;
+    }
+    if ($node->get('field_contact_website')->isEmpty()) {
+      continue;
+    }
+
+    $website_url = $node->get('field_contact_website')->first()?->getUrl();
+    if (!$website_url instanceof Url || !$website_url->isExternal()) {
+      continue;
+    }
+
+    // Replace the suggestion URL with the external one.
+    $suggestion->setUrl($website_url);
   }
 }
