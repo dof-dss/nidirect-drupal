@@ -9,6 +9,7 @@ use Drupal\Component\Utility\Html;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Link;
 use Drupal\Core\Url;
+use Drupal\link\LinkItemInterface;
 use Drupal\node\Entity\Node;
 use Drupal\node\NodeInterface;
 use Drupal\search_api_autocomplete\Suggestion\Suggestion;
@@ -348,7 +349,11 @@ function nidirect_contacts_preprocess_views_view_field(&$variables) {
     if ($variables['field']->field !== 'title') {
       return;
     }
-    if (!in_array($view->current_display, ['contacts_by_letter', 'contact_search'], TRUE)) {
+    if (!in_array($view->current_display, [
+        'contacts_by_letter',
+        'contact_search'
+      ], TRUE)
+    ) {
       return;
     }
 
@@ -405,11 +410,12 @@ function nidirect_contacts_search_api_autocomplete_suggestions_alter(array &$sug
       continue;
     }
 
-    $website_url = $node->get('field_contact_website')->first()?->getUrl();
-    if (!$website_url instanceof Url || !$website_url->isExternal()) {
+    $website_field = $node->get('field_contact_website')->first();
+    if ($website_field instanceof LinkItemInterface === FALSE || $website_field->isExternal() === FALSE) {
       continue;
     }
 
+    $website_url = $website_field->getUrl();
     // Replace the suggestion URL with the external one.
     $suggestion->setUrl($website_url);
   }
