@@ -345,13 +345,14 @@ function nidirect_contacts_camel_to_underscore(string $input_string, string $sep
 function nidirect_contacts_preprocess_views_view_field(&$variables) {
   $view = $variables['view'];
 
-  if ($view->id() === 'contacts_a_z') {
+  if ($view->id() === 'contacts_a_z' || $view->id() === 'contact_children') {
     if ($variables['field']->field !== 'title') {
       return;
     }
     if (!in_array($view->current_display, [
         'contacts_by_letter',
-        'contact_search'
+        'contact_search',
+        'contact_children',
       ], TRUE)
     ) {
       return;
