@@ -458,6 +458,4 @@ function nidirect_contacts_form_node_form_alter(&$form, FormStateInterface $form
   // Nest it under the website field wrapper so they appear together.
   $form['field_contact_website']['widget'][0]['field_show_external_link'] = $form['field_show_external_link'];
   unset($form['field_show_external_link']);
-
-  dump($form);
 }
