@@ -344,8 +344,13 @@ function nidirect_contacts_camel_to_underscore(string $input_string, string $sep
  */
 function nidirect_contacts_preprocess_views_view_field(&$variables) {
   $view = $variables['view'];
+  $view_ids = [
+    'contacts_a_z',
+    'contacts',
+    'contact_children',
+  ];
 
-  if ($view->id() === 'contacts_a_z' || $view->id() === 'contact_children') {
+  if (in_array($view->id(), $view_ids)) {
     if ($variables['field']->field !== 'title') {
       return;
     }
@@ -361,6 +366,11 @@ function nidirect_contacts_preprocess_views_view_field(&$variables) {
     // Get the node from the row.
     $node = $variables['row']->_entity ?? NULL;
     if ($node instanceof NodeInterface === FALSE) {
+      return;
+    }
+
+    // Exit early if we're not overriding to display an external link.
+    if (empty($node->get('field_show_external_link')->value)) {
       return;
     }
 
@@ -407,6 +417,10 @@ function nidirect_contacts_search_api_autocomplete_suggestions_alter(array &$sug
     if ($node instanceof NodeInterface === FALSE || $node->bundle() !== 'contact') {
       continue;
     }
+    // Exit early if we're not overriding to display an external link.
+    if (empty($node->get('field_show_external_link')->value)) {
+      return;
+    }
     if ($node->get('field_contact_website')->isEmpty()) {
       continue;
     }
@@ -420,4 +434,25 @@ function nidirect_contacts_search_api_autocomplete_suggestions_alter(array &$sug
     // Replace the suggestion URL with the external one.
     $suggestion->setUrl($website_url);
   }
+}
+
+/**
+ * Implements hook_form_BASE_FORM_ID_alter().
+ */
+function nidirect_contacts_form_node_form_alter(&$form, FormStateInterface $form_state) {
+  $node = $form_state->getFormObject()->getEntity();
+  if ($node instanceof NodeInterface === FALSE || $node->bundle() !== 'contact') {
+    return;
+  }
+
+  if (empty($form['field_contact_website']) || empty($form['field_show_external_link'])) {
+    return;
+  }
+
+  // Put the checkbox directly beneath the website field.
+  $form['field_show_external_link']['#weight'] = (int) count($form['field_contact_website']['widget'][0]) + 1;
+
+  // Nest it under the website field wrapper so they appear together.
+  $form['field_contact_website']['widget'][0]['field_show_external_link'] = $form['field_show_external_link'];
+  unset($form['field_show_external_link']);
 }
