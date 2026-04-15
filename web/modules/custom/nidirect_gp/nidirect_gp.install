@@ -11,6 +11,11 @@ use Drupal\field\Entity\FieldConfig;
  * Remove Practice and Surgery fields from GP Practice.
  */
 function nidirect_gp_update_10001() {
-  FieldConfig::loadByName('node', 'gp_practice', 'field_gp_practice_name')->delete();
-  FieldConfig::loadByName('node', 'gp_practice', 'field_gp_surgery_name')->delete();
+  if ($field = FieldConfig::loadByName('node', 'gp_practice', 'field_gp_practice_name')) {
+    $field->delete();
+  }
+
+  if ($field = FieldConfig::loadByName('node', 'gp_practice', 'field_gp_surgery_name')) {
+    $field->delete();
+  }
 }
