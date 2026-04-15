@@ -17,6 +17,7 @@ dependencies:
     - field.field.node.contact.field_phone
     - field.field.node.contact.field_related_info
     - field.field.node.contact.field_search_elevation
+    - field.field.node.contact.field_show_external_link
     - field.field.node.contact.field_site_themes
     - field.field.node.contact.field_summary
     - field.field.node.contact.field_supplementary_contact
@@ -64,6 +65,7 @@ third_party_settings:
         - field_email_address
         - field_phone
         - field_contact_website
+        - field_show_external_link
         - field_contact_hours
         - field_site_themes
       label: Detail
@@ -138,7 +140,7 @@ content:
     third_party_settings: {  }
   field_contact_website:
     type: link_default
-    weight: 8
+    weight: 7
     region: content
     settings:
       placeholder_url: ''
@@ -168,19 +170,19 @@ content:
     third_party_settings: {  }
   field_next_audit_due:
     type: datetime_default
-    weight: 14
+    weight: 15
     region: content
     settings: {  }
     third_party_settings: {  }
   field_phone:
     type: telephone_plus_widget
-    weight: 7
+    weight: 6
     region: content
     settings: {  }
     third_party_settings: {  }
   field_related_info:
     type: linkit
-    weight: 15
+    weight: 16
     region: content
     settings:
       placeholder_url: ''
@@ -190,7 +192,7 @@ content:
     third_party_settings: {  }
   field_search_elevation:
     type: search_api_best_bets_widget
-    weight: 16
+    weight: 17
     region: content
     settings:
       elevate_label: 'Elevate query'
@@ -200,6 +202,13 @@ content:
       exclude_placeholder: 'Write search queries....'
       exclude_description: 'Specify queries that will exclude this entity from the search result. Separate multiple by comma.'
       disable_exclude: false
+    third_party_settings: {  }
+  field_show_external_link:
+    type: boolean_checkbox
+    weight: 8
+    region: content
+    settings:
+      display_label: true
     third_party_settings: {  }
   field_site_themes:
     type: options_shs
@@ -241,7 +250,7 @@ content:
     third_party_settings: {  }
   moderation_state:
     type: moderation_state_default
-    weight: 13
+    weight: 14
     region: content
     settings: {  }
     third_party_settings: {  }
@@ -325,7 +334,7 @@ content:
     settings: {  }
     third_party_settings: {  }
   url_redirects:
-    weight: 12
+    weight: 13
     region: content
     settings: {  }
     third_party_settings: {  }

@@ -1,0 +1,21 @@
+uuid: b6cafc9a-1277-4df5-80f0-7d0f1d3f8a7b
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_show_external_link
+    - node.type.contact
+id: node.contact.field_show_external_link
+field_name: field_show_external_link
+entity_type: node
+bundle: contact
+label: 'Show external link'
+description: "'Yes' will set the contact to link to the external website URL rather than this node. 'No' will ensure users see this contact node in search results and listings."
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  on_label: 'Yes'
+  off_label: 'No'
+field_type: boolean

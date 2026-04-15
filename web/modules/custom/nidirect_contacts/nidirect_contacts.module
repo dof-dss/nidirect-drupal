@@ -6,9 +6,14 @@
  */
 
 use Drupal\Component\Utility\Html;
+use Drupal\Core\Entity\EntityFormInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Link;
 use Drupal\Core\Url;
+use Drupal\link\LinkItemInterface;
+use Drupal\node\Entity\Node;
+use Drupal\node\NodeInterface;
+use Drupal\search_api_autocomplete\Suggestion\Suggestion;
 use Drupal\views\Plugin\views\query\QueryPluginBase;
 use Drupal\views\ViewExecutable;
 
@@ -333,4 +338,124 @@ function nidirect_contacts_views_pre_render(ViewExecutable $view) {
 function nidirect_contacts_camel_to_underscore(string $input_string, string $separator = "-") {
   return strtolower(preg_replace(
     '/(?<=\d)(?=[A-Za-z])|(?<=[A-Za-z])(?=\d)|(?<=[a-z])(?=[A-Z])/', $separator, $input_string));
+}
+
+/**
+ * Implements hook_preprocess_views_view_field().
+ */
+function nidirect_contacts_preprocess_views_view_field(&$variables) {
+  $view = $variables['view'];
+  $view_ids = [
+    'contacts_a_z',
+    'contacts',
+    'contact_children',
+  ];
+
+  if (in_array($view->id(), $view_ids)) {
+    if ($variables['field']->field !== 'title') {
+      return;
+    }
+    if (!in_array($view->current_display, [
+      'contacts_by_letter',
+      'contact_search',
+      'contact_children',
+    ], TRUE)
+    ) {
+      return;
+    }
+
+    // Get the node from the row.
+    $node = $variables['row']->_entity ?? NULL;
+    if ($node instanceof NodeInterface === FALSE) {
+      return;
+    }
+
+    // Exit early if we're not overriding to display an external link.
+    if (empty($node->get('field_show_external_link')->value)) {
+      return;
+    }
+
+    $contact_website_url = $node->get('field_contact_website')->uri ?? '';
+
+    if (str_starts_with($contact_website_url, 'http')) {
+      $variables['external_contact_website_url'] = TRUE;
+      $contact_website_link = Link::fromTextAndUrl($node->getTitle(), Url::fromUri($contact_website_url));
+
+      // Replace the internal contact node link with the website URL.
+      $variables['output'] = $contact_website_link->toRenderable();
+    }
+  }
+}
+
+/**
+ * Implements hook_search_api_autocomplete_suggestions_alter().
+ */
+function nidirect_contacts_search_api_autocomplete_suggestions_alter(array &$suggestions, array $alter_params) {
+  foreach ($suggestions as $suggestion) {
+    if ($suggestion instanceof Suggestion === FALSE) {
+      continue;
+    }
+
+    $url = $suggestion->getUrl();
+    if ($url instanceof Url === FALSE || $url->isExternal() || $url->getRouteName() !== 'entity.node.canonical') {
+      continue;
+    }
+
+    $route_parameters = $url->getRouteParameters();
+    $node = NULL;
+
+    if (!empty($route_parameters['node'])) {
+      // Depending on how the route param is built, this may already be a node
+      // or just a node ID.
+      if ($route_parameters['node'] instanceof NodeInterface) {
+        $node = $route_parameters['node'];
+      }
+      elseif (is_numeric($route_parameters['node'])) {
+        $node = Node::load((int) $route_parameters['node']);
+      }
+    }
+
+    if ($node instanceof NodeInterface === FALSE || $node->bundle() !== 'contact') {
+      continue;
+    }
+    // Exit early if we're not overriding to display an external link.
+    if (empty($node->get('field_show_external_link')->value)) {
+      return;
+    }
+    if ($node->get('field_contact_website')->isEmpty()) {
+      continue;
+    }
+
+    $website_field = $node->get('field_contact_website')->first();
+    if ($website_field instanceof LinkItemInterface === FALSE || $website_field->isExternal() === FALSE) {
+      continue;
+    }
+
+    $website_url = $website_field->getUrl();
+    // Replace the suggestion URL with the external one.
+    $suggestion->setUrl($website_url);
+  }
+}
+
+/**
+ * Implements hook_form_BASE_FORM_ID_alter().
+ */
+function nidirect_contacts_form_node_form_alter(&$form, FormStateInterface $form_state) {
+  $form_object = $form_state->getFormObject();
+  // @phpstan-ignore-next-line
+  $node = $form_state->getFormObject()->getEntity();
+  if ($node instanceof NodeInterface === FALSE || $node->bundle() !== 'contact') {
+    return;
+  }
+
+  if (empty($form['field_contact_website']) || empty($form['field_show_external_link'])) {
+    return;
+  }
+
+  // Put the checkbox directly beneath the website field.
+  $form['field_show_external_link']['#weight'] = (int) count($form['field_contact_website']['widget'][0]) + 1;
+
+  // Nest it under the website field wrapper so they appear together.
+  $form['field_contact_website']['widget'][0]['field_show_external_link'] = $form['field_show_external_link'];
+  unset($form['field_show_external_link']);
 }
