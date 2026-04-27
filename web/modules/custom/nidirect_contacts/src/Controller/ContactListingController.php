@@ -12,7 +12,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
 /**
  * Controller for display Contact A-Z block and View.
  */
-class ContactListingController extends ControllerBase {
+final class ContactListingController extends ControllerBase {
 
   /**
    * Drupal\Core\Entity\EntityTypeManagerInterface definition.

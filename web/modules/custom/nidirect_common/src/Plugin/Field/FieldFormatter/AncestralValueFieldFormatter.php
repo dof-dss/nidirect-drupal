@@ -25,7 +25,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *   }
  * )
  */
-class AncestralValueFieldFormatter extends FormatterBase implements ContainerFactoryPluginInterface {
+final class AncestralValueFieldFormatter extends FormatterBase implements ContainerFactoryPluginInterface {
 
   /**
    * The entity type manager service.

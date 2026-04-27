@@ -6,7 +6,7 @@ use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\metatag\MetatagTagPluginManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-class ViewsMetatagManager {
+final class ViewsMetatagManager {
 
   /**
    * Entity type manager service.

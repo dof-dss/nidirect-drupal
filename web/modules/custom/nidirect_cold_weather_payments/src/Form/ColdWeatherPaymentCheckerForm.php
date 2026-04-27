@@ -19,7 +19,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
 /**
  * Form for checking cold weather payments.
  */
-class ColdWeatherPaymentCheckerForm extends FormBase {
+final class ColdWeatherPaymentCheckerForm extends FormBase {
 
   /**
    * Drupal\Core\Http\ClientFactory definition.
