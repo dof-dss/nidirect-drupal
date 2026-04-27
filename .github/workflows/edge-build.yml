@@ -1,0 +1,19 @@
+name: Edge build
+
+on:
+  schedule:
+    - cron: '0 2 * * 1-5'
+  workflow_dispatch:
+
+jobs:
+  edge-build:
+    uses: johangant/webdev-ci/.github/workflows/edge-build.yml@github-actions-poc
+    with:
+      source_branch: development
+      edge_build_branch: D8NID-edge
+      php_version: '8.3'
+      edge_build_dofdss_packages: 'dof-dss/nicsdru_origins_theme:dev-10.x-dev dof-dss/nicsdru_origins_modules:dev-10.x-dev'
+    secrets:
+      PLATFORM_CLI_TOKEN: ${{ secrets.PLATFORM_CLI_TOKEN }}
+      PLATFORM_PROJECT: ${{ secrets.PLATFORM_PROJECT }}
+      GAC_ACCESS_TOKEN: ${{ secrets.GAC_ACCESS_TOKEN }}
