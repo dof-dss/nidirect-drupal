@@ -16,7 +16,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *  category = @Translation("NI Direct"),
  * )
  */
-class ColdWeatherPaymentCheckerBlock extends BlockBase {
+final class ColdWeatherPaymentCheckerBlock extends BlockBase {
 
   /**
    * The form builder service.

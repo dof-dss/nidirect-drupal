@@ -11,6 +11,7 @@ use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\Core\Url;
 use Drupal\node\NodeInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Generates the breadcrumb trail for content types with subtheme fields.
@@ -49,6 +50,13 @@ final class NodeThemesBreadcrumb implements BreadcrumbBuilderInterface {
   protected $bookManager;
 
   /**
+   * The current request object.
+   *
+   * @var \Symfony\Component\HttpFoundation\Request
+   */
+  protected $request;
+
+  /**
    * Class constructor.
    *
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
@@ -56,10 +64,13 @@ final class NodeThemesBreadcrumb implements BreadcrumbBuilderInterface {
    *
    * @param \Drupal\book\BookManagerInterface $book_manager
    *   The book manager.
+   * @param \Symfony\Component\HttpFoundation\Request $request
+   *    The current request object.
    */
-  public function __construct(EntityTypeManagerInterface $entity_type_manager, BookManagerInterface $book_manager) {
+  public function __construct(EntityTypeManagerInterface $entity_type_manager, BookManagerInterface $book_manager, Request $request) {
     $this->entityTypeManager = $entity_type_manager;
     $this->bookManager = $book_manager;
+    $this->request = $request;
   }
 
   /**
@@ -68,7 +79,8 @@ final class NodeThemesBreadcrumb implements BreadcrumbBuilderInterface {
   public static function create(ContainerInterface $container) {
     return new static(
       $container->get('entity_type.manager'),
-      $container->get('book.manager')
+      $container->get('book.manager'),
+      $container->get('request_stack')->getCurrentRequest()
     );
   }
 
@@ -191,7 +203,7 @@ final class NodeThemesBreadcrumb implements BreadcrumbBuilderInterface {
       // UUID that is present in the preview url path. Using this UUID we can
       // build a cache tag that can invalidated on the preview form submit
       // handler: nidirect_breadcrumbs_preview_cache_handler().
-      $url_path = \Drupal::request()->getPathInfo();
+      $url_path = $this->request->getPathInfo();
       $paths = explode('/', $url_path);
       $cache_tags[] = 'node:' . $paths[3];
     }

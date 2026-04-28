@@ -13,6 +13,7 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Http\ClientFactory;
 use Drupal\Core\Render\Renderer;
 use GuzzleHttp\Exception\RequestException;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 
@@ -43,16 +44,25 @@ final class ColdWeatherPaymentCheckerForm extends FormBase {
   protected $request;
 
   /**
+   * Logger instance.
+   *
+   * @var \Psr\Log\LoggerInterface
+   */
+  protected $logger;
+
+  /**
    * Constructs a new ColdWeatherPaymentCheckerForm object.
    */
   public function __construct(
     ClientFactory $http_client_factory,
     Renderer $renderer,
-    RequestStack $request
+    RequestStack $request,
+    LoggerInterface $logger
   ) {
     $this->httpClientFactory = $http_client_factory;
     $this->renderer = $renderer;
     $this->request = $request;
+    $this->logger = $logger;
   }
 
   /**
@@ -62,7 +72,8 @@ final class ColdWeatherPaymentCheckerForm extends FormBase {
     return new static(
       $container->get('http_client_factory'),
       $container->get('renderer'),
-      $container->get('request_stack')
+      $container->get('request_stack'),
+      $container->get('logger.factory')->get('nidirect_cold_weather_payments')
     );
   }
 
@@ -269,7 +280,7 @@ final class ColdWeatherPaymentCheckerForm extends FormBase {
     catch (RequestException $e) {
       $data['has_error'] = TRUE;
       $data['response'] = $e->getResponse();
-      \Drupal::logger('type')->error($e->getMessage());
+      $this->logger->error($e->getMessage());
     }
     finally {
       return $data;
