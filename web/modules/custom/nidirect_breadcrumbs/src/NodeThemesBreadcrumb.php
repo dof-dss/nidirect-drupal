@@ -203,7 +203,7 @@ final class NodeThemesBreadcrumb implements BreadcrumbBuilderInterface {
       // UUID that is present in the preview url path. Using this UUID we can
       // build a cache tag that can invalidated on the preview form submit
       // handler: nidirect_breadcrumbs_preview_cache_handler().
-      $url_path = $this->request->getPathInfo();
+      $url_path = $this->requestStack->getPathInfo();
       $paths = explode('/', $url_path);
       $cache_tags[] = 'node:' . $paths[3];
     }
