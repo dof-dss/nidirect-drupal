@@ -38,8 +38,8 @@ class GpDeleteForm extends ContentEntityConfirmFormBase {
     $removed_from = [];
 
     // Fetch all GP Practices so we can check for references to this GP.
-    $gp_practices = \Drupal::entityTypeManager()->getStorage('node')->loadByProperties([
-      'type' => 'gp_practice'
+    $gp_practices = $this->entityTypeManager->getStorage('node')->loadByProperties([
+      'type' => 'gp_practice',
     ]);
 
     foreach ($gp_practices as $gp_practice) {

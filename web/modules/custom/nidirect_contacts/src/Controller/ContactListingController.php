@@ -5,6 +5,7 @@ namespace Drupal\nidirect_contacts\Controller;
 use Drupal\Core\Block\BlockManagerInterface;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\nidirect_common\ViewsMetatagManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -36,6 +37,13 @@ final class ContactListingController extends ControllerBase {
   protected $request;
 
   /**
+   * Current route match service.
+   *
+   * @var \Drupal\Core\Routing\RouteMatchInterface
+   */
+  protected $routeMatch;
+
+  /**
    * ViewMetatagManager service.
    *
    * @var \Drupal\nidirect_common\ViewsMetatagManager
@@ -48,11 +56,13 @@ final class ContactListingController extends ControllerBase {
   public function __construct(EntityTypeManagerInterface $entity_type_manager,
                               BlockManagerInterface $block_manager,
                               RequestStack $request,
+                              RouteMatchInterface $route_match,
                               ViewsMetatagManager $views_metatag_manager) {
 
     $this->entityTypeManager = $entity_type_manager;
     $this->blockManager = $block_manager;
     $this->request = $request;
+    $this->routeMatch = $route_match;
     $this->viewsMetaTagManager = $views_metatag_manager;
   }
 
@@ -64,6 +74,7 @@ final class ContactListingController extends ControllerBase {
       $container->get('entity_type.manager'),
       $container->get('plugin.manager.block'),
       $container->get('request_stack'),
+      $container->get('current_route_match'),
       $container->get('nidirect_common.views_metatags_manager')
     );
   }
@@ -80,7 +91,7 @@ final class ContactListingController extends ControllerBase {
   public function getTitle($route_type) {
     if ($route_type == 'contacts') {
       // Is there a text search string?
-      $search_string = \Drupal::request()->get('query_contacts_az');
+      $search_string = $this->request->getCurrentRequest()->get('query_contacts_az');
       if (!empty($search_string)) {
         return t('Contacts search');
       }
@@ -90,7 +101,7 @@ final class ContactListingController extends ControllerBase {
     }
     elseif ($route_type == 'contacts_letter') {
       // A letter has been selected from the A-Z.
-      $letter = \Drupal::routeMatch()->getParameter('letter');
+      $letter = $this->routeMatch->getParameter('letter');
       return t('Contacts - under :letter', [':letter' => strtoupper($letter)]);
     }
     return t('Contacts');

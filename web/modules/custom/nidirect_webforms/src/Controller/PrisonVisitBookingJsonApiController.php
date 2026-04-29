@@ -9,6 +9,8 @@ use Drupal\Core\File\FileExists;
 use Drupal\Core\File\FileSystemInterface;
 use Drupal\Core\Session\UserSession;
 use Drupal\file\Entity\File;
+use Drupal\file\FileRepositoryInterface;
+use Drupal\file\FileUsage\FileUsageInterface;
 use GuzzleHttp\ClientInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -19,7 +21,7 @@ use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
  * JSON API controller for receiving available
  * visit timeslots for prisons.
  */
-class PrisonVisitBookingJsonApiController extends ControllerBase {
+final class PrisonVisitBookingJsonApiController extends ControllerBase {
 
   /**
    * The configuration factory.
@@ -57,6 +59,27 @@ class PrisonVisitBookingJsonApiController extends ControllerBase {
   protected $cache;
 
   /**
+   * The file repository service.
+   *
+   * @var \Drupal\file\FileRepositoryInterface
+   */
+  protected $fileRepository;
+
+  /**
+   * The file system service.
+   *
+   * @var \Drupal\Core\File\FileSystemInterface
+   */
+  protected $fileSystem;
+
+  /**
+   * The file usage service.
+   *
+   * @var \Drupal\file\FileUsage\FileUsageInterface
+   */
+  protected $fileUsage;
+
+  /**
    * Constructs a PrisonVisitBookingJsonApiController object.
    *
    * @param \Drupal\Core\Config\ConfigFactoryInterface $configFactory
@@ -67,12 +90,21 @@ class PrisonVisitBookingJsonApiController extends ControllerBase {
    *   A request instance.
    * @param \Drupal\Core\Cache\CacheBackendInterface $cache
    *   A cache instance.
+   * @param \Drupal\file\FileRepositoryInterface $file_repository
+   *   The file repository service.
+   * @param \Drupal\Core\File\FileSystemInterface $file_system
+   *   The file system service.
+   * @param \Drupal\file\FileUsage\FileUsageInterface $file_usage
+   *   The file usage service.
    */
-  public function __construct(ConfigFactoryInterface $configFactory, ClientInterface $httpClient, Request $request, CacheBackendInterface $cache) {
+  public function __construct(ConfigFactoryInterface $configFactory, ClientInterface $httpClient, Request $request, CacheBackendInterface $cache, FileRepositoryInterface $file_repository, FileSystemInterface $file_system, FileUsageInterface $file_usage) {
     $this->configFactory = $configFactory;
     $this->httpClient = $httpClient;
     $this->request = $request;
     $this->cache = $cache;
+    $this->fileRepository = $file_repository;
+    $this->fileSystem = $file_system;
+    $this->fileUsage = $file_usage;
   }
 
   /**
@@ -89,6 +121,9 @@ class PrisonVisitBookingJsonApiController extends ControllerBase {
       $container->get('http_client'),
       $container->get('request_stack')->getCurrentRequest(),
       $container->get('cache.default'),
+      $container->get('file.repository'),
+      $container->get('file_system'),
+      $container->get('file.usage'),
     );
   }
 
@@ -209,17 +244,13 @@ class PrisonVisitBookingJsonApiController extends ControllerBase {
         $this->getLogger('prison_visits')->info('prison_visit_slots_data cache updated.');
 
         // Write content to file.
-        /** @var \Drupal\file\FileRepositoryInterface $fileRepository */
-        $fileRepository = \Drupal::service('file.repository');
         $directory = 'private://nidirect_webforms';
         $filepath = $directory . '/prison_visit_slots_data.json';
 
         // Create file if it doesn't exist.
-        $file = $fileRepository->loadByUri($filepath);
+        $file = $this->fileRepository->loadByUri($filepath);
         if (empty($file)) {
-          /** @var \Drupal\Core\File\FileSystemInterface $file_system */
-          $file_system = \Drupal::service('file_system');
-          $file_system->prepareDirectory($directory, FileSystemInterface::CREATE_DIRECTORY | FileSystemInterface::MODIFY_PERMISSIONS);
+          $this->fileSystem->prepareDirectory($directory, FileSystemInterface::CREATE_DIRECTORY | FileSystemInterface::MODIFY_PERMISSIONS);
           $file = File::create([
             'filename' => basename($filepath),
             'uri' => $filepath,
@@ -230,13 +261,11 @@ class PrisonVisitBookingJsonApiController extends ControllerBase {
           $file->save();
 
           // Mark the file as used as unused files might be deleted.
-          /** @var \Drupal\file\FileUsage\DatabaseFileUsageBackend $file_usage */
-          $file_usage = \Drupal::service('file.usage');
-          $file_usage->add($file, 'nidirect_webforms', 'webform', 'prison_visit_online_booking');
+          $this->fileUsage->add($file, 'nidirect_webforms', 'webform', 'prison_visit_online_booking');
         }
 
         // Write content to the file.
-        $fileRepository->writeData($content, $filepath, FileExists::Replace);
+        $this->fileRepository->writeData($content, $filepath, FileExists::Replace);
         $file->save();
         $this->getLogger('prison_visits')->info('prison_visit_slots_data saved to ' . $filepath);
       }

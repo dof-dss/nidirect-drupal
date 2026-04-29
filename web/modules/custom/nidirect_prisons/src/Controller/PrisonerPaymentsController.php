@@ -9,7 +9,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
-class PrisonerPaymentsController extends ControllerBase {
+final class PrisonerPaymentsController extends ControllerBase {
 
   /**
    * @var \Drupal\nidirect_prisons\Service\PrisonerPaymentManager

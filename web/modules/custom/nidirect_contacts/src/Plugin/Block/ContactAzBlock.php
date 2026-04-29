@@ -16,7 +16,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *  admin_label = @Translation("Contacts A to Z"),
  * )
  */
-class ContactAzBlock extends BlockBase implements ContainerFactoryPluginInterface {
+final class ContactAzBlock extends BlockBase implements ContainerFactoryPluginInterface {
 
   /**
    * Drupal\Core\Routing\CurrentRouteMatch definition.

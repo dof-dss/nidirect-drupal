@@ -16,7 +16,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *
  * @ingroup nidirect_gp
  */
-class GpRevisionDeleteForm extends ConfirmFormBase {
+final class GpRevisionDeleteForm extends ConfirmFormBase {
 
   /**
    * The Messenger service.

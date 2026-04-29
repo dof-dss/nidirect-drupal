@@ -1,7 +1,7 @@
 services:
   nidirect_breadcrumbs.breadcrumb.node.themes:
     class: Drupal\nidirect_breadcrumbs\NodeThemesBreadcrumb
-    arguments: ['@entity_type.manager', '@book.manager']
+    arguments: ['@entity_type.manager', '@book.manager', '@request_stack']
     tags:
       - { name: breadcrumb_builder, priority: 5000 }
 

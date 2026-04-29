@@ -388,7 +388,7 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
         $elements['page_payment_card_details']['#access'] = FALSE;
         $elements['submit']['#access'] = FALSE;
 
-        \Drupal::messenger()->addError($this->t('An error occurred while processing your request. Try again later.'));
+        $this->messenger()->addError($this->t('An error occurred while processing your request. Try again later.'));
         $this->getLogger('nidirect_prisons')->error('Failed to parse Worldpay response: @response', [
           '@response' => $response_xml,
         ]);
@@ -488,7 +488,7 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
         ]);
 
         $webform->setSetting('confirmation_message', $webform->getElement('webform_confirmation_failure')['#markup']);
-        \Drupal::messenger()->addError(t('Payment verification failed. Contact the administrator.'));
+        $this->messenger()->addError($this->t('Payment verification failed. Contact the administrator.'));
         return;
       }
 
@@ -499,7 +499,7 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
         ]);
 
         $webform->setSetting('confirmation_message', $webform->getElement('webform_confirmation_failure')['#markup']);
-        \Drupal::messenger()->addError(t('Payment verification failed. Contact the administrator.'));
+        $this->messenger()->addError($this->t('Payment verification failed. Contact the administrator.'));
         return;
       }
 

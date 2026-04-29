@@ -7,6 +7,7 @@ use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Form\FormBuilderInterface;
 use Drupal\Core\Form\FormState;
 use Drupal\geocoder\GeocoderInterface;
+use Drupal\nidirect_common\UpdateConfigFromEnvironment;
 use Drupal\nidirect_gp\PostcodeExtractor;
 use Drupal\views\ViewExecutable;
 use Geocoder\Model\AddressCollection;
@@ -20,7 +21,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
  *
  * Generates View results for fulltext and location based GP searches.
  */
-class GpSearchController extends ControllerBase {
+final class GpSearchController extends ControllerBase {
 
   /**
    * Symfony\Component\HttpFoundation\RequestStack definition.
@@ -86,6 +87,13 @@ class GpSearchController extends ControllerBase {
   protected $entityTypeManager;
 
   /**
+   * Config update service.
+   *
+   * @var \Drupal\nidirect_common\UpdateConfigFromEnvironment
+   */
+  protected $configUpdateService;
+
+  /**
    * GpSearchController constructor.
    *
    * @param \Symfony\Component\HttpFoundation\RequestStack $request_stack
@@ -102,6 +110,8 @@ class GpSearchController extends ControllerBase {
    *   Form builder.
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
    *   Entity type manager.
+   * @param \Drupal\nidirect_common\UpdateConfigFromEnvironment $config_update_service
+   *   Config update service.
    */
   public function __construct(
     RequestStack $request_stack,
@@ -110,7 +120,8 @@ class GpSearchController extends ControllerBase {
     int $proximity_max_distance,
     string $geocoding_service_id,
     FormBuilderInterface $form_builder,
-    EntityTypeManagerInterface $entity_type_manager
+    EntityTypeManagerInterface $entity_type_manager,
+    UpdateConfigFromEnvironment $config_update_service
   ) {
 
     $this->requestStack = $request_stack;
@@ -120,6 +131,7 @@ class GpSearchController extends ControllerBase {
     $this->geocodingServiceId = $geocoding_service_id;
     $this->formBuilder = $form_builder;
     $this->entityTypeManager = $entity_type_manager;
+    $this->configUpdateService = $config_update_service;
   }
 
   /**
@@ -133,7 +145,8 @@ class GpSearchController extends ControllerBase {
       $container->getParameter('nidirect_gp.proximity_max_distance'),
       $container->getParameter('nidirect_gp.geocoding_service'),
       $container->get('form_builder'),
-      $container->get('entity_type.manager')
+      $container->get('entity_type.manager'),
+      $container->get('nidirect_common.update_config_from_environment')
     );
   }
 
@@ -203,8 +216,7 @@ class GpSearchController extends ControllerBase {
         // Ensure that the geocoder provider api key is correct (as the api key
         // cannot be held in config, it may be necessary to update it here with
         // the api key that is held in the environment variable).
-        $config_update_service = \Drupal::service('nidirect_common.update_config_from_environment');
-        $config_update_service->updateApiKey('geocoder.geocoder_provider.googlemaps', 'apiKey', 'GOOGLE_MAP_API_SERVER_KEY');
+        $this->configUpdateService->updateApiKey('geocoder.geocoder_provider.googlemaps', 'apiKey', 'GOOGLE_MAP_API_SERVER_KEY');
         // Retrieve geocode provider.
         $provider = $this->entityTypeManager->getStorage('geocoder_provider')->loadMultiple([$this->geocodingServiceId]);
         // Geocode the first postcode (only accept single values for search).

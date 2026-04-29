@@ -2,6 +2,7 @@
 
 namespace Drupal\nidirect_prisons\Plugin\rest\resource;
 
+use Drupal\Core\Database\Connection;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\rest\Plugin\ResourceBase;
 use Drupal\rest\ResourceResponse;
@@ -20,7 +21,14 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *   }
  * )
  */
-class NominatedVisitorsResource extends ResourceBase implements ContainerFactoryPluginInterface {
+final class NominatedVisitorsResource extends ResourceBase implements ContainerFactoryPluginInterface {
+
+  /**
+   * The database connection.
+   *
+   * @var \Drupal\Core\Database\Connection
+   */
+  protected Connection $database;
 
   /**
    * Constructs a new NominatedVisitorsResource object.
@@ -35,15 +43,19 @@ class NominatedVisitorsResource extends ResourceBase implements ContainerFactory
    *   The available serialization formats.
    * @param \Psr\Log\LoggerInterface $logger
    *   A logger instance.
+   * @param \Drupal\Core\Database\Connection $database
+   *   The database connection.
    */
   public function __construct(
     array $configuration,
     $plugin_id,
     $plugin_definition,
     array $serializer_formats,
-    LoggerInterface $logger
+    LoggerInterface $logger,
+    Connection $database
   ) {
     parent::__construct($configuration, $plugin_id, $plugin_definition, $serializer_formats, $logger);
+    $this->database = $database;
   }
 
   /**
@@ -55,7 +67,8 @@ class NominatedVisitorsResource extends ResourceBase implements ContainerFactory
       $plugin_id,
       $plugin_definition,
       $container->getParameter('serializer.formats'),
-      $container->get('logger.factory')->get('nidirect_prisons')
+      $container->get('logger.factory')->get('nidirect_prisons'),
+      $container->get('database')
     );
   }
 
@@ -71,11 +84,11 @@ class NominatedVisitorsResource extends ResourceBase implements ContainerFactory
     }
 
     // Start a database transaction.
-    $transaction = \Drupal::database()->startTransaction();
+    $transaction = $this->database->startTransaction();
 
     try {
       // Delete existing prisoner nominees before inserting new data.
-      \Drupal::database()->delete('prisoner_payment_nominees')->execute();
+      $this->database->delete('prisoner_payment_nominees')->execute();
 
       // Process each prison.
       foreach ($data as $prison_key => $prisoners) {
@@ -106,7 +119,7 @@ class NominatedVisitorsResource extends ResourceBase implements ContainerFactory
           // Remove null values from visitor_ids to avoid empty entries in the database.
           $visitor_ids = array_filter($visitor_ids);
 
-          \Drupal::database()->merge('prisoner_payment_nominees')
+          $this->database->merge('prisoner_payment_nominees')
             ->key('prisoner_id', $prisoner['ID'])
             ->fields(['visitor_ids' => implode(',', $visitor_ids)])
             ->execute();
@@ -117,7 +130,7 @@ class NominatedVisitorsResource extends ResourceBase implements ContainerFactory
       // Rollback the transaction if an error occurs.
       $transaction->rollback();
 
-      \Drupal::logger('nidirect_prisons')->error('Database error: @message', ['@message' => $e->getMessage()]);
+      $this->logger->error('Database error: @message', ['@message' => $e->getMessage()]);
       return new ResourceResponse(['error' => 'Database error: ' . $e->getMessage()], 500);
     }
 

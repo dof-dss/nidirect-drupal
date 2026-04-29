@@ -11,7 +11,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 /**
  * Creates a local action linking to the current taxonomy add term form.
  */
-class AddTermLocalAction extends LocalActionDefault {
+final class AddTermLocalAction extends LocalActionDefault {
 
   /**
    * Current route match.
