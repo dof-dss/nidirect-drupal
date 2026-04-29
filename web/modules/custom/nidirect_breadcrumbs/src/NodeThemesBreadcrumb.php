@@ -65,8 +65,8 @@ final class NodeThemesBreadcrumb implements BreadcrumbBuilderInterface {
    * @param \Drupal\book\BookManagerInterface $book_manager
    *   The book manager.
    * @param \Symfony\Component\HttpFoundation\RequestStack $request_stack
-   * *   Request stack object/service.
- */
+   *   Request stack object/service.
+   */
   public function __construct(EntityTypeManagerInterface $entity_type_manager, BookManagerInterface $book_manager, RequestStack $request_stack) {
     $this->entityTypeManager = $entity_type_manager;
     $this->bookManager = $book_manager;
