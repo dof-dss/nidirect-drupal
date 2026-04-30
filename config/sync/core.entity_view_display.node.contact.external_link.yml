@@ -1,0 +1,88 @@
+uuid: 30bd6419-8619-4024-b4c5-07a3bbbf9253
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.node.external_link
+    - field.field.node.contact.body
+    - field.field.node.contact.field_address
+    - field.field.node.contact.field_contact_additional_info
+    - field.field.node.contact.field_contact_category
+    - field.field.node.contact.field_contact_group
+    - field.field.node.contact.field_contact_hours
+    - field.field.node.contact.field_contact_website
+    - field.field.node.contact.field_email_address
+    - field.field.node.contact.field_location
+    - field.field.node.contact.field_meta_tags
+    - field.field.node.contact.field_next_audit_due
+    - field.field.node.contact.field_phone
+    - field.field.node.contact.field_related_info
+    - field.field.node.contact.field_search_elevation
+    - field.field.node.contact.field_show_external_link
+    - field.field.node.contact.field_site_themes
+    - field.field.node.contact.field_summary
+    - field.field.node.contact.field_supplementary_contact
+    - field.field.node.contact.field_telephone
+    - node.type.contact
+  module:
+    - layout_builder
+    - link
+    - user
+third_party_settings:
+  layout_builder:
+    enabled: false
+    allow_custom: false
+id: node.contact.external_link
+targetEntityType: node
+bundle: contact
+mode: external_link
+content:
+  field_contact_website:
+    type: link
+    label: inline
+    settings:
+      trim_length: 80
+      url_only: true
+      url_plain: false
+      rel: '0'
+      target: _blank
+    third_party_settings: {  }
+    weight: 2
+    region: content
+  field_show_external_link:
+    type: boolean
+    label: inline
+    settings:
+      format: enabled-disabled
+      format_custom_false: ''
+      format_custom_true: ''
+    third_party_settings: {  }
+    weight: 1
+    region: content
+  links:
+    settings: {  }
+    third_party_settings: {  }
+    weight: 0
+    region: content
+hidden:
+  body: true
+  content_moderation_control: true
+  field_address: true
+  field_contact_additional_info: true
+  field_contact_category: true
+  field_contact_group: true
+  field_contact_hours: true
+  field_email_address: true
+  field_location: true
+  field_meta_tags: true
+  field_next_audit_due: true
+  field_phone: true
+  field_related_info: true
+  field_search_elevation: true
+  field_site_themes: true
+  field_summary: true
+  field_supplementary_contact: true
+  field_telephone: true
+  langcode: true
+  search_api_excerpt: true
+  toc_display: true

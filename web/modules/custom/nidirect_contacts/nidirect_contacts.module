@@ -7,6 +7,7 @@
 
 use Drupal\Component\Utility\Html;
 use Drupal\Core\Entity\EntityFormInterface;
+use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Link;
 use Drupal\Core\Url;
@@ -494,5 +495,24 @@ function nidirect_contacts_form_node_form_alter(&$form, FormStateInterface $form
         $selector => ['checked' => TRUE],
       ];
     }
+  }
+}
+
+/**
+ * Implements hook_entity_view_mode_alter().
+ */
+function nidirect_contacts_entity_view_mode_alter(&$view_mode, EntityInterface $entity) {
+
+  if ($entity->getEntityTypeId() !== 'node' || $entity->bundle() !== 'contact') {
+    return;
+  }
+
+  // Only affect full node view.
+  if ($view_mode !== 'full') {
+    return;
+  }
+
+  if ($entity->get('field_show_external_link')->value) {
+    $view_mode = 'external_link';
   }
 }
