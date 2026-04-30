@@ -2,6 +2,8 @@
 
 namespace Drupal\nidirect_money_advice_articles\EventSubscriber;
 
+use Drupal\Component\Datetime\TimeInterface;
+use Drupal\Component\Uuid\UuidInterface;
 use Drupal\Core\Database\Database;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Logger\LoggerChannelFactory;
@@ -38,18 +40,40 @@ class PostMigrationSubscriber implements EventSubscriberInterface {
   protected $dbConnDrupal8;
 
   /**
+   * The time service.
+   *
+   * @var \Drupal\Component\Datetime\TimeInterface
+   */
+  protected $time;
+
+  /**
+   * The UUID service.
+   *
+   * @var \Drupal\Component\Uuid\UuidInterface
+   */
+  protected $uuid;
+
+  /**
    * PostMigrationSubscriber constructor.
    *
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
    *   The Entity manager.
    * @param \Drupal\Core\Logger\LoggerChannelFactory $logger
    *   Drupal logger.
+   * @param \Drupal\Component\Datetime\TimeInterface $time
+   *   The time service.
+   * @param \Drupal\Component\Uuid\UuidInterface $uuid
+   *   The UUID service.
    */
   public function __construct(EntityTypeManagerInterface $entity_type_manager,
-                              LoggerChannelFactory $logger) {
+                              LoggerChannelFactory $logger,
+                              TimeInterface $time,
+                              UuidInterface $uuid) {
     $this->entityTypeManager = $entity_type_manager;
     $this->logger = $logger->get('nidirect_money_advice_articles');
     $this->dbConnDrupal8 = Database::getConnection('default', 'default');
+    $this->time = $time;
+    $this->uuid = $uuid;
   }
 
   /**
@@ -111,7 +135,7 @@ class PostMigrationSubscriber implements EventSubscriberInterface {
         'node',
         $row->destid1,
         1,
-        \Drupal::time()->getCurrentTime(),
+        $this->time->getCurrentTime(),
       ]);
       $query->execute();
 
@@ -127,13 +151,13 @@ class PostMigrationSubscriber implements EventSubscriberInterface {
       ]);
       $query->values([
         'locked_content',
-        \Drupal::service('uuid')->generate(),
+        $this->uuid->generate(),
         'node',
         $row->destid1,
         TRUE,
         1,
         'NULL',
-        \Drupal::time()->getCurrentTime(),
+        $this->time->getCurrentTime(),
       ]);
       $query->execute();
     }

@@ -7,11 +7,12 @@ use Drupal\Core\Database\Database;
 use Drupal\Core\Link;
 use Drupal\Core\Url;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
  * Returns responses for NIDirect Campaign Utilities routes.
  */
-class CampaignImporterDashboardController extends ControllerBase {
+final class CampaignImporterDashboardController extends ControllerBase {
 
   /**
    * The legacy database connection.
@@ -28,10 +29,18 @@ class CampaignImporterDashboardController extends ControllerBase {
   protected $dbConnD8;
 
   /**
+   * The request stack.
+   *
+   * @var \Symfony\Component\HttpFoundation\RequestStack
+   */
+  protected $requestStack;
+
+  /**
    * Controller constructor.
    */
-  public function __construct($d8_connection) {
+  public function __construct($d8_connection, RequestStack $request_stack) {
     $this->dbConnD8 = $d8_connection;
+    $this->requestStack = $request_stack;
 
     $this->dbConnD7 = Database::getConnection('default', 'migrate');
   }
@@ -42,7 +51,7 @@ class CampaignImporterDashboardController extends ControllerBase {
   public static function create(ContainerInterface $container) {
     return new static(
       $container->get('database'),
-      Database::getConnection('default', 'drupal7db'),
+      $container->get('request_stack'),
     );
   }
 
@@ -54,7 +63,7 @@ class CampaignImporterDashboardController extends ControllerBase {
     $query = $this->dbConnD7->query("SELECT nid, title, status FROM {node} WHERE type = 'landing_page' ORDER BY title");
     $d7_landing_pages = $query->fetchAll();
     $items = [];
-    $host = \Drupal::request()->getSchemeAndHttpHost();
+    $host = $this->requestStack->getCurrentRequest()->getSchemeAndHttpHost();
 
     foreach ($d7_landing_pages as $landing_page) {
       // Fetch the Drupal 8 node ID matching the Drupal 7 node title.

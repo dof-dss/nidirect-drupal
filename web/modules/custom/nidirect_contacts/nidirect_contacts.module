@@ -290,11 +290,6 @@ function nidirect_contacts_views_pre_render(ViewExecutable $view) {
         $entity = $result->_entity;
         $supplementary_contact = $entity->get('field_supplementary_contact');
         $node_title = $supplementary_contact->getString();
-
-        // Ignore next phpstan error; no appropriate setting function
-        // on the public properties the ResultRow object contains.
-
-        // @phpstan-ignore-next-line.
         $result->node_field_data_title = $node_title;
 
         /** @var \Drupal\node\NodeInterface $node */
@@ -441,8 +436,6 @@ function nidirect_contacts_search_api_autocomplete_suggestions_alter(array &$sug
  * Implements hook_form_BASE_FORM_ID_alter().
  */
 function nidirect_contacts_form_node_form_alter(&$form, FormStateInterface $form_state) {
-  $form_object = $form_state->getFormObject();
-  // @phpstan-ignore-next-line
   $node = $form_state->getFormObject()->getEntity();
   if ($node instanceof NodeInterface === FALSE || $node->bundle() !== 'contact') {
     return;

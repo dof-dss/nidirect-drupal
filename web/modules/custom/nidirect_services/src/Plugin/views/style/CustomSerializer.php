@@ -3,6 +3,8 @@
 namespace Drupal\nidirect_services\Plugin\views\style;
 
 use Drupal\rest\Plugin\views\style\Serializer;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
  * Custom serializer for view generating services-catalogue.json.
@@ -20,10 +22,26 @@ use Drupal\rest\Plugin\views\style\Serializer;
 class CustomSerializer extends Serializer {
 
   /**
+   * The request stack.
+   *
+   * @var \Symfony\Component\HttpFoundation\RequestStack
+   */
+  protected $requestStack;
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
+    $instance = parent::create($container, $configuration, $plugin_id, $plugin_definition);
+    $instance->requestStack = $container->get('request_stack');
+    return $instance;
+  }
+
+  /**
    * {@inheritdoc}
    */
   public function render() {
-    $host = \Drupal::request()->getSchemeAndHttpHost();
+    $host = $this->requestStack->getCurrentRequest()->getSchemeAndHttpHost();
 
     // Pattern to match and replace relative paths found in fields
     // containing HTML.
