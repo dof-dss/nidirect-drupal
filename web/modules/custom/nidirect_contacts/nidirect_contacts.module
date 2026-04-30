@@ -6,7 +6,7 @@
  */
 
 use Drupal\Component\Utility\Html;
-use Drupal\Core\Entity\EntityFormInterface;
+use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Link;
 use Drupal\Core\Url;
@@ -452,10 +452,64 @@ function nidirect_contacts_form_node_form_alter(&$form, FormStateInterface $form
     return;
   }
 
-  // Put the checkbox directly beneath the website field.
-  $form['field_show_external_link']['#weight'] = (int) count($form['field_contact_website']['widget'][0]) + 1;
+  if (isset($form['field_show_external_link'])) {
 
-  // Nest it under the website field wrapper so they appear together.
-  $form['field_contact_website']['widget'][0]['field_show_external_link'] = $form['field_show_external_link'];
-  unset($form['field_show_external_link']);
+    $selector = ':input[name="field_show_external_link[value]"]';
+
+    $fields_to_toggle = [
+      // group_general fields...
+      'field_contact_additional_info',
+      'field_address',
+      'body',
+      'field_contact_category',
+      'field_email_address',
+      'field_location',
+      'field_related_info',
+      'field_contact_hours',
+      'field_phone',
+      'field_summary',
+    ];
+
+    foreach ($fields_to_toggle as $field_name) {
+      if (isset($form[$field_name])) {
+        $form[$field_name]['#states'] = [
+          'invisible' => [
+            $selector => ['checked' => TRUE],
+          ],
+        ];
+
+        $form[$field_name]['widget'][0]['#states'] = [
+          'invisible' => [
+            $selector => ['checked' => TRUE],
+          ],
+        ];
+      }
+    }
+
+    if (isset($form['field_contact_website']['widget'][0]['uri'])) {
+      $form['field_contact_website']['widget'][0]['uri']['#states']['required'] = [
+        $selector => ['checked' => TRUE],
+      ];
+      $form['field_contact_website']['widget'][0]['title']['#states']['invisible'] = [
+        $selector => ['checked' => TRUE],
+      ];
+    }
+  }
+}
+
+/**
+ * Implements hook_entity_view_mode_alter().
+ */
+function nidirect_contacts_entity_view_mode_alter(&$view_mode, EntityInterface $entity):void {
+
+  // Only affect full node view.
+  if ($view_mode !== 'full') {
+    return;
+  }
+
+  if ($entity->getEntityTypeId() === 'node' && $entity->bundle() === 'contact') {
+    if ($entity->get('field_show_external_link')->value) {
+      $view_mode = 'external_link';
+    }
+  }
 }
