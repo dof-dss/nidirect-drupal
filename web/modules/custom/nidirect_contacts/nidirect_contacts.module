@@ -507,7 +507,7 @@ function nidirect_contacts_entity_view_mode_alter(&$view_mode, EntityInterface $
     return;
   }
 
-  if ($entity->getEntityTypeId() === 'node' && $entity->bundle() === 'contact') {
+  if ($entity instanceof NodeInterface && $entity->bundle() === 'contact') {
     if ($entity->get('field_show_external_link')->value) {
       $view_mode = 'external_link';
     }
