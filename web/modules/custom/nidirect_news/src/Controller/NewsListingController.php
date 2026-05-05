@@ -12,7 +12,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
 /**
  * Controller for news entity listings.
  */
-class NewsListingController extends ControllerBase {
+final class NewsListingController extends ControllerBase {
 
   /**
    * Drupal\Core\Entity\EntityTypeManagerInterface definition.

@@ -3,6 +3,7 @@
 namespace Drupal\nidirect_prisons\Authentication\Provider;
 
 use Drupal\Core\Authentication\AuthenticationProviderInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -10,6 +11,23 @@ use Symfony\Component\HttpFoundation\Request;
  * Prisoner Payments REST resources.
  */
 class TokenAndIpAddressAuth implements AuthenticationProviderInterface {
+
+  /**
+   * The logger service.
+   *
+   * @var \Psr\Log\LoggerInterface
+   */
+  protected LoggerInterface $logger;
+
+  /**
+   * Constructs a TokenAndIpAddressAuth object.
+   *
+   * @param \Psr\Log\LoggerInterface $logger
+   *   The logger service.
+   */
+  public function __construct(LoggerInterface $logger) {
+    $this->logger = $logger;
+  }
 
   /**
    * {@inheritdoc}
@@ -41,12 +59,12 @@ class TokenAndIpAddressAuth implements AuthenticationProviderInterface {
     $client_ip = $request->getClientIp();
 
     if (!in_array($token, $allowed_tokens)) {
-      \Drupal::logger('nidirect_prisons')->debug('Supplied X-Auth-Token not found in PRISONS_API_PERMITTED_TOKENS');
+      $this->logger->debug('Supplied X-Auth-Token not found in PRISONS_API_PERMITTED_TOKENS');
       return NULL;
     }
 
     if (!in_array($client_ip, $allowed_ip_addresses)) {
-      \Drupal::logger('nidirect_prisons')->debug('IP address @client_ip not found in PRISONS_API_PERMITTED_IPS.', ['@client_ip' => $client_ip]);
+      $this->logger->debug('IP address @client_ip not found in PRISONS_API_PERMITTED_IPS.', ['@client_ip' => $client_ip]);
       return NULL;
     }
 
@@ -60,7 +78,7 @@ class TokenAndIpAddressAuth implements AuthenticationProviderInterface {
     }
 
     // There must have been a problem loading nidirect_prisons_api_user.
-    \Drupal::logger('nidirect_prisons')->error('Service account with username @username could not be loaded.', ['@username' => $username]);
+    $this->logger->error('Service account with username @username could not be loaded.', ['@username' => $username]);
 
     // Authentication has failed.
     return NULL;

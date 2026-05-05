@@ -3,6 +3,7 @@
 namespace Drupal\nidirect_gp\Form;
 
 use Drupal\Core\Datetime\DateFormatterInterface;
+use Drupal\Component\Datetime\TimeInterface;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Form\ConfirmFormBase;
 use Drupal\Core\Form\FormStateInterface;
@@ -48,6 +49,13 @@ class GpRevisionRevertForm extends ConfirmFormBase {
   protected $messenger;
 
   /**
+   * The time service.
+   *
+   * @var \Drupal\Component\Datetime\TimeInterface
+   */
+  protected $time;
+
+  /**
    * Constructs a new GpRevisionRevertForm.
    *
    * @param \Drupal\Core\Entity\EntityStorageInterface $entity_storage
@@ -56,21 +64,25 @@ class GpRevisionRevertForm extends ConfirmFormBase {
    *   The date formatter service.
    * @param \Drupal\Core\Messenger\MessengerInterface $messenger
    *   Messenger service object.
+   * @param \Drupal\Component\Datetime\TimeInterface $time
+   *   The time service.
    */
-  public function __construct(EntityStorageInterface $entity_storage, DateFormatterInterface $date_formatter, MessengerInterface $messenger) {
+  public function __construct(EntityStorageInterface $entity_storage, DateFormatterInterface $date_formatter, MessengerInterface $messenger, TimeInterface $time) {
     $this->gpStorage = $entity_storage;
     $this->dateFormatter = $date_formatter;
     $this->messenger = $messenger;
+    $this->time = $time;
   }
 
   /**
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container) {
-    return new static(
+    return new self(
       $container->get('entity_type.manager')->getStorage('gp'),
       $container->get('date.formatter'),
-      $container->get('messenger')
+      $container->get('messenger'),
+      $container->get('datetime.time')
     );
   }
 
@@ -129,7 +141,6 @@ class GpRevisionRevertForm extends ConfirmFormBase {
     $original_revision_timestamp = $this->revision->getRevisionCreationTime();
 
     $this->revision = $this->prepareRevertedRevision($this->revision, $form_state);
-    // @phpstan-ignore-next-line.
     $this->revision->revision_log = t('Copy of the revision from %date.', ['%date' => $this->dateFormatter->format($original_revision_timestamp)]);
     $this->revision->save();
 
@@ -161,7 +172,7 @@ class GpRevisionRevertForm extends ConfirmFormBase {
   protected function prepareRevertedRevision(GpInterface $revision, FormStateInterface $form_state) {
     $revision->setNewRevision();
     $revision->isDefaultRevision(TRUE);
-    $revision->setRevisionCreationTime(\Drupal::time()->getRequestTime());
+    $revision->setRevisionCreationTime($this->time->getRequestTime());
 
     return $revision;
   }

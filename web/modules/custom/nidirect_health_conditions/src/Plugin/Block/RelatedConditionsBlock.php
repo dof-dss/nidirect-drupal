@@ -26,7 +26,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *  admin_label = @Translation("Health Conditions: Related conditions"),
  * )
  */
-class RelatedConditionsBlock extends BlockBase implements ContainerFactoryPluginInterface {
+final class RelatedConditionsBlock extends BlockBase implements ContainerFactoryPluginInterface {
 
   /**
    * \Drupal\Core\Routing\CurrentRouteMatch definition.

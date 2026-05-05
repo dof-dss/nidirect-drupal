@@ -17,7 +17,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
  *   category = @Translation("Translation help link"),
  * )
  */
-class TranslationHelpBlock extends BlockBase implements ContainerFactoryPluginInterface {
+final class TranslationHelpBlock extends BlockBase implements ContainerFactoryPluginInterface {
 
   /**
    * The request stack.

@@ -11,7 +11,7 @@ use Symfony\Component\Validator\ConstraintValidator;
 /**
  * Validates that a GP has a unique cypher.
  */
-class GpUniqueCypherConstraintValidator extends ConstraintValidator implements ContainerInjectionInterface {
+final class GpUniqueCypherConstraintValidator extends ConstraintValidator implements ContainerInjectionInterface {
 
 
   /**

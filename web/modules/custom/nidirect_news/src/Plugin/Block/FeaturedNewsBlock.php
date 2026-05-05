@@ -16,7 +16,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *  admin_label = @Translation("Featured news"),
  * )
  */
-class FeaturedNewsBlock extends BlockBase implements ContainerFactoryPluginInterface {
+final class FeaturedNewsBlock extends BlockBase implements ContainerFactoryPluginInterface {
 
   /**
    * The news controller service.

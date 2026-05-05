@@ -16,7 +16,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *
  * @package Drupal\nidirect_breadcrumbs
  */
-class LandingPageBreadcrumb implements BreadcrumbBuilderInterface {
+final class LandingPageBreadcrumb implements BreadcrumbBuilderInterface {
 
   /**
    * Core EntityTypeManager instance.

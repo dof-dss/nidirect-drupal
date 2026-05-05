@@ -2,6 +2,7 @@
 
 namespace Drupal\nidirect_gp\Form;
 
+use Drupal\Component\Datetime\TimeInterface;
 use Drupal\Core\Datetime\DateFormatterInterface;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Form\FormStateInterface;
@@ -15,7 +16,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *
  * @ingroup nidirect_gp
  */
-class GpRevisionRevertTranslationForm extends GpRevisionRevertForm {
+final class GpRevisionRevertTranslationForm extends GpRevisionRevertForm {
 
 
   /**
@@ -43,9 +44,11 @@ class GpRevisionRevertTranslationForm extends GpRevisionRevertForm {
    *   The language manager.
    * @param \Drupal\Core\Messenger\MessengerInterface $messenger
    *   Messenger service object.
+   * @param \Drupal\Component\Datetime\TimeInterface $time
+   *   The time service.
    */
-  public function __construct(EntityStorageInterface $entity_storage, DateFormatterInterface $date_formatter, LanguageManagerInterface $language_manager, MessengerInterface $messenger) {
-    parent::__construct($entity_storage, $date_formatter, $messenger);
+  public function __construct(EntityStorageInterface $entity_storage, DateFormatterInterface $date_formatter, LanguageManagerInterface $language_manager, MessengerInterface $messenger, TimeInterface $time) {
+    parent::__construct($entity_storage, $date_formatter, $messenger, $time);
     $this->languageManager = $language_manager;
   }
 
@@ -57,7 +60,8 @@ class GpRevisionRevertTranslationForm extends GpRevisionRevertForm {
       $container->get('entity_type.manager')->getStorage('gp'),
       $container->get('date.formatter'),
       $container->get('language_manager'),
-      $container->get('messenger')
+      $container->get('messenger'),
+      $container->get('datetime.time')
     );
   }
 
@@ -114,7 +118,7 @@ class GpRevisionRevertTranslationForm extends GpRevisionRevertForm {
 
     $latest_revision_translation->setNewRevision();
     $latest_revision_translation->isDefaultRevision(TRUE);
-    $revision->setRevisionCreationTime(\Drupal::time()->getRequestTime());
+    $revision->setRevisionCreationTime($this->time->getRequestTime());
 
     return $latest_revision_translation;
   }

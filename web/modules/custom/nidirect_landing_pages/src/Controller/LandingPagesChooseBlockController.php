@@ -19,7 +19,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 /**
  * Controller to alter display of Layout builder Block form.
  */
-class LandingPagesChooseBlockController implements ContainerInjectionInterface {
+final class LandingPagesChooseBlockController implements ContainerInjectionInterface {
 
   use AjaxHelperTrait;
   use LayoutBuilderContextTrait;
@@ -62,6 +62,13 @@ class LandingPagesChooseBlockController implements ContainerInjectionInterface {
   protected $fileSystem;
 
   /**
+   * The layout builder restrictions manager.
+   *
+   * @var mixed
+   */
+  protected $layoutBuilderRestrictionsManager;
+
+  /**
    * Class constructor.
    *
    * @param \Drupal\Core\Block\BlockManagerInterface $block_manager
@@ -74,17 +81,21 @@ class LandingPagesChooseBlockController implements ContainerInjectionInterface {
    *   Module handler service object.
    * @param \Drupal\Core\File\FileSystemInterface $file_system
    *   File system service object.
+   * @param mixed $layout_builder_restrictions_manager
+   *   Layout builder restrictions manager service object.
    */
   public function __construct(BlockManagerInterface $block_manager,
                               EntityTypeManagerInterface $entity_type_manager,
                               AccountInterface $current_user,
                               ModuleHandlerInterface $module_handler,
-                              FileSystemInterface $file_system) {
+                              FileSystemInterface $file_system,
+                              $layout_builder_restrictions_manager) {
     $this->blockManager = $block_manager;
     $this->entityTypeManager = $entity_type_manager;
     $this->currentUser = $current_user;
     $this->moduleHandler = $module_handler;
     $this->fileSystem = $file_system;
+    $this->layoutBuilderRestrictionsManager = $layout_builder_restrictions_manager;
   }
 
   /**
@@ -96,7 +107,8 @@ class LandingPagesChooseBlockController implements ContainerInjectionInterface {
       $container->get('entity_type.manager'),
       $container->get('current_user'),
       $container->get('module_handler'),
-      $container->get('file_system')
+      $container->get('file_system'),
+      $container->get('plugin.manager.layout_builder_restriction')
     );
   }
 
@@ -236,10 +248,9 @@ class LandingPagesChooseBlockController implements ContainerInjectionInterface {
 
     // Support for Layout Builder Restrictions.
     if ($this->moduleHandler->moduleExists('layout_builder_restrictions')) {
-      $layout_builder_restrictions_manager = \Drupal::service('plugin.manager.layout_builder_restriction');
-      $restriction_plugins = $layout_builder_restrictions_manager->getSortedPlugins();
+      $restriction_plugins = $this->layoutBuilderRestrictionsManager->getSortedPlugins();
       foreach (array_keys($restriction_plugins) as $id) {
-        $plugin = $layout_builder_restrictions_manager->createInstance($id);
+        $plugin = $this->layoutBuilderRestrictionsManager->createInstance($id);
         $allowed_inline_blocks = $plugin->inlineBlocksAllowedinContext($section_storage, $delta, $region);
 
         foreach ($build['links']['#links'] as $key => $link) {

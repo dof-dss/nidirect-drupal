@@ -11,7 +11,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *
  * @see \Drupal\nidirect_common\Plugin\Block\NidirectFeedbackmenuLinkDerivative
  */
-class NidirectFeedbackmenuLinkDerivative extends DeriverBase implements ContainerDeriverInterface {
+final class NidirectFeedbackmenuLinkDerivative extends DeriverBase implements ContainerDeriverInterface {
 
   /**
    * {@inheritdoc}

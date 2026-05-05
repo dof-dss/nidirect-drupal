@@ -7,6 +7,7 @@ use Drupal\Component\Serialization\Json;
 use Drupal\Component\Utility\Html;
 use Drupal\Component\Utility\Xss;
 use Drupal\Core\Cache\Cache;
+use Drupal\Core\Cache\CacheBackendInterface;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Database\Database;
 use Drupal\Core\Datetime\DrupalDateTime;
@@ -65,6 +66,20 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
   private $tempStoreFactory;
 
   /**
+   * The time service.
+   *
+   * @var \Drupal\Component\Datetime\TimeInterface
+   */
+  protected TimeInterface $time;
+
+  /**
+   * The cache backend.
+   *
+   * @var \Drupal\Core\Cache\CacheBackendInterface
+   */
+  protected CacheBackendInterface $cache;
+
+  /**
    * Array for storing various values extrapolated
    * from the visit reference number supplied by the webform.
    *
@@ -120,6 +135,8 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
     $instance->request = $container->get('request_stack')->getCurrentRequest();
     $instance->httpClient = $container->get('http_client');
     $instance->tempStoreFactory = $container->get('tempstore.private');
+    $instance->time = $container->get('datetime.time');
+    $instance->cache = $container->get('cache.default');
     return $instance;
   }
 
@@ -152,7 +169,7 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
       $connection->insert('prison_visit_booking_link_ids')
         ->fields([
           'unique_identifier' => $booking_link_id,
-          'created' => \Drupal::service('datetime.time')->getRequestTime(),
+          'created' => $this->time->getRequestTime(),
         ])
         ->execute();
     }
@@ -1355,7 +1372,7 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
     // (see PrisonVisitBookingJsonApiController.php). If there is no
     // cached data, fallback to using slots from file.
 
-    $cached_data = \Drupal::cache()->get('prison_visit_slots_data');
+    $cached_data = $this->cache->get('prison_visit_slots_data');
 
     if (!empty($cached_data)) {
 

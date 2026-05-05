@@ -16,7 +16,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 /**
  * Controller to alter display of Layout builder Sections form.
  */
-class LandingPagesChooseSectionController implements ContainerInjectionInterface {
+final class LandingPagesChooseSectionController implements ContainerInjectionInterface {
 
   use AjaxHelperTrait;
   use LayoutBuilderContextTrait;

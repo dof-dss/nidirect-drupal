@@ -2,6 +2,8 @@
 
 namespace Drupal\nidirect_school_closures;
 
+use Drupal\Component\Transliteration\TransliterationInterface;
+
 /**
  * Class for managing individual school closures.
  */
@@ -43,6 +45,13 @@ class SchoolClosure {
   protected $reason;
 
   /**
+   * The transliteration service.
+   *
+   * @var \Drupal\Component\Transliteration\TransliterationInterface
+   */
+  protected $transliteration;
+
+  /**
    * Array of friendly reason texts.
    */
   protected const REASONS = [
@@ -68,12 +77,15 @@ class SchoolClosure {
    *   Date of closure.
    * @param string $reason
    *   Reason for closure.
+   * @param \Drupal\Component\Transliteration\TransliterationInterface $transliteration
+   *   The transliteration service.
    */
-  public function __construct(string $name, string $location, \DateTime $date, string $reason) {
+  public function __construct(string $name, string $location, \DateTime $date, string $reason, TransliterationInterface $transliteration) {
     $this->name = $name;
     $this->location = $location;
     $this->date = $date;
     $this->reason = $reason;
+    $this->transliteration = $transliteration;
 
     // Call processors.
     $this->processAltName();
@@ -115,8 +127,7 @@ class SchoolClosure {
     // Add alternative names for Irish name schools.
     $pattern = '/[ÁÉÍÓÚáéíóú]/';
     if (preg_match($pattern, $this->name)) {
-      $transliteration = \Drupal::service('transliteration');
-      $this->altName = $transliteration->removeDiacritics($this->name);
+      $this->altName = $this->transliteration->removeDiacritics($this->name);
 
     }
   }

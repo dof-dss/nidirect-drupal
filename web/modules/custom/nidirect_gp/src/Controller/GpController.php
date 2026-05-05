@@ -7,6 +7,7 @@ use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Datetime\DateFormatterInterface;
 use Drupal\Core\Entity\RevisionableStorageInterface;
 use Drupal\Core\Link;
+use Drupal\Core\Render\RendererInterface;
 use Drupal\Core\Url;
 use Drupal\nidirect_gp\Entity\GpInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -16,7 +17,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *
  *  Returns responses for GP routes.
  */
-class GpController extends ControllerBase {
+final class GpController extends ControllerBase {
 
   /**
    * Date Formatter object.
@@ -26,21 +27,32 @@ class GpController extends ControllerBase {
   protected $dateFormatter;
 
   /**
+   * The renderer service.
+   *
+   * @var \Drupal\Core\Render\RendererInterface
+   */
+  protected $renderer;
+
+  /**
    * Constructs an GpController object.
    *
    * @param \Drupal\Core\Datetime\DateFormatterInterface $date_formatter
-   *   The form builder.
+   *   The date formatter.
+   * @param \Drupal\Core\Render\RendererInterface $renderer
+   *   The renderer service.
    */
-  public function __construct(DateFormatterInterface $date_formatter) {
+  public function __construct(DateFormatterInterface $date_formatter, RendererInterface $renderer) {
     $this->dateFormatter = $date_formatter;
+    $this->renderer = $renderer;
   }
 
   /**
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container) {
-    return new static($container
-      ->get('date.formatter')
+    return new static(
+      $container->get('date.formatter'),
+      $container->get('renderer')
     );
   }
 
@@ -116,7 +128,6 @@ class GpController extends ControllerBase {
 
     foreach (array_reverse($vids) as $vid) {
       /** @var \Drupal\nidirect_gp\Entity\Gp $revision */
-      // @phpstan-ignore-next-line
       $revision = $gp_storage->loadRevision($vid);
       // Only show revisions that are affected by the language that is being
       // displayed.
@@ -145,7 +156,7 @@ class GpController extends ControllerBase {
             '#template' => '{% trans %}{{ date }} by {{ username }}{% endtrans %}{% if message %}<p class="revision-log">{{ message }}</p>{% endif %}',
             '#context' => [
               'date' => $link->toString(),
-              'username' => \Drupal::service('renderer')->renderInIsolation($username),
+              'username' => $this->renderer->renderInIsolation($username),
               'message' => [
                 '#markup' => $revision->getRevisionLogMessage(),
                 '#allowed_tags' => Xss::getHtmlTagList(),

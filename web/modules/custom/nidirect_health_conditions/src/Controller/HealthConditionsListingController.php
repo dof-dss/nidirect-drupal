@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
 /**
  * Controller for health conditions listings.
  */
-class HealthConditionsListingController extends ControllerBase {
+final class HealthConditionsListingController extends ControllerBase {
 
   /**
    * Drupal\Core\Entity\EntityTypeManagerInterface definition.

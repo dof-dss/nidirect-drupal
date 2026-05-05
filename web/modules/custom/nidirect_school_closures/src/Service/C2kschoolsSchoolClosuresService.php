@@ -2,6 +2,7 @@
 
 namespace Drupal\nidirect_school_closures\Service;
 
+use Drupal\Component\Transliteration\TransliterationInterface;
 use Drupal\Core\Cache\CacheBackendInterface;
 use Drupal\Core\Config\ConfigFactory;
 use Drupal\Core\Logger\LoggerChannelFactory;
@@ -100,12 +101,20 @@ class C2kschoolsSchoolClosuresService implements SchoolClosuresServiceInterface 
   protected $logger;
 
   /**
+   * The transliteration service.
+   *
+   * @var \Drupal\Component\Transliteration\TransliterationInterface
+   */
+  protected $transliteration;
+
+  /**
    * Constructs a new C2kschoolsSchoolClosuresService object.
    */
-  public function __construct(HttpClient $http_client, CacheBackendInterface $cache, ConfigFactory $config_service, LoggerChannelFactory $logger) {
+  public function __construct(HttpClient $http_client, CacheBackendInterface $cache, ConfigFactory $config_service, LoggerChannelFactory $logger, TransliterationInterface $transliteration) {
     $this->httpClient = $http_client;
     $this->cacheService = $cache;
     $this->logger = $logger->get('nidirect_school_closures');
+    $this->transliteration = $transliteration;
 
     // Fetch the config settings.
     $config = $config_service->get('nidirect_school_closures.settings');
@@ -289,7 +298,7 @@ class C2kschoolsSchoolClosuresService implements SchoolClosuresServiceInterface 
         }
 
         // Closure processing object.
-        $closure = new SchoolClosure($name, $location, $date, $reason);
+        $closure = new SchoolClosure($name, $location, $date, $reason, $this->transliteration);
 
         if ($closure->isExpired()) {
           continue;

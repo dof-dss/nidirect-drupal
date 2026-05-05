@@ -1,0 +1,49 @@
+name: Continuous Integration Config
+
+on:
+  pull_request:
+    paths:
+      - 'composer.json'
+      - 'composer.lock'
+      - 'phpcs.xml'
+      - 'phpcs.xml.dist'
+      - 'phpstan.neon'
+      - 'phpstan-disallowed.neon'
+      - 'phpunit.xml'
+      - 'web/modules/**'
+      - 'web/themes/**'
+      - 'web/profiles/**'
+      - '.github/workflows/ci.yml'
+  push:
+    branches:
+      - main
+      - development
+    paths:
+      - 'composer.json'
+      - 'composer.lock'
+      - 'phpcs.xml'
+      - 'phpcs.xml.dist'
+      - 'phpstan.neon'
+      - 'phpstan-disallowed.neon'
+      - 'phpunit.xml'
+      - 'web/modules/**'
+      - 'web/themes/**'
+      - 'web/profiles/**'
+      - '.github/workflows/ci.yml'
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  static-analysis:
+    uses: johangant/webdev-ci/.github/workflows/static-analysis.yml@github-actions-poc
+    with:
+      php_version: '8.3'
+      coding_standards_dirs: 'web/modules/custom web/themes/custom'
+      deprecated_code_dirs: 'web/modules/custom web/themes/custom'
+      disallowed_functions_dirs: 'web/modules/custom web/themes/custom'
+      phpunit_args: '--testsuite unit'
+      unit_tests_phpunit_config: 'phpunit.xml'
+      ignore_dirs: 'web/themes/custom/nicsdru_nidirect_theme/node_modules'
+    secrets: inherit

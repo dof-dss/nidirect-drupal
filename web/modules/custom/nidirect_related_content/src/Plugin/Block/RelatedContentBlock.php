@@ -17,7 +17,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *   category = @Translation("NIDirect")
  * )
  */
-class RelatedContentBlock extends BlockBase implements ContainerFactoryPluginInterface {
+final class RelatedContentBlock extends BlockBase implements ContainerFactoryPluginInterface {
 
   /**
    * The entity type manager.

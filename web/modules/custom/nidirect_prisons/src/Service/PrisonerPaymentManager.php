@@ -4,7 +4,9 @@ namespace Drupal\nidirect_prisons\Service;
 
 use Drupal\Component\Datetime\TimeInterface;
 use Drupal\Component\Transliteration\TransliterationInterface;
+use Drupal\Component\Uuid\UuidInterface;
 use Drupal\Core\Database\Connection;
+use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\RequestException;
 use Psr\Log\LoggerInterface;
 
@@ -38,6 +40,20 @@ class PrisonerPaymentManager {
    */
   protected TransliterationInterface $transliteration;
 
+  /**
+   * The UUID service.
+   *
+   * @var \Drupal\Component\Uuid\UuidInterface
+   */
+  protected UuidInterface $uuid;
+
+  /**
+   * The HTTP client.
+   *
+   * @var \GuzzleHttp\ClientInterface
+   */
+  protected ClientInterface $httpClient;
+
   public const HARD_TIMEOUT = 1200;
   public const SOFT_TIMEOUT = 600;
 
@@ -64,17 +80,25 @@ class PrisonerPaymentManager {
    *   The time service.
    * @param \Drupal\Component\Transliteration\TransliterationInterface $transliteration
    *   The transliteration service.
+   * @param \Drupal\Component\Uuid\UuidInterface $uuid
+   *   The UUID service.
+   * @param \GuzzleHttp\ClientInterface $http_client
+   *   The HTTP client.
    */
   public function __construct(
     Connection $database,
     LoggerInterface $logger,
     TimeInterface $time,
-    TransliterationInterface $transliteration
+    TransliterationInterface $transliteration,
+    UuidInterface $uuid,
+    ClientInterface $http_client
   ) {
     $this->database = $database;
     $this->logger = $logger;
     $this->time = $time;
     $this->transliteration = $transliteration;
+    $this->uuid = $uuid;
+    $this->httpClient = $http_client;
     $this->hardTimeout = (int) (getenv('PRISONER_PAYMENTS_HARD_TIMEOUT') ?: self::HARD_TIMEOUT);
     $this->softTimeout = (int) (getenv('PRISONER_PAYMENTS_SOFT_TIMEOUT') ?: self::SOFT_TIMEOUT);
   }
@@ -568,7 +592,7 @@ class PrisonerPaymentManager {
    * @throws \Exception
    */
   public function generateOrderCode(string $prison_id, string $prisoner_id, string $visitor_id) {
-    $uuid_short = substr(\Drupal::service('uuid')->generate(), 0, 8);
+    $uuid_short = substr($this->uuid->generate(), 0, 8);
     $random_part = random_int(1000, 9999);
     return "{$prison_id}_{$prisoner_id}_{$visitor_id}_{$uuid_short}{$random_part}";
   }
@@ -782,7 +806,6 @@ XML;
    */
   public function sendWorldpayRequest(string $request_xml, string $prison_id) {
     $response_xml = NULL;
-    $client = \Drupal::service('http_client');
     $url = getenv('PRISONER_PAYMENTS_WP_SERVICE_URL') ?: 'https://secure-test.worldpay.com/jsp/merchant/xml/paymentService.jsp';
     $api_username = getenv('PRISONER_PAYMENTS_WP_USERNAME_' . $prison_id);
     $api_password = getenv('PRISONER_PAYMENTS_WP_PASSWORD_' . $prison_id);
@@ -794,7 +817,7 @@ XML;
     }
 
     try {
-      $response = $client->post($url, [
+      $response = $this->httpClient->post($url, [
         'headers' => [
           'Authorization' => 'Basic ' . base64_encode("$api_username:$api_password"),
           'Content-Type' => 'application/xml',

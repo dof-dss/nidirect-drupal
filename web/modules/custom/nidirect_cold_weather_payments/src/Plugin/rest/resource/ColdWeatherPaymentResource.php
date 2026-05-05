@@ -19,7 +19,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *   }
  * )
  */
-class ColdWeatherPaymentResource extends ResourceBase {
+final class ColdWeatherPaymentResource extends ResourceBase {
 
   /**
    * Cold Weather Payments service.

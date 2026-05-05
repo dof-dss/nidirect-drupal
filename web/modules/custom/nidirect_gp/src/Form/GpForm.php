@@ -8,6 +8,7 @@ use Drupal\Core\Entity\EntityRepositoryInterface;
 use Drupal\Core\Entity\EntityTypeBundleInfoInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Messenger\MessengerInterface;
+use Drupal\Core\Session\AccountProxyInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -15,7 +16,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *
  * @ingroup nidirect_gp
  */
-class GpForm extends ContentEntityForm {
+final class GpForm extends ContentEntityForm {
 
   /**
    * The Messenger service.
@@ -25,10 +26,18 @@ class GpForm extends ContentEntityForm {
   protected $messenger;
 
   /**
+   * The current user.
+   *
+   * @var \Drupal\Core\Session\AccountProxyInterface
+   */
+  protected $currentUser;
+
+  /**
    * {@inheritdoc}
    */
-  public function __construct(EntityRepositoryInterface $entity_repository, EntityTypeBundleInfoInterface $entity_type_bundle_info = NULL, TimeInterface $time = NULL, MessengerInterface $messenger = NULL) {
+  public function __construct(EntityRepositoryInterface $entity_repository, EntityTypeBundleInfoInterface $entity_type_bundle_info = NULL, TimeInterface $time = NULL, MessengerInterface $messenger = NULL, AccountProxyInterface $current_user = NULL) {
     $this->messenger = $messenger;
+    $this->currentUser = $current_user;
     parent::__construct($entity_repository, $entity_type_bundle_info, $time);
   }
 
@@ -40,7 +49,8 @@ class GpForm extends ContentEntityForm {
       $container->get('entity.repository'),
       $container->get('entity_type.bundle.info'),
       $container->get('datetime.time'),
-      $container->get('messenger')
+      $container->get('messenger'),
+      $container->get('current_user')
     );
   }
 
@@ -75,8 +85,8 @@ class GpForm extends ContentEntityForm {
       $entity->setNewRevision();
 
       // If a new revision is created, save the current user as revision author.
-      $entity->setRevisionCreationTime(\Drupal::time()->getRequestTime());
-      $entity->setRevisionUserId(\Drupal::currentUser()->id());
+      $entity->setRevisionCreationTime($this->time->getRequestTime());
+      $entity->setRevisionUserId($this->currentUser->id());
     }
     else {
       $entity->setNewRevision(FALSE);

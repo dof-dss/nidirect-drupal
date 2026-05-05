@@ -21,12 +21,20 @@ class SchoolClosuresTest extends KernelTestBase {
   protected $today;
 
   /**
+   * The transliteration service.
+   *
+   * @var \Drupal\Component\Transliteration\TransliterationInterface
+   */
+  protected $transliteration;
+
+  /**
    * {@inheritdoc}
    */
   public function setUp(): void {
     parent::setUp();
 
     $this->today = new \DateTime('now', new \DateTimeZone('Europe/London'));
+    $this->transliteration = $this->container->get('transliteration');
     // Reset the clock to avoid issues with time comparisons.
     $this->today->setTime(0, 0, 0);
   }
@@ -51,7 +59,7 @@ class SchoolClosuresTest extends KernelTestBase {
 
     $expected = 'Bunscoil Baile Mor';
 
-    $closure = new SchoolClosure($name, $location, $date, $reason);
+    $closure = new SchoolClosure($name, $location, $date, $reason, $this->transliteration);
     $output = $closure->getData();
 
     $this->assertEquals($expected, $output['altname']);
@@ -72,7 +80,7 @@ class SchoolClosuresTest extends KernelTestBase {
     // The location should not change.
     $expected = $location;
 
-    $closure = new SchoolClosure($name, $location, $date, $reason);
+    $closure = new SchoolClosure($name, $location, $date, $reason, $this->transliteration);
     $output = $closure->getData();
 
     $this->assertEquals($expected, $output['location']);
@@ -89,7 +97,7 @@ class SchoolClosuresTest extends KernelTestBase {
 
     $expected = 'County Armagh';
 
-    $closure = new SchoolClosure($name, $location, $date, $reason);
+    $closure = new SchoolClosure($name, $location, $date, $reason, $this->transliteration);
     $output = $closure->getData();
 
     $this->assertEquals($expected, $output['location']);
@@ -106,7 +114,7 @@ class SchoolClosuresTest extends KernelTestBase {
 
     $expected = 'due to no water supply.';
 
-    $closure = new SchoolClosure($name, $location, $date, $reason);
+    $closure = new SchoolClosure($name, $location, $date, $reason, $this->transliteration);
     $output = $closure->getData();
 
     $this->assertEquals($expected, $output['reason']);
@@ -123,7 +131,7 @@ class SchoolClosuresTest extends KernelTestBase {
 
     $expected = TRUE;
 
-    $closure = new SchoolClosure($name, $location, $date, $reason);
+    $closure = new SchoolClosure($name, $location, $date, $reason, $this->transliteration);
     $output = $closure->isExpired();
 
     $this->assertEquals($expected, $output);
@@ -140,7 +148,7 @@ class SchoolClosuresTest extends KernelTestBase {
 
     $expected = FALSE;
 
-    $closure = new SchoolClosure($name, $location, $date, $reason);
+    $closure = new SchoolClosure($name, $location, $date, $reason, $this->transliteration);
     $output = $closure->isExpired();
 
     $this->assertEquals($expected, $output);
@@ -157,7 +165,7 @@ class SchoolClosuresTest extends KernelTestBase {
 
     $expected = FALSE;
 
-    $closure = new SchoolClosure($name, $location, $date, $reason);
+    $closure = new SchoolClosure($name, $location, $date, $reason, $this->transliteration);
     $output = $closure->isExpired();
 
     $this->assertEquals($expected, $output);
