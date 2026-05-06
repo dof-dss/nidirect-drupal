@@ -479,7 +479,7 @@ function nidirect_contacts_form_node_form_alter(&$form, FormStateInterface $form
       $form[$field_name]['#states']['invisible'] = [
         $selector => ['checked' => TRUE],
       ];
-      
+
       if (isset($form[$field_name]['widget'])) {
         $form[$field_name]['widget']['#states']['invisible'] = [
           $selector => ['checked' => TRUE],
