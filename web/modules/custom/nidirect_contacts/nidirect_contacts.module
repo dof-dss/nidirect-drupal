@@ -441,7 +441,6 @@ function nidirect_contacts_search_api_autocomplete_suggestions_alter(array &$sug
  * Implements hook_form_BASE_FORM_ID_alter().
  */
 function nidirect_contacts_form_node_form_alter(&$form, FormStateInterface $form_state) {
-  $form_object = $form_state->getFormObject();
   // @phpstan-ignore-next-line
   $node = $form_state->getFormObject()->getEntity();
   if ($node instanceof NodeInterface === FALSE || $node->bundle() !== 'contact') {
@@ -452,22 +451,24 @@ function nidirect_contacts_form_node_form_alter(&$form, FormStateInterface $form
     return;
   }
 
+  // Hide fields that are no longer needed when "Show contact as
+  // external link" is checked.
+
   if (isset($form['field_show_external_link'])) {
 
     $selector = ':input[name="field_show_external_link[value]"]';
 
     $fields_to_toggle = [
-      // group_general fields...
-      'field_contact_additional_info',
-      'field_address',
-      'body',
       'field_contact_category',
-      'field_email_address',
+      'field_summary',
+      'body',
+      'field_address',
       'field_location',
-      'field_related_info',
+      'field_email_address',
       'field_contact_hours',
       'field_phone',
-      'field_summary',
+      'field_contact_additional_info',
+      'field_related_info',
     ];
 
     foreach ($fields_to_toggle as $field_name) {
@@ -478,7 +479,7 @@ function nidirect_contacts_form_node_form_alter(&$form, FormStateInterface $form
           ],
         ];
 
-        $form[$field_name]['widget'][0]['#states'] = [
+        $form[$field_name]['widget']['#states'] = [
           'invisible' => [
             $selector => ['checked' => TRUE],
           ],
@@ -494,7 +495,26 @@ function nidirect_contacts_form_node_form_alter(&$form, FormStateInterface $form
         $selector => ['checked' => TRUE],
       ];
     }
+
+    // Add after build callback for further alterations.
+    $form['#after_build'][] = 'nidirect_contacts_after_build';
   }
+}
+
+function nidirect_contacts_after_build(array $form, FormStateInterface $form_state) {
+
+  // Hide group_additional_information when "Show contact as external
+  // link" is checked.
+  $selector = ':input[name="field_show_external_link[value]"]';
+
+  if (isset($form['group_additional_information'])) {
+
+    $form['group_additional_information']['#states']['invisible'] = [
+      $selector => ['checked' => TRUE],
+    ];
+  }
+
+  return $form;
 }
 
 /**
