@@ -501,6 +501,13 @@ function nidirect_contacts_form_node_form_alter(&$form, FormStateInterface $form
   }
 }
 
+/**
+ * After build callback for contacts node edit form.
+ * 
+ * @param array $form
+ * @param \Drupal\Core\Form\FormStateInterface $form_state
+ * @return array
+ */
 function nidirect_contacts_after_build(array $form, FormStateInterface $form_state) {
 
   // Hide group_additional_information when "Show contact as external
