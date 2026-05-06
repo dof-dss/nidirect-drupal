@@ -498,6 +498,9 @@ function nidirect_contacts_form_node_form_alter(&$form, FormStateInterface $form
 
     // Add after build callback for further alterations.
     $form['#after_build'][] = 'nidirect_contacts_after_build';
+
+    // Add validation.
+    $form['#validate'][] = 'nidirect_contacts_contact_form_validate';
   }
 }
 
@@ -525,6 +528,29 @@ function nidirect_contacts_after_build(array $form, FormStateInterface $form_sta
   }
 
   return $form;
+}
+
+/**
+ * Validation for contacts node edit form.
+ *
+ * @param array $form
+ *   The form array.
+ * @param \Drupal\Core\Form\FormStateInterface $form_state
+ *   The form state object.
+ * @return void
+ *   Nothing to return.
+ */
+function nidirect_contacts_contact_form_validate(array $form, FormStateInterface $form_state) {
+
+  $show_external = $form_state->getValue('field_show_external_link');
+  $url = $form_state->getValue('field_contact_website');
+
+  if ($show_external && empty($url[0]['uri'])) {
+    $form_state->setError(
+      $form['field_contact_website']['widget'][0]['uri'],
+      t('Website URL is required when "Show contact as external link" is enabled.')
+    );
+  }
 }
 
 /**
