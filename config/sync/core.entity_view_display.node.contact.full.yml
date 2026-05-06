@@ -130,23 +130,9 @@ content:
           enable: true
           weight: -101
           settings:
+            reset_zoom: false
             min_zoom: 12
           map_center_id: fit_bounds
-        fit_shapes:
-          enable: false
-          weight: 0
-          settings:
-            min_zoom: null
-          map_center_id: fit_shapes
-        fixed_boundaries:
-          enable: false
-          weight: 0
-          settings:
-            south: ''
-            west: ''
-            north: ''
-            east: ''
-          map_center_id: fixed_boundaries
         fixed_value:
           enable: false
           weight: 0
@@ -162,6 +148,19 @@ content:
             location_option_id: ipstack
             access_key: ''
           map_center_id: location_plugins
+        client_location:
+          enable: false
+          weight: 0
+          map_center_id: client_location
+        fixed_boundaries:
+          enable: false
+          weight: 0
+          settings:
+            south: ''
+            west: ''
+            north: ''
+            east: ''
+          map_center_id: fixed_boundaries
       map_provider_id: google_maps
       map_provider_settings:
         map_features:
@@ -178,10 +177,23 @@ content:
                 value: ''
                 format: basic_html
             enabled: false
+          drawing:
+            weight: 0
+            settings:
+              polyline: false
+              strokeColor: '#FF0000'
+              strokeOpacity: '0.8'
+              strokeWeight: '2'
+              geodesic: false
+              polygon: false
+              fillColor: '#FF0000'
+              fillOpacity: '0.35'
+            enabled: false
           geolocation_google_maps_control_directions:
             weight: 0
             settings:
               position: RIGHT_CENTER
+              behavior: default
               origin_source: exposed
               origin_static_value: ''
               destination_source: exposed
@@ -217,13 +229,14 @@ content:
             weight: 0
             settings:
               position: RIGHT_CENTER
+              behavior: default
             enabled: false
           control_geocoder:
             weight: 0
             settings:
               position: TOP_LEFT
               geocoder: google_geocoding_api
-              geocoder_settings:
+              settings:
                 label: Address
                 description: 'Enter an address to be localized.'
                 autocomplete_min_length: 1
@@ -238,7 +251,7 @@ content:
                   west: ''
                   north: ''
                   east: ''
-                region: gb
+                region: ''
             enabled: false
           control_loading_indicator:
             weight: 0
@@ -254,7 +267,8 @@ content:
           control_maptype:
             weight: 0
             settings:
-              position: RIGHT_BOTTOM
+              position: TOP_RIGHT
+              behavior: default
               style: DEFAULT
             enabled: true
           control_recenter:
@@ -266,21 +280,20 @@ content:
             weight: 0
             settings:
               position: RIGHT_CENTER
+              behavior: default
             enabled: false
           control_streetview:
             weight: 0
             settings:
               position: RIGHT_CENTER
-            enabled: false
-          control_tile_layers:
-            weight: 0
-            settings:
-              position: TOP_LEFT
+              behavior: default
             enabled: false
           control_zoom:
             weight: 0
             settings:
-              position: RIGHT_CENTER
+              position: RIGHT_BOTTOM
+              behavior: default
+              style: LARGE
             enabled: true
           map_restriction:
             weight: 0
@@ -296,6 +309,106 @@ content:
             settings:
               style: '[]'
             enabled: false
+          marker_clusterer:
+            weight: 0
+            settings:
+              image_path: ''
+              styles: ''
+              max_zoom: 15
+              minimum_cluster_size: 2
+              zoom_on_click: true
+              average_center: false
+              grid_size: 60
+            enabled: false
+          marker_icon:
+            weight: 0
+            settings:
+              marker_icon_path: ''
+              anchor:
+                x: 0
+                'y': 0
+              origin:
+                x: 0
+                'y': 0
+              label_origin:
+                x: 0
+                'y': 0
+              size:
+                width: null
+                height: null
+              scaled_size:
+                width: null
+                height: null
+            enabled: false
+          marker_infobubble:
+            weight: 0
+            settings:
+              close_other: 1
+              close_button: 0
+              close_button_src: ''
+              shadow_style: 0
+              padding: 10
+              border_radius: 8
+              border_width: 2
+              border_color: '#039be5'
+              background_color: '#fff'
+              min_width: null
+              max_width: 550
+              min_height: null
+              max_height: null
+              arrow_style: 2
+              arrow_position: 30
+              arrow_size: 10
+            enabled: false
+          marker_infowindow:
+            weight: 0
+            settings:
+              info_window_solitary: true
+              disable_auto_pan: true
+              info_auto_display: false
+              max_width: null
+            enabled: true
+          marker_label:
+            weight: 0
+            settings:
+              color: ''
+              font_family: ''
+              font_size: ''
+              font_weight: ''
+            enabled: false
+          marker_opacity:
+            weight: 0
+            settings:
+              opacity: 1.0
+            enabled: false
+          geolocation_marker_scroll_to_id:
+            weight: 0
+            settings:
+              scroll_target_id: ''
+            enabled: false
+          marker_zoom_to_animate:
+            weight: 0
+            settings:
+              marker_zoom_anchor_id: ''
+            enabled: false
+          spiderfying:
+            weight: 0
+            settings:
+              spiderfiable_marker_path: /modules/contrib/geolocation/modules/geolocation_google_maps/images/marker-plus.svg
+              markersWontMove: true
+              markersWontHide: false
+              keepSpiderfied: true
+              ignoreMapClick: false
+              nearbyDistance: 20
+              circleSpiralSwitchover: 9
+              circleFootSeparation: 23
+              spiralFootSeparation: 26
+              spiralLengthStart: 11
+              spiralLengthFactor: 4
+              legWeight: 1.5
+              spiralIconWidth: 23
+              spiralIconHeight: 32
+            enabled: false
           google_maps_layer_traffic:
             weight: 0
             enabled: false
@@ -309,126 +422,6 @@ content:
         height: 400px
         width: 100%
         gestureHandling: auto
-        conditional_initialization: viewport
-        conditional_description: 'Clicking this button will embed a map.'
-        conditional_label: 'Show map'
-        conditional_viewport_threshold: 0.8
-        data_layers:
-          'geolocation_default_layer:default':
-            enabled: true
-            weight: -1
-            settings:
-              features:
-                marker_clusterer:
-                  enabled: false
-                  weight: 0
-                marker_icon:
-                  enabled: false
-                  weight: 0
-                  settings:
-                    marker_icon_path: ''
-                    anchor:
-                      x: 0
-                      'y': 0
-                    origin:
-                      x: 0
-                      'y': 0
-                    label_origin:
-                      x: 0
-                      'y': 0
-                    size:
-                      width: null
-                      height: null
-                    scaled_size:
-                      width: null
-                      height: null
-                marker_infobubble:
-                  enabled: false
-                  weight: 0
-                  settings:
-                    close_other: 1
-                    close_button: 0
-                    close_button_src: ''
-                    shadow_style: 0
-                    padding: 10
-                    border_radius: 8
-                    border_width: 2
-                    border_color: '#039be5'
-                    background_color: '#fff'
-                    min_width: null
-                    max_width: 550
-                    min_height: null
-                    max_height: null
-                    arrow_style: 2
-                    arrow_position: 30
-                    arrow_size: 10
-                marker_infowindow:
-                  enabled: false
-                  weight: 0
-                  settings:
-                    info_window_solitary: true
-                    disable_auto_pan: true
-                    info_auto_display: false
-                    max_width: null
-                marker_label:
-                  enabled: false
-                  weight: 0
-                  settings:
-                    color: ''
-                    font_family: ''
-                    font_size: ''
-                    font_weight: ''
-                marker_opacity:
-                  enabled: false
-                  weight: 0
-                  settings:
-                    opacity: 1.0
-                marker_zoom_by_anchor:
-                  enabled: false
-                  weight: 0
-                  settings:
-                    marker_zoom_anchor_id: ''
-                spiderfying:
-                  enabled: false
-                  weight: 0
-                  settings:
-                    spiderfiable_marker_path: /modules/contrib/geolocation/modules/geolocation_google_maps/images/marker-plus.svg
-                    markersWontMove: true
-                    markersWontHide: false
-                    keepSpiderfied: true
-                    ignoreMapClick: false
-                    nearbyDistance: 20
-                    circleSpiralSwitchover: 9
-                    circleFootSeparation: 23
-                    spiralFootSeparation: 26
-                    spiralLengthStart: 11
-                    spiralLengthFactor: 4
-                    legWeight: 1.5
-                    spiralIconWidth: 23
-                    spiralIconHeight: 32
-        tile_layers:
-          geolocation_tile_thunderforest:
-            settings:
-              apikey: ''
-            layers:
-              'geolocation_tile_thunderforest:cycle':
-                enabled: 0
-              'geolocation_tile_thunderforest:transport':
-                enabled: 0
-              'geolocation_tile_thunderforest:transport-dark':
-                enabled: 0
-              'geolocation_tile_thunderforest:spinal-map':
-                enabled: 0
-              'geolocation_tile_thunderforest:landscape':
-                enabled: 0
-              'geolocation_tile_thunderforest:outdoors':
-                enabled: 0
-              'geolocation_tile_thunderforest:pioneer':
-                enabled: 0
-              'geolocation_tile_thunderforest:mobile-atlas':
-                enabled: 0
-              'geolocation_tile_thunderforest:neighbourhood':
-                enabled: 0
       data_provider_settings: {  }
     third_party_settings: {  }
     weight: 6
