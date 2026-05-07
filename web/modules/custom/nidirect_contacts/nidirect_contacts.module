@@ -441,7 +441,6 @@ function nidirect_contacts_search_api_autocomplete_suggestions_alter(array &$sug
  * Implements hook_form_BASE_FORM_ID_alter().
  */
 function nidirect_contacts_form_node_form_alter(&$form, FormStateInterface $form_state) {
-  $form_object = $form_state->getFormObject();
   // @phpstan-ignore-next-line
   $node = $form_state->getFormObject()->getEntity();
   if ($node instanceof NodeInterface === FALSE || $node->bundle() !== 'contact') {
@@ -452,36 +451,38 @@ function nidirect_contacts_form_node_form_alter(&$form, FormStateInterface $form
     return;
   }
 
+  // Hide fields that are no longer needed when "Show contact as
+  // external link" is checked.
+
   if (isset($form['field_show_external_link'])) {
 
     $selector = ':input[name="field_show_external_link[value]"]';
 
     $fields_to_toggle = [
-      // group_general fields...
-      'field_contact_additional_info',
-      'field_address',
-      'body',
       'field_contact_category',
-      'field_email_address',
+      'field_summary',
+      'body',
+      'field_address',
       'field_location',
-      'field_related_info',
+      'field_email_address',
       'field_contact_hours',
       'field_phone',
-      'field_summary',
+      'field_contact_additional_info',
+      'field_related_info',
     ];
 
     foreach ($fields_to_toggle as $field_name) {
-      if (isset($form[$field_name])) {
-        $form[$field_name]['#states'] = [
-          'invisible' => [
-            $selector => ['checked' => TRUE],
-          ],
-        ];
+      if (!isset($form[$field_name])) {
+        continue;
+      }
 
-        $form[$field_name]['widget'][0]['#states'] = [
-          'invisible' => [
-            $selector => ['checked' => TRUE],
-          ],
+      $form[$field_name]['#states']['invisible'] = [
+        $selector => ['checked' => TRUE],
+      ];
+
+      if (isset($form[$field_name]['widget'])) {
+        $form[$field_name]['widget']['#states']['invisible'] = [
+          $selector => ['checked' => TRUE],
         ];
       }
     }
@@ -494,13 +495,66 @@ function nidirect_contacts_form_node_form_alter(&$form, FormStateInterface $form
         $selector => ['checked' => TRUE],
       ];
     }
+
+    // Add after build callback for further alterations.
+    $form['#after_build'][] = 'nidirect_contacts_after_build';
+
+    // Add validation.
+    $form['#validate'][] = 'nidirect_contacts_contact_form_validate';
+  }
+}
+
+/**
+ * After build callback for contacts node edit form.
+ *
+ * @param array $form
+ *   The form array.
+ * @param \Drupal\Core\Form\FormStateInterface $form_state
+ *   The form state object.
+ * @return array
+ *   The form returned as an array.
+ */
+function nidirect_contacts_after_build(array $form, FormStateInterface $form_state) {
+
+  // Hide additional information group when contact is external.
+  if (isset($form['group_additional_information'])) {
+    $form['group_additional_information']['#states']['invisible'] = [
+      ':input[name="field_show_external_link[value]"]' => ['checked' => TRUE],
+    ];
+  }
+
+  return $form;
+}
+
+/**
+ * Validation for contacts node edit form.
+ *
+ * @param array $form
+ *   The form array.
+ * @param \Drupal\Core\Form\FormStateInterface $form_state
+ *   The form state object.
+ * @return void
+ *   Nothing to return.
+ */
+function nidirect_contacts_contact_form_validate(array &$form, FormStateInterface $form_state) {
+  $show_external = (bool) $form_state->getValue([
+    'field_show_external_link',
+    'value'
+  ]);
+  $uri = $form_state->getValue(['field_contact_website', 0, 'uri']);
+
+  if ($show_external && empty($uri)) {
+    $form_state->setError(
+      $form['field_contact_website']['widget'][0]['uri'],
+      t('Website URL is required when "Show contact as external link" is enabled.')
+    );
   }
 }
 
 /**
  * Implements hook_entity_view_mode_alter().
  */
-function nidirect_contacts_entity_view_mode_alter(&$view_mode, EntityInterface $entity):void {
+function nidirect_contacts_entity_view_mode_alter(&$view_mode, EntityInterface $entity) {
 
   // Only affect full node view.
   if ($view_mode !== 'full') {
