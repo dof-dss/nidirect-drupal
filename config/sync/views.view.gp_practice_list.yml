@@ -12,7 +12,6 @@ dependencies:
     - field.storage.node.field_gp_practice_member
     - field.storage.node.field_gp_practice_no
     - field.storage.node.field_gp_prescriptions
-    - field.storage.node.field_gp_surgery_name
     - field.storage.node.field_phone
     - node.type.gp_practice
   module:
@@ -693,6 +692,7 @@ display:
         type: full
         options:
           offset: 0
+          pagination_heading_level: h4
           items_per_page: 20
           total_pages: null
           id: 0
@@ -710,7 +710,6 @@ display:
             offset: false
             offset_label: Offset
           quantity: 9
-          pagination_heading_level: h4
       exposed_form:
         type: basic
         options:
@@ -1096,69 +1095,6 @@ display:
           multi_type: separator
           separator: ', '
           field_api_classes: false
-        field_gp_surgery_name:
-          id: field_gp_surgery_name
-          table: node__field_gp_surgery_name
-          field: field_gp_surgery_name
-          relationship: none
-          group_type: group
-          admin_label: ''
-          plugin_id: field
-          label: 'Surgery or health centre name'
-          exclude: false
-          alter:
-            alter_text: false
-            text: ''
-            make_link: false
-            path: ''
-            absolute: false
-            external: false
-            replace_spaces: false
-            path_case: none
-            trim_whitespace: false
-            alt: ''
-            rel: ''
-            link_class: ''
-            prefix: ''
-            suffix: ''
-            target: ''
-            nl2br: false
-            max_length: 0
-            word_boundary: true
-            ellipsis: true
-            more_link: false
-            more_link_text: ''
-            more_link_path: ''
-            strip_tags: false
-            trim: false
-            preserve_tags: ''
-            html: false
-          element_type: ''
-          element_class: ''
-          element_label_type: ''
-          element_label_class: ''
-          element_label_colon: true
-          element_wrapper_type: ''
-          element_wrapper_class: ''
-          element_default_classes: true
-          empty: ''
-          hide_empty: false
-          empty_zero: false
-          hide_alter_empty: true
-          click_sort_column: value
-          type: string
-          settings:
-            link_to_entity: false
-          group_column: value
-          group_columns: {  }
-          group_rows: true
-          delta_limit: 0
-          delta_offset: 0
-          delta_reversed: false
-          delta_first_last: false
-          multi_type: separator
-          separator: ', '
-          field_api_classes: false
         title:
           id: title
           table: node_field_data
@@ -1169,13 +1105,11 @@ display:
           entity_type: node
           entity_field: title
           plugin_id: field
-          label: 'Practice name'
+          label: Title
           exclude: false
           alter:
             alter_text: true
-            text: |-
-              {{ title }}
-              <br><a class="edit-node-link" href="/node/{{ nid }}/edit">edit</a>
+            text: "{{ title }}\r\n<br><a class=\"edit-node-link\" href=\"/node/{{ nid }}/edit\">edit</a>"
             make_link: false
             path: ''
             absolute: false
@@ -2052,7 +1986,6 @@ display:
         - 'config:field.storage.node.field_gp_practice_member'
         - 'config:field.storage.node.field_gp_practice_no'
         - 'config:field.storage.node.field_gp_prescriptions'
-        - 'config:field.storage.node.field_gp_surgery_name'
         - 'config:field.storage.node.field_phone'
   gp_practice_list_page:
     id: gp_practice_list_page
@@ -2137,13 +2070,11 @@ display:
           entity_type: node
           entity_field: title
           plugin_id: field
-          label: Practice
+          label: Title
           exclude: false
           alter:
             alter_text: true
-            text: |-
-              {{ title }}
-              <br><a class="edit-node-link" href="/node/{{ nid }}/edit">edit</a>
+            text: "{{ title }}\r\n<br><a class=\"edit-node-link\" href=\"/node/{{ nid }}/edit\">edit</a>"
             make_link: false
             path: ''
             absolute: false
