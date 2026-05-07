@@ -1,9 +1,9 @@
-uuid: e7dfc0a9-2e1b-4657-9779-0039bcce267c
+uuid: 30bd6419-8619-4024-b4c5-07a3bbbf9253
 langcode: en
 status: true
 dependencies:
   config:
-    - core.entity_view_mode.node.teaser
+    - core.entity_view_mode.node.external_link
     - field.field.node.contact.body
     - field.field.node.contact.field_address
     - field.field.node.contact.field_contact_additional_info
@@ -25,18 +25,37 @@ dependencies:
     - field.field.node.contact.field_telephone
     - node.type.contact
   module:
-    - text
+    - layout_builder
+    - link
     - user
-id: node.contact.teaser
+third_party_settings:
+  layout_builder:
+    enabled: false
+    allow_custom: false
+id: node.contact.external_link
 targetEntityType: node
 bundle: contact
-mode: teaser
+mode: external_link
 content:
-  body:
-    type: text_summary_or_trimmed
-    label: hidden
+  field_contact_website:
+    type: link
+    label: inline
     settings:
-      trim_length: 600
+      trim_length: 80
+      url_only: true
+      url_plain: false
+      rel: '0'
+      target: _blank
+    third_party_settings: {  }
+    weight: 2
+    region: content
+  field_show_external_link:
+    type: boolean
+    label: inline
+    settings:
+      format: enabled-disabled
+      format_custom_false: ''
+      format_custom_true: ''
     third_party_settings: {  }
     weight: 1
     region: content
@@ -46,22 +65,13 @@ content:
     weight: 0
     region: content
 hidden:
+  body: true
   content_moderation_control: true
   field_address: true
   field_contact_additional_info: true
-  field_contact_address_01: true
-  field_contact_address_02: true
-  field_contact_address_03: true
-  field_contact_address_04: true
-  field_contact_address_05: true
-  field_contact_benefits_no: true
   field_contact_category: true
-  field_contact_emp_svcs_no: true
   field_contact_group: true
   field_contact_hours: true
-  field_contact_postcode: true
-  field_contact_town_city: true
-  field_contact_website: true
   field_email_address: true
   field_location: true
   field_meta_tags: true
@@ -69,11 +79,10 @@ hidden:
   field_phone: true
   field_related_info: true
   field_search_elevation: true
-  field_show_external_link: true
   field_site_themes: true
   field_summary: true
   field_supplementary_contact: true
   field_telephone: true
-  field_toc_enable: true
   langcode: true
   search_api_excerpt: true
+  toc_display: true
