@@ -516,14 +516,10 @@ function nidirect_contacts_form_node_form_alter(&$form, FormStateInterface $form
  */
 function nidirect_contacts_after_build(array $form, FormStateInterface $form_state) {
 
-  // Hide group_additional_information when "Show contact as external
-  // link" is checked.
-  $selector = ':input[name="field_show_external_link[value]"]';
-
+  // Hide additional information group when contact is external.
   if (isset($form['group_additional_information'])) {
-
     $form['group_additional_information']['#states']['invisible'] = [
-      $selector => ['checked' => TRUE],
+      ':input[name="field_show_external_link[value]"]' => ['checked' => TRUE],
     ];
   }
 
