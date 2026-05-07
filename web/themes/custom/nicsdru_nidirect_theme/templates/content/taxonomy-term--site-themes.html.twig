@@ -30,5 +30,7 @@
     {{ information_services_output }}
   {%  endif %}
   {{ content['field_additional_info'] }}
-  {{ drupal_entity('block', 'originssocialsharing', check_access=false) }}
+  {% if not hide_proni_social_links %}
+    {{ drupal_entity('block', 'originssocialsharing', check_access=false) }}
+  {% endif %}
 </div>

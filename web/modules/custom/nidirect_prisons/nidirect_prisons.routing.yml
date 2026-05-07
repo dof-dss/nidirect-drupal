@@ -6,3 +6,10 @@ nidirect_prisons.worldpay_order_notifications:
   methods: ['POST']
   requirements:
     _access: 'TRUE'
+nidirect_prisons.prisoner_payments_heartbeat:
+  path: '/prisoner-payments/heartbeat'
+  defaults:
+    _controller: '\Drupal\nidirect_prisons\Controller\PrisonerPaymentsController::heartbeat'
+  requirements:
+    _access: 'TRUE'
+

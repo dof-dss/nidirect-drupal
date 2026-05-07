@@ -38,13 +38,21 @@ filters:
   linkit:
     id: linkit
     provider: linkit
-    status: false
+    status: true
     weight: -34
     settings:
       title: true
+      media_substitution: metadata
   noreferrer:
     id: noreferrer
     provider: noreferrer
     status: true
     weight: 10
     settings: {  }
+  origins_media_cookie_content_blocker_embed_filter:
+    id: origins_media_cookie_content_blocker_embed_filter
+    provider: origins_common
+    status: false
+    weight: 0
+    settings:
+      replacement_text: 'Click here to view the video content'

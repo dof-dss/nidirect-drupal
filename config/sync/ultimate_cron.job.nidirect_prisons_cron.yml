@@ -10,18 +10,17 @@ weight: 0
 module: nidirect_prisons
 callback: 'nidirect_prisons#cron'
 scheduler:
-  id: crontab
+  id: simple
   configuration:
     rules:
-      - '*/15 * * * *'
-    catch_up: 0
+      - '* * * * *'
 launcher:
   id: serial
   configuration:
     timeouts:
-      lock_timeout: 3600
+      lock_timeout: 300
     launcher:
-      thread: 0
+      thread: 1
 logger:
   id: database
   configuration:

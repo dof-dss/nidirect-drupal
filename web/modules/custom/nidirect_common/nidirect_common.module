@@ -9,7 +9,9 @@
  * include (inc/) files and required in this file.
  */
 
+use Drupal\block\Entity\Block;
 use Drupal\Component\Serialization\Json;
+use Drupal\Core\Access\AccessResult;
 use Drupal\Core\Block\BlockPluginInterface;
 use Drupal\Core\Cache\Cache;
 use Drupal\Core\Datetime\DrupalDateTime;
@@ -20,6 +22,7 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Link;
 use Drupal\Core\Render\Markup;
 use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\Core\Session\AccountInterface;
 use Drupal\Core\Url;
 use Drupal\node\Entity\Node;
 use Drupal\node\NodeInterface;
@@ -712,6 +715,46 @@ function nidirect_common_preprocess_node(array &$variables) {
     }
   }
 
+  // PRONI MIGRATION.
+  $config = \Drupal::config('nidirect_common.proni_settings');
+
+  // Check UI Toggle OR Environment Variable.
+  $is_enabled = $config->get('enabled') || (getenv('PRONI_CONTENT_REDIRECT') === 'enabled');
+
+  // We must add the cache context and tag regardless of status so Drupal
+  // knows when to re-evaluate this logic if the config or user role changes.
+  $variables['#cache']['contexts'][] = 'user.roles:anonymous';
+  $variables['#cache']['tags'][] = 'config:nidirect_common.proni_settings';
+
+  if ($is_enabled && \Drupal::currentUser()->isAnonymous()) {
+    $node = $variables['node'];
+
+    if ($node instanceof NodeInterface && _nidirect_common_is_proni_content($node)) {
+
+      // 1. Replace Content.
+      $message = $config->get('message_text');
+      $variables['content'] = [
+        '#type' => 'processed_text',
+        '#text' => $message['value'],
+        '#format' => $message['format'],
+      ];
+
+      // 2. Add Noindex Tag for SEO.
+      $noindex = [
+        '#tag' => 'meta',
+        '#attributes' => [
+          'name' => 'robots',
+          'content' => 'noindex, follow',
+        ],
+      ];
+
+      $variables['#attached']['html_head'][] = [$noindex, 'robots_noindex'];
+
+      // 3. Hide origins social links block
+      $variables['hide_proni_social_links'] = TRUE;
+    }
+  }
+
 }
 
 /**
@@ -831,4 +874,101 @@ function nidirect_common_theme_registry_alter(&$theme_registry) {
       $theme_registry['fieldset']['template'] = 'fieldset';
     }
   }
+}
+
+/**
+ * Implements hook_block_access().
+ */
+function nidirect_common_block_access(Block $block, $operation, AccountInterface $account) {
+  // 1. Only act on the 'view' operation and specific block(s).
+  $target_blocks = [
+    'views_block__popular_content_pop_by_term',
+    'relatedcontentblock'
+  ];
+
+  if ($operation === 'view' && in_array($block->id(), $target_blocks)) {
+    $config = \Drupal::config('nidirect_common.proni_settings');
+    $is_enabled = $config->get('enabled') || (getenv('PRONI_CONTENT_REDIRECT') === 'enabled');
+
+    // 2. Only hide if the migration setting is active for anonymous users.
+    if ($is_enabled && $account->isAnonymous()) {
+
+      // Check if we are on a Node page.
+      $node = \Drupal::routeMatch()->getParameter('node');
+      if ($node instanceof NodeInterface && _nidirect_common_is_proni_content($node)) {
+        return AccessResult::forbidden()->addCacheableDependency($block);
+      }
+
+      // Check if we are on a Taxonomy Term page.
+      $term = \Drupal::routeMatch()->getParameter('taxonomy_term');
+      if ($term instanceof TermInterface && _nidirect_common_is_proni_term($term)) {
+        return AccessResult::forbidden()->addCacheableDependency($block);
+      }
+    }
+  }
+
+  return AccessResult::neutral();
+}
+
+/**
+ * Helper to check if node is tagged with PRONI (TID 362) or its children.
+ */
+function _nidirect_common_is_proni_content(NodeInterface $node) {
+  $target_parent_tid = 362;
+  $field_name = 'field_subtheme';
+
+  // 1. Check if the field exists and has any values.
+  if (!$node->hasField($field_name) || $node->get($field_name)->isEmpty()) {
+    return FALSE;
+  }
+
+  // 2. Get all TIDs currently associated with the node.
+  $node_tids = [];
+  foreach ($node->get($field_name) as $item) {
+    if (!empty($item->target_id)) {
+      $node_tids[] = $item->target_id;
+    }
+  }
+
+  if (empty($node_tids)) {
+    return FALSE;
+  }
+
+  // 3. Check for direct match first.
+  if (in_array($target_parent_tid, $node_tids)) {
+    return TRUE;
+  }
+
+  // 4. Load the hierarchy tree for $target_parent_tid and check children.
+  $term_storage = \Drupal::entityTypeManager()->getStorage('taxonomy_term');
+  $tree = $term_storage->loadTree('site_themes', $target_parent_tid);
+
+  $allowed_child_tids = array_column($tree, 'tid');
+
+  // Return TRUE if any node TID exists in the child term list.
+  return !empty(array_intersect($node_tids, $allowed_child_tids));
+}
+
+/**
+ * Helper to check if a term is PRONI (362) or one of its descendants.
+ */
+function _nidirect_common_is_proni_term($term) {
+  $target_parent_tid = 362;
+
+  // If it's the parent itself, return TRUE.
+  if ((int) $term->id() === $target_parent_tid) {
+    return TRUE;
+  }
+
+  // Check if it's a descendant.
+  $term_storage = \Drupal::entityTypeManager()->getStorage('taxonomy_term');
+
+  $parents = $term_storage->loadAllParents($term->id());
+  foreach ($parents as $parent) {
+    if ((int) $parent->id() === $target_parent_tid) {
+      return TRUE;
+    }
+  }
+
+  return FALSE;
 }

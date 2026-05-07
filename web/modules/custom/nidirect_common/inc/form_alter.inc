@@ -141,6 +141,11 @@ function nidirect_common_form_node_form_alter(&$form, FormStateInterface $form_s
     if ($node->hasField('body')) {
       $body = $node->get('body')->value;
 
+      // Some nodes do not have a 'required' body field.
+      if (empty($body)) {
+        return;
+      }
+
       // Map legacy to new view modes.
       $replacements = [
         'data-view-mode="landscape_float"' => 'data-view-mode="article_float"',

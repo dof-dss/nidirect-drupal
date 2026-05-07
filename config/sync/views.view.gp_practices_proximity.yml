@@ -442,13 +442,13 @@ display:
           field: nothing
           relationship: none
           group_type: group
-          admin_label: 'Title and distance'
+          admin_label: 'Title (distance no longer shown)'
           plugin_id: custom
           label: ''
           exclude: false
           alter:
             alter_text: true
-            text: '{{ title }} <small title="distance from your location">{{ field_location_proximity }}</small>'
+            text: '{{ title }}'
             make_link: false
             path: ''
             absolute: false
@@ -653,6 +653,7 @@ display:
         type: full
         options:
           offset: 0
+          pagination_heading_level: h4
           items_per_page: 10
           total_pages: null
           id: 0
@@ -670,7 +671,6 @@ display:
             offset: false
             offset_label: Offset
           quantity: 9
-          pagination_heading_level: h4
       exposed_form:
         type: basic
         options:

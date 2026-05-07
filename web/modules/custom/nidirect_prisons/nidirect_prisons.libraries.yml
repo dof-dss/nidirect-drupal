@@ -1,6 +1,23 @@
+prisoner_payments:
+  css:
+    base:
+      css/prisoner-payments.css: { minified: true }
+  js:
+    js/prisoner-payments.js: { minified: true }
+  dependencies:
+    - core/drupalSettings
+    - core/jquery
+prisoner_payments_timeout:
+  js:
+    js/prisoner-payments-timeout.js: { minified: true }
+  dependencies:
+    - core/drupalSettings
+    - core/jquery
 prisoner_payments_worldpay:
   js:
     '//payments.worldpay.com/resources/hpp/integrations/embedded/js/hpp-embedded-integration-library.js': { type: external }
-    js/prisoner-payments-worldpay.js: {}
+    js/prisoner-payments-worldpay.js: { minified: true }
   dependencies:
     - core/drupalSettings
+    - core/jquery
+    - core/drupal.dialog.ajax
