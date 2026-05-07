@@ -536,12 +536,11 @@ function nidirect_contacts_after_build(array $form, FormStateInterface $form_sta
  * @return void
  *   Nothing to return.
  */
-function nidirect_contacts_contact_form_validate(array $form, FormStateInterface $form_state) {
+function nidirect_contacts_contact_form_validate(array &$form, FormStateInterface $form_state) {
+  $show_external = (bool) $form_state->getValue(['field_show_external_link', 'value']);
+  $uri = $form_state->getValue(['field_contact_website', 0, 'uri']);
 
-  $show_external = $form_state->getValue('field_show_external_link');
-  $url = $form_state->getValue('field_contact_website');
-
-  if ($show_external && empty($url[0]['uri'])) {
+  if ($show_external && empty($uri)) {
     $form_state->setError(
       $form['field_contact_website']['widget'][0]['uri'],
       t('Website URL is required when "Show contact as external link" is enabled.')
@@ -552,7 +551,7 @@ function nidirect_contacts_contact_form_validate(array $form, FormStateInterface
 /**
  * Implements hook_entity_view_mode_alter().
  */
-function nidirect_contacts_entity_view_mode_alter(&$view_mode, EntityInterface $entity):void {
+function nidirect_contacts_entity_view_mode_alter(&$view_mode, EntityInterface $entity) {
 
   // Only affect full node view.
   if ($view_mode !== 'full') {
