@@ -567,3 +567,12 @@ function nidirect_contacts_entity_view_mode_alter(&$view_mode, EntityInterface $
     }
   }
 }
+
+/**
+ * Implements hook_preprocess_HOOK().
+ */
+function nidirect_contacts_preprocess_geolocation_latlng_formatter(array &$variables): void {
+
+  $config = \Drupal::config('geolocation_google_maps.settings');
+  $variables['google_map_api_key'] = $config->get('google_map_api_key');
+}
