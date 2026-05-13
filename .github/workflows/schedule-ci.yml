@@ -7,20 +7,10 @@ on:
 
 jobs:
   trigger-ci:
-    runs-on: ubuntu-latest
-
+    uses: dof-dss/webdev-ci/.github/workflows/dispatch-workflow.yml@WDT-154
     permissions:
       actions: write
       contents: read
-
-    steps:
-      - name: Trigger CI workflow
-        uses: actions/github-script@v7
-        with:
-          script: |
-            await github.rest.actions.createWorkflowDispatch({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              workflow_id: 'ci.yml',
-              ref: 'development'
-            });
+    with:
+      workflow_id: ci.yml
+      ref: development

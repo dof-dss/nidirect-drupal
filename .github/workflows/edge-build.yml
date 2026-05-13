@@ -7,7 +7,9 @@ on:
 
 jobs:
   edge-build:
-    uses: johangant/webdev-ci/.github/workflows/edge-build.yml@github-actions-poc
+    uses: dof-dss/webdev-ci/.github/workflows/edge-build.yml@WDT-154
+    permissions:
+      contents: write
     with:
       source_branch: development
       edge_build_branch: D8NID-edge
