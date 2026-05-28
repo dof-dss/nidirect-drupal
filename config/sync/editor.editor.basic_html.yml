@@ -11,7 +11,6 @@ editor: ckeditor5
 settings:
   toolbar:
     items:
-      - bold
       - blockQuote
       - superscript
       - removeFormat
@@ -53,7 +52,7 @@ settings:
       filters:
         -
           enabled: true
-          weight: -20
+          weight: -19
           search: '<o:p><\/o:p>'
           replace: ''
         -
@@ -74,7 +73,7 @@ settings:
         -
           enabled: true
           weight: -16
-          search: '<\/?(b\b|big|embed|font|i\b|small)[^>]*>'
+          search: '<\/?(b\b|big|embed|font|i\b|small|strong)[^>]*>'
           replace: ''
         -
           enabled: true
