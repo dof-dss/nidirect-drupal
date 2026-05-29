@@ -63,6 +63,19 @@ function nidirect_prisons_schema() {
         'type' => 'int',
         'not null' => TRUE,
       ],
+      'worldpay_order_sent' => [
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => TRUE,
+        'default' => 0,
+      ],
+      'worldpay_reference_url' => [
+        'type' => 'varchar',
+        'length' => 2048,
+      ],
+      'worldpay_sent_timestamp' => [
+        'type' => 'int',
+      ],
     ],
     'primary key' => ['order_key'],
   ];
@@ -156,4 +169,34 @@ function nidirect_prisons_update_8003() {
   $database->update('prisoner_payment_transactions')
     ->expression('updated_timestamp', 'created_timestamp')
     ->execute();
+}
+
+/**
+ * Add Worldpay order tracking fields to prisoner payment transactions.
+ */
+function nidirect_prisons_update_8004() {
+  $database = \Drupal::database();
+  $schema = $database->schema();
+
+  if (!$schema->fieldExists('prisoner_payment_transactions', 'worldpay_order_sent')) {
+    $schema->addField('prisoner_payment_transactions', 'worldpay_order_sent', [
+      'type' => 'int',
+      'size' => 'tiny',
+      'not null' => TRUE,
+      'default' => 0,
+    ]);
+  }
+
+  if (!$schema->fieldExists('prisoner_payment_transactions', 'worldpay_reference_url')) {
+    $schema->addField('prisoner_payment_transactions', 'worldpay_reference_url', [
+      'type' => 'varchar',
+      'length' => 2048,
+    ]);
+  }
+
+  if (!$schema->fieldExists('prisoner_payment_transactions', 'worldpay_sent_timestamp')) {
+    $schema->addField('prisoner_payment_transactions', 'worldpay_sent_timestamp', [
+      'type' => 'int',
+    ]);
+  }
 }

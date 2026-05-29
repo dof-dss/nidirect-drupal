@@ -202,16 +202,17 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
 
       if ($pending_transaction && !$this->paymentManager->expireIfTimedOut($pending_transaction)) {
 
-        // Stop progress if pending transaction is from another visitor.
-        if ($pending_transaction->visitor_id !== $visitor_id) {
+        // Stop progress if pending transaction is from another visitor,
+        // or if this transaction has already been sent to Worldpay.
+        if ($pending_transaction->visitor_id !== $visitor_id || !empty($pending_transaction->worldpay_order_sent)) {
           $elements['msg_payment_pending']['#access'] = TRUE;
           $elements['prisoner_payment_amount']['#access'] = FALSE;
           $elements['wizard_next']['#access'] = FALSE;
           return;
         }
-        // Else recreate pending transaction with a new order code
-        // just in case the visitor decides to change the amount to pay
-        // (which means the existing Worldpay order is no longer valid).
+        // Else recreate the local pending transaction with a new order
+        // code. This is only safe before a Worldpay order has been
+        // created for the pending transaction.
         else {
 
           $old_order_code = $pending_transaction->order_key;
@@ -229,9 +230,8 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
             $created_timestamp = $now;
           }
 
-          // Cancel the old pending transaction. Note we do not cancel
-          // the Worldpay order that was generated. Worldpay will expire
-          // and cancel that itself.
+          // Cancel the old local pending transaction. This branch is
+          // only reached before an order has been sent to Worldpay.
           $this->paymentManager->updateTransactionStatus(
             $old_order_code,
             'cancelled'
@@ -291,36 +291,39 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
       // Get the transaction.
       $transaction = $this->paymentManager->getTransaction($order_code);
 
-      // Halt progress if transaction expired.
-      if (!$transaction || $transaction->status === 'expired') {
+      // Halt progress if transaction expired or is no longer pending.
+      if (!$transaction || $transaction->status !== 'pending') {
         $elements['twig_payment_card_details']['#access'] = FALSE;
         $elements['msg_session_expired']['#access'] = TRUE;
         $elements['wizard_prev']['#access'] = FALSE;
         $elements['submit']['#access'] = FALSE;
         return;
       }
-      // Transaction underway, hide previous because we can't
-      // let user go back and change anything.  Instead, they
-      // can cancel and start again.
-      else {
 
-        $elements['wizard_prev']['#access'] = FALSE;
-
-        // Add Cancel button.
-        $form['actions']['cancel_payment'] = [
-          '#type' => 'submit',
-          '#value' => $this->t('Cancel payment'),
-          '#submit' => [[static::class, 'cancelPaymentSubmit']],
-          '#limit_validation_errors' => [],
-          '#weight' => -10,
-        ];
+      if (!empty($transaction->worldpay_order_sent)) {
+        $payment_amount = (float) $transaction->amount;
       }
 
-      // Update pending transaction with the payment amount.
-      $this->paymentManager->updatePendingTransactionAmount($order_code, $payment_amount);
+      // Transaction underway, hide previous because we can't
+      // let user go back and change anything after a Worldpay order
+      // is created.
+      $elements['wizard_prev']['#access'] = FALSE;
+
+      // Update pending transaction with the payment amount before the
+      // order is sent to Worldpay. After that point, the amount must
+      // remain tied to the Worldpay order.
+      if (empty($transaction->worldpay_order_sent)) {
+        $this->paymentManager->updatePendingTransactionAmount($order_code, $payment_amount);
+      }
 
       // Update transaction timestamp.
-      $this->paymentManager->touchTransaction($order_code);
+      if (!$this->paymentManager->touchTransaction($order_code)) {
+        $elements['twig_payment_card_details']['#access'] = FALSE;
+        $elements['msg_session_expired']['#access'] = TRUE;
+        $elements['wizard_prev']['#access'] = FALSE;
+        $elements['submit']['#access'] = FALSE;
+        return;
+      }
 
       // Clientside timeout countdown needs order code, timeout values
       // and the start time for the transaction.
@@ -331,35 +334,47 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
         'startTime' => (int) $transaction->created_timestamp,
       ];
 
-      // Generate and send Worldpay order XML request.
-      $order_data_xml = $this->paymentManager->generateOrderData(
-        $order_code,
-        $prison_id,
-        $prisoner_id,
-        $prisoner_fullname,
-        $payment_amount,
-        $visitor_fullname,
-        $visitor_email
-      );
+      $response = NULL;
 
-      // Prevent duplicate Worldpay order creation on form rebuilds.
-      if (!$form_state->get('worldpay_order_sent')) {
+      if (!empty($transaction->worldpay_order_sent) && !empty($transaction->worldpay_reference_url)) {
+        // Reuse the existing Worldpay order on form rebuilds.
+        $response = [
+          'success' => TRUE,
+          'order_code' => $order_code,
+          'reference_url' => $transaction->worldpay_reference_url,
+          'error' => NULL,
+        ];
+        $form_state->set('worldpay_order_sent', TRUE);
+      }
+      else {
+        // Generate and send Worldpay order XML request.
+        $order_data_xml = $this->paymentManager->generateOrderData(
+          $order_code,
+          $prison_id,
+          $prisoner_id,
+          $prisoner_fullname,
+          $payment_amount,
+          $visitor_fullname,
+          $visitor_email
+        );
 
         $response_xml = $this->paymentManager->sendWorldpayRequest(
           $order_data_xml,
           $prison_id
         );
 
-        // Mark as sent for this form/session.
-        $form_state->set('worldpay_order_sent', TRUE);
-      }
-      else {
-        // Order already sent; do not resend.
-        $response_xml = NULL;
+        if ($response_xml) {
+          $response = $this->paymentManager->parseWorldpayResponse($response_xml);
+
+          if (!empty($response['success']) && !empty($response['reference_url'])) {
+            $this->paymentManager->markWorldpayOrderSent($order_code, $response['reference_url']);
+            $form_state->set('worldpay_order_sent', TRUE);
+          }
+        }
       }
 
-      // Parse the Worldpay response to get the iframe URL.
-      if ($response_xml && $response = $this->paymentManager->parseWorldpayResponse($response_xml)) {
+      // Use the Worldpay response to get the iframe URL.
+      if (!empty($response['success']) && !empty($response['reference_url'])) {
 
         // Attach the Worldpay JS library and pass the iframe URL to drupalSettings.
         $form['#attached']['library'][] = 'nidirect_prisons/prisoner_payments_worldpay';
@@ -390,7 +405,7 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
 
         \Drupal::messenger()->addError($this->t('An error occurred while processing your request. Try again later.'));
         $this->getLogger('nidirect_prisons')->error('Failed to parse Worldpay response: @response', [
-          '@response' => $response_xml,
+          '@response' => isset($response_xml) ? $response_xml : NULL,
         ]);
       }
     }
@@ -553,6 +568,14 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
     $transaction = $this->paymentManager->getTransaction($order_code);
 
     if (!$transaction || $transaction->status !== 'pending') {
+      return;
+    }
+
+    if (!empty($transaction->worldpay_order_sent)) {
+      $this->getLogger('nidirect_prisons')->warning(
+        'Refused local cancellation for Worldpay order @order because it has already been sent to Worldpay',
+        ['@order' => $order_code]
+      );
       return;
     }
 

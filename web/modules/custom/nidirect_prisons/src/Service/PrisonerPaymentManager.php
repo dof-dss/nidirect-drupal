@@ -132,6 +132,9 @@ class PrisonerPaymentManager {
           'status',
           'created_timestamp',
           'updated_timestamp',
+          'worldpay_order_sent',
+          'worldpay_reference_url',
+          'worldpay_sent_timestamp',
         ])
         ->condition('order_key', $order_code)
         ->range(0, 1);
@@ -198,6 +201,9 @@ class PrisonerPaymentManager {
           'status',
           'created_timestamp',
           'updated_timestamp',
+          'worldpay_order_sent',
+          'worldpay_reference_url',
+          'worldpay_sent_timestamp',
         ])
         ->condition('status', 'pending')
         ->orderBy('created_timestamp', 'DESC')
@@ -233,6 +239,9 @@ class PrisonerPaymentManager {
           'status',
           'created_timestamp',
           'updated_timestamp',
+          'worldpay_order_sent',
+          'worldpay_reference_url',
+          'worldpay_sent_timestamp',
         ])
         ->condition('prisoner_id', $prisoner_id)
         ->condition('status', 'pending')
@@ -373,6 +382,9 @@ class PrisonerPaymentManager {
           'status' => 'pending',
           'created_timestamp' => $created_timestamp,
           'updated_timestamp' => $now,
+          'worldpay_order_sent' => 0,
+          'worldpay_reference_url' => NULL,
+          'worldpay_sent_timestamp' => NULL,
         ])
         ->execute();
     }
@@ -398,6 +410,9 @@ class PrisonerPaymentManager {
       'status' => 'pending',
       'created_timestamp' => $created_timestamp,
       'updated_timestamp' => $now,
+      'worldpay_order_sent' => 0,
+      'worldpay_reference_url' => NULL,
+      'worldpay_sent_timestamp' => NULL,
     ];
   }
 
@@ -422,6 +437,43 @@ class PrisonerPaymentManager {
     }
     catch (\Exception $e) {
       $this->logger->error('Error updating pending transaction amount: @message', ['@message' => $e->getMessage()]);
+    }
+  }
+
+  /**
+   * Mark a pending transaction as sent to Worldpay.
+   *
+   * @param string $order_code
+   *   The unique order code identifying the transaction.
+   * @param string $reference_url
+   *   The Worldpay hosted payment page reference URL.
+   *
+   * @return bool
+   *   TRUE if the transaction was updated, FALSE otherwise.
+   */
+  public function markWorldpayOrderSent(string $order_code, string $reference_url): bool {
+    try {
+      $updated = $this->database->update('prisoner_payment_transactions')
+        ->fields([
+          'worldpay_order_sent' => 1,
+          'worldpay_reference_url' => $reference_url,
+          'worldpay_sent_timestamp' => $this->time->getRequestTime(),
+        ])
+        ->condition('order_key', $order_code)
+        ->condition('status', 'pending')
+        ->execute();
+
+      return (bool) $updated;
+    }
+    catch (\Throwable $e) {
+      $this->logger->error(
+        'Error marking transaction @order as sent to Worldpay: @message',
+        [
+          '@order' => $order_code,
+          '@message' => $e->getMessage(),
+        ]
+      );
+      return FALSE;
     }
   }
 
@@ -465,7 +517,7 @@ class PrisonerPaymentManager {
       $updated = $this->database->update('prisoner_payment_transactions')
         ->fields(['status' => $status])
         ->condition('order_key', $order_code)
-        ->condition('status', ['pending', 'processing', 'expired'], 'IN')
+        ->condition('status', ['pending', 'processing', 'expired', 'cancelled'], 'IN')
         ->execute();
 
       return (bool) $updated;
