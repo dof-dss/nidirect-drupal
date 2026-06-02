@@ -202,7 +202,7 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
 
       if ($pending_transaction && !$this->paymentManager->expireIfTimedOut($pending_transaction)) {
 
-        // Stop progress if pending transaction is from another visitor,
+        // Stop progress if the pending transaction is from another visitor,
         // or if this transaction has already been sent to Worldpay.
         if ($pending_transaction->visitor_id !== $visitor_id || !empty($pending_transaction->worldpay_order_sent)) {
           $elements['msg_payment_pending']['#access'] = TRUE;
@@ -220,8 +220,8 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
 
           // The new order should use the created time of the old order
           // if still within timeout limits. This prevents resurrecting
-          // a transaction that is already hard-expired (e.g. if cron
-          // has not run).
+          // a transaction already hard-expired (for example, if cron
+          // has not yet run).
           if (($now - $pending_transaction->created_timestamp) < $this->paymentManager->hardTimeout) {
             $created_timestamp = $pending_transaction->created_timestamp;
           }
@@ -232,10 +232,7 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
 
           // Cancel the old local pending transaction. This branch is
           // only reached before an order has been sent to Worldpay.
-          $this->paymentManager->updateTransactionStatus(
-            $old_order_code,
-            'cancelled'
-          );
+          $this->cancelTransaction($old_order_code);
         }
       }
 
@@ -305,7 +302,7 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
       }
 
       // Transaction underway, hide previous because we can't
-      // let user go back and change anything after a Worldpay order
+      // let the user go back and change anything after a Worldpay order
       // is created.
       $elements['wizard_prev']['#access'] = FALSE;
 
@@ -573,7 +570,7 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
 
     if (!empty($transaction->worldpay_order_sent)) {
       $this->getLogger('nidirect_prisons')->warning(
-        'Refused local cancellation for Worldpay order @order because it has already been sent to Worldpay',
+        'Cancellation failed for Worldpay order @order because it has already been sent to Worldpay',
         ['@order' => $order_code]
       );
       return;
@@ -583,7 +580,7 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
     $this->paymentManager->updateTransactionStatus($order_code, 'cancelled');
 
     $this->getLogger('nidirect_prisons')->info(
-      'Payment cancelled by user for order @order',
+      'Payment cancelled for order @order',
       ['@order' => $order_code]
     );
   }
