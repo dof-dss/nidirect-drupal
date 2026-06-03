@@ -68,10 +68,22 @@
 
       if (status === 'cancelled_by_shopper') {
         console.log('Worldpay payment cancelled by shopper.');
-        // Need to somehow cancel the transaction via webform handler's
-        // cancelPaymentSubmit() method. Otherwise the user could start a new
-        // transaction, but will be blocked from proceeding because there is an
-        // existing pending transaction.
+        const cancelButton = document.querySelector('[data-drupal-selector="edit-cancel-payment"]');
+
+        if (!cancelButton) {
+          console.error('Cancel payment button not found.');
+          iframeContainer.removeChild(overlay);
+          return;
+        }
+
+        if (cancelButton.form && typeof cancelButton.form.requestSubmit === 'function') {
+          cancelButton.form.requestSubmit(cancelButton);
+        }
+        else {
+          cancelButton.click();
+        }
+
+        return;
       }
 
       if (status === 'success') {
