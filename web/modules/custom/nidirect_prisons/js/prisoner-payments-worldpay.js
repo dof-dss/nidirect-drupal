@@ -64,10 +64,8 @@
       }
 
       const status = responseData.order?.status;
-      console.log(`Worldpay payment status: ${status}`);
 
       if (status === 'cancelled_by_shopper') {
-        console.log('Worldpay payment cancelled by shopper.');
         const cancelButton = document.querySelector('[data-drupal-selector="edit-cancel-payment"]');
 
         if (!cancelButton) {
@@ -92,7 +90,6 @@
         iframeContainer.removeChild(overlay);
         iframeContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
         console.log(`Worldpay payment did not succeed. Status: ${status}`);
-        console.dir(responseData);
       }
     },
   };
