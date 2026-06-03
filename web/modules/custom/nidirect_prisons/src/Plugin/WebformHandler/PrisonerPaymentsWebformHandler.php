@@ -202,41 +202,11 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
 
       if ($pending_transaction && !$this->paymentManager->expireIfTimedOut($pending_transaction)) {
 
-        // Stop progress if pending transaction is from another visitor.
-        if ($pending_transaction->visitor_id !== $visitor_id) {
-          $elements['msg_payment_pending']['#access'] = TRUE;
-          $elements['prisoner_payment_amount']['#access'] = FALSE;
-          $elements['wizard_next']['#access'] = FALSE;
-          return;
-        }
-        // Else recreate pending transaction with a new order code
-        // just in case the visitor decides to change the amount to pay
-        // (which means the existing Worldpay order is no longer valid).
-        else {
-
-          $old_order_code = $pending_transaction->order_key;
-          $now = $this->time->getRequestTime();
-
-          // The new order should use the created time of the old order
-          // if still within timeout limits. This prevents resurrecting
-          // a transaction that is already hard-expired (e.g. if cron
-          // has not run).
-          if (($now - $pending_transaction->created_timestamp) < $this->paymentManager->hardTimeout) {
-            $created_timestamp = $pending_transaction->created_timestamp;
-          }
-          else {
-            // Hard timeout exceeded — start a fresh attempt.
-            $created_timestamp = $now;
-          }
-
-          // Cancel the old pending transaction. Note we do not cancel
-          // the Worldpay order that was generated. Worldpay will expire
-          // and cancel that itself.
-          $this->paymentManager->updateTransactionStatus(
-            $old_order_code,
-            'cancelled'
-          );
-        }
+        // Show payment pending message and prevent further progress.
+        $elements['msg_payment_pending']['#access'] = TRUE;
+        $elements['prisoner_payment_amount']['#access'] = FALSE;
+        $elements['wizard_next']['#access'] = FALSE;
+        return;
       }
 
       // Generate a new order code.
@@ -300,7 +270,7 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
         return;
       }
       // Transaction underway, hide previous because we can't
-      // let user go back and change anything.  Instead, they
+      // let user go back and change anything. Instead, they
       // can cancel and start again.
       else {
 
