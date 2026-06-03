@@ -6,6 +6,7 @@
  */
 
 use Drupal\Component\Utility\Html;
+use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Link;
@@ -14,6 +15,7 @@ use Drupal\link\LinkItemInterface;
 use Drupal\node\Entity\Node;
 use Drupal\node\NodeInterface;
 use Drupal\search_api_autocomplete\Suggestion\Suggestion;
+use Drupal\simple_sitemap\Exception\SkipElementException;
 use Drupal\views\Plugin\views\query\QueryPluginBase;
 use Drupal\views\ViewExecutable;
 
@@ -371,7 +373,7 @@ function nidirect_contacts_preprocess_views_view_field(&$variables) {
     }
 
     // Exit early if we're not overriding to display an external link.
-    if (empty($node->get('field_show_external_link')->value)) {
+    if (!nidirect_contacts_is_external_link_contact($node)) {
       return;
     }
 
@@ -419,7 +421,7 @@ function nidirect_contacts_search_api_autocomplete_suggestions_alter(array &$sug
       continue;
     }
     // Exit early if we're not overriding to display an external link.
-    if (empty($node->get('field_show_external_link')->value)) {
+    if (!nidirect_contacts_is_external_link_contact($node)) {
       return;
     }
     if ($node->get('field_contact_website')->isEmpty()) {
@@ -562,7 +564,7 @@ function nidirect_contacts_entity_view_mode_alter(&$view_mode, EntityInterface $
   }
 
   if ($entity instanceof NodeInterface && $entity->bundle() === 'contact') {
-    if ($entity->get('field_show_external_link')->value) {
+    if (nidirect_contacts_is_external_link_contact($entity)) {
       $view_mode = 'external_link';
     }
   }
@@ -575,4 +577,39 @@ function nidirect_contacts_preprocess_geolocation_latlng_formatter(array &$varia
 
   $config = \Drupal::config('geolocation_google_maps.settings');
   $variables['google_map_api_key'] = $config->get('google_map_api_key');
+}
+
+/**
+ * Checks if a contact node is configured to display as an external link.
+ *
+ * @param \Drupal\node\NodeInterface $node
+ *   The node to check.
+ *
+ * @return bool
+ *   TRUE when the node is an externally-linked contact.
+ */
+function nidirect_contacts_is_external_link_contact(NodeInterface $node): bool {
+  return $node->bundle() === 'contact'
+    && $node->hasField('field_show_external_link')
+    && !empty($node->get('field_show_external_link')->value);
+}
+
+/**
+ * Implements hook_simple_sitemap_entity_process().
+ */
+function nidirect_contacts_simple_sitemap_entity_process(ContentEntityInterface $entity): void {
+  if (nidirect_contacts_is_external_link_contact($entity)) {
+    throw new SkipElementException();
+  }
+}
+
+/**
+ * Implements hook_metatags_alter().
+ */
+function nidirect_contacts_metatags_alter(array &$metatags, array &$context): void {
+  $entity = $context['entity'] ?? NULL;
+
+  if (nidirect_contacts_is_external_link_contact($entity)) {
+    $metatags['robots'] = 'noindex, nofollow';
+  }
 }
