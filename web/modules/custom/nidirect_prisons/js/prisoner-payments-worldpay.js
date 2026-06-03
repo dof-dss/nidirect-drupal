@@ -65,6 +65,14 @@
 
       const status = responseData.order?.status;
 
+      if (status === 'cancelled') {
+        console.log('Worldpay payment cancelled.');
+        // Need to somehow cancel the transaction via webform handler's
+        // cancelPaymentSubmit() method. Otherwise the user could start a new
+        // transaction, but will be blocked from proceeding because there is an
+        // existing pending transaction.
+      }
+
       if (status === 'success') {
         submitButton.click();
       } else {
