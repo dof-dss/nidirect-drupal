@@ -282,6 +282,11 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
           '#value' => $this->t('Cancel payment'),
           '#submit' => [[static::class, 'cancelPaymentSubmit']],
           '#limit_validation_errors' => [],
+          '#attributes' => [
+            'aria-hidden' => 'true',
+            'class' => ['visually-hidden'],
+            'tabindex' => '-1',
+          ],
           '#weight' => -10,
         ];
       }
