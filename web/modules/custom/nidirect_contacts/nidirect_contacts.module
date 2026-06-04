@@ -598,7 +598,7 @@ function nidirect_contacts_is_external_link_contact(NodeInterface $node): bool {
  * Implements hook_simple_sitemap_entity_process().
  */
 function nidirect_contacts_simple_sitemap_entity_process(ContentEntityInterface $entity): void {
-  if (nidirect_contacts_is_external_link_contact($entity)) {
+  if ($entity instanceof NodeInterface && nidirect_contacts_is_external_link_contact($entity)) {
     throw new SkipElementException();
   }
 }
@@ -609,7 +609,7 @@ function nidirect_contacts_simple_sitemap_entity_process(ContentEntityInterface 
 function nidirect_contacts_metatags_alter(array &$metatags, array &$context): void {
   $entity = $context['entity'] ?? NULL;
 
-  if (nidirect_contacts_is_external_link_contact($entity)) {
+  if ($entity instanceof NodeInterface && nidirect_contacts_is_external_link_contact($entity)) {
     $metatags['robots'] = 'noindex, nofollow';
   }
 }
