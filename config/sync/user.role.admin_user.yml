@@ -4,6 +4,7 @@ status: true
 dependencies:
   config:
     - core.entity_view_display.node.landing_page.full
+    - entity_browser.browser.location_browser
     - filter.format.basic_html
     - filter.format.layout_builder_html
     - media.type.audio
@@ -39,6 +40,7 @@ dependencies:
     - book
     - content_moderation
     - entity_browser
+    - entity_usage
     - file
     - filter
     - flag
@@ -52,13 +54,13 @@ dependencies:
     - path
     - pathauto
     - redirect
+    - redis
     - scheduled_transitions
     - sitewide_alert
     - system
     - taxonomy
     - taxonomy_access_fix
     - toolbar
-    - tour
     - whatlinkshere
 id: admin_user
 label: 'admin user'
@@ -68,21 +70,21 @@ permissions:
   - 'access administration pages'
   - 'access block library'
   - 'access content overview'
+  - 'access entity usage statistics'
   - 'access location_browser entity browser pages'
   - 'access media overview'
   - 'access printer-friendly version'
+  - 'access redis report'
   - 'access site in maintenance mode'
   - 'access site reports'
   - 'access taxonomy overview'
   - 'access toolbar'
-  - 'access tour'
   - 'access user profiles'
   - 'add content to books'
   - 'add gp entities'
   - 'add scheduled transitions node application'
   - 'add scheduled transitions node article'
   - 'add scheduled transitions node contact'
-  - 'add scheduled transitions node driving_instructor'
   - 'add scheduled transitions node embargoed_publication'
   - 'add scheduled transitions node feature'
   - 'add scheduled transitions node featured_content_list'
@@ -254,7 +256,6 @@ permissions:
   - 'edit own cold_weather_payment content'
   - 'edit own contact content'
   - 'edit own document media'
-  - 'edit own driving_instructor content'
   - 'edit own embargoed_publication content'
   - 'edit own external_link content'
   - 'edit own feature content'

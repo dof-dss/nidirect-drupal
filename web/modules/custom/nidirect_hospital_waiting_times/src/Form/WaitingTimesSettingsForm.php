@@ -39,6 +39,10 @@ class WaitingTimesSettingsForm extends ConfigFormBase {
       '#default_value' => $config->get('data_source_url'),
     ];
 
+    $form['export_notice'] = [
+      '#markup' => 'Changes to the <em>Data source URL</em> should be followed with a config export.',
+    ];
+
     return parent::buildForm($form, $form_state);
   }
 

@@ -47,7 +47,7 @@
       padding-left: 2em;
       min-height: 1.5em;
 
-      &:before {
+      &::before {
         position: absolute;
         left: 0;
         display: inline-block;
@@ -76,4 +76,67 @@
 .split-list {
   columns: 2;
   column-gap: 3.6rem;
+}
+
+/*
+ * Definition lists.
+ */
+
+dl {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: .6rem;
+
+  // Definition term (dt) and definition description
+  // (dd) are side by side.
+  &.side-by-side {
+    grid-template-columns: max-content auto;
+
+    dt {
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    dd {
+      grid-column-start: 2;
+    }
+  }
+
+  // Definition list has a fixed height causing multiple columns of
+  // term and description pairs.
+  &.column-wrap {
+    @include breakpoint($phab) {
+      display: flex;
+      flex-flow: column wrap;
+      justify-content: flex-start;
+      max-height: 5.5em;
+    }
+  }
+
+  // Compact definition list.
+  &.compact {
+    dd,
+    dt {
+      @include responsive-typo-map($small-text);
+    }
+  }
+
+  dt,
+  dd {
+    padding: .25em .5em;
+    margin: 0;
+
+    @include breakpoint($tab) {
+      padding: .3334em .5em;
+    }
+  }
+
+  dt {
+    font-weight: bold;
+    background-color: $brand-primary-lighter;
+
+    &.error {
+      background-color: $error-bg;
+    }
+  }
 }

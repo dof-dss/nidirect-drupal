@@ -3,6 +3,7 @@ langcode: en
 status: true
 dependencies:
   config:
+    - entity_browser.browser.location_browser
     - filter.format.basic_html
     - media.type.audio
     - media.type.document
@@ -22,7 +23,6 @@ dependencies:
     - scheduled_transitions
     - system
     - toolbar
-    - tour
 id: news_supervisor
 label: 'news supervisor'
 weight: 5
@@ -32,7 +32,6 @@ permissions:
   - 'access location_browser entity browser pages'
   - 'access media overview'
   - 'access toolbar'
-  - 'access tour'
   - 'add scheduled transitions node news'
   - 'create audio media'
   - 'create document media'

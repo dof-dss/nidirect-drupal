@@ -86,7 +86,7 @@ class DrivingInstructorsBreadcrumb implements BreadcrumbBuilderInterface {
     }
 
     $breadcrumb->setLinks($links);
-    $breadcrumb->addCacheContexts(['url.path']);
+    $breadcrumb->addCacheContexts(['url.path', 'route']);
 
     if (!empty($cache_tags)) {
       $breadcrumb->addCacheTags($cache_tags);

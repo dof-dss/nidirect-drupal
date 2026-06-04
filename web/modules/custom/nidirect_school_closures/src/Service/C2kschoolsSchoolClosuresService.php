@@ -262,8 +262,8 @@ class C2kschoolsSchoolClosuresService implements SchoolClosuresServiceInterface 
       $this->data = [];
 
       foreach ($this->xml->channel->item as $item) {
-        $title = utf8_decode($item->title);
-        $description = utf8_decode($item->description);
+        $title = mb_convert_encoding($item->title, 'ISO-8859-1', 'UTF-8');
+        $description = mb_convert_encoding($item->description, 'ISO-8859-1', 'UTF-8');
 
         // Extract reason and date, skip if not matched.
         if (preg_match('/^(.*)<br\/><br\/>Closure takes place on (\d{2}\/\d{2}\/\d{4})$/', $description, $matches)) {

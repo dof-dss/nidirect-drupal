@@ -11,6 +11,7 @@ report-only:
         - 'https://*.google-analytics.com'
         - 'https://*.newrelic.com'
         - 'https://*.nr-data.net'
+        - 'https://*.googleapis.com'
     font-src:
       base: self
       sources:
@@ -38,6 +39,8 @@ report-only:
       base: self
     script-src:
       base: self
+      flags:
+        - unsafe-inline
       sources:
         - 'https://*.googletagmanager.com'
         - 'https://*.google-analytics.com'
@@ -47,19 +50,26 @@ report-only:
       base: self
     script-src-elem:
       base: self
+      flags:
+        - unsafe-inline
       sources:
         - 'https://*.googletagmanager.com'
         - 'https://*.google-analytics.com'
         - 'https://*.newrelic.com'
         - 'https://*.nr-data.net'
+        - 'https://*.googleapis.com'
     style-src:
       base: self
+      flags:
+        - unsafe-inline
     style-src-attr:
       base: self
       flags:
         - unsafe-inline
     style-src-elem:
       base: self
+      flags:
+        - unsafe-inline
     block-all-mixed-content: true
   reporting:
     plugin: none

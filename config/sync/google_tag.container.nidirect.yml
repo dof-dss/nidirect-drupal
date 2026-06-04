@@ -3,37 +3,58 @@ langcode: en
 status: true
 dependencies:
   module:
-    - webform
+    - system
+    - user
 id: nidirect
 label: NIDirect
 weight: 0
-container_id: GTM-KLM7XRX
-data_layer: dataLayer
-include_classes: false
-whitelist_classes: |-
-  google
-  nonGooglePixels
-  nonGoogleScripts
-  nonGoogleIframes
-blacklist_classes: |-
-  customScripts
-  customPixels
-include_environment: false
-environment_id: ''
-environment_token: ''
-path_toggle: 'exclude listed'
-path_list: |-
-  /admin*
-  /batch*
-  /node/add*
-  /node/*/edit
-  /node/*/delete
-  /user/*/edit*
-  /user/*/cancel*
-role_toggle: 'exclude listed'
-role_list: {  }
-status_toggle: 'exclude listed'
-status_list: |-
-  403
-  404
-conditions: {  }
+tag_container_ids:
+  - GTM-KLM7XRX
+advanced_settings:
+  consent_mode: false
+  gtm:
+    GTM-KLM7XRX:
+      data_layer: dataLayer
+      include_classes: false
+      allowlist_classes: ''
+      blocklist_classes: ''
+      include_environment: false
+      environment_id: ''
+      environment_token: ''
+dimensions_metrics: {  }
+conditions:
+  request_path:
+    id: request_path
+    negate: true
+    pages: |-
+      /admin*
+      /batch*
+      /node/add*
+      /node/*/edit
+      /node/*/delete
+      /user/*/edit*
+      /user/*/cancel*
+  response_code:
+    id: response_code
+    negate: true
+    response_codes: |-
+      403
+      404
+  user_role:
+    id: user_role
+    negate: false
+    context_mapping:
+      user: '@user.current_user_context:current_user'
+    roles:
+      anonymous: anonymous
+events:
+  custom: {  }
+  generate_lead:
+    value: ''
+    currency: ''
+  login:
+    method: CMS
+  search: {  }
+  sign_up:
+    method: CMS
+  webform_purchase: {  }

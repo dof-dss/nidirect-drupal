@@ -135,6 +135,10 @@ form#views-exposed-form-gp-practices-find-a-gp {
       @include breakpoint($phab) {
         flex: calc(65% - 6em) 0 1;
       }
+
+      input[type='search'] {
+        max-width: 100%;
+      }
     }
   }
 }
@@ -223,12 +227,18 @@ form#views-exposed-form-gp-practices-find-a-gp {
 // Weight: -2
 //
 // Style guide: theme.searches.contacts
+
+.form-item-query-contacts-az label {
+  margin: 0 0 1em;
+}
+
 #contacts-az--title {
-  margin: .5em 0;
+  margin: 1em 0;
 }
 
 .search-form--contacts {
-  margin-bottom: 0; // On contact search results page, no bottom margin under search box.
+  // On contact search results page, no bottom margin under search box.
+  margin-bottom: 0;
 }
 
 

@@ -28,7 +28,7 @@ function _render_campaign_list() {
     if (isset($row->_entity->get('field_subtheme')->target_id)) {
       $terms_to_override[$row->_entity->get('field_subtheme')->target_id] = [
         '#type' => 'link',
-        '#title' => $row->_entity->getTitle(),
+        '#title' => $row->_entity->getName(),
         '#url' => Url::fromRoute('entity.node.canonical', ['node' => $row->nid]),
       ];
     }

@@ -12,7 +12,7 @@ id: debt_management_enquiry
 title: 'Debt Management enquiry'
 description: ''
 categories: {  }
-elements: |-
+elements: |
   your_details:
     '#type': fieldset
     '#title': 'Your details'
@@ -180,6 +180,9 @@ settings:
   form_access_denied_message: ''
   form_access_denied_attributes: {  }
   form_file_limit: ''
+  form_attributes: {  }
+  form_method: ''
+  form_action: ''
   share: false
   share_node: false
   share_theme_name: ''
@@ -223,6 +226,8 @@ settings:
   wizard_toggle: true
   wizard_toggle_show_label: ''
   wizard_toggle_hide_label: ''
+  wizard_page_type: container
+  wizard_page_title_tag: h2
   preview: 2
   preview_label: ''
   preview_title: ''
@@ -241,7 +246,7 @@ settings:
   confirmation_type: page
   confirmation_url: ''
   confirmation_title: ''
-  confirmation_message: |-
+  confirmation_message: |
     <p class="info-notice info-notice--success">
       Thank you for your enquiry. We aim to respond to you within 2 working days.
     </p>
@@ -273,8 +278,6 @@ settings:
   token_update: false
   token_delete: false
   serial_disabled: false
-  page_admin_theme: false
-  form_remote_addr: true
 access:
   create:
     roles:
@@ -334,13 +337,13 @@ handlers:
     settings:
       states:
         - completed
-      to_mail: BELFASTCOLLEGESTREETDCNI.DEBTMANAGEMENTCUSTOMERENQUIRIES@NISSA.GSI.GOV.UK
+      to_mail: BELFASTCOLLEGESTREETDCNI.DEBTMANAGEMENTCUSTOMERENQUIRIES@DFCNI.GOV.UK
       to_options: {  }
       bcc_mail: ''
       bcc_options: {  }
       cc_mail: ''
       cc_options: {  }
-      from_mail: feedback@nidirect.gov.uk
+      from_mail: _default
       from_options: {  }
       from_name: nidirect
       reply_to: ''
@@ -349,8 +352,8 @@ handlers:
       sender_name: ''
       subject: 'Debt Management Enquiry from nidirect.gov.uk'
       body: |-
-        &lt;p&gt;Submitted on [current-date:long]&lt;/p&gt;<br />
-        &lt;p&gt;Submitted values are:&lt;/p&gt;<br />
+        Submitted on [current-date:long]<br />
+        Submitted values are:<br />
         [webform_submission:values]
       excluded_elements: {  }
       ignore_access: false

@@ -1,0 +1,30 @@
+parameters:
+  customRulesetUsed: true
+  reportUnmatchedIgnoredErrors: false
+  ignoreErrors:
+    - '#\Drupal calls should be avoided in classes, use dependency injection instead#'
+    - '#Plugin definitions cannot be altered.#'
+    - '#Missing cache backend declaration for performance.#'
+    - '#Plugin manager has cache backend specified but does not declare cache tags.#'
+  disallowedFunctionCalls:
+    - function: var_dump
+      message: 'This is likely not intended to be used outside of local development, please remove it.'
+    - function: dump
+      message: 'This is likely not intended to be used outside of local development, please remove it.'
+    - function: kint
+      message: 'This is likely not intended to be used outside of local development, please remove it.'
+    - function: ksm
+      message: 'This is likely not intended to be used outside of local development, please remove it.'
+    - function: die
+      message: 'This is likely not intended to be used outside of local development, please remove it.'
+    - function: exit
+      message: 'This is likely not intended to be used outside of local development, please remove it.'
+  fileExtensions:
+    - module
+    - theme
+    - inc
+    - install
+    - profile
+    - engine
+  paths:
+    - src

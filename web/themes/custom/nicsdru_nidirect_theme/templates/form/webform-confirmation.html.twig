@@ -16,11 +16,24 @@
 
 {{ attach_library('webform/webform.confirmation') }}
 
+{%
+  set back_classes = [
+  'btn',
+  'btn--large',
+  'btn--primary',
+  'btn--left',
+]
+%}
+
 {% if progress %}
   {{ progress }}
 {% endif %}
 
 <div{{ attributes.addClass(['webform-confirmation', 'ga-main']) }}>
+
+  {% if title %}
+    <h1 class="page-title">{{ title }}</h1>
+  {% endif %}
 
   {% if message %}
     <div class="webform-confirmation__message">{{ message }}</div>
@@ -28,7 +41,7 @@
 
   {% if back %}
   <div class="webform-confirmation__back">
-    <a class="btn btn--large btn--secondary btn--left" href="{{ back_url }}" rel="prev"{{ back_attributes }}>{{ back_label }}</a>
+    <a href="{{ back_url }}" rel="prev" data-self-ref="true" {{ back_attributes.addClass(back_classes) }}>{{ back_label }}</a>
   </div>
   {% endif %}
 

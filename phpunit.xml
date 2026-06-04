@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- For how to customize PHPUnit configuration, see core/tests/README.md. -->
+
+<phpunit
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  bootstrap="web/core/tests/bootstrap.php"
+  colors="true"
+  beStrictAboutTestsThatDoNotTestAnything="true"
+  beStrictAboutOutputDuringTests="true"
+  beStrictAboutChangesToGlobalState="true"
+  failOnWarning="true"
+  printerClass="\Drupal\Tests\Listeners\HtmlOutputPrinter"
+  cacheResult="false"
+  xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd"
+>
+  <php>
+    <!-- PHP settings -->
+    <ini name="error_reporting" value="32767"/>
+    <ini name="memory_limit" value="-1"/>
+
+    <!-- DDEV: base URL and DB for Functional/Kernel tests -->
+    <env name="SIMPLETEST_BASE_URL" value="https://nidirect.ddev.site"/>
+    <env name="SIMPLETEST_DB" value="mysql://db:db@db/db"/>
+
+    <!-- Browser test output (relative to project root) -->
+    <env name="BROWSERTEST_OUTPUT_DIRECTORY" value="/var/www/html/web/sites/simpletest/browser_output"/>
+
+    <!-- Optional: use router URL for clickable links in HTML output -->
+    <env name="BROWSERTEST_OUTPUT_BASE_URL" value="https://nidirect.ddev.site"/>
+
+    <!-- Uncomment to disable deprecation testing completely -->
+    <!-- <env name="SYMFONY_DEPRECATIONS_HELPER" value="disabled"/> -->
+
+    <!-- Mink / webdriver config; leave empty or override per-environment -->
+    <env name="MINK_DRIVER_CLASS" value=""/>
+    <env name="MINK_DRIVER_ARGS" value=""/>
+    <env name="MINK_DRIVER_ARGS_WEBDRIVER" value=""/>
+  </php>
+
+  <testsuites>
+    <!-- Unit tests: no DB required -->
+    <testsuite name="unit">
+      <directory>web/modules/custom/*/tests/src/Unit</directory>
+      <directory>web/modules/custom/*/*/tests/src/Unit</directory>
+      <directory>web/modules/origins/*/tests/src/Unit</directory>
+      <directory>web/modules/origins/*/*/tests/src/Unit</directory>
+      <directory>web/themes/custom/*/tests/src/Unit</directory>
+    </testsuite>
+
+    <!-- Kernel tests: bootstraps Drupal + DB -->
+    <testsuite name="kernel">
+      <directory>web/modules/custom/*/tests/src/Kernel</directory>
+      <directory>web/modules/custom/*/*/tests/src/Kernel</directory>
+      <directory>web/modules/origins/*/tests/src/Kernel</directory>
+      <directory>web/modules/origins/*/*/tests/src/Kernel</directory>
+      <directory>web/themes/custom/*/tests/src/Kernel</directory>
+    </testsuite>
+
+    <!-- Functional browser tests (no JS) -->
+    <testsuite name="functional">
+      <directory>web/modules/custom/*/tests/src/Functional</directory>
+      <directory>web/modules/custom/*/*/tests/src/Functional</directory>
+      <directory>web/modules/origins/*/tests/src/Functional</directory>
+      <directory>web/modules/origins/*/*/tests/src/Functional</directory>
+      <directory>web/themes/custom/*/tests/src/Functional</directory>
+    </testsuite>
+
+    <!-- Functional browser tests (with JS) -->
+    <testsuite name="functional-javascript">
+      <directory>web/modules/custom/*/tests/src/FunctionalJavascript</directory>
+      <directory>web/modules/custom/*/*/tests/src/FunctionalJavascript</directory>
+      <directory>web/modules/origins/*/tests/src/FunctionalJavascript</directory>
+      <directory>web/modules/origins/*/*/tests/src/FunctionalJavascript</directory>
+      <directory>web/themes/custom/*/tests/src/FunctionalJavascript</directory>
+    </testsuite>
+
+  </testsuites>
+
+  <listeners>
+    <listener class="\Drupal\Tests\Listeners\DrupalListener"/>
+  </listeners>
+
+  <!-- Coverage settings (focused on custom code) -->
+  <coverage>
+    <include>
+      <directory>web/modules/custom</directory>
+      <directory>web/modules/origins</directory>
+      <directory>web/themes/custom</directory>
+    </include>
+    <exclude>
+      <directory>web/modules/custom/*/tests</directory>
+      <directory>web/modules/custom/*/*/tests</directory>
+      <directory>web/modules/origins/*/tests</directory>
+      <directory>web/modules/origins/*/*/tests</directory>
+      <directory>web/themes/custom/*/tests</directory>
+    </exclude>
+  </coverage>
+</phpunit>

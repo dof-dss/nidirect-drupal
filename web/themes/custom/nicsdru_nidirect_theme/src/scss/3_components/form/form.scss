@@ -12,8 +12,102 @@ main form {
   max-width: 800px;
 }
 
-.form-actions {
+form {
 
+  > fieldset > legend {
+    @include responsive-typo-map($form-legend-large);
+    color: $headings;
+  }
+
+  h2 {
+    @include responsive-typo-map($h3-text);
+  }
+
+  h3 {
+    @include responsive-typo-map($h4-text);
+  }
+
+  .description {
+    @include responsive-typo-map($small-text);
+    margin: .6rem 0 .9rem;
+
+    .fieldset-wrapper & {
+      //@include responsive-typo-map($body-text);
+      margin: 0 0 1em;
+    }
+  }
+}
+
+fieldset,
+section.webform-section {
+
+  margin: 0 0 1.5em;
+  padding: 0;
+  border: 0;
+
+  &:focus {
+    outline-color: $brand-primary-medium;
+    outline-offset: .5em;
+    border: 0;
+  }
+
+  &.important-question {
+    margin: 2em 0;
+  }
+
+  &.form-item--card {
+    padding: 0;
+    background-color: #fff;
+    max-width: 100%;
+
+    &.compact {
+      max-width: 30em;
+    }
+
+
+    .fieldset__wrapper,
+    .fieldset-wrapper {
+      padding: 1em;
+      background-color: $grey-lightest;
+
+      > *:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+
+  legend {
+    @include responsive-typo-map($form-legend);
+    color: $peacock-blue;
+    font-weight: normal;
+
+    &:has(span.fieldset-legend.visually-hidden) {
+      padding: 0;
+      margin: 0;
+    }
+
+    &:has(+ .fieldset-wrapper > .description, + .fieldset-wrapper > .field-prefix > .description) {
+      margin-bottom: 0;
+    }
+  }
+
+  // Deeply nested fieldsets.
+  fieldset fieldset.radios--wrapper,
+  fieldset fieldset.checkboxes--wrapper {
+
+    legend {
+      @include responsive-typo-map($form-legend-small);
+      font-weight: bold;
+      color: $text;
+    }
+  }
+}
+
+.form-wrapper {
+  margin: 0 0 1.5em;
+}
+
+.form-actions {
   position: relative;
   margin: 2.5em 0;
 
@@ -32,11 +126,47 @@ main form {
   }
 }
 
+.form-item:not(.form-wrapper) {
+  padding: 0;
+  margin: 0 0 1em;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
 .form-item {
   position: relative;
 
   .container-inline {
     margin: 0;
+  }
+
+  &.form-type-checkbox,
+  &.form-type-radio {
+    margin-bottom: .5em;
+  }
+
+  &.form-type-processed-text {
+    margin: 0;
+  }
+
+  .info-notice:first-child {
+    margin-top: 0;
+  }
+
+  &--card {
+    padding: .5em;
+    background-color: $grey-lightest;
+  }
+
+  &--important {
+    margin-top: 2em;
+
+    label {
+      @include responsive-typo-map($h4-text);
+      font-weight: normal;
+    }
   }
 
   &--error-message {
@@ -49,35 +179,17 @@ main form {
       }
     }
   }
-}
 
-form {
+  @at-root .compact & {
+    margin: 0 0 .5em;
 
-  .form-item {
-    padding: 0;
-    margin: 1em 0;
-
-    &.form-type-processed-text {
+    * {
       margin: 0;
     }
   }
-
-  > .form-item {
-    margin: 2em 0;
-  }
 }
 
-.description {
-  @include responsive-typo-map($small-text);
-  margin: .6rem 0 .9rem;
-
-  .fieldset-wrapper .field-prefix &,
-  .fieldset-wrapper .field-suffix & {
-    @include responsive-typo-map($body-text);
-    margin: 1em 0 0;
-  }
-}
-
+/*
 // Fieldsets and sections act as containers for groups of related form controls.
 //
 // Using a fieldset is the preferred way to group form controls where the legend of the fieldset helps to uniquely
@@ -99,19 +211,18 @@ form > .form-wrapper > section {
   border: 0;
   padding: 0;
 
-  &:first-child {
-    margin-top: 0;
-  }
-
   &:focus {
     outline-color: $brand-primary-medium;
     border: 0;
   }
 
-  & > .form-item,
-  & > .fieldset-wrapper > .form-item,
-  fieldset {
-    margin: 1em 0 0;
+  &.important-question {
+    margin-top: 2em;
+
+    legend {
+      @include responsive-typo-map($h4-text);
+      font-weight: normal;
+    }
   }
 
   legend,
@@ -119,17 +230,36 @@ form > .form-wrapper > section {
     @include responsive-typo-map($form-legend);
     color: $brand-primary-dark;
     font-weight: normal;
+
+    &:has(+ .fieldset-wrapper > .description, + .fieldset-wrapper > .field-prefix > .description) {
+      margin-bottom: .9rem;
+    }
   }
 
   // Nested fieldset legends / section titles.
   fieldset legend,
   section h2 {
-    @include responsive-typo-map($form-legend-plain);
+    @include responsive-typo-map($form-legend-small);
+    font-weight: bold;
     color: $text;
   }
 
   .form-type-processed-text > * {
-    margin: 1em 0;
+    margin: 0 0 1em;
+  }
+
+  &.form-item--card {
+    padding: 0;
+    background-color: #fff;
+
+    .fieldset-wrapper {
+      padding: .5em;
+      background-color: $grey-lightest;
+
+      > *:last-child {
+        margin-bottom: 0;
+      }
+    }
   }
 }
 
@@ -139,20 +269,25 @@ form .legend {
   font-weight: normal;
 
   &--plain {
-    @include responsive-typo-map($form-legend-plain);
+    @include responsive-typo-map($form-legend-small);
     color: $text;
   }
 }
+*/
 
 label,
 .label {
   display: block;
-  margin: 0;
+  margin: 0 0 .5em;
   padding: 0;
   font-size: 1em;
   line-height: 1.5;
-  font-weight: normal;
+  font-weight: bold;
   color: color(text);
+
+  &:has(+ .description) {
+    margin: 0;
+  }
 
   &--small {
     font-size: 1.6rem;
@@ -208,11 +343,20 @@ label,
   }
 }
 
+[type='tel'],
+[type='date'],
+[type='time'],
+[type='number'],
+[inputmode='numeric'] {
+  font-family: var(--font-monospace);
+}
+
 [size='30'],
 [size='40'],
 [size='50'],
 [size='60'] {
-  max-width: 56rem;
+  width: 100%;
+  max-width: fit-content;
 }
 
 select,
@@ -231,7 +375,7 @@ textarea {
   border: 1px solid #333;
   border-radius: 0;
   color: color(text);
-  margin: .5em 0;
+  margin: 0 0 .5em;
   padding: .6rem;
   min-height: 2.5em;
 
@@ -253,6 +397,17 @@ textarea {
     background-color: $error-bg; // lightpink
     box-shadow: none;
     color: color(text);
+  }
+
+  &:disabled {
+    opacity: .8;
+    background-color: $grey-light;
+    color: $ash-grey;
+  }
+
+  &[readonly] {
+    background-color: $grey-light;
+    color: $grey-dark;
   }
 }
 
@@ -319,6 +474,11 @@ textarea,
   line-height: 1.5;
 }
 
+*:has( > .form-type-radio, > .form-type-checkbox) {
+  width: fit-content;
+  max-width: 66%;
+}
+
 .form-type-radio,
 .form-type-checkbox {
   position: relative;
@@ -331,6 +491,7 @@ textarea,
     display: inline-block;
     width: auto;
     padding: 0;
+    max-width: 100%;
 
     .form-item--error-message {
       @extend %error-bubble--floating-below;
@@ -371,8 +532,82 @@ input[type='checkbox'],
     margin: .723em .5em;
   }
 
-  &:checked {
-    background-color: #2daff7;
+  &:checked::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    border: 2px solid #fff;
+    background-color: $brand-primary-medium;
+
+    @at-root
+    input[type='radio']:checked::before,
+    .form-radio:checked::before {
+      border-radius: 1em;
+    }
+  }
+
+  &:checked:disabled,
+  &:disabled,
+  &:checked[readonly],
+  &[readonly] {
+    opacity: .6;
+
+    & ~ label {
+      background-color: $grey-light;
+      color: $grey-dark;
+    }
+  }
+
+  &[role='switch'] {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    color: inherit;
+    font-size: inherit;
+    width: 2.3334em;
+    height: 1.3334em;
+    margin: .6667em .6667em 0;
+    box-sizing: content-box;
+    border: 1px solid;
+    border-radius: 1em;
+    vertical-align: text-bottom;
+
+    @include breakpoint($tab, $no-query: true) {
+      margin: .5em .5em 0;
+    }
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 0;
+      transform: translate(0, -50%);
+      box-sizing: border-box;
+      width: 1.3334em;
+      height: 1.3334em;
+      margin: 0;
+      border: 3px solid #fff;
+      border-radius: 50%;
+      background: currentcolor;
+    }
+
+    &:checked {
+      color: $brand-primary-medium;
+      background-color: #fff;
+
+      &::before {
+        left: 1em;
+      }
+    }
+
+    & ~ label {
+      padding-left: 3.5em;
+    }
   }
 
   // sibling labels
@@ -387,6 +622,7 @@ input[type='checkbox'],
     min-height: 2.75em;
     box-shadow: inset 0 0 0 1px $charcoal; // Using box shadow to make thin border as it doesn't affect the overall size.
     font-size: 1em;
+    font-weight: normal;
     line-height: 1.5;
     vertical-align: baseline;
     color: color(text);
@@ -424,6 +660,15 @@ input[type='checkbox'],
     color: color(text);
   }
 
+  // sass-lint:disable space-after-colon
+  @at-root .form-checkboxes:has(.error) [type='checkbox']:not(:checked) ~ label {
+    box-shadow: inset 0 0 0 1px $error;
+    outline-color: $error;
+    background-color: $error-bg;
+    color: color(text);
+  }
+  // sass-lint:enable space-after-colon
+
   &:checked ~ label {
     background-color: $brand-primary-lightest;
   }
@@ -443,10 +688,6 @@ input[type='radio'],
 input[type='checkbox'],
 .form-checkbox {
   border-radius: 0;
-
-  &:checked {
-    border-style: inset;
-  }
 }
 
 details {

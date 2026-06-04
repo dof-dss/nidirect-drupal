@@ -5,6 +5,7 @@ namespace Drupal\nidirect_webforms\Controller;
 use Drupal\Core\Cache\CacheBackendInterface;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Controller\ControllerBase;
+use Drupal\Core\File\FileExists;
 use Drupal\Core\File\FileSystemInterface;
 use Drupal\Core\Session\UserSession;
 use Drupal\file\Entity\File;
@@ -100,7 +101,12 @@ class PrisonVisitBookingJsonApiController extends ControllerBase {
 
     if ($this->isValidRequest() === FALSE) {
       // Return "401 Unauthorized" response.
-      $response->setContent('Unauthorised Request')->setStatusCode(401);
+      $response
+        ->setData([
+          'status' => 'error',
+          'message' => 'Unauthorised request'
+        ])
+        ->setStatusCode(401);
       return $response;
     }
     else {
@@ -109,11 +115,21 @@ class PrisonVisitBookingJsonApiController extends ControllerBase {
 
       if ($data) {
         // Return data and 200 OK.
-        $response->setData($data)->setStatusCode(200);
+        $response
+          ->setData([
+            'status' => 'success',
+            'message' => 'Data received'
+          ])
+          ->setStatusCode(200);
       }
       else {
         // Return "400 Bad Request" response.
-        $response->setContent('Bad Request')->setStatusCode(400);
+        $response
+          ->setData([
+            'status' => 'error',
+            'message' => 'Bad request'
+          ])
+          ->setStatusCode(400);
       }
     }
 
@@ -220,7 +236,7 @@ class PrisonVisitBookingJsonApiController extends ControllerBase {
         }
 
         // Write content to the file.
-        $fileRepository->writeData($content, $filepath, FileSystemInterface::EXISTS_REPLACE);
+        $fileRepository->writeData($content, $filepath, FileExists::Replace);
         $file->save();
         $this->getLogger('prison_visits')->info('prison_visit_slots_data saved to ' . $filepath);
       }

@@ -197,4 +197,51 @@
   @include link-state-style($link-facet-btn);
 }
 
+// Experimental clear button for form inputs.
+// It is inserted by JS after a text input when the input has class "resettable".
+button.clear-button::before {
+  content: '\00d7';
+  display: inline-block;
+  background: #666;
+  font-size: 15px;
+  width: 1.5em;
+  height: 1.5em;
+  border-radius: 50%;
+  line-height: 1.5em;
+  text-align: center;
+  color: white;
+}
+
+button.clear-button:focus::before,
+button.clear-button:hover::before {
+  background: #1c1c1c;
+}
+
+button.clear-button {
+  position: absolute;
+  width: 2em;
+  height: 2em;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  transform: translate(-2.25em, .25em);
+  font: 1em monospace;
+  line-height: 1em;
+  background-color: transparent;
+}
+
+input[disabled] ~ button.clear-button,
+input[readonly] ~ button.clear-button {
+  opacity: .6;
+}
+
+input[disabled] ~ button.clear-button:hover::before,
+input[readonly] ~ button.clear-button:hover::before {
+  background: #666;
+}
+
+.form-item--error-message:has(+ button.clear-button) {
+  position: absolute;
+}
+
 

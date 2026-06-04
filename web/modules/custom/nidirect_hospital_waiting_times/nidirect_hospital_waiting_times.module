@@ -71,6 +71,8 @@ function nidirect_hospital_waiting_times_theme() {
       'render element' => 'children',
       'variables' => [
         'hospitals' => NULL,
+        'hospitals_emergency' => NULL,
+        'hospitals_non_emergency' => NULL,
         'updated' => NULL,
       ],
     ],
@@ -85,6 +87,8 @@ function nidirect_hospital_waiting_times_theme() {
  */
 function nidirect_hospital_waiting_times_render_times($attempts = 0) {
   $data = NULL;
+  $data_emergency_departments = NULL;
+  $data_non_emergency_departments = NULL;
   $updated = NULL;
   $cache = \Drupal::cache();
 
@@ -99,12 +103,24 @@ function nidirect_hospital_waiting_times_render_times($attempts = 0) {
   // We have data, update the twig vars.
   if ($cache_data && $cache_data->data) {
     $data = $cache_data->data;
+
+    foreach ($data as $index => $row) {
+      if ($row['type'] === 'Emergency Department') {
+        $data_emergency_departments[] = $row;
+      }
+      else {
+        $data_non_emergency_departments[] = $row;
+      }
+    }
+
     $updated = date('Y-m-d H:i:s', (int) $cache_data->created);
   }
 
   return [
     '#theme' => 'nidirect_hospital_waiting_times',
     '#hospitals' => $data,
+    '#hospitals_emergency' => $data_emergency_departments,
+    '#hospitals_non_emergency' => $data_non_emergency_departments,
     '#updated' => $updated,
     '#cache' => [
       'tags' => [

@@ -8,12 +8,14 @@ dependencies:
     - field.field.node.news.field_photo
     - field.field.node.news.field_published_date
     - field.field.node.news.field_related_info
+    - field.field.node.news.field_search_elevation
     - field.field.node.news.field_summary
     - field.field.node.news.field_teaser
     - node.type.news
   module:
     - datetime
     - link
+    - search_api_best_bets
     - text
     - user
 id: node.news.default
@@ -56,6 +58,13 @@ content:
       target: ''
     third_party_settings: {  }
     weight: 4
+    region: content
+  field_search_elevation:
+    type: search_api_best_bets_formatter
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    weight: 17
     region: content
   field_summary:
     type: text_default

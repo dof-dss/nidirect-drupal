@@ -3,6 +3,7 @@ langcode: en
 status: true
 dependencies:
   module:
+    - entity_usage
     - file
     - system
 id: qa_user
@@ -10,5 +11,6 @@ label: 'QA user'
 weight: 34
 is_admin: null
 permissions:
+  - 'access entity usage statistics'
   - 'delete own files'
   - 'view the administration theme'

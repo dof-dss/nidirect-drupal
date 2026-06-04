@@ -80,7 +80,7 @@ class SchoolClosuresBreadcrumb implements BreadcrumbBuilderInterface {
     $links[] = Link::fromTextAndUrl('Schools, learning and development', Url::fromUserInput('/information-and-services/education/schools-learning-and-development'));
     $links[] = Link::fromTextAndUrl('School life', Url::fromUserInput('/information-and-services/schools-learning-and-development/school-life'));
     $breadcrumb->setLinks($links);
-    $breadcrumb->addCacheContexts(['url.path']);
+    $breadcrumb->addCacheContexts(['url.path', 'route']);
 
     return $breadcrumb;
   }

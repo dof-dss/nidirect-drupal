@@ -17,6 +17,7 @@
       function performLocationSearch(location) {
         let lat = location.coords.latitude;
         let lng = location.coords.longitude;
+
         // @codingStandardsIgnoreStart
         const distance = drupalSettings.nidirect.gpSearch.maxDistance ?? 10;
         // @codingStandardsIgnoreEnd

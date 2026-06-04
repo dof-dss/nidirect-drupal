@@ -16,15 +16,90 @@ elements: |-
   error_message:
     '#type': processed_text
     '#format': full_html
+  page_url:
+    '#type': hidden
+    '#title': 'Page URL'
+    '#default_value': '[current-page:url]'
   is_your_feedback_about:
     '#type': radios
     '#title': 'What do you want to do?'
     '#options':
+      report_problem: 'report a problem'
       feedback: 'leave feedback'
       question_other: 'ask a question'
     '#options_display': side_by_side
     '#required': true
     '#required_error': 'You must choose what you want to do'
+  which_of_these_options_best_describes_the_problem_:
+    '#type': checkboxes
+    '#title': 'Report a problem'
+    '#description': |-
+      <span id="report_a_problem_instr">
+        Which problem did you find on this page? (Tick all that apply)
+      </span>
+    '#description_display': before
+    '#options':
+      link_button_video: 'A link, button or video is not working'
+      spelling: 'There is a spelling mistake'
+      info_missing: 'Information is missing, outdated or wrong'
+      cannot_find: "I can't find what I'm looking for"
+      other: 'Another issue'
+    '#states':
+      visible:
+        ':input[name="is_your_feedback_about"]':
+          value: report_problem
+    '#wrapper_attributes':
+      aria-describedby: report_a_problem_instr
+    '#required': true
+  messages:
+    '#type': webform_section
+    '#title': Messages
+    '#title_display': invisible
+    '#title_tag': ''
+    '#attributes':
+      aria-live: assertive
+    info_notice_noreply:
+      '#type': processed_text
+      '#states':
+        visible:
+          - ':input[name="is_your_feedback_about"]':
+              value: feedback
+          - or
+          - ':input[name="is_your_feedback_about"]':
+              value: report_problem
+      '#text': '<p class="info-notice--warning info-notice" data-renderer-start-pos="777">This is the official government website for Northern Ireland. You will not receive a reply. nidirect will consider your feedback to help improve the site.&nbsp;<br><br>Do not include any personal or financial information, for example National Insurance, credit card, or phone numbers.&nbsp;<br><br>If information about a GP practice is missing, outdated or wrong, email Business Services Organisation (BSO) at: <a href="mailto:professionalsupportteam@hscni.net" title="mailto:professionalsupportteam@hscni.net" data-renderer-mark="true">professionalsupportteam@hscni.net</a>.</p>'
+      '#format': full_html
+  provide_more_information:
+    '#type': textarea
+    '#title': "Tell nidirect more about the problem you're having with the website."
+    '#title_display': before
+    '#description_display': before
+    '#help_display': element_before
+    '#maxlength': 3000
+    '#required': true
+    '#counter_type': character
+    '#counter_minimum': 1
+    '#counter_maximum': 3000
+    '#states':
+      visible:
+        ':input[name="is_your_feedback_about"]':
+          value: report_problem
+  enter_your_feedback:
+    '#type': textarea
+    '#title': 'Enter your feedback'
+    '#title_display': before
+    '#description_display': before
+    '#help_display': element_before
+    '#maxlength': 3000
+    '#required': true
+    '#required_error': 'Please provide your feedback'
+    '#counter_type': character
+    '#counter_minimum': 1
+    '#counter_maximum': 3000
+    '#states':
+      visible:
+        ':input[name="is_your_feedback_about"]':
+          value: feedback
   what_is_your_question_about:
     '#type': fieldset
     '#title': 'What is your question about?'
@@ -45,13 +120,12 @@ elements: |-
           claiming_compensation_roads: 'Compensation due to a road problem'
           child_maintenance: 'Child Maintenance'
           groni_civil_partnerships: 'Civil partnership certificates'
-          covid_19: 'Coronavirus (COVID-19)'
-          covid_19_certificate: 'COVID vaccination certificate'
           criminal_record_checks: 'Criminal record checks (AccessNI)'
           groni_death: 'Death certificates'
           educational_maintenance_allowance: 'Educational Maintenance Allowance'
           employment_rights: 'Employment rights'
-          high_street_voucher: 'High Street Spend Local Scheme'
+          gp_practice: 'GP practice'
+          groni_account: 'GRONI Account'
           groni_marriage: 'Marriage certificates'
           motoring: Motoring
           nidirect_account: 'nidirect account'
@@ -62,118 +136,310 @@ elements: |-
           rates: 'Rates or property valuation'
           report_a_fault: 'Problems with roads and streets'
           smartpass: Smartpass
-        nidirect:
-          about_nidirect: 'Ask a question about the site'
+        Other:
+          something_else: 'My question is about something else'
       '#required': true
       '#required_error': 'You must tell us what your question is about'
-  do_you_want_a_reply_options:
-    '#type': radios
-    '#title': 'Do you want a reply?'
-    '#options':
-      'Yes': 'Yes'
-      'No': 'No'
-    '#options_display': side_by_side
-    '#required': true
-    '#required_error': 'You must tell us whether you want a reply'
+  what_to_do_next:
+    '#type': webform_section
+    '#title': 'What to do next'
     '#states':
       visible:
-        ':input[name="is_your_feedback_about"]':
-          value: feedback
-  enter_a_valid_email_address:
-    '#type': email
-    '#title': 'Enter a valid email address'
-    '#autocomplete': email
-    '#required': true
-    '#required_error': 'You must enter an email address so that we can reply to you.'
-    '#pattern': '[^@\s]+@[^@\s]+\.[^@\s]+'
-    '#pattern_error': 'You must enter a valid email address, for example, name@example.com'
-    '#states':
-      visible:
-        - ':input[name="feedback_about"]':
-            value: about_nidirect
-        - or
-        - ':input[name="do_you_want_a_reply_options"]':
-            value: 'Yes'
-  your_feedback:
-    '#type': fieldset
-    '#title': 'Your feedback'
-    '#states':
-      visible:
-        - ':input[name="do_you_want_a_reply_options"]':
-            checked: true
-        - or
-        - ':input[name="feedback_about"]':
-            value: about_nidirect
-    info_notice_noreply:
+        ':input[name="feedback_about"]':
+          filled: true
+    '#attributes':
+      aria-live: assertive
+      data-nosnippet: true
+    angling:
       '#type': processed_text
       '#states':
         visible:
-          ':input[name="do_you_want_a_reply_options"]':
-            value: 'No'
-      '#text': |-
-        <p class="info-notice info-notice--warning"><strong>We will not reply to your feedback.</strong>&nbsp; Don't include any personal or financial information, for example National Insurance, credit card numbers, or phone numbers.</p>
+          ':input[name="feedback_about"]':
+            value: angling
+      '#text': |
+        <div class="no-submit">
 
+        <p>Comments or queries about angling can be emailed to <a href="mailto:anglingcorrespondence@daera-ni.gov.uk">anglingcorrespondence@daera-ni.gov.uk&nbsp;</a></p>
+        </div>
       '#format': full_html
-    info_notice_reply:
+    benefits:
       '#type': processed_text
       '#states':
         visible:
-          - ':input[name="do_you_want_a_reply_options"]':
-              value: 'Yes'
+          ':input[name="feedback_about"]':
+            value: benefits
+      '#text': |
+        <div class="no-submit">
+
+        <p>If you have a comment or query about benefits, you will need to contact the government department&nbsp;or&nbsp;agency which handles that benefit.&nbsp; Contacts for common benefits are listed below.</p>
+
+        <h3>Carer's Allowance</h3>
+
+        <p><span>Call 0800 587 0912<br />
+        Email&nbsp;</span><a href="mailto:dcs.incomingpostteamdhc2@nissa.gsi.gov.uk">dcs.incomingpostteamdhc2@nissa.gsi.gov.uk</a></p>
+
+        <h3>Discretionary support / Short-term benefit advance</h3>
+
+        <p><span>Call 0800 587 2750&nbsp;<br />
+        Email&nbsp;</span><a href="mailto:customerservice.unit@communities-ni.gov.uk ">customerservice.unit@communities-ni.gov.uk</a></p>
+
+        <h3>Disability Living Allowance</h3>
+
+        <p>Call 0800 587 0912&nbsp;<br />
+        <span>Email <a href="mailto:dcs.incomingpostteamdhc2@nissa.gsi.gov.uk">dcs.incomingpostteamdhc2@nissa.gsi.gov.uk</a></span></p>
+
+        <h3>Employment and Support Allowance</h3>
+
+        <p>Call&nbsp;0800 587 1377</p>
+
+        <h3>Jobseeker’s Allowance</h3>
+
+        <p>Contact your local <a href="/contacts/jobs-and-benefits-offices">Jobs &amp; Benefits office</a></p>
+
+        <h3>Personal Independence Payment</h3>
+
+        <p>Call 0800 587 0932</p>
+
+        <p>If your query is about another benefit, select ‘Other’ from the drop-down menu above.</p>
+        </div>
+      '#format': full_html
+    blue_badge:
+      '#type': processed_text
+      '#states':
+        visible:
+          ':input[name="feedback_about"]':
+            value: blue_badge
+      '#text': |
+        <div class="no-submit">
+
+        <p>Comments or queries about the Blue Badge scheme can be emailed to <a href="mailto:bluebadges@infrastructure-ni.gov.uk">bluebadges@infrastructure-ni.gov.uk</a> or you can also call 0300 200 7818.</p>
+        </div>
+      '#format': full_html
+    careers:
+      '#type': processed_text
+      '#states':
+        visible:
+          ':input[name="feedback_about"]':
+            value: careers
+      '#text': |
+        <p>For queries or advice about careers, contact the <a data-entity-substitution="canonical" data-entity-type="node" data-entity-uuid="4849e4ec-9cbb-4ff9-a26b-7e2397f748b7" href="/careers-service">Careers Service</a>.</p>
+      '#format': full_html
+    child_maintenance:
+      '#type': processed_text
+      '#states':
+        visible:
+          ':input[name="feedback_about"]':
+            value: child_maintenance
+      '#text': '<div class="no-submit"><p>For queries or advice about Child Maintenance, contact the <a href="/contacts/child-maintenance-service-northern-ireland">Child Maintenance Service</a>.</p></div>'
+      '#format': full_html
+    claiming_compensation_road_problem:
+      '#type': processed_text
+      '#states':
+        visible:
+          ':input[name="feedback_about"]':
+            value: claiming_compensation_roads
+      '#text': |
+        <div class="no-submit">
+
+        <p>For queries or advice about claiming compensation due to a road problem, contact <a href="/contacts/dfi-roads-claims-unit">DFI Roads claim unit</a>.</p>
+        </div>
+      '#format': full_html
+    covid_19:
+      '#type': processed_text
+      '#states':
+        visible:
+          ':input[name="feedback_about"]':
+            value: covid_19
+      '#text': |
+        <div class="no-submit">
+        <p>If you can’t find the information you’re looking for in the&nbsp;<a data-entity-substitution="canonical" data-entity-type="node" data-entity-uuid="9fbac1c3-b232-4b5b-a7ad-a150c1760a8b" href="/campaigns/coronavirus-covid-19">Coronavirus (COVID-19) section</a>, then for queries about:</p>
+
+        <ul>
+        	<li>Restrictions or regulations&nbsp;—&nbsp;<a href="https://www.health-ni.gov.uk/contact" rel="noopener noreferrer" target="_blank" title="external link opens in a new window / tab">contact the Department of Health</a></li>
+        	<li>Travel advice (including self-isolation)&nbsp;—&nbsp;<a href="https://www.health-ni.gov.uk/contact" rel="noopener noreferrer" target="_blank" title="external link opens in a new window / tab">contact the Department of Health</a></li>
+        	<li>Coronavirus (COVID-19) vaccinations&nbsp;— contact the&nbsp;<a href="https://www.health-ni.gov.uk/contact" rel="noopener noreferrer" target="_blank" title="external link opens in a new window / tab">Department of Health</a>&nbsp;or&nbsp;<a href="https://www.publichealth.hscni.net/node/4802" rel="noopener noreferrer" target="_blank" title="external link opens in a new window / tab">Public Health Agency</a></li>
+        </ul>
+
+        <p>If your query is about another topic, select ‘Other’ from the drop-down menu above.</p>
+        </div>
+      '#format': full_html
+    covid_19_certificate:
+      '#type': processed_text
+      '#states':
+        visible:
+          ':input[name="feedback_about"]':
+            value: covid_19_certificate
+      '#text': |
+        <div class="no-submit">
+
+        <p>For queries about your identity check, email <a href="mailto:nida@nidirect.gov.uk">nida@nidirect.gov.uk</a> and for queries about your certificate, email <a href="mailto:covidcertni@hscni.net">covidcertni@hscni.net</a>.</p>
+        </div>
+      '#format': full_html
+    criminal_records_checks:
+      '#type': processed_text
+      '#states':
+        visible:
+          ':input[name="feedback_about"]':
+            value: criminal_record_checks
+      '#text': '<div class="no-submit"><p>For queries or advice about criminal record checks, email <a href="mailto:ani@accessni.gov.uk">ani@accessni.gov.uk</a></p></div>'
+      '#format': full_html
+    educational_maintenance_allowance:
+      '#type': processed_text
+      '#states':
+        visible:
+          ':input[name="feedback_about"]':
+            value: educational_maintenance_allowance
+      '#text': '<div class="no-submit"><p>Application and payment queries can be emailed to&nbsp;<a href="mailto:ema_ni@slc.co.uk">ema_ni@slc.co.uk</a></p></div>'
+      '#format': full_html
+    employment_rights:
+      '#type': processed_text
+      '#states':
+        visible:
+          ':input[name="feedback_about"]':
+            value: employment_rights
+      '#text': |
+        <div class="no-submit">
+
+        <p>For queries or advice about employment rights, contact the <a href="/contacts/labour-relations-agency">Labour Relations Agency</a>.</p>
+        </div>
+      '#format': full_html
+    gp_practice:
+      '#type': processed_text
+      '#states':
+        visible:
+          ':input[name="feedback_about"]':
+            value: gp_practice
+      '#text': |
+        <div class="no-submit">
+        <p>For queries or comments about a GP practice, contact the practice directly. If information about the GP practice is missing, outdated or wrong, email Business Services Organisation (BSO) at: <a href="mailto:professionalsupportteam@hscni.net">professionalsupportteam@hscni.net</a>.</p>
+        </div>
+      '#format': full_html
+    groni:
+      '#type': processed_text
+      '#states':
+        visible:
+          - ':input[name="feedback_about"]':
+              value: groni_birth
           - or
           - ':input[name="feedback_about"]':
-              value: about_nidirect
-      '#text': '<p>This feedback form is for issues with the nidirect website only.</p><p>You can use it to report a problem or suggest an improvement to a webpage.</p><p>If you have a question about a government service or policy, you should <a href="/contacts">contact the relevant government organisation directly</a> as we don’t have access to information about you held by government departments.</p><p>You must be aged 13 years or older - if you’re younger, ask someone with parental responsibility to send the feedback for you.</p><p>The nidirect <a href="/node/11439">privacy notice</a> applies to any information you send on this feedback form.</p>'
+              value: groni_civil_partnerships
+          - or
+          - ':input[name="feedback_about"]':
+              value: groni_death
+          - or
+          - ':input[name="feedback_about"]':
+              value: groni_marriage
+      '#text': '<div class="no-submit"><p>For queries or advice about birth, death, marriage and civil partnership certificates and research, contact the General Register Office Northern Ireland (GRONI) by email&nbsp;<a href="mailto:gro_nisra@finance-ni.gov.uk">gro_nisra@finance-ni.gov.uk</a></p></div>'
       '#format': full_html
-    page_url:
-      '#type': hidden
-      '#title': 'Page URL'
-      '#default_value': '[current-page:url]'
-    no_personal_info_message:
+    groni_account:
       '#type': processed_text
       '#states':
         visible:
-          - ':input[name="do_you_want_a_reply_options"]':
-              value: 'Yes'
-          - or
-          - ':input[name="feedback_about"]':
-              value: other
-      '#text': |-
-        <p class="info-notice info-notice--warning">Don't include any personal or financial information, for example National Insurance, credit card numbers, or phone numbers.</p>
-
+          ':input[name="feedback_about"]':
+            value: groni_account
+      '#text': |
+        <div class="no-submit">
+        <p>For queries about your GRONI account, email <a href="mailto:gro_nisra@finance-ni.gov.uk?subject=GRONI account">gro_nisra@finance-ni.gov.uk</a>.</p>
+        </div>
       '#format': full_html
-    enter_your_feedback:
-      '#type': textarea
-      '#title': 'Enter your feedback'
-      '#description': '750 characters maximum.'
-      '#title_display': invisible
-      '#description_display': before
-      '#help_display': element_before
-      '#required': true
-      '#required_error': 'Please provide your feedback'
-      '#counter_type': character
-      '#counter_minimum': 1
-      '#counter_maximum': 750
+    high_street_voucher_scheme:
+      '#type': processed_text
       '#states':
         visible:
-          ':input[name="is_your_feedback_about"]':
-            value: feedback
-    question_details:
-      '#type': textarea
-      '#title': 'Enter your question'
-      '#description': '750 characters maximum.'
-      '#title_display': invisible
-      '#description_display': before
-      '#help_display': element_before
-      '#required': true
-      '#required_error': 'Please enter your question'
-      '#counter_type': character
-      '#counter_minimum': 1
-      '#counter_maximum': 750
+          ':input[name="feedback_about"]':
+            value: high_street_voucher
+      '#text': |
+        <div class="no-submit">
+
+        <p>For queries about the High Street Spend Local Scheme,&nbsp; email&nbsp;<a href="mailto:HSSS.mail@economy-ni.gov.uk">HSSS.mail@economy-ni.gov.uk</a>.</p>
+        </div>
+      '#format': basic_html
+    motoring:
+      '#type': processed_text
       '#states':
         visible:
-          ':input[name="is_your_feedback_about"]':
-            value: question_other
+          ':input[name="feedback_about"]':
+            value: motoring
+      '#text': '<div class="no-submit"><p>For queries about:</p><ul><li>Car tax, vehicle registration and SORN<br>contact the <a href="https://www.gov.uk/contact-the-dvla">Driver and Vehicle Licensing Agency (DVLA), Swansea</a><br>&nbsp;</li><li>Driver licensing and tests, MOT and vehicle testing<br>contact the <a href="/contacts/driver-vehicle-agency-dva-northern-ireland">Driver &amp; Vehicle Agency (DVA), Northern Ireland</a></li></ul><p>If your query is about another topic, select ‘Other’ from the drop-down menu above.</p></div>'
+      '#format': full_html
+    nidirect_account:
+      '#type': processed_text
+      '#states':
+        visible:
+          ':input[name="feedback_about"]':
+            value: nidirect_account
+      '#text': |
+        <div class="no-submit">
+
+        <p>For queries about your identity check, email <a href="mailto:nida@nidirect.gov.uk">nida@nidirect.gov.uk</a>.</p>
+
+        <p>&nbsp;</p>
+        </div>
+      '#format': full_html
+    passports:
+      '#type': processed_text
+      '#states':
+        visible:
+          ':input[name="feedback_about"]':
+            value: passports
+      '#text': '<div class="no-submit"><p>For queries or advice about passports, contact&nbsp;<a href="https://www.nidirect.gov.uk/contacts/contacts-az/her-majestys-passport-office-northern-ireland-regional-office">HM Passport Office</a>.</p></div>'
+      '#format': full_html
+    penalty_charge_notices:
+      '#type': processed_text
+      '#states':
+        visible:
+          ':input[name="feedback_about"]':
+            value: PCNs
+      '#text': '<div class="no-submit"><p>For queries or advice about Penalty Charge Notices (PCNs), including parking tickets and bus lane PCNs, email&nbsp;<a href="mailto:dcu@infrastructure-ni.gov.uk">dcu@infrastructure-ni.gov.uk</a></p></div>'
+      '#format': full_html
+    pensions:
+      '#type': processed_text
+      '#states':
+        visible:
+          ':input[name="feedback_about"]':
+            value: pensions
+      '#text': '<div class="no-submit"><p>For queries or advice about pensions, contact the&nbsp;<a href="/contacts/northern-ireland-pension-centre">Northern Ireland Pension Centre</a>.</p></div>'
+      '#format': full_html
+    problems_roads:
+      '#type': processed_text
+      '#states':
+        visible:
+          ':input[name="feedback_about"]':
+            value: report_a_fault
+      '#text': '<div class="no-submit"><p>If you wish to report a problem with a road or street you can do so online <a href="/taxonomy/term/235">in this section</a>.</p><p>If you wish to check on a problem or fault you have already reported, contact <a href="/contacts/dfi-roads">DfI Roads</a>.</p></div>'
+      '#format': full_html
+    proni:
+      '#type': processed_text
+      '#states':
+        visible:
+          ':input[name="feedback_about"]':
+            value: proni
+      '#text': '<div class="no-submit"><p>For queries or advice about historical, social or cultural records relating to Northern Ireland, use the <a href="/forms/submit-enquiry">Public Record Office of Northern Ireland (PRONI) enquiry service</a>.</p></div>'
+      '#format': full_html
+    rates:
+      '#type': processed_text
+      '#states':
+        visible:
+          ':input[name="feedback_about"]':
+            value: rates
+      '#text': '<div class="no-submit"><p>For queries or advice about rates, email <a href="mailto:LPSCustomerTeam@lpsni.gov.uk">LPSCustomerTeam@lpsni.gov.uk</a></p></div>'
+      '#format': full_html
+    smartpass:
+      '#type': processed_text
+      '#states':
+        visible:
+          ':input[name="feedback_about"]':
+            value: smartpass
+      '#text': '<div class="no-submit"><p>For queries or advice about &nbsp;60+ and Senior Citizen SmartPasses (which can be used to get concessionary travel on public transport), contact&nbsp;<a href="/contacts/smartpass-translink">Smartpass - Translink</a>.</p></div>'
+      '#format': full_html
+    something_else:
+      '#type': processed_text
+      '#states':
+        visible:
+          ':input[name="feedback_about"]':
+            value: something_else
+      '#text': '<p>If you have a question about a government service or policy, you should <a href="/contacts">contact the relevant government organisation directly</a>.&nbsp;</p>'
+      '#format': full_html
   extra_comments_for_pooh_bear:
     '#type': textfield
     '#title': 'Extra comments (optional)'
@@ -182,338 +448,16 @@ elements: |-
     '#wrapper_attributes':
       class:
         - for-pooh-bear
-  angling:
-    '#type': processed_text
-    '#states':
-      visible:
-        ':input[name="feedback_about"]':
-          value: angling
-    '#wrapper_attributes':
-      role: alert
-    '#text': |-
-      <div class="no-submit">
-      <h2>What to do next</h2>
-
-      <p>Comments or queries about angling can be emailed to <a href="mailto:anglingcorrespondence@daera-ni.gov.uk">anglingcorrespondence@daera-ni.gov.uk&nbsp;</a></p>
-      </div>
-
-    '#format': full_html
-  benefits:
-    '#type': processed_text
-    '#states':
-      visible:
-        ':input[name="feedback_about"]':
-          value: benefits
-    '#wrapper_attributes':
-      role: alert
-    '#text': |-
-      <div class="no-submit">
-      <h2>What to do next</h2>
-
-      <p>If you have a comment or query about benefits, you will need to contact the government department&nbsp;or&nbsp;agency which handles that benefit.&nbsp; Contacts for common benefits are listed below.</p>
-
-      <h3>Carer's Allowance</h3>
-
-      <p><span>Call 0800 587 0912<br />
-      Email&nbsp;</span><a href="mailto:dcs.incomingpostteamdhc2@nissa.gsi.gov.uk">dcs.incomingpostteamdhc2@nissa.gsi.gov.uk</a></p>
-
-      <h3>Discretionary support / Short-term benefit advance</h3>
-
-      <p><span>Call 0800 587 2750&nbsp;<br />
-      Email&nbsp;</span><a href="mailto:customerservice.unit@communities-ni.gov.uk ">customerservice.unit@communities-ni.gov.uk</a></p>
-
-      <h3>Disability Living Allowance</h3>
-
-      <p>Call 0800 587 0912&nbsp;<br />
-      <span>Email <a href="mailto:dcs.incomingpostteamdhc2@nissa.gsi.gov.uk">dcs.incomingpostteamdhc2@nissa.gsi.gov.uk</a></span></p>
-
-      <h3>Employment and Support Allowance</h3>
-
-      <p>Call&nbsp;0800 587 1377</p>
-
-      <h3>Jobseeker’s Allowance</h3>
-
-      <p>Contact your local <a href="/node/2739">Jobs &amp; Benefits office</a></p>
-
-      <h3>Personal Independence Payment</h3>
-
-      <p>Call 0800 587 0932</p>
-
-      <p>If your query is about another benefit, select ‘Other’ from the drop-down menu above.</p>
-      </div>
-
-    '#format': full_html
-  blue_badge:
-    '#type': processed_text
-    '#states':
-      visible:
-        ':input[name="feedback_about"]':
-          value: blue_badge
-    '#wrapper_attributes':
-      role: alert
-    '#text': |-
-      <div class="no-submit">
-      <h2>What to do next</h2>
-
-      <p>Comments or queries about the Blue Badge scheme can be emailed to <a href="mailto:bluebadges@infrastructure-ni.gov.uk">bluebadges@infrastructure-ni.gov.uk</a> or you can also call 0300 200 7818.</p>
-      </div>
-
-    '#format': full_html
-  careers:
-    '#type': processed_text
-    '#states':
-      visible:
-        ':input[name="feedback_about"]':
-          value: careers
-    '#wrapper_attributes':
-      role: alert
-    '#text': '<div class="no-submit"><h2>What to do next</h2><p>For queries or advice about careers, contact the <a href="/node/800">Careers Service</a>.</p></div>'
-    '#format': full_html
-  child_maintenance:
-    '#type': processed_text
-    '#states':
-      visible:
-        ':input[name="feedback_about"]':
-          value: child_maintenance
-    '#wrapper_attributes':
-      role: alert
-    '#text': '<div class="no-submit"><h2>What to do next</h2><p>For queries or advice about Child Maintenance, contact the <a href="/node/4185">Child Maintenance Service</a>.</p></div>'
-    '#format': full_html
-  claiming_compensation_road_problem:
-    '#type': processed_text
-    '#states':
-      visible:
-        ':input[name="feedback_about"]':
-          value: claiming_compensation_roads
-    '#wrapper_attributes':
-      role: alert
-    '#text': |-
-      <div class="no-submit">
-      <h2>What to do next</h2>
-
-      <p>For queries or advice about claiming compensation due to a road problem, contact <a href="/node/125">DFI Roads claim unit</a>.</p>
-      </div>
-
-    '#format': full_html
-  covid_19:
-    '#type': processed_text
-    '#states':
-      visible:
-        ':input[name="feedback_about"]':
-          value: covid_19
-    '#wrapper_attributes':
-      role: alert
-    '#text': |-
-      <div class="no-submit">
-      <h2>What to do next</h2>
-
-      <p>If you can’t find the information you’re looking for in the&nbsp;<a href="https://www.staging-5em2ouy-wf467k64my7gc.uk-1.platformsh.site/information-and-services/health-and-wellbeing/coronavirus-covid-19">Coronavirus (COVID-19) section</a>, then for queries about:</p>
-
-      <ul>
-      	<li>Restrictions or regulations&nbsp;—&nbsp;<a href="https://www.health-ni.gov.uk/contact" rel="noopener noreferrer" target="_blank" title="external link opens in a new window / tab">contact the Department of Health</a></li>
-      	<li>Travel advice (including self-isolation)&nbsp;—&nbsp;<a href="https://www.health-ni.gov.uk/contact" rel="noopener noreferrer" target="_blank" title="external link opens in a new window / tab">contact the Department of Health</a></li>
-      	<li>Coronavirus (COVID-19) vaccinations&nbsp;— contact the&nbsp;<a href="https://www.health-ni.gov.uk/contact" rel="noopener noreferrer" target="_blank" title="external link opens in a new window / tab">Department of Health</a>&nbsp;or&nbsp;<a href="https://www.publichealth.hscni.net/node/4802" rel="noopener noreferrer" target="_blank" title="external link opens in a new window / tab">Public Health Agency</a></li>
-      </ul>
-
-      <p>If your query is about another topic, select ‘Other’ from the drop-down menu above.</p>
-      </div>
-
-    '#format': full_html
-  covid_19_certificate:
-    '#type': processed_text
-    '#states':
-      visible:
-        ':input[name="feedback_about"]':
-          value: covid_19_certificate
-    '#wrapper_attributes':
-      role: alert
-    '#text': |-
-      <div class="no-submit">
-      <h2>What to do next</h2>
-
-      <p>For queries about your identity check, email <a href="mailto:nida@nidirect.gov.uk">nida@nidirect.gov.uk</a> and for queries about your certificate, email <a href="mailto:covidcertni@hscni.net">covidcertni@hscni.net</a>.</p>
-      </div>
-
-    '#format': full_html
-  criminal_records_checks:
-    '#type': processed_text
-    '#states':
-      visible:
-        ':input[name="feedback_about"]':
-          value: criminal_record_checks
-    '#wrapper_attributes':
-      role: alert
-    '#text': '<div class="no-submit"><h2>What to do next</h2><p>For queries or advice about criminal record checks, email <a href="mailto:ani@accessni.gov.uk">ani@accessni.gov.uk</a></p></div>'
-    '#format': full_html
-  educational_maintenance_allowance:
-    '#type': processed_text
-    '#states':
-      visible:
-        ':input[name="feedback_about"]':
-          value: educational_maintenance_allowance
-    '#wrapper_attributes':
-      role: alert
-    '#text': '<div class="no-submit"><h2>What to do next</h2><p>Application and payment queries can be emailed to&nbsp;<a href="mailto:ema_ni@slc.co.uk">ema_ni@slc.co.uk</a></p></div>'
-    '#format': full_html
-  employment_rights:
-    '#type': processed_text
-    '#states':
-      visible:
-        ':input[name="feedback_about"]':
-          value: employment_rights
-    '#wrapper_attributes':
-      role: alert
-    '#text': |-
-      <div class="no-submit">
-      <h2>What to do next</h2>
-
-      <p>For queries or advice about employment rights, contact the <a href="/node/866">Labour Relations Agency</a>.</p>
-      </div>
-
-    '#format': full_html
-  groni:
-    '#type': processed_text
-    '#states':
-      visible:
-        - ':input[name="feedback_about"]':
-            value: groni_birth
-        - or
-        - ':input[name="feedback_about"]':
-            value: groni_civil_partnerships
-        - or
-        - ':input[name="feedback_about"]':
-            value: groni_death
-        - or
-        - ':input[name="feedback_about"]':
-            value: groni_marriage
-    '#wrapper_attributes':
-      role: alert
-    '#text': '<div class="no-submit"><h2>What to do next</h2><p>For queries or advice about birth, death, marriage and civil partnership certificates and research, contact the General Register Office Northern Ireland (GRONI) by email&nbsp;<a href="mailto:gro_nisra@finance-ni.gov.uk">gro_nisra@finance-ni.gov.uk</a></p></div>'
-    '#format': full_html
-  high_street_voucher_scheme:
-    '#type': processed_text
-    '#states':
-      visible:
-        ':input[name="feedback_about"]':
-          value: high_street_voucher
-    '#wrapper_attributes':
-      role: alert
-    '#text': |-
-      <div class="no-submit">
-      <h2>What to do next</h2>
-
-      <p>For queries about the High Street Spend Local Scheme,&nbsp; email&nbsp;<a href="mailto:SpendLocalNI@economy-ni.gov.uk">SpendLocalNI@economy-ni.gov.uk</a>.</p>
-      </div>
-
-    '#format': basic_html
-  motoring:
-    '#type': processed_text
-    '#states':
-      visible:
-        ':input[name="feedback_about"]':
-          value: motoring
-    '#wrapper_attributes':
-      role: alert
-    '#text': '<div class="no-submit"><h2>What to do next</h2><p>For queries about:</p><ul><li>Car tax, vehicle registration and SORN<br>contact the <a href="https://www.gov.uk/contact-the-dvla">Driver and Vehicle Licensing Agency (DVLA), Swansea</a><br>&nbsp;</li><li>Driver licensing and tests, MOT and vehicle testing<br>contact the <a href="/node/4236">Driver &amp; Vehicle Agency (DVA), Northern Ireland</a></li></ul><p>If your query is about another topic, select ‘Other’ from the drop-down menu above.</p></div>'
-    '#format': full_html
-  nidirect_account:
-    '#type': processed_text
-    '#states':
-      visible:
-        ':input[name="feedback_about"]':
-          value: nidirect_account
-    '#wrapper_attributes':
-      role: alert
-    '#text': |-
-      <div class="no-submit">
-      <h2>What to do next</h2>
-
-      <p>For queries about your identity check, email <a href="mailto:nida@nidirect.gov.uk">nida@nidirect.gov.uk</a>.</p>
-
-      <p>&nbsp;</p>
-      </div>
-
-    '#format': full_html
-  passports:
-    '#type': processed_text
-    '#states':
-      visible:
-        ':input[name="feedback_about"]':
-          value: passports
-    '#wrapper_attributes':
-      role: alert
-    '#text': '<div class="no-submit"><h2>What to do next</h2><p>For queries or advice about passports, contact&nbsp;<a href="https://www.nidirect.gov.uk/contacts/contacts-az/her-majestys-passport-office-northern-ireland-regional-office">HM Passport Office</a>.</p></div>'
-    '#format': full_html
-  penalty_charge_notices:
-    '#type': processed_text
-    '#states':
-      visible:
-        ':input[name="feedback_about"]':
-          value: PCNs
-    '#wrapper_attributes':
-      role: alert
-    '#text': '<div class="no-submit"><h2>What to do next</h2><p>For queries or advice about Penalty Charge Notices (PCNs), including parking tickets and bus lane PCNs, email&nbsp;<a href="mailto:dcu@infrastructure-ni.gov.uk">dcu@infrastructure-ni.gov.uk</a></p></div>'
-    '#format': full_html
-  pensions:
-    '#type': processed_text
-    '#states':
-      visible:
-        ':input[name="feedback_about"]':
-          value: pensions
-    '#wrapper_attributes':
-      role: alert
-    '#text': '<div class="no-submit"><h2>What to do next</h2><p>For queries or advice about pensions, contact the&nbsp;<a href="/node/10799">Northern Ireland Pension Centre</a>.</p></div>'
-    '#format': full_html
-  problems_roads:
-    '#type': processed_text
-    '#states':
-      visible:
-        ':input[name="feedback_about"]':
-          value: report_a_fault
-    '#wrapper_attributes':
-      role: alert
-    '#text': '<div class="no-submit"><h2>What to do next</h2><p>If you wish to report a problem with a road or street you can do so online <a href="/taxonomy/term/235">in this section</a>.</p><p>If you wish to check on a problem or fault you have already reported, contact <a href="/node/3710">DfI Roads</a>.</p></div>'
-    '#format': full_html
-  proni:
-    '#type': processed_text
-    '#states':
-      visible:
-        ':input[name="feedback_about"]':
-          value: proni
-    '#wrapper_attributes':
-      role: alert
-    '#text': '<div class="no-submit"><h2>What to do next</h2><p>For queries or advice about historical, social or cultural records relating to Northern Ireland, use the <a href="/node/4683">Public Record Office of Northern Ireland (PRONI) enquiry service</a>.</p></div>'
-    '#format': full_html
-  rates:
-    '#type': processed_text
-    '#states':
-      visible:
-        ':input[name="feedback_about"]':
-          value: rates
-    '#wrapper_attributes':
-      role: alert
-    '#text': '<div class="no-submit"><h2>What to do next</h2><p>For queries or advice about rates, email <a href="mailto:LPSCustomerTeam@lpsni.gov.uk">LPSCustomerTeam@lpsni.gov.uk</a></p></div>'
-    '#format': full_html
-  smartpass:
-    '#type': processed_text
-    '#states':
-      visible:
-        ':input[name="feedback_about"]':
-          value: smartpass
-    '#wrapper_attributes':
-      role: alert
-    '#text': '<div class="no-submit"><h2>What to do next</h2><p>For queries or advice about &nbsp;60+ and Senior Citizen SmartPasses (which can be used to get concessionary travel on public transport), contact&nbsp;<a href="/node/623">Smartpass - Translink</a>.</p></div>'
-    '#format': full_html
   actions:
     '#type': webform_actions
     '#title': 'Submit button(s)'
     '#states':
       visible:
-        - ':input[name="feedback_about"]':
-            value: about_nidirect
+        - ':input[name="is_your_feedback_about"]':
+            value: report_problem
         - or
-        - ':input[name="do_you_want_a_reply_options"]':
-            checked: true
+        - ':input[name="is_your_feedback_about"]':
+            value: feedback
     '#submit__label': 'Send feedback'
 css: ''
 javascript: ''
@@ -556,6 +500,10 @@ settings:
   form_access_denied_message: ''
   form_access_denied_attributes: {  }
   form_file_limit: ''
+  form_attributes:
+    data-nosnippet: true
+  form_method: ''
+  form_action: ''
   share: false
   share_node: false
   share_theme_name: ''
@@ -566,8 +514,8 @@ settings:
   submission_locked_message: ''
   submission_log: false
   submission_excluded_elements: {  }
-  submission_exclude_empty: false
-  submission_exclude_empty_checkbox: false
+  submission_exclude_empty: true
+  submission_exclude_empty_checkbox: true
   submission_views: {  }
   submission_views_replace: {  }
   submission_user_columns: {  }
@@ -599,6 +547,8 @@ settings:
   wizard_toggle: false
   wizard_toggle_show_label: ''
   wizard_toggle_hide_label: ''
+  wizard_page_type: container
+  wizard_page_title_tag: h2
   preview: 0
   preview_label: ''
   preview_title: ''
@@ -630,24 +580,22 @@ settings:
   limit_total_message: ''
   limit_total_unique: false
   limit_user: null
-  limit_user_interval: null
+  limit_user_interval: 86400
   limit_user_message: ''
   limit_user_unique: false
   entity_limit_total: null
   entity_limit_total_interval: null
-  entity_limit_user: null
-  entity_limit_user_interval: null
-  purge: none
-  purge_days: null
-  results_disabled: true
+  entity_limit_user: 10
+  entity_limit_user_interval: 86400
+  purge: all
+  purge_days: 1
+  results_disabled: false
   results_disabled_ignore: true
   results_customize: false
   token_view: false
   token_update: false
   token_delete: false
   serial_disabled: false
-  page_admin_theme: false
-  form_remote_addr: true
 access:
   create:
     roles:
@@ -707,13 +655,13 @@ handlers:
     settings:
       states:
         - completed
-      to_mail: feedback@nidirect.gov.uk
+      to_mail: feedback.nidirect@finance-ni.gov.uk
       to_options: {  }
       bcc_mail: ''
       bcc_options: {  }
       cc_mail: ''
       cc_options: {  }
-      from_mail: '[webform_submission:values:enter_a_valid_email_address:raw]'
+      from_mail: _default
       from_options: {  }
       from_name: 'nidirect visitor'
       reply_to: ''
@@ -722,57 +670,93 @@ handlers:
       sender_name: ''
       subject: 'Page feedback'
       body: |-
-        Submitted on [webform_submission:created]
-
-        Submitted values are:
+        <p>Submitted on [webform_submission:created]</p>
+        <p>Submitted by: [webform_submission:user]</p>
+        <p>Submitted values are:</p>
         [webform_submission:values]
       excluded_elements: {  }
       ignore_access: false
       exclude_empty: true
       exclude_empty_checkbox: false
       exclude_attachments: false
-      html: false
+      html: true
       attachments: false
       twig: false
       theme_name: ''
       parameters: {  }
       debug: false
-  auto_reply:
+  test_submission_email:
     id: email
-    handler_id: auto_reply
-    label: 'Auto reply'
-    notes: ''
+    handler_id: test_submission_email
+    label: 'Test submission email'
+    notes: 'Enable this email handler to test form submissions.  This handler should be disabled by default.'
     status: true
-    conditions:
-      enabled:
-        ':input[name="do_you_want_a_reply_options"]':
-          value: 'Yes'
-        ':input[name="enter_a_valid_email_address"]':
-          filled: true
-    weight: 0
+    conditions: {  }
+    weight: 1
     settings:
       states:
         - completed
-      to_mail: '[webform_submission:values:enter_a_valid_email_address:raw]'
+      to_mail: neil.blair@finance-ni.gov.uk
       to_options: {  }
       bcc_mail: ''
       bcc_options: {  }
       cc_mail: ''
       cc_options: {  }
-      from_mail: noreply@nidirect.gov.uk
+      from_mail: _default
       from_options: {  }
-      from_name: NIDirect
+      from_name: 'nidirect visitor'
       reply_to: ''
       return_path: ''
       sender_mail: ''
       sender_name: ''
-      subject: 'Thank you for your feedback on nidirect.gov.uk'
+      subject: 'Page feedback'
       body: |-
-        Thank you for your feedback.<br />
-        <br />
-        We aim to get back to you within 10 working days.&nbsp; All responses will usually be sent out Monday to Friday, 9.00 am to 5.00 pm (excluding public and bank holidays). This is an automated email message. Please do not reply to this email as we do not have access to emails sent to noreply@nidirect.gov.uk.
-      excluded_elements:
-        page_url: page_url
+        <p>Submitted on [webform_submission:created]</p>
+        <p>Submitted by: [webform_submission:user]</p>
+        <p>Submitted values are:</p>
+        [webform_submission:values]
+      excluded_elements: {  }
+      ignore_access: false
+      exclude_empty: true
+      exclude_empty_checkbox: false
+      exclude_attachments: false
+      html: true
+      attachments: false
+      twig: false
+      theme_name: ''
+      parameters: {  }
+      debug: false
+  test_for_jude:
+    id: email
+    handler_id: test_for_jude
+    label: 'Test for Jude'
+    notes: ''
+    status: true
+    conditions: {  }
+    weight: 2
+    settings:
+      states:
+        - completed
+      to_mail: jude.mccabe@finance-ni.gov.uk
+      to_options: {  }
+      bcc_mail: ''
+      bcc_options: {  }
+      cc_mail: ''
+      cc_options: {  }
+      from_mail: _default
+      from_options: {  }
+      from_name: 'nidirect visitor'
+      reply_to: ''
+      return_path: ''
+      sender_mail: ''
+      sender_name: ''
+      subject: 'Page feedback'
+      body: |-
+        <p>Submitted on [webform_submission:created]</p>
+        <p>Submitted by: [webform_submission:user]</p>
+        <p>Submitted values are:</p>
+        [webform_submission:values]
+      excluded_elements: {  }
       ignore_access: false
       exclude_empty: true
       exclude_empty_checkbox: false

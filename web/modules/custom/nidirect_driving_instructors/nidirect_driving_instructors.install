@@ -1,0 +1,25 @@
+<?php
+
+use Drupal\node\Entity\Node;
+
+/**
+* Delete all previous revisions for Driving Instructor nodes.
+*/
+function nidirect_driving_instructors_update_10001(&$sandbox) {
+  $node_storage = \Drupal::entityTypeManager()->getStorage('node');
+
+  $driving_instructors = $node_storage->loadByProperties(['type' => 'driving_instructor']);
+
+  foreach ($driving_instructors as $driving_instructor) {
+    $published_vid = $driving_instructor->getRevisionId();
+    $revision_ids = $node_storage->revisionIds($driving_instructor);
+
+    foreach ($revision_ids as $revision_id) {
+      if ($revision_id == $published_vid) {
+        continue;
+      }
+
+      $node_storage->deleteRevision($revision_id);
+    }
+  }
+}

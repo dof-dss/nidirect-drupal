@@ -244,12 +244,17 @@ function nicsdru_nidirect_theme_preprocess_page(array &$variables) {
           // plugin block instead of a content block.
           $block_manager = \Drupal::service('plugin.manager.block');
           $plugin_block = $block_manager->createInstance('nidirect_related_content_block', []);
-          $block_label = 'Related content';
+          $configuration = $plugin_block->getConfiguration();
+          $configuration['label'] = 'Related content';
 
           // Applying title as hook_block_view_alter() which applies the title
           // for canonical routes doesn't get called here.
           if ($node->hasField('field_subtheme') && !$node->get('field_subtheme')->isEmpty()) {
-            $block_label = $node->get('field_subtheme')->entity->getName();
+            $subtheme = $node->get('field_subtheme')->entity;
+
+            if (!empty($subtheme)) {
+              $configuration['label'] = $subtheme->getName();
+            }
           }
 
           // We have to create a block render array as $plugin_block->build()
@@ -257,12 +262,10 @@ function nicsdru_nidirect_theme_preprocess_page(array &$variables) {
           $variables['page']['sidebar_second'][] = [
             '#theme' => 'block',
             '#weight' => 0,
-            '#configuration' => [
-              'label' => $block_label,
-              'label_display' => '1',
-            ],
+            '#configuration' => $configuration,
             '#plugin_id' => $plugin_block->getPluginId(),
-            '#derivative_plugin_id' => NULL,
+            '#base_plugin_id' => $plugin_block->getBaseId(),
+            '#derivative_plugin_id' => $plugin_block->getDerivativeId(),
             'content' => $plugin_block->build(),
           ];
           break;
@@ -697,13 +700,13 @@ function nicsdru_nidirect_theme_preprocess_responsive_image_formatter(array &$va
     return;
   }
 
-  // If we've got a parent media entity and caption field value
-  // then inject the value into the responsive image attributes collection.
+  // If we have a parent media entity and caption field value inject the text
+  // into the responsive image attributes collection.
   // We're relying on Drupal input sanitising from the media form as
   // well as safe Twig rendering in responsive-image.html.twig to cover
   // any content that is migrated in from the legacy db and could
   // potentially contain dodgy html.
-  $caption = $media_image->field_caption->value;
+  $caption = $media_image->get('field_caption')->value;
 
   if (!empty($caption)) {
     $variables['responsive_image']['#attributes']['caption'] = $caption;
@@ -749,4 +752,11 @@ function nicsdru_nidirect_theme_preprocess_views_view_rss(&$variables) {
     $style->namespaces['xmlns:atom'] = 'http://www.w3.org/2005/Atom';
     $variables['namespaces'] = new Attribute($style->namespaces);
   }
+}
+
+/**
+ * Implements hook_preprocess_geolocation_map_wrapper().
+ */
+function nicsdru_nidirect_theme_preprocess_geolocation_map_wrapper(array &$variables) {
+  $variables['attributes']['data-silktide'] = 'ignore';
 }

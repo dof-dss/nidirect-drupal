@@ -104,7 +104,6 @@ function nidirect_gp_entity_extra_field_info() {
  * Implements hook_form_alter().
  */
 function nidirect_gp_form_alter(&$form, FormStateInterface $form_state, $form_id) {
-
   // Process GP Practices View form.
   if ($form['#id'] == 'views-exposed-form-gp-practices-find-a-gp') {
     $form['categories']['#attributes']['class'][] = 'container-inline';
@@ -113,24 +112,29 @@ function nidirect_gp_form_alter(&$form, FormStateInterface $form_state, $form_id
 
   // Special processing for GP Practice title on node edit/add forms.
   if (preg_match('/^node_gp_practice_(edit_)*form$/', $form_id)) {
-    // Make title field readonly and set a placeholder.
-    if (empty($form['title']['widget'][0]['value']['#default_value'])) {
-      $form['title']['widget'][0]['value']['#default_value'] = ' ';
+
+    $form['title']['widget'][0]['value']['#description'] = t('If possible, include the name of the surgery or health centre and the practice name.<br> For example, "Willowfield Surgery - Dr Kelly and partners".');
+    $form['title']['widget'][0]['value']['#attributes']['placeholder'] = 'Surgery or Health Centre - Practice Name';
+
+    foreach ([
+      'field_gp_practice_website',
+      'field_gp_appointments',
+      'field_gp_prescriptions'
+    ] as $link_field) {
+      // Replace link fields set as 'entity reference' to textfields, remove
+      // the autocomplete description and the FAPI #states which prevents
+      // the removal of previous URLs.
+      $form[$link_field]['widget']['0']['uri']['#type'] = 'textfield';
+      unset($form[$link_field]['widget']['0']['uri']['#description']);
+      unset($form[$link_field]['widget']['0']['uri']['#states']);
+
+      // Hide the title as this will be populated by JS for some fields.
+      if ($link_field !== 'field_gp_practice_website') {
+        $form[$link_field]['widget']['0']['title']['#type'] = 'hidden';
+      }
     }
-    $form['title']['widget'][0]['value']['#description'] =
-      t('You cannot edit the title. It is created automatically from the practice name and surgery name.');
-    $form['title']['#disabled'] = 'TRUE';
 
-    // Hide the Prescriptions URL title as we will use a default.
-    $form['field_gp_prescriptions']['widget']['0']['title']['#type'] = 'hidden';
-
-    // Hide the Appointments URL title as we will use a default.
-    $form['field_gp_appointments']['widget']['0']['title']['#type'] = 'hidden';
-
-    // Add a validator.
-    array_unshift($form['#validate'], 'nidirect_gp_gp_practice_form_validate');
-    // Prepend a submit callback.
-    array_unshift($form['#submit'], 'nidirect_gp_gp_practice_form_submit');
+    $form['#attached']['library'][] = 'nidirect_gp/gp_practice_admin';
   }
 }
 
@@ -190,63 +194,6 @@ function nidirect_gp_unique_cypher(array &$form, FormStateInterface $form_state)
 }
 
 /**
- * Utility function to handle GP Practice validation.
- */
-function nidirect_gp_gp_practice_form_validate(&$form, FormStateInterface $form_state) {
-  // If neither a practice name nor a surgery name is provided,
-  // go back to the form.
-  $practiceName = $form_state->getValue('field_gp_practice_name')[0]['value'];
-  $surgeryName = $form_state->getValue('field_gp_surgery_name')[0]['value'];
-  if (empty($practiceName) && empty($surgeryName)) {
-    $form_state->setErrorByName(
-      'field_gp_practice_name',
-      t('You must provide a surgery name, a practice name, or both. Both cannot be left blank.')
-    );
-  }
-}
-
-/**
- * Submit callback for GP Practice node form.
- */
-function nidirect_gp_gp_practice_form_submit(&$form, FormStateInterface $form_state) {
-  foreach (['field_gp_prescriptions', 'field_gp_appointments'] as $field_id) {
-    // If we have URL values for specific fields, set a fixed text value.
-    $field = $form_state->getValue($field_id);
-
-    if (empty(reset($field['uri']))) {
-      // Skip items with blank URI values.
-      continue;
-    }
-
-    // If we have a URI value then we want to use fixed labels for the link
-    // text on these fields.
-    if ($field_id == 'field_gp_prescriptions') {
-      $field[0]['title'] = t('Repeat prescriptions');
-    }
-
-    if ($field_id == 'field_gp_appointments') {
-      $field[0]['title'] = t('Online appointments');
-    }
-
-    $form_state->setValue($field_id, $field);
-  }
-}
-
-/**
- * Implements hook_entity_presave().
- */
-function nidirect_gp_entity_presave(EntityInterface $entity) {
-  // This will fire when nodes are created or edited.
-  if ($entity instanceof NodeInterface && $entity->bundle() === 'gp_practice') {
-    // Construct the title.
-    $practice = Xss::filter($entity->get('field_gp_practice_name')->value);
-    $surgery = Xss::filter($entity->get('field_gp_surgery_name')->value);
-    $title = nidirect_gp_build_gp_practice_title($practice, $surgery);
-    $entity->setTitle($title);
-  }
-}
-
-/**
  * Implements hook_views_pre_render().
  */
 function nidirect_gp_views_pre_render(ViewExecutable $view) {
@@ -286,44 +233,6 @@ function nidirect_gp_preprocess_views_view_field(&$variables) {
 
     $variables['output'] = \Drupal::service('renderer')->render($item_list);
   }
-}
-
-/**
- * Utility function to handle GP Practice submit.
- */
-function nidirect_gp_build_gp_practice_title($practiceName = '', $surgeryName = '') {
-  /*
-  For GP Practice nodes, the node title is a combination of the
-  practice name and the surgery
-  name, e.g. Dr. Jekyll & Partners - Hyde Park Surgery.
-  One or other can be blank but not both.
-
-  There are four permutations:
-  1. Both provided
-  2. practiceName provided, surgeryName not provided
-  3. practiceName not provided, surgeryName provided
-  4. Neither provided
-   */
-
-  $title = '';
-  // 1. Both provided.
-  if ($practiceName != '' && $surgeryName != '') {
-    $title = $surgeryName . ' - ' . $practiceName;
-  }
-  // 2. practiceName provided, surgeryName not provided.
-  if ($practiceName != '' && $surgeryName == '') {
-    $title = $practiceName;
-  }
-  // 3. practiceName not provided, surgeryName provided.
-  if ($practiceName == '' && $surgeryName != '') {
-    $title = $surgeryName;
-  }
-  // 4. Neither provided - this generates an error that
-  // will be caught by validation.
-  // Re-encode &amp; to just &.
-  $title = str_replace('&amp;', '&', $title);
-
-  return $title;
 }
 
 /**

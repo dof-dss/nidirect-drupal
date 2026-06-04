@@ -4,6 +4,11 @@
   upstream: "nidirect:http"
   cache:
     enabled: false
+  tls:
+    strict_transport_security:
+      enabled: true
+      include_subdomains: true
+      preload: true
   redirects:
     paths:
       '^(.*/)index\.php/(.*)':

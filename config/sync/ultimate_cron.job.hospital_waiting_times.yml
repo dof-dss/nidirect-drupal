@@ -15,15 +15,15 @@ scheduler:
   id: crontab
   configuration:
     rules:
-      - '*/45 */1 * * *'
+      - '*/10 * * * *'
+    catch_up: 0
 launcher:
   id: serial
   configuration:
     timeouts:
-      lock_timeout: 3600
-      max_execution_time: 3600
+      lock_timeout: 300
     launcher:
-      max_threads: 1
+      thread: 0
 logger:
   id: database
   configuration:

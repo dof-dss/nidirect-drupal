@@ -14,6 +14,7 @@
 //
 // Style guide: base.table
 
+.table.ck-widget table,
 table {
   // Add vertical rhythm margins.
   margin: 1em 0 1.5em;
@@ -30,7 +31,8 @@ table {
   }
 
   p {
-    margin: .9rem 0;
+    @include adjust-property-size-to(9px 0, margin);
+    //margin: .9rem 0;
 
     &:first-child {
       margin-top: 0;
@@ -40,47 +42,55 @@ table {
       margin-bottom: 0;
     }
   }
+
+  td,
+  th {
+    @include adjust-font-size-to(14px, 4);
+    @include adjust-property-size-to(4px 4px 3px, padding);
+    box-sizing: border-box;
+    border: 1px solid $table-border-color;
+    //padding: .4rem .4rem .3rem; // -1px on bottom border to maintain vertical rhythm.
+    text-align: left;
+    vertical-align: top;
+
+    @include breakpoint($phab, $no-query: true) {
+      @include adjust-font-size-to(16px, 4);
+      @include adjust-property-size-to(8px 8px 7px, padding);
+      //padding: .8rem .8rem .7rem; // -1px on bottom border to maintain vertical rhythm.
+    }
+
+    @include breakpoint($tab, $no-query: true) {
+      @include adjust-font-size-to(16px, 4.5); // need 27px line height for vertical rhythm now.
+      @include adjust-property-size-to(9px 9px 8px, padding);
+      //padding: .9rem .9rem .8rem; // -1px on bottom border to maintain vertical rhythm.
+    }
+
+    & * {
+      font-size: inherit;
+      line-height: inherit;
+    }
+  }
+
+  th {
+    background-color: $brand-primary-light;
+  }
+
+  td {
+    background-color: #fff;
+    height: 100%;
+  }
+
+  tr {
+    &:nth-child(odd) td {
+      background: $grey-lightest;
+    }
+
+    &:nth-child(even) td {
+      background: #fff;
+    }
+  }
 }
 
-td,
-th {
-  @include adjust-font-size-to(14px, 4);
-  box-sizing: border-box;
-  border: 1px solid $table-border-color;
-  padding: .4rem .4rem .3rem; // -1px on bottom border to maintain vertical rhythm.
-  text-align: left;
-  vertical-align: top;
-
-  @include breakpoint($phab, $no-query: true) {
-    @include adjust-font-size-to(16px, 4);
-    padding: .8rem .8rem .7rem; // -1px on bottom border to maintain vertical rhythm.
-  }
-
-  @include breakpoint($tab, $no-query: true) {
-    @include adjust-font-size-to(16px, 4.5); // need 27px line height for vertical rhythm now.
-    padding: .9rem .9rem .8rem; // -1px on bottom border to maintain vertical rhythm.
-  }
-
-  & * {
-    font-size: inherit;
-    line-height: inherit;
-  }
-}
-
-th {
-  background-color: $brand-primary-light;
-}
-
-td {
-  background-color: #fff;
-}
-
-tr {
-  &:nth-child(odd) td {
-    background: $grey-lightest;
-  }
-
-  &:nth-child(even) td {
-    background: #fff;
-  }
+.table.ck-widget table {
+  margin: 0;
 }

@@ -11,6 +11,7 @@ dependencies:
     - field.field.node.article.field_next_audit_due
     - field.field.node.article.field_photo
     - field.field.node.article.field_related_info
+    - field.field.node.article.field_search_elevation
     - field.field.node.article.field_site_themes
     - field.field.node.article.field_subtheme
     - field.field.node.article.field_summary
@@ -40,7 +41,12 @@ content:
     label: hidden
     settings: {  }
     third_party_settings: {  }
-    weight: 3
+    weight: 2
+    region: content
+  book_navigation:
+    settings: {  }
+    third_party_settings: {  }
+    weight: 5
     region: content
   field_additional_info:
     type: ancestral_value_field_formatter
@@ -49,7 +55,7 @@ content:
       ancestor_depth: '2'
       ancestors_only: false
     third_party_settings: {  }
-    weight: 5
+    weight: 4
     region: content
   field_photo:
     type: entity_reference_entity_view
@@ -58,7 +64,7 @@ content:
       view_mode: embed
       link: false
     third_party_settings: {  }
-    weight: 2
+    weight: 1
     region: content
   field_related_info:
     type: link
@@ -70,7 +76,7 @@ content:
       rel: ''
       target: ''
     third_party_settings: {  }
-    weight: 4
+    weight: 3
     region: content
   field_summary:
     type: smart_trim
@@ -91,7 +97,7 @@ content:
       summary_handler: full
       trim_options: {  }
     third_party_settings: {  }
-    weight: 1
+    weight: 0
     region: content
   toc_display:
     settings: {  }
@@ -104,6 +110,7 @@ hidden:
   field_banner_image: true
   field_meta_tags: true
   field_next_audit_due: true
+  field_search_elevation: true
   field_site_themes: true
   field_subtheme: true
   field_teaser: true

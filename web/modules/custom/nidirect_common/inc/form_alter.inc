@@ -8,6 +8,7 @@
 use Drupal\Component\Utility\NestedArray;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\media\MediaInterface;
+use Drupal\node\NodeInterface;
 use Nette\Utils\Arrays;
 
 /**
@@ -130,6 +131,39 @@ function nidirect_common_form_node_form_alter(&$form, FormStateInterface $form_s
     }
   }
 
+  // Replace legacy view modes used by embedded media images so that
+  // authors are seeing the newer correct image style in ckeditor5.
+  if (\Drupal::routeMatch()->getRouteName() === 'entity.node.edit_form') {
+
+    // $node is an upcast, full object from the routing service.
+    $node = \Drupal::routeMatch()->getParameter('node');
+
+    if ($node->hasField('body')) {
+      $body = $node->get('body')->value;
+
+      // Some nodes do not have a 'required' body field.
+      if (empty($body)) {
+        return;
+      }
+
+      // Map legacy to new view modes.
+      $replacements = [
+        'data-view-mode="landscape_float"' => 'data-view-mode="article_float"',
+        'data-view-mode="landscape_float_xp"' => 'data-view-mode="article_float_expandable"',
+        'data-view-mode="landscape_full"' => 'data-view-mode="article_full"',
+        'data-view-mode="landscape_full_xp"' => 'data-view-mode="article_full_expandable"',
+      ];
+
+      $new_body = strtr($body, $replacements);
+
+      if ($new_body !== $body) {
+        if (isset($form['body']['widget'][0]['#default_value'])) {
+          $form['body']['widget'][0]['#default_value'] = $new_body;
+        }
+      }
+    }
+  }
+
   // Restrict the ability for users to make changes to nodes flagged with
   // the 'locked content' flag. Eg: money advice service (MAS) content.
   if (\Drupal::currentUser()->hasPermission('flag locked_content') === FALSE &&
@@ -219,7 +253,7 @@ function nidirect_common_form_node_form_alter(&$form, FormStateInterface $form_s
   }
 
   // Custom validation for Telephone_Plus field.
-  if (array_key_exists('field_telephone', $form)) {
+  if (array_key_exists('field_phone', $form)) {
     array_unshift($form['#validate'], 'nidirect_common_validate_telephone');
   }
 
@@ -249,6 +283,9 @@ function nidirect_common_form_node_form_alter(&$form, FormStateInterface $form_s
   if (array_key_exists('field_attachment', $form)) {
     $form['#attached']['library'][] = 'nicsdru_origins_theme/media_library_styles';
   }
+
+  // Attach admin theme fixes.
+  $form['#attached']['library'][] = 'nicsdru_nidirect_theme/admin-forms';
 }
 
 /**
@@ -364,7 +401,7 @@ function nidirect_common_field_widget_single_element_telephone_plus_widget_form_
   // Display the title textfield if the user selects 'Other'.
   $element['telephone_title']['#states'] = [
     'visible' => [
-      ':input[name="field_telephone[' . $context['delta'] . '][telephone_predefined]"]' => ['value' => 'Other'],
+      ':input[name="field_phone[' . $context['delta'] . '][telephone_predefined]"]' => ['value' => 'Other'],
     ],
   ];
 }

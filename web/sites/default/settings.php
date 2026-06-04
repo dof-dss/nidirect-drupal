@@ -58,6 +58,8 @@ $config['geolocation_google_maps.settings']['google_map_api_key'] = getenv('GOOG
 $config['geolocation_google_maps.settings']['google_map_api_server_key'] = getenv('GOOGLE_MAP_API_SERVER_KEY');
 // Geocoder module API key.
 $config['geocoder.settings']['plugins_options']['googlemaps']['apikey'] = getenv('GOOGLE_MAP_API_SERVER_KEY');
+// Silktide module API key.
+$config['silktide.settings']['apikey'] = getenv('SILKTIDE_API_KEY');
 
 // Environment indicator defaults.
 $env_colour = !empty(getenv('SIMPLEI_ENV_COLOUR')) ? getenv('SIMPLEI_ENV_COLOUR') : '#000000';
@@ -93,4 +95,15 @@ $config['csp.settings']['report-only']['reporting']['options']['subdomain'] = ge
 // Local settings. These come last so that they can override anything.
 if (file_exists($app_root . '/' . $site_path . '/settings.local.php')) {
   include $app_root . '/' . $site_path . '/settings.local.php';
+}
+
+// Automatically generated include for settings managed by ddev.
+$ddev_settings = dirname(__FILE__) . '/settings.ddev.php';
+if (getenv('IS_DDEV_PROJECT') == 'true' && is_readable($ddev_settings)) {
+  require $ddev_settings;
+}
+
+// Include settings required for Redis cache.
+if (getenv('IS_DDEV_PROJECT') == 'true' && file_exists(__DIR__ . '/settings.ddev.redis.php')) {
+  include __DIR__ . '/settings.ddev.redis.php';
 }

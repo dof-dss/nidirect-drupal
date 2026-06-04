@@ -1,0 +1,17 @@
+uuid: 9d1a7eb7-e80b-454d-9b1d-23aade9e115f
+langcode: en
+status: true
+dependencies:
+  module:
+    - nidirect_prisons
+    - serialization
+id: prisoner_payments_service_status
+plugin_id: prisoner_payments_service_status
+granularity: resource
+configuration:
+  methods:
+    - POST
+  formats:
+    - json
+  authentication:
+    - nidirect_prisons_token_ip_auth
