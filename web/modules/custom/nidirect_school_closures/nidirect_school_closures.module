@@ -6,6 +6,7 @@
  */
 
 use Drupal\Core\Cache\Cache;
+use Drupal\Core\Cache\CacheableMetadata;
 use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Render\BubbleableMetadata;
@@ -80,6 +81,7 @@ function nidirect_school_closures_tokens($type, $tokens, array $data, array $opt
             '#attached' => ['library' => 'nidirect_school_closures/school_closures'],
             '#cache' => ['tags' => ['school_closures']],
           ];
+          $bubbleable_metadata->addCacheableDependency(CacheableMetadata::createFromRenderArray($output));
           $replacements[$original] = \Drupal::service('renderer')->render($output);
           break;
       }
