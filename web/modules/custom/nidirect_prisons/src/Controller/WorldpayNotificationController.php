@@ -185,13 +185,20 @@ class WorldpayNotificationController extends ControllerBase {
     // is 'failed'.
     if ($payment_status === 'AUTHORISED') {
 
-      // Detect late authorisation (expired locally but authorised by Worldpay).
-      $is_late_authorisation = ($payment_transaction->status === 'expired');
+      // Detect late authorisation (timed out or cancelled locally, but
+      // authorised by Worldpay).
+      $is_late_authorisation = in_array($payment_transaction->status, [
+        'expired',
+        'cancelled',
+      ], TRUE);
 
       if ($is_late_authorisation) {
         $this->logger->warning(
-          'Late Worldpay AUTHORISED received for expired transaction @order',
-          ['@order' => $order_code]
+          'Late Worldpay AUTHORISED received for @status transaction @order',
+          [
+            '@status' => $payment_transaction->status,
+            '@order' => $order_code,
+          ]
         );
       }
 
@@ -225,7 +232,7 @@ class WorldpayNotificationController extends ControllerBase {
             'updated_timestamp' => \Drupal::time()->getRequestTime(),
           ])
           ->condition('order_key', $order_code)
-          ->condition('status', ['pending', 'expired'], 'IN')
+          ->condition('status', ['pending', 'expired', 'cancelled'], 'IN')
           ->execute();
 
         if ($updated === 0) {
