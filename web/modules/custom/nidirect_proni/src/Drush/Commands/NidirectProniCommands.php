@@ -4,7 +4,6 @@ namespace Drupal\nidirect_proni\Drush\Commands;
 
 use Drupal\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
-use Drupal\path_alias\AliasManagerInterface;
 use Drupal\redirect\Entity\Redirect;
 use Drupal\redirect\RedirectRepository;
 use Drush\Commands\DrushCommands;
@@ -22,26 +21,19 @@ class NidirectProniCommands extends DrushCommands {
   protected EntityTypeManagerInterface $entityTypeManager;
 
   /**
-   * @var \Drupal\path_alias\AliasManagerInterface
-   */
-  protected AliasManagerInterface $aliasManager;
-
-  /**
    * @var \Drupal\redirect\RedirectRepository
    */
   protected RedirectRepository $redirectRepository;
 
   /**
-   * Class constructor
+   * Class constructor.
    */
   public function __construct(
     EntityTypeManagerInterface $entityTypeManager,
-    AliasManagerInterface $aliasManager,
     RedirectRepository $redirectRepository,
   ) {
     parent::__construct();
     $this->entityTypeManager = $entityTypeManager;
-    $this->aliasManager = $aliasManager;
     $this->redirectRepository = $redirectRepository;
   }
 
@@ -51,7 +43,6 @@ class NidirectProniCommands extends DrushCommands {
   public static function create(ContainerInterface $container): self {
     return new static(
       $container->get('entity_type.manager'),
-      $container->get('path_alias.manager'),
       $container->get('redirect.repository'),
     );
   }
@@ -62,29 +53,23 @@ class NidirectProniCommands extends DrushCommands {
    * @command nidirect:create-proni-redirects
    * @aliases proni-redirects
    */
-  public function createRedirects() {
+  public function createRedirects(): void {
     $this->createNodeRedirects();
     $this->createTermRedirects();
   }
 
   /**
-   * Creates redirects for all nodes tagged with the PRONI theme or its children.
+   * Creates redirects for all PRONI terms.
    */
   public function createTermRedirects(): void {
     $term_ids = $this->getProniTermIds();
-
-    $this->logger()->notice(dt('Processing @count PRONI terms.', ['@count' => count($term_ids)]));
-
     $created = 0;
     $skipped = 0;
 
+    $this->logger()->notice(dt('Processing @count PRONI terms.', ['@count' => count($term_ids)]));
+
     foreach ($term_ids as $tid) {
-      $system_path = '/taxonomy/term/' . $tid;
-      $alias = $this->aliasManager->getAliasByPath($system_path);
-
-      // Use the alias if one exists, otherwise fall back to the system path.
-      $source_path = ltrim($alias ?: $system_path, '/');
-
+      $source_path = 'taxonomy/term/' . $tid;
       $existing = $this->redirectRepository->findBySourcePath($source_path);
 
       if (!empty($existing)) {
@@ -97,35 +82,32 @@ class NidirectProniCommands extends DrushCommands {
       }
 
       $this->createRedirect($source_path);
+      $this->logger()->info(dt('Created redirect: @source (tid: @tid)', [
+        '@source' => $source_path,
+        '@tid' => $tid,
+      ]));
       $created++;
     }
 
-    $this->logger()->success(dt('Finished processing. Created: @created, Skipped: @skipped.', [
+    $this->logger()->success(dt('Terms done. Created: @created, Skipped: @skipped.', [
       '@created' => $created,
       '@skipped' => $skipped,
     ]));
   }
 
   /**
-   * Creates redirects for all nodes tagged with the PRONI theme or its children.
+   * Creates redirects for all nodes tagged with the PRONI terms.
    */
   public function createNodeRedirects(): void {
     $term_ids = $this->getProniTermIds();
-
     $node_ids = $this->getProniNodeIds($term_ids);
-
-    $this->logger()->notice(dt('Processing @count PRONI nodes.', ['@count' => count($node_ids)]));
-
     $created = 0;
     $skipped = 0;
 
+    $this->logger()->notice(dt('Processing @count PRONI nodes.', ['@count' => count($node_ids)]));
+
     foreach ($node_ids as $nid) {
-      $system_path = '/node/' . $nid;
-      $alias = $this->aliasManager->getAliasByPath($system_path);
-
-      // Use the alias if one exists, otherwise fall back to the system path.
-      $source_path = ltrim($alias ?: $system_path, '/');
-
+      $source_path = 'node/' . $nid;
       $existing = $this->redirectRepository->findBySourcePath($source_path);
 
       if (!empty($existing)) {
@@ -138,17 +120,21 @@ class NidirectProniCommands extends DrushCommands {
       }
 
       $this->createRedirect($source_path);
+      $this->logger()->info(dt('Created redirect: @source (nid: @nid)', [
+        '@source' => $source_path,
+        '@nid' => $nid,
+      ]));
       $created++;
     }
 
-    $this->logger()->success(dt('Finished processing. Created: @created, Skipped: @skipped.', [
+    $this->logger()->success(dt('Nodes done. Created: @created, Skipped: @skipped.', [
       '@created' => $created,
       '@skipped' => $skipped,
     ]));
   }
 
   /**
-   * Returns all PRONI term ID's.
+   * Returns all PRONI term IDs.
    */
   protected function getProniTermIds(): array {
     $term_storage = $this->entityTypeManager->getStorage('taxonomy_term');
@@ -163,43 +149,37 @@ class NidirectProniCommands extends DrushCommands {
   }
 
   /**
-   * Returns node IDs whose field_subtheme or field_top_level_theme target is in $term_ids.
+   * Returns node IDs that reference PRONI terms.
    *
    * @param int[] $term_ids
-   *   List of proni term ID's.
+   *   List of proni term IDs.
    * @return int[]
-   *   List of nodes that reference any of the term ID's.
+   *   List of node IDs that reference any of the term IDs.
    */
   protected function getProniNodeIds(array $term_ids): array {
     $node_storage = $this->entityTypeManager->getStorage('node');
 
-    $subtheme_query = $node_storage->getQuery()
+    $subtheme_ids = $node_storage->getQuery()
       ->accessCheck(FALSE)
-      ->condition('field_subtheme.target_id', $term_ids, 'IN');
+      ->condition('field_subtheme.target_id', $term_ids, 'IN')
+      ->execute();
 
-    $top_theme_query = $node_storage->getQuery()
+    $top_theme_ids = $node_storage->getQuery()
       ->accessCheck(FALSE)
-      ->condition('field_top_level_theme.target_id', $term_ids, 'IN');
-
-    $subtheme_ids = $subtheme_query->execute();
-    $top_theme_ids = $top_theme_query->execute();
+      ->condition('field_top_level_theme.target_id', $term_ids, 'IN')
+      ->execute();
 
     return array_values(array_unique(array_merge($subtheme_ids, $top_theme_ids)));
   }
 
   /**
-   * Generate the Redirect.
-   *
-   * @param string $source_path
-   *   Redirect source path.
-   *
+   * Creates a redirect to the PRONI site.
    */
   private function createRedirect(string $source_path): void {
     $redirect = Redirect::create();
     $redirect->setSource($source_path);
     $redirect->setRedirect(self::REDIRECT_URL);
     $redirect->setStatusCode(301);
-    $redirect->setLanguage('und');
     $redirect->save();
   }
 
