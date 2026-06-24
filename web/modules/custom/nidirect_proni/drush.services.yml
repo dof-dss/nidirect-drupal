@@ -1,0 +1,9 @@
+services:
+  nidirect_proni.commands:
+    class: Drupal\nidirect_proni\Drush\Commands\NidirectProniCommands
+    arguments:
+      - '@entity_type.manager'
+      - '@path_alias.manager'
+      - '@redirect.repository'
+    tags:
+      - { name: drush.command }
