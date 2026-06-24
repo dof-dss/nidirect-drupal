@@ -52,10 +52,74 @@ class NidirectProniCommands extends DrushCommands {
   }
 
   /**
-   * Creates redirects for all nodes tagged with the PRONI theme or its children.
+   * Creates redirects for all PRONI nodes and taxonomy terms.
    *
    * @command nidirect:create-proni-redirects
    * @aliases proni-redirects
+   */
+  public function createRedirects() {
+    $this->createNodeRedirects();
+    $this->createTermRedirects();
+  }
+
+  /**
+   * Creates redirects for all nodes tagged with the PRONI theme or its children.
+   */
+  public function createTermRedirects(): void {
+    $term_ids = $this->getProniTermIds();
+    $redirect_url = 'https://www.nidirect.gov.uk/articles/public-record-office-northern-ireland';
+
+    if (empty($term_ids)) {
+      $this->logger()->warning('No term IDs found for PRONI.');
+      return;
+    }
+
+    $this->logger()->notice(dt('Processing @count PRONI terms.', ['@count' => count($term_ids)]));
+
+    $created = 0;
+    $skipped = 0;
+
+    foreach ($term_ids as $tid) {
+      $system_path = '/taxonomy/term/' . $tid;
+      $alias = $this->aliasManager->getAliasByPath($system_path);
+
+      // Use the alias if one exists, otherwise fall back to the system path.
+      $source_path = ltrim($alias ?: $system_path, '/');
+
+      $existing = $this->redirectRepository->findBySourcePath($source_path);
+
+      if (!empty($existing)) {
+        $this->logger()->info(dt('Skipping tid @tid as a redirect already exists for "@path".', [
+          '@tid' => $tid,
+          '@path' => $source_path,
+        ]));
+        $skipped++;
+        continue;
+      }
+
+      $redirect = Redirect::create();
+      $redirect->setSource($source_path);
+      $redirect->setRedirect($redirect_url);
+      $redirect->setStatusCode(301);
+      $redirect->setLanguage('und');
+      $redirect->save();
+
+      $this->logger()->info(dt('Created redirect: /@source → @dest (nid: @nid)', [
+        '@source' => $source_path,
+        '@dest' => $redirect_url,
+        '@nid' => $tid,
+      ]));
+      $created++;
+    }
+
+    $this->logger()->success(dt('Finished processing. Created: @created, Skipped: @skipped.', [
+      '@created' => $created,
+      '@skipped' => $skipped,
+    ]));
+  }
+
+  /**
+   * Creates redirects for all nodes tagged with the PRONI theme or its children.
    */
   public function createNodeRedirects(): void {
     $term_ids = $this->getProniTermIds();
