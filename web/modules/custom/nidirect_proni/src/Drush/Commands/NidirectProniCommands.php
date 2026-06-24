@@ -14,6 +14,8 @@ use Drush\Commands\DrushCommands;
  */
 class NidirectProniCommands extends DrushCommands {
 
+  const string REDIRECT_URL = 'https://www.nidirect.gov.uk/articles/public-record-office-northern-ireland';
+
   /**
    * @var \Drupal\Core\Entity\EntityTypeManagerInterface
    */
@@ -29,6 +31,9 @@ class NidirectProniCommands extends DrushCommands {
    */
   protected RedirectRepository $redirectRepository;
 
+  /**
+   * Class constructor
+   */
   public function __construct(
     EntityTypeManagerInterface $entityTypeManager,
     AliasManagerInterface $aliasManager,
@@ -67,12 +72,6 @@ class NidirectProniCommands extends DrushCommands {
    */
   public function createTermRedirects(): void {
     $term_ids = $this->getProniTermIds();
-    $redirect_url = 'https://www.nidirect.gov.uk/articles/public-record-office-northern-ireland';
-
-    if (empty($term_ids)) {
-      $this->logger()->warning('No term IDs found for PRONI.');
-      return;
-    }
 
     $this->logger()->notice(dt('Processing @count PRONI terms.', ['@count' => count($term_ids)]));
 
@@ -97,18 +96,7 @@ class NidirectProniCommands extends DrushCommands {
         continue;
       }
 
-      $redirect = Redirect::create();
-      $redirect->setSource($source_path);
-      $redirect->setRedirect($redirect_url);
-      $redirect->setStatusCode(301);
-      $redirect->setLanguage('und');
-      $redirect->save();
-
-      $this->logger()->info(dt('Created redirect: /@source → @dest (nid: @nid)', [
-        '@source' => $source_path,
-        '@dest' => $redirect_url,
-        '@nid' => $tid,
-      ]));
+      $this->createRedirect($source_path);
       $created++;
     }
 
@@ -123,12 +111,6 @@ class NidirectProniCommands extends DrushCommands {
    */
   public function createNodeRedirects(): void {
     $term_ids = $this->getProniTermIds();
-    $redirect_url = 'https://www.nidirect.gov.uk/articles/public-record-office-northern-ireland';
-
-    if (empty($term_ids)) {
-      $this->logger()->warning('No term IDs found for PRONI.');
-      return;
-    }
 
     $node_ids = $this->getProniNodeIds($term_ids);
 
@@ -155,18 +137,7 @@ class NidirectProniCommands extends DrushCommands {
         continue;
       }
 
-      $redirect = Redirect::create();
-      $redirect->setSource($source_path);
-      $redirect->setRedirect($redirect_url);
-      $redirect->setStatusCode(301);
-      $redirect->setLanguage('und');
-      $redirect->save();
-
-      $this->logger()->info(dt('Created redirect: /@source → @dest (nid: @nid)', [
-        '@source' => $source_path,
-        '@dest' => $redirect_url,
-        '@nid' => $nid,
-      ]));
+      $this->createRedirect($source_path);
       $created++;
     }
 
@@ -178,8 +149,6 @@ class NidirectProniCommands extends DrushCommands {
 
   /**
    * Returns all PRONI term ID's.
-   *
-   * @return int[]
    */
   protected function getProniTermIds(): array {
     $term_storage = $this->entityTypeManager->getStorage('taxonomy_term');
@@ -216,6 +185,22 @@ class NidirectProniCommands extends DrushCommands {
     $top_theme_ids = $top_theme_query->execute();
 
     return array_values(array_unique(array_merge($subtheme_ids, $top_theme_ids)));
+  }
+
+  /**
+   * Generate the Redirect.
+   *
+   * @param string $source_path
+   *   Redirect source path.
+   *
+   */
+  private function createRedirect(string $source_path): void {
+    $redirect = Redirect::create();
+    $redirect->setSource($source_path);
+    $redirect->setRedirect(self::REDIRECT_URL);
+    $redirect->setStatusCode(301);
+    $redirect->setLanguage('und');
+    $redirect->save();
   }
 
 }
