@@ -1,0 +1,6 @@
+services:
+  nidirect_hospital_waiting_times.commands:
+    class: \Drupal\nidirect_hospital_waiting_times\Commands\HospitalWaitingTimesCommands
+    arguments: ['@cache_tags.invalidator']
+    tags:
+      - { name: drush.command }

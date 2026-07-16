@@ -69,11 +69,11 @@
         "drupal/config_readonly": "^1.0",
         "drupal/config_split": "^2.0",
         "drupal/config_update": "^2.0@alpha",
-        "drupal/core": "10.5.9",
-        "drupal/core-composer-scaffold": "10.5.9",
+        "drupal/core": "^10.6",
+        "drupal/core-composer-scaffold": "10.6.13",
         "drupal/core-dev": "^10.5",
-        "drupal/core-project-message": "10.5.9",
-        "drupal/core-recommended": "10.5.9",
+        "drupal/core-project-message": "10.6.13",
+        "drupal/core-recommended": "10.6.13",
         "drupal/csp": "^2.2",
         "drupal/csv_serialization": "^4.0",
         "drupal/ctools": "^4.0",
@@ -99,8 +99,9 @@
         "drupal/file_delete_ui": "^1.0@alpha",
         "drupal/filelog": "^3.0",
         "drupal/flag": "4.x-dev",
+        "drupal/flood_control": "^3.0",
         "drupal/geocoder": "^4.26",
-        "drupal/geolocation": "^3.14",
+        "drupal/geolocation": "^3.15",
         "drupal/google_tag": "^2.0",
         "drupal/handy_cache_tags": "^1.5",
         "drupal/honeypot": "^2.0",
@@ -127,6 +128,7 @@
         "drupal/queue_ui": "^3.2",
         "drupal/redirect": "^1.11",
         "drupal/redis": "^1.10",
+        "drupal/revision_manager": "^1.0@beta",
         "drupal/scheduled_transitions": "^2.7",
         "drupal/scheduler": "^2.0",
         "drupal/schema_metatag": "^3.0",
@@ -150,9 +152,11 @@
         "drupal/tamper": "^1.0@alpha",
         "drupal/taxonomy_access_fix": "^4.0",
         "drupal/taxonomy_entity_index": "^1.20",
-        "drupal/telephone_plus": "2.0.x-dev@dev",
+        "drupal/telephone_plus": "^2.0",
         "drupal/token": "^1.15",
         "drupal/token_filter": "^2.2",
+        "drupal/tour": "^2.0",
+        "drupal/tour_extras": "^1.0",
         "drupal/twig_field_value": "^2.0",
         "drupal/twig_tweak": "^3.4",
         "drupal/ultimate_cron": "^2.0@beta",
@@ -210,6 +214,9 @@
             "zaporylie/composer-drupal-optimizations": true,
             "php-http/discovery": true,
             "tbachert/spi": true
+        },
+        "audit": {
+            "block-insecure": true
         }
     },
     "extra": {
@@ -228,6 +235,9 @@
             },
             "drupal/easy_install": {
                 "Handle missing core version": "https://www.drupal.org/files/issues/2019-12-19/easy_install_core_version-3101883-0.patch"
+            },
+            "drupal/fastly": {
+                "Use PURGE instead of POST for url purges": "https://www.drupal.org/files/issues/2026-03-19/fastly-PURGE-instead-of-POST-3580285.patch"
             },
             "drupal/feeds": {
                 "Use uuid as GUID for Drupal entities": "https://www.drupal.org/files/issues/2022-09-23/feeds-3306725-18.patch"

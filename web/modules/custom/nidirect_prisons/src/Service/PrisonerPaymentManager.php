@@ -426,15 +426,13 @@ class PrisonerPaymentManager {
   }
 
   /**
-   * Update the status of a transaction. Only 'pending', 'processing'
-   * or (in exceptional cases) 'expired' transactions should have
-   * their status updated.
+   * Update the status of a transaction.
    *
    * @param string $order_code
    *   The unique order code identifying the transaction.
    *
    * @param string $status
-   *   One of: pending, expired, failed, success.
+   *   One of: pending, processing, expired, cancelled, failed, success.
    *
    * @return bool
    *   TRUE if the status was updated, FALSE otherwise.

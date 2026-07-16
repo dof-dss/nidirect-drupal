@@ -1,0 +1,39 @@
+{#
+/**
+ * @file
+ * Default theme implementation to display a search suggestion.
+ */
+#}
+
+{% set is_external = url is not empty and url.isExternal() %}
+
+<div class="search-api-autocomplete-suggestion">
+  {% if note is not empty %}
+    <span class="autocomplete-suggestion-note">{{ note }}</span>
+  {% endif %}
+
+  {% if label is not empty %}
+    <span class="autocomplete-suggestion-label">
+      {{ label }}
+      {% if is_external %}
+        <svg aria-hidden="true" class="ico ico-elink"><title>external link opens in a new window / tab</title><use xlink:href="#elink"></use></svg>
+      {% endif %}
+    </span>
+  {% endif %}
+
+  {% if suggestion_prefix is not empty %}
+    <span class="autocomplete-suggestion-suggestion-prefix">{{ suggestion_prefix }}</span>
+  {%- endif -%}
+
+  {%- if user_input is not empty -%}
+    <span class="autocomplete-suggestion-user-input">{{ user_input }}</span>
+  {%- endif -%}
+
+  {%- if clean_suffix is not empty -%}
+    <span class="autocomplete-suggestion-suggestion-suffix">{{ clean_suffix }}</span>
+  {%- endif %}
+
+  {% if results_count is not empty %}
+    <span class="autocomplete-suggestion-results-count">{{ results_count }}</span>
+  {% endif %}
+</div>

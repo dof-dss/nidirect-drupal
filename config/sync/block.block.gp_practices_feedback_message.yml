@@ -1,0 +1,33 @@
+uuid: b9c6bfd2-a39e-4e95-a5fa-e7e698afdf88
+langcode: en
+status: true
+dependencies:
+  content:
+    - 'block_content:basic:7bc4ff09-79cc-4270-82d5-20c2360f5d59'
+  module:
+    - block_content
+    - node
+  theme:
+    - nicsdru_nidirect_theme
+id: gp_practices_feedback_message
+theme: nicsdru_nidirect_theme
+region: content
+weight: 0
+provider: null
+plugin: 'block_content:7bc4ff09-79cc-4270-82d5-20c2360f5d59'
+settings:
+  id: 'block_content:7bc4ff09-79cc-4270-82d5-20c2360f5d59'
+  label: 'GP practices - if information is missing, outdated or wrong'
+  label_display: '0'
+  provider: block_content
+  status: true
+  info: ''
+  view_mode: full
+visibility:
+  'entity_bundle:node':
+    id: 'entity_bundle:node'
+    negate: false
+    context_mapping:
+      node: '@node.node_route_context:node'
+    bundles:
+      gp_practice: gp_practice

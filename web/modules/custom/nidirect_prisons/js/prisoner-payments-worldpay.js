@@ -65,13 +65,31 @@
 
       const status = responseData.order?.status;
 
+      if (status === 'cancelled_by_shopper') {
+        const cancelButton = document.querySelector('[data-drupal-selector="edit-cancel-payment"]');
+
+        if (!cancelButton) {
+          console.error('Cancel payment button not found.');
+          iframeContainer.removeChild(overlay);
+          return;
+        }
+
+        if (cancelButton.form && typeof cancelButton.form.requestSubmit === 'function') {
+          cancelButton.form.requestSubmit(cancelButton);
+        }
+        else {
+          cancelButton.click();
+        }
+
+        return;
+      }
+
       if (status === 'success') {
         submitButton.click();
       } else {
         iframeContainer.removeChild(overlay);
         iframeContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
         console.log(`Worldpay payment did not succeed. Status: ${status}`);
-        console.dir(responseData);
       }
     },
   };

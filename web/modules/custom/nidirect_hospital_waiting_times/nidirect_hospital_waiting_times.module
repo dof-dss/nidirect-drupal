@@ -7,6 +7,7 @@
 
 use Drupal\Core\Cache\Cache;
 use Drupal\Core\Cache\CacheBackendInterface;
+use Drupal\Core\Cache\CacheableMetadata;
 use Drupal\Core\Render\BubbleableMetadata;
 use Drupal\Core\Routing\RouteMatchInterface;
 
@@ -54,6 +55,10 @@ function nidirect_hospital_waiting_times_tokens($type, $tokens, array $data, arr
       switch ($name) {
         case 'hospital_emergency_waiting_times':
           $output = nidirect_hospital_waiting_times_render_times();
+          // Ensure cache tags from the render array bubble up to the parent
+          // with the token. This ensures that invalidating
+          // 'hospital_waiting_times' flushes the containing page cache.
+          $bubbleable_metadata->addCacheableDependency(CacheableMetadata::createFromRenderArray($output));
           $replacements[$original] = \Drupal::service('renderer')->render($output);
           break;
       }

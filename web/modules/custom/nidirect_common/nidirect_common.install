@@ -355,3 +355,28 @@ function _check_telephone_field_values() {
   return $results;
 
 }
+
+/**
+ * Cleanup stale config from geolocation fields.
+ */
+function nidirect_common_update_10001() {
+  $config_names = [
+      'core.entity_view_display.node.contact.default',
+      'core.entity_view_display.node.contact.diff',
+      'core.entity_view_display.node.contact.full',
+      'core.entity_view_display.node.gp_practice.default',
+      'core.entity_view_display.node.gp_practice.diff',
+      'core.entity_view_display.node.gp_practice.full',
+      'core.entity_view_display.paragraph.map.default',
+      'core.entity_view_display.paragraph.map.embed',
+      'core.entity_view_display.paragraph.map.preview',
+    ];
+
+    $database = \Drupal::database();
+
+    foreach ($config_names as $config_name) {
+      $database->delete('config')
+        ->condition('name', $config_name)
+        ->execute();
+    }
+}

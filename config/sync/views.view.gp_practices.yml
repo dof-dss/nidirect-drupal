@@ -82,6 +82,7 @@ display:
         type: full
         options:
           offset: 0
+          pagination_heading_level: h4
           items_per_page: 10
           total_pages: null
           id: 0
@@ -99,7 +100,6 @@ display:
             offset: false
             offset_label: Offset
           quantity: 9
-          pagination_heading_level: h4
       exposed_form:
         type: input_required
         options:
@@ -312,8 +312,11 @@ display:
         - 'languages:language_interface'
         - url
         - url.query_args
+        - 'user.node_grants:view'
         - user.permissions
-      tags: {  }
+      tags:
+        - 'config:search_api.index.default_content'
+        - 'search_api_list:default_content'
   find_a_gp:
     id: find_a_gp
     display_title: Embed
@@ -328,5 +331,8 @@ display:
         - 'languages:language_interface'
         - url
         - url.query_args
+        - 'user.node_grants:view'
         - user.permissions
-      tags: {  }
+      tags:
+        - 'config:search_api.index.default_content'
+        - 'search_api_list:default_content'
