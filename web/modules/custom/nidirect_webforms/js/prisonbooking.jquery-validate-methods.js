@@ -83,7 +83,7 @@
 
   Drupal.pvIsValidDate = function(d, m, y) {
     m = parseInt(m, 10) - 1;
-    return m >= 0 && m < 12 && d > 0 && d <= Drupal.pvDaysInMonth(m, y);
+    return y > 0 && m >= 0 && m < 12 && d > 0 && d <= Drupal.pvDaysInMonth(m, y);
   }
 
   Drupal.behaviors.prisonVisitValidateMethods = {
@@ -260,8 +260,10 @@
         $pvVisitorOneDob.rules("add", {
           validDate: true,
           minAge: [true, 18],
+          maxAge: [true, 150],
           messages: {
-            minAge: "You must be at least 18 years of age to book a prison visit"
+            minAge: "You must be at least 18 years of age to book a prison visit",
+            maxAge: "Enter a valid date of birth",
           }
         });
       }
@@ -288,10 +290,12 @@
         $(this).rules("add", {
           validDate: true,
           minAge: [true, 0],
+          maxAge: [true, 150],
           maxAdults: [true, 2],
           messages: {
-            validDate: "Enter a valid birthdate.",
-            minAge: "Enter a valid birthdate.",
+            validDate: "Enter a valid date of birth",
+            minAge: "Enter a valid date of birth",
+            maxAge: "Enter a valid date of birth",
             maxAdults: "The maximum number of adults is two. Enter a child's visitor ID and date of birth."
           }
         });
