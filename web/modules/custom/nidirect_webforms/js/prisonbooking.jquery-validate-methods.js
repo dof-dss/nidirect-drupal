@@ -290,10 +290,12 @@
         $(this).rules("add", {
           validDate: true,
           minAge: [true, 0],
+          maxAge: [true, 150],
           maxAdults: [true, 2],
           messages: {
-            validDate: "Enter a valid birthdate.",
-            minAge: "Enter a valid birthdate.",
+            validDate: "Enter a valid date of birth",
+            minAge: "Enter a valid date of birth",
+            maxAge: "Enter a valid date of birth",
             maxAdults: "The maximum number of adults is two. Enter a child's visitor ID and date of birth."
           }
         });
