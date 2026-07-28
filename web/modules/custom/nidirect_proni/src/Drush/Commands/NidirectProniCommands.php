@@ -159,6 +159,7 @@ class NidirectProniCommands extends DrushCommands {
     foreach ($nodes as $node) {
       if ($node->get('moderation_state')->getString() != 'archived') {
         $node->set('moderation_state', 'archived');
+        $node->setRevisionLogMessage('Archived for PRONI standalone site launch.');
         $node->save();
         $archived++;
       }
@@ -186,6 +187,7 @@ class NidirectProniCommands extends DrushCommands {
     foreach ($terms as $term) {
       if ($term->isPublished()) {
         $term->setUnpublished();
+        $term->setRevisionLogMessage('Unpublished for PRONI standalone site launch.');
         $term->save();
         $archived++;
       }
