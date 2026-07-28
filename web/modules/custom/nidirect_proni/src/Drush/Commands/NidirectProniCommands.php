@@ -59,6 +59,17 @@ class NidirectProniCommands extends DrushCommands {
   }
 
   /**
+   * Archives all PRONI nodes and taxonomy terms.
+   *
+   * @command nidirect:archive-proni-content
+   * @aliases proni-archive
+   */
+  public function archiveProniContent(): void {
+    $this->archiveNodes();
+    $this->archiveTerms();
+  }
+
+  /**
    * Creates redirects for all PRONI terms.
    */
   public function createTermRedirects(): void {
@@ -129,6 +140,62 @@ class NidirectProniCommands extends DrushCommands {
 
     $this->logger()->success(dt('Nodes done. Created: @created, Skipped: @skipped.', [
       '@created' => $created,
+      '@skipped' => $skipped,
+    ]));
+  }
+
+  /**
+   * Archive all PRONI nodes.
+   */
+  public function archiveNodes(): void {
+    $term_ids = $this->getProniTermIds();
+    $node_ids = $this->getProniNodeIds($term_ids);
+    $nodes = $this->entityTypeManager->getStorage('node')->loadMultiple($node_ids);
+    $archived = 0;
+    $skipped = 0;
+
+    $this->logger()->notice(dt('Processing @count PRONI nodes.', ['@count' => count($node_ids)]));
+
+    foreach ($nodes as $node) {
+      if ($node->get('moderation_state')->getString() != 'archived') {
+        $node->set('moderation_state', 'archived');
+        $node->save();
+        $archived++;
+      }
+      else {
+        $skipped++;
+      }
+    }
+
+    $this->logger()->success(dt('Processed node status. Archived: @archived, Skipped: @skipped.', [
+      '@archived' => $archived,
+      '@skipped' => $skipped,
+    ]));
+
+  }
+
+  /**
+   * Archive all PRONI terms.
+   */
+  public function archiveTerms(): void {
+    $term_ids = $this->getProniTermIds();
+    $terms = $this->entityTypeManager->getStorage('taxonomy_term')->loadMultiple($term_ids);
+    $archived = 0;
+    $skipped = 0;
+
+    foreach ($terms as $term) {
+      if ($term->isPublished()) {
+        $term->setUnpublished();
+        $term->save();
+        $archived++;
+      }
+      else {
+        $skipped++;
+      }
+    }
+
+    $this->logger()->success(dt('Processed term status. Archived: @archived, Skipped: @skipped.', [
+      '@archived' => $archived,
       '@skipped' => $skipped,
     ]));
   }
