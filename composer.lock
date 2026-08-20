@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "20008f71380e9a9ddc53853f0b395381",
+    "content-hash": "c21e6f81afacee41e51cd3559eb1f2c1",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -2456,6 +2456,66 @@
                 }
             ],
             "time": "2024-02-05T11:35:39+00:00"
+        },
+        {
+            "name": "dof-dss/canopy",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "git@github.com:dof-dss/canopy.git",
+                "reference": "da9caf77d3af268c44c5ec9dfa6767369c27d64f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/dof-dss/canopy/zipball/da9caf77d3af268c44c5ec9dfa6767369c27d64f",
+                "reference": "da9caf77d3af268c44c5ec9dfa6767369c27d64f",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^8.2",
+                "symfony/console": "^6.4 || ^7.0",
+                "symfony/process": "^6.4 || ^7.0",
+                "symfony/yaml": "^6.4 || ^7.0"
+            },
+            "require-dev": {
+                "phpstan/phpstan": "^2.1",
+                "phpunit/phpunit": "^11.5"
+            },
+            "bin": [
+                "bin/canopy"
+            ],
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Canopy\\": "src/"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "Canopy\\Tests\\": "tests/"
+                }
+            },
+            "scripts": {
+                "analyse": [
+                    "phpstan analyse --debug --memory-limit=512M"
+                ],
+                "lint": [
+                    "@php tools/lint.php"
+                ],
+                "test": [
+                    "phpunit"
+                ],
+                "verify": [
+                    "@lint",
+                    "@analyse",
+                    "@test"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Read-only technical assurance for Drupal codebases",
+            "time": "2026-08-13T15:40:09+00:00"
         },
         {
             "name": "dof-dss/nicsdru_origins_modules",
