@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+## Description: Run Canopy read-only technical assurance audits.
+## Usage: canopy [command] [options]
+## Example: "ddev canopy audit solr"
+## HostWorkingDir: true
+
+set -eu -o pipefail
+
+# Canopy 1.0's packaged binary looks for an autoloader within the package.
+# Bootstrap the consuming project's Composer autoloader until that is fixed.
+exec php -r '
+require "/var/www/html/vendor/autoload.php";
+exit((new Canopy\Application())->run());
+' -- "$@"

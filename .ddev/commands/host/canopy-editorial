@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+
+## Description: Compare NIDirect, DEPT, and all Unity site exports with the vendor-provided NICS editorial baseline.
+## Usage: canopy-editorial [options]
+## Example: "ddev canopy-editorial --detail"
+## Example: "ddev canopy-editorial --status=fail,unknown"
+## HostWorkingDir: true
+
+set -eu -o pipefail
+
+cd "$DDEV_APPROOT"
+
+exec php -r '
+require getenv("DDEV_APPROOT") . "/vendor/autoload.php";
+exit((new Canopy\Application())->run());
+' -- audit editorial \
+  --inventory="$DDEV_APPROOT/.canopy/editorial-reference.yml" \
+  "$@"
