@@ -1,14 +1,42 @@
 adding:
+  dependencies:
+    config:
+      - search_api_solr.solr_cache.cache_document_default_9_0_0
+      - search_api_solr.solr_cache.cache_fieldvalue_default_9_0_0
+      - search_api_solr.solr_cache.cache_filter_default_9_0_0
+      - search_api_solr.solr_cache.cache_persegfilter_default_9_0_0
+      - search_api_solr.solr_cache.cache_queryresult_default_9_0_0
+      - search_api_solr.solr_field_type.text_string_und_6_0_0
   backend_config:
+    connector: solr_cloud_basic_auth
     connector_config:
       host: solr
       port: 8983
-      core: dev
+      skip_schema_check: true
+      jts: false
       solr_install_dir: /opt/solr
+      checkpoints_collection: ''
+      stats_cache: org.apache.solr.search.stats.LRUStatsCache
+      distrib: true
+      context: solr
+      username: solr
+      password: '[Pwr]'
+    fallback_multiple: false
+    index_single_documents_fallback_count: 10
+    index_empty_text_fields: false
+    suppress_missing_languages: false
 removing:
+  dependencies:
+    config:
+      - search_api_solr.solr_cache.cache_document_default_7_0_0
+      - search_api_solr.solr_cache.cache_fieldvalue_default_7_0_0
+      - search_api_solr.solr_cache.cache_filter_default_7_0_0
+      - search_api_solr.solr_cache.cache_persegfilter_default_7_0_0
+      - search_api_solr.solr_cache.cache_queryresult_default_7_0_0
   backend_config:
+    connector: standard
     connector_config:
       host: solr.internal
       port: 8080
-      core: default
       solr_install_dir: ../../..
+    skip_schema_check: false

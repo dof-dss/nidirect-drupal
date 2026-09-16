@@ -246,7 +246,7 @@ display:
             default_group: All
             default_group_multiple: {  }
             group_items: {  }
-          parse_mode: sloppy_terms
+          parse_mode: terms
           min_length: 2
           fields:
             - address_line1
@@ -254,6 +254,9 @@ display:
             - body
             - field_supplementary_contact
             - title_fulltext
+            - title_ngram
+            - title_spellcheck
+            - title_txtedge
       style:
         type: html_list
       row:
