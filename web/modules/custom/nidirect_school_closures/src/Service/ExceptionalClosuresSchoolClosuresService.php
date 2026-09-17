@@ -6,14 +6,15 @@ use Drupal\Core\Cache\CacheBackendInterface;
 use Drupal\Core\Config\ConfigFactory;
 use Drupal\Core\Logger\LoggerChannelFactory;
 use Drupal\nidirect_school_closures\SchoolClosure;
+use Drupal\nidirect_school_closures\SchoolClosureReasonMapper;
 use Drupal\nidirect_school_closures\SchoolClosuresServiceInterface;
 use GuzzleHttp\Client as HttpClient;
 use GuzzleHttp\Exception\ClientException;
 
 /**
- * Implementation of SchoolClosuresService using C2k service.
+ * Implementation of SchoolClosuresService using the Exceptional Closures API.
  */
-class C2kschoolsSchoolClosuresService implements SchoolClosuresServiceInterface {
+class ExceptionalClosuresSchoolClosuresService implements SchoolClosuresServiceInterface {
 
   /**
    * HTTP request attempt count.
@@ -44,11 +45,11 @@ class C2kschoolsSchoolClosuresService implements SchoolClosuresServiceInterface 
   protected $url = NULL;
 
   /**
-   * Parsed XML response from the service call.
+   * Decoded JSON response from the service call.
    *
-   * @var \SimpleXMLElement
+   * @var array
    */
-  protected $xml = NULL;
+  protected $responseData = NULL;
 
   /**
    * Dataset of school closures.
@@ -100,12 +101,20 @@ class C2kschoolsSchoolClosuresService implements SchoolClosuresServiceInterface 
   protected $logger;
 
   /**
-   * Constructs a new C2kschoolsSchoolClosuresService object.
+   * Reason mapper service.
+   *
+   * @var \Drupal\nidirect_school_closures\SchoolClosureReasonMapper
    */
-  public function __construct(HttpClient $http_client, CacheBackendInterface $cache, ConfigFactory $config_service, LoggerChannelFactory $logger) {
+  protected $reasonMapper;
+
+  /**
+   * Constructs a new ExceptionalClosuresSchoolClosuresService object.
+   */
+  public function __construct(HttpClient $http_client, CacheBackendInterface $cache, ConfigFactory $config_service, LoggerChannelFactory $logger, SchoolClosureReasonMapper $reason_mapper) {
     $this->httpClient = $http_client;
     $this->cacheService = $cache;
     $this->logger = $logger->get('nidirect_school_closures');
+    $this->reasonMapper = $reason_mapper;
 
     // Fetch the config settings.
     $config = $config_service->get('nidirect_school_closures.settings');
@@ -135,13 +144,13 @@ class C2kschoolsSchoolClosuresService implements SchoolClosuresServiceInterface 
   }
 
   /**
-   * Setter for XML.
+   * Setter for the decoded JSON response.
    *
-   * @param \SimpleXMLElement $xml
-   *   XML Element containing school closure data.
+   * @param array $responseData
+   *   Decoded JSON response containing school closure data.
    */
-  public function setXml(\SimpleXMLElement $xml): void {
-    $this->xml = $xml;
+  public function setResponseData(array $responseData): void {
+    $this->responseData = $responseData;
   }
 
   /**
@@ -189,7 +198,7 @@ class C2kschoolsSchoolClosuresService implements SchoolClosuresServiceInterface 
       $this->fetchData();
 
       // Process received data or attempt again.
-      if (!empty($this->xml)) {
+      if (!empty($this->responseData)) {
         $this->processData();
         $this->updated = new \DateTime('now');
         // Cache the data indefinitely. The cache will be deleted based
@@ -228,7 +237,7 @@ class C2kschoolsSchoolClosuresService implements SchoolClosuresServiceInterface 
   }
 
   /**
-   * Fetch and convert the source data to XML.
+   * Fetch and decode the source data as JSON.
    */
   protected function fetchData() {
     // If we have a URL call it and parse the results.
@@ -237,8 +246,8 @@ class C2kschoolsSchoolClosuresService implements SchoolClosuresServiceInterface 
         $response = $this->httpClient->get($this->url);
 
         if ($response->getStatusCode() == 200) {
-          $xml_string = $response->getBody()->getContents();
-          $this->xml = simplexml_load_string($xml_string);
+          $json_string = $response->getBody()->getContents();
+          $this->responseData = json_decode($json_string, TRUE);
         }
       }
       catch (ClientException $e) {
@@ -248,63 +257,79 @@ class C2kschoolsSchoolClosuresService implements SchoolClosuresServiceInterface 
   }
 
   /**
-   * Process the XML data into array.
+   * Process the decoded JSON data into array.
    */
   public function processData() {
-    // If we don't have a channel element there was an issue.
-    if (empty($this->xml->channel)) {
+    // If we don't have a closures element there was an issue. Note this is
+    // distinct from an empty closures array, which just means there are no
+    // closures currently in effect.
+    if (!isset($this->responseData['closures']) || !is_array($this->responseData['closures'])) {
       $this->error = TRUE;
       return;
     }
 
-    // Process all closure XML elements.
-    if (!empty($this->xml->channel->item)) {
-      $this->data = [];
+    $this->data = [];
 
-      foreach ($this->xml->channel->item as $item) {
-        $title = mb_convert_encoding($item->title, 'ISO-8859-1', 'UTF-8');
-        $description = mb_convert_encoding($item->description, 'ISO-8859-1', 'UTF-8');
+    // Each entry is an institution, which may have multiple closures. All of
+    // a school's current closures are grouped together under that school,
+    // rather than each closure appearing as its own repeated entry.
+    foreach ($this->responseData['closures'] as $institution) {
+      $name = $institution['institutionName'] ?? '';
+      $location = $institution['address']['formattedAddress'] ?? '';
 
-        // Extract reason and date, skip if not matched.
-        if (preg_match('/^(.*)<br\/><br\/>Closure takes place on (\d{2}\/\d{2}\/\d{4})$/', $description, $matches)) {
-          $date = trim($matches[2]);
+      if (empty($name) || empty($institution['closures'])) {
+        continue;
+      }
 
-          $closure_date = explode('/', $date);
-          $date_formatted = $closure_date[2] . '-' . $closure_date[1] . '-' . $closure_date[0];
-          $date = new \DateTime($date_formatted, new \DateTimeZone('Europe/London'));
+      $events = [];
 
-          $reason = trim($matches[1]);
-        }
-        else {
+      foreach ($institution['closures'] as $closureEvent) {
+        if (empty($closureEvent['dateFrom'])) {
           continue;
         }
 
-        // Extract name and location, skip if not matched.
-        if (preg_match('/^(.*?),\s(.*)\(\d+\)$/', $title, $matches)) {
-          $name = trim($matches[1]);
-          $location = trim($matches[2]);
-        }
-        else {
-          continue;
-        }
+        $date = new \DateTime($closureEvent['dateFrom'], new \DateTimeZone('Europe/London'));
+        $dateTo = !empty($closureEvent['dateTo']) ? new \DateTime($closureEvent['dateTo'], new \DateTimeZone('Europe/London')) : NULL;
+        $reason = $this->reasonMapper->combine($closureEvent['reasons'] ?? []);
 
-        // Closure processing object.
-        $closure = new SchoolClosure($name, $location, $date, $reason);
+        $closure = new SchoolClosure($name, $location, $date, $reason, $dateTo);
 
         if ($closure->isExpired()) {
           continue;
         }
 
-        $this->data[] = $closure->getData();
+        $events[] = $closure->getData();
       }
 
-      // Sort the results by closure date.
-      usort($this->data, function ($a, $b) {
+      // Skip schools with no current closures.
+      if (empty($events)) {
+        continue;
+      }
+
+      usort($events, function ($a, $b) {
         return $a['date']->getTimestamp() - $b['date']->getTimestamp();
       });
 
-      $this->error = FALSE;
+      $this->data[] = [
+        'name' => $name,
+        'altname' => $events[0]['altname'],
+        'location' => $location,
+        'closures' => array_map(function ($event) {
+          return [
+            'date' => $event['date'],
+            'dateTo' => $event['dateTo'],
+            'reason' => $event['reason'],
+          ];
+        }, $events),
+      ];
     }
+
+    // Sort schools by their earliest current closure date.
+    usort($this->data, function ($a, $b) {
+      return $a['closures'][0]['date']->getTimestamp() - $b['closures'][0]['date']->getTimestamp();
+    });
+
+    $this->error = FALSE;
   }
 
 }

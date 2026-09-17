@@ -3,10 +3,23 @@
   <p>{% trans %}Last updated{% endtrans %}: {{ updated|date('g.i a') }} on {{ updated|date('j F Y') }}.</p>
 
   {% if closures|length > 0 %}
-    {% for closure in closures %}
+    {% for school in closures %}
     <div class="columnItem">
-      <h3 data-transliterated="{{ closure.altname }}">{{ closure.name }} | {{ closure.location }}</h3>
-      <p class="description">{{ closure.date|date('l jS F Y') }} {{ closure.reason|t|default("") }}</p>
+      <h3 data-transliterated="{{ school.altname }}" style="margin-bottom: 0">{{ school.name }}</h3>
+      <em style="color: #666">{{ school.location }}</em>
+
+      <ul class="description">
+        {% for closure in school.closures %}
+        <li>
+          {%- if closure.dateTo -%}
+            {{ '@from to @to'|t({'@from': closure.date|date('l jS F Y'), '@to': closure.dateTo|date('l jS F Y')}) }}
+          {%- else -%}
+            {{ closure.date|date('l jS F Y') }}
+          {%- endif %}
+          - {{ closure.reason|t|default("") }}
+        </li>
+        {% endfor %}
+      </ul>
     </div>
     {% endfor %}
   {% elseif error %}

@@ -10,17 +10,23 @@ interface SchoolClosuresServiceInterface {
   /**
    * Returns school closures data.
    *
-   * Returned array elements should comprise:
+   * Returned array elements represent one school each, and should comprise:
    * [
    *  'name' => '',
    *  'altname' => '',
    *  'location' => '',
-   *  'date' => '',
-   *  'reason' => '',
+   *  'closures' => [
+   *    ['date' => '', 'dateTo' => '', 'reason' => ''],
+   *    ...
+   *  ],
    * ]
    *
+   * A school may have more than one current closure, so all of them are
+   * listed under 'closures' rather than the school appearing more than once.
+   *
    * @return array
-   *   An array of associative arrays for school closures sorted by date asc.
+   *   An array of associative arrays for schools, sorted by their earliest
+   *   current closure date ascending.
    */
   public function getClosures();
 
