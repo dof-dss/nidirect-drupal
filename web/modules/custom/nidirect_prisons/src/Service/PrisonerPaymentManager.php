@@ -610,7 +610,13 @@ class PrisonerPaymentManager {
   public function queueMissingPrismNotifications(): int {
     try {
       $query = $this->database->select('prisoner_payment_transactions', 'ppt');
-      $query->fields('ppt', ['order_key', 'prisoner_id', 'visitor_id', 'amount', 'status']);
+      $query->fields('ppt', [
+        'order_key',
+        'prisoner_id',
+        'visitor_id',
+        'amount',
+        'status'
+      ]);
       $query->leftJoin('prisoner_payment_notifications', 'ppn', 'ppn.order_key = ppt.order_key');
       $query->condition('ppt.status', 'success');
       $query->isNull('ppn.order_key');
