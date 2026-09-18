@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+# Export the active Drupal Search API Solr configuration into the committed
+# configset shared by Upsun and DDEV.
+set -euo pipefail
+
+readonly solr_version="9.9"
+readonly server_id="solr_default"
+readonly archive=".solr-configset-nidirect-${solr_version}.zip"
+readonly destination=".platform/solr_configsets/nidirect/conf"
+
+cd "$(dirname "$0")/../.."
+
+temporary="$(mktemp -d)"
+trap 'rm -rf -- "$temporary" "$archive"' EXIT
+
+echo "Generating NIDirect Solr ${solr_version} configset..."
+ddev drush search-api-solr:get-server-config \
+  "$server_id" "/var/www/html/${archive}" "$solr_version" -y < /dev/null
+unzip -q "$archive" -d "$temporary"
+
+if [[ ! -f "${temporary}/schema.xml" || ! -f "${temporary}/solrconfig.xml" ]]; then
+  echo "Generated configset is missing schema.xml or solrconfig.xml." >&2
+  exit 1
+fi
+
+mkdir -p "$destination"
+find "$destination" -mindepth 1 -maxdepth 1 -exec rm -rf -- {} +
+cp -a "${temporary}/." "$destination/"
+chmod -R a+rX "$destination"
+
+echo "Updated ${destination}."
