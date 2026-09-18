@@ -36,6 +36,9 @@ function nidirect_prisons_cron() {
     }
   }
 
+  $payment_manager->queueMissingPrismNotifications();
+  $payment_manager->processPendingPrismNotifications();
+
   $connection = Database::getConnection();
 
   // Delete all transactions more than 7 days old.
