@@ -219,7 +219,6 @@ class WorldpayNotificationController extends ControllerBase {
       }
 
       $sequence_id = NULL;
-      $should_send_prism = FALSE;
       $db_transaction = NULL;
 
       try {
@@ -248,10 +247,22 @@ class WorldpayNotificationController extends ControllerBase {
           ->condition('prisoner_id', $payment_transaction->prisoner_id)
           ->execute();
 
-        // Generate sequence ID.
-        $sequence_id = $this->getNextSequenceId();
-
-        $should_send_prism = TRUE;
+        // Generate sequence ID and queue the upstream Prism notification.
+        $sequence_id = $this->paymentManager->getNextSequenceId();
+        $this->database->insert('prisoner_payment_notifications')
+          ->fields([
+            'order_key' => $order_code,
+            'prisoner_id' => $payment_transaction->prisoner_id,
+            'visitor_id' => $payment_transaction->visitor_id,
+            'amount' => $amount,
+            'sequence_id' => $sequence_id,
+            'status' => 'pending',
+            'attempts' => 0,
+            'created_timestamp' => \Drupal::time()->getRequestTime(),
+            'updated_timestamp' => \Drupal::time()->getRequestTime(),
+            'last_error' => NULL,
+          ])
+          ->execute();
 
       }
       catch (\Throwable $e) {
@@ -274,27 +285,9 @@ class WorldpayNotificationController extends ControllerBase {
         unset($db_transaction);
       }
 
-      // Now email Prism.
-      if ($should_send_prism && $sequence_id !== NULL) {
-        try {
-          $this->sendJsonToPrism(
-            $order_code,
-            $payment_transaction->prisoner_id,
-            $payment_transaction->visitor_id,
-            $amount,
-            $sequence_id
-          );
-        }
-        catch (\Throwable $e) {
-          $this->logger->error(
-            'PRISM notification failed for order @order after successful DB commit: @message',
-            [
-              '@order' => $order_code,
-              '@message' => $e->getMessage(),
-            ]
-          );
-        }
-      }
+      $this->logger->notice('Queued Prism notification for order @order_key', [
+        '@order_key' => $order_code,
+      ]);
     }
     else {
       // Payment failed.
@@ -303,68 +296,6 @@ class WorldpayNotificationController extends ControllerBase {
 
     // Acknowledge the notification.
     return new Response('[OK]', 200, ['Content-Type' => 'text/plain']);
-  }
-
-  /**
-   * Sends details of a successful payment transaction to Prism in
-   * JSON format via email.
-   *
-   * @param string $order_code
-   *   The order code for the transaction.
-   * @param string $prisoner_id
-   *   The prisoner id the transaction relates to.
-   * @param string $visitor_id
-   *   The visitor id the transaction relates to.
-   * @param float $amount
-   *   The amount paid in the transaction.
-   * @param int $sequence_id
-   *   The sequence id for the transaction.
-   * @throws \Exception
-   */
-  private function sendJsonToPrism($order_code, $prisoner_id, $visitor_id, $amount, $sequence_id) {
-
-    $json_data = json_encode([
-      "UNIQUE_TRANSACTION_ID" => $order_code,
-      "INMATE_ID" => $prisoner_id,
-      "VISITOR_ID" => $visitor_id,
-      "TRANSACTION_TIME" => date('d/m/Y H:i:s'),
-      "AMOUNT_PAID" => number_format($amount, 2, '.', ''),
-      "SEQUENCE_ID" => $sequence_id,
-    ], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
-
-    // Try sending the email.
-    try {
-      \Drupal::service('plugin.manager.mail')->mail(
-        'nidirect_prisons',
-        'prisoner_payment_notification',
-        getenv('PRISONER_PAYMENTS_PRISM_EMAIL') ?: 'prisoner_payments@mailhog.local',
-        \Drupal::languageManager()->getDefaultLanguage()->getId(),
-        ['subject' => 'PAYIN', 'body' => [$json_data]]
-      );
-
-      $this->logger->notice("Sent prisoner payment data for order {$order_code} to Prism.");
-    }
-    catch (\Exception $e) {
-      // If email fails, log the error and throw.
-      $this->logger->error('Failed to send email for order @order_code: @error', [
-        '@order_code' => $order_code,
-        '@error' => $e->getMessage(),
-      ]);
-      throw new \Exception('Failed to send payment data to Prism: ' . $e->getMessage());
-    }
-  }
-
-  /**
-   * Get the next sequential ID for each payment made to a prisoner.
-   *
-   * @return int
-   *   The sequence id.
-   * @throws \Exception
-   */
-  protected function getNextSequenceId() {
-    $query = $this->database->insert('prisoner_payment_sequence')->fields(['id' => NULL]);
-
-    return $query->execute();
   }
 
 }

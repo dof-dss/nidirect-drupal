@@ -546,6 +546,221 @@ class PrisonerPaymentManager {
   }
 
   /**
+   * Get the next sequential ID for each payment made to a prisoner.
+   *
+   * @return int
+   *   The sequence id.
+   * @throws \Exception
+   *   If unable to generate a sequence ID after retries.
+   */
+  public function getNextSequenceId(): int {
+    $max_retries = 3;
+    $retry_count = 0;
+
+    while ($retry_count < $max_retries) {
+      try {
+        $query = $this->database->insert('prisoner_payment_sequence')->fields(['id' => NULL]);
+        $sequence_id = $query->execute();
+
+        if (is_numeric($sequence_id) && (int) $sequence_id > 0) {
+          return (int) $sequence_id;
+        }
+
+        $retry_count++;
+        if ($retry_count < $max_retries) {
+          $this->logger->warning(
+            'Sequence ID generation returned invalid value (@value), retrying (@attempt/@max)',
+            [
+              '@value' => var_export($sequence_id, TRUE),
+              '@attempt' => $retry_count,
+              '@max' => $max_retries,
+            ]
+          );
+          usleep(50000);
+        }
+      }
+      catch (\Throwable $e) {
+        $retry_count++;
+        $this->logger->warning(
+          'Exception generating sequence ID, retrying (@attempt/@max): @message',
+          [
+            '@attempt' => $retry_count,
+            '@max' => $max_retries,
+            '@message' => $e->getMessage(),
+          ]
+        );
+        if ($retry_count < $max_retries) {
+          usleep(50000);
+        }
+      }
+    }
+
+    throw new \Exception(
+      'Failed to generate sequence ID for prisoner payment after ' . $max_retries . ' attempts'
+    );
+  }
+
+  /**
+   * Get all pending Prism notifications.
+   *
+   * @return array
+   *   Array of pending notification records.
+   */
+  public function getPendingPrismNotifications(): array {
+    try {
+      return $this->database->select('prisoner_payment_notifications', 'ppn')
+        ->fields('ppn', [
+          'order_key',
+          'prisoner_id',
+          'visitor_id',
+          'amount',
+          'sequence_id',
+          'status',
+          'attempts',
+          'created_timestamp',
+          'updated_timestamp',
+          'last_error',
+        ])
+        ->condition('status', 'pending')
+        ->orderBy('created_timestamp', 'ASC')
+        ->execute()
+        ->fetchAll();
+    }
+    catch (\Throwable $e) {
+      $this->logger->error('Error loading pending Prism notifications: @message', [
+        '@message' => $e->getMessage(),
+      ]);
+      return [];
+    }
+  }
+
+  /**
+   * Fetch a single pending Prism notification row.
+   *
+   * @param string $order_key
+   *   The order key.
+   *
+   * @return object|null
+   *   The notification record or NULL.
+   */
+  public function getPrismNotification(string $order_key): ?object {
+    try {
+      $record = $this->database->select('prisoner_payment_notifications', 'ppn')
+        ->fields('ppn', [
+          'order_key',
+          'prisoner_id',
+          'visitor_id',
+          'amount',
+          'sequence_id',
+          'status',
+          'attempts',
+          'created_timestamp',
+          'updated_timestamp',
+          'last_error',
+        ])
+        ->condition('order_key', $order_key)
+        ->range(0, 1)
+        ->execute()
+        ->fetchObject();
+
+      return $record ?: NULL;
+    }
+    catch (\Throwable $e) {
+      $this->logger->error('Error loading Prism notification @order: @message', [
+        '@order' => $order_key,
+        '@message' => $e->getMessage(),
+      ]);
+      return NULL;
+    }
+  }
+
+  /**
+   * Attempt to send any pending Prism notifications.
+   *
+   * @return int
+   *   Number of notifications processed.
+   */
+  public function processPendingPrismNotifications(): int {
+    $notifications = $this->getPendingPrismNotifications();
+    $count = 0;
+
+    foreach ($notifications as $notification) {
+      $count++;
+      $this->sendPrismNotification($notification);
+    }
+
+    return $count;
+  }
+
+  /**
+   * Send a Prism notification payload for a successful payment.
+   *
+   * @param object $notification
+   *   The notification row.
+   *
+   * @return bool
+   *   TRUE if the notification was sent, FALSE otherwise.
+   * @throws \Exception
+   */
+  public function sendPrismNotification(object $notification): bool {
+    $json_data = json_encode([
+      'UNIQUE_TRANSACTION_ID' => $notification->order_key,
+      'INMATE_ID' => $notification->prisoner_id,
+      'VISITOR_ID' => $notification->visitor_id,
+      'TRANSACTION_TIME' => date('d/m/Y H:i:s'),
+      'AMOUNT_PAID' => number_format((float) $notification->amount, 2, '.', ''),
+      'SEQUENCE_ID' => (int) $notification->sequence_id,
+    ], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+
+    try {
+      \Drupal::service('plugin.manager.mail')->mail(
+        'nidirect_prisons',
+        'prisoner_payment_notification',
+        getenv('PRISONER_PAYMENTS_PRISM_EMAIL') ?: 'prisoner_payments@mailhog.local',
+        \Drupal::languageManager()->getDefaultLanguage()->getId(),
+        ['subject' => 'PAYIN', 'body' => [$json_data]]
+      );
+
+      $this->database->update('prisoner_payment_notifications')
+        ->fields([
+          'status' => 'sent',
+          'attempts' => (int) $notification->attempts + 1,
+          'updated_timestamp' => \Drupal::time()->getRequestTime(),
+          'last_error' => NULL,
+        ])
+        ->condition('order_key', $notification->order_key)
+        ->execute();
+
+      $this->logger->notice('Sent prisoner payment data for order @order to Prism.', [
+        '@order' => $notification->order_key,
+      ]);
+
+      return TRUE;
+    }
+    catch (\Throwable $e) {
+      $next_attempts = (int) $notification->attempts + 1;
+      $status = $next_attempts >= 10 ? 'failed' : 'pending';
+
+      $this->database->update('prisoner_payment_notifications')
+        ->fields([
+          'status' => $status,
+          'attempts' => $next_attempts,
+          'updated_timestamp' => \Drupal::time()->getRequestTime(),
+          'last_error' => $e->getMessage(),
+        ])
+        ->condition('order_key', $notification->order_key)
+        ->execute();
+
+      $this->logger->error('Failed to send Prism notification for order @order: @message', [
+        '@order' => $notification->order_key,
+        '@message' => $e->getMessage(),
+      ]);
+
+      return FALSE;
+    }
+  }
+
+  /**
    * TODO: Move following functions to Worldpay Client service?
    */
 
