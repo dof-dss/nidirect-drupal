@@ -562,8 +562,8 @@ class PrisonerPaymentManager {
         $query = $this->database->insert('prisoner_payment_sequence')->fields(['id' => NULL]);
         $sequence_id = $query->execute();
 
-        if (is_int($sequence_id) && $sequence_id > 0) {
-          return $sequence_id;
+        if (is_numeric($sequence_id) && (int) $sequence_id > 0) {
+          return (int) $sequence_id;
         }
 
         $retry_count++;
@@ -598,60 +598,6 @@ class PrisonerPaymentManager {
     throw new \Exception(
       'Failed to generate sequence ID for prisoner payment after ' . $max_retries . ' attempts'
     );
-  }
-
-  /**
-   * Queue missed Prism notifications for successful transactions that do not
-   * yet have a record in the notifications table.
-   *
-   * @return int
-   *   Number of queued notifications.
-   */
-  public function queueMissingPrismNotifications(): int {
-    try {
-      $query = $this->database->select('prisoner_payment_transactions', 'ppt');
-      $query->fields('ppt', [
-        'order_key',
-        'prisoner_id',
-        'visitor_id',
-        'amount',
-        'status'
-      ]);
-      $query->leftJoin('prisoner_payment_notifications', 'ppn', 'ppn.order_key = ppt.order_key');
-      $query->condition('ppt.status', 'success');
-      $query->isNull('ppn.order_key');
-
-      $transactions = $query->execute()->fetchAll();
-
-      $count = 0;
-      foreach ($transactions as $transaction) {
-        $sequence_id = $this->getNextSequenceId();
-        $this->database->insert('prisoner_payment_notifications')
-          ->fields([
-            'order_key' => $transaction->order_key,
-            'prisoner_id' => $transaction->prisoner_id,
-            'visitor_id' => $transaction->visitor_id,
-            'amount' => (float) $transaction->amount,
-            'sequence_id' => $sequence_id,
-            'status' => 'pending',
-            'attempts' => 0,
-            'created_timestamp' => \Drupal::time()->getRequestTime(),
-            'updated_timestamp' => \Drupal::time()->getRequestTime(),
-            'last_error' => NULL,
-          ])
-          ->execute();
-
-        $count++;
-      }
-
-      return $count;
-    }
-    catch (\Throwable $e) {
-      $this->logger->error('Error queueing missed Prism notifications: @message', [
-        '@message' => $e->getMessage(),
-      ]);
-      return 0;
-    }
   }
 
   /**

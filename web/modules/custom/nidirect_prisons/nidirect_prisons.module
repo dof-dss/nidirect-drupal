@@ -35,8 +35,7 @@ function nidirect_prisons_cron() {
       }
     }
   }
-
-  $payment_manager->queueMissingPrismNotifications();
+  
   $payment_manager->processPendingPrismNotifications();
 
   $connection = Database::getConnection();
