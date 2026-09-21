@@ -478,6 +478,24 @@ field_settings:
     dependencies:
       module:
         - node
+  title_ngram:
+    label: Title
+    datasource_id: 'entity:node'
+    property_path: title
+    type: 'solr_text_custom:ngramstring'
+    boost: 3.0
+    dependencies:
+      module:
+        - node
+  title_spellcheck:
+    label: Title
+    datasource_id: 'entity:node'
+    property_path: title
+    type: solr_text_spellcheck
+    boost: 21.0
+    dependencies:
+      module:
+        - node
   type:
     label: 'Content type'
     datasource_id: 'entity:node'
@@ -558,6 +576,8 @@ processor_settings:
       - rendered_item
       - rendered_item_spellcheck
       - title
+      - title_ngram
+      - title_spellcheck
       - type
     title: false
     alt: true
