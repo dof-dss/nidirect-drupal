@@ -36,7 +36,7 @@ class ColdWeatherPaymentCheckerForm extends FormBase {
    */
   public function __construct(
     Renderer $renderer,
-    ColdWeatherPaymentsService $cold_weather_payments_service
+    ColdWeatherPaymentsService $cold_weather_payments_service,
   ) {
     $this->renderer = $renderer;
     $this->coldWeatherPaymentsService = $cold_weather_payments_service;

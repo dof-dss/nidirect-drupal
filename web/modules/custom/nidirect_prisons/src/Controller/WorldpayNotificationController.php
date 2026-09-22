@@ -43,7 +43,7 @@ class WorldpayNotificationController extends ControllerBase {
   public function __construct(
     Connection $database,
     PrisonerPaymentManager $payment_manager,
-    LoggerInterface $logger
+    LoggerInterface $logger,
   ) {
     $this->database = $database;
     $this->paymentManager = $payment_manager;

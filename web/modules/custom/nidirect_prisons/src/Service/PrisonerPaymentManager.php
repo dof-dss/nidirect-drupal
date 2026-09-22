@@ -69,7 +69,7 @@ class PrisonerPaymentManager {
     Connection $database,
     LoggerInterface $logger,
     TimeInterface $time,
-    TransliterationInterface $transliteration
+    TransliterationInterface $transliteration,
   ) {
     $this->database = $database;
     $this->logger = $logger;
@@ -357,7 +357,7 @@ class PrisonerPaymentManager {
     string $prisoner_id,
     string $visitor_id,
     float $amount,
-    ?int $created_timestamp = NULL
+    ?int $created_timestamp = NULL,
   ): \stdClass {
 
     $now = $this->time->getRequestTime();
@@ -599,7 +599,8 @@ class PrisonerPaymentManager {
     string $prisoner_fullname,
     float $payment_amount,
     string $visitor_fullname,
-    string $visitor_email) {
+    string $visitor_email,
+  ) {
 
     $merchant_code = getenv('PRISONER_PAYMENTS_WP_MERCHANT_CODE_' . $prison_id) ?: 'DEFAULT_MERCHANT_CODE';
 
