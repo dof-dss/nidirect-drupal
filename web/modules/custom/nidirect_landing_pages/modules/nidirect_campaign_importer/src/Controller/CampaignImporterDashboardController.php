@@ -42,7 +42,6 @@ final class CampaignImporterDashboardController extends ControllerBase {
   public static function create(ContainerInterface $container) {
     return new static(
       $container->get('database'),
-      Database::getConnection('default', 'drupal7db'),
     );
   }
 

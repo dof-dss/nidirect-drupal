@@ -3,6 +3,8 @@
 namespace Drupal\nidirect_prisons\Authentication\Provider;
 
 use Drupal\Core\Authentication\AuthenticationProviderInterface;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\user\UserInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -10,6 +12,13 @@ use Symfony\Component\HttpFoundation\Request;
  * Prisoner Payments REST resources.
  */
 class TokenAndIpAddressAuth implements AuthenticationProviderInterface {
+
+  /**
+   * Constructs a token and IP address authentication provider.
+   */
+  public function __construct(
+    protected EntityTypeManagerInterface $entityTypeManager,
+  ) {}
 
   /**
    * {@inheritdoc}
@@ -55,9 +64,12 @@ class TokenAndIpAddressAuth implements AuthenticationProviderInterface {
     // IP and token are allowed. Return nidirect_prisons_api_user
     // user (has authenticated user role).
     $username = 'nidirect_prisons_api_user';
-    $authenticated_user = user_load_by_name($username);
+    $users = $this->entityTypeManager
+      ->getStorage('user')
+      ->loadByProperties(['name' => $username]);
+    $authenticated_user = reset($users);
 
-    if ($authenticated_user) {
+    if ($authenticated_user instanceof UserInterface) {
       return $authenticated_user;
     }
 

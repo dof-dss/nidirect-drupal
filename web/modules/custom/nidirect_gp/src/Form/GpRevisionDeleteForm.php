@@ -4,7 +4,7 @@ namespace Drupal\nidirect_gp\Form;
 
 use Drupal\Core\Database\Connection;
 use Drupal\Core\Datetime\DateFormatterInterface;
-use Drupal\Core\Entity\EntityStorageInterface;
+use Drupal\Core\Entity\RevisionableStorageInterface;
 use Drupal\Core\Form\ConfirmFormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Messenger\MessengerInterface;
@@ -42,7 +42,7 @@ final class GpRevisionDeleteForm extends ConfirmFormBase {
   /**
    * The GP storage.
    *
-   * @var \Drupal\Core\Entity\EntityStorageInterface
+   * @var \Drupal\Core\Entity\RevisionableStorageInterface
    */
   protected $entityStorage;
 
@@ -56,7 +56,7 @@ final class GpRevisionDeleteForm extends ConfirmFormBase {
   /**
    * Constructs a new GpRevisionDeleteForm.
    *
-   * @param \Drupal\Core\Entity\EntityStorageInterface $entity_storage
+   * @param \Drupal\Core\Entity\RevisionableStorageInterface $entity_storage
    *   The entity storage.
    * @param \Drupal\Core\Database\Connection $connection
    *   The database connection.
@@ -65,7 +65,7 @@ final class GpRevisionDeleteForm extends ConfirmFormBase {
    * @param \Drupal\Core\Messenger\MessengerInterface $messenger
    *   Drupal messenger service.
    */
-  public function __construct(EntityStorageInterface $entity_storage, Connection $connection, DateFormatterInterface $date_formatter, ?MessengerInterface $messenger = NULL) {
+  public function __construct(RevisionableStorageInterface $entity_storage, Connection $connection, DateFormatterInterface $date_formatter, ?MessengerInterface $messenger = NULL) {
     $this->entityStorage = $entity_storage;
     $this->connection = $connection;
     $this->messenger = $messenger;
@@ -80,8 +80,8 @@ final class GpRevisionDeleteForm extends ConfirmFormBase {
     return new static(
       $entity_manager->getStorage('gp'),
       $container->get('database'),
-      $container->get('messenger'),
-      $container->get('date.formatter')
+      $container->get('date.formatter'),
+      $container->get('messenger')
     );
   }
 

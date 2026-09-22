@@ -3,7 +3,7 @@
 namespace Drupal\nidirect_gp\Form;
 
 use Drupal\Core\Datetime\DateFormatterInterface;
-use Drupal\Core\Entity\EntityStorageInterface;
+use Drupal\Core\Entity\RevisionableStorageInterface;
 use Drupal\Core\Form\ConfirmFormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Messenger\MessengerInterface;
@@ -30,7 +30,7 @@ class GpRevisionRevertForm extends ConfirmFormBase {
   /**
    * The GP storage.
    *
-   * @var \Drupal\Core\Entity\EntityStorageInterface
+   * @var \Drupal\Core\Entity\RevisionableStorageInterface
    */
   protected $gpStorage;
 
@@ -51,14 +51,14 @@ class GpRevisionRevertForm extends ConfirmFormBase {
   /**
    * Constructs a new GpRevisionRevertForm.
    *
-   * @param \Drupal\Core\Entity\EntityStorageInterface $entity_storage
+   * @param \Drupal\Core\Entity\RevisionableStorageInterface $entity_storage
    *   The GP storage.
    * @param \Drupal\Core\Datetime\DateFormatterInterface $date_formatter
    *   The date formatter service.
    * @param \Drupal\Core\Messenger\MessengerInterface $messenger
    *   Messenger service object.
    */
-  public function __construct(EntityStorageInterface $entity_storage, DateFormatterInterface $date_formatter, MessengerInterface $messenger) {
+  public function __construct(RevisionableStorageInterface $entity_storage, DateFormatterInterface $date_formatter, MessengerInterface $messenger) {
     $this->gpStorage = $entity_storage;
     $this->dateFormatter = $date_formatter;
     $this->messenger = $messenger;
@@ -129,7 +129,7 @@ class GpRevisionRevertForm extends ConfirmFormBase {
     $original_revision_timestamp = $this->revision->getRevisionCreationTime();
 
     $this->revision = $this->prepareRevertedRevision($this->revision, $form_state);
-    $this->revision->revision_log = t('Copy of the revision from %date.', ['%date' => $this->dateFormatter->format($original_revision_timestamp)]);
+    $this->revision->setRevisionLogMessage(t('Copy of the revision from %date.', ['%date' => $this->dateFormatter->format($original_revision_timestamp)]));
     $this->revision->save();
 
     $this->logger('content')->notice('GP: reverted %title revision %revision.', [

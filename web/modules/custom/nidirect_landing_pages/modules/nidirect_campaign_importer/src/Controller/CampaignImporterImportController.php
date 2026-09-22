@@ -196,6 +196,10 @@ final class CampaignImporterImportController extends ControllerBase {
 
     // Iterate each section and create a layout builder section.
     foreach ($xpath->query('/html/body/div') as $domnode) {
+      if (!$domnode instanceof \DOMElement) {
+        continue;
+      }
+
       if ($domnode->hasAttribute('class')) {
         $section_class = $domnode->getAttribute('class');
 

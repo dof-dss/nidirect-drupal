@@ -54,7 +54,9 @@ final class GpController extends ControllerBase {
    *   An array suitable for drupal_render().
    */
   public function revisionShow($gp_revision) {
-    $gp = $this->entityTypeManager()->getStorage('gp')->loadRevision($gp_revision);
+    $gp_storage = $this->entityTypeManager()->getStorage('gp');
+    assert($gp_storage instanceof RevisionableStorageInterface);
+    $gp = $gp_storage->loadRevision($gp_revision);
     $view_builder = $this->entityTypeManager()->getViewBuilder('gp');
 
     return $view_builder->view($gp);
@@ -70,8 +72,10 @@ final class GpController extends ControllerBase {
    *   The page title.
    */
   public function revisionPageTitle(int $gp_revision) {
+    $gp_storage = $this->entityTypeManager()->getStorage('gp');
+    assert($gp_storage instanceof RevisionableStorageInterface);
     /** @var \Drupal\nidirect_gp\Entity\Gp $gp */
-    $gp = $this->entityTypeManager()->getStorage('gp')->loadRevision($gp_revision);
+    $gp = $gp_storage->loadRevision($gp_revision);
 
     return $this->t('Revision of %title from %date', [
       '%title' => $gp->label(),

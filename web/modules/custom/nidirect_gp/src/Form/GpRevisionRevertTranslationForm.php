@@ -3,7 +3,7 @@
 namespace Drupal\nidirect_gp\Form;
 
 use Drupal\Core\Datetime\DateFormatterInterface;
-use Drupal\Core\Entity\EntityStorageInterface;
+use Drupal\Core\Entity\RevisionableStorageInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Language\LanguageManagerInterface;
 use Drupal\Core\Messenger\MessengerInterface;
@@ -35,7 +35,7 @@ final class GpRevisionRevertTranslationForm extends GpRevisionRevertForm {
   /**
    * Constructs a new GpRevisionRevertTranslationForm.
    *
-   * @param \Drupal\Core\Entity\EntityStorageInterface $entity_storage
+   * @param \Drupal\Core\Entity\RevisionableStorageInterface $entity_storage
    *   The GP storage.
    * @param \Drupal\Core\Datetime\DateFormatterInterface $date_formatter
    *   The date formatter service.
@@ -44,7 +44,7 @@ final class GpRevisionRevertTranslationForm extends GpRevisionRevertForm {
    * @param \Drupal\Core\Messenger\MessengerInterface $messenger
    *   Messenger service object.
    */
-  public function __construct(EntityStorageInterface $entity_storage, DateFormatterInterface $date_formatter, LanguageManagerInterface $language_manager, MessengerInterface $messenger) {
+  public function __construct(RevisionableStorageInterface $entity_storage, DateFormatterInterface $date_formatter, LanguageManagerInterface $language_manager, MessengerInterface $messenger) {
     parent::__construct($entity_storage, $date_formatter, $messenger);
     $this->languageManager = $language_manager;
   }
