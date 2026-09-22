@@ -5,6 +5,7 @@ namespace Drupal\Tests\nidirect_related_content\Kernel;
 use Drupal\field\Entity\FieldConfig;
 use Drupal\field\Entity\FieldStorageConfig;
 use Drupal\flag\Entity\Flag;
+use Drupal\nidirect_related_content\RelatedContentManager;
 use Drupal\node\Entity\Node;
 use Drupal\node\Entity\NodeType;
 use Drupal\taxonomy\Entity\Vocabulary;
@@ -13,10 +14,9 @@ use Drupal\Tests\node\Traits\NodeCreationTrait;
 use Drupal\Tests\user\Traits\UserCreationTrait;
 use Drupal\Tests\views\Kernel\ViewsKernelTestBase;
 use Drupal\views\Views;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
- * @coversDefaultClass Drupal\nidirect_related_content\RelatedContentManager
- *
  * This test currently doesn't work but has been included to pick up at a later
  * point. Main sticking point is getting with the Views inside the Related
  * Content service working. The same Views are loaded and able to run from
@@ -25,6 +25,7 @@ use Drupal\views\Views;
  * @group nidirect
  * @group nidirect_related_content
  */
+#[CoversClass(RelatedContentManager::class)]
 class RelatedContentTest extends ViewsKernelTestBase {
   use NodeCreationTrait;
   use ContentTypeCreationTrait;

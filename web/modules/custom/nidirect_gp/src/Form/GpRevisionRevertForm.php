@@ -3,6 +3,7 @@
 namespace Drupal\nidirect_gp\Form;
 
 use Drupal\Core\Datetime\DateFormatterInterface;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Entity\RevisionableStorageInterface;
 use Drupal\Core\Form\ConfirmFormBase;
 use Drupal\Core\Form\FormStateInterface;
@@ -16,7 +17,6 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *
  * @ingroup nidirect_gp
  */
-/** @phpstan-consistent-constructor */
 class GpRevisionRevertForm extends ConfirmFormBase {
 
 
@@ -28,11 +28,11 @@ class GpRevisionRevertForm extends ConfirmFormBase {
   protected $revision;
 
   /**
-   * The GP storage.
+   * The entity type manager.
    *
-   * @var \Drupal\Core\Entity\RevisionableStorageInterface
+   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
    */
-  protected $gpStorage;
+  protected $entityTypeManager;
 
   /**
    * The date formatter service.
@@ -51,15 +51,15 @@ class GpRevisionRevertForm extends ConfirmFormBase {
   /**
    * Constructs a new GpRevisionRevertForm.
    *
-   * @param \Drupal\Core\Entity\RevisionableStorageInterface $entity_storage
-   *   The GP storage.
+   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
+   *   The entity type manager.
    * @param \Drupal\Core\Datetime\DateFormatterInterface $date_formatter
    *   The date formatter service.
    * @param \Drupal\Core\Messenger\MessengerInterface $messenger
    *   Messenger service object.
    */
-  public function __construct(RevisionableStorageInterface $entity_storage, DateFormatterInterface $date_formatter, MessengerInterface $messenger) {
-    $this->gpStorage = $entity_storage;
+  public function __construct(EntityTypeManagerInterface $entity_type_manager, DateFormatterInterface $date_formatter, MessengerInterface $messenger) {
+    $this->entityTypeManager = $entity_type_manager;
     $this->dateFormatter = $date_formatter;
     $this->messenger = $messenger;
   }
@@ -68,8 +68,8 @@ class GpRevisionRevertForm extends ConfirmFormBase {
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container) {
-    return new static(
-      $container->get('entity_type.manager')->getStorage('gp'),
+    return new self(
+      $container->get('entity_type.manager'),
       $container->get('date.formatter'),
       $container->get('messenger')
     );
@@ -114,7 +114,7 @@ class GpRevisionRevertForm extends ConfirmFormBase {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state, $gp_revision = NULL) {
-    $this->revision = $this->gpStorage->loadRevision($gp_revision);
+    $this->revision = $this->getGpStorage()->loadRevision($gp_revision);
     $form = parent::buildForm($form, $form_state);
 
     return $form;
@@ -164,6 +164,15 @@ class GpRevisionRevertForm extends ConfirmFormBase {
     $revision->setRevisionCreationTime(\Drupal::time()->getRequestTime());
 
     return $revision;
+  }
+
+  /**
+   * Gets the revisionable GP storage.
+   */
+  protected function getGpStorage(): RevisionableStorageInterface {
+    $storage = $this->entityTypeManager->getStorage('gp');
+    assert($storage instanceof RevisionableStorageInterface);
+    return $storage;
   }
 
 }

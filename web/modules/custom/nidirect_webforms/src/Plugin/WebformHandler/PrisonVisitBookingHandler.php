@@ -7,6 +7,7 @@ use Drupal\Component\Serialization\Json;
 use Drupal\Component\Utility\Html;
 use Drupal\Component\Utility\Xss;
 use Drupal\Core\Cache\Cache;
+use Drupal\Core\Cache\CacheableMetadata;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Database\Database;
 use Drupal\Core\Datetime\DrupalDateTime;
@@ -62,7 +63,7 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
   /**
    * @var \Drupal\Core\TempStore\PrivateTempStoreFactory
    */
-  private $tempStoreFactory;
+  protected $tempStoreFactory;
 
   /**
    * Array for storing various values extrapolated
@@ -188,11 +189,9 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
     if ($booking_data) {
 
       // Set cache contexts.
-      $webform->addCacheableDependency([
-        '#cache' => [
-          'contexts' => ['url.query_args:booking'],
-        ],
-      ]);
+      $webform->addCacheableDependency(
+        (new CacheableMetadata())->setCacheContexts(['url.query_args:booking'])
+      );
 
       // Has the LINK_UNIQUEID in the booking data been used before?
       $link_unique_id = $booking_data['LINK_UNIQUEID'];

@@ -19,7 +19,11 @@ require_once __DIR__ . '/inc/theme.inc';
 function _render_campaign_list() {
   // Render the 'campaign list' view to see which taxonomy terms
   // have been overridden.
-  $campaigns_view = views_embed_view('articles_by_term', 'campaigns_embed');
+  $campaigns_view = [
+    '#type' => 'view',
+    '#name' => 'articles_by_term',
+    '#display_id' => 'campaigns_embed',
+  ];
   \Drupal::service('renderer')->renderRoot($campaigns_view);
   $terms_to_override = [];
   // Store taxonomy term tids that are overridden
@@ -28,7 +32,7 @@ function _render_campaign_list() {
     if (isset($row->_entity->get('field_subtheme')->target_id)) {
       $terms_to_override[$row->_entity->get('field_subtheme')->target_id] = [
         '#type' => 'link',
-        '#title' => $row->_entity->getName(),
+        '#title' => $row->_entity->label(),
         '#url' => Url::fromRoute('entity.node.canonical', ['node' => $row->nid]),
       ];
     }

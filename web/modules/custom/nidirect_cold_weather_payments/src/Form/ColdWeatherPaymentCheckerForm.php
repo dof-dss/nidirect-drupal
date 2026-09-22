@@ -10,6 +10,7 @@ use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Render\Renderer;
 use Drupal\nidirect_cold_weather_payments\Service\ColdWeatherPaymentsService;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -32,23 +33,31 @@ class ColdWeatherPaymentCheckerForm extends FormBase {
   protected $coldWeatherPaymentsService;
 
   /**
+   * The logger.
+   */
+  protected LoggerInterface $logger;
+
+  /**
    * Constructs a new ColdWeatherPaymentCheckerForm object.
    */
   public function __construct(
     Renderer $renderer,
     ColdWeatherPaymentsService $cold_weather_payments_service,
+    LoggerInterface $logger,
   ) {
     $this->renderer = $renderer;
     $this->coldWeatherPaymentsService = $cold_weather_payments_service;
+    $this->logger = $logger;
   }
 
   /**
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container) {
-    return new static(
+    return new self(
       $container->get('renderer'),
-      $container->get('nidirect_cold_weather_payments.payments')
+      $container->get('nidirect_cold_weather_payments.payments'),
+      $container->get('logger.factory')->get('nidirect_cold_weather_payments'),
     );
   }
 
@@ -240,7 +249,7 @@ class ColdWeatherPaymentCheckerForm extends FormBase {
       return $data;
     }
     catch (\Exception $e) {
-      \Drupal::logger('nidirect_cold_weather_payments')->error($e->getMessage());
+      $this->logger->error($e->getMessage());
       return ['has_error' => TRUE];
     }
   }

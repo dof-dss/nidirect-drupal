@@ -13,7 +13,7 @@ use Drupal\field\Entity\FieldStorageConfig;
 use Drupal\user\Entity\User;
 use Drupal\user\UserInterface;
 use Drupal\views\Entity\View;
-use Symfony\Component\Yaml\Yaml;
+use Drupal\Component\Serialization\Yaml;
 
 /**
  * Implements hook_install().
@@ -317,7 +317,7 @@ function nidirect_common_update_8005() {
   // Only create if the redirect view doesn't exist and views is enabled.
   if (!View::load('redirect') && \Drupal::moduleHandler()->moduleExists('views')) {
     $config_path = \Drupal::service('extension.list.module')->getPath('redirect') . '/config/install/views.view.redirect.yml';
-    $data = Yaml::parse(file_get_contents($config_path));
+    $data = Yaml::decode(file_get_contents($config_path));
     \Drupal::configFactory()->getEditable('views.view.redirect')->setData($data)->save(TRUE);
     $message = 'The new redirect view has been created.';
   }

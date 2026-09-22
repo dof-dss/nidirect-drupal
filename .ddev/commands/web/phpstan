@@ -1,9 +1,16 @@
 #!/usr/bin/env bash
 
-## Description: Run phpstan locally to detect deprecated code and ensure future compliance.
-## Usage: phpstan
+## Description: Run PHPStan locally to detect errors and deprecated code.
+## Usage: phpstan [paths and options]
 ## Example: "ddev phpstan web/modules/custom"
 ## HostWorkingDir: true
 
+set -euo pipefail
+
 cd /var/www/html
-vendor/bin/phpstan analyse $1
+
+if [ "$#" -eq 0 ]; then
+  set -- web/modules/custom
+fi
+
+exec vendor/bin/phpstan analyse --memory-limit=1G "$@"

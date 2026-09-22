@@ -12,6 +12,8 @@ services:
       - '@logger.channel.nidirect_prisons'
       - '@datetime.time'
       - '@transliteration'
+      - '@uuid'
+      - '@http_client'
   logger.channel.nidirect_prisons:
     parent: logger.channel_base
     arguments: [ 'nidirect_prisons' ]
