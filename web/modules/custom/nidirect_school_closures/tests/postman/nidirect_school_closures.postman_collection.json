@@ -1,0 +1,218 @@
+{
+  "info": {
+    "name": "NI Direct - School Closures (Exceptional Closures API mock)",
+    "description": "Mock endpoints for the Exceptional Closures API, built from the nidirect_school_closures kernel test fixtures (tests/src/Kernel/data). Import this collection, then create a Postman Mock Server from it to get a URL you can plug into the module's \"Data source URL\" setting (/admin/config/nidirect/school-closures) for manual/browser testing.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "",
+      "type": "string",
+      "description": "Filled in automatically when this collection is opened via its Postman mock server URL."
+    }
+  ],
+  "item": [
+    {
+      "name": "Get closures (default - multiple institutions)",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/closurereasons/all",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "closurereasons",
+            "all"
+          ]
+        },
+        "description": "No query params - this is the example Postman serves by default when the mock URL is hit directly, matching how the Drupal service calls the real API."
+      },
+      "response": [
+        {
+          "name": "200 - multiple institutions, mixed reasons/dates",
+          "originalRequest": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/closurereasons/all",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "closurereasons",
+                "all"
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\"closures\":[{\"srn\":\"1030326\",\"institutionName\":\"Our Lady's Girls' College\",\"closures\":[{\"closureId\":1,\"dateFrom\":\"2030-07-29T00:00:00\",\"dateTo\":null,\"reasons\":[{\"reasonTypeId\":4,\"reasonType\":\"Death of a member of staff, pupil or another person working at the school\"}]}],\"address\":{\"address1\":\"Sperrin Hills\",\"address2\":\"\",\"address3\":\"\",\"townCity\":\"Omagh\",\"county\":\"Tyrone\",\"postCode\":\"BT1 1AA\",\"formattedAddress\":\"Sperrin Hills, Omagh, Tyrone, BT1 1AA\"}},{\"srn\":\"1036576\",\"institutionName\":\"Harmony Primary School Belfast\",\"closures\":[{\"closureId\":2,\"dateFrom\":\"2030-09-28T00:00:00\",\"dateTo\":null,\"reasons\":[{\"reasonTypeId\":1,\"reasonType\":\"Adverse weather\"},{\"reasonTypeId\":2,\"reasonType\":\"Use as a polling station\"}]}],\"address\":{\"address1\":\"Brookhill\",\"address2\":\"\",\"address3\":\"\",\"townCity\":\"Belfast\",\"county\":\"Antrim\",\"postCode\":\"BT2 2BB\",\"formattedAddress\":\"Brookhill, Belfast, Antrim, BT2 2BB\"}},{\"srn\":\"2031876\",\"institutionName\":\"St Trinian's High School\",\"closures\":[{\"closureId\":3,\"dateFrom\":\"2019-01-01T00:00:00\",\"dateTo\":null,\"reasons\":[{\"reasonTypeId\":99,\"reasonType\":\"Flooding or burst pipes\"}]}],\"address\":{\"address1\":\"Barchester\",\"address2\":\"\",\"address3\":\"\",\"townCity\":\"Barchester\",\"county\":\"Down\",\"postCode\":\"BT3 3CC\",\"formattedAddress\":\"Barchester, Down, BT3 3CC\"}},{\"srn\":\"3041234\",\"institutionName\":\"St Example's Primary School\",\"closures\":[{\"closureId\":4,\"dateFrom\":\"2030-10-01T00:00:00\",\"dateTo\":\"2030-10-03T00:00:00\",\"reasons\":[{\"reasonTypeId\":1,\"reasonType\":\"Adverse weather\"}]}],\"address\":{\"address1\":\"Main Street\",\"address2\":\"\",\"address3\":\"\",\"townCity\":\"Lisburn\",\"county\":\"Antrim\",\"postCode\":\"BT4 4DD\",\"formattedAddress\":\"Main Street, Lisburn, Antrim, BT4 4DD\"}},{\"srn\":\"5051234\",\"institutionName\":\"Two Closures School\",\"closures\":[{\"closureId\":5,\"dateFrom\":\"2031-02-10T00:00:00\",\"dateTo\":null,\"reasons\":[{\"reasonTypeId\":4,\"reasonType\":\"Death of a member of staff, pupil or another person working at the school\"}]},{\"closureId\":6,\"dateFrom\":\"2031-01-05T00:00:00\",\"dateTo\":null,\"reasons\":[{\"reasonTypeId\":1,\"reasonType\":\"Adverse weather\"}]},{\"closureId\":7,\"dateFrom\":\"2019-05-05T00:00:00\",\"dateTo\":null,\"reasons\":[{\"reasonTypeId\":2,\"reasonType\":\"Use as a polling station\"}]}],\"address\":{\"address1\":\"School Road\",\"address2\":\"\",\"address3\":\"\",\"townCity\":\"Coleraine\",\"county\":\"Londonderry\",\"postCode\":\"BT5 5EE\",\"formattedAddress\":\"School Road, Coleraine, Londonderry, BT5 5EE\"}}]}"
+        }
+      ]
+    },
+    {
+      "name": "Get closures - no closures",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/closurereasons/all?scenario=noclosures",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "closurereasons",
+            "all"
+          ],
+          "query": [
+            {
+              "key": "scenario",
+              "value": "noclosures"
+            }
+          ]
+        },
+        "description": "Empty closures array - valid response, zero closures currently in effect."
+      },
+      "response": [
+        {
+          "name": "200 - empty closures array",
+          "originalRequest": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/closurereasons/all?scenario=noclosures",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "closurereasons",
+                "all"
+              ],
+              "query": [
+                {
+                  "key": "scenario",
+                  "value": "noclosures"
+                }
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\"closures\":[]}"
+        }
+      ]
+    },
+    {
+      "name": "Get closures - blank/malformed response",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/closurereasons/all?scenario=blank",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "closurereasons",
+            "all"
+          ],
+          "query": [
+            {
+              "key": "scenario",
+              "value": "blank"
+            }
+          ]
+        },
+        "description": "No closures key at all - triggers the service's error state (processData sets hasErrors() = TRUE)."
+      },
+      "response": [
+        {
+          "name": "200 - blank body, no closures key",
+          "originalRequest": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/closurereasons/all?scenario=blank",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "closurereasons",
+                "all"
+              ],
+              "query": [
+                {
+                  "key": "scenario",
+                  "value": "blank"
+                }
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{}"
+        }
+      ]
+    }
+  ]
+}

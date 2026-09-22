@@ -5,6 +5,7 @@
  * No jquery - using pure javascript for performance.
  *
  * Neil Blair 02/07/2018
+ * Updated: 21/09/2026 - Support for new API.
  */
 
 var scMin = 20,                       // enable filtering if school closures exceed this number
