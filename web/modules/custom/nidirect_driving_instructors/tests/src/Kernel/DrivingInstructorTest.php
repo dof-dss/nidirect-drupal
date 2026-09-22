@@ -48,8 +48,12 @@ class DrivingInstructorTest extends EntityKernelTestBase {
       'field_di_adi_no' => [['value' => '222']],
     ]);
     $node->save();
-    // Title should have been automatically set to a combination of fields.
-    $this->assertEquals('Firstname Lastname (ADI No. 222)', $node->getTitle());
+
+    // Reload to ensure the computed title is actually persisted.
+    $reloaded = Node::load($node->id());
+    $this->assertNotNull($reloaded);
+
+    $this->assertSame('Firstname Lastname (ADI No. 222)', $reloaded->getTitle());
   }
 
 }

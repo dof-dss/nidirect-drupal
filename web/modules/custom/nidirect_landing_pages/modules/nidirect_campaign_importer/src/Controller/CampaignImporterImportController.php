@@ -17,7 +17,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
 /**
  * Returns responses for NIDirect Campaign Utilities routes.
  */
-class CampaignImporterImportController extends ControllerBase {
+final class CampaignImporterImportController extends ControllerBase {
 
   /**
    * The entity type manager.
@@ -196,13 +196,11 @@ class CampaignImporterImportController extends ControllerBase {
 
     // Iterate each section and create a layout builder section.
     foreach ($xpath->query('/html/body/div') as $domnode) {
-      // @phpstan-ignore-next-line
       if ($domnode->hasAttribute('class')) {
-        // @phpstan-ignore-next-line
         $section_class = $domnode->getAttribute('class');
 
         switch ($section_class) {
-          case 'three-cols';
+          case 'three-cols':
             $section = new Section('teasers_x3');
             $region = ['one', 'two', 'three'];
             foreach ($xpath->query('div[contains(@class,\'col\')]/div[contains(@class,\'col-content\')]', $domnode) as $child) {
@@ -220,7 +218,7 @@ class CampaignImporterImportController extends ControllerBase {
 
             break;
 
-          case 'two-cols';
+          case 'two-cols':
             $section = new Section('teasers_x2');
             $region = ['one', 'two'];
             foreach ($xpath->query('div[contains(@class,\'col\')]/div[contains(@class,\'col-content\')]', $domnode) as $child) {
@@ -238,7 +236,7 @@ class CampaignImporterImportController extends ControllerBase {
 
             break;
 
-          case 'article-topic-teaser-wrap';
+          case 'article-topic-teaser-wrap':
             $section = new Section('teasers_x2');
             $region = ['one', 'two'];
             foreach ($xpath->query('div[contains(@class,\'columnItem\')]', $domnode) as $child) {

@@ -25,7 +25,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *
  * @package Drupal\nidirect_breadcrumbs
  */
-class NodeThemesBreadcrumb implements BreadcrumbBuilderInterface {
+final class NodeThemesBreadcrumb implements BreadcrumbBuilderInterface {
 
   /**
    * Core EntityTypeManager instance.
@@ -191,6 +191,7 @@ class NodeThemesBreadcrumb implements BreadcrumbBuilderInterface {
       // UUID that is present in the preview url path. Using this UUID we can
       // build a cache tag that can invalidated on the preview form submit
       // handler: nidirect_breadcrumbs_preview_cache_handler().
+      // @phpstan-ignore-next-line.
       $url_path = \Drupal::request()->getPathInfo();
       $paths = explode('/', $url_path);
       $cache_tags[] = 'node:' . $paths[3];

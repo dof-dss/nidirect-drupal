@@ -80,7 +80,7 @@ function nidirect_common_uninstall() {
     $name = $prefix . $name;
     /** @var \Drupal\user\UserInterface $user */
     $user = user_load_by_name($name);
-    if (!$user instanceof UserInterface) {
+    if ($user instanceof UserInterface) {
       \Drupal::logger('nidirect_common')->notice(t('Deleting user @name', ['@name' => $name]));
       $user->delete();
     }

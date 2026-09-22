@@ -8,16 +8,16 @@ dependencies:
 id: term_ni_postcode
 label: 'Term - NI postcode'
 type: 'canonical_entities:taxonomy_term'
-pattern: 'admin/postcodes/[term:name]'
+pattern: '/admin/postcodes/[term:name]'
 selection_criteria:
   57e41999-ea2a-4cab-a7eb-f8a3c9863716:
     id: 'entity_bundle:taxonomy_term'
     negate: false
-    uuid: 57e41999-ea2a-4cab-a7eb-f8a3c9863716
     context_mapping:
       taxonomy_term: taxonomy_term
     bundles:
       ni_postcodes: ni_postcodes
+    uuid: 57e41999-ea2a-4cab-a7eb-f8a3c9863716
 selection_logic: and
 weight: -5
 relationships: {  }

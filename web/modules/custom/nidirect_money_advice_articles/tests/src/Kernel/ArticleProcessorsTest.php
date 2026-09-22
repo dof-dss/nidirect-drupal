@@ -54,10 +54,10 @@ class ArticleProcessorsTest extends KernelTestBase {
     $description = $xml->xpath('//rss/channel/item/description');
     $output = ArticleProcessors::body($description[0]->__toString());
 
-    $this->assertContains('<p>The first step to taking control of your finances is doing a budget.</p>', $output);
-    $this->assertContains('<p>It will take a little effort, but it’s a great way to get a quick snapshot of the money you have coming in and going out.</p>', $output);
-    $this->assertContains('<p>Setting up a budget means you’re:</p>', $output);
-    $this->assertNotContains('Taking the time to manage your money better can really pay off.', $output);
+    $this->assertStringContainsString('<p>The first step to taking control of your finances is doing a budget.</p>', $output);
+    $this->assertStringContainsString('<p>It will take a little effort, but it’s a great way to get a quick snapshot of the money you have coming in and going out.</p>', $output);
+    $this->assertStringContainsString('<p>Setting up a budget means you’re:</p>', $output);
+    $this->assertStringNotContainsString('Taking the time to manage your money better can really pay off.', $output);
   }
 
   /**
@@ -69,10 +69,10 @@ class ArticleProcessorsTest extends KernelTestBase {
     $description = $xml->xpath('//rss/channel/item/description');
     $output = ArticleProcessors::body($description[0]->__toString());
 
-    $this->assertContains('<p>The first step to taking control of your finances is doing a budget.</p>', $output);
-    $this->assertContains('<p>It will take a little effort, but it’s a great way to get a quick snapshot of the money you have coming in and going out.</p>', $output);
-    $this->assertContains('<p>Setting up a budget means you’re:</p>', $output);
-    $this->assertNotContains('Taking the time to manage your money better can really pay off.', $output);
+    $this->assertStringContainsString('<p>The first step to taking control of your finances is doing a budget.</p>', $output);
+    $this->assertStringContainsString('<p>It will take a little effort, but it’s a great way to get a quick snapshot of the money you have coming in and going out.</p>', $output);
+    $this->assertStringContainsString('<p>Setting up a budget means you’re:</p>', $output);
+    $this->assertStringNotContainsString('Taking the time to manage your money better can really pay off.', $output);
   }
 
   /**
@@ -84,7 +84,7 @@ class ArticleProcessorsTest extends KernelTestBase {
     $description = $xml->xpath('//rss/channel/item/description');
     $output = ArticleProcessors::summary($description[0]->__toString());
 
-    $this->assertContains('Taking the time to manage your money better can really pay off.', $output);
+    $this->assertStringContainsString('Taking the time to manage your money better can really pay off.', $output);
   }
 
   /**
@@ -96,7 +96,7 @@ class ArticleProcessorsTest extends KernelTestBase {
     $description = $xml->xpath('//rss/channel/item/description');
     $output = ArticleProcessors::summary($description[0]->__toString());
 
-    $this->assertNotContains('Taking the time to manage your money better can really pay off.', $output);
+    $this->assertStringNotContainsString('Taking the time to manage your money better can really pay off.', $output);
   }
 
   /**
@@ -108,7 +108,7 @@ class ArticleProcessorsTest extends KernelTestBase {
     $description = $xml->xpath('//rss/channel/item/description');
     $output = ArticleProcessors::teaser($description[0]->__toString());
 
-    $this->assertContains('Taking the time to manage your money better can really pay off. It can help you stay on top of your bills and save...', $output);
+    $this->assertStringContainsString('Taking the time to manage your money better can really pay off. It can help you stay on top of your bills and save...', $output);
   }
 
   /**
@@ -120,7 +120,7 @@ class ArticleProcessorsTest extends KernelTestBase {
     $description = $xml->xpath('//rss/channel/item/description');
     $output = ArticleProcessors::teaser($description[0]->__toString());
 
-    $this->assertContains('Advice on managing your money from the Money Advice Service', $output);
+    $this->assertStringContainsString('Advice on managing your money from the Money Advice Service', $output);
   }
 
 }
