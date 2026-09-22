@@ -15,7 +15,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *
  * @package Drupal\nidirect_breadcrumbs
  */
-class DrivingInstructorsBreadcrumb implements BreadcrumbBuilderInterface {
+final class DrivingInstructorsBreadcrumb implements BreadcrumbBuilderInterface {
 
   /**
    * Route matches from the service container parameters.

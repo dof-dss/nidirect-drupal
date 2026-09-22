@@ -16,7 +16,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *
  *  Returns responses for GP routes.
  */
-class GpController extends ControllerBase {
+final class GpController extends ControllerBase {
 
   /**
    * Date Formatter object.
@@ -54,8 +54,9 @@ class GpController extends ControllerBase {
    *   An array suitable for drupal_render().
    */
   public function revisionShow($gp_revision) {
-    // @phpstan-ignore-next-line
-    $gp = $this->entityTypeManager()->getStorage('gp')->loadRevision($gp_revision);
+    $gp_storage = $this->entityTypeManager()->getStorage('gp');
+    assert($gp_storage instanceof RevisionableStorageInterface);
+    $gp = $gp_storage->loadRevision($gp_revision);
     $view_builder = $this->entityTypeManager()->getViewBuilder('gp');
 
     return $view_builder->view($gp);
@@ -71,9 +72,10 @@ class GpController extends ControllerBase {
    *   The page title.
    */
   public function revisionPageTitle(int $gp_revision) {
+    $gp_storage = $this->entityTypeManager()->getStorage('gp');
+    assert($gp_storage instanceof RevisionableStorageInterface);
     /** @var \Drupal\nidirect_gp\Entity\Gp $gp */
-    // @phpstan-ignore-next-line
-    $gp = $this->entityTypeManager()->getStorage('gp')->loadRevision($gp_revision);
+    $gp = $gp_storage->loadRevision($gp_revision);
 
     return $this->t('Revision of %title from %date', [
       '%title' => $gp->label(),
@@ -116,7 +118,6 @@ class GpController extends ControllerBase {
 
     foreach (array_reverse($vids) as $vid) {
       /** @var \Drupal\nidirect_gp\Entity\Gp $revision */
-      // @phpstan-ignore-next-line
       $revision = $gp_storage->loadRevision($vid);
       // Only show revisions that are affected by the language that is being
       // displayed.
@@ -145,6 +146,7 @@ class GpController extends ControllerBase {
             '#template' => '{% trans %}{{ date }} by {{ username }}{% endtrans %}{% if message %}<p class="revision-log">{{ message }}</p>{% endif %}',
             '#context' => [
               'date' => $link->toString(),
+              // @phpstan-ignore-next-line.
               'username' => \Drupal::service('renderer')->renderInIsolation($username),
               'message' => [
                 '#markup' => $revision->getRevisionLogMessage(),

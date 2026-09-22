@@ -5,6 +5,7 @@ namespace Drupal\Tests\nidirect_related_content\Kernel;
 use Drupal\field\Entity\FieldConfig;
 use Drupal\field\Entity\FieldStorageConfig;
 use Drupal\flag\Entity\Flag;
+use Drupal\nidirect_related_content\RelatedContentManager;
 use Drupal\node\Entity\Node;
 use Drupal\node\Entity\NodeType;
 use Drupal\taxonomy\Entity\Vocabulary;
@@ -13,10 +14,9 @@ use Drupal\Tests\node\Traits\NodeCreationTrait;
 use Drupal\Tests\user\Traits\UserCreationTrait;
 use Drupal\Tests\views\Kernel\ViewsKernelTestBase;
 use Drupal\views\Views;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
- * @coversDefaultClass Drupal\nidirect_related_content\RelatedContentManager
- *
  * This test currently doesn't work but has been included to pick up at a later
  * point. Main sticking point is getting with the Views inside the Related
  * Content service working. The same Views are loaded and able to run from
@@ -25,6 +25,7 @@ use Drupal\views\Views;
  * @group nidirect
  * @group nidirect_related_content
  */
+#[CoversClass(RelatedContentManager::class)]
 class RelatedContentTest extends ViewsKernelTestBase {
   use NodeCreationTrait;
   use ContentTypeCreationTrait;
@@ -93,44 +94,42 @@ class RelatedContentTest extends ViewsKernelTestBase {
   /**
    * Test related content manager service.
    */
-  /*
   public function testSubThemeRelated() {
-  $this->createThemeVocab();
-  $this->createNodeTypes();
+    $this->createThemeVocab();
+    $this->createNodeTypes();
 
-  $this->createUser([], 'admin', TRUE);
+    $this->createUser([], 'admin', TRUE);
 
-  $taxonomy_storage = \Drupal::entityTypeManager()->getStorage('taxonomy_term');
+    $taxonomy_storage = \Drupal::entityTypeManager()->getStorage('taxonomy_term');
 
-  $term = $taxonomy_storage->loadByProperties(['name' => 'Motoring']);
+    $term = $taxonomy_storage->loadByProperties(['name' => 'Motoring']);
 
-  $term = current($term);
+    $term = current($term);
 
-  $node1 = Node::create([
-  'type' => 'article',
-  'title' => 'Motoring article 1',
-  'field_subtheme' => [$term->id()],
-  ]);
-  $node1->save();
+    $node1 = Node::create([
+      'type' => 'article',
+      'title' => 'Motoring article 1',
+      'field_subtheme' => [$term->id()],
+    ]);
+    $node1->save();
 
-  $node2 = Node::create([
-  'type' => 'article',
-  'title' => 'Motoring article 2',
-  'field_subtheme' => [$term->id()],
-  ]);
-  $node2->save();
+    $node2 = Node::create([
+      'type' => 'article',
+      'title' => 'Motoring article 2',
+      'field_subtheme' => [$term->id()],
+    ]);
+    $node2->save();
 
-  // For dev/testing purposes
-  $view = Views::getView('related_content_manager__content');
-  $view->setDisplay('by_supplementary_term');
-  $view->setArguments([$term->id()]);
-  $view->execute();
+    // For dev/testing purposes.
+    $view = Views::getView('related_content_manager__content');
+    $view->setDisplay('by_supplementary_term');
+    $view->setArguments([$term->id()]);
+    $view->execute();
 
-  $results = $this->relatedContentManager->getSubThemes()->forTheme($term->id())->asArray();
+    $results = $this->relatedContentManager->getSubThemes()->forTheme($term->id())->asArray();
 
-  self::assertEquals($term->id(), $node1->get('field_subtheme')->getString());
+    self::assertEquals($term->id(), $node1->get('field_subtheme')->getString());
   }
-   */
 
   /**
    * Create a Theme vocabulary and terms.

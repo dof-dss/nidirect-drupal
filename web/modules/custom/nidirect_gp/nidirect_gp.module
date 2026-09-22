@@ -13,7 +13,6 @@ use Drupal\layout_builder\Entity\LayoutBuilderEntityViewDisplay;
 use Drupal\node\NodeInterface;
 use Drupal\views\Plugin\views\query\QueryPluginBase;
 use Drupal\views\ViewExecutable;
-use Drupal\views\Views;
 
 /**
  * Implements hook_help().
@@ -277,7 +276,7 @@ function nidirect_gp_views_query_alter(ViewExecutable $view, QueryPluginBase $qu
         // Add a join to the appropriate table, note
         // that it is a 'left' join as it is not essential that there
         // is an entry in the joined table for each practice.
-        $join_obj = Views::pluginManager('join')
+        $join_obj = \Drupal::service('plugin.manager.views.join')
           ->createInstance('standard', $configuration);
 
         /** @var \Drupal\views\Plugin\views\query\Sql $query */

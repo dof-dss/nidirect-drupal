@@ -7,6 +7,7 @@ use Drupal\Component\Serialization\Json;
 use Drupal\Component\Utility\Html;
 use Drupal\Component\Utility\Xss;
 use Drupal\Core\Cache\Cache;
+use Drupal\Core\Cache\CacheableMetadata;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Database\Database;
 use Drupal\Core\Datetime\DrupalDateTime;
@@ -62,7 +63,7 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
   /**
    * @var \Drupal\Core\TempStore\PrivateTempStoreFactory
    */
-  private $tempStoreFactory;
+  protected $tempStoreFactory;
 
   /**
    * Array for storing various values extrapolated
@@ -152,6 +153,7 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
       $connection->insert('prison_visit_booking_link_ids')
         ->fields([
           'unique_identifier' => $booking_link_id,
+          // @phpstan-ignore-next-line.
           'created' => \Drupal::service('datetime.time')->getRequestTime(),
         ])
         ->execute();
@@ -187,11 +189,9 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
     if ($booking_data) {
 
       // Set cache contexts.
-      $webform->addCacheableDependency([
-        '#cache' => [
-          'contexts' => ['url.query_args:booking'],
-        ],
-      ]);
+      $webform->addCacheableDependency(
+        (new CacheableMetadata())->setCacheContexts(['url.query_args:booking'])
+      );
 
       // Has the LINK_UNIQUEID in the booking data been used before?
       $link_unique_id = $booking_data['LINK_UNIQUEID'];
@@ -1363,7 +1363,7 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
     // Face-to-face slots are retrieved from external data in cache
     // (see PrisonVisitBookingJsonApiController.php). If there is no
     // cached data, fallback to using slots from file.
-
+    // @phpstan-ignore-next-line.
     $cached_data = \Drupal::cache()->get('prison_visit_slots_data');
 
     if (!empty($cached_data)) {
@@ -1409,7 +1409,7 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
    */
   private function getRequestBookingData() {
 
-    $booking_data_encrypted = $this->request->get("booking");
+    $booking_data_encrypted = $this->request->request->get("booking");
 
     // Decrypt it.
     $key = getenv('PRISON_VISIT_BOOKING_AMEND_AES_256_CBC_KEY');

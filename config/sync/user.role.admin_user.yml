@@ -3,6 +3,17 @@ langcode: en
 status: true
 dependencies:
   config:
+    - block_content.type.accordion_menu
+    - block_content.type.banner_deep
+    - block_content.type.card_deck_plain
+    - block_content.type.card_nested_standard
+    - block_content.type.card_nested_wide
+    - block_content.type.card_plain
+    - block_content.type.card_standard
+    - block_content.type.card_wide
+    - block_content.type.text
+    - block_content.type.video
+    - block_content.type.video_and_caption
     - core.entity_view_display.node.landing_page.full
     - entity_browser.browser.location_browser
     - filter.format.basic_html
@@ -36,7 +47,6 @@ dependencies:
   module:
     - block
     - block_content
-    - block_content_permissions
     - book
     - content_moderation
     - entity_browser
@@ -280,6 +290,7 @@ permissions:
   - 'flag locked_content other items'
   - 'flag locked_content own items'
   - 'flag show_listing'
+  - 'rebuild node access permissions'
   - 'reorder terms in site_themes'
   - 'revert all sitewide alert revisions'
   - 'revert application revisions'
@@ -307,16 +318,6 @@ permissions:
   - 'unflag locked_content other items'
   - 'unflag locked_content own items'
   - 'unflag show_listing'
-  - 'update any accordion_menu block content'
-  - 'update any banner_deep block content'
-  - 'update any card_nested_standard block content'
-  - 'update any card_nested_wide block content'
-  - 'update any card_plain block content'
-  - 'update any card_standard block content'
-  - 'update any card_wide block content'
-  - 'update any text block content'
-  - 'update any video block content'
-  - 'update any video_and_caption block content'
   - 'use moderation sidebar'
   - 'use nics_editorial_workflow transition archive'
   - 'use nics_editorial_workflow transition create_new_draft'

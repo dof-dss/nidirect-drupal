@@ -18,7 +18,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *
  * @package Drupal\nidirect_breadcrumbs
  */
-class ContactBreadcrumb implements BreadcrumbBuilderInterface {
+final class ContactBreadcrumb implements BreadcrumbBuilderInterface {
 
   /**
    * Drupal entity type manager.

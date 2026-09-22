@@ -15,7 +15,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
  *
  * @package Drupal\nidirect_breadcrumbs
  */
-class SchoolClosuresBreadcrumb implements BreadcrumbBuilderInterface {
+final class SchoolClosuresBreadcrumb implements BreadcrumbBuilderInterface {
 
   /**
    * Route matches from the service container parameters.

@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Defines the PaymentStatus enum for valid Worldpay payment statuses.
- */
-
 namespace Drupal\nidirect_prisons\Enum;
 
 /**
@@ -16,22 +11,22 @@ namespace Drupal\nidirect_prisons\Enum;
  * Merchant Administration Interface (MAI).
  */
 enum PaymentStatus: string {
-  case AUTHORISED = 'AUTHORISED';
-  case CANCELLED = 'CANCELLED';
-  case SHOPPER_CANCELLED = 'SHOPPER_CANCELLED';
-  case REFUSED = 'REFUSED';
-  case ERROR = 'ERROR';
+  case Authorised = 'AUTHORISED';
+  case Cancelled = 'CANCELLED';
+  case ShoppedCancelled = 'SHOPPER_CANCELLED';
+  case Refused = 'REFUSED';
+  case Error = 'ERROR';
 
   /**
    * Returns a list of allowed statuses.
    */
   public static function allowed(): array {
     return [
-      self::AUTHORISED,
-      self::CANCELLED,
-      self::SHOPPER_CANCELLED,
-      self::REFUSED,
-      self::ERROR,
+      self::Authorised,
+      self::Cancelled,
+      self::ShoppedCancelled,
+      self::Refused,
+      self::Error,
     ];
   }
 

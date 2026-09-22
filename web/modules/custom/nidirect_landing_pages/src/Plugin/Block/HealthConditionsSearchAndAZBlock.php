@@ -19,7 +19,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *   category = @Translation("Landing pages")
  * )
  */
-class HealthConditionsSearchAndAZBlock extends BlockBase implements ContainerFactoryPluginInterface {
+final class HealthConditionsSearchAndAZBlock extends BlockBase implements ContainerFactoryPluginInterface {
 
   /**
    * The block manager service.

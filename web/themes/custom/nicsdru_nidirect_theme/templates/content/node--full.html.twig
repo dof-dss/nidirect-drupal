@@ -72,7 +72,12 @@
 #}
 <article{{ attributes.setAttribute('id', 'main-article').removeAttribute('role') }}>
   {% if show_title %}
-  {{ drupal_block('page_title_block', wrapper=false) }}
+    {% set current_path = path('<current>') %}
+    {% if current_path starts with '/node/preview/' %}
+      <h1>{{ node.label }}</h1>
+    {% else %}
+      {{ drupal_block('page_title_block', wrapper=false) }}
+    {% endif %}
   {% endif %}
   {% if  content_attributes is not empty %}
   <div{{ content_attributes }}>

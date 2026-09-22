@@ -1,0 +1,51 @@
+<?php
+
+/**
+ * @file
+ * Install functions for the filelog module.
+ */
+
+use Drupal\Component\FileSecurity\FileSecurity;
+
+/**
+ * Implements hook_install().
+ */
+function filelog_install(): void {
+  $config = Drupal::configFactory()->getEditable('filelog.settings');
+  $path = $config->get('location');
+  $fileSystem = Drupal::service('file_system');
+
+  // Set up the logging directory.
+  if ($fileSystem->prepareDirectory($path, $fileSystem::CREATE_DIRECTORY) && FileSecurity::writeHtaccess($path)) {
+    $config->set('enabled', TRUE);
+  }
+  else {
+    Drupal::messenger()->addError(t('The logs/ directory could not be created, or is not writable. File logging is disabled.'));
+  }
+
+  // Check if we can compress.
+  if (!extension_loaded('zlib')) {
+    $config->set('rotation.gzip', FALSE);
+  }
+
+  $config->save();
+}
+
+/**
+ * Adds the new 'channels_type' and 'channels' keys to the module settings.
+ */
+function filelog_update_8101(&$sandbox): void {
+  $config = Drupal::configFactory()->getEditable('filelog.settings');
+  $config->set('channels_type', $config->get('channels_type') ?? 'exclude');
+  $config->set('channels', $config->get('channels') ?? []);
+  $config->save();
+}
+
+/**
+ * Replaces the token [log:type] with [log:channel] in format string.
+ */
+function filelog_update_8201(&$sandbox): void {
+  $config = Drupal::configFactory()->getEditable('filelog.settings');
+  $config->set('format', str_replace('[log:type]', '[log:channel]', $config->get('format')));
+  $config->save();
+}
