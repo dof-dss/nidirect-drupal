@@ -35,7 +35,7 @@ function nidirect_prisons_cron() {
       }
     }
   }
-  
+
   $payment_manager->processPendingPrismNotifications();
 
   $connection = Database::getConnection();
@@ -48,6 +48,15 @@ function nidirect_prisons_cron() {
 
   if ($deleted) {
     \Drupal::logger('nidirect_prisons')->info('Deleted @count old prisoner payment transactions.', ['@count' => $deleted]);
+  }
+
+  // Delete all notifications more than 7 days old.
+  $query = $connection->delete('prisoner_payment_notifications')
+    ->condition('created_timestamp', $threshold, '<');
+  $deleted = $query->execute();
+
+  if ($deleted) {
+    \Drupal::logger('nidirect_prisons')->info('Deleted @count old prisoner payment notifications.', ['@count' => $deleted]);
   }
 
   // Log (hopefully very rare) cases where a prisoner has
