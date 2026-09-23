@@ -707,7 +707,7 @@ class PrisonerPaymentManager {
       'UNIQUE_TRANSACTION_ID' => $notification->order_key,
       'INMATE_ID' => $notification->prisoner_id,
       'VISITOR_ID' => $notification->visitor_id,
-      'TRANSACTION_TIME' => date('d/m/Y H:i:s'),
+      'TRANSACTION_TIME' => date('d/m/Y H:i:s', $notification->created_timestamp),
       'AMOUNT_PAID' => number_format((float) $notification->amount, 2, '.', ''),
       'SEQUENCE_ID' => (int) $notification->sequence_id,
     ], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
