@@ -19,6 +19,8 @@ hooks:
     - exec: "drush cr"
     # Import any local config split profile overrides.
     - exec: "drush cim -y"
+    # Ensure imported database configuration points at the local Solr core.
+    - exec-host: "scripts/solr/configure-local-connector"
 name: nidirect
 nodejs_version: 20
 php_version: "8.3"
