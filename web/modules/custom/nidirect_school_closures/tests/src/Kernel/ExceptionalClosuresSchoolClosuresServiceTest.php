@@ -127,7 +127,7 @@ class ExceptionalClosuresSchoolClosuresServiceTest extends KernelTestBase {
 
     $school = $this->findSchool($data, 'Harmony Primary School Belfast');
 
-    $expected = 'due to adverse weather and use as a polling station for an election.';
+    $expected = 'due to adverse weather and use as a polling station.';
 
     $this->assertEquals($expected, $school['closures'][0]['reason']);
   }

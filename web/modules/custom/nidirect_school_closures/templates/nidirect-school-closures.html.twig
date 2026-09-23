@@ -4,9 +4,9 @@
 
   {% if closures|length > 0 %}
     {% for school in closures %}
-    <div class="columnItem">
-      <h3 data-transliterated="{{ school.altname }}" style="margin-bottom: 0">{{ school.name }}</h3>
-      <em style="color: #717171; font-size: 0.92em">{{ school.location }}</em>
+    <div class="school-closure">
+      <h3 class="school-closure__name" data-transliterated="{{ school.altname }}">{{ school.name }}</h3>
+      <em class="school-closure__location">{{ school.location }}</em>
 
       <ul class="description">
         {% for closure in school.closures %}
@@ -21,7 +21,6 @@
         {% endfor %}
       </ul>
     </div>
-    <hr style="border-color: #e1e1e1">
     {% endfor %}
   {% elseif error %}
     <p>{% trans %}Sorry, there was a problem with this service. Please contact your school for information on possible closures.{% endtrans %}</p>

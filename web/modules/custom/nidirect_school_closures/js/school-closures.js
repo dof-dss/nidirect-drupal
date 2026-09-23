@@ -8,10 +8,10 @@
  * Updated: 21/09/2026 - Support for new API.
  */
 
-var scMin = 20,                       // enable filtering if school closures exceed this number
-    scContainerID = 'school-closure-results', // id of element containing school closure items
-    scItemsClass = 'columnItem',      // class of school closure item containers
-    scTagToFilter = 'h3',             // tag in each item we want to filter on
+var scMin = 20,                                  // enable filtering if school closures exceed this number.
+    scContainerID = 'school-closure-results',   // id of element containing all school closure records.
+    scItemsClass = 'school-closure',            // class for each individual school closure.
+    scTagToFilter = 'h3',                       // tag in each item we want to filter on.
     scParent,
     scResults,
     scResultsProcessed = [],

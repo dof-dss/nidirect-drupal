@@ -80,7 +80,7 @@ class SchoolClosure {
    * @return array
    *   Associative array of closure data.
    */
-  public function getData() {
+  public function getData(): array {
     return [
       'name' => $this->name,
       'altname' => $this->altName,
@@ -93,8 +93,11 @@ class SchoolClosure {
 
   /**
    * Return if the closure date has expired.
+   *
+   * @return bool
+   *   TRUE if expired, otherwise FALSE.
    */
-  public function isExpired() {
+  public function isExpired(): bool {
     $today = new \DateTime('now', new \DateTimeZone('Europe/London'));
     // Reset the clock to avoid issues with time comparisons.
     $today->setTime(0, 0, 0);
@@ -107,13 +110,12 @@ class SchoolClosure {
   /**
    * Process alternative school names.
    */
-  protected function processAltname() {
+  protected function processAltname(): void {
     // Add alternative names for Irish name schools.
     $pattern = '/[ÁÉÍÓÚáéíóú]/';
     if (preg_match($pattern, $this->name)) {
       $transliteration = \Drupal::service('transliteration');
       $this->altName = $transliteration->removeDiacritics($this->name);
-
     }
   }
 

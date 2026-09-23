@@ -6,7 +6,6 @@ use Drupal\Core\Cache\CacheBackendInterface;
 use Drupal\Core\Config\ConfigFactory;
 use Drupal\Core\Logger\LoggerChannelFactory;
 use Drupal\nidirect_school_closures\SchoolClosure;
-use Drupal\nidirect_school_closures\SchoolClosureReasonMapper;
 use Drupal\nidirect_school_closures\SchoolClosuresServiceInterface;
 use GuzzleHttp\Client as HttpClient;
 use GuzzleHttp\Exception\ClientException;
@@ -101,20 +100,12 @@ class ExceptionalClosuresSchoolClosuresService implements SchoolClosuresServiceI
   protected $logger;
 
   /**
-   * Reason mapper service.
-   *
-   * @var \Drupal\nidirect_school_closures\SchoolClosureReasonMapper
-   */
-  protected $reasonMapper;
-
-  /**
    * Constructs a new ExceptionalClosuresSchoolClosuresService object.
    */
-  public function __construct(HttpClient $http_client, CacheBackendInterface $cache, ConfigFactory $config_service, LoggerChannelFactory $logger, SchoolClosureReasonMapper $reason_mapper) {
+  public function __construct(HttpClient $http_client, CacheBackendInterface $cache, ConfigFactory $config_service, LoggerChannelFactory $logger) {
     $this->httpClient = $http_client;
     $this->cacheService = $cache;
     $this->logger = $logger->get('nidirect_school_closures');
-    $this->reasonMapper = $reason_mapper;
 
     // Fetch the config settings.
     $config = $config_service->get('nidirect_school_closures.settings');
@@ -129,7 +120,7 @@ class ExceptionalClosuresSchoolClosuresService implements SchoolClosuresServiceI
    * @return \DateTime
    *   Returns dataset last updated date.
    */
-  public function getUpdated(): \DateTime {
+  public function getUpdated(): \DateTime|null {
     return $this->updated;
   }
 
@@ -290,7 +281,7 @@ class ExceptionalClosuresSchoolClosuresService implements SchoolClosuresServiceI
 
         $date = new \DateTime($closureEvent['dateFrom'], new \DateTimeZone('Europe/London'));
         $dateTo = !empty($closureEvent['dateTo']) ? new \DateTime($closureEvent['dateTo'], new \DateTimeZone('Europe/London')) : NULL;
-        $reason = $this->reasonMapper->combine($closureEvent['reasons'] ?? []);
+        $reason = $this->combineReasons($closureEvent['reasons'] ?? []);
 
         $closure = new SchoolClosure($name, $location, $date, $reason, $dateTo);
 
@@ -330,6 +321,39 @@ class ExceptionalClosuresSchoolClosuresService implements SchoolClosuresServiceI
     });
 
     $this->error = FALSE;
+  }
+
+  /**
+   * Combines a closure's reasons into a single display sentence.
+   *
+   * Uses the API's own reasonType text verbatim, so no local
+   * reasonTypeId-to-text mapping needs to be kept in sync with the API.
+   *
+   * @param array $reasons
+   *   Array of reasons, each with a 'reasonType' key.
+   *
+   * @return string
+   *   The combined sentence, e.g. "due to adverse weather and use as a
+   *   polling station."
+   */
+  protected function combineReasons(array $reasons): string {
+    $fragments = array_filter(array_map(function ($reason) {
+      return strtolower($reason['reasonType'] ?? '');
+    }, $reasons));
+
+    if (empty($fragments)) {
+      return '';
+    }
+
+    if (count($fragments) === 1) {
+      $joined = reset($fragments);
+    }
+    else {
+      $last = array_pop($fragments);
+      $joined = implode(', ', $fragments) . ' and ' . $last;
+    }
+
+    return 'due to ' . $joined . '.';
   }
 
 }

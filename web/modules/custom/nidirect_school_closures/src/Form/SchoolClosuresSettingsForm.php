@@ -8,7 +8,7 @@ use Drupal\nidirect_school_closures\SchoolClosuresServiceInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * Configure example settings for this site.
+ * School Closures configuration form.
  */
 class SchoolClosuresSettingsForm extends ConfigFormBase {
 

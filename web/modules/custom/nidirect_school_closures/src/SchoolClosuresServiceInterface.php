@@ -36,7 +36,7 @@ interface SchoolClosuresServiceInterface {
    * @return \DateTime
    *   A DateTime of when the closures data was last updated.
    */
-  public function getUpdated();
+  public function getUpdated(): \DateTime|NULL;
 
   /**
    * Returns if the closure service encountered errors.
@@ -47,6 +47,6 @@ interface SchoolClosuresServiceInterface {
    * @return bool
    *   A boolean state if errors were encountered when requesting data.
    */
-  public function hasErrors();
+  public function hasErrors(): bool;
 
 }

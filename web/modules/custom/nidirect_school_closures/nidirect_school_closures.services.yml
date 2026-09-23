@@ -3,9 +3,7 @@ services:
     alias: nidirect_school_closures.source.exceptional_closures
   nidirect_school_closures.source.exceptional_closures:
     class: Drupal\nidirect_school_closures\Service\ExceptionalClosuresSchoolClosuresService
-    arguments: ['@http_client', '@cache.default', '@config.factory', '@logger.factory', '@nidirect_school_closures.reason_mapper']
-  nidirect_school_closures.reason_mapper:
-    class: Drupal\nidirect_school_closures\SchoolClosureReasonMapper
+    arguments: ['@http_client', '@cache.default', '@config.factory', '@logger.factory']
   nidirect_school_closures.http_headers_subscriber:
     class: Drupal\nidirect_school_closures\EventSubscriber\HttpHeadersSubscriber
     arguments: ['@current_route_match', '@config.factory']
