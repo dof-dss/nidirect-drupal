@@ -17,6 +17,9 @@ jobs:
     steps:
       - checkout
       - run:
+          name: Verify Solr configset wiring
+          command: scripts/solr/verify-configsets
+      - run:
           name: Download shared config
           command: |
             for attempt in 1 2 3 4 5; do
