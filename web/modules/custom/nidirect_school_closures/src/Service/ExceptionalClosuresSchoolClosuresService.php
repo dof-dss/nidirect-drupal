@@ -261,9 +261,7 @@ class ExceptionalClosuresSchoolClosuresService implements SchoolClosuresServiceI
 
     $this->data = [];
 
-    // Each entry is an institution, which may have multiple closures. All of
-    // a school's current closures are grouped together under that school,
-    // rather than each closure appearing as its own repeated entry.
+    // Iterate each school/institution.
     foreach ($this->responseData['closures'] as $institution) {
       $name = $institution['institutionName'] ?? '';
       $location = $institution['address']['formattedAddress'] ?? '';
@@ -272,7 +270,7 @@ class ExceptionalClosuresSchoolClosuresService implements SchoolClosuresServiceI
         continue;
       }
 
-      $events = [];
+      $institution_closures = [];
 
       foreach ($institution['closures'] as $closureEvent) {
         if (empty($closureEvent['dateFrom'])) {
@@ -289,21 +287,22 @@ class ExceptionalClosuresSchoolClosuresService implements SchoolClosuresServiceI
           continue;
         }
 
-        $events[] = $closure->getData();
+        $institution_closures[] = $closure->getData();
       }
 
       // Skip schools with no current closures.
-      if (empty($events)) {
+      if (empty($institution_closures)) {
         continue;
       }
 
-      usort($events, function ($a, $b) {
+      // Sort the school's closures by date.
+      usort($institution_closures, function ($a, $b) {
         return $a['date']->getTimestamp() - $b['date']->getTimestamp();
       });
 
       $this->data[] = [
         'name' => $name,
-        'altname' => $events[0]['altname'],
+        'altname' => $institution_closures[0]['altname'],
         'location' => $location,
         'closures' => array_map(function ($event) {
           return [
@@ -311,7 +310,7 @@ class ExceptionalClosuresSchoolClosuresService implements SchoolClosuresServiceI
             'dateTo' => $event['dateTo'],
             'reason' => $event['reason'],
           ];
-        }, $events),
+        }, $institution_closures),
       ];
     }
 
@@ -325,9 +324,6 @@ class ExceptionalClosuresSchoolClosuresService implements SchoolClosuresServiceI
 
   /**
    * Combines a closure's reasons into a single display sentence.
-   *
-   * Uses the API's own reasonType text verbatim, so no local
-   * reasonTypeId-to-text mapping needs to be kept in sync with the API.
    *
    * @param array $reasons
    *   Array of reasons, each with a 'reasonType' key.

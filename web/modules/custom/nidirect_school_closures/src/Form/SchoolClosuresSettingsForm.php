@@ -4,6 +4,8 @@ namespace Drupal\nidirect_school_closures\Form;
 
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Link;
+use Drupal\Core\Url;
 use Drupal\nidirect_school_closures\SchoolClosuresServiceInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -86,13 +88,19 @@ class SchoolClosuresSettingsForm extends ConfigFormBase {
 
     $form['cache_duration'] = [
       '#type' => 'number',
-      '#title' => $this->t('Cache duration'),
+      '#title' => $this->t('API response cache duration'),
       '#description' => $this->t('Duration in minutes.'),
       '#min' => 0,
       '#max' => 10080,
       '#required' => TRUE,
       '#size' => 2,
       '#default_value' => $config->get('cache_duration'),
+    ];
+
+    $form['cron_info'] = [
+      '#markup' => $this->t('<strong>Note:</strong> If you alter the API cache duration, ensure the @link is appropriately configured to purge the render cache.', [
+        '@link' => Link::createFromRoute('School Closures cron', 'entity.ultimate_cron_job.edit_form', ['ultimate_cron_job' => 'nidirect_school_closures'], ['attributes' => ['target' => '_blank']])->toString()
+      ]),
     ];
 
     return parent::buildForm($form, $form_state);
