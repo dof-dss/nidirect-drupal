@@ -248,12 +248,12 @@ class WorldpayNotificationController extends ControllerBase {
           ->condition('prisoner_id', $payment_transaction->prisoner_id)
           ->execute();
 
-        // Generate sequence ID.
+        // Generate sequence ID for the payment.
         $sequence_id = $this->getNextSequenceId();
-        if ($sequence_id === NULL) {
-          $this->logger->error('Failed to generate sequence ID for order @order', ['@order' => $order_code]);
+        if (!is_numeric($sequence_id) || (int) $sequence_id <= 0) {
           throw new \Exception('Failed to generate sequence ID');
         }
+        $sequence_id = (int) $sequence_id;
 
         // Send payment details to Prism.
         $this->sendJsonToPrism(
@@ -263,7 +263,6 @@ class WorldpayNotificationController extends ControllerBase {
           $amount,
           $sequence_id
         );
-
       }
       catch (\Throwable $e) {
 
@@ -327,7 +326,6 @@ class WorldpayNotificationController extends ControllerBase {
       "SEQUENCE_ID" => $sequence_id,
     ], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
 
-    // Try sending the email.
     try {
       \Drupal::service('plugin.manager.mail')->mail(
         'nidirect_prisons',
@@ -340,7 +338,6 @@ class WorldpayNotificationController extends ControllerBase {
       $this->logger->notice("Sent prisoner payment data for order {$order_code} to Prism.");
     }
     catch (\Exception $e) {
-      // If email fails, log the error and throw.
       $this->logger->error('Failed to send email for order @order_code: @error', [
         '@order_code' => $order_code,
         '@error' => $e->getMessage(),
@@ -358,7 +355,6 @@ class WorldpayNotificationController extends ControllerBase {
    */
   protected function getNextSequenceId() {
     $query = $this->database->insert('prisoner_payment_sequence')->fields(['id' => NULL]);
-
     return $query->execute();
   }
 
