@@ -250,8 +250,19 @@ class WorldpayNotificationController extends ControllerBase {
 
         // Generate sequence ID.
         $sequence_id = $this->getNextSequenceId();
+        if ($sequence_id === NULL) {
+          $this->logger->error('Failed to generate sequence ID for order @order', ['@order' => $order_code]);
+          throw new \Exception('Failed to generate sequence ID');
+        }
 
-        $should_send_prism = TRUE;
+        // Send payment details to Prism.
+        $this->sendJsonToPrism(
+          $order_code,
+          $payment_transaction->prisoner_id,
+          $payment_transaction->visitor_id,
+          $amount,
+          $sequence_id
+        );
 
       }
       catch (\Throwable $e) {
@@ -268,37 +279,21 @@ class WorldpayNotificationController extends ControllerBase {
           ]
         );
 
-        return new Response('[OK]', 200, ['Content-Type' => 'text/plain']);
+        // Return 500 Internal Server Error so that Worldpay will retry the
+        // notification later. This is important to ensure that the payment is
+        // not lost and can be processed successfully in a later attempt.
+        return new Response('[Server Error]', 500, ['Content-Type' => 'text/plain']);
       }
       finally {
         unset($db_transaction);
-      }
-
-      // Now email Prism.
-      if ($should_send_prism && $sequence_id !== NULL) {
-        try {
-          $this->sendJsonToPrism(
-            $order_code,
-            $payment_transaction->prisoner_id,
-            $payment_transaction->visitor_id,
-            $amount,
-            $sequence_id
-          );
-        }
-        catch (\Throwable $e) {
-          $this->logger->error(
-            'PRISM notification failed for order @order after successful DB commit: @message',
-            [
-              '@order' => $order_code,
-              '@message' => $e->getMessage(),
-            ]
-          );
-        }
       }
     }
     else {
       // Payment failed.
       $this->paymentManager->updateTransactionStatus($order_code, 'failed');
+      $this->logger->error('Worldpay payment FAILED for order @order', [
+        '@order' => $order_code,
+      ]);
     }
 
     // Acknowledge the notification.
