@@ -685,6 +685,18 @@ class PrisonerPaymentManager {
     $count = 0;
 
     foreach ($notifications as $notification) {
+      // Set status as processing so no other cron thread touches it.
+      $claimed = $this->database->update('prisoner_payment_notifications')
+        ->fields(['status' => 'processing'])
+        ->condition('order_key', $notification->order_key)
+        ->condition('status', 'pending')
+        ->execute();
+
+      // If 0 rows were updated, another concurrent cron process claimed it first. Skip it.
+      if ($claimed === 0) {
+        continue;
+      }
+
       $count++;
       $this->sendPrismNotification($notification);
     }
