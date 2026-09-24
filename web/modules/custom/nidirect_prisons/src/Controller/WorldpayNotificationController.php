@@ -224,7 +224,8 @@ class WorldpayNotificationController extends ControllerBase {
       try {
         $db_transaction = $this->database->startTransaction();
 
-        // Attempt atomic status transition first.
+        // Attempt atomic status transition first. Only the winning process
+        // continues below; all other concurrent notifications are ignored.
         $updated = $this->database->update('prisoner_payment_transactions')
           ->fields([
             'status' => 'success',
@@ -235,11 +236,13 @@ class WorldpayNotificationController extends ControllerBase {
           ->execute();
 
         if ($updated === 0) {
-          // Another process already handled it.
+          $this->logger->notice(
+            'Worldpay AUTHORISED notification for order @order already processed by another process.',
+            ['@order' => $order_code]
+          );
+
           return new Response('[OK]', 200, ['Content-Type' => 'text/plain']);
         }
-
-        // Only the winning process continues below.
 
         // Deduct from prisoner's balance.
         $this->database->update('prisoner_payment_amount')
@@ -247,23 +250,28 @@ class WorldpayNotificationController extends ControllerBase {
           ->condition('prisoner_id', $payment_transaction->prisoner_id)
           ->execute();
 
-        // Generate sequence ID and queue the upstream Prism notification.
-        $sequence_id = $this->paymentManager->getNextSequenceId();
-        $this->database->insert('prisoner_payment_notifications')
-          ->fields([
-            'order_key' => $order_code,
-            'prisoner_id' => $payment_transaction->prisoner_id,
-            'visitor_id' => $payment_transaction->visitor_id,
-            'amount' => $amount,
-            'sequence_id' => $sequence_id,
-            'status' => 'pending',
-            'attempts' => 0,
-            'created_timestamp' => \Drupal::time()->getRequestTime(),
-            'updated_timestamp' => \Drupal::time()->getRequestTime(),
-            'last_error' => NULL,
-          ])
-          ->execute();
-
+        // Queue up a Prism notification if there isn't already one.
+        $existing_notification = $this->paymentManager->getPrismNotification($order_code);
+        if (!$existing_notification) {
+          $sequence_id = $this->paymentManager->getNextSequenceId();
+          $this->database->insert('prisoner_payment_notifications')
+            ->fields([
+              'order_key' => $order_code,
+              'prisoner_id' => $payment_transaction->prisoner_id,
+              'visitor_id' => $payment_transaction->visitor_id,
+              'amount' => $amount,
+              'sequence_id' => $sequence_id,
+              'status' => 'pending',
+              'attempts' => 0,
+              'created_timestamp' => \Drupal::time()->getRequestTime(),
+              'updated_timestamp' => \Drupal::time()->getRequestTime(),
+              'last_error' => NULL,
+            ])
+            ->execute();
+        }
+        else {
+          $this->logger->notice('Worldpay AUTHORISED notification for order @order already queued.', ['@order' => $order_code]);
+        }
       }
       catch (\Throwable $e) {
 
