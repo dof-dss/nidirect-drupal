@@ -36,6 +36,8 @@ function nidirect_prisons_cron() {
     }
   }
 
+  $payment_manager->processPendingPrismNotifications();
+
   $connection = Database::getConnection();
 
   // Delete all transactions more than 7 days old.
@@ -48,8 +50,53 @@ function nidirect_prisons_cron() {
     \Drupal::logger('nidirect_prisons')->info('Deleted @count old prisoner payment transactions.', ['@count' => $deleted]);
   }
 
-  // Log (hopefully very rare) cases where a prisoner has
-  // more than one pending transaction.
+  // Recover stale processing notifications and stop retrying exhausted ones.
+  $now = \Drupal::time()->getRequestTime();
+  $stale_processing_threshold = $now - 1800;
+  $stale_pending_threshold = $now - 86400;
+
+  $recovered = $connection->update('prisoner_payment_notifications')
+    ->fields([
+      'status' => 'pending',
+      'updated_timestamp' => $now,
+      'last_error' => 'Recovered from stale processing state',
+    ])
+    ->condition('status', 'processing')
+    ->condition('updated_timestamp', $stale_processing_threshold, '<')
+    ->execute();
+
+  if ($recovered) {
+    \Drupal::logger('nidirect_prisons')->warning('Recovered @count stale Prism notifications from processing state.', ['@count' => $recovered]);
+  }
+
+  $exhausted = $connection->update('prisoner_payment_notifications')
+    ->fields([
+      'status' => 'failed',
+      'updated_timestamp' => $now,
+      'last_error' => 'Stopped retrying after max attempts and age threshold',
+    ])
+    ->condition('status', 'pending')
+    ->condition('attempts', 10, '>=')
+    ->condition('updated_timestamp', $stale_pending_threshold, '<')
+    ->execute();
+
+  if ($exhausted) {
+    \Drupal::logger('nidirect_prisons')->warning('Marked @count exhaustively retried Prism notifications as failed.', ['@count' => $exhausted]);
+  }
+
+  // Delete all notifications more than 7 days old.
+  $query = $connection->delete('prisoner_payment_notifications')
+    ->condition('status', ['sent', 'failed'], 'IN')
+    ->condition('created_timestamp', $threshold, '<');
+  $deleted = $query->execute();
+
+  if ($deleted) {
+    \Drupal::logger('nidirect_prisons')->info('Deleted @count old prisoner payment notifications.', ['@count' => $deleted]);
+  }
+
+
+
+  // Log (hopefully very rare) cases where a prisoner has  // more than one pending transaction.
   $query = $connection->select('prisoner_payment_transactions', 'ppt');
   $query->addField('ppt', 'prisoner_id');
   $query->addExpression('COUNT(*)', 'pending_count');
