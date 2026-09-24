@@ -327,13 +327,17 @@ class WorldpayNotificationController extends ControllerBase {
     ], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
 
     try {
-      \Drupal::service('plugin.manager.mail')->mail(
+      $result = \Drupal::service('plugin.manager.mail')->mail(
         'nidirect_prisons',
         'prisoner_payment_notification',
         getenv('PRISONER_PAYMENTS_PRISM_EMAIL') ?: 'prisoner_payments@mailhog.local',
         \Drupal::languageManager()->getDefaultLanguage()->getId(),
         ['subject' => 'PAYIN', 'body' => [$json_data]]
       );
+
+      if (empty($result['result'])) {
+        throw new \Exception('Mail manager reported failure sending payment data to Prism.');
+      }
 
       $this->logger->notice("Sent prisoner payment data for order {$order_code} to Prism.");
     }
