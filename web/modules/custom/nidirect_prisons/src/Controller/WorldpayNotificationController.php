@@ -347,8 +347,8 @@ class WorldpayNotificationController extends ControllerBase {
   private function sendJsonToPrism($order_code, $prisoner_id, $visitor_id, $amount, $sequence_id) {
 
     $email = getenv('PRISONER_PAYMENTS_PRISM_EMAIL');
-    if (empty($email)) {
-      throw new \Exception('PRISONER_PAYMENTS_PRISM_EMAIL environment variable is not set.');
+    if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+      throw new \Exception('PRISONER_PAYMENTS_PRISM_EMAIL environment variable is not set or is not a valid email address.');
     }
 
     $json_data = json_encode([
