@@ -4,6 +4,8 @@ namespace Drupal\nidirect_prisons\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Database\Connection;
+use Drupal\Core\Language\LanguageManagerInterface;
+use Drupal\Core\Mail\MailManagerInterface;
 use Drupal\nidirect_prisons\Enum\PaymentStatus;
 use Drupal\nidirect_prisons\Service\PrisonerPaymentManager;
 use Psr\Log\LoggerInterface;
@@ -33,21 +35,35 @@ class WorldpayNotificationController extends ControllerBase {
   protected LoggerInterface $logger;
 
   /**
+   * @var \Drupal\Core\Mail\MailManagerInterface
+   *   The mail manager service.
+   */
+  protected MailManagerInterface $mailManager;
+
+  /**
    * @param \Drupal\Core\Database\Connection $database
    *   The DB connection.
    * @param \Drupal\nidirect_prisons\Service\PrisonerPaymentManager $payment_manager
    *   The Payment Manager Service.
    * @param \Psr\Log\LoggerInterface $logger
    *   The Logger service.
+   * @param \Drupal\Core\Mail\MailManagerInterface $mail_manager
+   *   The mail manager service.
+   * @param \Drupal\Core\Language\LanguageManagerInterface $language_manager
+   *   The language manager service.
    */
   public function __construct(
     Connection $database,
     PrisonerPaymentManager $payment_manager,
-    LoggerInterface $logger
+    LoggerInterface $logger,
+    MailManagerInterface $mail_manager,
+    LanguageManagerInterface $language_manager
   ) {
     $this->database = $database;
     $this->paymentManager = $payment_manager;
     $this->logger = $logger;
+    $this->mailManager = $mail_manager;
+    $this->languageManager = $language_manager;
   }
 
   /**
@@ -58,10 +74,23 @@ class WorldpayNotificationController extends ControllerBase {
    * @return static
    */
   public static function create(ContainerInterface $container) {
+    /** @var \Drupal\Core\Database\Connection $database */
+    $database = $container->get('database');
+    /** @var \Drupal\nidirect_prisons\Service\PrisonerPaymentManager $payment_manager */
+    $payment_manager = $container->get('nidirect_prisons.prisoner_payment_manager');
+    /** @var \Psr\Log\LoggerInterface $logger */
+    $logger = $container->get('logger.channel.nidirect_prisons');
+    /** @var \Drupal\Core\Mail\MailManagerInterface $mail_manager */
+    $mail_manager = $container->get('plugin.manager.mail');
+    /** @var \Drupal\Core\Language\LanguageManagerInterface $language_manager */
+    $language_manager = $container->get('language_manager');
+
     return new static(
-      $container->get('database'),
-      $container->get('nidirect_prisons.prisoner_payment_manager'),
-      $container->get('logger.channel.nidirect_prisons')
+      $database,
+      $payment_manager,
+      $logger,
+      $mail_manager,
+      $language_manager
     );
   }
 
@@ -317,6 +346,11 @@ class WorldpayNotificationController extends ControllerBase {
    */
   private function sendJsonToPrism($order_code, $prisoner_id, $visitor_id, $amount, $sequence_id) {
 
+    $email = getenv('PRISONER_PAYMENTS_PRISM_EMAIL');
+    if (empty($email)) {
+      throw new \Exception('PRISONER_PAYMENTS_PRISM_EMAIL environment variable is not set.');
+    }
+
     $json_data = json_encode([
       "UNIQUE_TRANSACTION_ID" => $order_code,
       "INMATE_ID" => $prisoner_id,
@@ -327,11 +361,11 @@ class WorldpayNotificationController extends ControllerBase {
     ], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
 
     try {
-      $result = \Drupal::service('plugin.manager.mail')->mail(
+      $result = $this->mailManager->mail(
         'nidirect_prisons',
         'prisoner_payment_notification',
-        getenv('PRISONER_PAYMENTS_PRISM_EMAIL') ?: 'prisoner_payments@mailhog.local',
-        \Drupal::languageManager()->getDefaultLanguage()->getId(),
+        $email,
+        $this->languageManager->getDefaultLanguage()->getId(),
         ['subject' => 'PAYIN', 'body' => [$json_data]]
       );
 
