@@ -37,7 +37,7 @@ runtime:
 # to the application in the PLATFORM_RELATIONSHIPS variable. The right-hand
 # side is in the form `:`.
 relationships:
-  solr: 'solr_8_11:solr'
+  solr: 'solr_9_9:solr'
   redis: "redis:redis"
   #  For MariaDB, the endpoint does not change whether you used the mysql or mariadb service type.
   database: 'db:admin'
@@ -106,6 +106,8 @@ hooks:
     drush -y config-import
     # Final cache rebuild.
     drush -y cache-rebuild
+    # Clear Hospital Waiting times cache.
+    drush nidirect:hwt-cache-clear
   post_deploy: |
     set -e
     echo "Import any pending config changes"

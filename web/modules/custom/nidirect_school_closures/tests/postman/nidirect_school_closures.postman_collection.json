@@ -1,0 +1,366 @@
+{
+  "info": {
+    "_postman_id": "42413efb-7642-4ca5-8f52-64d991672752",
+    "name": "NI Direct - School Closures (Exceptional Closures API mock)",
+    "description": "Mock endpoints for the Exceptional Closures API, built from the nidirect_school_closures kernel test fixtures (tests/src/Kernel/data). Import this collection, then create a Postman Mock Server from it to get a URL you can plug into the module's \"Data source URL\" setting (/admin/config/nidirect/school-closures) for manual/browser testing.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "4029665"
+  },
+  "item": [
+    {
+      "name": "Get closures (default - multiple institutions)",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/closurereasons/all",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "closurereasons",
+            "all"
+          ]
+        },
+        "description": "No query params - this is the example Postman serves by default when the mock URL is hit directly, matching how the Drupal service calls the real API."
+      },
+      "response": [
+        {
+          "name": "200 - multiple institutions, mixed reasons/dates",
+          "originalRequest": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/closurereasons/all",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "closurereasons",
+                "all"
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "cookie": [],
+          "body": "{\n  \"closures\": [\n    {\n      \"srn\": \"1030326\",\n      \"institutionName\": \"Our Lady's Girls' College\",\n      \"closures\": [\n        {\n          \"closureId\": 1,\n          \"dateFrom\": \"2030-07-29T00:00:00\",\n          \"dateTo\": null,\n          \"reasons\": [\n            {\n              \"reasonTypeId\": 4,\n              \"reasonType\": \"Death of a member of staff, pupil or another person working at the school\"\n            }\n          ]\n        }\n      ],\n      \"address\": {\n        \"address1\": \"Sperrin Hills\",\n        \"address2\": \"\",\n        \"address3\": \"\",\n        \"townCity\": \"Omagh\",\n        \"county\": \"Tyrone\",\n        \"postCode\": \"BT1 1AA\",\n        \"formattedAddress\": \"Sperrin Hills, Omagh, Tyrone, BT1 1AA\"\n      }\n    },\n    {\n      \"srn\": \"1036576\",\n      \"institutionName\": \"Harmony Primary School Belfast\",\n      \"closures\": [\n        {\n          \"closureId\": 2,\n          \"dateFrom\": \"2030-09-28T00:00:00\",\n          \"dateTo\": null,\n          \"reasons\": [\n            {\n              \"reasonTypeId\": 1,\n              \"reasonType\": \"Adverse weather\"\n            },\n            {\n              \"reasonTypeId\": 2,\n              \"reasonType\": \"Use as a polling station\"\n            }\n          ]\n        }\n      ],\n      \"address\": {\n        \"address1\": \"Brookhill\",\n        \"address2\": \"\",\n        \"address3\": \"\",\n        \"townCity\": \"Belfast\",\n        \"county\": \"Antrim\",\n        \"postCode\": \"BT2 2BB\",\n        \"formattedAddress\": \"Brookhill, Belfast, Antrim, BT2 2BB\"\n      }\n    },\n    {\n      \"srn\": \"2031876\",\n      \"institutionName\": \"St Trinian's High School\",\n      \"closures\": [\n        {\n          \"closureId\": 3,\n          \"dateFrom\": \"2019-01-01T00:00:00\",\n          \"dateTo\": null,\n          \"reasons\": [\n            {\n              \"reasonTypeId\": 99,\n              \"reasonType\": \"Flooding or burst pipes\"\n            }\n          ]\n        }\n      ],\n      \"address\": {\n        \"address1\": \"Barchester\",\n        \"address2\": \"\",\n        \"address3\": \"\",\n        \"townCity\": \"Barchester\",\n        \"county\": \"Down\",\n        \"postCode\": \"BT3 3CC\",\n        \"formattedAddress\": \"Barchester, Down, BT3 3CC\"\n      }\n    },\n    {\n      \"srn\": \"2137873\",\n      \"institutionName\": \"St Numpty's High School\",\n      \"closures\": [\n        {\n          \"closureId\": 4,\n          \"dateFrom\": \"2026-11-12T00:00:00\",\n          \"dateTo\": null,\n          \"reasons\": [\n            {\n              \"reasonTypeId\": 99,\n              \"reasonType\": \"Flooding or burst pipes\"\n            }\n          ]\n        }\n      ],\n      \"address\": {\n        \"address1\": \"21 Lets Be Avenue\",\n        \"address2\": \"\",\n        \"address3\": \"\",\n        \"townCity\": \"Bangor\",\n        \"county\": \"Down\",\n        \"postCode\": \"BT19 1AC\",\n        \"formattedAddress\": \"21 Lets Be Avenue, Bangor, Down, BT19 1AC\"\n      }\n    },\n    {\n      \"srn\": \"3041234\",\n      \"institutionName\": \"St Example's Primary School\",\n      \"closures\": [\n        {\n          \"closureId\": 5,\n          \"dateFrom\": \"2030-10-01T00:00:00\",\n          \"dateTo\": \"2030-10-03T00:00:00\",\n          \"reasons\": [\n            {\n              \"reasonTypeId\": 1,\n              \"reasonType\": \"Adverse weather\"\n            }\n          ]\n        }\n      ],\n      \"address\": {\n        \"address1\": \"Main Street\",\n        \"address2\": \"\",\n        \"address3\": \"\",\n        \"townCity\": \"Lisburn\",\n        \"county\": \"Antrim\",\n        \"postCode\": \"BT4 4DD\",\n        \"formattedAddress\": \"Main Street, Lisburn, Antrim, BT4 4DD\"\n      }\n    },\n    {\n      \"srn\": \"5051234\",\n      \"institutionName\": \"Two Closures School\",\n      \"closures\": [\n        {\n          \"closureId\": 6,\n          \"dateFrom\": \"2031-02-10T00:00:00\",\n          \"dateTo\": null,\n          \"reasons\": [\n            {\n              \"reasonTypeId\": 4,\n              \"reasonType\": \"Death of a member of staff, pupil or another person working at the school\"\n            }\n          ]\n        },\n        {\n          \"closureId\": 7,\n          \"dateFrom\": \"2031-01-05T00:00:00\",\n          \"dateTo\": null,\n          \"reasons\": [\n            {\n              \"reasonTypeId\": 1,\n              \"reasonType\": \"Adverse weather\"\n            }\n          ]\n        },\n        {\n          \"closureId\": 8,\n          \"dateFrom\": \"2019-05-05T00:00:00\",\n          \"dateTo\": null,\n          \"reasons\": [\n            {\n              \"reasonTypeId\": 2,\n              \"reasonType\": \"Use as a polling station\"\n            }\n          ]\n        }\n      ],\n      \"address\": {\n        \"address1\": \"School Road\",\n        \"address2\": \"\",\n        \"address3\": \"\",\n        \"townCity\": \"Coleraine\",\n        \"county\": \"Londonderry\",\n        \"postCode\": \"BT5 5EE\",\n        \"formattedAddress\": \"School Road, Coleraine, Londonderry, BT5 5EE\"\n      }\n    },\n    {\n      \"srn\": \"2021224\",\n      \"institutionName\": \"Old School\",\n      \"closures\": [\n        {\n          \"closureId\": 9,\n          \"dateFrom\": \"2026-10-23T00:00:00\",\n          \"dateTo\": null,\n          \"reasons\": [\n            {\n              \"reasonTypeId\": 4,\n              \"reasonType\": \"Death of a member of staff, pupil or another person working at the school\"\n            }\n          ]\n        },\n        {\n          \"closureId\": 10,\n          \"dateFrom\": \"2031-01-05T00:00:00\",\n          \"dateTo\": null,\n          \"reasons\": [\n            {\n              \"reasonTypeId\": 1,\n              \"reasonType\": \"Badger infestation\"\n            }\n          ]\n        },\n        {\n          \"closureId\": 11,\n          \"dateFrom\": \"2019-05-05T00:00:00\",\n          \"dateTo\": null,\n          \"reasons\": [\n            {\n              \"reasonTypeId\": 2,\n              \"reasonType\": \"Use as a polling station\"\n            }\n          ]\n        }\n      ],\n      \"address\": {\n        \"address1\": \"St\",\n        \"address2\": \"\",\n        \"address3\": \"\",\n        \"townCity\": \"Spa\",\n        \"county\": \"Down\",\n        \"postCode\": \"BT24 1OC\",\n        \"formattedAddress\": \"23 Old School Road, Spa, Down, BT24 1OC\"\n      }\n    },\n    {\n      \"srn\": \"2137873\",\n      \"institutionName\": \"Slippery Slope School\",\n      \"closures\": [\n        {\n          \"closureId\": 4,\n          \"dateFrom\": \"2026-10-12T00:00:00\",\n          \"dateTo\": null,\n          \"reasons\": [\n            {\n              \"reasonTypeId\": 99,\n              \"reasonType\": \"Flooding or burst pipes\"\n            }\n          ]\n        }\n      ],\n      \"address\": {\n        \"address1\": \"109 Hill Street\",\n        \"address2\": \"\",\n        \"address3\": \"\",\n        \"townCity\": \"Belfast\",\n        \"county\": \"Antrim\",\n        \"postCode\": \"BT3 1AA\",\n        \"formattedAddress\": \"109 Hill Street, Belfast, Antrim, BT3 1AA\"\n      }\n    }\n  ]\n}"
+        }
+      ]
+    },
+    {
+      "name": "Get closures (default - multiple institutions including alt name)",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/closurereasons/all?scenario=altname",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "closurereasons",
+            "all"
+          ],
+          "query": [
+            {
+              "key": "scenario",
+              "value": "altname"
+            }
+          ]
+        },
+        "description": "No query params - this is the example Postman serves by default when the mock URL is hit directly, matching how the Drupal service calls the real API."
+      },
+      "response": [
+        {
+          "name": "200 - multiple institutions, includes an accented name (Colaiste Feirste) for alt-name transliteration",
+          "originalRequest": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/closurereasons/all?scenario=altname",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "closurereasons",
+                "all"
+              ],
+              "query": [
+                {
+                  "key": "scenario",
+                  "value": "altname"
+                }
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "cookie": [],
+          "body": "{\"closures\":[{\"srn\":\"1030326\",\"institutionName\":\"Our Lady's Girls' College\",\"closures\":[{\"closureId\":1,\"dateFrom\":\"2030-07-29T00:00:00\",\"dateTo\":null,\"reasons\":[{\"reasonTypeId\":4,\"reasonType\":\"Death of a member of staff, pupil or another person working at the school\"}]}],\"address\":{\"address1\":\"Sperrin Hills\",\"address2\":\"\",\"address3\":\"\",\"townCity\":\"Omagh\",\"county\":\"Tyrone\",\"postCode\":\"BT1 1AA\",\"formattedAddress\":\"Sperrin Hills, Omagh, Tyrone, BT1 1AA\"}},{\"srn\":\"1036576\",\"institutionName\":\"Harmony Primary School Belfast\",\"closures\":[{\"closureId\":2,\"dateFrom\":\"2030-09-28T00:00:00\",\"dateTo\":null,\"reasons\":[{\"reasonTypeId\":1,\"reasonType\":\"Adverse weather\"},{\"reasonTypeId\":2,\"reasonType\":\"Use as a polling station\"}]}],\"address\":{\"address1\":\"Brookhill\",\"address2\":\"\",\"address3\":\"\",\"townCity\":\"Belfast\",\"county\":\"Antrim\",\"postCode\":\"BT2 2BB\",\"formattedAddress\":\"Brookhill, Belfast, Antrim, BT2 2BB\"}},{\"srn\":\"2031876\",\"institutionName\":\"St Trinian's High School\",\"closures\":[{\"closureId\":3,\"dateFrom\":\"2019-01-01T00:00:00\",\"dateTo\":null,\"reasons\":[{\"reasonTypeId\":99,\"reasonType\":\"Flooding or burst pipes\"}]}],\"address\":{\"address1\":\"Barchester\",\"address2\":\"\",\"address3\":\"\",\"townCity\":\"Barchester\",\"county\":\"Down\",\"postCode\":\"BT3 3CC\",\"formattedAddress\":\"Barchester, Down, BT3 3CC\"}},{\"srn\":\"3041234\",\"institutionName\":\"St Example's Primary School\",\"closures\":[{\"closureId\":4,\"dateFrom\":\"2030-10-01T00:00:00\",\"dateTo\":\"2030-10-03T00:00:00\",\"reasons\":[{\"reasonTypeId\":1,\"reasonType\":\"Adverse weather\"}]}],\"address\":{\"address1\":\"Main Street\",\"address2\":\"\",\"address3\":\"\",\"townCity\":\"Lisburn\",\"county\":\"Antrim\",\"postCode\":\"BT4 4DD\",\"formattedAddress\":\"Main Street, Lisburn, Antrim, BT4 4DD\"}},{\"srn\":\"5051234\",\"institutionName\":\"Two Closures School\",\"closures\":[{\"closureId\":5,\"dateFrom\":\"2031-02-10T00:00:00\",\"dateTo\":null,\"reasons\":[{\"reasonTypeId\":4,\"reasonType\":\"Death of a member of staff, pupil or another person working at the school\"}]},{\"closureId\":6,\"dateFrom\":\"2031-01-05T00:00:00\",\"dateTo\":null,\"reasons\":[{\"reasonTypeId\":1,\"reasonType\":\"Adverse weather\"}]},{\"closureId\":7,\"dateFrom\":\"2019-05-05T00:00:00\",\"dateTo\":null,\"reasons\":[{\"reasonTypeId\":2,\"reasonType\":\"Use as a polling station\"}]}],\"address\":{\"address1\":\"School Road\",\"address2\":\"\",\"address3\":\"\",\"townCity\":\"Coleraine\",\"county\":\"Londonderry\",\"postCode\":\"BT5 5EE\",\"formattedAddress\":\"School Road, Coleraine, Londonderry, BT5 5EE\"}},{\"srn\":\"6061234\",\"institutionName\":\"Coláiste Feirste\",\"closures\":[{\"closureId\":8,\"dateFrom\":\"2030-11-15T00:00:00\",\"dateTo\":null,\"reasons\":[{\"reasonTypeId\":1,\"reasonType\":\"Adverse weather\"}]}],\"address\":{\"address1\":\"7 Beechview Park\",\"address2\":\"\",\"address3\":\"\",\"townCity\":\"Belfast\",\"county\":\"Antrim\",\"postCode\":\"BT12 7PY\",\"formattedAddress\":\"7 Beechview Park, Belfast, Antrim, BT12 7PY\"}}]}"
+        }
+      ]
+    },
+    {
+      "name": "Get closures - no closures",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/closurereasons/all?scenario=noclosures",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "closurereasons",
+            "all"
+          ],
+          "query": [
+            {
+              "key": "scenario",
+              "value": "noclosures"
+            }
+          ]
+        },
+        "description": "Empty closures array - valid response, zero closures currently in effect."
+      },
+      "response": [
+        {
+          "name": "200 - empty closures array",
+          "originalRequest": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/closurereasons/all?scenario=noclosures",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "closurereasons",
+                "all"
+              ],
+              "query": [
+                {
+                  "key": "scenario",
+                  "value": "noclosures"
+                }
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "cookie": [],
+          "body": "{\"closures\":[]}"
+        }
+      ]
+    },
+    {
+      "name": "Get closures - blank/malformed response",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/closurereasons/all?scenario=blank",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "closurereasons",
+            "all"
+          ],
+          "query": [
+            {
+              "key": "scenario",
+              "value": "blank"
+            }
+          ]
+        },
+        "description": "No closures key at all - triggers the service's error state (processData sets hasErrors() = TRUE)."
+      },
+      "response": [
+        {
+          "name": "200 - blank body, no closures key",
+          "originalRequest": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/closurereasons/all?scenario=blank",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "closurereasons",
+                "all"
+              ],
+              "query": [
+                {
+                  "key": "scenario",
+                  "value": "blank"
+                }
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "cookie": [],
+          "body": "{}"
+        }
+      ]
+    },
+    {
+      "name": "Get closures (default - multiple institutions - test search)",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/closurereasons/all?scenario=test-search",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "closurereasons",
+            "all"
+          ],
+          "query": [
+            {
+              "key": "scenario",
+              "value": "test-search"
+            }
+          ]
+        },
+        "description": "25 current, non-expired institutions with a single closure each - a larger dataset for exercising the client-side search/filter (school-closures.js) against more than a handful of rows."
+      },
+      "response": [
+        {
+          "name": "200 - 25 institutions (search/filter test volume)",
+          "originalRequest": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/closurereasons/all?scenario=test-search",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "closurereasons",
+                "all"
+              ],
+              "query": [
+                {
+                  "key": "scenario",
+                  "value": "test-search"
+                }
+              ]
+            },
+            "description": "25 current, non-expired institutions with a single closure each - a larger dataset for exercising the client-side search/filter (school-closures.js) against more than a handful of rows."
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\"closures\":[{\"srn\":\"9000001\",\"institutionName\":\"Test Primary School 1\",\"closures\":[{\"closureId\":101,\"dateFrom\":\"2031-01-01T00:00:00\",\"dateTo\":null,\"reasons\":[{\"reasonTypeId\":1,\"reasonType\":\"Adverse weather\"}]}],\"address\":{\"address1\":\"1 Test Street\",\"address2\":\"\",\"address3\":\"\",\"townCity\":\"Testtown\",\"county\":\"Antrim\",\"postCode\":\"BT1 1AA\",\"formattedAddress\":\"1 Test Street, Testtown, Antrim, BT1 1AA\"}},{\"srn\":\"9000002\",\"institutionName\":\"Test Primary School 2\",\"closures\":[{\"closureId\":102,\"dateFrom\":\"2031-01-02T00:00:00\",\"dateTo\":null,\"reasons\":[{\"reasonTypeId\":1,\"reasonType\":\"Adverse weather\"}]}],\"address\":{\"address1\":\"2 Test Street\",\"address2\":\"\",\"address3\":\"\",\"townCity\":\"Testtown\",\"county\":\"Antrim\",\"postCode\":\"BT2 2AA\",\"formattedAddress\":\"2 Test Street, Testtown, Antrim, BT2 2AA\"}},{\"srn\":\"9000003\",\"institutionName\":\"Test Primary School 3\",\"closures\":[{\"closureId\":103,\"dateFrom\":\"2031-01-03T00:00:00\",\"dateTo\":null,\"reasons\":[{\"reasonTypeId\":1,\"reasonType\":\"Adverse weather\"}]}],\"address\":{\"address1\":\"3 Test Street\",\"address2\":\"\",\"address3\":\"\",\"townCity\":\"Testtown\",\"county\":\"Antrim\",\"postCode\":\"BT3 3AA\",\"formattedAddress\":\"3 Test Street, Testtown, Antrim, BT3 3AA\"}},{\"srn\":\"9000004\",\"institutionName\":\"Test Primary School 4\",\"closures\":[{\"closureId\":104,\"dateFrom\":\"2031-01-04T00:00:00\",\"dateTo\":null,\"reasons\":[{\"reasonTypeId\":1,\"reasonType\":\"Adverse weather\"}]}],\"address\":{\"address1\":\"4 Test Street\",\"address2\":\"\",\"address3\":\"\",\"townCity\":\"Testtown\",\"county\":\"Antrim\",\"postCode\":\"BT4 4AA\",\"formattedAddress\":\"4 Test Street, Testtown, Antrim, BT4 4AA\"}},{\"srn\":\"9000005\",\"institutionName\":\"Test Primary School 5\",\"closures\":[{\"closureId\":105,\"dateFrom\":\"2031-01-05T00:00:00\",\"dateTo\":null,\"reasons\":[{\"reasonTypeId\":1,\"reasonType\":\"Adverse weather\"}]}],\"address\":{\"address1\":\"5 Test Street\",\"address2\":\"\",\"address3\":\"\",\"townCity\":\"Testtown\",\"county\":\"Antrim\",\"postCode\":\"BT5 5AA\",\"formattedAddress\":\"5 Test Street, Testtown, Antrim, BT5 5AA\"}},{\"srn\":\"9000006\",\"institutionName\":\"Test Primary School 6\",\"closures\":[{\"closureId\":106,\"dateFrom\":\"2031-01-06T00:00:00\",\"dateTo\":null,\"reasons\":[{\"reasonTypeId\":1,\"reasonType\":\"Adverse weather\"}]}],\"address\":{\"address1\":\"6 Test Street\",\"address2\":\"\",\"address3\":\"\",\"townCity\":\"Testtown\",\"county\":\"Antrim\",\"postCode\":\"BT6 6AA\",\"formattedAddress\":\"6 Test Street, Testtown, Antrim, BT6 6AA\"}},{\"srn\":\"9000007\",\"institutionName\":\"Test Primary School 7\",\"closures\":[{\"closureId\":107,\"dateFrom\":\"2031-01-07T00:00:00\",\"dateTo\":null,\"reasons\":[{\"reasonTypeId\":1,\"reasonType\":\"Adverse weather\"}]}],\"address\":{\"address1\":\"7 Test Street\",\"address2\":\"\",\"address3\":\"\",\"townCity\":\"Testtown\",\"county\":\"Antrim\",\"postCode\":\"BT7 7AA\",\"formattedAddress\":\"7 Test Street, Testtown, Antrim, BT7 7AA\"}},{\"srn\":\"9000008\",\"institutionName\":\"Test Primary School 8\",\"closures\":[{\"closureId\":108,\"dateFrom\":\"2031-01-08T00:00:00\",\"dateTo\":null,\"reasons\":[{\"reasonTypeId\":1,\"reasonType\":\"Adverse weather\"}]}],\"address\":{\"address1\":\"8 Test Street\",\"address2\":\"\",\"address3\":\"\",\"townCity\":\"Testtown\",\"county\":\"Antrim\",\"postCode\":\"BT8 8AA\",\"formattedAddress\":\"8 Test Street, Testtown, Antrim, BT8 8AA\"}},{\"srn\":\"9000009\",\"institutionName\":\"Test Primary School 9\",\"closures\":[{\"closureId\":109,\"dateFrom\":\"2031-01-09T00:00:00\",\"dateTo\":null,\"reasons\":[{\"reasonTypeId\":1,\"reasonType\":\"Adverse weather\"}]}],\"address\":{\"address1\":\"9 Test Street\",\"address2\":\"\",\"address3\":\"\",\"townCity\":\"Testtown\",\"county\":\"Antrim\",\"postCode\":\"BT9 9AA\",\"formattedAddress\":\"9 Test Street, Testtown, Antrim, BT9 9AA\"}},{\"srn\":\"9000010\",\"institutionName\":\"Test Primary School 10\",\"closures\":[{\"closureId\":110,\"dateFrom\":\"2031-01-10T00:00:00\",\"dateTo\":null,\"reasons\":[{\"reasonTypeId\":1,\"reasonType\":\"Adverse weather\"}]}],\"address\":{\"address1\":\"10 Test Street\",\"address2\":\"\",\"address3\":\"\",\"townCity\":\"Testtown\",\"county\":\"Antrim\",\"postCode\":\"BT10 10AA\",\"formattedAddress\":\"10 Test Street, Testtown, Antrim, BT10 10AA\"}},{\"srn\":\"9000011\",\"institutionName\":\"Test Primary School 11\",\"closures\":[{\"closureId\":111,\"dateFrom\":\"2031-01-11T00:00:00\",\"dateTo\":null,\"reasons\":[{\"reasonTypeId\":1,\"reasonType\":\"Adverse weather\"}]}],\"address\":{\"address1\":\"11 Test Street\",\"address2\":\"\",\"address3\":\"\",\"townCity\":\"Testtown\",\"county\":\"Antrim\",\"postCode\":\"BT11 11AA\",\"formattedAddress\":\"11 Test Street, Testtown, Antrim, BT11 11AA\"}},{\"srn\":\"9000012\",\"institutionName\":\"Test Primary School 12\",\"closures\":[{\"closureId\":112,\"dateFrom\":\"2031-01-12T00:00:00\",\"dateTo\":null,\"reasons\":[{\"reasonTypeId\":1,\"reasonType\":\"Adverse weather\"}]}],\"address\":{\"address1\":\"12 Test Street\",\"address2\":\"\",\"address3\":\"\",\"townCity\":\"Testtown\",\"county\":\"Antrim\",\"postCode\":\"BT12 12AA\",\"formattedAddress\":\"12 Test Street, Testtown, Antrim, BT12 12AA\"}},{\"srn\":\"9000013\",\"institutionName\":\"Test Primary School 13\",\"closures\":[{\"closureId\":113,\"dateFrom\":\"2031-01-13T00:00:00\",\"dateTo\":null,\"reasons\":[{\"reasonTypeId\":1,\"reasonType\":\"Adverse weather\"}]}],\"address\":{\"address1\":\"13 Test Street\",\"address2\":\"\",\"address3\":\"\",\"townCity\":\"Testtown\",\"county\":\"Antrim\",\"postCode\":\"BT13 13AA\",\"formattedAddress\":\"13 Test Street, Testtown, Antrim, BT13 13AA\"}},{\"srn\":\"9000014\",\"institutionName\":\"Test Primary School 14\",\"closures\":[{\"closureId\":114,\"dateFrom\":\"2031-01-14T00:00:00\",\"dateTo\":null,\"reasons\":[{\"reasonTypeId\":1,\"reasonType\":\"Adverse weather\"}]}],\"address\":{\"address1\":\"14 Test Street\",\"address2\":\"\",\"address3\":\"\",\"townCity\":\"Testtown\",\"county\":\"Antrim\",\"postCode\":\"BT14 14AA\",\"formattedAddress\":\"14 Test Street, Testtown, Antrim, BT14 14AA\"}},{\"srn\":\"9000015\",\"institutionName\":\"Test Primary School 15\",\"closures\":[{\"closureId\":115,\"dateFrom\":\"2031-01-15T00:00:00\",\"dateTo\":null,\"reasons\":[{\"reasonTypeId\":1,\"reasonType\":\"Adverse weather\"}]}],\"address\":{\"address1\":\"15 Test Street\",\"address2\":\"\",\"address3\":\"\",\"townCity\":\"Testtown\",\"county\":\"Antrim\",\"postCode\":\"BT15 15AA\",\"formattedAddress\":\"15 Test Street, Testtown, Antrim, BT15 15AA\"}},{\"srn\":\"9000016\",\"institutionName\":\"Test Primary School 16\",\"closures\":[{\"closureId\":116,\"dateFrom\":\"2031-01-16T00:00:00\",\"dateTo\":null,\"reasons\":[{\"reasonTypeId\":1,\"reasonType\":\"Adverse weather\"}]}],\"address\":{\"address1\":\"16 Test Street\",\"address2\":\"\",\"address3\":\"\",\"townCity\":\"Testtown\",\"county\":\"Antrim\",\"postCode\":\"BT16 16AA\",\"formattedAddress\":\"16 Test Street, Testtown, Antrim, BT16 16AA\"}},{\"srn\":\"9000017\",\"institutionName\":\"Test Primary School 17\",\"closures\":[{\"closureId\":117,\"dateFrom\":\"2031-01-17T00:00:00\",\"dateTo\":null,\"reasons\":[{\"reasonTypeId\":1,\"reasonType\":\"Adverse weather\"}]}],\"address\":{\"address1\":\"17 Test Street\",\"address2\":\"\",\"address3\":\"\",\"townCity\":\"Testtown\",\"county\":\"Antrim\",\"postCode\":\"BT17 17AA\",\"formattedAddress\":\"17 Test Street, Testtown, Antrim, BT17 17AA\"}},{\"srn\":\"9000018\",\"institutionName\":\"Test Primary School 18\",\"closures\":[{\"closureId\":118,\"dateFrom\":\"2031-01-18T00:00:00\",\"dateTo\":null,\"reasons\":[{\"reasonTypeId\":1,\"reasonType\":\"Adverse weather\"}]}],\"address\":{\"address1\":\"18 Test Street\",\"address2\":\"\",\"address3\":\"\",\"townCity\":\"Testtown\",\"county\":\"Antrim\",\"postCode\":\"BT18 18AA\",\"formattedAddress\":\"18 Test Street, Testtown, Antrim, BT18 18AA\"}},{\"srn\":\"9000019\",\"institutionName\":\"Test Primary School 19\",\"closures\":[{\"closureId\":119,\"dateFrom\":\"2031-01-19T00:00:00\",\"dateTo\":null,\"reasons\":[{\"reasonTypeId\":1,\"reasonType\":\"Adverse weather\"}]}],\"address\":{\"address1\":\"19 Test Street\",\"address2\":\"\",\"address3\":\"\",\"townCity\":\"Testtown\",\"county\":\"Antrim\",\"postCode\":\"BT19 19AA\",\"formattedAddress\":\"19 Test Street, Testtown, Antrim, BT19 19AA\"}},{\"srn\":\"9000020\",\"institutionName\":\"Test Primary School 20\",\"closures\":[{\"closureId\":120,\"dateFrom\":\"2031-01-20T00:00:00\",\"dateTo\":null,\"reasons\":[{\"reasonTypeId\":1,\"reasonType\":\"Adverse weather\"}]}],\"address\":{\"address1\":\"20 Test Street\",\"address2\":\"\",\"address3\":\"\",\"townCity\":\"Testtown\",\"county\":\"Antrim\",\"postCode\":\"BT20 20AA\",\"formattedAddress\":\"20 Test Street, Testtown, Antrim, BT20 20AA\"}},{\"srn\":\"9000021\",\"institutionName\":\"Test Primary School 21\",\"closures\":[{\"closureId\":121,\"dateFrom\":\"2031-01-21T00:00:00\",\"dateTo\":null,\"reasons\":[{\"reasonTypeId\":1,\"reasonType\":\"Adverse weather\"}]}],\"address\":{\"address1\":\"21 Test Street\",\"address2\":\"\",\"address3\":\"\",\"townCity\":\"Testtown\",\"county\":\"Antrim\",\"postCode\":\"BT21 21AA\",\"formattedAddress\":\"21 Test Street, Testtown, Antrim, BT21 21AA\"}},{\"srn\":\"9000022\",\"institutionName\":\"Test Primary School 22\",\"closures\":[{\"closureId\":122,\"dateFrom\":\"2031-01-22T00:00:00\",\"dateTo\":null,\"reasons\":[{\"reasonTypeId\":1,\"reasonType\":\"Adverse weather\"}]}],\"address\":{\"address1\":\"22 Test Street\",\"address2\":\"\",\"address3\":\"\",\"townCity\":\"Testtown\",\"county\":\"Antrim\",\"postCode\":\"BT22 22AA\",\"formattedAddress\":\"22 Test Street, Testtown, Antrim, BT22 22AA\"}},{\"srn\":\"9000023\",\"institutionName\":\"Test Primary School 23\",\"closures\":[{\"closureId\":123,\"dateFrom\":\"2031-01-23T00:00:00\",\"dateTo\":null,\"reasons\":[{\"reasonTypeId\":1,\"reasonType\":\"Adverse weather\"}]}],\"address\":{\"address1\":\"23 Test Street\",\"address2\":\"\",\"address3\":\"\",\"townCity\":\"Testtown\",\"county\":\"Antrim\",\"postCode\":\"BT23 23AA\",\"formattedAddress\":\"23 Test Street, Testtown, Antrim, BT23 23AA\"}},{\"srn\":\"9000024\",\"institutionName\":\"Test Primary School 24\",\"closures\":[{\"closureId\":124,\"dateFrom\":\"2031-01-24T00:00:00\",\"dateTo\":null,\"reasons\":[{\"reasonTypeId\":1,\"reasonType\":\"Adverse weather\"}]}],\"address\":{\"address1\":\"24 Test Street\",\"address2\":\"\",\"address3\":\"\",\"townCity\":\"Testtown\",\"county\":\"Antrim\",\"postCode\":\"BT24 24AA\",\"formattedAddress\":\"24 Test Street, Testtown, Antrim, BT24 24AA\"}},{\"srn\":\"9000025\",\"institutionName\":\"Test Primary School 25\",\"closures\":[{\"closureId\":125,\"dateFrom\":\"2031-01-25T00:00:00\",\"dateTo\":null,\"reasons\":[{\"reasonTypeId\":1,\"reasonType\":\"Adverse weather\"}]}],\"address\":{\"address1\":\"25 Test Street\",\"address2\":\"\",\"address3\":\"\",\"townCity\":\"Testtown\",\"county\":\"Antrim\",\"postCode\":\"BT25 25AA\",\"formattedAddress\":\"25 Test Street, Testtown, Antrim, BT25 25AA\"}}]}"
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "",
+      "description": "Filled in automatically when this collection is opened via its Postman mock server URL."
+    }
+  ]
+}

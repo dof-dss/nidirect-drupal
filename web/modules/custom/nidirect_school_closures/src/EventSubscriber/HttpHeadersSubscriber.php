@@ -8,6 +8,9 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
+/**
+ * Event subscriber for handling school closure caching.
+ */
 class HttpHeadersSubscriber implements EventSubscriberInterface {
 
   /**
@@ -29,39 +32,24 @@ class HttpHeadersSubscriber implements EventSubscriberInterface {
   }
 
   /**
-   * Looks for a specific school closures cache tag in the response
-   * headers, because we can't tell otherwise if the token or list
-   * has otherwise rendered.
-   *
-   * If it's present, then we sync the surrogate-control header
-   * value to a lower value on the pages it appears on so that
-   * any school closure updates aren't cached for longer than
-   * the refresh interval is on the data feed.
+   * Checks if response content contains rendered school closures and
+   * adds a surrogate-control header using the school closures cache settings
+   * to ensure the page containing it expires properly.
    *
    * @param \Symfony\Component\HttpKernel\Event\ResponseEvent $event
    *   The response event object from the event handler.
    */
   public function remoteSurrogateControlHeader(ResponseEvent $event) {
-    // Only trigger when school closures token has rendered.
-    // We have no visiblity of the final render arrays at this point
-    // so we can either rely on x-drupal-cache-tags when in development
-    // to see what has rendered, but in prod we don't want those header
-    // values being shown so they become unusable here too.
-    // What we can do is inspect the full HTML response and look
-    // for a known render string. It's not perfect, but probably better
-    // than leaving cache tag debug headers ON by default and doing some
-    // kind of removal process in here; that'd be very confusing for
-    // future maintenance and developers.
+
     $response = $event->getResponse();
     $content = $response->getContent();
 
-    // Is there nidirect_school_closures render markup in the response string?
+    // Check if the school closures markup (via token) is rendered on the output.
     if (preg_match('|<div id="school-closure-results">|', $content)) {
       $response->headers->remove('surrogate-control');
-      // Replace with config value for school data feed expiration.
       $cache_duration = $this->configFactory->get('nidirect_school_closures.settings')->get('cache_duration') ?? 10;
 
-      // Convert minutes from config into seconds for surrogate-control TTL.
+      // Add the school closures cache age to the response.
       $response->headers->set('surrogate-control', 'max-age=' . ($cache_duration * 60));
     }
   }
@@ -70,8 +58,7 @@ class HttpHeadersSubscriber implements EventSubscriberInterface {
    * {@inheritdoc}
    */
   public static function getSubscribedEvents() {
-    // -100 weighting overrides other services such as those from
-    // http_cache_control and fastly modules.
+    // Float this handler so that it is called before other cache services.
     $events[KernelEvents::RESPONSE][] = ['remoteSurrogateControlHeader', -100];
     return $events;
   }

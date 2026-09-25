@@ -20,6 +20,11 @@ $databases['default']['default'] = [
   'pdo' => [PDO::MYSQL_ATTR_COMPRESS => !empty($creds['query']['compression'])]
 ];
 
+// Enable cache tag headers on Upsun development environments without disabling cache.
+if (getenv('PLATFORM_ENVIRONMENT_TYPE') === 'development') {
+  $settings['container_yamls'][] = $app_root . '/' . $site_path . '/development.services.platformsh.yml';
+}
+
 // Enable verbose error messages on development branches, but not on the production branch.
 // You may add more debug-centric settings here if desired to have them automatically enable
 // on development but not production.

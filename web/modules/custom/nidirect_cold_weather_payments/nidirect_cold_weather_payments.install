@@ -1,0 +1,14 @@
+<?php
+
+/**
+ * @file
+ * Install, update, uninstall & requirements hooks for NIDirect Cold Weather Payments module.
+ */
+
+/**
+ * Cleanup stale config from geolocation fields.
+ */
+function nidirect_cold_weather_payments_update_10001() {
+  // Remove redundant CWP REST resource.
+  \Drupal::configFactory()->getEditable('rest.resource.cold_weather_payment_resource')->delete();
+}
