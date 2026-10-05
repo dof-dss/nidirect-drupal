@@ -1,30 +1,71 @@
 <div id="school-closure-results">
 
-  <p>{% trans %}Last updated{% endtrans %}: {{ updated|date('g.i a') }} on {{ updated|date('jS F Y') }}.</p>
+  <p>
+    {% trans %}Last updated{% endtrans %}:
+    <time datetime="{{ updated|date('c') }}">
+      {{ updated|date('g.i a') }} on {{ updated|date('j F Y') }}
+    </time>.
+  </p>
 
   {% if closures|length > 0 %}
-    {% for school in closures %}
-    <div class="school-closure">
-      <h3 class="school-closure__name" data-transliterated="{{ school.altname }}">{{ school.name }}</h3>
-      <em class="school-closure__location">{{ school.location }}</em>
 
-      <ul class="description">
-        {% for closure in school.closures %}
-        <li>
-          {%- if closure.dateTo -%}
-            {{ '@from to @to'|t({'@from': closure.date|date('l jS F Y'), '@to': closure.dateTo|date('l jS F Y')}) }}
-          {%- else -%}
-            {{ closure.date|date('l jS F Y') }}
-          {%- endif %}
-          - {{ closure.reason|t|default("") }}
+    <ul class="school-closures">
+
+      {% for school in closures %}
+        <li class="school-closure">
+          <h2
+            class="school-closure__name"
+            data-transliterated="{{ school.altname }}"
+          >{{ school.name }}</h2>
+
+          {% if school.location %}
+            <p class="school-closure__location">
+              {{ school.location|replace({'NULL,': '', 'NULL': ''}) }}
+            </p>
+          {% endif %}
+
+          <ul class="school-closure__events">
+            {% for closure in school.closures %}
+              <li class="school-closure__event">
+                {% if closure.dateTo %}
+                  <time datetime="{{ closure.date|date('Y-m-d') }}">
+                    {{ closure.date|date('l j F Y') }}
+                  </time>
+                  to
+                  <time datetime="{{ closure.dateTo|date('Y-m-d') }}">
+                    {{ closure.dateTo|date('l j F Y') }}
+                  </time>
+                {% else %}
+                  <time datetime="{{ closure.date|date('Y-m-d') }}">
+                    {{ closure.date|date('l j F Y') }}
+                  </time>
+                {% endif %}
+                {% if 'due to other' not in closure.reason %}
+                  &mdash; closed {{ closure.reason|t }}
+                {% else %}
+                  &mdash; closed
+                {% endif %}
+              </li>
+            {% endfor %}
+          </ul>
+
         </li>
-        {% endfor %}
-      </ul>
-    </div>
-    {% endfor %}
+      {% endfor %}
+
+    </ul>
+
   {% elseif error %}
-    <p>{% trans %}Sorry, there was a problem with this service. Please contact your school for information on possible closures.{% endtrans %}</p>
+
+    <p>
+      {% trans %}
+        Sorry, there was a problem with this service. Please contact your school for information on possible closures.
+      {% endtrans %}
+    </p>
+
   {% else %}
+
     <p>{% trans %}There are no school closures.{% endtrans %}</p>
+
   {% endif %}
+
 </div>
