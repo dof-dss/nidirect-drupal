@@ -20,7 +20,7 @@
 
           {% if school.location %}
             <p class="school-closure__location">
-              {{ school.location|replace({'NULL,': '', 'NULL': ''}) }}
+              {{ school.location }}
             </p>
           {% endif %}
 
@@ -40,13 +40,11 @@
                     {{ closure.date|date('l j F Y') }}
                   </time>
                 {% endif %}
-                <span class="school-closure__reason">
-                {% if 'due to other' not in closure.reason %}
-                  Closed {{ closure.reason|t }}
-                {% else %}
-                  Closed
+                {% if closure.reason %}
+                  <span class="school-closure__reason">
+                    Closed {{ closure.reason|t }}
+                  </span>
                 {% endif %}
-                </span>
               </li>
             {% endfor %}
           </ul>
