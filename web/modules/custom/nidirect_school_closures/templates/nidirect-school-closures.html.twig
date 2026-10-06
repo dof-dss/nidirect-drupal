@@ -1,11 +1,11 @@
-<div id="school-closure-results">
+<p>
+  {% trans %}Last updated{% endtrans %}:
+  <time datetime="{{ updated|date('c') }}">
+    {{ updated|date('g.i a') }} on {{ updated|date('j F Y') }}
+  </time>.
+</p>
 
-  <p>
-    {% trans %}Last updated{% endtrans %}:
-    <time datetime="{{ updated|date('c') }}">
-      {{ updated|date('g.i a') }} on {{ updated|date('j F Y') }}
-    </time>.
-  </p>
+<div id="school-closure-results">
 
   {% if closures|length > 0 %}
 
@@ -40,18 +40,18 @@
                     {{ closure.date|date('l j F Y') }}
                   </time>
                 {% endif %}
+                <span class="school-closure__reason">
                 {% if 'due to other' not in closure.reason %}
-                  &mdash; closed {{ closure.reason|t }}
+                  Closed {{ closure.reason|t }}
                 {% else %}
-                  &mdash; closed
+                  Closed
                 {% endif %}
+                </span>
               </li>
             {% endfor %}
           </ul>
-
         </li>
       {% endfor %}
-
     </ul>
 
   {% elseif error %}

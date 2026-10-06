@@ -1,8 +1,18 @@
+#sc-form-label {
+  font-size: 2.4rem;
+  line-height: 3rem;
+}
+
+#sc-aria-alert {
+  font-weight: bold;
+  margin: .5em 0;
+}
+
 ul.school-closures {
   list-style: none;
   margin: 2.5em 0;
   padding: 2em 0;
-  box-shadow: 0 1px 0 0 #d1d1d1, 0 -1px 0 0 #d1d1d1;
+  box-shadow: 0 1px 0 0 #999, 0 -1px 0 0 #999;
 
   li.school-closure {
     margin: 0 0 2em;
@@ -31,11 +41,19 @@ ul.school-closures {
 
       .school-closure__event {
         font-size: 1.6rem;
-        line-height: 3rem;
+        line-height: 2.4rem;
 
         time {
+          display: inline-block;
+          line-height: 3rem;
           font-weight: bold;
         }
+
+        .school-closure__reason {
+          display: block;
+          font-size: 1.5rem;
+        }
+
       }
     }
   }
