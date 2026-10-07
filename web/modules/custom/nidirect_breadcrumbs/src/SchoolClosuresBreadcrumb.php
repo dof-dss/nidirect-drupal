@@ -74,7 +74,7 @@ final class SchoolClosuresBreadcrumb implements BreadcrumbBuilderInterface {
 
     $breadcrumb = new Breadcrumb();
     $links[] = Link::createFromRoute(t('Home'), '<front>');
-    // TODO: replace fixed text/paths with routes to actual nodes or
+    // @todo replace fixed text/paths with routes to actual nodes or
     // taxonomy term pages.
     $links[] = Link::fromTextAndUrl('Education', Url::fromUserInput('/information-and-services/education'));
     $links[] = Link::fromTextAndUrl('Schools, learning and development', Url::fromUserInput('/information-and-services/education/schools-learning-and-development'));

@@ -2,24 +2,15 @@
 
 namespace Drupal\nidirect_webforms\Plugin\WebformHandler;
 
-use Drupal\Component\Datetime\TimeInterface;
 use Drupal\Component\Serialization\Json;
-use Drupal\Component\Utility\Html;
-use Drupal\Component\Utility\Xss;
-use Drupal\Core\Cache\Cache;
 use Drupal\Core\Cache\CacheableMetadata;
-use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Database\Database;
 use Drupal\Core\Datetime\DrupalDateTime;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
-use Drupal\Core\TempStore\PrivateTempStoreFactory;
 use Drupal\datetime\Plugin\Field\FieldType\DateTimeItemInterface;
-use Drupal\webform\Entity\Webform;
 use Drupal\webform\Plugin\WebformHandlerBase;
 use Drupal\webform\Utility\WebformFormHelper;
-use Drupal\webform\WebformInterface;
-use Drupal\webform\WebformSubmissionForm;
 use Drupal\webform\WebformSubmissionInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -176,7 +167,6 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
     // allow users to amend the booking. Since the original booking
     // submission is never stored, all the booking data is encrypted
     // and embedded in the link.
-
     // Early return if no booking data in the request.
     if ($this->request->query->has('booking') === FALSE) {
       $webform->setElementProperties('amend_booking_page', ['#access' => FALSE]);
@@ -260,7 +250,6 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
     // The booking reference is collected in the very first wizard page.
     // Once it is submitted and validated, form_state will contain the
     // processed booking reference (see processVisitBookingReference()).
-
     $this->bookingReference = $form_state->get('booking_reference_processed');
 
     // Pass configuration and the processed booking reference
@@ -330,7 +319,6 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
       // If there are errors with the booking reference, we might have
       // to halt the amendment process, or only allow
       // specific amendments.
-
       $error_status = $this->bookingReference['error_status'] ?? FALSE;
 
       if ($error_status) {
@@ -459,7 +447,6 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
 
     // If the main visitor ID duplicates an existing additional
     // visitor ID, remove the additional visitor.
-
     if (!empty($visitor_1_id) && $duplicate_visitor_id_key = array_search($visitor_1_id, $additional_visitor_ids)) {
 
       // Determine the additional visitor number from the key for
@@ -555,7 +542,7 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
             'thursday',
             'friday',
             'saturday',
-            'sunday'
+            'sunday',
           ];
 
           for ($j = 1; $j <= 7; $j++) {
@@ -606,7 +593,6 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
 
     // Deal with remembered additional visitors versus amending
     // a booking containing additional visitors.
-
     $elements['msg_existing_additional_visitors']['#access'] = FALSE;
     $elements['msg_additional_visitors']['#access'] = FALSE;
     $elements['msg_amend_additional_visitors']['#access'] = FALSE;
@@ -860,10 +846,8 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
 
       // The form accommodates two additional adults and five
       // additional children.
-
       // Reset secure value elements (bit like hidden elements)
       // keeping track of additional visitors.
-
       for ($i = 1; $i <= 5; $i++) {
         $form_state->setValue('av' . $i . '_id', '');
         $form_state->setValue('av' . $i . '_dob', NULL);
@@ -887,7 +871,7 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
         if (!empty($visitor_id) && !empty($visitor_dob)) {
           $additional_visitors[] = [
             'id' => $visitor_id,
-            'dob' => $visitor_dob->format('d/m/Y H:i')
+            'dob' => $visitor_dob->format('d/m/Y H:i'),
           ];
         }
       }
@@ -1314,7 +1298,6 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
     // falls within certain dates. Weekend slots cannot be booked where
     // the visit type is enhanced (booking reference visit type
     // identifier is 'E').
-
     $visit_type_id = $this->bookingReference['visit_type_id'];
 
     $date = $this->bookingReference['date'];
@@ -1388,7 +1371,6 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
       // No data in cache, so try file instead. Every time the
       // external service posts data to prison visits api controller,
       // data is stored in cache and written to file.
-
       $file_uri = 'private://nidirect_webforms/prison_visit_slots_data.json';
       $file_contents = file_exists($file_uri) ? file_get_contents($file_uri) : NULL;
 

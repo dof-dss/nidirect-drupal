@@ -10,7 +10,6 @@ use Drupal\geocoder\GeocoderInterface;
 use Drupal\nidirect_gp\PostcodeExtractor;
 use Drupal\views\ViewExecutable;
 use Geocoder\Model\AddressCollection;
-use maxh\Nominatim\Exceptions\NominatimException;
 use maxh\Nominatim\Nominatim;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;

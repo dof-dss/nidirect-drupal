@@ -566,7 +566,7 @@ class PrisonerPaymentManager {
   }
 
   /**
-   * TODO: Move following functions to Worldpay Client service?
+   * @todo Move following functions to Worldpay Client service?
    */
 
   /**

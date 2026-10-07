@@ -258,7 +258,7 @@ final class CampaignImporterImportController extends ControllerBase {
 
             break;
 
-          default;
+          default:
             break;
 
         }

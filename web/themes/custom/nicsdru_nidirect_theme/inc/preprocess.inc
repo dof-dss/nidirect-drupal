@@ -232,6 +232,7 @@ function nicsdru_nidirect_theme_preprocess_page(array &$variables) {
           // Render Featured and Latest news block.
           $variables['page']['sidebar_second'][] = Helpers::blockContent('featurednews');
           $variables['page']['sidebar_second'][] = Helpers::blockContent('views_block__news_latest_news_block');
+          // Fall through to render related content for news as well.
 
         case 'article':
         case 'news':

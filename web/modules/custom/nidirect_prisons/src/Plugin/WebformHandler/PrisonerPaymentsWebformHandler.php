@@ -7,7 +7,6 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\nidirect_prisons\Service\PrisonerPaymentManager;
 use Drupal\webform\Plugin\WebformHandlerBase;
 use Drupal\webform\Utility\WebformFormHelper;
-use Drupal\webform\WebformSubmissionForm;
 use Drupal\webform\WebformSubmissionInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -393,7 +392,6 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
       // letters, hyphens, single apostrophes, and spaces. And it must
       // contain a first name and last name (each with at least one
       // letter once non-letter characters are removed).
-
       // Regex pattern to match latin alphabet letters, hyphens, single
       // apostrophes, and spaces.
       $pattern_match = '/^[\p{Latin}\-.\'\s]+$/u';

@@ -7,13 +7,11 @@ use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\File\FileExists;
 use Drupal\Core\File\FileSystemInterface;
-use Drupal\Core\Session\UserSession;
 use Drupal\file\Entity\File;
 use GuzzleHttp\ClientInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 /**
  * JSON API controller for receiving available
@@ -104,7 +102,7 @@ final class PrisonVisitBookingJsonApiController extends ControllerBase {
       $response
         ->setData([
           'status' => 'error',
-          'message' => 'Unauthorised request'
+          'message' => 'Unauthorised request',
         ])
         ->setStatusCode(401);
       return $response;
@@ -118,7 +116,7 @@ final class PrisonVisitBookingJsonApiController extends ControllerBase {
         $response
           ->setData([
             'status' => 'success',
-            'message' => 'Data received'
+            'message' => 'Data received',
           ])
           ->setStatusCode(200);
       }
@@ -127,7 +125,7 @@ final class PrisonVisitBookingJsonApiController extends ControllerBase {
         $response
           ->setData([
             'status' => 'error',
-            'message' => 'Bad request'
+            'message' => 'Bad request',
           ])
           ->setStatusCode(400);
       }

@@ -176,15 +176,15 @@ final class GpController extends ControllerBase {
             $links['revert'] = [
               'title' => $this->t('Revert'),
               'url' => $has_translations ?
-              Url::fromRoute('entity.gp.translation_revert', [
-                'gp' => $gp->id(),
-                'gp_revision' => $vid,
-                'langcode' => $langcode,
-              ]) :
-              Url::fromRoute('entity.gp.revision_revert', [
-                'gp' => $gp->id(),
-                'gp_revision' => $vid,
-              ]),
+                Url::fromRoute('entity.gp.translation_revert', [
+                  'gp' => $gp->id(),
+                  'gp_revision' => $vid,
+                  'langcode' => $langcode,
+                ]) :
+                Url::fromRoute('entity.gp.revision_revert', [
+                  'gp' => $gp->id(),
+                  'gp_revision' => $vid,
+                ]),
             ];
           }
 

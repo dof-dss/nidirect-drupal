@@ -77,7 +77,7 @@ final class TranslationHelpBlock extends BlockBase implements ContainerFactoryPl
     $block_content = [
       '#attributes' => [
         'class' => ['section-translation-help'],
-      ]
+      ],
     ];
 
     if ($translation_help_url) {
@@ -94,7 +94,7 @@ final class TranslationHelpBlock extends BlockBase implements ContainerFactoryPl
     else {
       // We can't show a link in the block - so show missing link message.
       $block_content['link-missing'] = [
-        '#markup' => '<span>Translation help page (/articles/translation-help) missing!</span>'
+        '#markup' => '<span>Translation help page (/articles/translation-help) missing!</span>',
       ];
     }
 

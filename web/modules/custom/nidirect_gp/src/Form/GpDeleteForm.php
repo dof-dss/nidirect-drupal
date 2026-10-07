@@ -40,7 +40,7 @@ class GpDeleteForm extends ContentEntityConfirmFormBase {
     // Fetch all GP Practices so we can check for references to this GP.
     // @phpstan-ignore-next-line.
     $gp_practices = \Drupal::entityTypeManager()->getStorage('node')->loadByProperties([
-      'type' => 'gp_practice'
+      'type' => 'gp_practice',
     ]);
 
     foreach ($gp_practices as $gp_practice) {

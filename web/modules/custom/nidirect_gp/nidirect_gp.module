@@ -5,12 +5,10 @@
  * Contains nidirect_gp.module.
  */
 
-use Drupal\Component\Utility\Xss;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\layout_builder\Entity\LayoutBuilderEntityViewDisplay;
-use Drupal\node\NodeInterface;
 use Drupal\views\Plugin\views\query\QueryPluginBase;
 use Drupal\views\ViewExecutable;
 
@@ -118,7 +116,7 @@ function nidirect_gp_form_alter(&$form, FormStateInterface $form_state, $form_id
     foreach ([
       'field_gp_practice_website',
       'field_gp_appointments',
-      'field_gp_prescriptions'
+      'field_gp_prescriptions',
     ] as $link_field) {
       // Replace link fields set as 'entity reference' to textfields, remove
       // the autocomplete description and the FAPI #states which prevents

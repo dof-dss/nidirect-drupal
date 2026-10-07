@@ -328,7 +328,6 @@ class RelatedContentManager {
 
       // External link nodes' titles should be replaced with the link value
       // they contain.
-
       if ($entity->bundle() === 'external_link') {
         /** @var \Drupal\link\Plugin\Field\FieldType\LinkItem $field_link */
         $field_link = $entity->get('field_link')->first();

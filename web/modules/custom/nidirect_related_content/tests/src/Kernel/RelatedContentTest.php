@@ -50,7 +50,7 @@ class RelatedContentTest extends ViewsKernelTestBase {
    */
   public static $testViews = [
     'related_content_manager__content',
-    'related_content_manager__terms'
+    'related_content_manager__terms',
   ];
 
   /**
@@ -68,7 +68,7 @@ class RelatedContentTest extends ViewsKernelTestBase {
     'field',
     'system',
     'flag',
-    'book'
+    'book',
   ];
 
   /**
@@ -144,7 +144,7 @@ class RelatedContentTest extends ViewsKernelTestBase {
     $term_storage = \Drupal::entityTypeManager()->getStorage('taxonomy_term');
     $root = $term_storage->create([
       'name' => 'Motoring',
-      'vid' => $vocabulary->id()
+      'vid' => $vocabulary->id(),
     ]);
     $root->save();
 
