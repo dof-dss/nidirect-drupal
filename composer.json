@@ -44,8 +44,8 @@
         "ext-simplexml": "*",
         "composer/installers": "^2.0",
         "cweagans/composer-patches": "^1.6.5",
-        "dof-dss/nicsdru_origins_modules": "^11",
-        "dof-dss/nicsdru_origins_theme": "^11",
+        "dof-dss/nicsdru_origins_modules": "dev-11.x-dev",
+        "dof-dss/nicsdru_origins_theme": "^11.1",
         "drupal/a11y_form_helpers": "^2.1",
         "drupal/address": "^2.0",
         "drupal/admin_toolbar": "^3.5",
@@ -253,6 +253,9 @@
             "drupal/redirect": {
                 "Add URL Redirects tab to applicable content entity edit forms": "patches/redirect-content-entity-tabs-3245137.patch",
                 "Empty query params on source cause TypeError": "https://www.drupal.org/files/issues/2023-04-05/3315928-17-array_walk-expects-parameter-1-to-be-array.patch"
+            },
+            "drupal/shs": {
+                "Widget does not preselect stored values on edit forms since 2.0.4 (regression from #3517342)": "https://www.drupal.org/files/issues/2026-09-01/shs_preselect_stored_values.patch"
             }
         },
         "composer-exit-on-patch-failure": true,
