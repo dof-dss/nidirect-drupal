@@ -8,159 +8,168 @@
  * Updated: 21/09/2026 - Support for new API.
  */
 
-const scMin = 20,                              // enable filtering if school closures exceed this number.
-  scContainerID = 'school-closure-results',     // id of element containing all school closure records.
-  scItemsClass = 'school-closure',              // class for each individual school closure.
-  scTitleClass = 'school-closure__name',        // class for element containing school title.
-  scLocationClass = 'school-closure__location'; // class for element containing school location.
+(function (Drupal) {
+  'use strict';
 
-let scParent,
-  scResults,
-  scResultsProcessed = [],
-  scForm, scFormLabel, scFilter,
-  scAriaAlert, scStatusDefault;
+  Drupal.behaviors.nidirectSchoolClosuresFilter = {
+    attach: function attach(context) {
+      const scMin = 20;
+      const scContainerID = 'school-closure-results';
+      const scItemsClass = 'school-closure';
+      const scTitleClass = 'school-closure__name';
+      const scLocationClass = 'school-closure__location';
 
-scParent = document.getElementById(scContainerID);
-scResults = scParent.getElementsByClassName(scItemsClass);
-scStatusDefault = '<span class="element-invisible">Showing </span><span class="count">' + scResults.length + '</span> ';
-(scResults.length !== 1) ? scStatusDefault += "schools" : scStatusDefault += "school";
+      const scParent = context.querySelector('#' + scContainerID);
 
-// enable result filter when listing more than n results
-if (scResults.length > scMin) {
+      if (!scParent || scParent.dataset.scInitialised === 'true') {
+        return;
+      }
 
-  let result, name, location, nameText, locationText, transliterated;
+      scParent.dataset.scInitialised = 'true';
 
-  for (let i = 0; i < scResults.length; i++) {
-    result = scResults[i];
-    name = result.getElementsByClassName(scTitleClass)[0];
-    location = result.getElementsByClassName(scLocationClass)[0];
+      const scResults = scParent.getElementsByClassName(scItemsClass);
+      const scResultsProcessed = [];
+      let scForm, scFormLabel, scFilter, scAriaAlert, scStatusDefault;
 
-    nameText = scCleanText(name.innerText);
-    locationText = location ? scCleanText(location.innerText) : '';
-    transliterated = '';
+      scStatusDefault = '<span class="element-invisible">Showing </span><span class="count">' + scResults.length + '</span> ';
+      (scResults.length !== 1) ? scStatusDefault += 'schools' : scStatusDefault += 'school';
 
-    if (name.hasAttribute("data-transliterated")) {
-      transliterated = scCleanText(name.getAttribute("data-transliterated"));
-    }
+      function scUpdateStatus(count, filter) {
+        let plural, status;
+        plural = (count !== 1) ? 's' : '';
 
-    scResultsProcessed[i] = {
-      "name" : nameText,
-      "location" : locationText,
-      "transliterated" : transliterated
-    };
-  }
+        if (filter.length > 0) {
+          status = '<span class="element-invisible">Showing </span><span class="count">' + count + '</span> school' + plural;
+        } else {
+          status = scStatusDefault;
+        }
 
-  // Create search form.
-  scForm = document.createElement("form");
-  scForm.setAttribute("id", "sc-form");
-  scForm.addEventListener('submit', function (event) {
-    event.preventDefault();
-  });
-  scForm.setAttribute("role", "search");
+        if (scAriaAlert.innerHTML !== status) {
+          scAriaAlert.innerHTML = status;
+        }
+      }
 
-  scFormLabel = document.createElement("label");
-  scFormLabel.innerText = "Search by school or town";
-  scFormLabel.setAttribute("for", "sc-filter");
-  scFormLabel.setAttribute("id", "sc-form-label");
+      function scProcessFilter(value) {
+        const filter = scCleanText(value);
+        let count = 0;
 
-  scFilter = document.createElement("input");
-  scFilter.setAttribute("id", "sc-filter");
-  scFilter.setAttribute("type", "search");
-  scFilter.setAttribute("class", "form-text");
-  scFilter.setAttribute("autocomplete", "off");
-  scFilter.setAttribute("maxlength", "128");
-  scFilter.setAttribute("size", "50");
+        for (let i = 0; i < scResultsProcessed.length; i++) {
+          const result = scResultsProcessed[i];
 
-  scFilter.addEventListener('input', function () {
-    scProcessFilter(this.value);
-  });
+          if (
+            !filter ||
+            scMatch(filter, result.name) ||
+            scMatch(filter, result.location) ||
+            scMatch(filter, result.transliterated)
+          ) {
+            scResults[i].hidden = false;
+            count++;
+          } else {
+            scResults[i].hidden = true;
+          }
+        }
 
-  // aria alert for filter matches - will be announced every time its contents are changed
-  scAriaAlert = document.createElement("p");
-  scAriaAlert.setAttribute("id", "sc-aria-alert");
-  scAriaAlert.setAttribute("role", "status");
-  scAriaAlert.innerHTML = scStatusDefault;
+        scUpdateStatus(count, filter);
+      }
 
-  // now assemble and append everything to the DOM
-  scForm.appendChild(scFormLabel);
-  scForm.appendChild(scFilter);
-  scParent.parentNode.insertBefore(scAriaAlert, scParent);
-  scParent.parentNode.insertBefore(scForm, scAriaAlert);
-}
+      function scCleanText(text) {
+        /*
+         * Returns text cleansed to remove punctuation, double-spacing, etc
+         * useful for text comparisons between entered search filter and items to be searched
+         */
 
-function scUpdateStatus(count, filter) {
-  let plural, status;
-  plural = (count !== 1) ? "s" : "";
-  if (filter.length > 0) {
-    status = '<span class="element-invisible">Showing </span><span class="count">' + count + "</span> school" + plural;
-  } else {
-    status = scStatusDefault;
-  }
-  if (scAriaAlert.innerHTML !== status) {
-    scAriaAlert.innerHTML = status;
-  }
-}
+        let cleansed = text.toLowerCase().trim();
 
-function scProcessFilter(value) {
-  const filter = scCleanText(value);
-  let count = 0;
+        // CET think it may be common for people to search for "allsaints" instead of "allsaint" ...
+        cleansed = cleansed.replace('allsaint', 'all saint');
 
-  for (let i = 0; i < scResultsProcessed.length; i++) {
-    let result = scResultsProcessed[i];
+        // normalise "st." and "saint" to "st "
+        cleansed = cleansed.replace(/\bst\.|\bsaint(?!s)/gu, 'st ');
 
-    if (
-      !filter ||
-      scMatch(filter, result.name) ||
-      scMatch(filter, result.location) ||
-      scMatch(filter, result.transliterated)
-    ) {
-      scResults[i].hidden = false;
-      count++;
-    }
-    else {
-      scResults[i].hidden = true;
-    }
-  }
+        // remove any other non-letter/space characters
+        cleansed = cleansed.replace(/[^A-Za-zÀ-ÿ0-9\s]/gu, '');
 
-  scUpdateStatus(count, filter);
-}
+        // replace double spaces with single space
+        cleansed = cleansed.replace(/\s{2,}/g, ' ');
 
-function scCleanText(text) {
+        return cleansed;
+      }
 
-  /*
-   * Returns text cleansed to remove punctuation, double-spacing, etc
-   * useful for text comparisons between entered search filter and items to be searched
-   */
+      function scMatch(needle, haystack) {
+        const arrNeedle = needle.split(' ');
 
-  let cleansed = text.toLowerCase().trim();
+        for (let i = 0; i < arrNeedle.length; i++) {
+          const pattern = '\\b' + arrNeedle[i];
 
-  // CET think it may be common for people to search for "allsaints" instead of "allsaint" ...
-  cleansed = cleansed.replace("allsaint", "all saint");
+          if (haystack.search(new RegExp(pattern, 'g')) < 0) {
+            return false;
+          }
+        }
 
-  // normalise "st." and "saint" to "st "
-  cleansed = cleansed.replace(/\bst\.|\bsaint(?!s)/gu, "st ");
+        return true;
+      }
 
-  // remove any other non-letter/space characters
-  cleansed = cleansed.replace(/[^A-Za-zÀ-ÿ0-9\s]/gu, "");
+      // enable result filter when listing more than n results
+      if (scResults.length > scMin) {
+        let result, name, location, nameText, locationText, transliterated;
 
-  // replace double spaces with single space
-  cleansed = cleansed.replace(/\s{2,}/g, ' ');
+        for (let i = 0; i < scResults.length; i++) {
+          result = scResults[i];
+          name = result.getElementsByClassName(scTitleClass)[0];
+          location = result.getElementsByClassName(scLocationClass)[0];
 
-  //console.log('scCleanText(' + text + ') returns "' + cleansed +'"');
+          nameText = scCleanText(name.innerText);
+          locationText = location ? scCleanText(location.innerText) : '';
+          transliterated = '';
 
-  return cleansed;
-}
+          if (name.hasAttribute('data-transliterated')) {
+            transliterated = scCleanText(name.getAttribute('data-transliterated'));
+          }
 
-function scMatch(needle, haystack) {
-  const arrNeedle = needle.split(' ');
+          scResultsProcessed[i] = {
+            name: nameText,
+            location: locationText,
+            transliterated: transliterated,
+          };
+        }
 
-  for (let i = 0; i < arrNeedle.length; i++) {
-    const pattern = '\\b' + arrNeedle[i];
+        // Create search form.
+        scForm = document.createElement('form');
+        scForm.setAttribute('id', 'sc-form');
+        scForm.addEventListener('submit', function (event) {
+          event.preventDefault();
+        });
+        scForm.setAttribute('role', 'search');
 
-    if (haystack.search(new RegExp(pattern, 'g')) < 0) {
-      return false;
-    }
-  }
+        scFormLabel = document.createElement('label');
+        scFormLabel.innerText = 'Search by school or town';
+        scFormLabel.setAttribute('for', 'sc-filter');
+        scFormLabel.setAttribute('id', 'sc-form-label');
 
-  return true;
-}
+        scFilter = document.createElement('input');
+        scFilter.setAttribute('id', 'sc-filter');
+        scFilter.setAttribute('type', 'search');
+        scFilter.setAttribute('class', 'form-text');
+        scFilter.setAttribute('autocomplete', 'off');
+        scFilter.setAttribute('maxlength', '128');
+        scFilter.setAttribute('size', '50');
+
+        scFilter.addEventListener('input', function () {
+          scProcessFilter(this.value);
+        });
+
+        // aria alert for filter matches - will be announced every time its contents are changed
+        scAriaAlert = document.createElement('p');
+        scAriaAlert.setAttribute('id', 'sc-aria-alert');
+        scAriaAlert.setAttribute('role', 'status');
+        scAriaAlert.innerHTML = scStatusDefault;
+
+        // now assemble and append everything to the DOM
+        scForm.appendChild(scFormLabel);
+        scForm.appendChild(scFilter);
+        scParent.parentNode.insertBefore(scAriaAlert, scParent);
+        scParent.parentNode.insertBefore(scForm, scAriaAlert);
+      }
+    },
+  };
+})(Drupal);
