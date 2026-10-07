@@ -28,7 +28,7 @@ ul.school-closures {
     }
 
     .school-closure__location {
-      margin: .6rem 0 1.2rem;
+      margin: .6rem 0 1.8rem;
       color: #717171;
       font-size: 1.6rem;
       line-height: 1.8rem;
@@ -40,21 +40,46 @@ ul.school-closures {
       padding: 0;
 
       .school-closure__event {
+        padding: 0 0 0 1em;
+        margin: 0 0 1.8rem;
+        box-shadow: inset .3em 0 0 0 #cee4f6;
         font-size: 1.6rem;
         line-height: 2.4rem;
+        text-box: trim-start text text;
+        word-spacing: .3em;
+
+        &:last-child {
+          margin-bottom: 0;
+        }
 
         time {
           display: inline-block;
-          line-height: 3rem;
           font-weight: bold;
+          word-spacing: normal;
         }
 
         .school-closure__reason {
           display: block;
           font-size: 1.5rem;
+          text-box: trim-end text text;
+          word-spacing: normal;
         }
 
       }
     }
   }
 }
+
+/*
+li.school-closure__event::after {
+  width: 30px;
+  content: ' ';
+  display: block;
+  border: 1px dashed #999;
+  margin-top: 1.1rem;
+}
+
+li.school-closure__event:last-child::after {
+    border: 0 solid transparent;
+}
+ */
