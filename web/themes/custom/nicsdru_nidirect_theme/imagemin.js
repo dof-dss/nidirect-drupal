@@ -5,27 +5,18 @@ const GIFImages = 'src/images/**/*.gif';
 const output = 'images';
 
 const imageminJpegtran = require('imagemin-jpegtran');
-const imageminJpegoptim = require('imagemin-jpegoptim');
 const imageminOptipng = require('imagemin-optipng');
 const imageminPngcrush = require('imagemin-pngcrush');
 const imageminPngout = require('imagemin-pngout');
 const imageminZopfli = require('imagemin-zopfli');
 const imageminGifsicle = require('imagemin-gifsicle');
 
-imagemin([JPEGImages], output, {use: [imageminJpegtran()]}).then(() => {
-  console.log('Images optimized');
-});
-
 const optimiseJPEGImages = () =>
     imagemin([JPEGImages], output, {
       plugins: [
-        imageminJpegoptim(),
         imageminJpegtran(),
       ]
     });
-
-optimiseJPEGImages()
-    .catch(error => console.log(error));
 
 const optimisePNGImages = () =>
     imagemin([PNGImages], output, {
@@ -50,4 +41,6 @@ const optimiseGIFImages = () =>
     });
 
 optimiseJPEGImages()
+    .catch(error => console.log(error));
+optimiseGIFImages()
     .catch(error => console.log(error));
