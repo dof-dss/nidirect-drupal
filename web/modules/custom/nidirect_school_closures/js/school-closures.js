@@ -142,7 +142,7 @@
         scForm.setAttribute('role', 'search');
 
         scFormLabel = document.createElement('label');
-        scFormLabel.innerText = 'Search by school or town';
+        scFormLabel.innerText = Drupal.t('Search by school or town');
         scFormLabel.setAttribute('for', 'sc-filter');
         scFormLabel.setAttribute('id', 'sc-form-label');
 
