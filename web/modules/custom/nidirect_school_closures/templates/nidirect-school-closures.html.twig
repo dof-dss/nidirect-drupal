@@ -31,7 +31,7 @@
                   <time datetime="{{ closure.date|date('Y-m-d') }}">
                     {{ closure.date|date('l j F Y') }}
                   </time>
-                  to
+                  {% trans %}to{% endtrans %}
                   <time datetime="{{ closure.dateTo|date('Y-m-d') }}">
                     {{ closure.dateTo|date('l j F Y') }}
                   </time>
@@ -42,7 +42,7 @@
                 {% endif %}
                 {% if closure.reason %}
                   <span class="school-closure__reason">
-                    Closed {{ closure.reason|t }}
+                    {{ 'Closed @reason'|t({'@reason': closure.reason}) }}
                   </span>
                 {% endif %}
               </li>
