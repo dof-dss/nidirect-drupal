@@ -1,0 +1,71 @@
+/*
+ * @file
+ * Provides the styling for form inputs with autocomplete enabled.
+ */
+@import '../../init';
+
+.js {
+
+  // Remove the default autocomplete styling.
+  input.form-autocomplete {
+
+    &.ui-autocomplete-input,
+    &.ui-autocomplete-loading {
+      background: none;
+      position: relative;
+      padding-right: 1.667em;
+    }
+
+  }
+
+  // Override origins autocomplete styling.
+  .origins-autocomplete {
+
+    &::before,
+    &::after {
+      content: '';
+      position: absolute;
+      display: block;
+      z-index: 100000;
+      right: .5em;
+      top: calc(50% - .5em);
+      width: 1em;
+      height: 1em;
+      margin-top: 0;
+      border-radius: 50%;
+    }
+
+    &::before {
+      background-color: #ddd;
+    }
+
+    &::after {
+      width: calc(1em - 3px);
+      height: calc(1em - 3px);
+      transform: translate(-1.5px, 1.5px);
+      background-color: #fff;
+    }
+
+    &:has(input.is-autocompleting)::before {
+      background-image: conic-gradient(
+          #666 0deg,
+          #aaa 100deg,
+          transparent 220deg
+      );
+      animation: origins-autocomplete-spinner .8s linear infinite;
+    }
+  }
+}
+
+@keyframes origins-autocomplete-spinner {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .js .origins-autocomplete:has(input.is-autocompleting)::before {
+    background-image: none;
+    animation: none;
+  }
+}
