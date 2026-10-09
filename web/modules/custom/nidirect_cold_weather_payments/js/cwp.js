@@ -12,10 +12,9 @@
       postcodeField[0].addEventListener('input', function (event) {
         let value = event.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
 
-        if (value.length === 5 && Number.isNaN(value.charAt(4)) || value.length > 5) {
-          const outward = value.slice(0, -3);
-          const inward = value.slice(-3);
-          value = outward + ' ' + inward;
+        const postcode = value.match(/^(BT\d{1,2})(\d[A-Z]{2})$/);
+        if (postcode) {
+          value = `${postcode[1]} ${postcode[2]}`;
         }
 
         event.target.value = value;
