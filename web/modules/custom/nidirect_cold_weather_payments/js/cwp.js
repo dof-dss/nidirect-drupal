@@ -36,7 +36,7 @@
 
       postcodeField[0].addEventListener('focus', function (event) {
         this.classList.remove('error');
-        const errorMessages = document.querySelectorAll('.form-item--error-message');
+        const errorMessages = this.form.querySelectorAll('.cwp-error-container .form-item--error-message');
         errorMessages.forEach(function (message) {
           message.remove();
         });
