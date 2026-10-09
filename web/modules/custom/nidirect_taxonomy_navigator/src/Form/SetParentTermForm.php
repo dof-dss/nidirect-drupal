@@ -144,6 +144,7 @@ class SetParentTermForm extends FormBase {
     $form['actions']['cancel'] = [
       '#type' => 'link',
       '#title' => 'Cancel',
+      // @phpstan-ignore-next-line.
       '#url' => Url::fromUri(\Drupal::request()->getSchemeAndHttpHost() . \Drupal::request()->query->get('destination')),
     ];
 

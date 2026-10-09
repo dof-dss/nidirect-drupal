@@ -2,6 +2,7 @@
 
 namespace Drupal\nidirect_search;
 
+use Drupal\Core\Cache\CacheableMetadata;
 use Drupal\Core\Config\Entity\ConfigEntityListBuilder;
 use Drupal\Core\Entity\EntityInterface;
 
@@ -50,8 +51,8 @@ class SolrElevatedIdEntityListBuilder extends ConfigEntityListBuilder {
   /**
    * {@inheritDoc}
    */
-  public function getOperations(EntityInterface $entity) {
-    $operations = parent::getOperations($entity);
+  public function getOperations(EntityInterface $entity, ?CacheableMetadata $cacheability = NULL) {
+    $operations = parent::getOperations($entity, $cacheability);
 
     if (!empty($operations['edit'])) {
       $edit = $operations['edit']['url'];

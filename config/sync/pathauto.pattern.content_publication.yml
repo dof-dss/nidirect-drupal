@@ -7,17 +7,17 @@ dependencies:
 id: content_publication
 label: 'Content - Publication'
 type: 'canonical_entities:node'
-pattern: 'publications/[node:title]'
+pattern: '/publications/[node:title]'
 selection_criteria:
   199349c5-b9e7-4cbd-b8ae-28d18cf0b022:
     id: 'entity_bundle:node'
     negate: false
-    uuid: 199349c5-b9e7-4cbd-b8ae-28d18cf0b022
     context_mapping:
       node: node
     bundles:
       embargoed_publication: embargoed_publication
       publication: publication
+    uuid: 199349c5-b9e7-4cbd-b8ae-28d18cf0b022
 selection_logic: and
 weight: -5
 relationships: {  }

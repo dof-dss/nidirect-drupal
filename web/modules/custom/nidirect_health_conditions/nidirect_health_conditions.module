@@ -206,7 +206,7 @@ function nidirect_health_conditions_inline_entity_form_entity_form_alter(array &
     // Always hide some fields when using the inline entity form regardless of
     // $entity_form['#op']. To change this value, don't use the IEF form. Edit
     // the node directly via the main content edit listings.
-    hide($entity_form['field_parent_condition']);
+    $entity_form['field_parent_condition']['#access'] = FALSE;
 
   }
 }

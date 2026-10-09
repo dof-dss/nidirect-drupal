@@ -29,7 +29,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *
  * @package Drupal\nidirect_breadcrumbs
  */
-class GpPracticeBreadcrumb implements BreadcrumbBuilderInterface {
+final class GpPracticeBreadcrumb implements BreadcrumbBuilderInterface {
 
   /**
    * Core EntityTypeManager instance.

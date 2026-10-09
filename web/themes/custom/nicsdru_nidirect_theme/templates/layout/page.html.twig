@@ -73,7 +73,8 @@
   {% else %}
     {{- page.content -}}
   {% endif %}
-  {%- if page.sidebar_second|render|striptags('<img>')|trim|length -%}
+  {% set sidebar_second = page.sidebar_second|render|trim %}
+  {% if sidebar_second is not empty %}
     <aside{{ sidebar_second_attr }}>
       {{- page.sidebar_second -}}
     </aside>

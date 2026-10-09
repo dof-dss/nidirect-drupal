@@ -23,7 +23,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *
  * @package Drupal\nidirect_breadcrumbs
  */
-class NewsBreadcrumb implements BreadcrumbBuilderInterface {
+final class NewsBreadcrumb implements BreadcrumbBuilderInterface {
 
   /**
    * Core EntityTypeManager instance.

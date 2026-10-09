@@ -17,7 +17,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
  *
  * @package Drupal\nidirect_breadcrumbs
  */
-class GovernmentContactBreadcrumb implements BreadcrumbBuilderInterface {
+final class GovernmentContactBreadcrumb implements BreadcrumbBuilderInterface {
 
   /**
    * Drupal entity type manager.

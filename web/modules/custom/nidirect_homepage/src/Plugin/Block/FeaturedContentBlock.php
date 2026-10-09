@@ -17,7 +17,7 @@ use function t;
  *  admin_label = @Translation("Featured content"),
  * )
  */
-class FeaturedContentBlock extends BlockBase implements ContainerFactoryPluginInterface {
+final class FeaturedContentBlock extends BlockBase implements ContainerFactoryPluginInterface {
 
   /**
    * Drupal\Core\Entity\EntityTypeManagerInterface definition.
