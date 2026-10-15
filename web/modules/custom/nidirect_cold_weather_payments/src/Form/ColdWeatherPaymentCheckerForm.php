@@ -69,6 +69,8 @@ class ColdWeatherPaymentCheckerForm extends FormBase {
       'class' => ['search-form', 'search-form--cwp'],
     ];
 
+    $form['#attached']['library'][] = 'nidirect_cold_weather_payments/cwp_postcode_format';
+
     $form['postcode'] = [
       '#type' => 'textfield',
       '#maxlength' => 8,
@@ -78,13 +80,10 @@ class ColdWeatherPaymentCheckerForm extends FormBase {
       '#title_display' => 'before',
       '#attributes' => [
         'autocomplete' => 'postal-code',
+        'autocapitalize' => 'characters',
+        'autocorrect' => 'off',
       ],
       '#default_value' => $form_state->getValue('postcode', ''),
-      '#ajax' => [
-        'callback' => '::clearErrors',
-        'event' => 'focus',
-        'progress' => ['type' => 'none'],
-      ],
     ];
 
     $form['submit'] = [
