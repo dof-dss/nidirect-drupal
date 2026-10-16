@@ -273,7 +273,12 @@ function nidirect_landing_pages_entity_presave(EntityInterface $entity) {
 function nidirect_landing_pages_retrieve_article_teasers_by_term(int $tid, int $current_nid) {
   // Render the 'articles by term' view and process the results.
   $results = [];
-  $articles_view = views_embed_view('articles_by_term', 'article_teasers_by_term_embed', $tid, $tid);
+  $articles_view = [
+    '#type' => 'view',
+    '#name' => 'articles_by_term',
+    '#display_id' => 'article_teasers_by_term_embed',
+    '#arguments' => [$tid, $tid],
+  ];
   \Drupal::service('renderer')->renderRoot($articles_view);
   foreach ($articles_view['view_build']['#view']->result as $row) {
     $this_result = [];
@@ -310,7 +315,12 @@ function nidirect_landing_pages_retrieve_article_teasers_by_term(int $tid, int $
 function nidirect_landing_pages_retrieve_article_teasers_by_topic(int $tid) {
   // Render the 'site subtopics' view and process the results.
   $results = [];
-  $articles_view = views_embed_view('site_subtopics', 'subtopic_teasers_by_topic_embed', $tid, $tid);
+  $articles_view = [
+    '#type' => 'view',
+    '#name' => 'site_subtopics',
+    '#display_id' => 'subtopic_teasers_by_topic_embed',
+    '#arguments' => [$tid, $tid],
+  ];
   \Drupal::service('renderer')->renderRoot($articles_view);
   foreach ($articles_view['view_build']['#view']->result as $row) {
     $this_result = [];
@@ -763,8 +773,7 @@ function nidirect_landing_pages_preprocess_book_navigation(&$variables) {
   if ($node instanceof NodeInterface && $node->bundle() == 'landing_page') {
 
     // Hide book navigation on landing pages that are the first page of a book.
-    // @phpstan-ignore-next-line. Ignore as Book doesn't have a defined interface.
-    if ($node->book && $node->book['depth'] == 1) {
+    if (($variables['current_depth'] ?? 0) == 1) {
       // Remove list of book contents.
       unset($variables['tree']);
       // Hide previous/next book links.

@@ -25,7 +25,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *   }
  * )
  */
-class PrisonerPaymentsServiceStatus extends ResourceBase implements ContainerFactoryPluginInterface {
+final class PrisonerPaymentsServiceStatus extends ResourceBase implements ContainerFactoryPluginInterface {
 
   /**
    * Constructs a new PrisonerPaymentsServiceStatus object.
@@ -47,7 +47,7 @@ class PrisonerPaymentsServiceStatus extends ResourceBase implements ContainerFac
     $plugin_id,
     $plugin_definition,
     array $serializer_formats,
-    LoggerInterface $logger
+    LoggerInterface $logger,
   ) {
     parent::__construct($configuration, $plugin_id, $plugin_definition, $serializer_formats, $logger);
   }

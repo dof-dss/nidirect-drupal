@@ -15,7 +15,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *
  * @package Drupal\nidirect_breadcrumbs
  */
-class TaxonomyTermThemesBreadcrumb implements BreadcrumbBuilderInterface {
+final class TaxonomyTermThemesBreadcrumb implements BreadcrumbBuilderInterface {
 
   /**
    * Core EntityTypeManager instance.

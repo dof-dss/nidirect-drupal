@@ -257,7 +257,7 @@ class TaxonomyNavigatorForm extends FormBase {
       $form_values = $form_state->getValues();
       $terms = $form_values['terms'];
       foreach ($terms as $term) {
-        // Todo: Improve the performance of updating weight.
+        // @todo Improve the performance of updating weight.
         $this->dbConnection->update('taxonomy_term_field_data')
           ->fields(['weight' => $term['weight']])
           ->condition('tid', $term['tid'], '=')

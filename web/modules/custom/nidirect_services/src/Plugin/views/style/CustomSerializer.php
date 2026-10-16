@@ -23,6 +23,7 @@ class CustomSerializer extends Serializer {
    * {@inheritdoc}
    */
   public function render() {
+    // @phpstan-ignore-next-line.
     $host = \Drupal::request()->getSchemeAndHttpHost();
 
     // Pattern to match and replace relative paths found in fields

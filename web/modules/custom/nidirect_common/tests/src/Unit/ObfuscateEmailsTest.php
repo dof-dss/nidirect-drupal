@@ -33,7 +33,7 @@ class ObfuscateEmailsTest extends UnitTestCase {
    * @return array[]
    *   Test cases.
    */
-  public function providerEmailObfuscation(): array {
+  public static function providerEmailObfuscation(): array {
     return [
       'simple email' => [
         'Contact john.smith@example.com for details.',

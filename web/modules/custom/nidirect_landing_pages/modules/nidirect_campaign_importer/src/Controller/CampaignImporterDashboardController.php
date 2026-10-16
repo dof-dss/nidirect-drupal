@@ -11,7 +11,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 /**
  * Returns responses for NIDirect Campaign Utilities routes.
  */
-class CampaignImporterDashboardController extends ControllerBase {
+final class CampaignImporterDashboardController extends ControllerBase {
 
   /**
    * The legacy database connection.
@@ -42,7 +42,6 @@ class CampaignImporterDashboardController extends ControllerBase {
   public static function create(ContainerInterface $container) {
     return new static(
       $container->get('database'),
-      Database::getConnection('default', 'drupal7db'),
     );
   }
 
@@ -54,6 +53,7 @@ class CampaignImporterDashboardController extends ControllerBase {
     $query = $this->dbConnD7->query("SELECT nid, title, status FROM {node} WHERE type = 'landing_page' ORDER BY title");
     $d7_landing_pages = $query->fetchAll();
     $items = [];
+    // @phpstan-ignore-next-line.
     $host = \Drupal::request()->getSchemeAndHttpHost();
 
     foreach ($d7_landing_pages as $landing_page) {

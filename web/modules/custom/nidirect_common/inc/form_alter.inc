@@ -8,7 +8,6 @@
 use Drupal\Component\Utility\NestedArray;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\media\MediaInterface;
-use Drupal\node\NodeInterface;
 use Nette\Utils\Arrays;
 
 /**
@@ -443,7 +442,7 @@ function nidirect_common_form_editor_media_dialog_alter(array &$form, FormStateI
       'attributes' => [
         'class' => 'button',
         'target' => '_blank',
-      ]
+      ],
     ]
   )->toString();
 }

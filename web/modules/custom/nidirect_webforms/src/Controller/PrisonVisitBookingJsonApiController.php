@@ -7,19 +7,17 @@ use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\File\FileExists;
 use Drupal\Core\File\FileSystemInterface;
-use Drupal\Core\Session\UserSession;
 use Drupal\file\Entity\File;
 use GuzzleHttp\ClientInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 /**
  * JSON API controller for receiving available
  * visit timeslots for prisons.
  */
-class PrisonVisitBookingJsonApiController extends ControllerBase {
+final class PrisonVisitBookingJsonApiController extends ControllerBase {
 
   /**
    * The configuration factory.
@@ -104,7 +102,7 @@ class PrisonVisitBookingJsonApiController extends ControllerBase {
       $response
         ->setData([
           'status' => 'error',
-          'message' => 'Unauthorised request'
+          'message' => 'Unauthorised request',
         ])
         ->setStatusCode(401);
       return $response;
@@ -118,7 +116,7 @@ class PrisonVisitBookingJsonApiController extends ControllerBase {
         $response
           ->setData([
             'status' => 'success',
-            'message' => 'Data received'
+            'message' => 'Data received',
           ])
           ->setStatusCode(200);
       }
@@ -127,7 +125,7 @@ class PrisonVisitBookingJsonApiController extends ControllerBase {
         $response
           ->setData([
             'status' => 'error',
-            'message' => 'Bad request'
+            'message' => 'Bad request',
           ])
           ->setStatusCode(400);
       }
@@ -210,6 +208,7 @@ class PrisonVisitBookingJsonApiController extends ControllerBase {
 
         // Write content to file.
         /** @var \Drupal\file\FileRepositoryInterface $fileRepository */
+        // @phpstan-ignore-next-line.
         $fileRepository = \Drupal::service('file.repository');
         $directory = 'private://nidirect_webforms';
         $filepath = $directory . '/prison_visit_slots_data.json';
@@ -218,6 +217,7 @@ class PrisonVisitBookingJsonApiController extends ControllerBase {
         $file = $fileRepository->loadByUri($filepath);
         if (empty($file)) {
           /** @var \Drupal\Core\File\FileSystemInterface $file_system */
+          // @phpstan-ignore-next-line.
           $file_system = \Drupal::service('file_system');
           $file_system->prepareDirectory($directory, FileSystemInterface::CREATE_DIRECTORY | FileSystemInterface::MODIFY_PERMISSIONS);
           $file = File::create([
@@ -231,6 +231,7 @@ class PrisonVisitBookingJsonApiController extends ControllerBase {
 
           // Mark the file as used as unused files might be deleted.
           /** @var \Drupal\file\FileUsage\DatabaseFileUsageBackend $file_usage */
+          // @phpstan-ignore-next-line.
           $file_usage = \Drupal::service('file.usage');
           $file_usage->add($file, 'nidirect_webforms', 'webform', 'prison_visit_online_booking');
         }
