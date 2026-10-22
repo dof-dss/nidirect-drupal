@@ -25,6 +25,6 @@ TL;DR:
 
 This is the primary NIDIrect CI pipeline. Other, supporting repositories will have their own pipelines that provide basic, but helpful, checks to trap simple issues earlier on. For example:
 
-https://github.com/dof-dss/nidirect-site-modules contains code that we want to validate against coding standards and deprecated code. We can't run UI tests or kernel test here because we would need the full set of services and fully working Drupal install to do this.
+https://github.com/dof-dss/nicsdru_origins_modules contains code that we want to validate against coding standards and deprecated code.
 
 Updates to supporting repos (new tags) will require a change to the `composer.lock` file in this project, triggering the required full build steps/checks before a release is potentially created and providing a much better chance of spotting issues before they might be deployed.
