@@ -78,10 +78,16 @@ function nidirect_school_closures_tokens($type, $tokens, array $data, array $opt
             '#closures' => $service->getClosures(),
             '#error' => $service->hasErrors(),
             '#updated' => $service->getUpdated(),
-            '#attached' => ['library' => 'nidirect_school_closures/school_closures'],
+            '#attached' => ['library' => ['nidirect_school_closures/school_closures']],
             '#cache' => ['tags' => ['school_closures']],
           ];
           $bubbleable_metadata->addCacheableDependency(CacheableMetadata::createFromRenderArray($output));
+          // Also bubble #attached (the filter library) up to the page.
+          // BubbleableMetadata::merge() returns a new object rather than
+          // mutating in place, so addAttachments() (an in-place mutator)
+          // is used here instead to actually propagate it back to the
+          // caller via this same $bubbleable_metadata instance.
+          $bubbleable_metadata->addAttachments($output['#attached'] ?? []);
           $replacements[$original] = \Drupal::service('renderer')->render($output);
           break;
       }

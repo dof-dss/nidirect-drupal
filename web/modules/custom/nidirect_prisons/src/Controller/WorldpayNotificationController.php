@@ -4,6 +4,8 @@ namespace Drupal\nidirect_prisons\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Database\Connection;
+use Drupal\Core\Language\LanguageManagerInterface;
+use Drupal\Core\Mail\MailManagerInterface;
 use Drupal\nidirect_prisons\Enum\PaymentStatus;
 use Drupal\nidirect_prisons\Service\PrisonerPaymentManager;
 use Psr\Log\LoggerInterface;
@@ -33,21 +35,35 @@ class WorldpayNotificationController extends ControllerBase {
   protected LoggerInterface $logger;
 
   /**
+   * @var \Drupal\Core\Mail\MailManagerInterface
+   *   The mail manager service.
+   */
+  protected MailManagerInterface $mailManager;
+
+  /**
    * @param \Drupal\Core\Database\Connection $database
    *   The DB connection.
    * @param \Drupal\nidirect_prisons\Service\PrisonerPaymentManager $payment_manager
    *   The Payment Manager Service.
    * @param \Psr\Log\LoggerInterface $logger
    *   The Logger service.
+   * @param \Drupal\Core\Mail\MailManagerInterface $mail_manager
+   *   The mail manager service.
+   * @param \Drupal\Core\Language\LanguageManagerInterface $language_manager
+   *   The language manager service.
    */
   public function __construct(
     Connection $database,
     PrisonerPaymentManager $payment_manager,
-    LoggerInterface $logger
+    LoggerInterface $logger,
+    MailManagerInterface $mail_manager,
+    LanguageManagerInterface $language_manager
   ) {
     $this->database = $database;
     $this->paymentManager = $payment_manager;
     $this->logger = $logger;
+    $this->mailManager = $mail_manager;
+    $this->languageManager = $language_manager;
   }
 
   /**
@@ -58,10 +74,23 @@ class WorldpayNotificationController extends ControllerBase {
    * @return static
    */
   public static function create(ContainerInterface $container) {
+    /** @var \Drupal\Core\Database\Connection $database */
+    $database = $container->get('database');
+    /** @var \Drupal\nidirect_prisons\Service\PrisonerPaymentManager $payment_manager */
+    $payment_manager = $container->get('nidirect_prisons.prisoner_payment_manager');
+    /** @var \Psr\Log\LoggerInterface $logger */
+    $logger = $container->get('logger.channel.nidirect_prisons');
+    /** @var \Drupal\Core\Mail\MailManagerInterface $mail_manager */
+    $mail_manager = $container->get('plugin.manager.mail');
+    /** @var \Drupal\Core\Language\LanguageManagerInterface $language_manager */
+    $language_manager = $container->get('language_manager');
+
     return new static(
-      $container->get('database'),
-      $container->get('nidirect_prisons.prisoner_payment_manager'),
-      $container->get('logger.channel.nidirect_prisons')
+      $database,
+      $payment_manager,
+      $logger,
+      $mail_manager,
+      $language_manager
     );
   }
 
@@ -248,11 +277,21 @@ class WorldpayNotificationController extends ControllerBase {
           ->condition('prisoner_id', $payment_transaction->prisoner_id)
           ->execute();
 
-        // Generate sequence ID.
+        // Generate sequence ID for the payment.
         $sequence_id = $this->getNextSequenceId();
+        if (!is_numeric($sequence_id) || (int) $sequence_id <= 0) {
+          throw new \Exception('Failed to generate sequence ID');
+        }
+        $sequence_id = (int) $sequence_id;
 
-        $should_send_prism = TRUE;
-
+        // Send payment details to Prism.
+        $this->sendJsonToPrism(
+          $order_code,
+          $payment_transaction->prisoner_id,
+          $payment_transaction->visitor_id,
+          $amount,
+          $sequence_id
+        );
       }
       catch (\Throwable $e) {
 
@@ -268,37 +307,21 @@ class WorldpayNotificationController extends ControllerBase {
           ]
         );
 
-        return new Response('[OK]', 200, ['Content-Type' => 'text/plain']);
+        // Return 500 Internal Server Error so that Worldpay will retry the
+        // notification later. This is important to ensure that the payment is
+        // not lost and can be processed successfully in a later attempt.
+        return new Response('[Server Error]', 500, ['Content-Type' => 'text/plain']);
       }
       finally {
         unset($db_transaction);
-      }
-
-      // Now email Prism.
-      if ($should_send_prism && $sequence_id !== NULL) {
-        try {
-          $this->sendJsonToPrism(
-            $order_code,
-            $payment_transaction->prisoner_id,
-            $payment_transaction->visitor_id,
-            $amount,
-            $sequence_id
-          );
-        }
-        catch (\Throwable $e) {
-          $this->logger->error(
-            'PRISM notification failed for order @order after successful DB commit: @message',
-            [
-              '@order' => $order_code,
-              '@message' => $e->getMessage(),
-            ]
-          );
-        }
       }
     }
     else {
       // Payment failed.
       $this->paymentManager->updateTransactionStatus($order_code, 'failed');
+      $this->logger->error('Worldpay payment FAILED for order @order', [
+        '@order' => $order_code,
+      ]);
     }
 
     // Acknowledge the notification.
@@ -323,6 +346,11 @@ class WorldpayNotificationController extends ControllerBase {
    */
   private function sendJsonToPrism($order_code, $prisoner_id, $visitor_id, $amount, $sequence_id) {
 
+    $email = getenv('PRISONER_PAYMENTS_PRISM_EMAIL');
+    if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+      throw new \Exception('PRISONER_PAYMENTS_PRISM_EMAIL environment variable is not set or is not a valid email address.');
+    }
+
     $json_data = json_encode([
       "UNIQUE_TRANSACTION_ID" => $order_code,
       "INMATE_ID" => $prisoner_id,
@@ -332,20 +360,22 @@ class WorldpayNotificationController extends ControllerBase {
       "SEQUENCE_ID" => $sequence_id,
     ], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
 
-    // Try sending the email.
     try {
-      \Drupal::service('plugin.manager.mail')->mail(
+      $result = $this->mailManager->mail(
         'nidirect_prisons',
         'prisoner_payment_notification',
-        getenv('PRISONER_PAYMENTS_PRISM_EMAIL') ?: 'prisoner_payments@mailhog.local',
-        \Drupal::languageManager()->getDefaultLanguage()->getId(),
+        $email,
+        $this->languageManager->getDefaultLanguage()->getId(),
         ['subject' => 'PAYIN', 'body' => [$json_data]]
       );
+
+      if (empty($result['result'])) {
+        throw new \Exception('Mail manager reported failure sending payment data to Prism.');
+      }
 
       $this->logger->notice("Sent prisoner payment data for order {$order_code} to Prism.");
     }
     catch (\Exception $e) {
-      // If email fails, log the error and throw.
       $this->logger->error('Failed to send email for order @order_code: @error', [
         '@order_code' => $order_code,
         '@error' => $e->getMessage(),
@@ -363,7 +393,6 @@ class WorldpayNotificationController extends ControllerBase {
    */
   protected function getNextSequenceId() {
     $query = $this->database->insert('prisoner_payment_sequence')->fields(['id' => NULL]);
-
     return $query->execute();
   }
 

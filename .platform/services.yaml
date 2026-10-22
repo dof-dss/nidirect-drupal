@@ -17,17 +17,22 @@ db:
         privileges:
           main: admin
 
-# Fudging the service name forces a full rebuild with any new config.
-solr_8_11:
-  type: solr:8.11
+# Changing the service name provisions a new service for the Solr 9.9 index.
+solr_9_9:
+  type: solr:9.9
   disk: 1024
   configuration:
+    modules:
+      - extraction
+      - analysis-extras
+      - langid
+      - ltr
     cores:
-      default:
-        conf_dir: !archive "solr_config/"
+      nidirect_index:
+        conf_dir: !archive "solr_configsets/nidirect/conf/"
     endpoints:
       solr:
-        core: default
+        core: nidirect_index
 
 redis:
-  type: redis:7.2
+  type: redis:8.8
