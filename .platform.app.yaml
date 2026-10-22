@@ -106,6 +106,8 @@ hooks:
     drush -y config-import
     # Final cache rebuild.
     drush -y cache-rebuild
+    # Clear Hospital Waiting times cache.
+    drush nidirect:hwt-cache-clear
   post_deploy: |
     set -e
     echo "Import any pending config changes"

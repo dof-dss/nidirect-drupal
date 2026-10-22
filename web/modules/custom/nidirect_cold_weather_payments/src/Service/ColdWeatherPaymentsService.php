@@ -32,7 +32,7 @@ class ColdWeatherPaymentsService {
    * @param string $postcode
    *   The postcode to check for payments.
    */
-  public function forPostcode($postcode = NULL) {
+  public function forPostcode($postcode = NULL): array {
     preg_match_all('/^(BT)?(\d{1,2})\s?/mi', $postcode, $matches, PREG_SET_ORDER, 0);
     $response['postcode'] = $matches[0][2];
 
@@ -44,16 +44,16 @@ class ColdWeatherPaymentsService {
       ->accessCheck(TRUE)
       ->range(0, 1);
 
-    $vid_keys = array_keys($query->execute());
+    $vids = array_keys($query->execute());
 
     // Set a data key if we have no published CWP data.
-    if (empty($vid_keys)) {
+    if (empty($vids)) {
       $response['published_content'] = 'none';
       return $response;
     }
 
-    // Fetch the last revision.
-    $vid = array_pop($vid_keys);
+    // Fetch the node.
+    $vid = array_pop($vids);
     /** @var \Drupal\node\NodeInterface $node */
     $node = $this->entityTypeManager->getStorage('node')->loadRevision($vid);
 
@@ -72,6 +72,11 @@ class ColdWeatherPaymentsService {
       // We need to load each station to extract the postcodes it covers.
       $station_ids = explode(',', $trigger->get('stations')->getValue());
       $stations = $this->entityTypeManager->getStorage('weather_station')->loadMultiple($station_ids);
+
+      if (!isset($response['station_ids'])) {
+        $response['station_ids'] = [];
+      }
+      $response['station_ids'] = array_unique(array_merge($response['station_ids'], array_keys($stations)));
 
       $postcodes = [];
       foreach ($stations as $station) {

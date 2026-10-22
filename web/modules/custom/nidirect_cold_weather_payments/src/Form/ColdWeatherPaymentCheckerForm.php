@@ -2,31 +2,20 @@
 
 namespace Drupal\nidirect_cold_weather_payments\Form;
 
-use Drupal\Component\Serialization\Json;
 use Drupal\Core\Ajax\AjaxResponse;
 use Drupal\Core\Ajax\HtmlCommand;
 use Drupal\Core\Ajax\InvokeCommand;
 use Drupal\Core\Ajax\RemoveCommand;
-use Drupal\Core\Cache\CacheableAjaxResponse;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\Core\Http\ClientFactory;
 use Drupal\Core\Render\Renderer;
-use GuzzleHttp\Exception\RequestException;
+use Drupal\nidirect_cold_weather_payments\Service\ColdWeatherPaymentsService;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
  * Form for checking cold weather payments.
  */
 class ColdWeatherPaymentCheckerForm extends FormBase {
-
-  /**
-   * Drupal\Core\Http\ClientFactory definition.
-   *
-   * @var \Drupal\Core\Http\ClientFactory
-   */
-  protected $httpClientFactory;
 
   /**
    * Drupal\Core\Render\Renderer definition.
@@ -36,23 +25,21 @@ class ColdWeatherPaymentCheckerForm extends FormBase {
   protected $renderer;
 
   /**
-   * Symfony\Component\HttpFoundation\RequestStack definition.
+   * Cold Weather Payments service.
    *
-   * @var \Symfony\Component\HttpFoundation\RequestStack
+   * @var \Drupal\nidirect_cold_weather_payments\Service\ColdWeatherPaymentsService
    */
-  protected $request;
+  protected $coldWeatherPaymentsService;
 
   /**
    * Constructs a new ColdWeatherPaymentCheckerForm object.
    */
   public function __construct(
-    ClientFactory $http_client_factory,
     Renderer $renderer,
-    RequestStack $request
+    ColdWeatherPaymentsService $cold_weather_payments_service
   ) {
-    $this->httpClientFactory = $http_client_factory;
     $this->renderer = $renderer;
-    $this->request = $request;
+    $this->coldWeatherPaymentsService = $cold_weather_payments_service;
   }
 
   /**
@@ -60,9 +47,8 @@ class ColdWeatherPaymentCheckerForm extends FormBase {
    */
   public static function create(ContainerInterface $container) {
     return new static(
-      $container->get('http_client_factory'),
       $container->get('renderer'),
-      $container->get('request_stack')
+      $container->get('nidirect_cold_weather_payments.payments')
     );
   }
 
@@ -154,7 +140,7 @@ class ColdWeatherPaymentCheckerForm extends FormBase {
    * AJAX callback to process form submission.
    */
   public function submitAjax(array $form, FormStateInterface $form_state) {
-    $response = new CacheableAjaxResponse();
+    $response = new AjaxResponse();
 
     // Set error message if postcode does not validate.
     if (!$this->isValidNiPostcode($form, $form_state)) {
@@ -176,11 +162,6 @@ class ColdWeatherPaymentCheckerForm extends FormBase {
     $data = $this->cwpLookup($postcode_district);
 
     $output = $this->resultsRender($data);
-
-    // Although this doesn't currently work when updating the CWP node, I'm
-    // leaving this here so we can come back at a later date and re-evaluate
-    // clearing the CWP ajax response cache.
-    $response->getCacheableMetadata()->addCacheTags(['node:' . $data['id']]);
 
     $response->addCommand(
       new HtmlCommand('#cwp-results', $output)
@@ -237,22 +218,13 @@ class ColdWeatherPaymentCheckerForm extends FormBase {
   }
 
   /**
-   * Call CWP API and process data.
+   * Fetch CWP data and process payment triggers.
    */
   private function cwpLookup($postcode_district) {
-    $data = NULL;
-
     try {
-      $client = $this->httpClientFactory->fromOptions([
-        'base_uri' => $this->request->getCurrentRequest()->getSchemeAndHttpHost(),
-      ]);
-
-      $api_response = $client->get('api/cwp/BT' . $postcode_district, []);
-      $json = $api_response->getBody()->getContents();
-      $data = Json::decode($json);
+      $data = $this->coldWeatherPaymentsService->forPostcode('BT' . $postcode_district);
 
       $payments = [];
-
       if (array_key_exists('payments_triggered', $data)) {
         foreach ($data['payments_triggered'] as $trigger) {
           if ($trigger['payment_granted']) {
@@ -263,16 +235,13 @@ class ColdWeatherPaymentCheckerForm extends FormBase {
           }
         }
       }
-
       $data['payments'] = $payments;
-    }
-    catch (RequestException $e) {
-      $data['has_error'] = TRUE;
-      $data['response'] = $e->getResponse();
-      \Drupal::logger('type')->error($e->getMessage());
-    }
-    finally {
+
       return $data;
+    }
+    catch (\Exception $e) {
+      \Drupal::logger('nidirect_cold_weather_payments')->error($e->getMessage());
+      return ['has_error' => TRUE];
     }
   }
 
@@ -309,11 +278,6 @@ class ColdWeatherPaymentCheckerForm extends FormBase {
     // return a cwp result render array.
     if (is_null($data) || isset($data['has_error'])) {
       $output['#markup'] = $this->t('Sorry, there was a problem checking for Cold Weather Payments.');
-
-      if (!empty($data['response']) && $data['response']->getStatusCode() == '401') {
-        $output['#markup'] .= '<br>' . $this->t('This was due to an authentication (401) error.');
-      }
-
       $output['#prefix'] = '<p class="info-notice info-notice--error">';
       $output['#suffix'] = '</p>';
     }

@@ -19,11 +19,16 @@ jobs:
       - run:
           name: Download shared config
           command: |
-            wget \
-              --header="Cache-Control: no-cache" \
-              --header="Pragma: no-cache" \
-              "https://raw.githubusercontent.com/dof-dss/webdev-ci/development/shared-config.yml?nocache=$(date +%s)" \
-              -O shared-config.yml
+            for attempt in 1 2 3 4 5; do
+              curl --fail --location --connect-timeout 30 --output shared-config.yml \
+                "https://raw.githubusercontent.com/dof-dss/webdev-ci/development/shared-config.yml" && break
+
+              if [ "$attempt" -eq 5 ]; then
+                exit 1
+              fi
+
+              sleep 10
+            done
 
       - run:
           name: Combine shared jobs and local workflows
