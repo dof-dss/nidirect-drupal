@@ -92,6 +92,12 @@ $settings['simple_environment_indicator'] = sprintf('%s %s', $env_colour, $env_n
 // CSP report URI config override.
 $config['csp.settings']['report-only']['reporting']['options']['subdomain'] = getenv('CSP_REPORTING_SUBDOMAIN');
 
+// Increase Guzzle limits to work with AIS endpoints.
+$settings['http_client_config'] = [
+  'timeout' => 60,
+  'connect_timeout' => 15,
+];
+
 // Local settings. These come last so that they can override anything.
 if (file_exists($app_root . '/' . $site_path . '/settings.local.php')) {
   include $app_root . '/' . $site_path . '/settings.local.php';
