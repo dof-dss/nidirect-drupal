@@ -1,0 +1,17 @@
+uuid: 66bfc661-1f50-4d8a-bcba-25841e11e2f0
+langcode: en
+status: true
+dependencies:
+  module:
+    - nidirect_prisons
+    - serialization
+id: prisoner_house_membership_resource
+plugin_id: prisoner_house_membership_resource
+granularity: resource
+configuration:
+  methods:
+    - POST
+  formats:
+    - json
+  authentication:
+    - nidirect_prisons_token_ip_auth
