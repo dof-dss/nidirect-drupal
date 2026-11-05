@@ -80,6 +80,23 @@ function nidirect_prisons_schema() {
     'primary key' => ['id'],
   ];
 
+  $schema['prisoner_house_membership'] = [
+    'description' => 'Stores current prisoner prison and house assignments.',
+    'fields' => [
+      'prisoner_id' => [
+        'type' => 'varchar',
+        'length' => 5,
+        'not null' => TRUE,
+      ],
+      'prison_id' => ['type' => 'varchar', 'length' => 2, 'not null' => TRUE],
+      'house_id' => ['type' => 'varchar', 'length' => 64, 'not null' => TRUE],
+    ],
+    'primary key' => ['prisoner_id'],
+    'indexes' => [
+      'prison_house' => ['prison_id', 'house_id'],
+    ],
+  ];
+
   return $schema;
 }
 
@@ -156,4 +173,32 @@ function nidirect_prisons_update_8003() {
   $database->update('prisoner_payment_transactions')
     ->expression('updated_timestamp', 'created_timestamp')
     ->execute();
+}
+
+/**
+ * Adds the prisoner_house_membership table.
+ */
+function nidirect_prisons_update_8004() {
+  $schema = \Drupal::database()->schema();
+
+  if (!$schema->tableExists('prisoner_house_membership')) {
+    $schema->createTable('prisoner_house_membership', [
+      'description' => 'Stores current prisoner prison and house assignments.',
+      'fields' => [
+        'prisoner_id' => [
+          'type' => 'varchar',
+          'length' => 5,
+          'not null' => TRUE,
+        ],
+        'prison_id' => ['type' => 'varchar', 'length' => 2, 'not null' => TRUE],
+        'house_id' => ['type' => 'varchar', 'length' => 64, 'not null' => TRUE],
+      ],
+      'primary key' => ['prisoner_id'],
+      'indexes' => [
+        'prison_house' => ['prison_id', 'house_id'],
+      ],
+    ]);
+
+    \Drupal::logger('nidirect_prisons')->notice('Created prisoner_house_membership table.');
+  }
 }
