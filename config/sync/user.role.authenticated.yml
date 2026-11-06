@@ -5,9 +5,10 @@ dependencies:
   config:
     - filter.format.basic_html
     - filter.format.webform_default
+    - rest.resource.prison_visit_slots_resource
     - rest.resource.prison_visits_service_status
     - rest.resource.prisoner_amounts_resource
-    - rest.resource.prisoner_house_membership_resource
+    - rest.resource.prisoner_house_affiliation_resource
     - rest.resource.prisoner_nominees_resource
     - rest.resource.prisoner_payments_service_status
     - search_api_autocomplete.search.contacts
@@ -45,9 +46,10 @@ permissions:
   - 'access content'
   - 'delete own files'
   - 'notify of path changes'
+  - 'restful post prison_visit_slots_resource'
   - 'restful post prison_visits_service_status'
   - 'restful post prisoner_amounts_resource'
-  - 'restful post prisoner_house_membership_resource'
+  - 'restful post prisoner_house_affiliation_resource'
   - 'restful post prisoner_nominees_resource'
   - 'restful post prisoner_payments_service_status'
   - 'select terms in drive_instr_categories'
