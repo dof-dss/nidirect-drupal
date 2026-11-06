@@ -12,25 +12,25 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
- * Receives a full snapshot of prisoner house memberships from Prism.
+ * Receives a full snapshot of prisoner house affiliations from Prism.
  *
  * @RestResource(
- *   id = "prisoner_house_membership_resource",
- *   label = @Translation("Prisoner House Membership Resource"),
+ *   id = "prisoner_house_affiliation_resource",
+ *   label = @Translation("Prisoner House Affiliation Resource"),
  *   uri_paths = {
- *     "create" = "/api/v1/prison-visits/inmates"
+ *     "create" = "/api/v1/prison-visits/prisoner-house-affiliation"
  *   }
  * )
  */
-class PrisonerHouseMembershipResource extends ResourceBase {
+class PrisonerHouseAffiliationResource extends ResourceBase {
 
   /**
-   * Lock shared by all imports of the membership snapshot.
+   * Lock shared by all imports of the affiliation snapshot.
    */
-  private const IMPORT_LOCK = 'nidirect_prisons.house_membership_import';
+  private const IMPORT_LOCK = 'nidirect_prisons.house_affiliation_import';
 
   /**
-   * Constructs the prisoner house membership resource.
+   * Constructs the prisoner house affiliation resource.
    */
   public function __construct(
     array $configuration,
@@ -60,17 +60,17 @@ class PrisonerHouseMembershipResource extends ResourceBase {
   }
 
   /**
-   * Handles POST requests replacing the complete membership snapshot.
+   * Handles POST requests replacing the complete affiliation snapshot.
    */
   public function post(Request $request): ModifiedResourceResponse {
     try {
-      $memberships = $this->validateSnapshot($request->getContent());
+      $affiliations = $this->validateSnapshot($request->getContent());
     }
     catch (\JsonException | \InvalidArgumentException $exception) {
       $message = $exception instanceof \JsonException
         ? 'Invalid JSON payload.'
         : $exception->getMessage();
-      $this->logger->warning('Rejected prisoner house membership snapshot: @reason', ['@reason' => $message]);
+      $this->logger->warning('Rejected prisoner house affiliation snapshot: @reason', ['@reason' => $message]);
       return new ModifiedResourceResponse(['error' => $message], 400);
     }
 
@@ -79,22 +79,22 @@ class PrisonerHouseMembershipResource extends ResourceBase {
     try {
       $locked = $this->lock->acquire(self::IMPORT_LOCK, 300.0);
       if (!$locked) {
-        $this->logger->warning('Prisoner house membership import already in progress.');
+        $this->logger->warning('Prisoner house affiliation import already in progress.');
         return new ModifiedResourceResponse(
-          ['error' => 'A membership import is already in progress. Retry this snapshot.'],
+          ['error' => 'An affiliation import is already in progress. Retry this snapshot.'],
           503,
           ['Retry-After' => '5'],
         );
       }
 
-      $this->replaceSnapshot($memberships);
+      $this->replaceSnapshot($affiliations);
     }
     catch (DatabaseException | \PDOException $exception) {
       // Database exception messages may contain SQL and prisoner identifiers.
-      $this->logger->error('Prisoner house membership import failed: @exception', [
+      $this->logger->error('Prisoner house affiliation import failed: @exception', [
         '@exception' => get_class($exception),
       ]);
-      return new ModifiedResourceResponse(['error' => 'Unable to update prisoner house memberships.'], 500);
+      return new ModifiedResourceResponse(['error' => 'Unable to update prisoner house affiliations.'], 500);
     }
     finally {
       if ($locked) {
@@ -102,31 +102,31 @@ class PrisonerHouseMembershipResource extends ResourceBase {
       }
     }
 
-    $this->logger->notice('Updated prisoner house membership snapshot with @count memberships.', [
-      '@count' => count($memberships),
+    $this->logger->notice('Updated prisoner house affiliation snapshot with @count affiliations.', [
+      '@count' => count($affiliations),
     ]);
     return new ModifiedResourceResponse([
-      'message' => 'Prisoner house memberships successfully updated.',
-      'memberships' => count($memberships),
+      'message' => 'Prisoner house affiliations successfully updated.',
+      'affiliations' => count($affiliations),
     ]);
   }
 
   /**
-   * Replaces memberships in a single transaction while the import lock is held.
+   * Replaces affiliations in a single transaction while the import lock is held.
    *
-   * @param array<array{prisoner_id: string, prison_id: string, house_id: string}> $memberships
-   *   Validated membership rows.
+   * @param array<array{prisoner_id: string, prison_id: string, affiliation_id: string}> $affiliations
+   *   Validated affiliation rows.
    */
-  private function replaceSnapshot(array $memberships): void {
+  private function replaceSnapshot(array $affiliations): void {
     $transaction = $this->database->startTransaction();
 
     try {
-      $this->database->delete('prisoner_house_membership')->execute();
-      foreach (array_chunk($memberships, 200) as $batch) {
-        $insert = $this->database->insert('prisoner_house_membership')
-          ->fields(['prisoner_id', 'prison_id', 'house_id']);
-        foreach ($batch as $membership) {
-          $insert->values($membership);
+      $this->database->delete('prisoner_house_affiliation')->execute();
+      foreach (array_chunk($affiliations, 200) as $batch) {
+        $insert = $this->database->insert('prisoner_house_affiliation')
+          ->fields(['prisoner_id', 'prison_id', 'affiliation_id']);
+        foreach ($batch as $affiliation) {
+          $insert->values($affiliation);
         }
         $insert->execute();
       }
@@ -143,8 +143,8 @@ class PrisonerHouseMembershipResource extends ResourceBase {
   /**
    * Validates and flattens a snapshot before any stored data is changed.
    *
-   * @return array<array{prisoner_id: string, prison_id: string, house_id: string}>
-   *   Validated membership rows.
+   * @return array<array{prisoner_id: string, prison_id: string, affiliation_id: string}>
+   *   Validated affiliation rows.
    *
    * @throws \JsonException
    *   If the request is not valid JSON.
@@ -157,22 +157,22 @@ class PrisonerHouseMembershipResource extends ResourceBase {
       throw new \InvalidArgumentException('Payload must contain an INMATES object keyed by prison.');
     }
 
-    $memberships = [];
+    $affiliations = [];
     $seen = [];
-    foreach ($data->INMATES as $prison_id => $houses) {
+    foreach ($data->INMATES as $prison_id => $prison_affiliations) {
       if (!in_array($prison_id, ['MY', 'MN', 'HW'], TRUE)) {
         throw new \InvalidArgumentException('INMATES prison codes must be MY, MN or HW.');
       }
-      if (!$houses instanceof \stdClass) {
-        throw new \InvalidArgumentException('Each prison must contain an object keyed by house code.');
+      if (!$prison_affiliations instanceof \stdClass) {
+        throw new \InvalidArgumentException('Each prison must contain an object keyed by affiliation code.');
       }
 
-      foreach ($houses as $house_id => $prisoners) {
-        if (preg_match('/\A[A-Z0-9_]{1,64}\z/', $house_id) !== 1) {
-          throw new \InvalidArgumentException('House codes must contain 1 to 64 uppercase letters, digits or underscores.');
+      foreach ($prison_affiliations as $affiliation_id => $prisoners) {
+        if (preg_match('/\A[A-Z0-9_]{1,64}\z/', $affiliation_id) !== 1) {
+          throw new \InvalidArgumentException('Affiliation codes must contain 1 to 64 uppercase letters, digits or underscores.');
         }
         if (!is_array($prisoners)) {
-          throw new \InvalidArgumentException('Each house must contain a JSON list of prisoner IDs.');
+          throw new \InvalidArgumentException('Each affiliation must contain a JSON list of prisoner IDs.');
         }
 
         foreach ($prisoners as $prisoner_id) {
@@ -184,20 +184,20 @@ class PrisonerHouseMembershipResource extends ResourceBase {
           }
 
           $seen[$prisoner_id] = TRUE;
-          $memberships[] = [
+          $affiliations[] = [
             'prisoner_id' => $prisoner_id,
             'prison_id' => $prison_id,
-            'house_id' => $house_id,
+            'affiliation_id' => $affiliation_id,
           ];
         }
       }
     }
 
-    if (!$memberships) {
-      throw new \InvalidArgumentException('Snapshot must contain at least one prisoner; empty snapshots cannot clear memberships.');
+    if (!$affiliations) {
+      throw new \InvalidArgumentException('Snapshot must contain at least one prisoner; empty snapshots cannot clear affiliations.');
     }
 
-    return $memberships;
+    return $affiliations;
   }
 
 }
