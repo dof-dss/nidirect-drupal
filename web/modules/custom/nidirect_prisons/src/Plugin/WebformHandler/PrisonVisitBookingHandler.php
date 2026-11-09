@@ -306,6 +306,18 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
       }
     }
 
+    // Virtual slots depend on the prisoner's house affiliation.
+    // If the prisoner_id changes, reset the virtual slots.
+    $last_prisoner_id = $form_state->get('last_prisoner_id');
+    $curr_prisoner_id = $form_state->getValue('prisoner_id');
+    $visit_type = $this->bookingReference['visit_type'] ?? NULL;
+    if ($visit_type === 'virtual' && !empty($curr_prisoner_id)) {
+      if (!empty($last_prisoner_id) && $curr_prisoner_id !== $last_prisoner_id) {
+        $this->resetFormSlots($form, $form_state, $webform_submission);
+      }
+      $form_state->set('last_prisoner_id', $curr_prisoner_id);
+    }
+
     // Pre-populate the form with any booking amendment data. Only do
     // this once.
     $amend_booking_data = $form_state->get('amend_booking_data');
@@ -1269,7 +1281,7 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
   /**
    * Get available slots for a given prison, visit type and prisoner category.
    */
-  private function getAvailableSlots() {
+  private function getAvailableSlots(): array {
 
     $available_slots = [];
 
@@ -1287,35 +1299,52 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
       return ['error' => TRUE];
     }
 
-    $this->logSlotDataFreshness();
-
     $prison_id = $this->bookingReference['prison_id'];
     $prisoner_category = $this->bookingReference['prisoner_category'];
     $prisoner_subcategory = $this->bookingReference['prisoner_subcategory'];
+    $prisoner_id = $this->formState->getValue('prisoner_id');
 
+    if (empty($prison_id) || empty($prisoner_id) || empty($prisoner_category) || empty($prisoner_subcategory)) {
+      return ['error' => TRUE];
+    }
+
+    // Log when the imported slots are missing or over 24 hours old.
+    $this->logSlotDataFreshness();
+
+    // Determine available time slots.
+    // The available time slots depend on the visit type, prison and prisoner affiliation.
+    $affiliation_id = NULL;
     if ($visit_type === 'VIRTUAL') {
-      $timestamps = $this->getSlotTimestamps($visit_type, $prison_id);
+
+      // For virtual visits, prisoner affiliation is stored in the
+      // prisoner_house_affiliation table.
+      $affiliation_id = $this->database->select('prisoner_house_affiliation', 'pha')
+        ->fields('pha', ['affiliation_id'])
+        ->condition('prisoner_id', $prisoner_id)
+        ->execute()
+        ->fetchField();
+
+      if (!$affiliation_id) {
+        return ['error' => TRUE];
+      }
     }
     else {
-      $affiliation_ids = [];
+      // For face-to-face visits, prisoner affiliation is determined by the
+      // prisoner category and subcategory (which is encoded in the
+      // booking reference).
       if ($prisoner_category === 'separates') {
-        if ($prisoner_subcategory !== NULL) {
-          $affiliation_ids[] = 'AFILL_' . $prisoner_subcategory;
-        }
-        $affiliation_ids[] = 'AFILL';
+        $affiliation_id = 'AFILL_' . $prisoner_subcategory;
       }
       elseif ($prisoner_category === 'integrated') {
-        $affiliation_ids[] = 'INT';
-      }
-
-      $timestamps = [];
-      foreach ($affiliation_ids as $affiliation_id) {
-        $timestamps = $this->getSlotTimestamps($visit_type, $prison_id, [$affiliation_id]);
-        if ($timestamps) {
-          break;
-        }
+        $affiliation_id = 'INT';
       }
     }
+
+    if (empty($affiliation_id)) {
+      return ['error' => TRUE];
+    }
+
+    $timestamps = $this->getSlotTimestamps($visit_type, $prison_id, $affiliation_id);
 
     if (!$timestamps) {
       return ['error' => TRUE];
@@ -1337,20 +1366,19 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
 
     $date = $this->bookingReference['date'];
     $date_visit_earliest = $this->bookingReference['date_visit_earliest'];
-    $date_valid_to = $this->bookingReference['date_valid_to'];
     $date_visit_week_start = $this->bookingReference['date_visit_week_start'];
+    $date_valid_to = $this->bookingReference['date_valid_to'];
+
+    // The minimum date for a slot to be bookable.
+    // the earliest visit date (the booking reference allows) or the start of the week for the booking reference.
+    $min_date = max($date, $date_visit_earliest, $date_visit_week_start);
 
     foreach ($available_slots as $slot_key => $slot) {
       // Determine if this slot is bookable.
       $slot_is_bookable = TRUE;
 
-      if ($slot < $date) {
-        $slot_is_bookable = FALSE;
-      }
-      elseif ($slot < $date_visit_earliest) {
-        $slot_is_bookable = FALSE;
-      }
-      elseif ($slot < $date_visit_week_start) {
+      // Cannot book a slot
+      if ($slot < $min_date) {
         $slot_is_bookable = FALSE;
       }
       elseif ($slot > $date_valid_to) {
@@ -1378,21 +1406,21 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
    *   Visit type stored in the slots table.
    * @param string $prison_id
    *   Prison code.
-   * @param string[]|null $affiliation_ids
-   *   Optional affiliation codes to filter by.
+   * @param string|null $affiliation_id
+   *   Optional affiliation code to filter by.
    *
    * @return int[]
    *   Slot timestamps ordered chronologically.
    */
-  private function getSlotTimestamps(string $visit_type, string $prison_id, ?array $affiliation_ids = NULL): array {
+  private function getSlotTimestamps(string $visit_type, string $prison_id, ?string $affiliation_id = NULL): array {
     $query = $this->database->select('prison_visit_slots', 'slots')
       ->fields('slots', ['slot_datetime'])
       ->condition('visit_type', $visit_type)
       ->condition('prison_id', $prison_id)
       ->orderBy('slot_datetime');
 
-    if ($affiliation_ids !== NULL) {
-      $query->condition('affiliation_id', $affiliation_ids, 'IN');
+    if ($affiliation_id !== NULL) {
+      $query->condition('affiliation_id', $affiliation_id);
     }
 
     $query->distinct();
