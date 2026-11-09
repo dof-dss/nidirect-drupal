@@ -185,8 +185,8 @@ class PrisonVisitSlotsResource extends ResourceBase {
           $prison_id = $matches[1];
           $affiliation_id = $matches[2];
           $this->validateAffiliationId($affiliation_id);
-          if (!$datetimes instanceof \stdClass) {
-            throw new \InvalidArgumentException('Face-to-face slots must be an object of date/time values.');
+          if (!is_array($datetimes) || !array_is_list($datetimes) || empty($datetimes)) {
+            throw new \InvalidArgumentException('Face-to-face slots must be a list of date/time values.');
           }
 
           foreach ($datetimes as $datetime) {
@@ -203,7 +203,7 @@ class PrisonVisitSlotsResource extends ResourceBase {
 
           foreach ($affiliations as $affiliation_id => $datetimes) {
             $this->validateAffiliationId($affiliation_id);
-            if (!is_array($datetimes) || !array_is_list($datetimes)) {
+            if (!is_array($datetimes) || !array_is_list($datetimes) || empty($datetimes)) {
               throw new \InvalidArgumentException('Virtual affiliation slots must be a list of date/time values.');
             }
 
