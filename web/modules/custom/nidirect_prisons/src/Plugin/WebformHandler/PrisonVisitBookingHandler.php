@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\nidirect_webforms\Plugin\WebformHandler;
+namespace Drupal\nidirect_prisons\Plugin\WebformHandler;
 
 use Drupal\Component\Datetime\TimeInterface;
 use Drupal\Component\Serialization\Json;
@@ -8,7 +8,7 @@ use Drupal\Component\Utility\Html;
 use Drupal\Component\Utility\Xss;
 use Drupal\Core\Cache\Cache;
 use Drupal\Core\Config\ConfigFactoryInterface;
-use Drupal\Core\Database\Database;
+use Drupal\Core\Database\Connection;
 use Drupal\Core\Datetime\DrupalDateTime;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
@@ -63,6 +63,20 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
    * @var \Drupal\Core\TempStore\PrivateTempStoreFactory
    */
   private $tempStoreFactory;
+
+  /**
+   * The database connection.
+   *
+   * @var \Drupal\Core\Database\Connection
+   */
+  protected Connection $database;
+
+  /**
+   * The time service.
+   *
+   * @var \Drupal\Component\Datetime\TimeInterface
+   */
+  protected TimeInterface $time;
 
   /**
    * Array for storing various values extrapolated
@@ -120,6 +134,8 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
     $instance->request = $container->get('request_stack')->getCurrentRequest();
     $instance->httpClient = $container->get('http_client');
     $instance->tempStoreFactory = $container->get('tempstore.private');
+    $instance->database = $container->get('database');
+    $instance->time = $container->get('datetime.time');
     return $instance;
   }
 
@@ -127,7 +143,7 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
    * {@inheritdoc}
    */
   public function defaultConfiguration() {
-    return $this->configFactory->get('nidirect_webforms.prison_visit_booking.settings')->getRawData() ?? [];
+    return $this->configFactory->get('nidirect_prisons.prison_visit_booking.settings')->getRawData() ?? [];
   }
 
   /**
@@ -146,13 +162,11 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
 
     if ($is_amended && $booking_link_id = $webform_submission->getData()['bkg_link_uniqueid']) {
 
-      $connection = Database::getConnection();
-
       // Store the unique identifier with the current timestamp.
-      $connection->insert('prison_visit_booking_link_ids')
+      $this->database->insert('prison_visit_booking_link_ids')
         ->fields([
           'unique_identifier' => $booking_link_id,
-          'created' => \Drupal::service('datetime.time')->getRequestTime(),
+          'created' => $this->time->getRequestTime(),
         ])
         ->execute();
     }
@@ -197,9 +211,7 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
       $link_unique_id = $booking_data['LINK_UNIQUEID'];
 
       if ($link_unique_id) {
-        $connection = Database::getConnection();
-
-        $query = $connection->select('prison_visit_booking_link_ids', 'pvblink_ids')
+        $query = $this->database->select('prison_visit_booking_link_ids', 'pvblink_ids')
           ->fields('pvblink_ids', ['unique_identifier'])
           ->condition('unique_identifier', $link_unique_id);
 
@@ -265,6 +277,7 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
 
     // Pass configuration and the processed booking reference
     // to clientside.
+    $form['#attached']['library'][] = 'nidirect_prisons/prison_visit_booking';
     $form['#attached']['drupalSettings']['prisonVisitBooking'] = $this->configuration;
     $form['#attached']['drupalSettings']['prisonVisitBooking']['booking_ref'] = $this->bookingReference;
 
@@ -1265,48 +1278,53 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
       return ['error' => TRUE];
     }
 
-    // Return an error if there is no slot data.
-    $data = $this->getData();
-    if (!$data || empty($data['SLOTS'])) {
+    $visit_type = match ($this->bookingReference['visit_type']) {
+      'face-to-face' => 'FACE_TO_FACE',
+      'virtual' => 'VIRTUAL',
+      default => NULL,
+    };
+    if ($visit_type === NULL) {
       return ['error' => TRUE];
     }
 
-    // Get slots based on visit type. Return an error if none exist.
-    $visit_type = $this->bookingReference['visit_type'];
+    $this->logSlotDataFreshness();
 
-    if ($visit_type === 'face-to-face' && array_key_exists('FACE_TO_FACE', $data['SLOTS'])) {
-      $slots = $data['SLOTS']['FACE_TO_FACE'];
-    }
-    elseif ($visit_type === 'virtual' && array_key_exists('VIRTUAL', $data['SLOTS'])) {
-      $slots = $data['SLOTS']['VIRTUAL'];
-    }
-    else {
-      return ['error' => TRUE];
-    }
-
-    // Get available slots for specific prison and prisoner category.
     $prison_id = $this->bookingReference['prison_id'];
     $prisoner_category = $this->bookingReference['prisoner_category'];
     $prisoner_subcategory = $this->bookingReference['prisoner_subcategory'];
 
-    // Build a key to get slots for specific prison and prisoner category.
-    $visit_slots_key = $prison_id;
-
-    if ($prisoner_category === 'separates' && array_key_exists($visit_slots_key . '_AFILL_' . $prisoner_subcategory, $slots)) {
-      $visit_slots_key .= '_AFILL_' . $prisoner_subcategory;
+    if ($visit_type === 'VIRTUAL') {
+      $timestamps = $this->getSlotTimestamps($visit_type, $prison_id);
     }
-    elseif ($prisoner_category === 'separates' && array_key_exists($visit_slots_key . '_AFILL', $slots)) {
-      $visit_slots_key .= '_AFILL';
-    }
-    elseif ($prisoner_category === 'integrated' && array_key_exists($visit_slots_key . '_INT', $slots)) {
-      $visit_slots_key .= '_INT';
+    else {
+      $affiliation_ids = [];
+      if ($prisoner_category === 'separates') {
+        if ($prisoner_subcategory !== NULL) {
+          $affiliation_ids[] = 'AFILL_' . $prisoner_subcategory;
+        }
+        $affiliation_ids[] = 'AFILL';
+      }
+      elseif ($prisoner_category === 'integrated') {
+        $affiliation_ids[] = 'INT';
+      }
+
+      $timestamps = [];
+      foreach ($affiliation_ids as $affiliation_id) {
+        $timestamps = $this->getSlotTimestamps($visit_type, $prison_id, [$affiliation_id]);
+        if ($timestamps) {
+          break;
+        }
+      }
     }
 
-    // Slots from cached json have dates dd/mm/yyyy format. Alter to make it dd-mm-yyyy.
-    foreach ($slots[$visit_slots_key] as $slot) {
-      $slot_parsed = str_replace('/', '-', $slot);
-      $slot_datetime = new \DateTime($slot_parsed);
+    if (!$timestamps) {
+      return ['error' => TRUE];
+    }
 
+    $timezone = new \DateTimeZone('Europe/London');
+    foreach ($timestamps as $timestamp) {
+      $slot_datetime = new \DateTime('@' . $timestamp);
+      $slot_datetime->setTimezone($timezone);
       $available_slots[] = $slot_datetime;
     }
 
@@ -1354,54 +1372,48 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
   }
 
   /**
-   * Get data stored in cache or from file.
+   * Loads slot timestamps for a prison and optional affiliations.
+   *
+   * @param string $visit_type
+   *   Visit type stored in the slots table.
+   * @param string $prison_id
+   *   Prison code.
+   * @param string[]|null $affiliation_ids
+   *   Optional affiliation codes to filter by.
+   *
+   * @return int[]
+   *   Slot timestamps ordered chronologically.
    */
-  private function getData() {
+  private function getSlotTimestamps(string $visit_type, string $prison_id, ?array $affiliation_ids = NULL): array {
+    $query = $this->database->select('prison_visit_slots', 'slots')
+      ->fields('slots', ['slot_datetime'])
+      ->condition('visit_type', $visit_type)
+      ->condition('prison_id', $prison_id)
+      ->orderBy('slot_datetime');
 
-    $data = [];
-
-    // Face-to-face slots are retrieved from external data in cache
-    // (see PrisonVisitBookingJsonApiController.php). If there is no
-    // cached data, fallback to using slots from file.
-
-    $cached_data = \Drupal::cache()->get('prison_visit_slots_data');
-
-    if (!empty($cached_data)) {
-
-      // There is cached data.
-      $data = $cached_data->data;
-      $cached_data_timestamp = (int) $cached_data->created;
-
-      // Check when created.
-      $now = new \DateTime('now');
-      $data_last_updated = new \DateTime('now');
-      $data_last_updated->setTimestamp($cached_data_timestamp);
-
-      // Log a warning when cached data more than 24 hours old.
-      if ($now->diff($data_last_updated)->h >= 24) {
-        $this->getLogger('prison_visits')->warning('prison_visit_slots_data cache data has not been updated in last 24 hours.');
-      }
-
-    }
-    else {
-
-      // No data in cache, so try file instead. Every time the
-      // external service posts data to prison visits api controller,
-      // data is stored in cache and written to file.
-
-      $file_uri = 'private://nidirect_webforms/prison_visit_slots_data.json';
-      $file_contents = file_exists($file_uri) ? file_get_contents($file_uri) : NULL;
-
-      if (!empty($file_contents)) {
-        $data = json_decode($file_contents, TRUE);
-        $this->getLogger('prison_visits')->info('prison_visit_slots_data cache is empty. Using @file instead.', ['@file' => $file_uri]);
-      }
-      else {
-        $this->getLogger('prison_visits')->error('prison_visit_slots_data not found in cache or file @file.', ['@file' => $file_uri]);
-      }
+    if ($affiliation_ids !== NULL) {
+      $query->condition('affiliation_id', $affiliation_ids, 'IN');
     }
 
-    return $data;
+    $query->distinct();
+
+    return array_map('intval', $query->execute()->fetchCol());
+  }
+
+  /**
+   * Logs when the imported slots are missing or over 24 hours old.
+   */
+  private function logSlotDataFreshness(): void {
+    $query = $this->database->select('prison_visit_slots', 'slots');
+    $query->addExpression('MAX(updated_timestamp)', 'latest_update');
+    $latest_update = (int) $query->execute()->fetchField();
+
+    if (!$latest_update) {
+      $this->getLogger('prison_visits')->error('No prison visit slots have been imported.');
+    }
+    elseif ($this->time->getRequestTime() - $latest_update >= 86400) {
+      $this->getLogger('prison_visits')->warning('Prison visit slots data has not been updated in the last 24 hours.');
+    }
   }
 
   /**

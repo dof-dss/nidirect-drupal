@@ -1,4 +1,4 @@
-Date.prototype.getUTCWeekNumber = function(){
+Date.prototype.getUTCWeekNumber = function () {
   const d = new Date(Date.UTC(this.getFullYear(), this.getMonth(), this.getDate()));
   const dayNum = d.getUTCDay() || 7;
   d.setUTCDate(d.getUTCDate() + 4 - dayNum);

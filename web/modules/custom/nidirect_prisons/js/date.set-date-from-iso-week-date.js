@@ -1,5 +1,5 @@
 /**
- * Get the date from an ISO 8601 week and year
+ * Gets the date from an ISO 8601 week and year.
  *
  * https://en.wikipedia.org/wiki/ISO_week_date
  *
