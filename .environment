@@ -4,6 +4,11 @@
 # necessarily the git repository's root. In case of multiple applications,
 # each application can have its own .environment file.
 
+# Prefer the patched Node.js installed during the Upsun build hook.
+if [ -n "$N_PREFIX" ] && [ -x "$N_PREFIX/bin/node" ]; then
+  export PATH="$N_PREFIX/bin:$PATH"
+fi
+
 # Allow executable app dependencies from Composer to be run from the path.
 if [ -n "$PLATFORM_APP_DIR" -a -f "$PLATFORM_APP_DIR"/composer.json ] ; then
   bin=$(composer config bin-dir --working-dir="$PLATFORM_APP_DIR" --no-interaction 2>/dev/null)
