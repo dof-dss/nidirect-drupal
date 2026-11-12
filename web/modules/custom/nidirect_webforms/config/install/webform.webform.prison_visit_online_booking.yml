@@ -4,7 +4,6 @@ status: open
 dependencies:
   module:
     - nidirect_prisons
-    - nidirect_webforms
 weight: 0
 open: null
 close: null
@@ -207,50 +206,6 @@ elements: |-
               </ol>
           </div>
       </div>
-  booking_reference_prisoner_reference:
-    '#type': webform_wizard_page
-    '#title': 'Visit reference number and prisoner ID'
-    '#states_clear': false
-    '#format': container
-    booking_and_prisoner_reference_preamble:
-      '#type': webform_markup
-      '#markup': |-
-        <p class="info-notice" role="status">
-        To book a prison visit, you will need a visit reference number (or booking reference) and a prisoner ID for the prisoner you want to visit.
-        </p>
-    visitor_order_number:
-      '#type': textfield
-      '#title': 'Visit reference number'
-      '#description': 'For example, AAA9999-9999'
-      '#description_display': before
-      '#maxlength': 12
-      '#size': 12
-      '#autocomplete': 'off'
-      '#input_mask': AAA9999-9999
-      '#pattern': '[A-Z]{3}[0-9]{4}-[0-9]{4}'
-      '#pattern_error': 'Visit reference number is not recognised'
-      '#attributes':
-        class:
-          - monospace-text
-        data-inputmask-placeholder: ' '
-      '#data-tippy-arrow': false
-    prisoner_id:
-      '#type': textfield
-      '#title': 'Prisoner ID'
-      '#description': 'For example, A9999'
-      '#description_display': before
-      '#maxlength': 5
-      '#size': 5
-      '#autocomplete': 'off'
-      '#input_mask': 'A9[9][9][9]'
-      '#required': true
-      '#required_error': 'Enter the prisoner ID of the prisoner you will be visiting'
-      '#pattern': '[A-FH][0-9]{1,4}'
-      '#pattern_error': 'Prisoner ID is not recognised'
-      '#attributes':
-        class:
-          - monospace-text
-        data-inputmask-placeholder: ' '
   amend_booking_page:
     '#type': webform_wizard_page
     '#title': 'Amend booking'
@@ -540,6 +495,50 @@ elements: |-
         class:
           - important-question
       '#access': false
+  booking_reference_prisoner_reference:
+    '#type': webform_wizard_page
+    '#title': 'Visit reference number and prisoner ID'
+    '#states_clear': false
+    '#format': container
+    booking_and_prisoner_reference_preamble:
+      '#type': webform_markup
+      '#markup': |-
+        <p class="info-notice" role="status">
+        To book a prison visit, you will need a visit reference number (or booking reference) and a prisoner ID for the prisoner you want to visit.
+        </p>
+    visitor_order_number:
+      '#type': textfield
+      '#title': 'Visit reference number'
+      '#description': 'For example, AAA9999-9999'
+      '#description_display': before
+      '#maxlength': 12
+      '#size': 12
+      '#autocomplete': 'off'
+      '#input_mask': AAA9999-9999
+      '#pattern': '[A-Z]{3}[0-9]{4}-[0-9]{4}'
+      '#pattern_error': 'Visit reference number is not recognised'
+      '#attributes':
+        class:
+          - monospace-text
+        data-inputmask-placeholder: ' '
+      '#data-tippy-arrow': false
+    prisoner_id:
+      '#type': textfield
+      '#title': 'Prisoner ID'
+      '#description': 'For example, A9999'
+      '#description_display': before
+      '#maxlength': 5
+      '#size': 5
+      '#autocomplete': 'off'
+      '#input_mask': 'A9[9][9][9]'
+      '#required': true
+      '#required_error': 'Enter the prisoner ID of the prisoner you will be visiting'
+      '#pattern': '[A-FH][0-9]{1,4}'
+      '#pattern_error': 'Prisoner ID is not recognised'
+      '#attributes':
+        class:
+          - monospace-text
+        data-inputmask-placeholder: ' '
   main_visitor_details:
     '#type': webform_wizard_page
     '#title': 'Main visitor details'
@@ -559,6 +558,21 @@ elements: |-
     '#states_clear': false
     '#format': container
     '#next_button_label': Next
+    msg_reference_no_slots:
+      '#type': webform_markup
+      '#access': false
+      '#markup': |-
+        <div role="status">
+          <p class="info-notice info-notice--warning" >There are no visit dates and times available for the visit reference number <strong>[webform_submission:values:visitor_order_number]</strong>.</p>
+          <p>You can go back and try a different reference number if you have one.</p>
+        </div>
+    msg_reference_no_data:
+      '#type': webform_markup
+      '#access': false
+      '#markup': |-
+        <div class="info-notice info-notice--error" role="status">
+          <p>An error has occurred. Booking cannot proceed at this time. Try again later.</p>
+        </div>
     visitor_1_details:
       '#type': fieldset
       '#title': 'Your details'
@@ -1209,14 +1223,14 @@ elements: |-
               <dd>{{ data.prisoner_id }}</dd>
             </dl>
         </div>
-    msg_no_slots_available:
+    msg_slots:
       '#type': webform_markup
       '#access': false
       '#markup': |-
-        <div class="visit-details" role="status">
-          <div class="info-notice info-notice--error" role="status">
+        <div role="status">
+          <div class="info-notice info-notice--warning">
             <p>
-              There are no more visit dates and times available.
+              There are no visit dates and times available.
             </p>
           </div>
           <hr>
@@ -1762,6 +1776,7 @@ elements: |-
     '#type': webform_actions
     '#title': 'Submit button(s)'
     '#submit__label': 'Book prison visit'
+    '#wizard_prev__label': Back
 css: |-
   .test-badge {
     display: inline-block;
@@ -1844,7 +1859,7 @@ settings:
   form_title: source_entity_webform
   form_submit_once: true
   form_open_message: ''
-  form_close_message: 'The booking a prison visit online service is currently unavailable. We are working to restore service as soon as possible. Apologies for any inconvenience.'
+  form_close_message: 'This service is unavailable until 1:30pm today at the latest due to essential maintenance.  Please try again later.  We apologise for any inconvenience.'
   form_exception_message: ''
   form_previous_submissions: false
   form_confidential: false
@@ -2718,3 +2733,833 @@ handlers:
         F: 7
         V: 7
         E: 28
+      visit_slots:
+        face-to-face:
+          MY_INT:
+            - '03-01-1973 09:15:00'
+            - '03-01-1973 10:45:00'
+            - '03-01-1973 14:15:00'
+            - '03-01-1973 15:30:00'
+            - '04-01-1973 09:15:00'
+            - '04-01-1973 10:45:00'
+            - '04-01-1973 14:15:00'
+            - '04-01-1973 15:30:00'
+            - '06-01-1973 09:15:00'
+            - '06-01-1973 10:45:00'
+            - '06-01-1973 14:15:00'
+            - '06-01-1973 15:30:00'
+          MY_AFILL_1:
+            - '03-01-1973 10:30:00'
+            - '04-01-1973 14:30:00'
+            - '06-01-1973 14:30:00'
+          MY_AFILL_2:
+            - '03-01-1973 14:30:00'
+            - '04-01-1973 10:30:00'
+            - '06-01-1973 10:30:00'
+          MN:
+            - '03-01-1973 10:15:00'
+            - '03-01-1973 14:15:00'
+            - '05-01-1973 10:15:00'
+            - '05-01-1973 14:15:00'
+            - '06-01-1973 10:15:00'
+            - '06-01-1973 14:15:00'
+          HW:
+            - '02-01-1973 09:30:00'
+            - '02-01-1973 10:45:00'
+            - '02-01-1973 14:00:00'
+            - '02-01-1973 15:15:00'
+            - '03-01-1973 09:30:00'
+            - '03-01-1973 10:45:00'
+            - '03-01-1973 14:00:00'
+            - '03-01-1973 15:15:00'
+            - '07-01-1973 09:30:00'
+            - '07-01-1973 10:45:00'
+            - '07-01-1973 14:30:00'
+          HW_AFILL:
+            - '02-01-1973 09:30:00'
+            - '02-01-1973 10:45:00'
+            - '02-01-1973 14:00:00'
+            - '02-01-1973 15:15:00'
+            - '03-01-1973 09:30:00'
+            - '03-01-1973 10:45:00'
+            - '03-01-1973 14:00:00'
+            - '03-01-1973 15:15:00'
+            - '07-01-1973 09:30:00'
+            - '07-01-1973 10:45:00'
+            - '07-01-1973 14:30:00'
+        virtual:
+          MY:
+            - '01-01-1973 09:30'
+            - '01-01-1973 10:00'
+            - '01-01-1973 10:30'
+            - '01-01-1973 11:00'
+            - '01-01-1973 11:30'
+            - '01-01-1973 14:00'
+            - '01-01-1973 14:30'
+            - '01-01-1973 15:00'
+            - '01-01-1973 15:30'
+            - '02-01-1973 09:30'
+            - '02-01-1973 10:00'
+            - '02-01-1973 10:30'
+            - '02-01-1973 11:00'
+            - '02-01-1973 11:30'
+            - '02-01-1973 14:00'
+            - '02-01-1973 14:30'
+            - '02-01-1973 15:00'
+            - '02-01-1973 15:30'
+            - '03-01-1973 09:30'
+            - '03-01-1973 10:00'
+            - '03-01-1973 10:30'
+            - '03-01-1973 11:00'
+            - '03-01-1973 11:30'
+            - '03-01-1973 14:00'
+            - '03-01-1973 14:30'
+            - '03-01-1973 15:00'
+            - '03-01-1973 15:30'
+            - '04-01-1973 09:30'
+            - '04-01-1973 10:00'
+            - '04-01-1973 10:30'
+            - '04-01-1973 11:00'
+            - '04-01-1973 11:30'
+            - '04-01-1973 14:00'
+            - '04-01-1973 14:30'
+            - '04-01-1973 15:00'
+            - '04-01-1973 15:30'
+            - '05-01-1973 09:30'
+            - '05-01-1973 10:00'
+            - '05-01-1973 10:30'
+            - '05-01-1973 11:00'
+            - '05-01-1973 11:30'
+            - '05-01-1973 14:00'
+            - '05-01-1973 14:30'
+            - '05-01-1973 15:00'
+            - '05-01-1973 15:30'
+            - '06-01-1973 09:30'
+            - '06-01-1973 10:00'
+            - '06-01-1973 10:30'
+            - '06-01-1973 11:00'
+            - '06-01-1973 11:30'
+            - '06-01-1973 14:00'
+            - '06-01-1973 14:30'
+            - '06-01-1973 15:00'
+            - '06-01-1973 15:30'
+            - '07-01-1973 09:30'
+            - '07-01-1973 10:00'
+            - '07-01-1973 10:30'
+            - '07-01-1973 11:00'
+            - '07-01-1973 11:30'
+            - '07-01-1973 14:00'
+            - '07-01-1973 14:30'
+            - '07-01-1973 15:00'
+            - '07-01-1973 15:30'
+          MN:
+            - '01-01-1973 08:30'
+            - '01-01-1973 09:00'
+            - '01-01-1973 09:30'
+            - '01-01-1973 10:00'
+            - '01-01-1973 10:30'
+            - '01-01-1973 11:00'
+            - '01-01-1973 11:30'
+            - '01-01-1973 14:15'
+            - '01-01-1973 14:45'
+            - '01-01-1973 15:15'
+            - '01-01-1973 15:45'
+            - '01-01-1973 16:15'
+            - '01-01-1973 16:45'
+            - '01-01-1973 17:15'
+            - '01-01-1973 17:45'
+            - '02-01-1973 08:30'
+            - '02-01-1973 09:00'
+            - '02-01-1973 09:30'
+            - '02-01-1973 10:00'
+            - '02-01-1973 10:30'
+            - '02-01-1973 11:00'
+            - '02-01-1973 11:30'
+            - '02-01-1973 14:15'
+            - '02-01-1973 14:45'
+            - '02-01-1973 15:15'
+            - '02-01-1973 15:45'
+            - '02-01-1973 16:15'
+            - '02-01-1973 16:45'
+            - '02-01-1973 17:15'
+            - '02-01-1973 17:45'
+            - '03-01-1973 08:30'
+            - '03-01-1973 09:00'
+            - '03-01-1973 09:30'
+            - '03-01-1973 10:00'
+            - '03-01-1973 10:30'
+            - '03-01-1973 11:00'
+            - '03-01-1973 11:30'
+            - '03-01-1973 14:15'
+            - '03-01-1973 14:45'
+            - '03-01-1973 15:15'
+            - '03-01-1973 15:45'
+            - '03-01-1973 16:15'
+            - '03-01-1973 16:45'
+            - '03-01-1973 17:15'
+            - '03-01-1973 17:45'
+            - '04-01-1973 08:30'
+            - '04-01-1973 09:00'
+            - '04-01-1973 09:30'
+            - '04-01-1973 10:00'
+            - '04-01-1973 10:30'
+            - '04-01-1973 11:00'
+            - '04-01-1973 11:30'
+            - '04-01-1973 14:15'
+            - '04-01-1973 14:45'
+            - '04-01-1973 15:15'
+            - '04-01-1973 15:45'
+            - '04-01-1973 16:15'
+            - '04-01-1973 16:45'
+            - '04-01-1973 17:15'
+            - '04-01-1973 17:45'
+            - '05-01-1973 08:30'
+            - '05-01-1973 09:00'
+            - '05-01-1973 09:30'
+            - '05-01-1973 10:00'
+            - '05-01-1973 10:30'
+            - '05-01-1973 11:00'
+            - '05-01-1973 11:30'
+            - '05-01-1973 14:15'
+            - '05-01-1973 14:45'
+            - '05-01-1973 15:15'
+            - '05-01-1973 15:45'
+            - '05-01-1973 16:15'
+            - '05-01-1973 16:45'
+            - '05-01-1973 17:15'
+            - '05-01-1973 17:45'
+            - '06-01-1973 09:15'
+            - '06-01-1973 09:45'
+            - '06-01-1973 10:15'
+            - '06-01-1973 10:45'
+            - '06-01-1973 11:15'
+            - '06-01-1973 11:45'
+            - '06-01-1973 14:15'
+            - '06-01-1973 14:45'
+            - '06-01-1973 15:15'
+            - '06-01-1973 15:45'
+            - '06-01-1973 16:15'
+            - '06-01-1973 16:45'
+            - '07-01-1973 09:15'
+            - '07-01-1973 09:45'
+            - '07-01-1973 10:15'
+            - '07-01-1973 10:45'
+            - '07-01-1973 11:15'
+            - '07-01-1973 11:45'
+            - '07-01-1973 14:15'
+            - '07-01-1973 14:45'
+            - '07-01-1973 15:15'
+            - '07-01-1973 15:45'
+            - '07-01-1973 16:15'
+            - '07-01-1973 16:45'
+          HW:
+            - '01-01-1973 09:00'
+            - '01-01-1973 10:00'
+            - '01-01-1973 11:00'
+            - '01-01-1973 14:00'
+            - '01-01-1973 15:00'
+            - '01-01-1973 16:00'
+            - '02-01-1973 09:00'
+            - '02-01-1973 10:00'
+            - '02-01-1973 11:00'
+            - '02-01-1973 14:00'
+            - '02-01-1973 15:00'
+            - '02-01-1973 16:00'
+            - '03-01-1973 09:00'
+            - '03-01-1973 10:00'
+            - '03-01-1973 11:00'
+            - '03-01-1973 14:00'
+            - '03-01-1973 15:00'
+            - '03-01-1973 16:00'
+            - '04-01-1973 09:00'
+            - '04-01-1973 10:00'
+            - '04-01-1973 11:00'
+            - '04-01-1973 14:00'
+            - '04-01-1973 15:00'
+            - '04-01-1973 16:00'
+            - '05-01-1973 09:00'
+            - '05-01-1973 10:00'
+            - '05-01-1973 11:00'
+            - '05-01-1973 14:00'
+            - '05-01-1973 15:00'
+            - '05-01-1973 16:00'
+            - '06-01-1973 09:00'
+            - '06-01-1973 09:30'
+            - '06-01-1973 10:00'
+            - '06-01-1973 10:30'
+            - '06-01-1973 11:00'
+            - '06-01-1973 11:30'
+            - '06-01-1973 14:00'
+            - '06-01-1973 14:30'
+            - '06-01-1973 15:00'
+            - '06-01-1973 15:30'
+            - '06-01-1973 16:00'
+            - '07-01-1973 09:00'
+            - '07-01-1973 09:30'
+            - '07-01-1973 10:00'
+            - '07-01-1973 10:30'
+            - '07-01-1973 11:00'
+            - '07-01-1973 11:30'
+            - '07-01-1973 14:00'
+            - '07-01-1973 14:30'
+            - '07-01-1973 15:00'
+            - '07-01-1973 15:30'
+            - '07-01-1973 16:00'
+      visit_slots_uri: 'https://gist.githubusercontent.com/dof-dss-eddwebdev/57ea797b76466f4036654e4242da82bb/raw/eb8eb122149add828bfad5179811ec77a4a90187/prism-slots.json'
+  ov_in_test_1:
+    id: email
+    handler_id: ov_in_test_1
+    label: OV_IN_AMEND_TEST
+    notes: ''
+    status: true
+    conditions:
+      enabled:
+        ':input[name="environment_base_url"]':
+          value:
+            pattern: '^.*wcjm3mu7bacfm.*$'
+        ':input[name="bkg_id"]':
+          filled: true
+    weight: -45
+    settings:
+      states:
+        - completed
+      to_mail: PRISMTESTVisitsBooking@justice-ni.gov.uk
+      to_options: {  }
+      bcc_mail: ''
+      bcc_options: {  }
+      cc_mail: ''
+      cc_options: {  }
+      from_mail: _default
+      from_options: {  }
+      from_name: _default
+      reply_to: ''
+      return_path: ''
+      sender_mail: ''
+      sender_name: ''
+      subject: OV_AMEND
+      body: |-
+        {
+        "SEQUENCE_ID": "[webform_submission:serial]",
+        "SUBMITTED_DATETIME": "[webform_submission:completed:prison_visit_booking_datetime]",
+        "AMEND_TYPE": "[webform_submission:values:amend_type]",
+        "BKG_ID": "[webform_submission:values:bkg_id]",
+        "VISIT_ORDER_NO": "[webform_submission:values:visitor_order_number]",
+        "INMATE_ID": "[webform_submission:values:prisoner_id]",
+        "SPECIAL_REQUIREMENTS": [webform_submission:values:special_requirements_json],
+        "VISITOR_1_ID": "[webform_submission:values:visitor_1_id]",
+        "VISITOR_1_DOB": "[webform_submission:values:visitor_1_dob] 00:00",
+        "VISITOR_1_EMAIL": "[webform_submission:values:visitor_1_email]",
+        "VISITOR_1_PHONE": "[webform_submission:values:visitor_1_telephone]",
+        "VISITOR_2_ID": "[webform_submission:values:av1_id]",
+        "VISITOR_2_DOB": "[webform_submission:values:av1_dob]",
+        "VISITOR_3_ID": "[webform_submission:values:av2_id]",
+        "VISITOR_3_DOB": "[webform_submission:values:av2_dob]",
+        "VISITOR_4_ID": "[webform_submission:values:av3_id]",
+        "VISITOR_4_DOB": "[webform_submission:values:av3_dob]",
+        "VISITOR_5_ID": "[webform_submission:values:av4_id]",
+        "VISITOR_5_DOB": "[webform_submission:values:av4_dob]",
+        "SLOT1_DATETIME": "[webform_submission:values:slot1_datetime_submission]",
+        "SLOT2_DATETIME": "[webform_submission:values:slot2_datetime_submission]",
+        "SLOT3_DATETIME": "[webform_submission:values:slot3_datetime_submission]",
+        "SLOT4_DATETIME": "[webform_submission:values:slot4_datetime_submission]",
+        "SLOT5_DATETIME": "[webform_submission:values:slot5_datetime_submission]"
+        }
+      excluded_elements:
+        confirmation_message: confirmation_message
+        confirmation_keep_booking_message: confirmation_keep_booking_message
+        confirmation_amend_booking_message: confirmation_amend_booking_message
+        confirmation_cancel_booking_message: confirmation_cancel_booking_message
+        confirmation_visit_details: confirmation_visit_details
+        booking_and_prisoner_reference_preamble: booking_and_prisoner_reference_preamble
+        visitor_order_number: visitor_order_number
+        prisoner_id: prisoner_id
+        amend_error_default: amend_error_default
+        error_booking_already_amended: error_booking_already_amended
+        visit_order_ref_invalid: visit_order_ref_invalid
+        visit_order_ref_expired: visit_order_ref_expired
+        visit_order_ref_amendment_expired: visit_order_ref_amendment_expired
+        booking_details: booking_details
+        booking_details_ref_no_slots: booking_details_ref_no_slots
+        booking_details_notice_exceeded_face_to_face: booking_details_notice_exceeded_face_to_face
+        booking_details_notice_exceeded_virtual: booking_details_notice_exceeded_virtual
+        amend_booking_options: amend_booking_options
+        choose_changes: choose_changes
+        choose_changes_virtual: choose_changes_virtual
+        visitor_1_intro: visitor_1_intro
+        visitor_1_intro_amend: visitor_1_intro_amend
+        visitor_1_id: visitor_1_id
+        visitor_1_dob: visitor_1_dob
+        visitor_1_email: visitor_1_email
+        visitor_1_telephone: visitor_1_telephone
+        msg_additional_visitors: msg_additional_visitors
+        msg_existing_additional_visitors: msg_existing_additional_visitors
+        additional_visitor_number: additional_visitor_number
+        additional_visitor_1_id: additional_visitor_1_id
+        additional_visitor_1_dob: additional_visitor_1_dob
+        additional_visitor_2_id: additional_visitor_2_id
+        additional_visitor_2_dob: additional_visitor_2_dob
+        additional_visitor_3_id: additional_visitor_3_id
+        additional_visitor_3_dob: additional_visitor_3_dob
+        additional_visitor_4_id: additional_visitor_4_id
+        additional_visitor_4_dob: additional_visitor_4_dob
+        additional_visitor_5_id: additional_visitor_5_id
+        additional_visitor_5_dob: additional_visitor_5_dob
+        visitor_special_requirements_choice: visitor_special_requirements_choice
+        visitor_special_requirements_details: visitor_special_requirements_details
+        remember_settings_info: remember_settings_info
+        additional_visitors_remember: additional_visitors_remember
+        visit_details: visit_details
+        time_slot_restrictions: time_slot_restrictions
+        monday_week_1: monday_week_1
+        tuesday_week_1: tuesday_week_1
+        wednesday_week_1: wednesday_week_1
+        thursday_week_1: thursday_week_1
+        friday_week_1: friday_week_1
+        saturday_week_1: saturday_week_1
+        sunday_week_1: sunday_week_1
+        monday_week_2: monday_week_2
+        tuesday_week_2: tuesday_week_2
+        wednesday_week_2: wednesday_week_2
+        thursday_week_2: thursday_week_2
+        friday_week_2: friday_week_2
+        saturday_week_2: saturday_week_2
+        sunday_week_2: sunday_week_2
+        monday_week_3: monday_week_3
+        tuesday_week_3: tuesday_week_3
+        wednesday_week_3: wednesday_week_3
+        thursday_week_3: thursday_week_3
+        friday_week_3: friday_week_3
+        saturday_week_3: saturday_week_3
+        sunday_week_3: sunday_week_3
+        monday_week_4: monday_week_4
+        tuesday_week_4: tuesday_week_4
+        wednesday_week_4: wednesday_week_4
+        thursday_week_4: thursday_week_4
+        friday_week_4: friday_week_4
+        saturday_week_4: saturday_week_4
+        sunday_week_4: sunday_week_4
+        slots_preferred: slots_preferred
+        booking_reference_processed: booking_reference_processed
+        amend_booking_setup_complete: amend_booking_setup_complete
+        prison_name: prison_name
+        visit_type: visit_type
+        amend_timeslot_message: amend_timeslot_message
+        amend_type: amend_type
+        bkg_id: bkg_id
+        bkg_link_uniqueid: bkg_link_uniqueid
+        bkg_slotdatetime: bkg_slotdatetime
+        current_visitor_order_number: current_visitor_order_number
+        last_visitor_order_number: last_visitor_order_number
+        slot1_datetime: slot1_datetime
+        slot2_datetime: slot2_datetime
+        slot3_datetime: slot3_datetime
+        slot4_datetime: slot4_datetime
+        slot5_datetime: slot5_datetime
+        slot1_datetime_submission: slot1_datetime_submission
+        slot2_datetime_submission: slot2_datetime_submission
+        slot3_datetime_submission: slot3_datetime_submission
+        slot4_datetime_submission: slot4_datetime_submission
+        slot5_datetime_submission: slot5_datetime_submission
+        special_requirements_json: special_requirements_json
+        av1_id: av1_id
+        av1_dob: av1_dob
+        av2_id: av2_id
+        av2_dob: av2_dob
+        av3_id: av3_id
+        av3_dob: av3_dob
+        av4_id: av4_id
+        av4_dob: av4_dob
+        av5_id: av5_id
+        av5_dob: av5_dob
+        environment_base_url: environment_base_url
+        webform_confirmation_message_default: webform_confirmation_message_default
+        webform_confirmation_message_cancel: webform_confirmation_message_cancel
+        webform_confirmation_message_keep: webform_confirmation_message_keep
+        webform_confirmation_message_change: webform_confirmation_message_change
+      ignore_access: true
+      exclude_empty: true
+      exclude_empty_checkbox: false
+      exclude_attachments: false
+      html: false
+      attachments: false
+      twig: false
+      theme_name: ''
+      parameters: {  }
+      debug: false
+  ov_in:
+    id: email
+    handler_id: ov_in
+    label: OV_IN_AMEND
+    notes: ''
+    status: true
+    conditions:
+      enabled:
+        ':input[name="environment_base_url"]':
+          value: 'https://www.nidirect.gov.uk'
+        ':input[name="bkg_id"]':
+          filled: true
+    weight: -46
+    settings:
+      states:
+        - completed
+      to_mail: PRISMVisitsBooking@justice-ni.gov.uk
+      to_options: {  }
+      bcc_mail: ''
+      bcc_options: {  }
+      cc_mail: ''
+      cc_options: {  }
+      from_mail: _default
+      from_options: {  }
+      from_name: _default
+      reply_to: ''
+      return_path: ''
+      sender_mail: ''
+      sender_name: ''
+      subject: OV_AMEND
+      body: |-
+        {
+        "SEQUENCE_ID": "[webform_submission:serial]",
+        "SUBMITTED_DATETIME": "[webform_submission:completed:prison_visit_booking_datetime]",
+        "AMEND_TYPE": "[webform_submission:values:amend_type]",
+        "BKG_ID": "[webform_submission:values:bkg_id]",
+        "VISIT_ORDER_NO": "[webform_submission:values:visitor_order_number]",
+        "INMATE_ID": "[webform_submission:values:prisoner_id]",
+        "SPECIAL_REQUIREMENTS": [webform_submission:values:special_requirements_json],
+        "VISITOR_1_ID": "[webform_submission:values:visitor_1_id]",
+        "VISITOR_1_DOB": "[webform_submission:values:visitor_1_dob] 00:00",
+        "VISITOR_1_EMAIL": "[webform_submission:values:visitor_1_email]",
+        "VISITOR_1_PHONE": "[webform_submission:values:visitor_1_telephone]",
+        "VISITOR_2_ID": "[webform_submission:values:av1_id]",
+        "VISITOR_2_DOB": "[webform_submission:values:av1_dob]",
+        "VISITOR_3_ID": "[webform_submission:values:av2_id]",
+        "VISITOR_3_DOB": "[webform_submission:values:av2_dob]",
+        "VISITOR_4_ID": "[webform_submission:values:av3_id]",
+        "VISITOR_4_DOB": "[webform_submission:values:av3_dob]",
+        "VISITOR_5_ID": "[webform_submission:values:av4_id]",
+        "VISITOR_5_DOB": "[webform_submission:values:av4_dob]",
+        "SLOT1_DATETIME": "[webform_submission:values:slot1_datetime_submission]",
+        "SLOT2_DATETIME": "[webform_submission:values:slot2_datetime_submission]",
+        "SLOT3_DATETIME": "[webform_submission:values:slot3_datetime_submission]",
+        "SLOT4_DATETIME": "[webform_submission:values:slot4_datetime_submission]",
+        "SLOT5_DATETIME": "[webform_submission:values:slot5_datetime_submission]"
+        }
+      excluded_elements:
+        confirmation_message: confirmation_message
+        confirmation_keep_booking_message: confirmation_keep_booking_message
+        confirmation_amend_booking_message: confirmation_amend_booking_message
+        confirmation_cancel_booking_message: confirmation_cancel_booking_message
+        confirmation_visit_details: confirmation_visit_details
+        booking_and_prisoner_reference_preamble: booking_and_prisoner_reference_preamble
+        visitor_order_number: visitor_order_number
+        prisoner_id: prisoner_id
+        amend_error_default: amend_error_default
+        error_booking_already_amended: error_booking_already_amended
+        visit_order_ref_invalid: visit_order_ref_invalid
+        visit_order_ref_expired: visit_order_ref_expired
+        visit_order_ref_amendment_expired: visit_order_ref_amendment_expired
+        booking_details: booking_details
+        booking_details_ref_no_slots: booking_details_ref_no_slots
+        booking_details_notice_exceeded_face_to_face: booking_details_notice_exceeded_face_to_face
+        booking_details_notice_exceeded_virtual: booking_details_notice_exceeded_virtual
+        amend_booking_options: amend_booking_options
+        choose_changes: choose_changes
+        choose_changes_virtual: choose_changes_virtual
+        visitor_1_intro: visitor_1_intro
+        visitor_1_intro_amend: visitor_1_intro_amend
+        visitor_1_id: visitor_1_id
+        visitor_1_dob: visitor_1_dob
+        visitor_1_email: visitor_1_email
+        visitor_1_telephone: visitor_1_telephone
+        msg_additional_visitors: msg_additional_visitors
+        msg_existing_additional_visitors: msg_existing_additional_visitors
+        additional_visitor_number: additional_visitor_number
+        additional_visitor_1_id: additional_visitor_1_id
+        additional_visitor_1_dob: additional_visitor_1_dob
+        additional_visitor_2_id: additional_visitor_2_id
+        additional_visitor_2_dob: additional_visitor_2_dob
+        additional_visitor_3_id: additional_visitor_3_id
+        additional_visitor_3_dob: additional_visitor_3_dob
+        additional_visitor_4_id: additional_visitor_4_id
+        additional_visitor_4_dob: additional_visitor_4_dob
+        additional_visitor_5_id: additional_visitor_5_id
+        additional_visitor_5_dob: additional_visitor_5_dob
+        visitor_special_requirements_choice: visitor_special_requirements_choice
+        visitor_special_requirements_details: visitor_special_requirements_details
+        remember_settings_info: remember_settings_info
+        additional_visitors_remember: additional_visitors_remember
+        visit_details: visit_details
+        time_slot_restrictions: time_slot_restrictions
+        monday_week_1: monday_week_1
+        tuesday_week_1: tuesday_week_1
+        wednesday_week_1: wednesday_week_1
+        thursday_week_1: thursday_week_1
+        friday_week_1: friday_week_1
+        saturday_week_1: saturday_week_1
+        sunday_week_1: sunday_week_1
+        monday_week_2: monday_week_2
+        tuesday_week_2: tuesday_week_2
+        wednesday_week_2: wednesday_week_2
+        thursday_week_2: thursday_week_2
+        friday_week_2: friday_week_2
+        saturday_week_2: saturday_week_2
+        sunday_week_2: sunday_week_2
+        monday_week_3: monday_week_3
+        tuesday_week_3: tuesday_week_3
+        wednesday_week_3: wednesday_week_3
+        thursday_week_3: thursday_week_3
+        friday_week_3: friday_week_3
+        saturday_week_3: saturday_week_3
+        sunday_week_3: sunday_week_3
+        monday_week_4: monday_week_4
+        tuesday_week_4: tuesday_week_4
+        wednesday_week_4: wednesday_week_4
+        thursday_week_4: thursday_week_4
+        friday_week_4: friday_week_4
+        saturday_week_4: saturday_week_4
+        sunday_week_4: sunday_week_4
+        slots_preferred: slots_preferred
+        booking_reference_processed: booking_reference_processed
+        amend_booking_setup_complete: amend_booking_setup_complete
+        prison_name: prison_name
+        visit_type: visit_type
+        amend_timeslot_message: amend_timeslot_message
+        amend_type: amend_type
+        bkg_id: bkg_id
+        bkg_link_uniqueid: bkg_link_uniqueid
+        bkg_slotdatetime: bkg_slotdatetime
+        current_visitor_order_number: current_visitor_order_number
+        last_visitor_order_number: last_visitor_order_number
+        slot1_datetime: slot1_datetime
+        slot2_datetime: slot2_datetime
+        slot3_datetime: slot3_datetime
+        slot4_datetime: slot4_datetime
+        slot5_datetime: slot5_datetime
+        slot1_datetime_submission: slot1_datetime_submission
+        slot2_datetime_submission: slot2_datetime_submission
+        slot3_datetime_submission: slot3_datetime_submission
+        slot4_datetime_submission: slot4_datetime_submission
+        slot5_datetime_submission: slot5_datetime_submission
+        special_requirements_json: special_requirements_json
+        av1_id: av1_id
+        av1_dob: av1_dob
+        av2_id: av2_id
+        av2_dob: av2_dob
+        av3_id: av3_id
+        av3_dob: av3_dob
+        av4_id: av4_id
+        av4_dob: av4_dob
+        av5_id: av5_id
+        av5_dob: av5_dob
+        environment_base_url: environment_base_url
+        webform_confirmation_message_default: webform_confirmation_message_default
+        webform_confirmation_message_cancel: webform_confirmation_message_cancel
+        webform_confirmation_message_keep: webform_confirmation_message_keep
+        webform_confirmation_message_change: webform_confirmation_message_change
+      ignore_access: true
+      exclude_empty: true
+      exclude_empty_checkbox: false
+      exclude_attachments: false
+      html: false
+      attachments: false
+      twig: false
+      theme_name: ''
+      parameters: {  }
+      debug: false
+  ov_in_local_1:
+    id: email
+    handler_id: ov_in_local_1
+    label: OV_IN_AMEND_LOCAL
+    notes: ''
+    status: true
+    conditions:
+      enabled:
+        ':input[name="environment_base_url"]':
+          value:
+            pattern: '^.*(ddev\.site|lndo\.site|localhost).*$'
+        ':input[name="bkg_id"]':
+          filled: true
+    weight: -44
+    settings:
+      states:
+        - completed
+      to_mail: test@mailhog.local
+      to_options: {  }
+      bcc_mail: ''
+      bcc_options: {  }
+      cc_mail: ''
+      cc_options: {  }
+      from_mail: noreply@mailhog.local
+      from_options: {  }
+      from_name: _default
+      reply_to: ''
+      return_path: ''
+      sender_mail: ''
+      sender_name: ''
+      subject: OV_IN
+      body: |-
+        {
+        "SEQUENCE_ID": "[webform_submission:serial]",
+        "SUBMITTED_DATETIME": "[webform_submission:completed:prison_visit_booking_datetime]",
+        "AMEND_TYPE": "[webform_submission:values:amend_type]",
+        "BKG_ID": "[webform_submission:values:bkg_id]",
+        "VISIT_ORDER_NO": "[webform_submission:values:visitor_order_number]",
+        "INMATE_ID": "[webform_submission:values:prisoner_id]",
+        "SPECIAL_REQUIREMENTS": [webform_submission:values:special_requirements_json],
+        "VISITOR_1_ID": "[webform_submission:values:visitor_1_id]",
+        "VISITOR_1_DOB": "[webform_submission:values:visitor_1_dob] 00:00",
+        "VISITOR_1_EMAIL": "[webform_submission:values:visitor_1_email]",
+        "VISITOR_1_PHONE": "[webform_submission:values:visitor_1_telephone]",
+        "VISITOR_2_ID": "[webform_submission:values:av1_id]",
+        "VISITOR_2_DOB": "[webform_submission:values:av1_dob]",
+        "VISITOR_3_ID": "[webform_submission:values:av2_id]",
+        "VISITOR_3_DOB": "[webform_submission:values:av2_dob]",
+        "VISITOR_4_ID": "[webform_submission:values:av3_id]",
+        "VISITOR_4_DOB": "[webform_submission:values:av3_dob]",
+        "VISITOR_5_ID": "[webform_submission:values:av4_id]",
+        "VISITOR_5_DOB": "[webform_submission:values:av4_dob]",
+        "SLOT1_DATETIME": "[webform_submission:values:slot1_datetime_submission]",
+        "SLOT2_DATETIME": "[webform_submission:values:slot2_datetime_submission]",
+        "SLOT3_DATETIME": "[webform_submission:values:slot3_datetime_submission]",
+        "SLOT4_DATETIME": "[webform_submission:values:slot4_datetime_submission]",
+        "SLOT5_DATETIME": "[webform_submission:values:slot5_datetime_submission]"
+        }
+      excluded_elements:
+        confirmation_message: confirmation_message
+        confirmation_keep_booking_message: confirmation_keep_booking_message
+        confirmation_amend_booking_message: confirmation_amend_booking_message
+        confirmation_cancel_booking_message: confirmation_cancel_booking_message
+        confirmation_visit_details: confirmation_visit_details
+        booking_and_prisoner_reference_preamble: booking_and_prisoner_reference_preamble
+        visitor_order_number: visitor_order_number
+        prisoner_id: prisoner_id
+        amend_error_default: amend_error_default
+        error_booking_already_amended: error_booking_already_amended
+        visit_order_ref_invalid: visit_order_ref_invalid
+        visit_order_ref_expired: visit_order_ref_expired
+        visit_order_ref_amendment_expired: visit_order_ref_amendment_expired
+        booking_details: booking_details
+        booking_details_ref_no_slots: booking_details_ref_no_slots
+        booking_details_notice_exceeded_face_to_face: booking_details_notice_exceeded_face_to_face
+        booking_details_notice_exceeded_virtual: booking_details_notice_exceeded_virtual
+        amend_booking_options: amend_booking_options
+        choose_changes: choose_changes
+        choose_changes_virtual: choose_changes_virtual
+        visitor_1_intro: visitor_1_intro
+        visitor_1_intro_amend: visitor_1_intro_amend
+        visitor_1_id: visitor_1_id
+        visitor_1_id_duplicate_warning: visitor_1_id_duplicate_warning
+        visitor_1_dob: visitor_1_dob
+        visitor_1_email: visitor_1_email
+        visitor_1_telephone: visitor_1_telephone
+        msg_additional_visitors: msg_additional_visitors
+        msg_existing_additional_visitors: msg_existing_additional_visitors
+        msg_amend_additional_visitors: msg_amend_additional_visitors
+        additional_visitor_number: additional_visitor_number
+        additional_visitor_1_id: additional_visitor_1_id
+        additional_visitor_1_dob: additional_visitor_1_dob
+        additional_visitor_2_id: additional_visitor_2_id
+        additional_visitor_2_dob: additional_visitor_2_dob
+        additional_visitor_3_id: additional_visitor_3_id
+        additional_visitor_3_dob: additional_visitor_3_dob
+        additional_visitor_4_id: additional_visitor_4_id
+        additional_visitor_4_dob: additional_visitor_4_dob
+        additional_visitor_5_id: additional_visitor_5_id
+        additional_visitor_5_dob: additional_visitor_5_dob
+        visitor_special_requirements_choice: visitor_special_requirements_choice
+        visitor_special_requirements_details: visitor_special_requirements_details
+        remember_settings_info: remember_settings_info
+        additional_visitors_remember: additional_visitors_remember
+        visit_details: visit_details
+        time_slot_restrictions: time_slot_restrictions
+        monday_week_1: monday_week_1
+        tuesday_week_1: tuesday_week_1
+        wednesday_week_1: wednesday_week_1
+        thursday_week_1: thursday_week_1
+        friday_week_1: friday_week_1
+        saturday_week_1: saturday_week_1
+        sunday_week_1: sunday_week_1
+        monday_week_2: monday_week_2
+        tuesday_week_2: tuesday_week_2
+        wednesday_week_2: wednesday_week_2
+        thursday_week_2: thursday_week_2
+        friday_week_2: friday_week_2
+        saturday_week_2: saturday_week_2
+        sunday_week_2: sunday_week_2
+        monday_week_3: monday_week_3
+        tuesday_week_3: tuesday_week_3
+        wednesday_week_3: wednesday_week_3
+        thursday_week_3: thursday_week_3
+        friday_week_3: friday_week_3
+        saturday_week_3: saturday_week_3
+        sunday_week_3: sunday_week_3
+        monday_week_4: monday_week_4
+        tuesday_week_4: tuesday_week_4
+        wednesday_week_4: wednesday_week_4
+        thursday_week_4: thursday_week_4
+        friday_week_4: friday_week_4
+        saturday_week_4: saturday_week_4
+        sunday_week_4: sunday_week_4
+        slots_preferred: slots_preferred
+        booking_reference_processed: booking_reference_processed
+        amend_booking_setup_complete: amend_booking_setup_complete
+        prison_name: prison_name
+        visit_type: visit_type
+        amend_timeslot_message: amend_timeslot_message
+        amend_type: amend_type
+        bkg_id: bkg_id
+        bkg_link_uniqueid: bkg_link_uniqueid
+        bkg_visit_order_no: bkg_visit_order_no
+        bkg_inmate_id: bkg_inmate_id
+        bkg_special_requirements: bkg_special_requirements
+        bkg_visitor_1_id: bkg_visitor_1_id
+        bkg_visitor_1_dob: bkg_visitor_1_dob
+        bkg_visitor_1_email: bkg_visitor_1_email
+        bkg_visitor_1_phone: bkg_visitor_1_phone
+        bkg_visitor_2_id: bkg_visitor_2_id
+        bkg_visitor_2_dob: bkg_visitor_2_dob
+        bkg_visitor_3_id: bkg_visitor_3_id
+        bkg_visitor_3_dob: bkg_visitor_3_dob
+        bkg_visitor_4_id: bkg_visitor_4_id
+        bkg_visitor_4_dob: bkg_visitor_4_dob
+        bkg_visitor_5_id: bkg_visitor_5_id
+        bkg_visitor_5_dob: bkg_visitor_5_dob
+        bkg_slotdatetime: bkg_slotdatetime
+        current_visitor_order_number: current_visitor_order_number
+        last_visitor_order_number: last_visitor_order_number
+        slot1_datetime: slot1_datetime
+        slot2_datetime: slot2_datetime
+        slot3_datetime: slot3_datetime
+        slot4_datetime: slot4_datetime
+        slot5_datetime: slot5_datetime
+        slot1_datetime_submission: slot1_datetime_submission
+        slot2_datetime_submission: slot2_datetime_submission
+        slot3_datetime_submission: slot3_datetime_submission
+        slot4_datetime_submission: slot4_datetime_submission
+        slot5_datetime_submission: slot5_datetime_submission
+        special_requirements_json: special_requirements_json
+        av1_id: av1_id
+        av1_dob: av1_dob
+        av2_id: av2_id
+        av2_dob: av2_dob
+        av3_id: av3_id
+        av3_dob: av3_dob
+        av4_id: av4_id
+        av4_dob: av4_dob
+        av5_id: av5_id
+        av5_dob: av5_dob
+        environment_base_url: environment_base_url
+        webform_confirmation_message_default: webform_confirmation_message_default
+        webform_confirmation_message_cancel: webform_confirmation_message_cancel
+        webform_confirmation_message_keep: webform_confirmation_message_keep
+        webform_confirmation_message_change: webform_confirmation_message_change
+      ignore_access: true
+      exclude_empty: true
+      exclude_empty_checkbox: false
+      exclude_attachments: false
+      html: false
+      attachments: false
+      twig: false
+      theme_name: ''
+      parameters: {  }
+      debug: true
+variants: {  }
