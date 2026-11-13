@@ -4,11 +4,17 @@ status: true
 dependencies:
   module:
     - symfony_mailer_log
+    - symfony_mailer_queue
     - webform
 id: webform
 configuration:
   mailer_inline_css: {  }
   symfony_mailer_log: {  }
+  queue_sending:
+    queue_behavior: delayed
+    requeue_delay: '120'
+    maximum_attempts: '10'
+    send_wait_time: '0'
   mailer_wrap_and_convert:
     plain: false
     swiftmailer: false
