@@ -573,6 +573,9 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
         $this->resetFormSlots($form, $form_state, $webform_submission);
       }
 
+      // Keep track of timeslots that have been offered.
+      $offered_slots = [];
+
       // Get available slots and show only those slots on the form.
       $available_slots = $this->getAvailableSlots();
       $slots_error = $available_slots['error'] ?? FALSE;
@@ -593,10 +596,6 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
           // Form slots for each week.
           $form_slots_week = &$form['elements']['visit_preferred_day_and_time']['slots']['slots_week_' . $i];
           $webform_submission_slots_week = $webform->getElement('slots_week_' . $i, TRUE);
-
-          if ($form_slots_week['#access'] = FALSE) {
-            continue;
-          }
 
           // By default, disable access. Enable access if there are days
           // and times to show.
@@ -648,6 +647,12 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
             if (!empty($form_slots_day['#options'])) {
               $form_slots_day['#access'] = TRUE;
               $form_slots_week['#access'] = TRUE;
+
+              // Keep track of the timeslots that have been offered.
+              $offered_slots = array_merge(
+                $offered_slots,
+                array_keys($form_slots_day['#options'])
+              );
             }
 
           }
@@ -671,6 +676,51 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
         // Prevent further progression.
         $elements['wizard_next']['#access'] = FALSE;
         $elements['preview_next']['#access'] = FALSE;
+      }
+
+      // Store timeslots that have been offered. They are used to validate
+      // hidden slot preference values against the list of offered slots.
+      $form_state->set('prison_visit_offered_slots', $offered_slots);
+
+      // Handle the case where user hits previous and a preferred slot is no
+      // longer present in the list of offered slots.
+      if ($page_trigger_is_previous && !$slots_error
+        && !($amend_booking_data && $form_state->getValue('amend_timeslot') === 'No')) {
+        $remaining_preferences = [];
+        $preferences_changed = FALSE;
+
+        for ($i = 1; $i <= 5; $i++) {
+          $value = $form_state->getValue('slot' . $i . '_datetime');
+
+          if ($value === NULL || $value === '') {
+            continue;
+          }
+
+          if (in_array($value, $offered_slots, TRUE)) {
+            $remaining_preferences[] = $value;
+          }
+          else {
+            $preferences_changed = TRUE;
+          }
+        }
+
+        if ($preferences_changed) {
+          $user_input = $form_state->getUserInput();
+
+          for ($i = 1; $i <= 5; $i++) {
+            $key = 'slot' . $i . '_datetime';
+            $value = $remaining_preferences[$i - 1] ?? NULL;
+
+            $form_state->setValue($key, $value);
+            $webform_submission->setElementData($key, $value);
+            $elements[$key]['#default_value'] = $value;
+            $elements[$key]['#value'] = $value;
+            $user_input[$key] = $value;
+          }
+
+          $form_state->setUserInput($user_input);
+          $elements['msg_slot_preferences_changed']['#access'] = TRUE;
+        }
       }
     }
 
@@ -878,13 +928,26 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
       if (empty($prisoner_id)) {
         $form_state->setErrorByName('prisoner_id', $this->t('Prisoner ID is required.'));
       }
-      elseif (empty($this->bookingReference['error_status'])
-        && !empty($prison_id)
-        && $this->getPrisonerHouseAffiliationId($prisoner_id, $prison_id) === FALSE) {
-        // Either booking reference or prisoner ID is incorrect.
-        // Show error messages for both fields.
-        $form_state->setErrorByName('visitor_order_number', $this->t('Visit Reference Number may be incorrect.'));
-        $form_state->setErrorByName('prisoner_id', $this->t('Prisoner ID may be incorrect.'));
+      elseif (empty($this->bookingReference['error_status']) && !empty($prison_id)) {
+        $affiliation_id = $this->getPrisonerHouseAffiliationId($prisoner_id, $prison_id);
+
+        if ($affiliation_id === FALSE) {
+          $has_affiliation_data = $this->database
+              ->select('prisoner_house_affiliation', 'pha')
+              ->fields('pha', ['prisoner_id'])
+              ->range(0, 1)
+              ->execute()
+              ->fetchField() !== FALSE;
+
+          if (!$has_affiliation_data) {
+            $this->getLogger('prison_visits')->error('Prisoner affiliation data is unavailable.');
+            $form_state->setError($form, $this->t('An error has occurred. Booking cannot proceed at this time. Try again later.'));
+          }
+          else {
+            $form_state->setErrorByName('visitor_order_number', $this->t('Visit Reference Number may be incorrect.'));
+            $form_state->setErrorByName('prisoner_id', $this->t('Prisoner ID may be incorrect.'));
+          }
+        }
       }
     }
 
@@ -918,6 +981,31 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
 
     if ($page === 'visit_preferred_day_and_time') {
       $this->validateSlotPicked($form, $form_state, $webform_submission);
+    }
+
+    if ($page === 'webform_preview' && !$form_state->get('amend_booking_data')) {
+      $validated = $form_state->get('prison_visit_validated_preferences');
+
+      $preferences_match = is_array($validated)
+        && ($validated['booking_reference'] ?? NULL) === $form_state->getValue('visitor_order_number')
+        && ($validated['prisoner_id'] ?? NULL) === $form_state->getValue('prisoner_id')
+        && !empty($validated['slots']);
+
+      if ($preferences_match) {
+        for ($i = 1; $i <= 5; $i++) {
+          $submitted = $form_state->getValue('slot' . $i . '_datetime') ?? '';
+          $expected = $validated['slots'][$i - 1] ?? '';
+
+          if ($submitted !== $expected) {
+            $preferences_match = FALSE;
+            break;
+          }
+        }
+      }
+
+      if (!$preferences_match) {
+        $form_state->setError($form, $this->t('Your visit preferences could not be verified. Please go back to the visit date and time page and review your choices.'));
+      }
     }
   }
 
@@ -1122,7 +1210,7 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
     $visit_earliest_date = clone $now;
     $visit_earliest_date->modify('+' . $booking_advance_notice);
 
-    // Round up to the nearest hour.
+    // Round up to the nearest halfhour.
     if ((int) $now->format('i') > 0) {
       $visit_earliest_date->modify('+1 hour');
       // Normalise to the top of the hour.
@@ -1317,7 +1405,9 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
       return;
     }
 
-    if ($form_state->getValue('slot1_datetime') && $form_state->getValue('amend_timeslot') === 'No') {
+    if ($form_state->get('amend_booking_data')
+      && $form_state->getValue('slot1_datetime')
+      && $form_state->getValue('amend_timeslot') === 'No') {
       return;
     }
 
@@ -1330,13 +1420,86 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
 
     if (empty($form_values)) {
       $form_state->setErrorByName('slots_week_1', $this->t('You did not choose a time slot for your visit.'));
+      return;
     }
     elseif (empty($form_state->getValue('slot1_datetime'))) {
       // Hidden time slot elements (populated by JS) should not be
       // empty. Belt and braces, reset slots.
       $this->resetFormSlots($form, $form_state, $webform_submission);
       $form_state->setErrorByName('slots_week_1', $this->t('You did not choose a time slot for your visit.'));
+      return;
     }
+
+    // Validate hidden slot preference values against the list of offered slots.
+    $offered_slots = $form_state->get('prison_visit_offered_slots');
+
+    if (!is_array($offered_slots) || empty($offered_slots)) {
+      $form_state->setError($form, $this->t('Visit time options could not be verified. Please go back and reopen the visit date and time page.'));
+      return;
+    }
+
+    $booking_reference = $form_state->get('booking_reference_processed');
+    $visit_type_id = $booking_reference['visit_type_id'] ?? NULL;
+    $slot_limit = $this->configuration['visit_type_time_slot_limit'][$visit_type_id] ?? NULL;
+
+    if (!is_int($slot_limit) || $slot_limit < 1 || $slot_limit > 5) {
+      $form_state->setError($form, $this->t('Visit preferences could not be verified. Please go back and enter your visit reference number again.'));
+      return;
+    }
+
+    $selected_slots = [];
+    $has_gap = FALSE;
+
+    for ($i = 1; $i <= 5; $i++) {
+      $selected_slot = $form_state->getValue('slot' . $i . '_datetime');
+
+      if ($selected_slot === NULL || $selected_slot === '') {
+        $has_gap = TRUE;
+        continue;
+      }
+
+      if (!is_string($selected_slot)
+        || !in_array($selected_slot, $offered_slots, TRUE)) {
+        $this->resetFormSlots($form, $form_state, $webform_submission);
+        $form_state->setError($form, $this->t('One or more selected visit times were not offered on this page. Please choose your preferred times again.'));
+        return;
+      }
+
+      if ($has_gap
+        || $i > $slot_limit
+        || in_array($selected_slot, $selected_slots, TRUE)) {
+        $this->resetFormSlots($form, $form_state, $webform_submission);
+        $form_state->setError($form, $this->t('Visit preferences must be distinct and ranked consecutively within the allowed number of choices. Please choose your preferred times again.'));
+        return;
+      }
+
+      $selected_slots[] = $selected_slot;
+    }
+
+    // Ensure the ranked hidden preferences match the selected (checked) slots.
+    $checked_slots = [];
+
+    foreach ($form_values as $values) {
+      foreach ($values as $value) {
+        if ($value !== 0 && $value !== '0') {
+          $checked_slots[] = $value;
+        }
+      }
+    }
+
+    if (count($checked_slots) !== count($selected_slots)
+      || array_diff($checked_slots, $selected_slots)
+      || array_diff($selected_slots, $checked_slots)) {
+      $this->resetFormSlots($form, $form_state, $webform_submission);
+      $form_state->setError($form, $this->t('Your selected visit times do not match your ranked preferences. Please choose your preferred times again.'));
+      return;
+    }
+
+    $form_state->set('prison_visit_validated_preferences', [
+      'booking_reference' => $form_state->getValue('visitor_order_number'),
+      'prisoner_id' => $form_state->getValue('prisoner_id'),
+      'slots' => $selected_slots,
+    ]);
   }
 
   /**
