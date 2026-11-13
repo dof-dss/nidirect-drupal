@@ -3,7 +3,7 @@ langcode: en
 status: open
 dependencies:
   module:
-    - nidirect_webforms
+    - nidirect_prisons
 weight: 0
 open: null
 close: null
@@ -206,50 +206,6 @@ elements: |-
               </ol>
           </div>
       </div>
-  booking_reference_prisoner_reference:
-    '#type': webform_wizard_page
-    '#title': 'Visit reference number and prisoner ID'
-    '#states_clear': false
-    '#format': container
-    booking_and_prisoner_reference_preamble:
-      '#type': webform_markup
-      '#markup': |-
-        <p class="info-notice" role="status">
-        To book a prison visit, you will need a visit reference number (or booking reference) and a prisoner ID for the prisoner you want to visit.
-        </p>
-    visitor_order_number:
-      '#type': textfield
-      '#title': 'Visit reference number'
-      '#description': 'For example, AAA9999-9999'
-      '#description_display': before
-      '#maxlength': 12
-      '#size': 12
-      '#autocomplete': 'off'
-      '#input_mask': AAA9999-9999
-      '#pattern': '[A-Z]{3}[0-9]{4}-[0-9]{4}'
-      '#pattern_error': 'Visit reference number is not recognised'
-      '#attributes':
-        class:
-          - monospace-text
-        data-inputmask-placeholder: ' '
-      '#data-tippy-arrow': false
-    prisoner_id:
-      '#type': textfield
-      '#title': 'Prisoner ID'
-      '#description': 'For example, A9999'
-      '#description_display': before
-      '#maxlength': 5
-      '#size': 5
-      '#autocomplete': 'off'
-      '#input_mask': 'A9[9][9][9]'
-      '#required': true
-      '#required_error': 'Enter the prisoner ID of the prisoner you will be visiting'
-      '#pattern': '[A-FH][0-9]{1,4}'
-      '#pattern_error': 'Prisoner ID is not recognised'
-      '#attributes':
-        class:
-          - monospace-text
-        data-inputmask-placeholder: ' '
   amend_booking_page:
     '#type': webform_wizard_page
     '#title': 'Amend booking'
@@ -539,6 +495,50 @@ elements: |-
         class:
           - important-question
       '#access': false
+  booking_reference_prisoner_reference:
+    '#type': webform_wizard_page
+    '#title': 'Visit reference number and prisoner ID'
+    '#states_clear': false
+    '#format': container
+    booking_and_prisoner_reference_preamble:
+      '#type': webform_markup
+      '#markup': |-
+        <p class="info-notice" role="status">
+        To book a prison visit, you will need a visit reference number (or booking reference) and a prisoner ID for the prisoner you want to visit.
+        </p>
+    visitor_order_number:
+      '#type': textfield
+      '#title': 'Visit reference number'
+      '#description': 'For example, AAA9999-9999'
+      '#description_display': before
+      '#maxlength': 12
+      '#size': 12
+      '#autocomplete': 'off'
+      '#input_mask': AAA9999-9999
+      '#pattern': '[A-Z]{3}[0-9]{4}-[0-9]{4}'
+      '#pattern_error': 'Visit reference number is not recognised'
+      '#attributes':
+        class:
+          - monospace-text
+        data-inputmask-placeholder: ' '
+      '#data-tippy-arrow': false
+    prisoner_id:
+      '#type': textfield
+      '#title': 'Prisoner ID'
+      '#description': 'For example, A9999'
+      '#description_display': before
+      '#maxlength': 5
+      '#size': 5
+      '#autocomplete': 'off'
+      '#input_mask': 'A9[9][9][9]'
+      '#required': true
+      '#required_error': 'Enter the prisoner ID of the prisoner you will be visiting'
+      '#pattern': '[A-FH][0-9]{1,4}'
+      '#pattern_error': 'Prisoner ID is not recognised'
+      '#attributes':
+        class:
+          - monospace-text
+        data-inputmask-placeholder: ' '
   main_visitor_details:
     '#type': webform_wizard_page
     '#title': 'Main visitor details'
@@ -558,6 +558,21 @@ elements: |-
     '#states_clear': false
     '#format': container
     '#next_button_label': Next
+    msg_reference_no_slots:
+      '#type': webform_markup
+      '#access': false
+      '#markup': |-
+        <div role="status">
+          <p class="info-notice info-notice--warning" >There are no visit dates and times available for the visit reference number <strong>[webform_submission:values:visitor_order_number]</strong>.</p>
+          <p>You can go back and try a different reference number if you have one.</p>
+        </div>
+    msg_reference_no_data:
+      '#type': webform_markup
+      '#access': false
+      '#markup': |-
+        <div class="info-notice info-notice--error" role="status">
+          <p>An error has occurred. Booking cannot proceed at this time. Try again later.</p>
+        </div>
     visitor_1_details:
       '#type': fieldset
       '#title': 'Your details'
@@ -1208,20 +1223,28 @@ elements: |-
               <dd>{{ data.prisoner_id }}</dd>
             </dl>
         </div>
-    msg_no_slots_available:
+    msg_slots:
       '#type': webform_markup
       '#access': false
       '#markup': |-
-        <div class="visit-details" role="status">
-          <div class="info-notice info-notice--error" role="status">
+        <div role="status">
+          <div class="info-notice info-notice--warning">
             <p>
-              There are no more visit dates and times available.
+              There are no visit dates and times available.
             </p>
           </div>
           <hr>
           <p>
             You can <a href="/forms/book-prison-visit" data-self-ref="true">make a new booking using a different visit reference number</a> if you have one.
           </p>
+        </div>
+    msg_slot_preferences_changed:
+      '#type': webform_markup
+      '#access': false
+      '#markup': |-
+        <div class="info-notice info-notice--warning" role="status">
+          <p>Some of your preferred visit times are no longer offered and have been removed from your selection.</p>
+          <p>Please review your remaining choices before continuing.</p>
         </div>
     slots:
       '#type': container
@@ -1761,6 +1784,7 @@ elements: |-
     '#type': webform_actions
     '#title': 'Submit button(s)'
     '#submit__label': 'Book prison visit'
+    '#wizard_prev__label': Back
 css: |-
   .test-badge {
     display: inline-block;
@@ -1843,7 +1867,7 @@ settings:
   form_title: source_entity_webform
   form_submit_once: true
   form_open_message: ''
-  form_close_message: 'The booking a prison visit online service is currently unavailable. We are working to restore service as soon as possible. Apologies for any inconvenience.'
+  form_close_message: 'This service is unavailable until 1:30pm today at the latest due to essential maintenance.  Please try again later.  We apologise for any inconvenience.'
   form_exception_message: ''
   form_previous_submissions: false
   form_confidential: false
@@ -2061,7 +2085,7 @@ settings:
     <p class="info-notice" role="status">
         We will send you an email shortly to let you know whether your booking request has been successful.  Please allow up to 1 hour for this email to arrive.
     </p>
-    <p>If you need to amend this booking, use the <strong>Cancel or Amend Booking</strong> button in the email.</p>
+
     <div class="launch-service">
         <a href="/forms/book-prison-visit" class="btn btn--call-to-action" data-self-ref="true">Book another prison visit</a>
     </div>

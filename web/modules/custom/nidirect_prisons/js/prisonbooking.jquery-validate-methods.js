@@ -1,6 +1,6 @@
 /**
  * @file
- * Defines jquery-validation methods and rules for prison visit booking.
+ * Defines validation methods and rules for prison visit booking.
  */
 (function ($, Drupal, once) {
 

@@ -80,6 +80,35 @@ function nidirect_prisons_schema() {
     'primary key' => ['id'],
   ];
 
+  $schema['prisoner_house_affiliation'] = [
+    'description' => 'Stores current prisoner prison and house affiliations.',
+    'fields' => [
+      'prisoner_id' => [
+        'type' => 'varchar',
+        'length' => 5,
+        'not null' => TRUE,
+      ],
+      'prison_id' => ['type' => 'varchar', 'length' => 2, 'not null' => TRUE],
+      'affiliation_id' => ['type' => 'varchar', 'length' => 64, 'not null' => TRUE],
+    ],
+    'primary key' => ['prisoner_id'],
+    'indexes' => [
+      'prison_affiliation' => ['prison_id', 'affiliation_id'],
+    ],
+  ];
+
+  $schema['prison_visit_slots'] = [
+    'description' => 'Stores prison visit slots.',
+    'fields' => [
+      'visit_type' => ['type' => 'varchar', 'length' => 20, 'not null' => TRUE],
+      'prison_id' => ['type' => 'varchar', 'length' => 2, 'not null' => TRUE],
+      'affiliation_id' => ['type' => 'varchar', 'length' => 64, 'not null' => TRUE],
+      'slot_datetime' => ['type' => 'int', 'not null' => TRUE],
+      'updated_timestamp' => ['type' => 'int', 'not null' => TRUE],
+    ],
+    'primary key' => ['visit_type', 'prison_id', 'affiliation_id', 'slot_datetime'],
+  ];
+
   return $schema;
 }
 
@@ -156,4 +185,55 @@ function nidirect_prisons_update_8003() {
   $database->update('prisoner_payment_transactions')
     ->expression('updated_timestamp', 'created_timestamp')
     ->execute();
+}
+
+/**
+ * Adds the prisoner_house_affiliation table.
+ */
+function nidirect_prisons_update_8004() {
+  $schema = \Drupal::database()->schema();
+
+  if (!$schema->tableExists('prisoner_house_affiliation')) {
+    $schema->createTable('prisoner_house_affiliation', [
+      'description' => 'Stores current prisoner prison and house assignments.',
+      'fields' => [
+        'prisoner_id' => [
+          'type' => 'varchar',
+          'length' => 5,
+          'not null' => TRUE,
+        ],
+        'prison_id' => ['type' => 'varchar', 'length' => 2, 'not null' => TRUE],
+        'affiliation_id' => ['type' => 'varchar', 'length' => 64, 'not null' => TRUE],
+      ],
+      'primary key' => ['prisoner_id'],
+      'indexes' => [
+        'prison_affiliation' => ['prison_id', 'affiliation_id'],
+      ],
+    ]);
+
+    \Drupal::logger('nidirect_prisons')->notice('Created prisoner_house_affiliation table.');
+  }
+}
+
+/**
+ * Adds the prison_visit_slots table.
+ */
+function nidirect_prisons_update_8005() {
+  $schema = \Drupal::database()->schema();
+
+  if (!$schema->tableExists('prison_visit_slots')) {
+    $schema->createTable('prison_visit_slots', [
+      'description' => 'Stores available visit slots for prisoners.',
+      'fields' => [
+        'visit_type' => ['type' => 'varchar', 'length' => 20, 'not null' => TRUE],
+        'prison_id' => ['type' => 'varchar', 'length' => 2, 'not null' => TRUE],
+        'affiliation_id' => ['type' => 'varchar', 'length' => 64, 'not null' => TRUE],
+        'slot_datetime' => ['type' => 'int', 'not null' => TRUE],
+        'updated_timestamp' => ['type' => 'int', 'not null' => TRUE],
+      ],
+      'primary key' => ['visit_type', 'prison_id', 'affiliation_id', 'slot_datetime'],
+    ]);
+
+    \Drupal::logger('nidirect_prisons')->notice('Created prison_visit_slots table.');
+  }
 }
