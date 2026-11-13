@@ -17,6 +17,8 @@ dependencies:
     - search_api_best_bets
     - search_api_solr
     - taxonomy
+    - node
+    - search_api
 third_party_settings:
   search_api_solr:
     finalize: false
@@ -265,15 +267,24 @@ field_settings:
     dependencies:
       module:
         - node
-  title_fulltext:
-    label: 'Title fulltext'
-    property_path: aggregated_field
-    type: text
-    boost: 13.0
-    configuration:
-      type: concat
-      fields:
-        - 'entity:node/title'
+  title_ngram:
+    label: Title
+    datasource_id: 'entity:node'
+    property_path: title
+    type: 'solr_text_custom:ngram'
+    boost: 21.0
+    dependencies:
+      module:
+        - node
+  title_spellcheck:
+    label: Title
+    datasource_id: 'entity:node'
+    property_path: title
+    type: solr_text_spellcheck
+    boost: 21.0
+    dependencies:
+      module:
+        - node
   type:
     label: 'Content type'
     datasource_id: 'entity:node'
@@ -332,7 +343,8 @@ processor_settings:
       - postal_code
       - sorting_code
       - title
-      - title_fulltext
+      - title_ngram
+      - title_spellcheck
       - type
     title: true
     alt: true

@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+# Point the active Drupal Search API server at the credential-free DDEV core.
+# This updates the local database only; committed configuration remains the
+# portable source used by hosted environments.
+set -euo pipefail
+
+cd "$(dirname "$0")/../.."
+
+ddev drush cache:rebuild < /dev/null
+ddev drush php:eval '
+  $config = \Drupal::service("config.factory")->getEditable("search_api.server.solr_default");
+  if ($config->isNew()) {
+    throw new \RuntimeException("The active solr_default server does not exist.");
+  }
+
+  $backend = $config->get("backend_config");
+  $backend["connector"] = "standard";
+  $connector = $backend["connector_config"] ?? [];
+  $connector["scheme"] = "http";
+  $connector["host"] = "solr";
+  $connector["port"] = 8983;
+  $connector["path"] = "/";
+  $connector["core"] = "nidirect_index";
+  $connector["skip_schema_check"] = TRUE;
+  $connector["solr_install_dir"] = "/opt/solr";
+  unset(
+    $connector["username"],
+    $connector["password"],
+    $connector["jts"],
+    $connector["checkpoints_collection"],
+    $connector["stats_cache"],
+    $connector["distrib"],
+    $connector["context"]
+  );
+  $backend["connector_config"] = $connector;
+  $config->set("backend_config", $backend)->save();
+
+  \Drupal::entityTypeManager()->getStorage("search_api_server")->resetCache(["solr_default"]);
+  $server = \Drupal::entityTypeManager()->getStorage("search_api_server")->load("solr_default");
+  if (!$server || !$server->isAvailable()) {
+    throw new \RuntimeException("Drupal cannot reach solr:8983/solr/nidirect_index.");
+  }
+' < /dev/null
+
+echo "Configured the active local Solr connector for nidirect_index."

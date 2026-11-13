@@ -10,17 +10,23 @@ interface SchoolClosuresServiceInterface {
   /**
    * Returns school closures data.
    *
-   * Returned array elements should comprise:
+   * Returned array elements represent one school each, and should comprise:
    * [
    *  'name' => '',
    *  'altname' => '',
    *  'location' => '',
-   *  'date' => '',
-   *  'reason' => '',
+   *  'closures' => [
+   *    ['date' => '', 'dateTo' => '', 'reason' => ''],
+   *    ...
+   *  ],
    * ]
    *
+   * A school may have more than one current closure, so all of them are
+   * listed under 'closures' rather than the school appearing more than once.
+   *
    * @return array
-   *   An array of associative arrays for school closures sorted by date asc.
+   *   An array of associative arrays for schools, sorted by their earliest
+   *   current closure date ascending.
    */
   public function getClosures();
 
@@ -30,7 +36,7 @@ interface SchoolClosuresServiceInterface {
    * @return \DateTime
    *   A DateTime of when the closures data was last updated.
    */
-  public function getUpdated();
+  public function getUpdated(): \DateTime|NULL;
 
   /**
    * Returns if the closure service encountered errors.
@@ -41,6 +47,6 @@ interface SchoolClosuresServiceInterface {
    * @return bool
    *   A boolean state if errors were encountered when requesting data.
    */
-  public function hasErrors();
+  public function hasErrors(): bool;
 
 }

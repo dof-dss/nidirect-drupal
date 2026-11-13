@@ -1,0 +1,92 @@
+#!/usr/bin/env bash
+# Verify that Upsun and DDEV use one NIDirect Solr 9.9 configset.
+set -euo pipefail
+
+cd "$(dirname "$0")/../.."
+
+failures=0
+
+fail() {
+  echo "ERROR: $*" >&2
+  failures=$((failures + 1))
+}
+
+readonly conf=".platform/solr_configsets/nidirect/conf"
+
+for required_file in \
+  "$conf/schema.xml" \
+  "$conf/solrconfig.xml" \
+  .ddev/docker-compose.solr.yaml \
+  .ddev/solr/Dockerfile \
+  .ddev/solr/create-or-refresh-core.sh \
+  scripts/solr/configure-local-connector \
+  scripts/solr/generate-configset; do
+  [[ -f "$required_file" ]] || fail "missing ${required_file}"
+done
+
+grep -Eq '^solr_9_9:$' .platform/services.yaml \
+  || fail "Upsun service is not named solr_9_9"
+grep -Eq "^[[:space:]]+type: (['\"])?solr:9\.9(['\"])?$" .platform/services.yaml \
+  || fail "Upsun is not pinned to Solr 9.9"
+grep -Eq "solr: (['\"])?solr_9_9:solr(['\"])?$" .platform.app.yaml \
+  || fail "the application relationship does not use solr_9_9"
+grep -Eq '^[[:space:]]+nidirect_index:$' .platform/services.yaml \
+  || fail "Upsun does not declare nidirect_index"
+grep -Eq 'conf_dir: !archive "?solr_configsets/nidirect/conf/' .platform/services.yaml \
+  || fail "Upsun does not use the canonical NIDirect configset"
+grep -Eq '^[[:space:]]+core: nidirect_index$' .platform/services.yaml \
+  || fail "the Upsun endpoint does not expose nidirect_index"
+
+for module in extraction analysis-extras langid ltr; do
+  grep -Eq "^[[:space:]]+- ${module}$" .platform/services.yaml \
+    || fail "Upsun does not enable the ${module} module"
+done
+
+grep -Eq 'SOLR_BASE_IMAGE: solr:9\.9$' .ddev/docker-compose.solr.yaml \
+  || fail "DDEV is not pinned to Solr 9.9"
+grep -Fq '${DDEV_APPROOT}/.platform/solr_configsets/nidirect:/solr-configset:ro' \
+  .ddev/docker-compose.solr.yaml \
+  || fail "DDEV does not read the canonical configset read-only"
+grep -Eq 'SOLR_MODULES: extraction,langid,ltr,analysis-extras$' .ddev/docker-compose.solr.yaml \
+  || fail "DDEV does not enable the expected modules"
+
+if grep -Eq 'SOLR_AUTH_|SOLR_AUTH_TYPE|SOLR_AUTHENTICATION_OPTS|solr_cloud_basic_auth|username: solr|password:' \
+  .ddev/docker-compose.solr.yaml \
+  .ddev/solr/create-or-refresh-core.sh \
+  config/local/config_split.patch.search_api.server.solr_default.yml \
+  .env.sample; then
+  fail "local Solr still contains HTTP basic-auth configuration"
+fi
+
+for obsolete_path in \
+  .platform/solr_9.x_config \
+  .platform/solr_config \
+  .ddev/solr/conf \
+  .ddev/solr/configsets \
+  .ddev/solr/security.json \
+  .ddev/commands/solr/solr-zk; do
+  [[ ! -e "$obsolete_path" ]] || fail "obsolete config source remains at ${obsolete_path}"
+done
+
+grep -Eq '^[[:space:]]+connector: standard$' config/sync/search_api.server.solr_default.yml \
+  || fail "the committed Search API server does not use the standard connector"
+grep -Eq '^[[:space:]]+core: nidirect_index$' config/sync/search_api.server.solr_default.yml \
+  || fail "the committed Search API server does not use nidirect_index"
+grep -Eq '^[[:space:]]+core: nidirect_index$' config/local/config_split.patch.search_api.server.solr_default.yml \
+  || fail "the local connector patch does not use nidirect_index"
+
+[[ -x .ddev/solr/create-or-refresh-core.sh ]] \
+  || fail ".ddev/solr/create-or-refresh-core.sh is not executable"
+[[ -x scripts/solr/generate-configset ]] \
+  || fail "scripts/solr/generate-configset is not executable"
+[[ -x scripts/solr/configure-local-connector ]] \
+  || fail "scripts/solr/configure-local-connector is not executable"
+grep -Fq 'scripts/solr/configure-local-connector' .ddev/config.yaml \
+  || fail "DDEV does not synchronise the local connector after database import"
+
+if [[ $failures -ne 0 ]]; then
+  echo "Solr configset verification failed with ${failures} error(s)." >&2
+  exit 1
+fi
+
+echo "Solr configset verification passed for NIDirect."

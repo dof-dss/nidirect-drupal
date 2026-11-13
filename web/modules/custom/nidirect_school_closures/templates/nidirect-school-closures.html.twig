@@ -1,17 +1,69 @@
+<p>
+  {% trans %}Last updated{% endtrans %}:
+  <time datetime="{{ updated|date('c') }}">
+    {{ updated|date('g.i a') }} on {{ updated|date('j F Y') }}
+  </time>.
+</p>
+
 <div id="school-closure-results">
 
-  <p>{% trans %}Last updated{% endtrans %}: {{ updated|date('g.i a') }} on {{ updated|date('j F Y') }}.</p>
-
   {% if closures|length > 0 %}
-    {% for closure in closures %}
-    <div class="columnItem">
-      <h3 data-transliterated="{{ closure.altname }}">{{ closure.name }} | {{ closure.location }}</h3>
-      <p class="description">{{ closure.date|date('l jS F Y') }} {{ closure.reason|t|default("") }}</p>
-    </div>
-    {% endfor %}
+
+    <ul class="school-closures">
+
+      {% for school in closures %}
+        <li class="school-closure">
+          <h2
+            class="school-closure__name"
+            data-transliterated="{{ school.altname }}"
+          >{{ school.name }}</h2>
+
+          {% if school.location %}
+            <p class="school-closure__location">
+              {{ school.location }}
+            </p>
+          {% endif %}
+
+          <ul class="school-closure__events">
+            {% for closure in school.closures %}
+              <li class="school-closure__event">
+                {% if closure.dateTo %}
+                  <time datetime="{{ closure.date|date('Y-m-d') }}">
+                    {{ closure.date|date('l j F Y') }}
+                  </time>
+                  {% trans %}to{% endtrans %}
+                  <time datetime="{{ closure.dateTo|date('Y-m-d') }}">
+                    {{ closure.dateTo|date('l j F Y') }}
+                  </time>
+                {% else %}
+                  <time datetime="{{ closure.date|date('Y-m-d') }}">
+                    {{ closure.date|date('l j F Y') }}
+                  </time>
+                {% endif %}
+                {% if closure.reason %}
+                  <span class="school-closure__reason">
+                    {{ 'Closed @reason'|t({'@reason': closure.reason}) }}
+                  </span>
+                {% endif %}
+              </li>
+            {% endfor %}
+          </ul>
+        </li>
+      {% endfor %}
+    </ul>
+
   {% elseif error %}
-    <p>{% trans %}Sorry, there was a problem with this service. Please contact your school for information on possible closures.{% endtrans %}</p>
+
+    <p>
+      {% trans %}
+        Sorry, there was a problem with this service. Please contact your school for information on possible closures.
+      {% endtrans %}
+    </p>
+
   {% else %}
+
     <p>{% trans %}There are no school closures.{% endtrans %}</p>
+
   {% endif %}
+
 </div>
