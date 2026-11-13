@@ -1238,6 +1238,14 @@ elements: |-
             You can <a href="/forms/book-prison-visit" data-self-ref="true">make a new booking using a different visit reference number</a> if you have one.
           </p>
         </div>
+    msg_slot_preferences_changed:
+      '#type': webform_markup
+      '#access': false
+      '#markup': |-
+        <div class="info-notice info-notice--warning" role="status">
+          <p>Some of your preferred visit times are no longer offered and have been removed from your selection.</p>
+          <p>Please review your remaining choices before continuing.</p>
+        </div>
     slots:
       '#type': container
       time_slot_restrictions:
