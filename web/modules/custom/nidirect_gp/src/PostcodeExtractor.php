@@ -10,7 +10,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * Takes a regex from the container parameters and matches
  * text strings against it.
  */
-class PostcodeExtractor {
+final class PostcodeExtractor {
 
   /**
    * Postcode regex to match strings against.

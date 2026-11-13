@@ -4,7 +4,8 @@ namespace Drupal\nidirect_gp\Form;
 
 use Drupal\Core\Database\Connection;
 use Drupal\Core\Datetime\DateFormatterInterface;
-use Drupal\Core\Entity\EntityStorageInterface;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\Core\Entity\RevisionableStorageInterface;
 use Drupal\Core\Form\ConfirmFormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Messenger\MessengerInterface;
@@ -16,7 +17,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *
  * @ingroup nidirect_gp
  */
-class GpRevisionDeleteForm extends ConfirmFormBase {
+final class GpRevisionDeleteForm extends ConfirmFormBase {
 
   /**
    * The Messenger service.
@@ -40,11 +41,11 @@ class GpRevisionDeleteForm extends ConfirmFormBase {
   protected $revision;
 
   /**
-   * The GP storage.
+   * The entity type manager.
    *
-   * @var \Drupal\Core\Entity\EntityStorageInterface
+   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
    */
-  protected $entityStorage;
+  protected $entityTypeManager;
 
   /**
    * The database connection.
@@ -56,17 +57,17 @@ class GpRevisionDeleteForm extends ConfirmFormBase {
   /**
    * Constructs a new GpRevisionDeleteForm.
    *
-   * @param \Drupal\Core\Entity\EntityStorageInterface $entity_storage
-   *   The entity storage.
+   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
+   *   The entity type manager.
    * @param \Drupal\Core\Database\Connection $connection
    *   The database connection.
-   * @param \Drupal\Core\Messenger\MessengerInterface $messenger
-   *   Drupal messenger service.
    * @param \Drupal\Core\Datetime\DateFormatterInterface $date_formatter
    *   Drupal date formatter service.
+   * @param \Drupal\Core\Messenger\MessengerInterface $messenger
+   *   Drupal messenger service.
    */
-  public function __construct(EntityStorageInterface $entity_storage, Connection $connection, MessengerInterface $messenger = NULL, DateFormatterInterface $date_formatter) {
-    $this->entityStorage = $entity_storage;
+  public function __construct(EntityTypeManagerInterface $entity_type_manager, Connection $connection, DateFormatterInterface $date_formatter, MessengerInterface $messenger) {
+    $this->entityTypeManager = $entity_type_manager;
     $this->connection = $connection;
     $this->messenger = $messenger;
     $this->dateFormatter = $date_formatter;
@@ -76,12 +77,11 @@ class GpRevisionDeleteForm extends ConfirmFormBase {
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container) {
-    $entity_manager = $container->get('entity_type.manager');
-    return new static(
-      $entity_manager->getStorage('gp'),
+    return new self(
+      $container->get('entity_type.manager'),
       $container->get('database'),
-      $container->get('messenger'),
-      $container->get('date.formatter')
+      $container->get('date.formatter'),
+      $container->get('messenger')
     );
   }
 
@@ -117,8 +117,7 @@ class GpRevisionDeleteForm extends ConfirmFormBase {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state, $gp_revision = NULL) {
-    // @phpstan-ignore-next-line
-    $this->revision = $this->entityStorage->loadRevision($gp_revision);
+    $this->revision = $this->getGpStorage()->loadRevision($gp_revision);
     $form = parent::buildForm($form, $form_state);
 
     return $form;
@@ -128,8 +127,7 @@ class GpRevisionDeleteForm extends ConfirmFormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-    // @phpstan-ignore-next-line
-    $this->entityStorage->deleteRevision($this->revision->getRevisionId());
+    $this->getGpStorage()->deleteRevision($this->revision->getRevisionId());
 
     $this->logger('content')->notice('GP: deleted %title revision %revision.', [
       '%title' => $this->revision->label(),
@@ -149,6 +147,15 @@ class GpRevisionDeleteForm extends ConfirmFormBase {
          ['gp' => $this->revision->id()]
       );
     }
+  }
+
+  /**
+   * Gets the revisionable GP storage.
+   */
+  private function getGpStorage(): RevisionableStorageInterface {
+    $storage = $this->entityTypeManager->getStorage('gp');
+    assert($storage instanceof RevisionableStorageInterface);
+    return $storage;
   }
 
 }

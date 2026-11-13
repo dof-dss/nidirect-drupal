@@ -2,6 +2,7 @@
 
 namespace Drupal\nidirect_prisons\Controller;
 
+use Drupal\Component\Datetime\TimeInterface;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Database\Connection;
 use Drupal\Core\Language\LanguageManagerInterface;
@@ -41,6 +42,11 @@ class WorldpayNotificationController extends ControllerBase {
   protected MailManagerInterface $mailManager;
 
   /**
+   * The time service.
+   */
+  protected TimeInterface $time;
+
+  /**
    * @param \Drupal\Core\Database\Connection $database
    *   The DB connection.
    * @param \Drupal\nidirect_prisons\Service\PrisonerPaymentManager $payment_manager
@@ -51,19 +57,23 @@ class WorldpayNotificationController extends ControllerBase {
    *   The mail manager service.
    * @param \Drupal\Core\Language\LanguageManagerInterface $language_manager
    *   The language manager service.
+   * @param \Drupal\Component\Datetime\TimeInterface $time
+   *   The time service.
    */
   public function __construct(
     Connection $database,
     PrisonerPaymentManager $payment_manager,
     LoggerInterface $logger,
     MailManagerInterface $mail_manager,
-    LanguageManagerInterface $language_manager
+    LanguageManagerInterface $language_manager,
+    TimeInterface $time,
   ) {
     $this->database = $database;
     $this->paymentManager = $payment_manager;
     $this->logger = $logger;
     $this->mailManager = $mail_manager;
     $this->languageManager = $language_manager;
+    $this->time = $time;
   }
 
   /**
@@ -71,7 +81,8 @@ class WorldpayNotificationController extends ControllerBase {
    *
    * @param \Symfony\Component\DependencyInjection\ContainerInterface $container
    *   The service container.
-   * @return static
+   * @return self
+   *   The controller instance.
    */
   public static function create(ContainerInterface $container) {
     /** @var \Drupal\Core\Database\Connection $database */
@@ -85,12 +96,13 @@ class WorldpayNotificationController extends ControllerBase {
     /** @var \Drupal\Core\Language\LanguageManagerInterface $language_manager */
     $language_manager = $container->get('language_manager');
 
-    return new static(
+    return new self(
       $database,
       $payment_manager,
       $logger,
       $mail_manager,
-      $language_manager
+      $language_manager,
+      $container->get('datetime.time'),
     );
   }
 
@@ -151,7 +163,6 @@ class WorldpayNotificationController extends ControllerBase {
     // Return 400 bad request if there is something wrong with the
     // XML. Note Worldpay will retry sending notifications (for up to 7
     // days) if the response is anything other than a 200 OK.
-
     if (empty($xml_data)) {
       $this->logger->error('Empty Worldpay notification received.');
       return new Response('Bad request', 400);
@@ -258,7 +269,7 @@ class WorldpayNotificationController extends ControllerBase {
         $updated = $this->database->update('prisoner_payment_transactions')
           ->fields([
             'status' => 'success',
-            'updated_timestamp' => \Drupal::time()->getRequestTime(),
+            'updated_timestamp' => $this->time->getRequestTime(),
           ])
           ->condition('order_key', $order_code)
           ->condition('status', ['pending', 'expired', 'cancelled'], 'IN')
@@ -270,7 +281,6 @@ class WorldpayNotificationController extends ControllerBase {
         }
 
         // Only the winning process continues below.
-
         // Deduct from prisoner's balance.
         $this->database->update('prisoner_payment_amount')
           ->expression('amount', 'GREATEST(amount - :paid_amount, 0)', [':paid_amount' => $amount])

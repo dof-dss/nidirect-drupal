@@ -18,7 +18,7 @@ class GPPracticeTest extends EntityKernelTestBase {
    *
    * @var array
    */
-  protected static $modules = ['node', 'nidirect_gp', 'nidirect_common'];
+  protected static $modules = ['node', 'nidirect_gp', 'nidirect_common', 'metatag', 'token'];
 
   /**
    * {@inheritdoc}

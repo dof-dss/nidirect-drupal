@@ -3,7 +3,7 @@
 namespace Drupal\nidirect_gp\Form;
 
 use Drupal\Core\Datetime\DateFormatterInterface;
-use Drupal\Core\Entity\EntityStorageInterface;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Language\LanguageManagerInterface;
 use Drupal\Core\Messenger\MessengerInterface;
@@ -15,7 +15,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *
  * @ingroup nidirect_gp
  */
-class GpRevisionRevertTranslationForm extends GpRevisionRevertForm {
+final class GpRevisionRevertTranslationForm extends GpRevisionRevertForm {
 
 
   /**
@@ -35,8 +35,8 @@ class GpRevisionRevertTranslationForm extends GpRevisionRevertForm {
   /**
    * Constructs a new GpRevisionRevertTranslationForm.
    *
-   * @param \Drupal\Core\Entity\EntityStorageInterface $entity_storage
-   *   The GP storage.
+   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
+   *   The entity type manager.
    * @param \Drupal\Core\Datetime\DateFormatterInterface $date_formatter
    *   The date formatter service.
    * @param \Drupal\Core\Language\LanguageManagerInterface $language_manager
@@ -44,8 +44,8 @@ class GpRevisionRevertTranslationForm extends GpRevisionRevertForm {
    * @param \Drupal\Core\Messenger\MessengerInterface $messenger
    *   Messenger service object.
    */
-  public function __construct(EntityStorageInterface $entity_storage, DateFormatterInterface $date_formatter, LanguageManagerInterface $language_manager, MessengerInterface $messenger) {
-    parent::__construct($entity_storage, $date_formatter, $messenger);
+  public function __construct(EntityTypeManagerInterface $entity_type_manager, DateFormatterInterface $date_formatter, LanguageManagerInterface $language_manager, MessengerInterface $messenger) {
+    parent::__construct($entity_type_manager, $date_formatter, $messenger);
     $this->languageManager = $language_manager;
   }
 
@@ -53,8 +53,8 @@ class GpRevisionRevertTranslationForm extends GpRevisionRevertForm {
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container) {
-    return new static(
-      $container->get('entity_type.manager')->getStorage('gp'),
+    return new self(
+      $container->get('entity_type.manager'),
       $container->get('date.formatter'),
       $container->get('language_manager'),
       $container->get('messenger')
@@ -101,7 +101,7 @@ class GpRevisionRevertTranslationForm extends GpRevisionRevertForm {
     $revert_untranslated_fields = $form_state->getValue('revert_untranslated_fields');
 
     /** @var \Drupal\nidirect_gp\Entity\GpInterface $latest_revision */
-    $latest_revision = $this->gpStorage->load($revision->id());
+    $latest_revision = $this->getGpStorage()->load($revision->id());
     $latest_revision_translation = $latest_revision->getTranslation($this->langcode);
 
     $revision_translation = $revision->getTranslation($this->langcode);
@@ -114,6 +114,7 @@ class GpRevisionRevertTranslationForm extends GpRevisionRevertForm {
 
     $latest_revision_translation->setNewRevision();
     $latest_revision_translation->isDefaultRevision(TRUE);
+    // @phpstan-ignore-next-line.
     $revision->setRevisionCreationTime(\Drupal::time()->getRequestTime());
 
     return $latest_revision_translation;

@@ -157,7 +157,6 @@ class SchoolClosuresTest extends KernelTestBase {
     $reason = 'no water supply';
     // Note: both $date and $dateTo clone from $this->today() independently,
     // since date_sub()/date_add() mutate \DateTime in place.
-
     $expected = TRUE;
 
     $closure = new SchoolClosure($name, $location, $date, $reason, $dateTo);

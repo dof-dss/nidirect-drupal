@@ -17,7 +17,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
  *   category = @Translation("Translation help link"),
  * )
  */
-class TranslationHelpBlock extends BlockBase implements ContainerFactoryPluginInterface {
+final class TranslationHelpBlock extends BlockBase implements ContainerFactoryPluginInterface {
 
   /**
    * The request stack.
@@ -77,7 +77,7 @@ class TranslationHelpBlock extends BlockBase implements ContainerFactoryPluginIn
     $block_content = [
       '#attributes' => [
         'class' => ['section-translation-help'],
-      ]
+      ],
     ];
 
     if ($translation_help_url) {
@@ -94,7 +94,7 @@ class TranslationHelpBlock extends BlockBase implements ContainerFactoryPluginIn
     else {
       // We can't show a link in the block - so show missing link message.
       $block_content['link-missing'] = [
-        '#markup' => '<span>Translation help page (/articles/translation-help) missing!</span>'
+        '#markup' => '<span>Translation help page (/articles/translation-help) missing!</span>',
       ];
     }
 

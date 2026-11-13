@@ -3,7 +3,6 @@
 namespace Drupal\nidirect_gp;
 
 use Drupal\Core\Entity\EntityTypeManagerInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Check if a GP Cypher is unique.

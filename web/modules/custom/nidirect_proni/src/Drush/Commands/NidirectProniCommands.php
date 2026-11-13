@@ -41,7 +41,7 @@ class NidirectProniCommands extends DrushCommands {
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container): self {
-    return new static(
+    return new self(
       $container->get('entity_type.manager'),
       $container->get('redirect.repository'),
     );

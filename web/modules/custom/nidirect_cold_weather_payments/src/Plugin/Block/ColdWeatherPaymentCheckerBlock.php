@@ -28,6 +28,7 @@ class ColdWeatherPaymentCheckerBlock extends BlockBase {
    */
   public function build() {
     $build = [];
+    // @phpstan-ignore-next-line.
     $form = \Drupal::formBuilder()->getForm(ColdWeatherPaymentCheckerForm::class);
 
     $build[] = $form;

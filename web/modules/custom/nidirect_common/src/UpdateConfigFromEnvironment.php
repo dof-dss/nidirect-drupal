@@ -2,10 +2,7 @@
 
 namespace Drupal\nidirect_common;
 
-use Drupal\Core\Cache\CacheTagsInvalidatorInterface;
 use Drupal\Core\Config\ConfigFactoryInterface;
-use Drupal\Core\Entity\EntityInterface;
-use Drupal\Core\Entity\EntityTypeManagerInterface;
 
 /**
  * Utility class to update Google Map Api keys.

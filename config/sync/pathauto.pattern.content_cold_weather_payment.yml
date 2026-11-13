@@ -7,16 +7,16 @@ dependencies:
 id: content_cold_weather_payment
 label: 'Content - Cold weather payment'
 type: 'canonical_entities:node'
-pattern: 'admin/content/cold-weather-payment/[node:title]'
+pattern: '/admin/content/cold-weather-payment/[node:title]'
 selection_criteria:
   af9e0b4b-dadc-43f9-ad2b-23694aad9f4a:
     id: 'entity_bundle:node'
     negate: false
-    uuid: af9e0b4b-dadc-43f9-ad2b-23694aad9f4a
     context_mapping:
       node: node
     bundles:
       cold_weather_payment: cold_weather_payment
+    uuid: af9e0b4b-dadc-43f9-ad2b-23694aad9f4a
 selection_logic: and
 weight: -5
 relationships: {  }

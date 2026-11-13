@@ -34,8 +34,11 @@ class InvalidateTaxonomyListCacheTags {
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
    *   The entity type manager.
    */
-  public function __construct(CacheTagsInvalidatorInterface $cache_tags_invalidator,
-                              EntityTypeManagerInterface $entity_type_manager) {
+  public function __construct(
+    CacheTagsInvalidatorInterface $cache_tags_invalidator,
+    EntityTypeManagerInterface $entity_type_manager,
+  ) {
+
     $this->cacheTagsInvalidator = $cache_tags_invalidator;
     $this->entityTypeManager = $entity_type_manager;
   }

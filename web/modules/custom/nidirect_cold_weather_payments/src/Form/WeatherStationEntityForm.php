@@ -11,7 +11,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 /**
  * Form for creating weather station entities.
  */
-class WeatherStationEntityForm extends EntityForm {
+final class WeatherStationEntityForm extends EntityForm {
 
   /**
    * EntityTypeManager.

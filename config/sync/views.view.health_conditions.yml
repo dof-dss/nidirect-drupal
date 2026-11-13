@@ -100,6 +100,7 @@ display:
         type: full
         options:
           offset: 0
+          pagination_heading_level: h4
           items_per_page: 20
           total_pages: null
           id: 0
@@ -117,7 +118,6 @@ display:
             offset: false
             offset_label: Offset
           quantity: 9
-          pagination_heading_level: h4
       exposed_form:
         type: input_required
         options:
@@ -147,7 +147,7 @@ display:
           plugin_id: search_api_spellcheck_did_you_mean
           empty: true
           search_api_spellcheck_count: 1
-          search_api_spellcheck_hide_on_result: 1
+          search_api_spellcheck_hide_on_result: true
           search_api_spellcheck_collate: true
         area:
           id: area
@@ -219,19 +219,6 @@ display:
             multiple: false
             remember_roles:
               authenticated: authenticated
-              anonymous: '0'
-              administrator: '0'
-              gp_author_user: '0'
-              author_user: '0'
-              gp_supervisor_user: '0'
-              news_supervisor: '0'
-              supervisor_user: '0'
-              editor_user: '0'
-              admin_user: '0'
-              apps_user: '0'
-              health_condition_author_user: '0'
-              health_condition_supervisor_user: '0'
-              driving_instructor_supervisor_user: '0'
             expose_fields: false
             placeholder: 'eg asthma, or cough, wheeze'
             searched_fields_id: ''

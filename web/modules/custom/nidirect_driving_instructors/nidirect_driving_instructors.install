@@ -12,7 +12,12 @@ function nidirect_driving_instructors_update_10001(&$sandbox) {
 
   foreach ($driving_instructors as $driving_instructor) {
     $published_vid = $driving_instructor->getRevisionId();
-    $revision_ids = $node_storage->revisionIds($driving_instructor);
+    $revision_ids = array_keys($node_storage->getQuery()
+      ->accessCheck(FALSE)
+      ->allRevisions()
+      ->condition('nid', $driving_instructor->id())
+      ->sort('vid')
+      ->execute());
 
     foreach ($revision_ids as $revision_id) {
       if ($revision_id == $published_vid) {

@@ -10,7 +10,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
 /**
  * Provides a default implementation for menu link plugins.
  */
-class NidirectFeedbackMenu extends MenuLinkDefault {
+final class NidirectFeedbackMenu extends MenuLinkDefault {
 
   /**
    * The request stack.
