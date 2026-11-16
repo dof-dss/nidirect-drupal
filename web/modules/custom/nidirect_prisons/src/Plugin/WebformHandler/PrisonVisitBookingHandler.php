@@ -481,7 +481,10 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
 
       // Clear any previous slot availability error statuses before checking again.
       $error_status = $this->bookingReference['error_status'] ?? NULL;
-      if (in_array($error_status, [self::VISIT_ORDER_REF_NO_SLOTS, self::VISIT_ORDER_REF_NO_DATA], TRUE)) {
+      if (in_array($error_status, [
+        self::VISIT_ORDER_REF_NO_SLOTS,
+        self::VISIT_ORDER_REF_NO_DATA
+      ], TRUE)) {
         unset($this->bookingReference['error_status'], $this->bookingReference['error_status_msg']);
       }
 
@@ -496,7 +499,10 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
 
       // Check again...
       $error_status = $this->bookingReference['error_status'] ?? NULL;
-      if (in_array($error_status, [self::VISIT_ORDER_REF_NO_SLOTS, self::VISIT_ORDER_REF_NO_DATA], TRUE)) {
+      if (in_array($error_status, [
+        self::VISIT_ORDER_REF_NO_SLOTS,
+        self::VISIT_ORDER_REF_NO_DATA
+      ], TRUE)) {
 
         if ($error_status === self::VISIT_ORDER_REF_NO_SLOTS) {
           $elements['main_visitor_details']['#title_display'] = 'invisible';
@@ -934,11 +940,11 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
 
         if ($affiliation_id === FALSE) {
           $has_affiliation_data = $this->database
-              ->select('prisoner_house_affiliation', 'pha')
-              ->fields('pha', ['prisoner_id'])
-              ->range(0, 1)
-              ->execute()
-              ->fetchField() !== FALSE;
+            ->select('prisoner_house_affiliation', 'pha')
+            ->fields('pha', ['prisoner_id'])
+            ->range(0, 1)
+            ->execute()
+            ->fetchField() !== FALSE;
 
           if (!$has_affiliation_data) {
             $this->getLogger('prison_visits')->error('Prisoner affiliation data is unavailable.');
