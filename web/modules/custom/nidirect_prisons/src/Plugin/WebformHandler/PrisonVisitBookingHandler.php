@@ -1628,7 +1628,7 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
       // Determine if this slot is bookable.
       $slot_is_bookable = TRUE;
 
-      // Cannot book a slot
+      // Cannot book a slot.
       if ($slot < $min_date) {
         $slot_is_bookable = FALSE;
       }
@@ -1866,13 +1866,19 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
   }
 
   /**
-   * @param string $prisoner_id
-   * @param string $prison_id
+   * Get the prisoner house affiliation ID for a given prisoner ID and
+   * prison ID.
    *
-   * @return FALSE|string
+   * @param string $prisoner_id
+   *   The prisoner ID.
+   * @param string $prison_id
+   *   The prison ID.
+   *
+   * @return false|string
+   *   The affiliation ID, or FALSE if not found.
    * @throws \Exception
    */
-  private function getPrisonerHouseAffiliationId(string $prisoner_id, string $prison_id): string|FALSE {
+  private function getPrisonerHouseAffiliationId(string $prisoner_id, string $prison_id): false|string {
 
     if (empty($prisoner_id) || empty($prison_id)) {
       return FALSE;
