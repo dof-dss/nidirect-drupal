@@ -836,7 +836,7 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
   }
 
   /**
-   * Alter form so that an existing booking can be amended.
+   * Alter form to prepopulate with booking data to be amended.
    */
   private function alterFormToAmendBooking() {
 
@@ -847,7 +847,8 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
     $this->setFormElementValue('prisoner_id', $amend_booking_data['INMATE_ID']);
     $this->setFormElementValue('visitor_1_id', $amend_booking_data['VISITOR_1_ID']);
 
-    // Chop off time from visitor 1 DOB.
+    // Visitor 1 DOB supplied in the booking data is in UK date/time format
+    // (DD/MM/YYYY HH:mm). Chop off time.
     $visitor_1_dob = explode(" ", $amend_booking_data['VISITOR_1_DOB'])[0];
 
     $this->setFormElementValue('visitor_1_dob', $visitor_1_dob);
@@ -1190,7 +1191,7 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
     }
 
     // Determine various dates for the booking reference.
-    $booking_ref_validity_period_days = $this->configuration['booking_reference_validity_period_days'][$visit_type_id];
+    $booking_ref_validity_period_days = $this->configuration['visit_order_number_validity_period_days'][$visit_type_id];
     $this->bookingReference['validity_period_days'] = $booking_ref_validity_period_days;
 
     // Advance notice required for a booking.
