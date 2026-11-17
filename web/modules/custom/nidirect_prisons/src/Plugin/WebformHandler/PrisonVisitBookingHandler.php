@@ -148,14 +148,10 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
 
   /**
    * {@inheritdoc}
-   *
-   * If webform submissions are optionally enabled, we can prevent or
-   * alter the submission before insertion into the database to
-   * obfuscate sensitive data or remove it altogether.
    */
   public function postSave(WebformSubmissionInterface $webform_submission, $update = TRUE) {
 
-    // Store the amend booking link unique identifier for this
+    // Store the amendment link unique identifier for this
     // submission so that it cannot be used again.
     $amend_booking_options = $webform_submission->getData()['amend_booking_options'] ?? NULL;
     $is_amended = $amend_booking_options === 'cancel' || $amend_booking_options === 'change' ?? FALSE;
@@ -177,17 +173,11 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
 
   /**
    * {@inheritdoc}
-   * @throws \Exception
    */
   public function prepareForm(WebformSubmissionInterface $webform_submission, $operation, FormStateInterface $form_state) {
 
     // Prepare form if a booking is being amended.
     $webform = $webform_submission->getWebform();
-
-    // A prison visit booking confirmation email contains a link to
-    // allow users to amend the booking. Since the original booking
-    // submission is never stored, all the booking data is encrypted
-    // and embedded in the link.
 
     // Early return if no booking data in the request.
     if ($this->request->query->has('booking') === FALSE) {
@@ -195,7 +185,6 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
       return;
     }
 
-    // Get booking data from the request.
     $booking_data = $this->getRequestBookingData();
 
     if ($booking_data) {
@@ -232,8 +221,8 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
       // Store booking data in form_state.
       $form_state->set('amend_booking_data', $booking_data);
 
-      // Disable booking_reference_prisoner_reference wizard page
-      // and set current page to amend_booking_page.
+      // Disable the booking_reference_prisoner_reference wizard page
+      // and set the current page to amend_booking_page.
       $webform->setElementProperties('booking_reference_prisoner_reference', ['#access' => FALSE]);
       $webform_submission->setCurrentPage('amend_booking_page');
     }
@@ -241,12 +230,9 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
 
   /**
    * {@inheritdoc}
-   * @throws \Exception
    */
   public function alterForm(array &$form, FormStateInterface $form_state, WebformSubmissionInterface $webform_submission) {
 
-    // Store references to form, form state, and submission for
-    // easy access.
     $this->form = &$form;
     $this->formState = $form_state;
     $this->webformSubmission = $webform_submission;
@@ -260,20 +246,18 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
     $elements = $this->elements;
     $webform = $webform_submission->getWebform();
 
-    // Many form alterations here are dependent on data extracted from
-    // the visit_order_number or "booking reference".
-    //
-    // The booking reference determines:
-    // - The prison being visited
-    // - Whether it is a face-to-face or virtual visit
-    // - The date when the visit can be booked
-    // - The prisoner type and time slots available for prisoner type.
-    //
-    // The booking reference is collected in the very first wizard page.
-    // Once it is submitted and validated, form_state will contain the
-    // processed booking reference (see processVisitBookingReference()).
+    /*
+     * The visit_order_number or booking reference determines:
+     * - The prison being visited
+     * - Whether it is a face-to-face or virtual visit (online meeting)
+     * - The date when the visit can be booked
+     * - The prisoner type and face-to-face timeslots available for
+     *   the prisoner type.
+     */
 
     $this->bookingReference = $form_state->get('booking_reference_processed');
+
+    // Set form elements that display the prison name and visit type.
     $prison_name = $this->bookingReference['prison_name'] ?? NULL;
     $visit_type = $this->bookingReference['visit_type'] ?? NULL;
 
@@ -282,13 +266,12 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
       $this->setFormElementValue('visit_type', $visit_type);
     }
 
-    // Pass configuration and the processed booking reference
-    // to clientside.
+    // Pass configuration and the booking reference to clientside.
     $form['#attached']['library'][] = 'nidirect_prisons/prison_visit_booking';
     $form['#attached']['drupalSettings']['prisonVisitBooking'] = $this->configuration;
     $form['#attached']['drupalSettings']['prisonVisitBooking']['booking_ref'] = $this->bookingReference;
 
-    // Detect if booking reference (visit_order_number) is changed.
+    // Detect if the booking reference has changed.
     $last_ref = $form_state->get('last_visitor_order_number');
     $curr_ref = $form_state->getValue('visitor_order_number');
 
@@ -300,15 +283,12 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
     elseif (!empty($last_ref) && $curr_ref !== $last_ref) {
       $form_state->set('last_visitor_order_number', $curr_ref);
 
-      // Reset time slots user might have selected.
+      // Reset time slots when the booking reference changes.
       $this->resetFormSlots($form, $form_state, $webform_submission);
 
-      // If it's a virtual visit reset elements applicable only to
-      // face-to-face visits.
+      // Reset form elements not applicable to virtual visits.
       if ($visit_type === 'virtual') {
-        // Virtual visits have no additional visitors.
         $this->resetAdditionalVisitors();
-        // Virtual visits have no special_requirements.
         $this->setFormElementValue('visitor_special_requirements_details');
       }
     }
@@ -324,167 +304,15 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
       $form_state->set('last_prisoner_id', $curr_prisoner_id);
     }
 
-    // Pre-populate the form with any booking amendment data. Only do
-    // this once.
     $amend_booking_data = $form_state->get('amend_booking_data');
-    $amend_booking_setup_complete = $form_state->get('amend_booking_setup_complete');
-
-    if ($page === 'amend_booking_page' && $amend_booking_data && ($amend_booking_setup_complete !== TRUE || $page_trigger_is_previous)) {
-      $this->populateFormToAmendBooking();
-    }
-
-    // Further alterations when amending a booking...
-    if ($amend_booking_data) {
-
-      if (!empty($amend_booking_data['error'])) {
-
-        // Show custom error message.
-        $elements['error_booking_already_amended']['#access'] = TRUE;
-
-        // Hide some amendment related elements.
-        $elements['booking_details']['#access'] = FALSE;
-        $elements['amend_booking_options']['#access'] = FALSE;
-
-        // Prevent user progressing to next wizard page.
-        $elements['wizard_next']['#access'] = FALSE;
-
-        // Early return.
-        return;
-      }
-
-      // Amendment data is ok...
-      // Process the visitor order number if not already processed and
-      // update available slots.
-      if (!$this->bookingReference) {
-        $this->processVisitBookingReference($amend_booking_data['VISIT_ORDER_NO'], $form, $form_state, $webform_submission);
-      }
-
-      // If there are errors with the booking reference, we might have
-      // to halt the amendment process, or only allow
-      // specific amendments.
-
-      $error_status = $this->bookingReference['error_status'] ?? FALSE;
-
-      if ($error_status) {
-
-        // Get any error messages.
-        $error_status_msg = $this->bookingReference['error_status_msg'] ?? NULL;
-
-        if ($error_status === self::VISIT_ORDER_REF_MISSING || $error_status === self::VISIT_ORDER_REF_INVALID) {
-          // Cannot proceed with booking amendment.
-          $elements['visit_order_ref_invalid']['#access'] = TRUE;
-          $elements['booking_details']['#access'] = FALSE;
-          $elements['amend_booking_options']['#access'] = FALSE;
-          $elements['wizard_next']['#access'] = FALSE;
-
-          // Early return.
-          return;
-        }
-        elseif ($error_status === self::VISIT_ORDER_REF_EXPIRED) {
-          // Cannot proceed with booking amendment.
-          $elements['visit_order_ref_expired']['#access'] = TRUE;
-          $elements['booking_details']['#access'] = FALSE;
-          $elements['amend_booking_options']['#access'] = FALSE;
-          $elements['wizard_next']['#access'] = FALSE;
-
-          // Early return.
-          return;
-        }
-        elseif ($error_status === self::VISIT_ORDER_REF_AMENDMENT_EXPIRED) {
-          // Cannot proceed with booking amendment.
-          $elements['visit_order_ref_amendment_expired']['#access'] = TRUE;
-          $elements['booking_details']['#access'] = FALSE;
-          $elements['amend_booking_options']['#access'] = FALSE;
-          $elements['wizard_next']['#access'] = FALSE;
-
-          // Early return.
-          return;
-        }
-        elseif ($error_status === self::VISIT_ORDER_REF_NOTICE_EXCEEDED || $error_status === self::VISIT_ORDER_REF_AMENDMENT_NOTICE_EXCEEDED) {
-          // Display message indicating notice period not met and time
-          // must be changed. The notice period differs for face-to-face
-          // versus virtual visits.
-          if ($this->bookingReference['visit_type_id'] !== 'V') {
-            $elements['booking_details_notice_exceeded_face_to_face']['#access'] = TRUE;
-          }
-          else {
-            $elements['booking_details_notice_exceeded_virtual']['#access'] = TRUE;
-          }
-          // The time slot must be changed. Check the time slot option and
-          // make it readonly so the user cannot uncheck it.
-          $elements['choose_changes']['time_slot']['#attributes']['checked'] = TRUE;
-          $elements['choose_changes']['time_slot']['#attributes']['readonly'] = 'readonly';
-          $elements['choose_changes']['time_slot']['#attributes']['onclick'] = 'return false';
-          $elements['choose_changes']['time_slot']['#label_attributes']['onclick'] = 'return false';
-        }
-        elseif ($error_status === self::VISIT_ORDER_REF_NO_SLOTS) {
-          // Cannot amend time slot, but can edit visitor details.
-          $elements['booking_details_ref_no_slots']['#access'] = TRUE;
-          unset($elements['choose_changes']['#options']['time_slot']);
-        }
-        elseif ($error_status) {
-          $elements['amend_error_default']['#access'] = TRUE;
-          $elements['booking_details']['#access'] = FALSE;
-          $elements['amend_booking_options']['#access'] = FALSE;
-          $elements['wizard_next']['#access'] = FALSE;
-
-          // Early return.
-          return;
-        }
-      }
-      else {
-        // No issue with the visit order number, so the booking data is
-        // amendable. Safe to show the booking details.
-        $elements['booking_details']['#access'] = TRUE;
-      }
-
-      // Alter wizard page titles.
-      $elements['main_visitor_details']['#title'] = $this->t('Amend main visitor details');
-      $elements['additional_visitor_details']['#title'] = $this->t('Amend additional visitors');
-      $elements['visitor_special_requirements']['#title'] = $this->t('Amend visitor special requirements');
-      $elements['visit_preferred_day_and_time']['#title'] = $this->t('Amend visit date and time');
-      $elements['webform_preview']['#title'] = $this->t('Amend booking confirmation');
-
-      // Alter the hidden element tracking the amendment type.
-      if ($form_state->getValue('amend_booking_options') === 'keep') {
-        $this->setFormElementValue('amend_type', 'KEEP');
-      }
-      elseif ($form_state->getValue('amend_booking_options') === 'cancel') {
-        $this->setFormElementValue('amend_type', 'CANCEL');
-      }
-      elseif ($form_state->getValue('amend_booking_options') === 'change') {
-        $this->setFormElementValue('amend_type', 'UPDATE');
-      }
-
-      // Alter change options presented to the user.
-      // Virtual visits have no additional visitors.
-      if ($this->bookingReference['visit_type'] === 'virtual') {
-        unset($elements['choose_changes']['#options']['additional_visitors']);
-      }
-
-      // Alterations at webform preview stage.
-      if ($page === 'webform_preview') {
-
-        if ($form_state->getValue('amend_booking_options') === 'keep') {
-          $elements['preview']['#title'] = $this->t('Confirm keep booking');
-          $elements['actions'][0]['#submit__label'] = $this->t('Keep booking');
-        }
-        elseif ($form_state->getValue('amend_booking_options') === 'cancel') {
-          $elements['preview']['#title'] = $this->t('Confirm cancel booking');
-          $elements['actions'][0]['#submit__label'] = $this->t('Cancel booking');
-        }
-        elseif ($form_state->getValue('amend_booking_options') === 'change') {
-          $elements['preview']['#title'] = $this->t('Confirm amend booking');
-          $elements['actions'][0]['#submit__label'] = $this->t('Amend booking');
-        }
-      }
+    if ($amend_booking_data && !$this->alterFormForBookingAmendment($page, $page_trigger_is_previous)) {
+      return;
     }
 
     if ($page === 'main_visitor_details' && !$amend_booking_data && !empty($this->bookingReference)) {
 
       // This page immediately follows the booking reference page.
-      // Before letting the user proceed with booking, we check
-      // slot availability for the booking reference.
+      // Perform slot availability checks here.
 
       $slots = $this->getAvailableSlots();
       $slots_error = $slots['error'] ?? FALSE;
@@ -843,9 +671,142 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
   }
 
   /**
-   * Alter form to prepopulate with booking data to be amended.
+   * Applies amendment alterations, returning FALSE if amendment is blocked.
    */
-  private function populateFormToAmendBooking() {
+  private function alterFormForBookingAmendment(string $page, bool $page_trigger_is_previous): bool {
+    $amend_booking_data = $this->formState->get('amend_booking_data');
+    $setup_complete = $this->formState->get('amend_booking_setup_complete');
+
+    // Populate initially and restore original booking data on back navigation.
+    if ($page === 'amend_booking_page' && ($setup_complete !== TRUE || $page_trigger_is_previous)) {
+      $this->populateFormFromBookingData();
+    }
+
+    if (!empty($amend_booking_data['error'])) {
+      $this->blockBookingAmendment('error_booking_already_amended');
+      return FALSE;
+    }
+
+    if (!$this->bookingReference) {
+      $this->processVisitBookingReference($amend_booking_data['VISIT_ORDER_NO'], $this->form, $this->formState, $this->webformSubmission);
+    }
+
+    if (!$this->applyBookingAmendmentRestrictions()) {
+      return FALSE;
+    }
+
+    $this->alterBookingAmendmentPresentation($page);
+    return TRUE;
+  }
+
+  /**
+   * Displays an amendment error and prevents further wizard progression.
+   */
+  private function blockBookingAmendment(string $message_element): void {
+    $this->elements[$message_element]['#access'] = TRUE;
+    $this->elements['booking_details']['#access'] = FALSE;
+    $this->elements['amend_booking_options']['#access'] = FALSE;
+    $this->elements['wizard_next']['#access'] = FALSE;
+  }
+
+  /**
+   * Restricts amendments, returning FALSE if amendment cannot proceed.
+   */
+  private function applyBookingAmendmentRestrictions(): bool {
+    $elements = $this->elements;
+    $error_status = $this->bookingReference['error_status'] ?? FALSE;
+
+    if (!$error_status) {
+      $elements['booking_details']['#access'] = TRUE;
+      return TRUE;
+    }
+
+    if ($error_status === self::VISIT_ORDER_REF_MISSING || $error_status === self::VISIT_ORDER_REF_INVALID) {
+      $this->blockBookingAmendment('visit_order_ref_invalid');
+      return FALSE;
+    }
+
+    if ($error_status === self::VISIT_ORDER_REF_EXPIRED) {
+      $this->blockBookingAmendment('visit_order_ref_expired');
+      return FALSE;
+    }
+
+    if ($error_status === self::VISIT_ORDER_REF_AMENDMENT_EXPIRED) {
+      $this->blockBookingAmendment('visit_order_ref_amendment_expired');
+      return FALSE;
+    }
+
+    if ($error_status === self::VISIT_ORDER_REF_NOTICE_EXCEEDED || $error_status === self::VISIT_ORDER_REF_AMENDMENT_NOTICE_EXCEEDED) {
+      if ($this->bookingReference['visit_type_id'] !== 'V') {
+        $elements['booking_details_notice_exceeded_face_to_face']['#access'] = TRUE;
+      }
+      else {
+        $elements['booking_details_notice_exceeded_virtual']['#access'] = TRUE;
+      }
+
+      // Require a time change and prevent the user unchecking the option.
+      $elements['choose_changes']['time_slot']['#attributes']['checked'] = TRUE;
+      $elements['choose_changes']['time_slot']['#attributes']['readonly'] = 'readonly';
+      $elements['choose_changes']['time_slot']['#attributes']['onclick'] = 'return false';
+      $elements['choose_changes']['time_slot']['#label_attributes']['onclick'] = 'return false';
+      return TRUE;
+    }
+
+    if ($error_status === self::VISIT_ORDER_REF_NO_SLOTS) {
+      // Visitor details can still be changed when no time slots are available.
+      $elements['booking_details_ref_no_slots']['#access'] = TRUE;
+      unset($elements['choose_changes']['#options']['time_slot']);
+      return TRUE;
+    }
+
+    $this->blockBookingAmendment('amend_error_default');
+    return FALSE;
+  }
+
+  /**
+   * Updates amendment page titles, options and preview labels.
+   */
+  private function alterBookingAmendmentPresentation(string $page): void {
+    $elements = $this->elements;
+    $elements['main_visitor_details']['#title'] = $this->t('Amend main visitor details');
+    $elements['additional_visitor_details']['#title'] = $this->t('Amend additional visitors');
+    $elements['visitor_special_requirements']['#title'] = $this->t('Amend visitor special requirements');
+    $elements['visit_preferred_day_and_time']['#title'] = $this->t('Amend visit date and time');
+    $elements['webform_preview']['#title'] = $this->t('Amend booking confirmation');
+
+    // Virtual visits have no additional visitors.
+    if ($this->bookingReference['visit_type'] === 'virtual') {
+      unset($elements['choose_changes']['#options']['additional_visitors']);
+    }
+
+    $amend_booking_option = $this->formState->getValue('amend_booking_options');
+    if ($amend_booking_option === 'keep') {
+      $this->setFormElementValue('amend_type', 'KEEP');
+      if ($page === 'webform_preview') {
+        $elements['preview']['#title'] = $this->t('Confirm keep booking');
+        $elements['actions'][0]['#submit__label'] = $this->t('Keep booking');
+      }
+    }
+    elseif ($amend_booking_option === 'cancel') {
+      $this->setFormElementValue('amend_type', 'CANCEL');
+      if ($page === 'webform_preview') {
+        $elements['preview']['#title'] = $this->t('Confirm cancel booking');
+        $elements['actions'][0]['#submit__label'] = $this->t('Cancel booking');
+      }
+    }
+    elseif ($amend_booking_option === 'change') {
+      $this->setFormElementValue('amend_type', 'UPDATE');
+      if ($page === 'webform_preview') {
+        $elements['preview']['#title'] = $this->t('Confirm amend booking');
+        $elements['actions'][0]['#submit__label'] = $this->t('Amend booking');
+      }
+    }
+  }
+
+  /**
+   * Prepopulates the form with the original booking data to be amended.
+   */
+  private function populateFormFromBookingData(): void {
 
     $amend_booking_data = $this->formState->get('amend_booking_data');
 
@@ -917,7 +878,6 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
 
   /**
    * {@inheritdoc}
-   * @throws \Exception
    */
   public function validateForm(array &$form, FormStateInterface $form_state, WebformSubmissionInterface $webform_submission) {
 
