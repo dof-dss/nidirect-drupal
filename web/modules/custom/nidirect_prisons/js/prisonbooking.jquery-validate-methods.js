@@ -1,6 +1,6 @@
 /**
  * @file
- * Defines jquery-validation methods and rules for prison visit booking.
+ * Defines validation methods and rules for prison visit booking.
  */
 (function ($, Drupal, once) {
 
@@ -231,7 +231,7 @@
         const pvPrisons = settings.prisonVisitBooking.prisons;
         const pvTypes = settings.prisonVisitBooking.visit_type;
         const pvNotice = settings.prisonVisitBooking.visit_advance_notice;
-        const pvRefValidity = settings.prisonVisitBooking.booking_reference_validity_period_days;
+        const pvRefValidity = settings.prisonVisitBooking.visit_order_number_validity_period_days;
         const pvRefMaxAdvancedIssue = settings.prisonVisitBooking.visit_order_number_max_advance_issue;
 
         $pvRef.rules( "add", {
