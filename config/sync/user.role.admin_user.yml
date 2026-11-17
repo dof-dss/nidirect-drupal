@@ -3,6 +3,17 @@ langcode: en
 status: true
 dependencies:
   config:
+    - block_content.type.accordion_menu
+    - block_content.type.banner_deep
+    - block_content.type.card_deck_plain
+    - block_content.type.card_nested_standard
+    - block_content.type.card_nested_wide
+    - block_content.type.card_plain
+    - block_content.type.card_standard
+    - block_content.type.card_wide
+    - block_content.type.text
+    - block_content.type.video
+    - block_content.type.video_and_caption
     - core.entity_view_display.node.landing_page.full
     - entity_browser.browser.location_browser
     - filter.format.basic_html
@@ -36,7 +47,6 @@ dependencies:
   module:
     - block
     - block_content
-    - block_content_permissions
     - book
     - content_moderation
     - entity_browser
@@ -110,8 +120,8 @@ permissions:
   - 'administer redirects'
   - 'administer scheduled transitions'
   - 'administer site configuration'
-  - 'administer sitewide alert'
   - 'administer sitewide alert entities'
+  - 'administer sitewide alert'
   - 'administer software updates'
   - 'administer taxonomy'
   - 'administer themes'
@@ -228,9 +238,16 @@ permissions:
   - 'delete sitewide alert entities'
   - 'delete terms in site_themes'
   - 'delete webform revisions'
+  - 'edit any accordion_menu block content'
   - 'edit any application content'
   - 'edit any article content'
   - 'edit any audio media'
+  - 'edit any banner_deep block content'
+  - 'edit any card_nested_standard block content'
+  - 'edit any card_nested_wide block content'
+  - 'edit any card_plain block content'
+  - 'edit any card_standard block content'
+  - 'edit any card_wide block content'
   - 'edit any cold_weather_payment content'
   - 'edit any contact content'
   - 'edit any document media'
@@ -249,7 +266,10 @@ permissions:
   - 'edit any page content'
   - 'edit any publication content'
   - 'edit any remote_video media'
+  - 'edit any text block content'
+  - 'edit any video block content'
   - 'edit any video media'
+  - 'edit any video_and_caption block content'
   - 'edit any webform content'
   - 'edit gp entities'
   - 'edit own application content'
@@ -278,9 +298,9 @@ permissions:
   - 'edit terms in site_themes'
   - 'flag display_on_landing_pages'
   - 'flag hide_content'
-  - 'flag locked_content'
   - 'flag locked_content other items'
   - 'flag locked_content own items'
+  - 'flag locked_content'
   - 'flag show_listing'
   - 'reorder terms in site_themes'
   - 'revert all sitewide alert revisions'
@@ -305,20 +325,10 @@ permissions:
   - 'select terms in contact_categories'
   - 'select terms in site_themes'
   - 'unflag hide_content'
-  - 'unflag locked_content'
   - 'unflag locked_content other items'
   - 'unflag locked_content own items'
+  - 'unflag locked_content'
   - 'unflag show_listing'
-  - 'update any accordion_menu block content'
-  - 'update any banner_deep block content'
-  - 'update any card_nested_standard block content'
-  - 'update any card_nested_wide block content'
-  - 'update any card_plain block content'
-  - 'update any card_standard block content'
-  - 'update any card_wide block content'
-  - 'update any text block content'
-  - 'update any video block content'
-  - 'update any video_and_caption block content'
   - 'use moderation sidebar'
   - 'use nics_editorial_workflow transition archive'
   - 'use nics_editorial_workflow transition create_new_draft'
