@@ -13,10 +13,14 @@ type: 'php:8.3'
 # Set non-sensitive variables here only.
 # Use Platform CLI or console to set sensitive variables.
 variables:
+  env:
+    N_PREFIX: /app/.global
   php:
     memory_limit: "128M"
 
 dependencies:
+  nodejs:
+    n: '11.0.0'
   php:
     composer/composer: '^2'
 
@@ -83,6 +87,12 @@ build:
 hooks:
   build: |
     set -e
+    echo ">>> Install the pinned, patched Node.js version"
+    # installs the pinned version from .nvmrc
+    n auto
+    export PATH="$N_PREFIX/bin:$PATH"
+    # clears cached command locations so the shell finds the new copy.
+    hash -r
     echo "Replace vanilla CKEditor config with a custom one to fix the click/drag bug with embedded entities"
     git clone https://github.com/dof-dss/ckeditor4-fix-widget-dnd.git
     rm -rf web/core/assets/vendor/ckeditor
