@@ -330,7 +330,7 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
     $amend_booking_setup_complete = $form_state->get('amend_booking_setup_complete');
 
     if ($page === 'amend_booking_page' && $amend_booking_data && ($amend_booking_setup_complete !== TRUE || $page_trigger_is_previous)) {
-      $this->alterFormToAmendBooking();
+      $this->populateFormToAmendBooking();
     }
 
     // Further alterations when amending a booking...
@@ -845,7 +845,7 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
   /**
    * Alter form to prepopulate with booking data to be amended.
    */
-  private function alterFormToAmendBooking() {
+  private function populateFormToAmendBooking() {
 
     $amend_booking_data = $this->formState->get('amend_booking_data');
 
