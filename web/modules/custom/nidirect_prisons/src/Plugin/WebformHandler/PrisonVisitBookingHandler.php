@@ -763,6 +763,15 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
     }
 
     if ($error_status === self::VISIT_ORDER_REF_NOTICE_EXCEEDED || $error_status === self::VISIT_ORDER_REF_AMENDMENT_NOTICE_EXCEEDED) {
+      if (!$slots) {
+        $message_element = $this->bookingReference['visit_type_id'] === 'V'
+          ? 'booking_details_notice_exceeded_virtual_no_slots'
+          : 'booking_details_notice_exceeded_face_to_face_no_slots';
+        $elements[$message_element]['#access'] = TRUE;
+        $elements['amend_booking_options']['#title'] = $this->t('Do you want to keep or cancel this booking?');
+        unset($elements['amend_booking_options']['#options']['change']);
+        return TRUE;
+      }
 
       // Otherwise (there are slots), the user must change the time slot.
       if ($this->bookingReference['visit_type_id'] !== 'V') {
