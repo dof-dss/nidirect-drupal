@@ -448,6 +448,32 @@ elements: |-
           <p>The visit date and time for this booking occurs in less than 48 hours. If you want to make any changes to the booking, the visit date and time must be changed.
           </p>
         </div>
+    booking_details_notice_exceeded_face_to_face_no_slots:
+      '#type': webform_markup
+      '#access': false
+      '#markup': |-
+        <div class="info-notice info-notice--warning" role="status">
+        <h2>24 hours notice is required for changes to face-to-face visits</h2>
+        <p>
+        The visit date and time for this booking occurs in less than 24 hours and cannot be changed because there are no other dates and times available.
+        </p>
+        <p>
+        You can keep the existing booking or cancel it.
+        </p>
+        </div>
+    booking_details_notice_exceeded_virtual_no_slots:
+      '#type': webform_markup
+      '#access': false
+      '#markup': |-
+        <div class="info-notice info-notice--warning" role="status">
+        <h2>48 hours notice is required for changes to virtual visits</h2>
+        <p>
+        The visit date and time for this booking occurs in less than 48 hours and cannot be changed because there are no other dates and times available.
+        </p>
+        <p>
+        You can keep the existing booking or cancel it.
+        </p>
+        </div>
     amend_booking_options:
       '#type': radios
       '#title': 'Do you want to keep, cancel or change this booking?'
@@ -3014,6 +3040,10 @@ handlers:
             - '07-01-1973 15:30'
             - '07-01-1973 16:00'
       visit_slots_uri: 'https://gist.githubusercontent.com/dof-dss-eddwebdev/57ea797b76466f4036654e4242da82bb/raw/eb8eb122149add828bfad5179811ec77a4a90187/prism-slots.json'
+      booking_reference_validity_period_days:
+        F: 7
+        V: 7
+        E: 28
   ov_in_test_1:
     id: email
     handler_id: ov_in_test_1
