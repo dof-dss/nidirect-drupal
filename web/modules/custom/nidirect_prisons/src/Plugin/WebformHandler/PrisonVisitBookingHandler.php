@@ -11,6 +11,8 @@ use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Database\Connection;
 use Drupal\Core\Datetime\DrupalDateTime;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Flood\FloodInterface;
+use Drupal\Core\Site\Settings;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\Core\TempStore\PrivateTempStoreFactory;
 use Drupal\datetime\Plugin\Field\FieldType\DateTimeItemInterface;
@@ -58,6 +60,11 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
    * @var \GuzzleHttp\ClientInterface
    */
   protected $httpClient;
+
+  /**
+   * @var \Drupal\Core\Flood\FloodInterface
+   */
+  protected $flood;
 
   /**
    * @var \Drupal\Core\TempStore\PrivateTempStoreFactory
@@ -136,6 +143,7 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
     $instance->tempStoreFactory = $container->get('tempstore.private');
     $instance->database = $container->get('database');
     $instance->time = $container->get('datetime.time');
+    $instance->flood = $container->get('flood');
     return $instance;
   }
 
@@ -941,6 +949,7 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
     }
 
     if ($page === 'booking_reference_prisoner_reference') {
+      $form_state->set('virtual_booking_attempt', NULL);
       $this->validateVisitBookingReference($form, $form_state, $webform_submission);
 
       $prisoner_id = $form_state->getValue('prisoner_id');
@@ -949,26 +958,46 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
       if (empty($prisoner_id)) {
         $form_state->setErrorByName('prisoner_id', $this->t('Prisoner ID is required.'));
       }
-      elseif (empty($this->bookingReference['error_status']) && !empty($prison_id)) {
+
+      // Rate limit virtual bookings.
+      if (!$form_state->getErrors() && !$form_state->get('amend_booking_data') && ($this->bookingReference['visit_type_id'] ?? NULL) === 'V') {
+        $event = 'nidirect_prisons.virtual_booking_attempt';
+        $limit = Settings::get('nidirect_prisons_virtual_booking_limit', 5);
+        $window = Settings::get('nidirect_prisons_virtual_booking_window', 900);
+
+        if (!$this->flood->isAllowed($event, $limit, $window)) {
+          $form_state->setErrorByName('visitor_order_number', $this->t('Too many virtual booking attempts. Please wait a few minutes before trying again.'));
+          return;
+        }
+
+        $this->flood->register($event, $window);
+
         $affiliation_id = $this->getPrisonerHouseAffiliationId($prisoner_id, $prison_id);
 
         if ($affiliation_id === FALSE) {
+          // Is affiliation data available?
           $has_affiliation_data = $this->database
-            ->select('prisoner_house_affiliation', 'pha')
-            ->fields('pha', ['prisoner_id'])
-            ->range(0, 1)
-            ->execute()
-            ->fetchField() !== FALSE;
+              ->select('prisoner_house_affiliation', 'pha')
+              ->fields('pha', ['prisoner_id'])
+              ->range(0, 1)
+              ->execute()
+              ->fetchField() !== FALSE;
 
           if (!$has_affiliation_data) {
             $this->getLogger('prison_visits')->error('Prisoner affiliation data is unavailable.');
             $form_state->setError($form, $this->t('An error has occurred. Booking cannot proceed at this time. Try again later.'));
           }
           else {
-            $form_state->setErrorByName('visitor_order_number', $this->t('Visit Reference Number may be incorrect.'));
-            $form_state->setErrorByName('prisoner_id', $this->t('Prisoner ID may be incorrect.'));
+            $form_state->setError($form, $this->t('The details you have provided may be incorrect. Check the details and try again.'));
           }
+
+          return;
         }
+
+        $form_state->set('virtual_booking_attempt', [
+          $this->bookingReference['visitor_order_number'],
+          $prisoner_id,
+        ]);
       }
     }
 
@@ -1598,6 +1627,13 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
     // The available time slots depend on the visit type, prison and prisoner affiliation.
     $affiliation_id = NULL;
     if ($visit_type === 'VIRTUAL') {
+
+      if (!$this->formState->get('amend_booking_data') && $this->formState->get('virtual_booking_attempt') !== [
+          $this->bookingReference['visitor_order_number'],
+          $prisoner_id,
+        ]) {
+        return ['error' => TRUE];
+      }
 
       $affiliation_id = $this->getPrisonerHouseAffiliationId($prisoner_id, $prison_id);
 
