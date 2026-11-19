@@ -977,11 +977,11 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
         if ($affiliation_id === FALSE) {
           // Is affiliation data available?
           $has_affiliation_data = $this->database
-              ->select('prisoner_house_affiliation', 'pha')
-              ->fields('pha', ['prisoner_id'])
-              ->range(0, 1)
-              ->execute()
-              ->fetchField() !== FALSE;
+            ->select('prisoner_house_affiliation', 'pha')
+            ->fields('pha', ['prisoner_id'])
+            ->range(0, 1)
+            ->execute()
+            ->fetchField() !== FALSE;
 
           if (!$has_affiliation_data) {
             $this->getLogger('prison_visits')->error('Prisoner affiliation data is unavailable.');
@@ -1629,9 +1629,9 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
     if ($visit_type === 'VIRTUAL') {
 
       if (!$this->formState->get('amend_booking_data') && $this->formState->get('virtual_booking_attempt') !== [
-          $this->bookingReference['visitor_order_number'],
-          $prisoner_id,
-        ]) {
+        $this->bookingReference['visitor_order_number'],
+        $prisoner_id,
+      ]) {
         return ['error' => TRUE];
       }
 
