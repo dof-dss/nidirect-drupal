@@ -959,18 +959,26 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
         $form_state->setErrorByName('prisoner_id', $this->t('Prisoner ID is required.'));
       }
 
-      // Rate limit virtual bookings.
-      if (!$form_state->getErrors() && !$form_state->get('amend_booking_data') && ($this->bookingReference['visit_type_id'] ?? NULL) === 'V') {
-        $event = 'nidirect_prisons.virtual_booking_attempt';
-        $limit = Settings::get('nidirect_prisons_virtual_booking_limit', 5);
-        $window = Settings::get('nidirect_prisons_virtual_booking_window', 900);
+      // Rate limit bookings to 5 per 15 minutes.
+      if (!$form_state->getErrors() && !$form_state->get('amend_booking_data')) {
+        $event = 'nidirect_prisons.booking_attempt';
+        $limit = Settings::get('nidirect_prisons_booking_limit', 5);
+        $window = Settings::get('nidirect_prisons_booking_window', 900);
 
         if (!$this->flood->isAllowed($event, $limit, $window)) {
-          $form_state->setErrorByName('visitor_order_number', $this->t('Too many virtual booking attempts. Please wait a few minutes before trying again.'));
+          $form_state->setErrorByName('visitor_order_number', $this->t('Too many booking attempts. Please wait a few minutes before trying again.'));
+          $this->getLogger('prison_visits')
+            ->warning('Booking attempt flood limit reached for IP address @ip.', [
+              '@ip' => \Drupal::request()
+                ->getClientIp()
+            ]);
           return;
         }
 
         $this->flood->register($event, $window);
+      }
+
+      if (!$form_state->getErrors() && !$form_state->get('amend_booking_data') && $this->bookingReference['visit_type_id'] === 'V') {
 
         $affiliation_id = $this->getPrisonerHouseAffiliationId($prisoner_id, $prison_id);
 
