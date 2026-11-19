@@ -11,6 +11,8 @@ use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Database\Connection;
 use Drupal\Core\Datetime\DrupalDateTime;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Flood\FloodInterface;
+use Drupal\Core\Site\Settings;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\Core\TempStore\PrivateTempStoreFactory;
 use Drupal\datetime\Plugin\Field\FieldType\DateTimeItemInterface;
@@ -58,6 +60,11 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
    * @var \GuzzleHttp\ClientInterface
    */
   protected $httpClient;
+
+  /**
+   * @var \Drupal\Core\Flood\FloodInterface
+   */
+  protected $flood;
 
   /**
    * @var \Drupal\Core\TempStore\PrivateTempStoreFactory
@@ -136,6 +143,7 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
     $instance->tempStoreFactory = $container->get('tempstore.private');
     $instance->database = $container->get('database');
     $instance->time = $container->get('datetime.time');
+    $instance->flood = $container->get('flood');
     return $instance;
   }
 
@@ -247,7 +255,7 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
     $webform = $webform_submission->getWebform();
 
     /*
-     * The visit_order_number or booking reference determines:
+     * The visitor_order_number or booking reference determines:
      * - The prison being visited
      * - Whether it is a face-to-face or virtual visit (online meeting)
      * - The date when the visit can be booked
@@ -329,7 +337,7 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
       elseif (!$slots) {
         // No slots available.
         $this->bookingReference['error_status'] = self::VISIT_ORDER_REF_NO_SLOTS;
-        $this->bookingReference['error_status_msg'] = $this->t('There are no time slots available for visit reference number @booking_ref.', ['@booking_ref' => $this->bookingReference['visit_order_number']]);
+        $this->bookingReference['error_status_msg'] = $this->t('There are no time slots available for visit reference number @booking_ref.', ['@booking_ref' => $this->bookingReference['visitor_order_number']]);
       }
       else {
         $this->bookingReference['available_slots'] = $slots;
@@ -397,7 +405,7 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
 
     // If user is amending a booking, timeslots are always reset and
     // the original timeslot restored if user chose not to amend it.
-    $choose_changes = $form_state->getValue('choose_changes') ?? $form_state->getValue('choose_changes_virtual') ?? NULL;
+    $choose_changes = $form_state->getValue('choose_changes') ?? NULL;
     if ($amend_booking_data && is_array($choose_changes) && !in_array('time_slot', $choose_changes)) {
       $this->resetFormSlots($form, $form_state, $webform_submission);
 
@@ -701,7 +709,6 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
 
     if (!$this->bookingReference) {
       $this->processVisitBookingReference($amend_booking_data['VISIT_ORDER_NO'], $this->form, $this->formState, $this->webformSubmission);
-      // Updates following newly processed booking reference.
       $this->setFormElementValue('prison_name', $this->bookingReference['prison_name'] ?? NULL);
       $this->setFormElementValue('visit_type', $this->bookingReference['visit_type'] ?? NULL);
       $this->form['#attached']['drupalSettings']['prisonVisitBooking']['booking_ref'] = $this->bookingReference;
@@ -737,11 +744,6 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
     $elements = $this->elements;
     $error_status = $this->bookingReference['error_status'] ?? FALSE;
 
-    if (!$error_status) {
-      $elements['booking_details']['#access'] = TRUE;
-      return TRUE;
-    }
-
     if ($error_status === self::VISIT_ORDER_REF_MISSING || $error_status === self::VISIT_ORDER_REF_INVALID) {
       $this->blockBookingAmendment('visit_order_ref_invalid');
       return FALSE;
@@ -757,7 +759,29 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
       return FALSE;
     }
 
+    // Further amendment restrictions rely on whether there are slots.
+    $slots = $this->getAvailableSlots();
+    $slots_error = $slots['error'] ?? FALSE;
+
+    if ($slots_error) {
+      $this->elements['booking_details_ref_no_data']['#access'] = TRUE;
+      $this->elements['amend_booking_options']['#title'] = $this->t('Do you want to keep or cancel this booking?');
+      unset($this->elements['amend_booking_options']['#options']['change']);
+      return TRUE;
+    }
+
     if ($error_status === self::VISIT_ORDER_REF_NOTICE_EXCEEDED || $error_status === self::VISIT_ORDER_REF_AMENDMENT_NOTICE_EXCEEDED) {
+      if (!$slots) {
+        $message_element = $this->bookingReference['visit_type_id'] === 'V'
+          ? 'booking_details_notice_exceeded_virtual_no_slots'
+          : 'booking_details_notice_exceeded_face_to_face_no_slots';
+        $elements[$message_element]['#access'] = TRUE;
+        $elements['amend_booking_options']['#title'] = $this->t('Do you want to keep or cancel this booking?');
+        unset($elements['amend_booking_options']['#options']['change']);
+        return TRUE;
+      }
+
+      // Show message that notice period exceeded.
       if ($this->bookingReference['visit_type_id'] !== 'V') {
         $elements['booking_details_notice_exceeded_face_to_face']['#access'] = TRUE;
       }
@@ -765,20 +789,26 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
         $elements['booking_details_notice_exceeded_virtual']['#access'] = TRUE;
       }
 
-      // Require a time change and prevent the user unchecking the option.
+      // Time slot must be changed.
       $elements['choose_changes']['time_slot']['#attributes']['checked'] = TRUE;
       $elements['choose_changes']['time_slot']['#attributes']['readonly'] = 'readonly';
       $elements['choose_changes']['time_slot']['#attributes']['onclick'] = 'return false';
       $elements['choose_changes']['time_slot']['#label_attributes']['onclick'] = 'return false';
+
       return TRUE;
     }
 
-    if ($error_status === self::VISIT_ORDER_REF_NO_SLOTS) {
-      // Visitor details can still be changed when no time slots are available.
+    // Visitor details can still be changed when no time slots are available and
+    // no other amendment restrictions apply.
+    if (!$slots) {
       $elements['booking_details_ref_no_slots']['#access'] = TRUE;
       $elements['booking_details']['#access'] = TRUE;
       unset($elements['choose_changes']['#options']['time_slot']);
-      unset($elements['choose_changes_virtual']['#options']['time_slot']);
+      return TRUE;
+    }
+
+    if (!$error_status) {
+      $elements['booking_details']['#access'] = TRUE;
       return TRUE;
     }
 
@@ -916,6 +946,7 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
     }
 
     if ($page === 'booking_reference_prisoner_reference') {
+      $form_state->set('virtual_booking_attempt', NULL);
       $this->validateVisitBookingReference($form, $form_state, $webform_submission);
 
       $prisoner_id = $form_state->getValue('prisoner_id');
@@ -924,10 +955,32 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
       if (empty($prisoner_id)) {
         $form_state->setErrorByName('prisoner_id', $this->t('Prisoner ID is required.'));
       }
-      elseif (empty($this->bookingReference['error_status']) && !empty($prison_id)) {
+
+      // Rate limit bookings to 5 per 15 minutes.
+      if (!$form_state->getErrors() && !$form_state->get('amend_booking_data')) {
+        $event = 'nidirect_prisons.booking_attempt';
+        $limit = Settings::get('nidirect_prisons_booking_limit', $this->configuration['nidirect_prisons_booking_limit'] ?? 5);
+        $window = Settings::get('nidirect_prisons_booking_window', $this->configuration['nidirect_prisons_booking_window'] ?? 900);
+
+        if (!$this->flood->isAllowed($event, $limit, $window)) {
+          $form_state->setErrorByName('visitor_order_number', $this->t('Too many booking attempts. Please wait a few minutes before trying again.'));
+          $this->getLogger('prison_visits')
+            ->warning('Booking attempt flood limit reached for IP address @ip.', [
+              '@ip' => \Drupal::request()
+                ->getClientIp()
+            ]);
+          return;
+        }
+
+        $this->flood->register($event, $window);
+      }
+
+      if (!$form_state->getErrors() && !$form_state->get('amend_booking_data') && $this->bookingReference['visit_type_id'] === 'V') {
+
         $affiliation_id = $this->getPrisonerHouseAffiliationId($prisoner_id, $prison_id);
 
         if ($affiliation_id === FALSE) {
+          // Is affiliation data available?
           $has_affiliation_data = $this->database
             ->select('prisoner_house_affiliation', 'pha')
             ->fields('pha', ['prisoner_id'])
@@ -940,10 +993,16 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
             $form_state->setError($form, $this->t('An error has occurred. Booking cannot proceed at this time. Try again later.'));
           }
           else {
-            $form_state->setErrorByName('visitor_order_number', $this->t('Visit Reference Number may be incorrect.'));
-            $form_state->setErrorByName('prisoner_id', $this->t('Prisoner ID may be incorrect.'));
+            $form_state->setError($form, $this->t('The details you have provided may be incorrect. Check the details and try again.'));
           }
+
+          return;
         }
+
+        $form_state->set('virtual_booking_attempt', [
+          $this->bookingReference['visitor_order_number'],
+          $prisoner_id,
+        ]);
       }
     }
 
@@ -1229,38 +1288,32 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
     if ($now > $booking_ref_valid_to) {
       $this->bookingReference['error_status'] = self::VISIT_ORDER_REF_EXPIRED;
       $this->bookingReference['error_status_msg'] = $this->t('Visit reference number has expired.');
+      // No point in continuing.
       return;
     }
     elseif ($now < $booking_ref_max_advanced_issue_date) {
       $this->bookingReference['error_status'] = self::VISIT_ORDER_REF_INVALID;
       $this->bookingReference['error_status_msg'] = $this->t('Visit reference number is not recognised.');
+      // No point in continuing.
       return;
     }
     elseif ($amend_booking_date && $now > $amend_booking_date) {
       $this->bookingReference['error_status'] = self::VISIT_ORDER_REF_AMENDMENT_EXPIRED;
       $this->bookingReference['error_status_msg'] = $this->t('The scheduled date and time for this visit have already passed, so amendments can no longer be made.');
+      // No point in continuing.
       return;
     }
     elseif ($now > $visit_latest_booking_date) {
       $this->bookingReference['error_status'] = self::VISIT_ORDER_REF_NOTICE_EXCEEDED;
       $this->bookingReference['error_status_msg'] = $this->t('Visit reference number period of notice has expired.');
+      // No early return here - continue.
     }
 
     if ($amend_booking_data) {
-      // If the notice period for amending the booking is exceeded...
+
       if (empty($this->bookingReference['error_status']) && $visit_latest_booking_amendment_date && $now > $visit_latest_booking_amendment_date) {
         $this->bookingReference['error_status'] = self::VISIT_ORDER_REF_AMENDMENT_NOTICE_EXCEEDED;
         $this->bookingReference['error_status_msg'] = $this->t('The period of notice required for amending the visit date and time has not been met.');
-      }
-
-      $slots = $this->getAvailableSlots();
-      if (!empty($slots['error'])) {
-        $this->bookingReference['error_status'] = self::VISIT_ORDER_REF_NO_DATA;
-        $this->bookingReference['error_status_msg'] = $this->t('An error has occurred. Booking cannot proceed at this time. Try again later.');
-      }
-      elseif (!$slots) {
-        $this->bookingReference['error_status'] = self::VISIT_ORDER_REF_NO_SLOTS;
-        $this->bookingReference['error_status_msg'] = $this->t('There are no more visit dates and times available. You can still make other changes to this booking.');
       }
     }
     elseif (!empty($this->bookingReference['error_status'])) {
@@ -1580,6 +1633,13 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
     $affiliation_id = NULL;
     if ($visit_type === 'VIRTUAL') {
 
+      if (!$this->formState->get('amend_booking_data') && $this->formState->get('virtual_booking_attempt') !== [
+        $this->bookingReference['visitor_order_number'],
+        $prisoner_id,
+      ]) {
+        return ['error' => TRUE];
+      }
+
       $affiliation_id = $this->getPrisonerHouseAffiliationId($prisoner_id, $prison_id);
 
       if ($affiliation_id === FALSE) {
@@ -1603,7 +1663,6 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
     }
 
     $timestamps = $this->getSlotTimestamps($visit_type, $prison_id, $affiliation_id);
-
     $timezone = new \DateTimeZone('Europe/London');
     foreach ($timestamps as $timestamp) {
       $slot_datetime = new \DateTime('@' . $timestamp);

@@ -137,10 +137,6 @@ function nidirect_webforms_form_alter(&$form, FormStateInterface $form_state, $f
     // Add js to deal with Drupal.AjaxError messages.
     $form['#attached']['library'][] = 'nidirect_webforms/webform_ajax_errors.js';
   }
-
-  if (preg_match('/webform_submission_prison_visit/', $form_id)) {
-    $form['#attached']['library'][] = 'nidirect_webforms/prison_visit_booking';
-  }
 }
 
 /**
@@ -233,16 +229,4 @@ function nidirect_webforms_preprocess_webform_confirmation(&$variables) {
     $title = $token_service->replace($title, $variables['webform_submission'] ?: $variables['webform']);
     $variables['title'] = $title;
   }
-}
-
-/**
- * Implements hook_cron().
- */
-function nidirect_webforms_cron() {
-  $seven_weeks_ago = \Drupal::service('datetime.time')->getRequestTime() - (7 * 7 * 24 * 60 * 60);
-
-  // Delete records older than 7 weeks.
-  \Drupal::database()->delete('prison_visit_booking_link_ids')
-    ->condition('created', $seven_weeks_ago, '<')
-    ->execute();
 }
