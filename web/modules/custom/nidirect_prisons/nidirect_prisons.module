@@ -14,7 +14,7 @@ use Drupal\nidirect_prisons\Service\PrisonerPaymentManager;
 function nidirect_prisons_cron() {
 
   /*
-   * Enforce transaction timeouts.
+   * Enforce prisoner payment transaction timeouts.
    */
 
   /** @var \Drupal\nidirect_prisons\Service\PrisonerPaymentManager $payment_manager */
@@ -78,6 +78,15 @@ function nidirect_prisons_cron() {
       ]
     );
   }
+
+  /*
+   * Delete prison visit booking link IDs older than 7 weeks.
+   */
+
+  $seven_weeks_ago = \Drupal::service('datetime.time')->getRequestTime() - (7 * 7 * 24 * 60 * 60);
+  $connection->delete('prison_visit_booking_link_ids')
+    ->condition('created', $seven_weeks_ago, '<')
+    ->execute();
 
 }
 
