@@ -934,8 +934,32 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
     if ($page === 'booking_reference_prisoner_reference') {
       $this->validateVisitBookingReference($form, $form_state, $webform_submission);
 
-      if (empty($form_state->getValue('prisoner_id'))) {
+      $prisoner_id = $form_state->getValue('prisoner_id');
+      $prison_id = $this->bookingReference['prison_id'] ?? NULL;
+
+      if (empty($prisoner_id)) {
         $form_state->setErrorByName('prisoner_id', $this->t('Prisoner ID is required.'));
+      }
+      elseif (empty($this->bookingReference['error_status']) && !empty($prison_id)) {
+        $affiliation_id = $this->getPrisonerHouseAffiliationId($prisoner_id, $prison_id);
+
+        if ($affiliation_id === FALSE) {
+          $has_affiliation_data = $this->database
+            ->select('prisoner_house_affiliation', 'pha')
+            ->fields('pha', ['prisoner_id'])
+            ->range(0, 1)
+            ->execute()
+            ->fetchField() !== FALSE;
+
+          if (!$has_affiliation_data) {
+            $this->getLogger('prison_visits')->error('Prisoner affiliation data is unavailable.');
+            $form_state->setError($form, $this->t('An error has occurred. Booking cannot proceed at this time. Try again later.'));
+          }
+          else {
+            $form_state->setErrorByName('visitor_order_number', $this->t('Visit Reference Number may be incorrect.'));
+            $form_state->setErrorByName('prisoner_id', $this->t('Prisoner ID may be incorrect.'));
+          }
+        }
       }
     }
 
