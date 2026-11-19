@@ -417,6 +417,15 @@ elements: |-
                 </ol>
             </div>
         </div>
+    booking_details_ref_no_data:
+      '#type': webform_markup
+      '#access': false
+      '#markup': |-
+        <div class="info-notice info-notice--warning" role="status">
+          <p>
+            Visit date and time availability cannot be checked at this time. You can keep or cancel this booking, or try again later to make changes.
+          </p>
+        </div>
     booking_details_ref_no_slots:
       '#access': false
       '#type': webform_markup
@@ -3042,6 +3051,8 @@ handlers:
         F: 7
         V: 7
         E: 28
+      nidirect_prisons_booking_limit: 5
+      nidirect_prisons_booking_window: 900
   ov_in_test_1:
     id: email
     handler_id: ov_in_test_1
