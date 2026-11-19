@@ -962,8 +962,8 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
       // Rate limit bookings to 5 per 15 minutes.
       if (!$form_state->getErrors() && !$form_state->get('amend_booking_data')) {
         $event = 'nidirect_prisons.booking_attempt';
-        $limit = Settings::get('nidirect_prisons_booking_limit', 5);
-        $window = Settings::get('nidirect_prisons_booking_window', 900);
+        $limit = Settings::get('nidirect_prisons_booking_limit', $this->configuration['nidirect_prisons_booking_limit'] ?? 5);
+        $window = Settings::get('nidirect_prisons_booking_window', $this->configuration['nidirect_prisons_booking_window'] ?? 900);
 
         if (!$this->flood->isAllowed($event, $limit, $window)) {
           $form_state->setErrorByName('visitor_order_number', $this->t('Too many booking attempts. Please wait a few minutes before trying again.'));
