@@ -405,7 +405,7 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
 
     // If user is amending a booking, timeslots are always reset and
     // the original timeslot restored if user chose not to amend it.
-    $choose_changes = $form_state->getValue('choose_changes') ?? $form_state->getValue('choose_changes_virtual') ?? NULL;
+    $choose_changes = $form_state->getValue('choose_changes') ?? NULL;
     if ($amend_booking_data && is_array($choose_changes) && !in_array('time_slot', $choose_changes)) {
       $this->resetFormSlots($form, $form_state, $webform_submission);
 
@@ -781,21 +781,19 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
         return TRUE;
       }
 
-      // Otherwise (there are slots), the user must change the time slot.
+      // Show message that notice period exceeded.
       if ($this->bookingReference['visit_type_id'] !== 'V') {
         $elements['booking_details_notice_exceeded_face_to_face']['#access'] = TRUE;
-        $elements['choose_changes']['time_slot']['#attributes']['checked'] = TRUE;
-        $elements['choose_changes']['time_slot']['#attributes']['readonly'] = 'readonly';
-        $elements['choose_changes']['time_slot']['#attributes']['onclick'] = 'return false';
-        $elements['choose_changes']['time_slot']['#label_attributes']['onclick'] = 'return false';
       }
       else {
         $elements['booking_details_notice_exceeded_virtual']['#access'] = TRUE;
-        $elements['choose_changes_virtual']['time_slot']['#attributes']['checked'] = TRUE;
-        $elements['choose_changes_virtual']['time_slot']['#attributes']['readonly'] = 'readonly';
-        $elements['choose_changes_virtual']['time_slot']['#attributes']['onclick'] = 'return false';
-        $elements['choose_changes_virtual']['time_slot']['#label_attributes']['onclick'] = 'return false';
       }
+
+      // Time slot must be changed.
+      $elements['choose_changes']['time_slot']['#attributes']['checked'] = TRUE;
+      $elements['choose_changes']['time_slot']['#attributes']['readonly'] = 'readonly';
+      $elements['choose_changes']['time_slot']['#attributes']['onclick'] = 'return false';
+      $elements['choose_changes']['time_slot']['#label_attributes']['onclick'] = 'return false';
 
       return TRUE;
     }
@@ -806,7 +804,6 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
       $elements['booking_details_ref_no_slots']['#access'] = TRUE;
       $elements['booking_details']['#access'] = TRUE;
       unset($elements['choose_changes']['#options']['time_slot']);
-      unset($elements['choose_changes_virtual']['#options']['time_slot']);
       return TRUE;
     }
 
