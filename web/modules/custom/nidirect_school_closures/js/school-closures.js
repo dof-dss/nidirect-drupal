@@ -13,7 +13,7 @@
 
   Drupal.behaviors.nidirectSchoolClosuresFilter = {
     attach: function attach(context) {
-      const scMin = 20;
+      const scMin = 10;
       const scContainerID = 'school-closure-results';
       const scItemsClass = 'school-closure';
       const scTitleClass = 'school-closure__name';
@@ -142,7 +142,7 @@
         scForm.setAttribute('role', 'search');
 
         scFormLabel = document.createElement('label');
-        scFormLabel.innerText = Drupal.t('Search by school or town');
+        scFormLabel.innerText = Drupal.t('Search by school or address');
         scFormLabel.setAttribute('for', 'sc-filter');
         scFormLabel.setAttribute('id', 'sc-form-label');
 

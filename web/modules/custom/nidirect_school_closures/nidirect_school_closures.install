@@ -12,3 +12,14 @@ function nidirect_school_closures_uninstall() {
   $cache = \Drupal::cache();
   $cache->delete('school_closures');
 }
+
+/**
+ * Update school closures API path.
+ */
+function nidirect_school_closures_10001() {
+  $config = \Drupal::configFactory()->getEditable('nidirect_school_closures.settings');
+
+  if ($config) {
+    $config->set('data_source_url', 'https://exceptionalclosures.education-ni.gov.uk/api/closurereasons/all')->save();
+  }
+}
