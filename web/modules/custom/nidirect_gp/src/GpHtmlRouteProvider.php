@@ -17,6 +17,19 @@ class GpHtmlRouteProvider extends AdminHtmlRouteProvider {
   /**
    * {@inheritdoc}
    */
+  protected function getCanonicalRoute(EntityTypeInterface $entity_type) {
+    $route = parent::getCanonicalRoute($entity_type);
+    if ($route) {
+      // Restrict standalone GP pages while retaining entity view access for
+      // GP names referenced on practice nodes.
+      $route->setRequirement('_user_is_logged_in', 'TRUE');
+    }
+    return $route;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function getRoutes(EntityTypeInterface $entity_type) {
     $collection = parent::getRoutes($entity_type);
 
