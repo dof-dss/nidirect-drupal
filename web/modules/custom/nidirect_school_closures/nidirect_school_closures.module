@@ -78,9 +78,24 @@ function nidirect_school_closures_tokens($type, $tokens, array $data, array $opt
             '#closures' => $service->getClosures(),
             '#error' => $service->hasErrors(),
             '#updated' => $service->getUpdated(),
-            '#attached' => ['library' => ['nidirect_school_closures/school_closures']],
-            '#cache' => ['tags' => ['school_closures']],
+            '#attached' => [
+              'library' => ['nidirect_school_closures/school_closures'],
+              'drupalSettings' => [
+                'nidirect' => [
+                  'schoolClosures' => [
+                    'searchBoxTrigger' => \Drupal::config('nidirect_school_closures.settings')->get('search_box_trigger'),
+                  ],
+                ],
+              ],
+            ],
+            '#cache' => [
+              'tags' => [
+                'school_closures',
+                'config:nidirect_school_closures.settings',
+              ],
+            ],
           ];
+
           $bubbleable_metadata->addCacheableDependency(CacheableMetadata::createFromRenderArray($output));
           // Also bubble #attached (the filter library) up to the page.
           // BubbleableMetadata::merge() returns a new object rather than
