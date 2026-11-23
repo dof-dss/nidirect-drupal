@@ -1,6 +1,6 @@
 /**
  * @file
- * JQuery behavior for prison visit booking.
+ * JQuery for prison visit booking webform.
  */
 
 (function($, Drupal, once) {
