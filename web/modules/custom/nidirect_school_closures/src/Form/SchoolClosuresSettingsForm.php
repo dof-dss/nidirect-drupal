@@ -103,6 +103,17 @@ class SchoolClosuresSettingsForm extends ConfigFormBase {
       ]),
     ];
 
+    $form['search_box_trigger'] = [
+      '#type' => 'number',
+      '#title' => $this->t('Search box'),
+      '#description' => $this->t('Minimum results to trigger the display of the search box.'),
+      '#min' => 1,
+      '#max' => 50,
+      '#required' => TRUE,
+      '#size' => 2,
+      '#default_value' => $config->get('search_box_trigger'),
+    ];
+
     return parent::buildForm($form, $form_state);
   }
 
@@ -114,6 +125,7 @@ class SchoolClosuresSettingsForm extends ConfigFormBase {
       ->set('data_source_url', $form_state->getValue('data_source_url'))
       ->set('max_attempts', $form_state->getValue('max_attempts'))
       ->set('cache_duration', $form_state->getValue('cache_duration'))
+      ->set('search_box_trigger', $form_state->getValue('search_box_trigger'))
       ->save();
 
     parent::submitForm($form, $form_state);
