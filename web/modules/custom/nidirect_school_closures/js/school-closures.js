@@ -8,12 +8,12 @@
  * Updated: 21/09/2026 - Support for new API.
  */
 
-(function (Drupal) {
+(function (Drupal, drupalSettings) {
   'use strict';
 
   Drupal.behaviors.nidirectSchoolClosuresFilter = {
     attach: function attach(context) {
-      const scMin = 10;
+      const scMin = parseInt(drupalSettings?.nidirect?.schoolClosures?.searchBoxTrigger, 10) || 20;
       const scContainerID = 'school-closure-results';
       const scItemsClass = 'school-closure';
       const scTitleClass = 'school-closure__name';
@@ -172,4 +172,4 @@
       }
     },
   };
-})(Drupal);
+})(Drupal, drupalSettings);
