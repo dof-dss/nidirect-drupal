@@ -20,7 +20,7 @@ workflows:
           php_version: << pipeline.parameters.php_version >>
           coding_standards_dirs: << pipeline.parameters.coding_standards_dirs >>
           ignore_dirs: << pipeline.parameters.ignore_dirs >>
-      - deprecated_code:
+      - deprecated_code_phpstan:
           requires:
             - build
           php_version: << pipeline.parameters.php_version >>

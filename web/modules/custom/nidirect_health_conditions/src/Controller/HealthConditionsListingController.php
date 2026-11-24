@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
 /**
  * Controller for health conditions listings.
  */
-class HealthConditionsListingController extends ControllerBase {
+final class HealthConditionsListingController extends ControllerBase {
 
   /**
    * Drupal\Core\Entity\EntityTypeManagerInterface definition.
@@ -60,7 +60,7 @@ class HealthConditionsListingController extends ControllerBase {
    * @return array
    *   Render array for Drupal to convert to HTML.
    */
-  public function filterByLetter(string $letter = NULL) {
+  public function filterByLetter(?string $letter = NULL) {
     // Trim letter parameter if, for whatever reason, it's > 1.
     if (strlen($letter) > 1) {
       $letter = substr($letter, 0, 1);

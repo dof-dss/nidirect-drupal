@@ -2,11 +2,8 @@
 
 namespace Drupal\nidirect_gp\EventSubscriber;
 
-use Drupal\Core\Config\ConfigCollectionInfo;
-use Drupal\Core\Config\ConfigCrudEvent;
 use Drupal\Core\Config\ConfigEvents;
 use Drupal\Core\Config\ConfigImporterEvent;
-use Drupal\Core\Config\Importer\MissingContentEvent;
 use Drupal\nidirect_common\UpdateConfigFromEnvironment;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
@@ -40,7 +37,7 @@ class GeocoderApiKeyUpdate implements EventSubscriberInterface {
    */
   public static function getSubscribedEvents() {
     return [
-      ConfigEvents::IMPORT => ['onConfigImport']
+      ConfigEvents::IMPORT => ['onConfigImport'],
     ];
   }
 

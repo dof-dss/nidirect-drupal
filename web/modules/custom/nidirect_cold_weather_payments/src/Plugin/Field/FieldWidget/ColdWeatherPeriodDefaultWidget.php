@@ -22,7 +22,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *   }
  * )
  */
-class ColdWeatherPeriodDefaultWidget extends WidgetBase implements WidgetInterface, ContainerFactoryPluginInterface {
+final class ColdWeatherPeriodDefaultWidget extends WidgetBase implements WidgetInterface, ContainerFactoryPluginInterface {
 
   /**
    * EntityTypeManager.

@@ -114,6 +114,7 @@ class SchoolClosure {
     // Add alternative names for Irish name schools.
     $pattern = '/[ÁÉÍÓÚáéíóú]/';
     if (preg_match($pattern, $this->name)) {
+      // @phpstan-ignore-next-line.
       $transliteration = \Drupal::service('transliteration');
       $this->altName = $transliteration->removeDiacritics($this->name);
     }

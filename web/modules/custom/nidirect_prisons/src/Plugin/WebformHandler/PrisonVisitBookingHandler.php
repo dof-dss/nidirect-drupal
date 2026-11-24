@@ -2,25 +2,25 @@
 
 namespace Drupal\nidirect_prisons\Plugin\WebformHandler;
 
-use Drupal\Component\Datetime\TimeInterface;
 use Drupal\Component\Serialization\Json;
+<<<<<<< HEAD:web/modules/custom/nidirect_prisons/src/Plugin/WebformHandler/PrisonVisitBookingHandler.php
 use Drupal\Component\Utility\Html;
 use Drupal\Component\Utility\Xss;
 use Drupal\Core\Cache\Cache;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Database\Connection;
+=======
+use Drupal\Core\Cache\CacheableMetadata;
+use Drupal\Core\Database\Database;
+>>>>>>> D8NID-1865:web/modules/custom/nidirect_webforms/src/Plugin/WebformHandler/PrisonVisitBookingHandler.php
 use Drupal\Core\Datetime\DrupalDateTime;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Flood\FloodInterface;
 use Drupal\Core\Site\Settings;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
-use Drupal\Core\TempStore\PrivateTempStoreFactory;
 use Drupal\datetime\Plugin\Field\FieldType\DateTimeItemInterface;
-use Drupal\webform\Entity\Webform;
 use Drupal\webform\Plugin\WebformHandlerBase;
 use Drupal\webform\Utility\WebformFormHelper;
-use Drupal\webform\WebformInterface;
-use Drupal\webform\WebformSubmissionForm;
 use Drupal\webform\WebformSubmissionInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -69,7 +69,7 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
   /**
    * @var \Drupal\Core\TempStore\PrivateTempStoreFactory
    */
-  private $tempStoreFactory;
+  protected $tempStoreFactory;
 
   /**
    * The database connection.
@@ -170,7 +170,12 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
       $this->database->insert('prison_visit_booking_link_ids')
         ->fields([
           'unique_identifier' => $booking_link_id,
+<<<<<<< HEAD:web/modules/custom/nidirect_prisons/src/Plugin/WebformHandler/PrisonVisitBookingHandler.php
           'created' => $this->time->getRequestTime(),
+=======
+          // @phpstan-ignore-next-line.
+          'created' => \Drupal::service('datetime.time')->getRequestTime(),
+>>>>>>> D8NID-1865:web/modules/custom/nidirect_webforms/src/Plugin/WebformHandler/PrisonVisitBookingHandler.php
         ])
         ->execute();
     }
@@ -187,6 +192,13 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
     // Prepare form if a booking is being amended.
     $webform = $webform_submission->getWebform();
 
+<<<<<<< HEAD:web/modules/custom/nidirect_prisons/src/Plugin/WebformHandler/PrisonVisitBookingHandler.php
+=======
+    // A prison visit booking confirmation email contains a link to
+    // allow users to amend the booking. Since the original booking
+    // submission is never stored, all the booking data is encrypted
+    // and embedded in the link.
+>>>>>>> D8NID-1865:web/modules/custom/nidirect_webforms/src/Plugin/WebformHandler/PrisonVisitBookingHandler.php
     // Early return if no booking data in the request.
     if ($this->request->query->has('booking') === FALSE) {
       $webform->setElementProperties('amend_booking_page', ['#access' => FALSE]);
@@ -198,11 +210,9 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
     if ($booking_data) {
 
       // Set cache contexts.
-      $webform->addCacheableDependency([
-        '#cache' => [
-          'contexts' => ['url.query_args:booking'],
-        ],
-      ]);
+      $webform->addCacheableDependency(
+        (new CacheableMetadata())->setCacheContexts(['url.query_args:booking'])
+      );
 
       // Has the LINK_UNIQUEID in the booking data been used before?
       $link_unique_id = $booking_data['LINK_UNIQUEID'];
@@ -254,6 +264,7 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
     $elements = $this->elements;
     $webform = $webform_submission->getWebform();
 
+<<<<<<< HEAD:web/modules/custom/nidirect_prisons/src/Plugin/WebformHandler/PrisonVisitBookingHandler.php
     /*
      * The visitor_order_number or booking reference determines:
      * - The prison being visited
@@ -263,6 +274,20 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
      *   the prisoner type.
      */
 
+=======
+    // Many form alterations here are dependent on data extracted from
+    // the visit_order_number or "booking reference".
+    //
+    // The booking reference determines:
+    // - The prison being visited
+    // - Whether it is a face-to-face or virtual visit
+    // - The date when the visit can be booked
+    // - The prisoner type and time slots available for prisoner type.
+    //
+    // The booking reference is collected in the very first wizard page.
+    // Once it is submitted and validated, form_state will contain the
+    // processed booking reference (see processVisitBookingReference()).
+>>>>>>> D8NID-1865:web/modules/custom/nidirect_webforms/src/Plugin/WebformHandler/PrisonVisitBookingHandler.php
     $this->bookingReference = $form_state->get('booking_reference_processed');
 
     // Set form elements that display the prison name and visit type.
@@ -334,10 +359,91 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
         $this->bookingReference['error_status'] = self::VISIT_ORDER_REF_NO_DATA;
         $this->bookingReference['error_status_msg'] = $this->t('An error has occurred. Booking cannot proceed at this time. Try again later.');
       }
+<<<<<<< HEAD:web/modules/custom/nidirect_prisons/src/Plugin/WebformHandler/PrisonVisitBookingHandler.php
       elseif (!$slots) {
         // No slots available.
         $this->bookingReference['error_status'] = self::VISIT_ORDER_REF_NO_SLOTS;
         $this->bookingReference['error_status_msg'] = $this->t('There are no time slots available for visit reference number @booking_ref.', ['@booking_ref' => $this->bookingReference['visitor_order_number']]);
+=======
+
+      // Amendment data is ok...
+      // Process the visitor order number if not already processed.
+      if (!$this->bookingReference) {
+        $this->processVisitBookingReference($amend_booking_data['VISIT_ORDER_NO'], $form, $form_state, $webform_submission);
+      }
+
+      // If there are errors with the booking reference, we might have
+      // to halt the amendment process, or only allow
+      // specific amendments.
+      $error_status = $this->bookingReference['error_status'] ?? FALSE;
+
+      if ($error_status) {
+
+        // Get any error messages.
+        $error_status_msg = $this->bookingReference['error_status_msg'] ?? NULL;
+
+        if ($error_status === self::VISIT_ORDER_REF_MISSING || $error_status === self::VISIT_ORDER_REF_INVALID) {
+          // Cannot proceed with booking amendment.
+          $elements['visit_order_ref_invalid']['#access'] = TRUE;
+          $elements['booking_details']['#access'] = FALSE;
+          $elements['amend_booking_options']['#access'] = FALSE;
+          $elements['wizard_next']['#access'] = FALSE;
+
+          // Early return.
+          return;
+        }
+        elseif ($error_status === self::VISIT_ORDER_REF_EXPIRED) {
+          // Cannot proceed with booking amendment.
+          $elements['visit_order_ref_expired']['#access'] = TRUE;
+          $elements['booking_details']['#access'] = FALSE;
+          $elements['amend_booking_options']['#access'] = FALSE;
+          $elements['wizard_next']['#access'] = FALSE;
+
+          // Early return.
+          return;
+        }
+        elseif ($error_status === self::VISIT_ORDER_REF_AMENDMENT_EXPIRED) {
+          // Cannot proceed with booking amendment.
+          $elements['visit_order_ref_amendment_expired']['#access'] = TRUE;
+          $elements['booking_details']['#access'] = FALSE;
+          $elements['amend_booking_options']['#access'] = FALSE;
+          $elements['wizard_next']['#access'] = FALSE;
+
+          // Early return.
+          return;
+        }
+        elseif ($error_status === self::VISIT_ORDER_REF_NOTICE_EXCEEDED || $error_status === self::VISIT_ORDER_REF_AMENDMENT_NOTICE_EXCEEDED) {
+          // Display message indicating notice period not met and time
+          // must be changed. The notice period differs for face-to-face
+          // versus virtual visits.
+          if ($this->bookingReference['visit_type_id'] !== 'V') {
+            $elements['booking_details_notice_exceeded_face_to_face']['#access'] = TRUE;
+          }
+          else {
+            $elements['booking_details_notice_exceeded_virtual']['#access'] = TRUE;
+          }
+          // The time slot must be changed. Check the time slot option and
+          // make it readonly so the user cannot uncheck it.
+          $elements['choose_changes']['time_slot']['#attributes']['checked'] = TRUE;
+          $elements['choose_changes']['time_slot']['#attributes']['readonly'] = 'readonly';
+          $elements['choose_changes']['time_slot']['#attributes']['onclick'] = 'return false';
+          $elements['choose_changes']['time_slot']['#label_attributes']['onclick'] = 'return false';
+        }
+        elseif ($error_status === self::VISIT_ORDER_REF_NO_SLOTS) {
+          // Cannot amend time slot, but can edit visitor details.
+          $elements['booking_details_ref_no_slots']['#access'] = TRUE;
+          unset($elements['choose_changes']['#options']['time_slot']);
+        }
+        elseif ($error_status) {
+          $elements['amend_error_default']['#access'] = TRUE;
+          $elements['booking_details']['#access'] = FALSE;
+          $elements['amend_booking_options']['#access'] = FALSE;
+          $elements['wizard_next']['#access'] = FALSE;
+
+          // Early return.
+          return;
+        }
+>>>>>>> D8NID-1865:web/modules/custom/nidirect_webforms/src/Plugin/WebformHandler/PrisonVisitBookingHandler.php
       }
       else {
         $this->bookingReference['available_slots'] = $slots;
@@ -370,7 +476,6 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
 
     // If the main visitor ID duplicates an existing additional
     // visitor ID, remove the additional visitor.
-
     if (!empty($visitor_1_id) && $duplicate_visitor_id_key = array_search($visitor_1_id, $additional_visitor_ids)) {
 
       // Determine the additional visitor number from the key for
@@ -465,7 +570,7 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
             'thursday',
             'friday',
             'saturday',
-            'sunday'
+            'sunday',
           ];
 
           for ($j = 1; $j <= 7; $j++) {
@@ -573,7 +678,6 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
 
     // Deal with remembered additional visitors versus amending
     // a booking containing additional visitors.
-
     $elements['msg_existing_additional_visitors']['#access'] = FALSE;
     $elements['msg_additional_visitors']['#access'] = FALSE;
     $elements['msg_amend_additional_visitors']['#access'] = FALSE;
@@ -1107,10 +1211,8 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
 
       // The form accommodates two additional adults and five
       // additional children.
-
       // Reset secure value elements (bit like hidden elements)
       // keeping track of additional visitors.
-
       for ($i = 1; $i <= 5; $i++) {
         $form_state->setValue('av' . $i . '_id', '');
         $form_state->setValue('av' . $i . '_dob', NULL);
@@ -1134,7 +1236,7 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
         if (!empty($visitor_id) && !empty($visitor_dob)) {
           $additional_visitors[] = [
             'id' => $visitor_id,
-            'dob' => $visitor_dob->format('d/m/Y H:i')
+            'dob' => $visitor_dob->format('d/m/Y H:i'),
           ];
         }
       }
@@ -1674,7 +1776,6 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
     // falls within certain dates. Weekend slots cannot be booked where
     // the visit type is enhanced (booking reference visit type
     // identifier is 'E').
-
     $visit_type_id = $this->bookingReference['visit_type_id'];
 
     $date = new \DateTime('@' . $this->time->getRequestTime());
@@ -1739,8 +1840,51 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
       ->condition('prison_id', $prison_id)
       ->orderBy('slot_datetime');
 
+<<<<<<< HEAD:web/modules/custom/nidirect_prisons/src/Plugin/WebformHandler/PrisonVisitBookingHandler.php
     if ($affiliation_id !== NULL) {
       $query->condition('affiliation_id', $affiliation_id);
+=======
+    $data = [];
+
+    // Face-to-face slots are retrieved from external data in cache
+    // (see PrisonVisitBookingJsonApiController.php). If there is no
+    // cached data, fallback to using slots from file.
+    // @phpstan-ignore-next-line.
+    $cached_data = \Drupal::cache()->get('prison_visit_slots_data');
+
+    if (!empty($cached_data)) {
+
+      // There is cached data.
+      $data = $cached_data->data;
+      $cached_data_timestamp = (int) $cached_data->created;
+
+      // Check when created.
+      $now = new \DateTime('now');
+      $data_last_updated = new \DateTime('now');
+      $data_last_updated->setTimestamp($cached_data_timestamp);
+
+      // Log a warning when cached data more than 24 hours old.
+      if ($now->diff($data_last_updated)->h >= 24) {
+        $this->getLogger('prison_visits')->warning('prison_visit_slots_data cache data has not been updated in last 24 hours.');
+      }
+
+    }
+    else {
+
+      // No data in cache, so try file instead. Every time the
+      // external service posts data to prison visits api controller,
+      // data is stored in cache and written to file.
+      $file_uri = 'private://nidirect_webforms/prison_visit_slots_data.json';
+      $file_contents = file_exists($file_uri) ? file_get_contents($file_uri) : NULL;
+
+      if (!empty($file_contents)) {
+        $data = json_decode($file_contents, TRUE);
+        $this->getLogger('prison_visits')->info('prison_visit_slots_data cache is empty. Using @file instead.', ['@file' => $file_uri]);
+      }
+      else {
+        $this->getLogger('prison_visits')->error('prison_visit_slots_data not found in cache or file @file.', ['@file' => $file_uri]);
+      }
+>>>>>>> D8NID-1865:web/modules/custom/nidirect_webforms/src/Plugin/WebformHandler/PrisonVisitBookingHandler.php
     }
 
     $query->distinct();
@@ -1772,7 +1916,7 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
    */
   private function getRequestBookingData() {
 
-    $booking_data_encrypted = $this->request->get("booking");
+    $booking_data_encrypted = $this->request->request->get("booking");
 
     // Decrypt it.
     $key = getenv('PRISON_VISIT_BOOKING_AMEND_AES_256_CBC_KEY');
