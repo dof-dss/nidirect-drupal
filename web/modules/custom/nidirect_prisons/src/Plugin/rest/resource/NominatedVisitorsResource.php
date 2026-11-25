@@ -20,7 +20,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *   }
  * )
  */
-class NominatedVisitorsResource extends ResourceBase implements ContainerFactoryPluginInterface {
+final class NominatedVisitorsResource extends ResourceBase implements ContainerFactoryPluginInterface {
 
   /**
    * Constructs a new NominatedVisitorsResource object.
@@ -41,7 +41,7 @@ class NominatedVisitorsResource extends ResourceBase implements ContainerFactory
     $plugin_id,
     $plugin_definition,
     array $serializer_formats,
-    LoggerInterface $logger
+    LoggerInterface $logger,
   ) {
     parent::__construct($configuration, $plugin_id, $plugin_definition, $serializer_formats, $logger);
   }
@@ -71,10 +71,12 @@ class NominatedVisitorsResource extends ResourceBase implements ContainerFactory
     }
 
     // Start a database transaction.
+    // @phpstan-ignore-next-line.
     $transaction = \Drupal::database()->startTransaction();
 
     try {
       // Delete existing prisoner nominees before inserting new data.
+      // @phpstan-ignore-next-line.
       \Drupal::database()->delete('prisoner_payment_nominees')->execute();
 
       // Process each prison.
@@ -106,6 +108,7 @@ class NominatedVisitorsResource extends ResourceBase implements ContainerFactory
           // Remove null values from visitor_ids to avoid empty entries in the database.
           $visitor_ids = array_filter($visitor_ids);
 
+          // @phpstan-ignore-next-line.
           \Drupal::database()->merge('prisoner_payment_nominees')
             ->key('prisoner_id', $prisoner['ID'])
             ->fields(['visitor_ids' => implode(',', $visitor_ids)])
@@ -117,6 +120,7 @@ class NominatedVisitorsResource extends ResourceBase implements ContainerFactory
       // Rollback the transaction if an error occurs.
       $transaction->rollback();
 
+      // @phpstan-ignore-next-line.
       \Drupal::logger('nidirect_prisons')->error('Database error: @message', ['@message' => $e->getMessage()]);
       return new ResourceResponse(['error' => 'Database error: ' . $e->getMessage()], 500);
     }

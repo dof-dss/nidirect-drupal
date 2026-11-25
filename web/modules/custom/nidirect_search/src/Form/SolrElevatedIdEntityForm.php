@@ -13,7 +13,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *
  * @property \Drupal\nidirect_search\SolrElevatedIdEntityInterface $entity
  */
-class SolrElevatedIdEntityForm extends EntityForm {
+final class SolrElevatedIdEntityForm extends EntityForm {
 
   /**
    * Solr server entity.

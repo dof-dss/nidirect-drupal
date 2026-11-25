@@ -27,7 +27,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *
  * @package Drupal\nidirect_breadcrumbs
  */
-class HealthConditionBreadcrumb implements BreadcrumbBuilderInterface {
+final class HealthConditionBreadcrumb implements BreadcrumbBuilderInterface {
 
   /**
    * Drupal entity type manager.

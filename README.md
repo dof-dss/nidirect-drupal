@@ -76,10 +76,10 @@ API keys, auth tokens or other sensitive values *must* be stored as environment 
 Automated testing is configured to check:
 
 - Static analysis of custom PHP code against drupal.org coding standards using [phpcs](https://github.com/squizlabs/PHP_CodeSniffer).
-- Analysis of custom code for deprecated code using [drupal-check](https://github.com/mglaman/drupal-check).
+- Static analysis and deprecated API checks using [PHPStan](https://phpstan.org/). Run `ddev phpstan web/modules/custom` locally.
 - Run any defined unit tests via [phpunit](https://phpunit.de/).
 
-All of these tools can be run locally with Circle CI.
+All of these tools can be run locally with DDEV and are also enforced by CircleCI.
 
 ## Configuration management
 

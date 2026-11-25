@@ -1,19 +1,11 @@
 diff --git a/js/antibot.js b/js/antibot.js
-index e473219..0e810ab 100644
+index f49bfc2..9ea29e4 100644
 --- a/js/antibot.js
 +++ b/js/antibot.js
-@@ -15,33 +15,55 @@
-   Drupal.antibot = {};
+@@ -20,25 +20,46 @@
+         drupalSettings.antibot.human = false;
+       }
  
-   Drupal.behaviors.antibot = {
--    attach: function (context, settings) {
-+    attach(context, settings) {
-       drupalSettings = settings;
-       // Assume the user is not human, despite JS being enabled.
-       drupalSettings.antibot.human = false;
- 
--      // Wait for a mouse to move, indicating they are human.
--      document.body.addEventListener('mousemove', function () {
 +      // Provide a shared function to allow removing listeners.
 +      const unlockFormsForHumans = (event) => {
 +        // Act only if browser thinks this came from user interaction.
@@ -30,46 +22,44 @@ index e473219..0e810ab 100644
 +          return;
 +        }
 +
-         // Unlock the forms.
-         Drupal.antibot.unlockForms();
--      });
++        // Unlock the forms.
++        Drupal.antibot.unlockForms();
 +
 +        document.body.removeEventListener('mousemove', unlockFormsForHumans);
 +        document.body.removeEventListener('pointermove', unlockFormsForHumans);
 +        document.body.removeEventListener('touchmove', unlockFormsForHumans);
 +        document.body.removeEventListener('keydown', unlockFormsForHumans);
-+        document.body.removeEventListener('click', unlockFormsForHumans);
++        document.body.removeEventListener('click', unlockFormsForHumans, true);
 +      };
 +
-+      // Wait for a mouse to move, indicating they are human.
+       // Wait for a mouse to move, indicating they are human.
+-      document.body.addEventListener('mousemove', () => {
+-        // Unlock the forms.
+-        Drupal.antibot.unlockForms();
+-      });
 +      document.body.addEventListener('mousemove', unlockFormsForHumans);
 +
 +      // Wait for a pointer to move, indicating they are human.
 +      document.body.addEventListener('pointermove', unlockFormsForHumans);
  
        // Wait for a touch move event, indicating that they are human.
--      document.body.addEventListener('touchmove', function () {
+-      document.body.addEventListener('touchmove', () => {
 -        // Unlock the forms.
 -        Drupal.antibot.unlockForms();
 -      });
 +      document.body.addEventListener('touchmove', unlockFormsForHumans);
  
        // A tab or enter key pressed can also indicate they are human.
--      document.body.addEventListener('keydown', function (e) {
--        if ((e.code == 'Tab') || (e.code == 'Enter')) {
+-      document.body.addEventListener('keydown', (e) => {
+-        if (e.code === 'Tab' || e.code === 'Enter') {
 -          // Unlock the forms.
 -          Drupal.antibot.unlockForms();
 -        }
 -      });
--    }
 +      document.body.addEventListener('keydown', unlockFormsForHumans);
 +
-+      // Some assistive technologies ONLY click. Capture first event action.
++      // Some assistive technologies only click. Capture first event action.
 +      document.body.addEventListener('click', unlockFormsForHumans, true);
-+    },
+     },
    };
  
-+
-   /**
-    * Unlock all locked forms.
-    */

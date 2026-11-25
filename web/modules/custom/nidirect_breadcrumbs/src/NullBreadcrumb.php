@@ -13,7 +13,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
  *
  * @package Drupal\nidirect_breadcrumbs
  */
-class NullBreadcrumb implements BreadcrumbBuilderInterface {
+final class NullBreadcrumb implements BreadcrumbBuilderInterface {
 
   /**
    * Route matches from the service container parameters.

@@ -883,7 +883,7 @@ function nidirect_common_block_access(Block $block, $operation, AccountInterface
   // 1. Only act on the 'view' operation and specific block(s).
   $target_blocks = [
     'views_block__popular_content_pop_by_term',
-    'relatedcontentblock'
+    'relatedcontentblock',
   ];
 
   if ($operation === 'view' && in_array($block->id(), $target_blocks)) {
