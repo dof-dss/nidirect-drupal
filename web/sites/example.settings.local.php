@@ -27,9 +27,8 @@
  * @see https://www.drupal.org/node/2492225
  *
  * It is strongly recommended that you set zend.assertions=1 in the PHP.ini file
- * on development machines and to 0 or -1 in production.
- *
- * @see https://www.php.net/manual/en/ini.core.php#ini.zend.assertions
+ * (It cannot be changed from .htaccess or runtime) on development machines and
+ * to 0 or -1 in production.
  */
 
 /**
