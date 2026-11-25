@@ -12,7 +12,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
 /**
  * Controller for display Contact A-Z block and View.
  */
-class ContactListingController extends ControllerBase {
+final class ContactListingController extends ControllerBase {
 
   /**
    * Drupal\Core\Entity\EntityTypeManagerInterface definition.
@@ -45,10 +45,12 @@ class ContactListingController extends ControllerBase {
   /**
    * Constructs a new ContactListingController object.
    */
-  public function __construct(EntityTypeManagerInterface $entity_type_manager,
-                              BlockManagerInterface $block_manager,
-                              RequestStack $request,
-                              ViewsMetatagManager $views_metatag_manager) {
+  public function __construct(
+    EntityTypeManagerInterface $entity_type_manager,
+    BlockManagerInterface $block_manager,
+    RequestStack $request,
+    ViewsMetatagManager $views_metatag_manager,
+  ) {
 
     $this->entityTypeManager = $entity_type_manager;
     $this->blockManager = $block_manager;
@@ -80,7 +82,8 @@ class ContactListingController extends ControllerBase {
   public function getTitle($route_type) {
     if ($route_type == 'contacts') {
       // Is there a text search string?
-      $search_string = \Drupal::request()->get('query_contacts_az');
+      // @phpstan-ignore-next-line.
+      $search_string = \Drupal::request()->request->get('query_contacts_az');
       if (!empty($search_string)) {
         return t('Contacts search');
       }
@@ -90,6 +93,7 @@ class ContactListingController extends ControllerBase {
     }
     elseif ($route_type == 'contacts_letter') {
       // A letter has been selected from the A-Z.
+      // @phpstan-ignore-next-line.
       $letter = \Drupal::routeMatch()->getParameter('letter');
       return t('Contacts - under :letter', [':letter' => strtoupper($letter)]);
     }
@@ -133,7 +137,7 @@ class ContactListingController extends ControllerBase {
    * @return array
    *   Render array for Drupal to convert to HTML.
    */
-  public function filterByLetter(string $letter = NULL) {
+  public function filterByLetter(?string $letter = NULL) {
     // Trim letter parameter if, for whatever reason, it's > 1.
     if (strlen($letter) > 1) {
       $letter = substr($letter, 0, 1);

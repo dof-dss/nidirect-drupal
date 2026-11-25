@@ -151,7 +151,6 @@ function nidirect_webforms_honeypot_form_protections_alter(&$options, $form) {
   // quiz type and 'wizard' webforms which present one question at a time
   // and so users can answer them pretty quickly and too easily trigger
   // a time restriction error.
-
   // Id fragments of webforms we will alter. We use fragments because
   // the full id can contain specific node ids the webform is embedded in.
   $form_id_frags = [
@@ -188,8 +187,7 @@ function nidirect_webforms_preprocess_form_element(&$variables) {
   $element = $variables['element'];
 
   // Fix a11y issue with webform_select_other element labels.
-  // @TODO: create issue on webform issue queue.
-
+  // @todo create issue on webform issue queue.
   // The wrapping webform_select_other element has a visible label that IS NOT
   // associated with the select element it contains. So we stop that one being
   // displayed.
@@ -217,7 +215,6 @@ function nidirect_webforms_preprocess_webform_confirmation(&$variables) {
   // Fix for confirmation title not showing when "Page" is selected in
   // confirmation settings.
   // See https://www.drupal.org/project/webform/issues/3171108.
-
   if ($variables['webform']->getSetting('confirmation_title')) {
     $title = $variables['webform']->getSetting('confirmation_title');
   }
