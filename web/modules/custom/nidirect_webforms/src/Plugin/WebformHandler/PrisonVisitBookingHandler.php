@@ -62,7 +62,7 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
   /**
    * @var \Drupal\Core\TempStore\PrivateTempStoreFactory
    */
-  private $tempStoreFactory;
+  protected $tempStoreFactory;
 
   /**
    * Array for storing various values extrapolated
@@ -187,11 +187,7 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
     if ($booking_data) {
 
       // Set cache contexts.
-      $webform->addCacheableDependency([
-        '#cache' => [
-          'contexts' => ['url.query_args:booking'],
-        ],
-      ]);
+      $webform->addCacheContexts(['url.query_args:booking']);
 
       // Has the LINK_UNIQUEID in the booking data been used before?
       $link_unique_id = $booking_data['LINK_UNIQUEID'];
@@ -1409,7 +1405,7 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
    */
   private function getRequestBookingData() {
 
-    $booking_data_encrypted = $this->request->get("booking");
+    $booking_data_encrypted = $this->request->query->get('booking');
 
     // Decrypt it.
     $key = getenv('PRISON_VISIT_BOOKING_AMEND_AES_256_CBC_KEY');
