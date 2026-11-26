@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "164b2ff1c500606dcc8bd3b2471a6e9e",
+    "content-hash": "be18e41e2596be5570abbb850158bf86",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -13351,6 +13351,83 @@
             "time": "2016-07-25T17:07:32+00:00"
         },
         {
+            "name": "mnsami/composer-custom-directory-installer",
+            "version": "2.3.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/mnsami/composer-custom-directory-installer.git",
+                "reference": "66df9d4430c32f191ff12476ddbaea68915f2999"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/mnsami/composer-custom-directory-installer/zipball/66df9d4430c32f191ff12476ddbaea68915f2999",
+                "reference": "66df9d4430c32f191ff12476ddbaea68915f2999",
+                "shasum": ""
+            },
+            "require": {
+                "composer-plugin-api": "^2.3",
+                "php": ">=8.1"
+            },
+            "require-dev": {
+                "composer/composer": "^2.0",
+                "composer/installers": "^2.3",
+                "friendsofphp/php-cs-fixer": "^3.75",
+                "phpstan/phpstan": "^2.3",
+                "phpunit/phpunit": "^10.5"
+            },
+            "type": "composer-plugin",
+            "extra": {
+                "class": [
+                    "Composer\\CustomDirectoryInstaller\\LibraryPlugin",
+                    "Composer\\CustomDirectoryInstaller\\PluginPlugin"
+                ],
+                "branch-alias": {
+                    "dev-master": "2.3.x-dev"
+                },
+                "plugin-modifies-install-path": true
+            },
+            "autoload": {
+                "psr-4": {
+                    "Composer\\CustomDirectoryInstaller\\": "src/Composer/CustomDirectoryInstaller"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Mina Nabil Sami",
+                    "email": "mina.nsami@gmail.com"
+                }
+            ],
+            "description": "A composer plugin, to help install packages of different types in custom paths.",
+            "homepage": "https://github.com/mnsami/composer-custom-directory-installer",
+            "keywords": [
+                "composer",
+                "composer-installer",
+                "composer-plugin",
+                "custom-path",
+                "drupal",
+                "installer-paths",
+                "monorepo",
+                "wordpress"
+            ],
+            "support": {
+                "issues": "https://github.com/mnsami/composer-custom-directory-installer/issues",
+                "security": "https://github.com/mnsami/composer-custom-directory-installer/security/policy",
+                "source": "https://github.com/mnsami/composer-custom-directory-installer"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/sponsors/mnsami",
+                    "type": "github"
+                }
+            ],
+            "time": "2026-10-13T23:16:14+00:00",
+            "published-time": "2026-10-13T23:18:16+00:00"
+        },
+        {
             "name": "mtdowling/jmespath.php",
             "version": "2.9.2",
             "source": {
@@ -13693,64 +13770,6 @@
                 }
             ],
             "time": "2023-11-08T09:30:43+00:00"
-        },
-        {
-            "name": "oomphinc/composer-installers-extender",
-            "version": "2.0.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/oomphinc/composer-installers-extender.git",
-                "reference": "cbf4b6f9a24153b785d09eee755b995ba87bd5f9"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/oomphinc/composer-installers-extender/zipball/cbf4b6f9a24153b785d09eee755b995ba87bd5f9",
-                "reference": "cbf4b6f9a24153b785d09eee755b995ba87bd5f9",
-                "shasum": ""
-            },
-            "require": {
-                "composer-plugin-api": "^1.1 || ^2.0",
-                "composer/installers": "^1.0 || ^2.0",
-                "php": ">=7.1"
-            },
-            "require-dev": {
-                "composer/composer": "^2.0",
-                "phpunit/phpunit": "^7.2",
-                "squizlabs/php_codesniffer": "^3.3"
-            },
-            "type": "composer-plugin",
-            "extra": {
-                "class": "OomphInc\\ComposerInstallersExtender\\Plugin"
-            },
-            "autoload": {
-                "psr-4": {
-                    "OomphInc\\ComposerInstallersExtender\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Stephen Beemsterboer",
-                    "email": "stephen@oomphinc.com",
-                    "homepage": "https://github.com/balbuf"
-                },
-                {
-                    "name": "Nathan Dentzau",
-                    "email": "nate@oomphinc.com",
-                    "homepage": "http://oomph.is/ndentzau"
-                }
-            ],
-            "description": "Extend the composer/installers plugin to accept any arbitrary package type.",
-            "homepage": "http://www.oomphinc.com/",
-            "support": {
-                "issues": "https://github.com/oomphinc/composer-installers-extender/issues",
-                "source": "https://github.com/oomphinc/composer-installers-extender/tree/2.0.1"
-            },
-            "abandoned": true,
-            "time": "2021-12-15T12:32:42+00:00"
         },
         {
             "name": "open-telemetry/api",
