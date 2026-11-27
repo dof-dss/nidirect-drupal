@@ -1,0 +1,959 @@
+uuid: a525c08a-c702-4310-a46a-c72b4a851d32
+langcode: en
+status: open
+dependencies: {  }
+weight: 0
+open: null
+close: null
+uid: 24
+template: false
+archive: false
+id: contact_the_ni_pension_centre
+title: 'Contact the Northern Ireland Pension Centre'
+description: ''
+categories: {  }
+elements: |-
+  page_intro:
+    '#type': webform_wizard_page
+    intro:
+      '#type': processed_text
+      '#text': '<div role="status"><p class="page-summary">You can use this form if you have a query about Pension Credit or State Pension. This is for Northern Ireland residents only.</p><p>This form is for anyone who has reached <a href="https://www.gov.uk/state-pension-age" target="_blank">State Pension age</a> or is within four months of reaching it. If you are under State Pension age, you may need to <a href="https://www.gov.uk/future-pension-centre">contact the Future Pension Centre</a>.</p><p>If you want to call, email or write to the Northern Ireland Pension Centre, the contact details are at the following link: &nbsp;</p><p><a href="https://www.communities-ni.gov.uk/contacts/northern-ireland-pension-centre">Northern Ireland Pension Centre</a></p><p>You can find out how personal information you give to the Northern Ireland Pension Centre when using this form will be handled by viewing its <a href="https://www.communities-ni.gov.uk/publications/privacy-notice-pension-service">privacy notice</a>.</p></div>'
+      '#format': full_html
+  page_ni_resident:
+    '#type': webform_wizard_page
+    do_you_live_in_northern_ireland:
+      '#type': radios
+      '#title': 'Do you live in Northern Ireland?'
+      '#options': yes_no
+      '#options_display': side_by_side
+      '#required': true
+      '#required_error': 'You must choose one of these options'
+    ni_only_notice:
+      '#type': processed_text
+      '#states':
+        visible:
+          ':input[name="do_you_live_in_northern_ireland"]':
+            value: 'No'
+      '#text': '<p class="info-notice" role="status">This form is only for people living in Northern Ireland. If you live in Great Britain you should <a href="https://www.gov.uk/contact-pension-service" data-entity-type="external">contact the Pension Service on GOV.UK</a> instead.</p>'
+      '#format': full_html
+  page_contact_reason:
+    '#type': webform_wizard_page
+    '#title': 'Contact reason'
+    what_is_your_state_pension_or_pension_credit_query_about:
+      '#type': radios
+      '#title': 'What is your State Pension or Pension Credit query about?'
+      '#options':
+        'State Pension': 'State Pension'
+        'Pension Credit': 'Pension Credit'
+        'Report a death': 'Report a death'
+        'Proof of benefit letter': 'Proof of benefit letter'
+      '#other__option_label': 'Something else…'
+      '#other__title': 'Briefly tell us what your query is about'
+      '#required': true
+      '#required_error': 'You must choose a reason for your query.'
+    processed_text_reporting_a_death:
+      '#type': processed_text
+      '#states':
+        visible:
+          ':input[name="what_is_your_state_pension_or_pension_credit_query_about"]':
+            value: 'Report a death'
+      '#text': '<div role="status"><h2>Reporting a death</h2><p>Deaths should be reported to the Bereavement Service at the following link: &nbsp;<br><a href="/articles/bereavement-service-reporting-death">Bereavement Service - reporting a death</a></p></div>'
+      '#format': full_html
+    processed_text_request_proof_benefit:
+      '#type': processed_text
+      '#states':
+        visible:
+          ':input[name="what_is_your_state_pension_or_pension_credit_query_about"]':
+            value: 'Proof of benefit letter'
+      '#text': '<div role="status"><h2>Request proof of benefit</h2><p>You do not need to contact the Pension Centre to get proof of your benefits and State Pension. You can&nbsp;<br><a href="/services/get-proof-your-benefits-and-state-pension">get proof of your benefits and State Pension</a> online</p></div>'
+      '#format': full_html
+  page_state_pension_query:
+    '#type': webform_wizard_page
+    '#title': 'State Pension query'
+    '#states':
+      visible:
+        ':input[name="what_is_your_state_pension_or_pension_credit_query_about"]':
+          value: 'State Pension'
+    state_pension_choose_the_reason_for_your_query:
+      '#type': radios
+      '#title': 'Choose the reason for your State Pension query'
+      '#options':
+        'Apply for State Pension': 'Apply for State Pension'
+        'Report a change in circumstances': 'Report a change in circumstances'
+        'Track an earlier query made': 'Track an earlier query made'
+        'General or other query': 'General or other query'
+      '#other__option_label': ''
+      '#required': true
+    markup_state_pension_apply:
+      '#type': processed_text
+      '#states':
+        visible:
+          ':input[name="state_pension_choose_the_reason_for_your_query"]':
+            value: 'Apply for State Pension'
+      '#text': '<div role="status"><h2>Applying for State Pension</h2><p>The quickest way to apply for State Pension is online: &nbsp;<br><a href="/services/get-your-state-pension">Get your State Pension</a></p><p>If you cannot use the online, phone or post service, select <strong>Next</strong> to continue.</p></div>'
+      '#format': full_html
+    markup_state_pension_change_in_circumstances:
+      '#type': processed_text
+      '#states':
+        visible:
+          ':input[name="state_pension_choose_the_reason_for_your_query"]':
+            value: 'Report a change in circumstances'
+      '#text': '<div role="status"><h2>Reporting a change in circumstances</h2><p>Changes in circumstances cannot be reported through this form.</p><p>You can use the online service to report some changes in your circumstances: &nbsp;<br><a href="https://www.manage-state-pension.service.gov.uk/start">Manage your State Pension</a></p><p>If you cannot use this service, find out how to report a change another way at:<br><a href="https://www.nidirect.gov.uk/articles/state-pension-report-change-your-circumstances">State Pension: report a change in your circumstances</a>.</p></div>'
+      '#format': full_html
+    markup_state_pension_other_query:
+      '#type': processed_text
+      '#states':
+        visible:
+          ':input[name="state_pension_choose_the_reason_for_your_query"]':
+            value: 'General or other query'
+      '#text': '<div role="status"><h2>Before making your query online</h2><p>Changes in circumstances cannot be reported through this form.</p><p>You can use the <a href="https://www.manage-state-pension.service.gov.uk/start">Manage your State Pension</a> online service to report some changes in your circumstances.</p><p>If you cannot use this service, find out how to report a change another way at: &nbsp;<br><a href="https://www.nidirect.gov.uk/articles/state-pension-report-change-your-circumstances">State Pension: report a change in your circumstances</a>.</p><p>You can find answers to many common State Pension questions at <a href="/campaigns/state-pension">State Pension</a>.</p><p>If you cannot find the answer to your question online, select <strong>Next</strong> to continue.</p></div>'
+      '#format': full_html
+  page_pension_credit_query:
+    '#type': webform_wizard_page
+    '#title': 'Pension Credit query'
+    '#states':
+      visible:
+        ':input[name="what_is_your_state_pension_or_pension_credit_query_about"]':
+          value: 'Pension Credit'
+    pension_credit_choose_the_reason_for_your_query:
+      '#type': radios
+      '#title': 'Choose the reason for your Pension Credit query'
+      '#options':
+        'Apply for Pension Credit': 'Apply for Pension Credit'
+        'Report a change in circumstances': 'Report a change in circumstances'
+        'Track an earlier query made': 'Track an earlier query made'
+        'General or other query': 'General or other query'
+      '#other__option_label': ''
+      '#required': true
+    markup_pension_credit_apply:
+      '#type': processed_text
+      '#states':
+        visible:
+          ':input[name="pension_credit_choose_the_reason_for_your_query"]':
+            value: 'Apply for Pension Credit'
+      '#text': '<div role="status"><h2>Applying for Pension Credit</h2><p>The quickest way to apply for Pension Credit is online: <a href="/articles/applying-pension-credit">Applying for Pension Credit</a></p><p>If you cannot use the online, phone or post service, select <strong>Next</strong> to continue.</p></div>'
+      '#format': full_html
+    markup_pension_credit_change_in_circumstances:
+      '#type': processed_text
+      '#states':
+        visible:
+          ':input[name="pension_credit_choose_the_reason_for_your_query"]':
+            value: 'Report a change in circumstances'
+      '#text': '<div role="status"><h2>Reporting changes in circumstances</h2><p>Changes in circumstances cannot be reported through this form.</p><p>To report a change in circumstances, contact the <a href="https://www.communities-ni.gov.uk/contacts/northern-ireland-pension-centre">Northern Ireland Pension Centre</a>.</p></div>'
+      '#format': full_html
+    markup_pension_credit_other_query:
+      '#type': processed_text
+      '#states':
+        visible:
+          ':input[name="pension_credit_choose_the_reason_for_your_query"]':
+            value: 'General or other query'
+      '#text': '<div role="status"><h2>Before making your query online</h2><p>Changes in circumstances cannot be reported through this form.</p><p>To report a change in circumstances, contact the <a href="https://www.communities-ni.gov.uk/contacts/northern-ireland-pension-centre">Northern Ireland Pension Centre</a>.</p><p>You can find the answers to many common Pension Credit questions online.</p><p>Check the information at <a href="/articles/understanding-pension-credit">Understanding Pension Credit</a> before making your query online.</p><p>If you cannot find the answer to your question online, select <strong>Next</strong> to continue.</p></div>'
+      '#format': full_html
+  page_track_an_earlier_query:
+    '#type': webform_wizard_page
+    '#title': 'About the earlier query you made'
+    '#states':
+      visible:
+        - ':input[name="state_pension_choose_the_reason_for_your_query"]':
+            value: 'Track an earlier query made'
+        - or
+        - ':input[name="pension_credit_choose_the_reason_for_your_query"]':
+            value: 'Track an earlier query made'
+    date_you_made_your_first_query_to_the_pension_service:
+      '#type': date
+      '#title': 'Date you made your first query to the Pension Centre (optional)'
+      '#date_date_min': '-100 years'
+      '#date_date_max': today
+    how_did_you_make_your_first_query:
+      '#type': webform_radios_other
+      '#title': 'How did you make your first query?'
+      '#options':
+        Post: Post
+        Telephone: Telephone
+        Email: Email
+      '#other__option_label': 'Through a third party'
+      '#other__title': 'Provide details of the third party'
+      '#other__placeholder': ''
+      '#required': true
+      '#required_error': 'You must tell us how you made your first query.'
+    have_you_had_a_reply_from_the_pension_service_on_your_first_quer:
+      '#type': radios
+      '#title': 'Have you had a reply from the Pension Centre on your first query?'
+      '#options': yes_no
+      '#options_display': side_by_side
+      '#required': true
+      '#required_error': 'You must answer Yes or No, have you had a reply from the Pension Centre on your first query?'
+    give_more_details_on_reply_from_pension_service:
+      '#type': textarea
+      '#title': 'Give more details about your original query'
+      '#required': true
+      '#required_error': 'You must give more details about your original query'
+      '#counter_type': word
+      '#counter_minimum': 1
+      '#counter_maximum': 500
+      '#states':
+        visible:
+          ':input[name="have_you_had_a_reply_from_the_pension_service_on_your_first_quer"]':
+            checked: true
+  page_about_you:
+    '#type': webform_wizard_page
+    '#title': 'About you'
+    are_you_completing_for_yourself:
+      '#type': radios
+      '#title': 'Are you filling in this contact form for yourself?'
+      '#options': yes_no
+      '#options_display': side_by_side
+      '#required': true
+      '#required_error': 'Choose yes or no, are you completing this contact form for yourself?'
+    your_relationship_to_the_person:
+      '#type': webform_select_other
+      '#title': 'What is your relationship to the person who you are filling in this form for?'
+      '#options':
+        'Family member': 'Family member'
+        Friend: Friend
+        Carer: Carer
+        'Support worker': 'Support worker'
+        Appointee: Appointee
+        'Power of attorney': 'Power of attorney'
+        Controller: Controller
+      '#options_display': two_columns
+      '#other__option_label': 'Other relationship'
+      '#other__title': 'Provide details of your relationship'
+      '#other__placeholder': ''
+      '#required': true
+      '#required_error': 'You must tell us what your relationship is to the person who you are filling in this form for.'
+      '#states':
+        visible:
+          ':input[name="are_you_completing_for_yourself"]':
+            value: 'No'
+      '#wrapper_type': form_element
+    markup_person_must_be_present:
+      '#type': processed_text
+      '#states':
+        visible:
+          ':input[name="your_relationship_to_the_person[select]"]':
+            value:
+              pattern: 'Family member|Friend|Carer|Support worker'
+      '#text': '<div role="status"><p class="info-notice">If you are not the official appointee, power of attorney or controller, then the person you''re filling in the form for must be present when the Pension Centre contacts you.<br><br>Personal information cannot be shared with anyone else unless the customer is present and gives their consent.</p></div>'
+      '#format': full_html
+    have_they_agreed:
+      '#type': radios
+      '#title': 'Have they agreed that you can contact the Pension Centre for them?'
+      '#options': yes_no
+      '#options_display': side_by_side
+      '#required': true
+      '#required_error': 'Yes or no, have they agreed that you can contact the Pension Centre for them?'
+      '#states':
+        visible:
+          ':input[name="are_you_completing_for_yourself"]':
+            value: 'No'
+    markup_personal_info_cannot_be_shared:
+      '#type': processed_text
+      '#states':
+        visible:
+          ':input[name="have_they_agreed"]':
+            value: 'No'
+      '#text': |-
+        <div  role="status">
+        <p class="info-notice">
+        Personal information cannot be shared without the customer's consent. The customer must contact the Pension Centre themselves or give consent for you to act on their behalf.
+        </p>
+        </div>
+      '#format': full_html
+  page_their_details:
+    '#type': webform_wizard_page
+    '#title': 'About the person this query relates to'
+    '#states':
+      visible:
+        ':input[name="are_you_completing_for_yourself"]':
+          value: 'No'
+    fieldset_their_details:
+      '#type': fieldset
+      '#title': 'About the person this query relates to'
+      '#format': container
+      their_name:
+        '#type': textfield
+        '#title': 'Their name'
+        '#description': 'Enter their full name including first and last names'
+        '#description_display': before
+        '#maxlength': 100
+        '#autocomplete': name
+        '#required': true
+        '#required_error': 'Enter their full name.'
+      their_national_insurance_number:
+        '#type': textfield
+        '#title': 'Their National Insurance number'
+        '#description': 'For example, QQ 12 34 56 C'
+        '#description_display': before
+        '#maxlength': 13
+        '#size': 14
+        '#autocomplete': 'off'
+        '#input_mask': 'AA 99 99 99 A'
+        '#required': true
+        '#required_error': 'Enter their National Insurance number'
+        '#pattern': '[A-Z]{2} ?[0-9]{2} ?[0-9]{2} ?[0-9]{2} ?[ABCD]'
+        '#pattern_error': 'Enter a valid National Insurance number, for example QQ 12 34 56 C'
+        '#attributes':
+          class:
+            - monospace-text
+          data-inputmask-placeholder: ' '
+      their_dob:
+        '#type': date
+        '#title': 'Their date of birth'
+        '#required': true
+        '#required_error': 'You must choose a date'
+        '#date_date_min': '-150 years'
+        '#date_date_max': today
+      their_address:
+        '#type': fieldset
+        '#title': 'Their address'
+        '#required': true
+        their_address_line_1:
+          '#type': textfield
+          '#title': 'Address line 1'
+          '#maxlength': 100
+        their_address_line_2:
+          '#type': textfield
+          '#title': 'Address line 2'
+          '#maxlength': 100
+        their_county:
+          '#type': textfield
+          '#title': 'County (optional)'
+          '#maxlength': 50
+          '#size': 20
+        their_postcode:
+          '#type': textfield
+          '#title': Postcode
+          '#maxlength': 8
+          '#size': 8
+  page_your_details:
+    '#type': webform_wizard_page
+    '#title': 'Your details'
+    '#states':
+      visible:
+        ':input[name="are_you_completing_for_yourself"]':
+          value: 'Yes'
+    fieldset_your_details:
+      '#type': fieldset
+      '#title': 'Your details'
+      '#format': container
+      your_name:
+        '#type': textfield
+        '#title': 'Your name'
+        '#description': 'Enter your full name including first and last names'
+        '#description_display': before
+        '#maxlength': 100
+        '#autocomplete': name
+        '#required': true
+        '#required_error': 'You must provide your full name.'
+      your_national_insurance_number:
+        '#type': textfield
+        '#title': 'Your National Insurance number'
+        '#description': 'For example, QQ 12 34 56 C'
+        '#description_display': before
+        '#maxlength': 13
+        '#size': 14
+        '#autocomplete': 'off'
+        '#input_mask': 'AA 99 99 99 A'
+        '#required': true
+        '#required_error': 'Enter your National Insurance number'
+        '#pattern': '[A-Z]{2} ?[0-9]{2} ?[0-9]{2} ?[0-9]{2} ?[ABCD]'
+        '#pattern_error': 'Enter a valid National Insurance number, for example QQ 12 34 56 C'
+        '#attributes':
+          class:
+            - monospace-text
+          data-inputmask-placeholder: ' '
+      your_dob:
+        '#type': date
+        '#title': 'Your date of birth'
+        '#required': true
+        '#required_error': 'You must choose a date'
+        '#date_date_min': '-150 years'
+        '#date_date_max': today
+      your_address:
+        '#type': fieldset
+        '#title': 'Your home address'
+        '#required': true
+        your_address_line_1:
+          '#type': textfield
+          '#title': 'Address line 1'
+          '#maxlength': 100
+          '#autocomplete': address-line1
+        your_address_line_2:
+          '#type': textfield
+          '#title': 'Address line 2'
+          '#maxlength': 100
+          '#autocomplete': address-line2
+        your_county:
+          '#type': textfield
+          '#title': 'County (optional)'
+          '#maxlength': 50
+          '#size': 20
+        your_postcode:
+          '#type': textfield
+          '#title': Postcode
+          '#maxlength': 8
+          '#size': 8
+          '#autocomplete': postal-code
+  page_contact_details_1:
+    '#type': webform_wizard_page
+    '#title': 'Can you use a phone'
+    can_use_a_phone:
+      '#type': radios
+      '#title': 'Can you use a phone or can someone use a phone on your behalf?'
+      '#options': yes_no
+      '#options_display': side_by_side
+      '#required': true
+      '#required_error': 'You must choose one of these options'
+      '#states':
+        visible:
+          ':input[name="do_you_live_in_northern_ireland"]':
+            value: 'Yes'
+    no_phone_details:
+      '#type': processed_text
+      '#states':
+        visible:
+          ':input[name="can_use_a_phone"]':
+            value: 'No'
+      '#text': |-
+        <div role="status">
+        <h2>If you need additional support</h2>
+        <p>If you can’t use a phone because of a language, speech, hearing, or other communication difficulty, continue to fill in the following fields.</p>
+        <p>When your request has been received, the most suitable way to contact you will be chosen based on your circumstances. This may be by phone, email or letter.</p>
+        <h3>If you use Relay UK</h2> 
+        <p>
+        You can find details on how to use Relay UK to contact the Pension Centre at the following link.
+        </p>
+        <p>
+        <a href="https://www.communities-ni.gov.uk/contacts/northern-ireland-pension-centre" target="_blank">Northern Ireland Pension Centre</a>
+        </p>
+        <h3>If you need language support</h2>
+        <p>
+        If you need an interpreter, contact the Pension Centre at the following link. They will arrange an interpreter where possible.
+        </p>
+        <p>
+        <a href="https://www.communities-ni.gov.uk/contacts/northern-ireland-pension-centre" target="_blank">Northern Ireland Pension Centre</a>
+        </p>
+        </div>
+      '#format': full_html
+  page_contact_details_2:
+    '#type': webform_wizard_page
+    '#title': 'Your contact details'
+    contact_name:
+      '#type': textfield
+      '#title': 'Your name'
+      '#description': 'Enter your full name including first and last names'
+      '#description_display': before
+      '#maxlength': 100
+      '#autocomplete': name
+      '#required': true
+      '#required_error': 'You must provide your full name.'
+      '#states':
+        visible:
+          ':input[name="are_you_completing_for_yourself"]':
+            value: 'No'
+    phone_number:
+      '#type': textfield
+      '#title': 'Telephone number'
+      '#description': |-
+        Enter your telephone or mobile number. 
+        Keep in mind you will get a call from an 0800 number and the call may show as an unknown number.
+      '#description_display': before
+      '#maxlength': 20
+      '#size': 22
+      '#autocomplete': tel
+      '#required_error': 'Enter your land line or mobile number'
+      '#pattern': '^[\+0-9\s\-\(\)]+$'
+      '#pattern_error': 'Enter a valid telephone or mobile number'
+      '#states':
+        visible:
+          ':input[name="can_use_a_phone"]':
+            value: 'Yes'
+        required:
+          ':input[name="can_use_a_phone"]':
+            value: 'Yes'
+      '#attributes':
+        class:
+          - monospace-text
+    phone_number_optional:
+      '#type': textfield
+      '#title': 'Telephone number (optional)'
+      '#description': |-
+        Optionally provide your telephone or mobile number. 
+        Keep in mind you will get a call from an 0800 number and the call may show as an unknown number.
+      '#description_display': before
+      '#maxlength': 20
+      '#size': 22
+      '#autocomplete': tel
+      '#required_error': 'Enter a telephone or mobile number'
+      '#pattern': '^[\+0-9\s\-\(\)]+$'
+      '#pattern_error': 'Enter a valid telephone or mobile number'
+      '#states':
+        visible:
+          ':input[name="can_use_a_phone"]':
+            value: 'No'
+      '#attributes':
+        class:
+          - monospace-text
+    email_address:
+      '#type': email
+      '#title': 'Email address (optional)'
+      '#description': "An agent may email you if they can't reach you by phone."
+      '#description_display': before
+      '#autocomplete': email
+      '#pattern': '[^@\s]+@[^@\s]+\.[^@\s]+'
+      '#pattern_error': 'Enter a valid email address.'
+    explain_why_you_cannot_phone:
+      '#type': textarea
+      '#title': 'Explain why you cannot make contact by phone'
+      '#description': 'Briefly explain why you cannot make contact by phone so that arrangements to get in touch can be made.'
+      '#title_display': before
+      '#description_display': before
+      '#required': true
+      '#required_error': 'You must explain why you cannot make contact by phone'
+      '#counter_type': word
+      '#counter_minimum': 1
+      '#counter_maximum': 200
+      '#states':
+        visible:
+          ':input[name="can_use_a_phone"]':
+            value: 'No'
+  your_query:
+    '#type': webform_wizard_page
+    '#title': 'Query details'
+    '#required': true
+    '#states':
+      visible:
+        - ':input[name="state_pension_choose_the_reason_for_your_query"]':
+            value: 'Apply for State Pension'
+        - or
+        - ':input[name="state_pension_choose_the_reason_for_your_query"]':
+            value: 'General or other query'
+        - or
+        - ':input[name="pension_credit_choose_the_reason_for_your_query"]':
+            value: 'Apply for Pension Credit'
+        - or
+        - ':input[name="pension_credit_choose_the_reason_for_your_query"]':
+            value: 'General or other query'
+    query_details:
+      '#type': fieldset
+      '#title': 'Tell us what your query is about'
+      subject_optional:
+        '#type': textfield
+        '#title': 'Subject (optional)'
+        '#maxlength': 100
+      your_query_text:
+        '#type': textarea
+        '#title': 'Enter a summary of your query'
+        '#title_display': before
+        '#description_display': before
+        '#required': true
+        '#required_error': 'You must enter a summary of your query.'
+        '#counter_type': word
+        '#counter_minimum': 1
+        '#counter_maximum': 200
+  callback_preferences:
+    '#type': webform_wizard_page
+    '#title': 'Callback preferences'
+    '#states':
+      visible:
+        - ':input[name="state_pension_choose_the_reason_for_your_query"]':
+            value: 'Apply for State Pension'
+        - or
+        - ':input[name="state_pension_choose_the_reason_for_your_query"]':
+            value: 'Track an earlier query made'
+        - or
+        - ':input[name="state_pension_choose_the_reason_for_your_query"]':
+            value: 'General or other query'
+        - or
+        - ':input[name="pension_credit_choose_the_reason_for_your_query"]':
+            value: 'Apply for Pension Credit'
+        - or
+        - ':input[name="pension_credit_choose_the_reason_for_your_query"]':
+            value: 'Track an earlier query made'
+        - or
+        - ':input[name="pension_credit_choose_the_reason_for_your_query"]':
+            value: 'General or other query'
+    preferred_callback_date:
+      '#type': date
+      '#title': 'Preferred callback date (optional)'
+      '#description': 'Choose a date within the next five working days. Your preferred date will be used where possible.'
+      '#description_display': before
+      '#date_date_min': today
+      '#date_date_max': '+14 days'
+      '#date_days':
+        - '1'
+        - '2'
+        - '3'
+        - '4'
+        - '5'
+    preferred_callback_time:
+      '#type': radios
+      '#title': 'Preferred callback time'
+      '#description': 'The Pension Centre will try to contact you on your preferred date and time. If this is not possible, they will contact you as soon as they can.'
+      '#description_display': before
+      '#required': true
+      '#required_error': 'You must choose your preferred contact time (or select "No preference").'
+      '#options':
+        Morning: 'Morning (9.00 am to 11:59 am)'
+        Afternoon: 'Afternoon (12.00 pm to 4.00 pm)'
+        'No preference': 'No preference'
+  actions:
+    '#type': webform_actions
+    '#title': 'Submit button(s)'
+    '#states':
+      invisible:
+        - ':input[name="do_you_live_in_northern_ireland"]':
+            value: 'No'
+        - or
+        - ':input[name="what_is_your_state_pension_or_pension_credit_query_about"]':
+            value: 'Report a death'
+        - or
+        - ':input[name="what_is_your_state_pension_or_pension_credit_query_about"]':
+            value: 'Proof of benefit letter'
+        - or
+        - ':input[name="state_pension_choose_the_reason_for_your_query"]':
+            value: 'Report a change in circumstances'
+        - or
+        - ':input[name="pension_credit_choose_the_reason_for_your_query"]':
+            value: 'Get a Pension Credit Estimate'
+        - or
+        - ':input[name="pension_credit_choose_the_reason_for_your_query"]':
+            value: 'Report a change in circumstances'
+        - or
+        - ':input[name="have_they_agreed"]':
+            value: 'No'
+    '#submit__label': Send
+    '#wizard_prev__label': Back
+css: |-
+  form .form-wrapper fieldset.radios--wrapper legend,
+  form .form-wrapper fieldset.webform-radios-other--wrapper legend {
+      font-size: 1.6rem;
+      line-height: 2.4rem;
+      margin: 0 0 1.2rem;
+      font-weight: bold;
+      color: #1c1c1c
+  }
+
+  @media screen and (min-width: 600px) {
+      form .form-wrapper fieldset.radios--wrapper legend,
+      form .form-wrapper fieldset.webform-radios-other--wrapper legend {
+          font-size:1.8rem;
+          line-height: 2.7rem;
+          margin: 0 0 1.5rem
+      }
+  }
+javascript: ''
+settings:
+  ajax: false
+  ajax_scroll_top: form
+  ajax_progress_type: ''
+  ajax_effect: ''
+  ajax_speed: null
+  page: true
+  page_submit_path: ''
+  page_confirm_path: ''
+  page_theme_name: ''
+  form_title: source_entity_webform
+  form_submit_once: false
+  form_open_message: ''
+  form_close_message: ''
+  form_exception_message: ''
+  form_previous_submissions: true
+  form_confidential: false
+  form_confidential_message: ''
+  form_disable_remote_addr: false
+  form_convert_anonymous: false
+  form_prepopulate: false
+  form_prepopulate_source_entity: false
+  form_prepopulate_source_entity_required: false
+  form_prepopulate_source_entity_type: ''
+  form_unsaved: false
+  form_disable_back: true
+  form_submit_back: false
+  form_disable_autocomplete: false
+  form_novalidate: false
+  form_disable_inline_errors: false
+  form_required: false
+  form_autofocus: false
+  form_details_toggle: false
+  form_reset: false
+  form_access_denied: default
+  form_access_denied_title: ''
+  form_access_denied_message: ''
+  form_access_denied_attributes: {  }
+  form_file_limit: ''
+  form_attributes: {  }
+  form_method: ''
+  form_action: ''
+  share: false
+  share_node: false
+  share_theme_name: ''
+  share_title: true
+  share_page_body_attributes: {  }
+  submission_label: ''
+  submission_exception_message: ''
+  submission_locked_message: ''
+  submission_log: false
+  submission_excluded_elements: {  }
+  submission_exclude_empty: false
+  submission_exclude_empty_checkbox: false
+  submission_views: {  }
+  submission_views_replace: {  }
+  submission_user_columns: {  }
+  submission_user_duplicate: false
+  submission_access_denied: default
+  submission_access_denied_title: ''
+  submission_access_denied_message: ''
+  submission_access_denied_attributes: {  }
+  previous_submission_message: ''
+  previous_submissions_message: ''
+  autofill: false
+  autofill_message: ''
+  autofill_excluded_elements: {  }
+  wizard_progress_bar: false
+  wizard_progress_pages: false
+  wizard_progress_percentage: false
+  wizard_progress_link: false
+  wizard_progress_states: false
+  wizard_start_label: ''
+  wizard_preview_link: false
+  wizard_confirmation: true
+  wizard_confirmation_label: ''
+  wizard_auto_forward: true
+  wizard_auto_forward_hide_next_button: false
+  wizard_keyboard: true
+  wizard_track: ''
+  wizard_prev_button_label: Back
+  wizard_next_button_label: ''
+  wizard_toggle: false
+  wizard_toggle_show_label: ''
+  wizard_toggle_hide_label: ''
+  wizard_page_type: container
+  wizard_page_title_tag: h2
+  preview: 0
+  preview_label: ''
+  preview_title: ''
+  preview_message: ''
+  preview_attributes: {  }
+  preview_excluded_elements: {  }
+  preview_exclude_empty: true
+  preview_exclude_empty_checkbox: false
+  draft: none
+  draft_multiple: false
+  draft_auto_save: false
+  draft_saved_message: ''
+  draft_loaded_message: ''
+  draft_pending_single_message: ''
+  draft_pending_multiple_message: ''
+  confirmation_type: inline
+  confirmation_url: ''
+  confirmation_title: '[none]'
+  confirmation_message: |-
+    <h2>Thank you for your contact request</h2>
+
+    <p class="info-notice info-notice--success">A pensions agent will be in touch with you within five working days.</p>
+
+    <h2>What happens next</h2>
+
+    <p>
+    Your callback will come from a 0800 number, and the call may show as an unknown number.
+    </p>
+
+    <h2>If you are contacting the Pension Centre for someone else</h2>
+
+    <p>
+    If you are contacting the Pension Centre for someone else and you are not their official appointee, power of attorney or controller, the customer must be present.  This is so their permission can be confirmed before their information is shared with you.
+    </p>
+
+    <p>Personal information cannot be shared unless the customer's consent can be confirmed.</p>
+  confirmation_attributes: {  }
+  confirmation_back: false
+  confirmation_back_label: ''
+  confirmation_back_attributes: {  }
+  confirmation_exclude_query: false
+  confirmation_exclude_token: false
+  confirmation_update: false
+  limit_total: null
+  limit_total_interval: null
+  limit_total_message: ''
+  limit_total_unique: false
+  limit_user: null
+  limit_user_interval: null
+  limit_user_message: ''
+  limit_user_unique: false
+  entity_limit_total: null
+  entity_limit_total_interval: null
+  entity_limit_user: null
+  entity_limit_user_interval: null
+  purge: none
+  purge_days: null
+  results_disabled: true
+  results_disabled_ignore: false
+  results_customize: false
+  token_view: false
+  token_update: false
+  token_delete: false
+  serial_disabled: false
+access:
+  create:
+    roles:
+      - anonymous
+      - authenticated
+    users: {  }
+    permissions: {  }
+  view_any:
+    roles: {  }
+    users: {  }
+    permissions: {  }
+  update_any:
+    roles: {  }
+    users: {  }
+    permissions: {  }
+  delete_any:
+    roles: {  }
+    users: {  }
+    permissions: {  }
+  purge_any:
+    roles: {  }
+    users: {  }
+    permissions: {  }
+  view_own:
+    roles: {  }
+    users: {  }
+    permissions: {  }
+  update_own:
+    roles: {  }
+    users: {  }
+    permissions: {  }
+  delete_own:
+    roles: {  }
+    users: {  }
+    permissions: {  }
+  administer:
+    roles: {  }
+    users: {  }
+    permissions: {  }
+  test:
+    roles: {  }
+    users: {  }
+    permissions: {  }
+  configuration:
+    roles: {  }
+    users: {  }
+    permissions: {  }
+handlers:
+  email:
+    id: email
+    handler_id: email
+    label: Email
+    notes: ''
+    status: true
+    conditions: {  }
+    weight: 0
+    settings:
+      states:
+        - completed
+      to_mail: pensionservice@dfcni.gov.uk
+      to_options: {  }
+      bcc_mail: ''
+      bcc_options: {  }
+      cc_mail: ''
+      cc_options: {  }
+      from_mail: 'noreply@[site:url-brief]'
+      from_options: {  }
+      from_name: _default
+      reply_to: ''
+      return_path: ''
+      sender_mail: ''
+      sender_name: ''
+      subject: 'TEST Pension Service Query from nidirect.gov.uk'
+      body: |-
+        <p><strong>TEST submission from new contact form</strong</p>
+        <p>Submitted on [webform_submission:created:long]</p>
+
+        [webform_submission:values]
+      excluded_elements:
+        intro: intro
+        do_you_live_in_northern_ireland: do_you_live_in_northern_ireland
+        ni_only_notice: ni_only_notice
+        processed_text_reporting_a_death: processed_text_reporting_a_death
+        processed_text_request_proof_benefit: processed_text_request_proof_benefit
+        markup_state_pension_apply: markup_state_pension_apply
+        markup_state_pension_change_in_circumstances: markup_state_pension_change_in_circumstances
+        markup_state_pension_other_query: markup_state_pension_other_query
+        markup_pension_credit_apply: markup_pension_credit_apply
+        markup_pension_credit_estimate: markup_pension_credit_estimate
+        markup_pension_credit_change_in_circumstances: markup_pension_credit_change_in_circumstances
+        markup_pension_credit_other_query: markup_pension_credit_other_query
+        markup_person_must_be_present: markup_person_must_be_present
+        markup_personal_info_cannot_be_shared: markup_personal_info_cannot_be_shared
+        no_phone_details: no_phone_details
+      ignore_access: false
+      exclude_empty: true
+      exclude_empty_checkbox: false
+      exclude_attachments: false
+      html: true
+      attachments: false
+      twig: false
+      theme_name: ''
+      parameters: {  }
+      debug: false
+  email_1:
+    id: email
+    handler_id: email_1
+    label: 'Copy for visitor'
+    notes: ''
+    status: true
+    conditions:
+      enabled:
+        ':input[name="email_address"]':
+          filled: true
+    weight: 0
+    settings:
+      states:
+        - completed
+      to_mail: '[webform_submission:values:email_address:raw]'
+      to_options: {  }
+      bcc_mail: ''
+      bcc_options: {  }
+      cc_mail: ''
+      cc_options: {  }
+      from_mail: 'noreply@[site:url-brief]'
+      from_options: {  }
+      from_name: '[site:name]'
+      reply_to: ''
+      return_path: ''
+      sender_mail: ''
+      sender_name: ''
+      subject: 'NI Pension Centre - confirmation of contact request'
+      body: |-
+        <p>
+        Dear 
+        [webform_submission:values:your_name][webform_submission:values:contact_name],
+        </p>
+
+        <p>Thank you for your contact request.</p>
+        <p>A pensions agent will be in touch with you within five working days.</p>
+        <p>
+        Regards,<br />
+        Northern Ireland Pension Centre<br />
+        </p>
+        <hr>
+        <p>
+        <small>
+        <em>Please note</em>: This email was been sent from a notification-only email address that can&rsquo;t accept replies. Please do not reply to this message.
+        </small>
+        </p>
+      excluded_elements: {  }
+      ignore_access: false
+      exclude_empty: true
+      exclude_empty_checkbox: false
+      exclude_attachments: false
+      html: true
+      attachments: false
+      twig: false
+      theme_name: ''
+      parameters: {  }
+      debug: false
+variants: {  }
