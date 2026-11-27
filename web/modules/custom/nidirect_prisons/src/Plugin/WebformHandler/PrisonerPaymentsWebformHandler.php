@@ -192,41 +192,52 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
         // Handle existing pending transactions for the prisoner.
         $pending_transaction = $this->paymentManager->getPendingTransactionForPrisoner($prisoner_id);
 
-        if ($pending_transaction && !$this->paymentManager->expireIfTimedOut($pending_transaction)) {
-
-          // Show payment pending message and prevent further progress.
-          $elements['msg_payment_pending']['#access'] = TRUE;
-          $elements['prisoner_payment_amount']['#access'] = FALSE;
-          $elements['wizard_next']['#access'] = FALSE;
-          return;
+        if ($pending_transaction && $this->paymentManager->expireIfTimedOut($pending_transaction)) {
+          $pending_transaction = NULL;
         }
 
-        // Generate a new order code.
-        $order_code = $this->paymentManager->generateOrderCode(
-          $prison_id,
-          $prisoner_id,
-          $visitor_id
-        );
+        if ($pending_transaction) {
+          $is_own_transaction =
+            $pending_transaction->order_key === $form_state->get('order_code')
+            && (string) $pending_transaction->visitor_id === (string) $visitor_id;
 
-        // Generate a new pending transaction.
-        $new_transaction = $this->paymentManager->logPendingTransaction(
-          $order_code,
-          $prisoner_id,
-          $visitor_id,
-          0,
-          $created_timestamp
-        );
+          if (!$is_own_transaction) {
+            $elements['msg_payment_pending']['#access'] = TRUE;
+            $elements['prisoner_payment_amount']['#access'] = FALSE;
+            $elements['wizard_next']['#access'] = FALSE;
+            return;
+          }
 
-        // Attach settings for clientside JS.
+          $transaction = $pending_transaction;
+          $order_code = $transaction->order_key;
+        }
+        else {
+          $order_code = $this->paymentManager->generateOrderCode(
+            $prison_id,
+            $prisoner_id,
+            $visitor_id
+          );
+
+          $transaction = $this->paymentManager->logPendingTransaction(
+            $order_code,
+            $prisoner_id,
+            $visitor_id,
+            0,
+            $created_timestamp
+          );
+
+          $form_state->set('worldpay_order_sent', FALSE);
+          $form_state->set('worldpay_reference_url', NULL);
+        }
+
         $form['#attached']['drupalSettings']['prisonerPayments'] = [
           'orderCode' => $order_code,
           'prisonerMaxAmount' => $prisoner_max_amount,
           'softTimeout' => $this->paymentManager->softTimeout,
           'hardTimeout' => $this->paymentManager->hardTimeout,
-          'startTime' => (int) $new_transaction->created_timestamp,
+          'startTime' => (int) $transaction->created_timestamp,
         ];
 
-        // Keep order_code and prison_id for later.
         $form_state->set('order_code', $order_code);
         $form_state->set('prison_id', $prison_id);
 
