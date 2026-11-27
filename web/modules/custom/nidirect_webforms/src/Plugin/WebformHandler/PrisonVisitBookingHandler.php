@@ -712,6 +712,7 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
       }
     }
     finally {
+      // Release references to form, form state, and submission.
       $this->elements = [];
       unset($this->formState);
       $this->webformSubmission = NULL;
@@ -821,6 +822,7 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
       }
     }
     finally {
+      // Release references to form, form state, and submission.
       $this->elements = [];
       unset($this->formState);
       $this->webformSubmission = NULL;
