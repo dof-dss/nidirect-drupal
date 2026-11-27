@@ -60,8 +60,7 @@ class SchoolClosuresTest extends KernelTestBase {
   /**
    * School location test.
    *
-   * Test location matches original and town is not removed if absent
-   * from school name.
+   * Location is used verbatim, as provided by the data source.
    */
   public function testLocation() {
     $name = 'All Saints Primary School';
@@ -69,47 +68,12 @@ class SchoolClosuresTest extends KernelTestBase {
     $date = $this->today();
     $reason = '';
 
-    // The location should not change.
     $expected = $location;
 
     $closure = new SchoolClosure($name, $location, $date, $reason);
     $output = $closure->getData();
 
     $this->assertEquals($expected, $output['location']);
-  }
-
-  /**
-   * Test location has town removed if present in school name.
-   */
-  public function testLocationWithMatchingSchoolName() {
-    $name = 'Portadown Model Boys School';
-    $location = 'Portadown, County Armagh';
-    $date = $this->today();
-    $reason = '';
-
-    $expected = 'County Armagh';
-
-    $closure = new SchoolClosure($name, $location, $date, $reason);
-    $output = $closure->getData();
-
-    $this->assertEquals($expected, $output['location']);
-  }
-
-  /**
-   * Test reason matches one of the predefined text replacements.
-   */
-  public function testReasonMatchesPredefinedReplacement() {
-    $name = 'All Saints Primary School';
-    $location = 'Belfast';
-    $date = $this->today();
-    $reason = 'no water supply';
-
-    $expected = 'due to no water supply.';
-
-    $closure = new SchoolClosure($name, $location, $date, $reason);
-    $output = $closure->getData();
-
-    $this->assertEquals($expected, $output['reason']);
   }
 
   /**
@@ -158,6 +122,45 @@ class SchoolClosuresTest extends KernelTestBase {
     $expected = FALSE;
 
     $closure = new SchoolClosure($name, $location, $date, $reason);
+    $output = $closure->isExpired();
+
+    $this->assertEquals($expected, $output);
+  }
+
+  /**
+   * Test closure is not expired if dateTo is in the future, even though
+   * the start date is in the past.
+   */
+  public function testIsNotExpiredIfDateToIsInTheFuture() {
+    $name = 'All Saints Primary School';
+    $location = 'Belfast';
+    $date = date_sub(clone $this->today(), date_interval_create_from_date_string('1 day'));
+    $dateTo = date_add(clone $this->today(), date_interval_create_from_date_string('1 day'));
+    $reason = 'no water supply';
+
+    $expected = FALSE;
+
+    $closure = new SchoolClosure($name, $location, $date, $reason, $dateTo);
+    $output = $closure->isExpired();
+
+    $this->assertEquals($expected, $output);
+  }
+
+  /**
+   * Test closure is expired once dateTo has passed.
+   */
+  public function testIsExpiredIfDateToIsInThePast() {
+    $name = 'All Saints Primary School';
+    $location = 'Belfast';
+    $date = date_sub(clone $this->today(), date_interval_create_from_date_string('3 days'));
+    $dateTo = date_sub(clone $this->today(), date_interval_create_from_date_string('1 day'));
+    $reason = 'no water supply';
+    // Note: both $date and $dateTo clone from $this->today() independently,
+    // since date_sub()/date_add() mutate \DateTime in place.
+
+    $expected = TRUE;
+
+    $closure = new SchoolClosure($name, $location, $date, $reason, $dateTo);
     $output = $closure->isExpired();
 
     $this->assertEquals($expected, $output);

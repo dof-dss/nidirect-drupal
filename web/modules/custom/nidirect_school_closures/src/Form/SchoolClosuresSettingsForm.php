@@ -4,11 +4,13 @@ namespace Drupal\nidirect_school_closures\Form;
 
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Link;
+use Drupal\Core\Url;
 use Drupal\nidirect_school_closures\SchoolClosuresServiceInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * Configure example settings for this site.
+ * School Closures configuration form.
  */
 class SchoolClosuresSettingsForm extends ConfigFormBase {
 
@@ -86,13 +88,30 @@ class SchoolClosuresSettingsForm extends ConfigFormBase {
 
     $form['cache_duration'] = [
       '#type' => 'number',
-      '#title' => $this->t('Cache duration'),
+      '#title' => $this->t('API response cache duration'),
       '#description' => $this->t('Duration in minutes.'),
       '#min' => 0,
       '#max' => 10080,
       '#required' => TRUE,
       '#size' => 2,
       '#default_value' => $config->get('cache_duration'),
+    ];
+
+    $form['cron_info'] = [
+      '#markup' => $this->t('<strong>Note:</strong> If you alter the API cache duration, ensure the @link is appropriately configured to purge the render cache.', [
+        '@link' => Link::createFromRoute('School Closures cron', 'entity.ultimate_cron_job.edit_form', ['ultimate_cron_job' => 'nidirect_school_closures'], ['attributes' => ['target' => '_blank']])->toString()
+      ]),
+    ];
+
+    $form['search_box_trigger'] = [
+      '#type' => 'number',
+      '#title' => $this->t('Search box'),
+      '#description' => $this->t('Minimum results to trigger the display of the search box.'),
+      '#min' => 1,
+      '#max' => 50,
+      '#required' => TRUE,
+      '#size' => 2,
+      '#default_value' => $config->get('search_box_trigger'),
     ];
 
     return parent::buildForm($form, $form_state);
@@ -106,6 +125,7 @@ class SchoolClosuresSettingsForm extends ConfigFormBase {
       ->set('data_source_url', $form_state->getValue('data_source_url'))
       ->set('max_attempts', $form_state->getValue('max_attempts'))
       ->set('cache_duration', $form_state->getValue('cache_duration'))
+      ->set('search_box_trigger', $form_state->getValue('search_box_trigger'))
       ->save();
 
     parent::submitForm($form, $form_state);
