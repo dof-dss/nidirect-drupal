@@ -230,8 +230,9 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
         $form_state->set('order_code', $order_code);
         $form_state->set('prison_id', $prison_id);
 
-        // Set flag to indicate new order not sent to worldpay yet.
+        // Indicate new order not sent to worldpay yet.
         $form_state->set('worldpay_order_sent', FALSE);
+        $form_state->set('worldpay_reference_url', NULL);
 
         // Show msg_maximum_amount_payable.
         $elements['msg_maximum_amount_payable']['#access'] = TRUE;
@@ -299,39 +300,43 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
         ];
 
         // Generate and send Worldpay order XML request.
-        $order_data_xml = $this->paymentManager->generateOrderData(
-          $order_code,
-          $prison_id,
-          $prisoner_id,
-          $prisoner_fullname,
-          $payment_amount,
-          $visitor_fullname,
-          $visitor_email
-        );
+        $response_xml = NULL;
+        $reference_url = $form_state->get('worldpay_reference_url');
 
-        // Prevent duplicate Worldpay order creation on form rebuilds.
         if (!$form_state->get('worldpay_order_sent')) {
+          $order_data_xml = $this->paymentManager->generateOrderData(
+            $order_code,
+            $prison_id,
+            $prisoner_id,
+            $prisoner_fullname,
+            $payment_amount,
+            $visitor_fullname,
+            $visitor_email
+          );
 
           $response_xml = $this->paymentManager->sendWorldpayRequest(
             $order_data_xml,
             $prison_id
           );
 
-          // Mark as sent for this form/session.
           $form_state->set('worldpay_order_sent', TRUE);
-        }
-        else {
-          // Order already sent; do not resend.
-          $response_xml = NULL;
+
+          if ($response_xml) {
+            $response = $this->paymentManager->parseWorldpayResponse($response_xml);
+
+            if ($response['success']) {
+              $reference_url = $response['reference_url'];
+              $form_state->set('worldpay_reference_url', $reference_url);
+            }
+          }
         }
 
-        // Parse the Worldpay response to get the iframe URL.
-        if ($response_xml && $response = $this->paymentManager->parseWorldpayResponse($response_xml)) {
+        if (is_string($reference_url) && $reference_url !== '') {
 
           // Attach the Worldpay JS library and pass the iframe URL to drupalSettings.
           $form['#attached']['library'][] = 'nidirect_prisons/prisoner_payments_worldpay';
           $form['#attached']['drupalSettings']['worldpay'] = [
-            'url' => $response['reference_url'],
+            'url' => $reference_url,
             'target' => 'worldpay-html',
           ];
 
@@ -356,9 +361,10 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
           $elements['submit']['#access'] = FALSE;
 
           $this->messenger()->addError($this->t('An error occurred while processing your request. Try again later.'));
-          $this->getLogger('nidirect_prisons')->error('Failed to parse Worldpay response: @response', [
-            '@response' => $response_xml,
-          ]);
+          $this->getLogger('nidirect_prisons')->error(
+            'Worldpay iframe URL unavailable for order @order.',
+            ['@order' => $order_code]
+          );
         }
       }
     }
@@ -510,6 +516,7 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
     $form_state->set('order_code', NULL);
     $form_state->set('prison_id', NULL);
     $form_state->set('worldpay_order_sent', FALSE);
+    $form_state->set('worldpay_reference_url', NULL);
 
     // Restart the form.
     $form_state->setRedirect('<current>');
