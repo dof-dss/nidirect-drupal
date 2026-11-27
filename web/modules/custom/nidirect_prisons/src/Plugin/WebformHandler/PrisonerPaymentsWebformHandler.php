@@ -89,7 +89,6 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
     return [
       'debug' => FALSE,
       'prisoner_maximum_payment_amount' => 0,
-      'worldpay_payment_service_url' => 'https://secure-test.worldpay.com/jsp/merchant/xml/paymentService.jsp',
     ];
   }
 
@@ -109,16 +108,6 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
       '#return_value' => TRUE,
       '#default_value' => $this->configuration['debug'],
     ];
-    $form['worldpay'] = [
-      '#type' => 'details',
-      '#title' => $this->t('Worldpay settings'),
-    ];
-    $form['worldpay']['payment_service_url'] = [
-      '#type' => 'textfield',
-      '#title' => $this->t('Payment service URL'),
-      '#description' => $this->t('The URL for sending XML payment requests to. See https://docs.worldpay.com/apis/wpg/hostedintegration/quickstart for more information.'),
-      '#default_value' => $this->configuration['worldpay_payment_service_url'],
-    ];
 
     return $this->setSettingsParents($form);
   }
@@ -129,7 +118,6 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
   public function submitConfigurationForm(array &$form, FormStateInterface $form_state) {
     parent::submitConfigurationForm($form, $form_state);
     $this->configuration['debug'] = (bool) $form_state->getValue('debug');
-    $this->configuration['worldpay_payment_service_url'] = (string) $form_state->getValue('worldpay_payment_service_url');
   }
 
   /**
