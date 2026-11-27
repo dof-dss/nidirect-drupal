@@ -255,7 +255,7 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
         $transaction = $this->paymentManager->getTransaction($order_code);
 
         // Halt progress if transaction expired.
-        if (!$transaction || $transaction->status === 'expired') {
+        if (!$transaction || !$this->paymentManager->touchTransaction($order_code)) {
           $elements['twig_payment_card_details']['#access'] = FALSE;
           $elements['msg_session_expired']['#access'] = TRUE;
           $elements['wizard_prev']['#access'] = FALSE;
@@ -286,9 +286,6 @@ class PrisonerPaymentsWebformHandler extends WebformHandlerBase {
 
         // Update pending transaction with the payment amount.
         $this->paymentManager->updatePendingTransactionAmount($order_code, $payment_amount);
-
-        // Update transaction timestamp.
-        $this->paymentManager->touchTransaction($order_code);
 
         // Clientside timeout countdown needs order code, timeout values
         // and the start time for the transaction.
