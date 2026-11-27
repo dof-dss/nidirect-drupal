@@ -76,11 +76,6 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
   protected $bookingReference = [];
 
   /**
-   * @var array
-   */
-  protected array $form = [];
-
-  /**
    * @var \Drupal\Core\Form\FormStateInterface
    */
   protected FormStateInterface $formState;
@@ -236,483 +231,490 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
 
     // Store references to form, form state, and submission for
     // easy access.
-    $this->form = &$form;
     $this->formState = $form_state;
     $this->webformSubmission = $webform_submission;
-    $this->elements = WebformFormHelper::flattenElements($form);
 
-    $page = $form_state->get('current_page');
-    $page_trigger = $form_state->getTriggeringElement()['#value'] ?? NULL;
-    $page_trigger_is_next = $page_trigger === 'Next';
-    $page_trigger_is_previous = $page_trigger === 'Previous';
+    try {
+      $this->elements = WebformFormHelper::flattenElements($form);
 
-    $elements = $this->elements;
-    $webform = $webform_submission->getWebform();
+      $page = $form_state->get('current_page');
+      $page_trigger = $form_state->getTriggeringElement()['#value'] ?? NULL;
+      $page_trigger_is_next = $page_trigger === 'Next';
+      $page_trigger_is_previous = $page_trigger === 'Previous';
 
-    // Many form alterations here are dependent on data extracted from
-    // the visit_order_number or "booking reference".
-    //
-    // The booking reference determines:
-    // - The prison being visited
-    // - Whether it is a face-to-face or virtual visit
-    // - The date when the visit can be booked
-    // - The prisoner type and time slots available for prisoner type.
-    //
-    // The booking reference is collected in the very first wizard page.
-    // Once it is submitted and validated, form_state will contain the
-    // processed booking reference (see processVisitBookingReference()).
+      $elements = $this->elements;
+      $webform = $webform_submission->getWebform();
 
-    $this->bookingReference = $form_state->get('booking_reference_processed');
+      // Many form alterations here are dependent on data extracted from
+      // the visit_order_number or "booking reference".
+      //
+      // The booking reference determines:
+      // - The prison being visited
+      // - Whether it is a face-to-face or virtual visit
+      // - The date when the visit can be booked
+      // - The prisoner type and time slots available for prisoner type.
+      //
+      // The booking reference is collected in the very first wizard page.
+      // Once it is submitted and validated, form_state will contain the
+      // processed booking reference (see processVisitBookingReference()).
 
-    // Pass configuration and the processed booking reference
-    // to clientside.
-    $form['#attached']['drupalSettings']['prisonVisitBooking'] = $this->configuration;
-    $form['#attached']['drupalSettings']['prisonVisitBooking']['booking_ref'] = $this->bookingReference;
+      $this->bookingReference = $form_state->get('booking_reference_processed');
 
-    // Detect if booking reference (visit_order_number) is changed.
-    $last_ref = $form_state->get('last_visitor_order_number');
-    $curr_ref = $form_state->getValue('visitor_order_number');
+      // Pass configuration and the processed booking reference
+      // to clientside.
+      $form['#attached']['drupalSettings']['prisonVisitBooking'] = $this->configuration;
+      $form['#attached']['drupalSettings']['prisonVisitBooking']['booking_ref'] = $this->bookingReference;
 
-    // First-time set.
-    if (empty($last_ref) && !empty($curr_ref)) {
-      $form_state->set('last_visitor_order_number', $curr_ref);
-    }
-    // Changed.
-    elseif (!empty($last_ref) && $curr_ref !== $last_ref) {
-      $form_state->set('last_visitor_order_number', $curr_ref);
+      // Detect if booking reference (visit_order_number) is changed.
+      $last_ref = $form_state->get('last_visitor_order_number');
+      $curr_ref = $form_state->getValue('visitor_order_number');
 
-      // Reset time slots user might have selected.
-      $this->resetFormSlots($form, $form_state, $webform_submission);
-
-      // If it's a virtual visit reset elements applicable only to
-      // face-to-face visits.
-      if ($this->bookingReference['visit_type'] === 'virtual') {
-        // Virtual visits have no additional visitors.
-        $this->resetAdditionalVisitors();
-        // Virtual visits have no special_requirements.
-        $this->setFormElementValue('visitor_special_requirements_details');
+      // First-time set.
+      if (empty($last_ref) && !empty($curr_ref)) {
+        $form_state->set('last_visitor_order_number', $curr_ref);
       }
-    }
+      // Changed.
+      elseif (!empty($last_ref) && $curr_ref !== $last_ref) {
+        $form_state->set('last_visitor_order_number', $curr_ref);
 
-    // Pre-populate the form with any booking amendment data. Only do
-    // this once.
-    $amend_booking_data = $form_state->get('amend_booking_data');
-    $amend_booking_setup_complete = $form_state->get('amend_booking_setup_complete');
+        // Reset time slots user might have selected.
+        $this->resetFormSlots($form, $form_state, $webform_submission);
 
-    if ($page === 'amend_booking_page' && $amend_booking_data && ($amend_booking_setup_complete !== TRUE || $page_trigger_is_previous)) {
-      $this->alterFormToAmendBooking();
-    }
-
-    // Further alterations when amending a booking...
-    if ($amend_booking_data) {
-
-      if (!empty($amend_booking_data['error'])) {
-
-        // Show custom error message.
-        $elements['error_booking_already_amended']['#access'] = TRUE;
-
-        // Hide some amendment related elements.
-        $elements['booking_details']['#access'] = FALSE;
-        $elements['amend_booking_options']['#access'] = FALSE;
-
-        // Prevent user progressing to next wizard page.
-        $elements['wizard_next']['#access'] = FALSE;
-
-        // Early return.
-        return;
+        // If it's a virtual visit reset elements applicable only to
+        // face-to-face visits.
+        if ($this->bookingReference['visit_type'] === 'virtual') {
+          // Virtual visits have no additional visitors.
+          $this->resetAdditionalVisitors();
+          // Virtual visits have no special_requirements.
+          $this->setFormElementValue('visitor_special_requirements_details');
+        }
       }
 
-      // Amendment data is ok...
-      // Process the visitor order number if not already processed.
-      if (!$this->bookingReference) {
-        $this->processVisitBookingReference($amend_booking_data['VISIT_ORDER_NO'], $form, $form_state, $webform_submission);
+      // Pre-populate the form with any booking amendment data. Only do
+      // this once.
+      $amend_booking_data = $form_state->get('amend_booking_data');
+      $amend_booking_setup_complete = $form_state->get('amend_booking_setup_complete');
+
+      if ($page === 'amend_booking_page' && $amend_booking_data && ($amend_booking_setup_complete !== TRUE || $page_trigger_is_previous)) {
+        $this->alterFormToAmendBooking();
       }
 
-      // If there are errors with the booking reference, we might have
-      // to halt the amendment process, or only allow
-      // specific amendments.
+      // Further alterations when amending a booking...
+      if ($amend_booking_data) {
 
-      $error_status = $this->bookingReference['error_status'] ?? FALSE;
+        if (!empty($amend_booking_data['error'])) {
 
-      if ($error_status) {
+          // Show custom error message.
+          $elements['error_booking_already_amended']['#access'] = TRUE;
 
-        // Get any error messages.
-        $error_status_msg = $this->bookingReference['error_status_msg'] ?? NULL;
-
-        if ($error_status === self::VISIT_ORDER_REF_MISSING || $error_status === self::VISIT_ORDER_REF_INVALID) {
-          // Cannot proceed with booking amendment.
-          $elements['visit_order_ref_invalid']['#access'] = TRUE;
+          // Hide some amendment related elements.
           $elements['booking_details']['#access'] = FALSE;
           $elements['amend_booking_options']['#access'] = FALSE;
+
+          // Prevent user progressing to next wizard page.
           $elements['wizard_next']['#access'] = FALSE;
 
           // Early return.
           return;
         }
-        elseif ($error_status === self::VISIT_ORDER_REF_EXPIRED) {
-          // Cannot proceed with booking amendment.
-          $elements['visit_order_ref_expired']['#access'] = TRUE;
-          $elements['booking_details']['#access'] = FALSE;
-          $elements['amend_booking_options']['#access'] = FALSE;
-          $elements['wizard_next']['#access'] = FALSE;
 
-          // Early return.
-          return;
+        // Amendment data is ok...
+        // Process the visitor order number if not already processed.
+        if (!$this->bookingReference) {
+          $this->processVisitBookingReference($amend_booking_data['VISIT_ORDER_NO'], $form, $form_state, $webform_submission);
         }
-        elseif ($error_status === self::VISIT_ORDER_REF_AMENDMENT_EXPIRED) {
-          // Cannot proceed with booking amendment.
-          $elements['visit_order_ref_amendment_expired']['#access'] = TRUE;
-          $elements['booking_details']['#access'] = FALSE;
-          $elements['amend_booking_options']['#access'] = FALSE;
-          $elements['wizard_next']['#access'] = FALSE;
 
-          // Early return.
-          return;
-        }
-        elseif ($error_status === self::VISIT_ORDER_REF_NOTICE_EXCEEDED || $error_status === self::VISIT_ORDER_REF_AMENDMENT_NOTICE_EXCEEDED) {
-          // Display message indicating notice period not met and time
-          // must be changed. The notice period differs for face-to-face
-          // versus virtual visits.
-          if ($this->bookingReference['visit_type_id'] !== 'V') {
-            $elements['booking_details_notice_exceeded_face_to_face']['#access'] = TRUE;
+        // If there are errors with the booking reference, we might have
+        // to halt the amendment process, or only allow
+        // specific amendments.
+
+        $error_status = $this->bookingReference['error_status'] ?? FALSE;
+
+        if ($error_status) {
+
+          // Get any error messages.
+          $error_status_msg = $this->bookingReference['error_status_msg'] ?? NULL;
+
+          if ($error_status === self::VISIT_ORDER_REF_MISSING || $error_status === self::VISIT_ORDER_REF_INVALID) {
+            // Cannot proceed with booking amendment.
+            $elements['visit_order_ref_invalid']['#access'] = TRUE;
+            $elements['booking_details']['#access'] = FALSE;
+            $elements['amend_booking_options']['#access'] = FALSE;
+            $elements['wizard_next']['#access'] = FALSE;
+
+            // Early return.
+            return;
           }
-          else {
-            $elements['booking_details_notice_exceeded_virtual']['#access'] = TRUE;
+          elseif ($error_status === self::VISIT_ORDER_REF_EXPIRED) {
+            // Cannot proceed with booking amendment.
+            $elements['visit_order_ref_expired']['#access'] = TRUE;
+            $elements['booking_details']['#access'] = FALSE;
+            $elements['amend_booking_options']['#access'] = FALSE;
+            $elements['wizard_next']['#access'] = FALSE;
+
+            // Early return.
+            return;
           }
-          // The time slot must be changed. Check the time slot option and
-          // make it readonly so the user cannot uncheck it.
-          $elements['choose_changes']['time_slot']['#attributes']['checked'] = TRUE;
-          $elements['choose_changes']['time_slot']['#attributes']['readonly'] = 'readonly';
-          $elements['choose_changes']['time_slot']['#attributes']['onclick'] = 'return false';
-          $elements['choose_changes']['time_slot']['#label_attributes']['onclick'] = 'return false';
+          elseif ($error_status === self::VISIT_ORDER_REF_AMENDMENT_EXPIRED) {
+            // Cannot proceed with booking amendment.
+            $elements['visit_order_ref_amendment_expired']['#access'] = TRUE;
+            $elements['booking_details']['#access'] = FALSE;
+            $elements['amend_booking_options']['#access'] = FALSE;
+            $elements['wizard_next']['#access'] = FALSE;
+
+            // Early return.
+            return;
+          }
+          elseif ($error_status === self::VISIT_ORDER_REF_NOTICE_EXCEEDED || $error_status === self::VISIT_ORDER_REF_AMENDMENT_NOTICE_EXCEEDED) {
+            // Display message indicating notice period not met and time
+            // must be changed. The notice period differs for face-to-face
+            // versus virtual visits.
+            if ($this->bookingReference['visit_type_id'] !== 'V') {
+              $elements['booking_details_notice_exceeded_face_to_face']['#access'] = TRUE;
+            }
+            else {
+              $elements['booking_details_notice_exceeded_virtual']['#access'] = TRUE;
+            }
+            // The time slot must be changed. Check the time slot option and
+            // make it readonly so the user cannot uncheck it.
+            $elements['choose_changes']['time_slot']['#attributes']['checked'] = TRUE;
+            $elements['choose_changes']['time_slot']['#attributes']['readonly'] = 'readonly';
+            $elements['choose_changes']['time_slot']['#attributes']['onclick'] = 'return false';
+            $elements['choose_changes']['time_slot']['#label_attributes']['onclick'] = 'return false';
+          }
+          elseif ($error_status === self::VISIT_ORDER_REF_NO_SLOTS) {
+            // Cannot amend time slot, but can edit visitor details.
+            $elements['booking_details_ref_no_slots']['#access'] = TRUE;
+            unset($elements['choose_changes']['#options']['time_slot']);
+          }
+          elseif ($error_status) {
+            $elements['amend_error_default']['#access'] = TRUE;
+            $elements['booking_details']['#access'] = FALSE;
+            $elements['amend_booking_options']['#access'] = FALSE;
+            $elements['wizard_next']['#access'] = FALSE;
+
+            // Early return.
+            return;
+          }
         }
-        elseif ($error_status === self::VISIT_ORDER_REF_NO_SLOTS) {
-          // Cannot amend time slot, but can edit visitor details.
-          $elements['booking_details_ref_no_slots']['#access'] = TRUE;
-          unset($elements['choose_changes']['#options']['time_slot']);
+        else {
+          // No issue with the visit order number, so the booking data is
+          // amendable. Safe to show the booking details.
+          $elements['booking_details']['#access'] = TRUE;
         }
-        elseif ($error_status) {
-          $elements['amend_error_default']['#access'] = TRUE;
-          $elements['booking_details']['#access'] = FALSE;
-          $elements['amend_booking_options']['#access'] = FALSE;
-          $elements['wizard_next']['#access'] = FALSE;
 
-          // Early return.
-          return;
-        }
-      }
-      else {
-        // No issue with the visit order number, so the booking data is
-        // amendable. Safe to show the booking details.
-        $elements['booking_details']['#access'] = TRUE;
-      }
+        // Alter wizard page titles.
+        $elements['main_visitor_details']['#title'] = $this->t('Amend main visitor details');
+        $elements['additional_visitor_details']['#title'] = $this->t('Amend additional visitors');
+        $elements['visitor_special_requirements']['#title'] = $this->t('Amend visitor special requirements');
+        $elements['visit_preferred_day_and_time']['#title'] = $this->t('Amend visit date and time');
+        $elements['webform_preview']['#title'] = $this->t('Amend booking confirmation');
 
-      // Alter wizard page titles.
-      $elements['main_visitor_details']['#title'] = $this->t('Amend main visitor details');
-      $elements['additional_visitor_details']['#title'] = $this->t('Amend additional visitors');
-      $elements['visitor_special_requirements']['#title'] = $this->t('Amend visitor special requirements');
-      $elements['visit_preferred_day_and_time']['#title'] = $this->t('Amend visit date and time');
-      $elements['webform_preview']['#title'] = $this->t('Amend booking confirmation');
-
-      // Alter the hidden element tracking the amendment type.
-      if ($form_state->getValue('amend_booking_options') === 'keep') {
-        $this->setFormElementValue('amend_type', 'KEEP');
-      }
-      elseif ($form_state->getValue('amend_booking_options') === 'cancel') {
-        $this->setFormElementValue('amend_type', 'CANCEL');
-      }
-      elseif ($form_state->getValue('amend_booking_options') === 'change') {
-        $this->setFormElementValue('amend_type', 'UPDATE');
-      }
-
-      // Alter change options presented to the user.
-      // Virtual visits have no additional visitors.
-      if ($this->bookingReference['visit_type'] === 'virtual') {
-        unset($elements['choose_changes']['#options']['additional_visitors']);
-      }
-
-      // Alterations at webform preview stage.
-      if ($page === 'webform_preview') {
-
+        // Alter the hidden element tracking the amendment type.
         if ($form_state->getValue('amend_booking_options') === 'keep') {
-          $elements['preview']['#title'] = $this->t('Confirm keep booking');
-          $elements['actions'][0]['#submit__label'] = $this->t('Keep booking');
+          $this->setFormElementValue('amend_type', 'KEEP');
         }
         elseif ($form_state->getValue('amend_booking_options') === 'cancel') {
-          $elements['preview']['#title'] = $this->t('Confirm cancel booking');
-          $elements['actions'][0]['#submit__label'] = $this->t('Cancel booking');
+          $this->setFormElementValue('amend_type', 'CANCEL');
         }
         elseif ($form_state->getValue('amend_booking_options') === 'change') {
-          $elements['preview']['#title'] = $this->t('Confirm amend booking');
-          $elements['actions'][0]['#submit__label'] = $this->t('Amend booking');
+          $this->setFormElementValue('amend_type', 'UPDATE');
+        }
+
+        // Alter change options presented to the user.
+        // Virtual visits have no additional visitors.
+        if ($this->bookingReference['visit_type'] === 'virtual') {
+          unset($elements['choose_changes']['#options']['additional_visitors']);
+        }
+
+        // Alterations at webform preview stage.
+        if ($page === 'webform_preview') {
+
+          if ($form_state->getValue('amend_booking_options') === 'keep') {
+            $elements['preview']['#title'] = $this->t('Confirm keep booking');
+            $elements['actions'][0]['#submit__label'] = $this->t('Keep booking');
+          }
+          elseif ($form_state->getValue('amend_booking_options') === 'cancel') {
+            $elements['preview']['#title'] = $this->t('Confirm cancel booking');
+            $elements['actions'][0]['#submit__label'] = $this->t('Cancel booking');
+          }
+          elseif ($form_state->getValue('amend_booking_options') === 'change') {
+            $elements['preview']['#title'] = $this->t('Confirm amend booking');
+            $elements['actions'][0]['#submit__label'] = $this->t('Amend booking');
+          }
         }
       }
-    }
 
-    // Pass all visitor IDs to clientside for duplication checks.
-    $visitor_1_id = $form_state->getValue('visitor_1_id');
-    $additional_visitor_ids = array_filter($form_state->getValues(), function ($v, $k) {
-      return preg_match("/additional_visitor_[1-5]_id/", $k);
-    }, ARRAY_FILTER_USE_BOTH);
+      // Pass all visitor IDs to clientside for duplication checks.
+      $visitor_1_id = $form_state->getValue('visitor_1_id');
+      $additional_visitor_ids = array_filter($form_state->getValues(), function ($v, $k) {
+        return preg_match("/additional_visitor_[1-5]_id/", $k);
+      }, ARRAY_FILTER_USE_BOTH);
 
-    $form['#attached']['drupalSettings']['prisonVisitBooking']['visitorOneId'] = ['visitor_1_id' => $visitor_1_id];
-    $form['#attached']['drupalSettings']['prisonVisitBooking']['additionalVisitorIds'] = $additional_visitor_ids;
+      $form['#attached']['drupalSettings']['prisonVisitBooking']['visitorOneId'] = ['visitor_1_id' => $visitor_1_id];
+      $form['#attached']['drupalSettings']['prisonVisitBooking']['additionalVisitorIds'] = $additional_visitor_ids;
 
-    // If the main visitor ID duplicates an existing additional
-    // visitor ID, remove the additional visitor.
+      // If the main visitor ID duplicates an existing additional
+      // visitor ID, remove the additional visitor.
 
-    if (!empty($visitor_1_id) && $duplicate_visitor_id_key = array_search($visitor_1_id, $additional_visitor_ids)) {
+      if (!empty($visitor_1_id) && $duplicate_visitor_id_key = array_search($visitor_1_id, $additional_visitor_ids)) {
 
-      // Determine the additional visitor number from the key for
-      // the duplicate ID.
-      $duplicate_visitor_number = (int) filter_var($duplicate_visitor_id_key, FILTER_SANITIZE_NUMBER_INT);
+        // Determine the additional visitor number from the key for
+        // the duplicate ID.
+        $duplicate_visitor_number = (int) filter_var($duplicate_visitor_id_key, FILTER_SANITIZE_NUMBER_INT);
 
-      // Erase the duplicate visitor values.
-      $this->setFormElementValue('additional_visitor_' . $duplicate_visitor_number . '_id', '');
-      $this->setFormElementValue('additional_visitor_' . $duplicate_visitor_number . '_dob', '');
+        // Erase the duplicate visitor values.
+        $this->setFormElementValue('additional_visitor_' . $duplicate_visitor_number . '_id', '');
+        $this->setFormElementValue('additional_visitor_' . $duplicate_visitor_number . '_dob', '');
 
-      // Shift up the visitors that follow to fill the gap.
-      for ($i = $duplicate_visitor_number; $i < count($additional_visitor_ids); $i++) {
+        // Shift up the visitors that follow to fill the gap.
+        for ($i = $duplicate_visitor_number; $i < count($additional_visitor_ids); $i++) {
 
-        // Grab next visitor details before erasing them.
-        $next_id = $this->formState->getValue('additional_visitor_' . ($i + 1) . '_id');
-        $next_dob = $this->formState->getValue('additional_visitor_' . ($i + 1) . '_dob');
+          // Grab next visitor details before erasing them.
+          $next_id = $this->formState->getValue('additional_visitor_' . ($i + 1) . '_id');
+          $next_dob = $this->formState->getValue('additional_visitor_' . ($i + 1) . '_dob');
 
-        // Erase next visitor details.
-        $this->setFormElementValue('additional_visitor_' . ($i + 1) . '_id', '');
-        $this->setFormElementValue('additional_visitor_' . ($i + 1) . '_dob', '');
+          // Erase next visitor details.
+          $this->setFormElementValue('additional_visitor_' . ($i + 1) . '_id', '');
+          $this->setFormElementValue('additional_visitor_' . ($i + 1) . '_dob', '');
 
-        // Copy next visitor details to this visitor.
-        $this->setFormElementValue('additional_visitor_' . $i . '_id', $next_id);
-        $this->setFormElementValue('additional_visitor_' . $i . '_dob', $next_dob);
+          // Copy next visitor details to this visitor.
+          $this->setFormElementValue('additional_visitor_' . $i . '_id', $next_id);
+          $this->setFormElementValue('additional_visitor_' . $i . '_dob', $next_dob);
+        }
+
+        // Subtract 1 from the form element tracking the number of
+        // additional visitors.
+        $additional_visitor_number = (string) ($this->formState->getValue('additional_visitor_number') - 1);
+        $this->setFormElementValue('additional_visitor_number', $additional_visitor_number);
       }
 
-      // Subtract 1 from the form element tracking the number of
-      // additional visitors.
-      $additional_visitor_number = (string) ($this->formState->getValue('additional_visitor_number') - 1);
-      $this->setFormElementValue('additional_visitor_number', $additional_visitor_number);
-    }
-
-    // If user is amending a booking, timeslots are always reset and
-    // the original timeslot restored if user chose not to amend it.
-    $choose_changes = $form_state->getValue('choose_changes') ?? $form_state->getValue('choose_changes_virtual') ?? NULL;
-    if ($amend_booking_data && is_array($choose_changes) && !in_array('time_slot', $choose_changes)) {
-      $this->resetFormSlots($form, $form_state, $webform_submission);
-
-      $this->setFormElementValue('slot1_datetime', $amend_booking_data['SLOTDATETIME']);
-    }
-
-    // Show available timeslots in the form.
-    if ($page === 'visit_preferred_day_and_time' && !empty($this->bookingReference)) {
-
-      // Reset timeslots when user is amending a booking.
-      if ($amend_booking_data && $page_trigger_is_next) {
+      // If user is amending a booking, timeslots are always reset and
+      // the original timeslot restored if user chose not to amend it.
+      $choose_changes = $form_state->getValue('choose_changes') ?? $form_state->getValue('choose_changes_virtual') ?? NULL;
+      if ($amend_booking_data && is_array($choose_changes) && !in_array('time_slot', $choose_changes)) {
         $this->resetFormSlots($form, $form_state, $webform_submission);
+
+        $this->setFormElementValue('slot1_datetime', $amend_booking_data['SLOTDATETIME']);
       }
 
-      // Get available slots and show only those slots on the form.
-      $available_slots = $this->getAvailableSlots();
-      $slots_error = $available_slots['error'] ?? FALSE;
+      // Show available timeslots in the form.
+      if ($page === 'visit_preferred_day_and_time' && !empty($this->bookingReference)) {
 
-      // Determine dates.
-      $visit_booking_ref_valid_from = $this->bookingReference['date_valid_from'];
-      $visit_booking_week_start = $this->bookingReference['date_visit_week_start'];
+        // Reset timeslots when user is amending a booking.
+        if ($amend_booking_data && $page_trigger_is_next) {
+          $this->resetFormSlots($form, $form_state, $webform_submission);
+        }
 
-      if ($visit_booking_ref_valid_from < $visit_booking_week_start) {
-        $visit_booking_ref_valid_from = clone $visit_booking_week_start;
-      }
+        // Get available slots and show only those slots on the form.
+        $available_slots = $this->getAvailableSlots();
+        $slots_error = $available_slots['error'] ?? FALSE;
 
-      // Alter form slots to correspond with available slots.
-      if (!empty($available_slots) && !$slots_error) {
+        // Determine dates.
+        $visit_booking_ref_valid_from = $this->bookingReference['date_valid_from'];
+        $visit_booking_week_start = $this->bookingReference['date_visit_week_start'];
 
-        for ($i = 4; $i >= 1; $i--) {
+        if ($visit_booking_ref_valid_from < $visit_booking_week_start) {
+          $visit_booking_ref_valid_from = clone $visit_booking_week_start;
+        }
 
-          // Form slots for each week.
-          $form_slots_week = &$form['elements']['visit_preferred_day_and_time']['slots']['slots_week_' . $i];
-          $webform_submission_slots_week = $webform->getElement('slots_week_' . $i, TRUE);
+        // Alter form slots to correspond with available slots.
+        if (!empty($available_slots) && !$slots_error) {
 
-          if ($form_slots_week['#access'] = FALSE) {
-            continue;
+          for ($i = 4; $i >= 1; $i--) {
+
+            // Form slots for each week.
+            $form_slots_week = &$form['elements']['visit_preferred_day_and_time']['slots']['slots_week_' . $i];
+            $webform_submission_slots_week = $webform->getElement('slots_week_' . $i, TRUE);
+
+            if ($form_slots_week['#access'] = FALSE) {
+              continue;
+            }
+
+            // By default, disable access. Enable access if there are days
+            // and times to show.
+            $form_slots_week['#access'] = FALSE;
+
+            // Add week commencing date to container titles for each week.
+            $form_slots_week_date = clone $visit_booking_ref_valid_from;
+            $form_slots_week_date->modify('+' . ($i - 1) . 'weeks');
+            $form_slots_week_title = str_replace('[DATE]', $form_slots_week_date->format('j F Y'), $form_slots_week['#title']);
+
+            $form_slots_week['#title'] = $form_slots_week_title;
+            $webform_submission_slots_week['#title'] = $form_slots_week_title;
+            $webform->setElementProperties('slots_week_' . $i, $webform_submission_slots_week);
+
+            // Loop through form slots for each day.
+            $days_of_week = [
+              'monday',
+              'tuesday',
+              'wednesday',
+              'thursday',
+              'friday',
+              'saturday',
+              'sunday'
+            ];
+
+            for ($j = 1; $j <= 7; $j++) {
+              $day = $days_of_week[$j - 1];
+              $form_slots_day_date = clone $form_slots_week_date;
+              $form_slots_day = &$form_slots_week[$day . '_week_' . $i];
+
+              $form_slots_day_title = $form_slots_day['#title'];
+              $form_slots_day_date->modify('+' . ($j - 1) . ' day');
+              $form_slots_day_title .= ', ' . $form_slots_day_date->format('j F Y');
+              $form_slots_day['#title'] = $form_slots_day_title;
+
+              // By default, disable access.
+              $form_slots_day['#access'] = FALSE;
+
+              $form_slots_day['#options'] = [];
+
+              // Create the bookable options and add to the form.
+              foreach ($available_slots as $available_slot) {
+                if ($available_slot->format('Y-m-d') === $form_slots_day_date->format('Y-m-d')) {
+                  $form_slots_day['#options'][$available_slot->format(DATE_ATOM)] = $available_slot->format('g.i a');
+                }
+              }
+
+              // Enable access to form slots if options to show.
+              if (!empty($form_slots_day['#options'])) {
+                $form_slots_day['#access'] = TRUE;
+                $form_slots_week['#access'] = TRUE;
+              }
+
+            }
           }
+        }
+        else {
+          // There are no slots available.
+          // Disable all slots.
+          $elements['slots']['#access'] = FALSE;
 
-          // By default, disable access. Enable access if there are days
-          // and times to show.
-          $form_slots_week['#access'] = FALSE;
+          // Show a message.
+          $elements['msg_no_slots_available']['#access'] = TRUE;
 
-          // Add week commencing date to container titles for each week.
-          $form_slots_week_date = clone $visit_booking_ref_valid_from;
-          $form_slots_week_date->modify('+' . ($i - 1) . 'weeks');
-          $form_slots_week_title = str_replace('[DATE]', $form_slots_week_date->format('j F Y'), $form_slots_week['#title']);
+          // Prevent further progression.
+          $elements['wizard_prev']['#access'] = FALSE;
+          $elements['wizard_next']['#access'] = FALSE;
+          $elements['preview_next']['#access'] = FALSE;
+        }
+      }
 
-          $form_slots_week['#title'] = $form_slots_week_title;
-          $webform_submission_slots_week['#title'] = $form_slots_week_title;
-          $webform->setElementProperties('slots_week_' . $i, $webform_submission_slots_week);
+      // Deal with remembered additional visitors versus amending
+      // a booking containing additional visitors.
 
-          // Loop through form slots for each day.
-          $days_of_week = [
-            'monday',
-            'tuesday',
-            'wednesday',
-            'thursday',
-            'friday',
-            'saturday',
-            'sunday'
-          ];
+      $elements['msg_existing_additional_visitors']['#access'] = FALSE;
+      $elements['msg_additional_visitors']['#access'] = FALSE;
+      $elements['msg_amend_additional_visitors']['#access'] = FALSE;
 
-          for ($j = 1; $j <= 7; $j++) {
-            $day = $days_of_week[$j - 1];
-            $form_slots_day_date = clone $form_slots_week_date;
-            $form_slots_day = &$form_slots_week[$day . '_week_' . $i];
+      // Remembered additional visitors are stored in a private tempstore.
+      $temp_store = $this->tempStoreFactory->get('nidirect_webforms.prison_visit_booking');
 
-            $form_slots_day_title = $form_slots_day['#title'];
-            $form_slots_day_date->modify('+' . ($j - 1) . ' day');
-            $form_slots_day_title .= ', ' . $form_slots_day_date->format('j F Y');
-            $form_slots_day['#title'] = $form_slots_day_title;
+      // Retrieve visitor data, but not for virtual bookings.
+      $visitor_data = [];
+      if (!empty($this->bookingReference) && $this->bookingReference['visit_type'] !== 'virtual') {
+        $visitor_data = $temp_store->get('visitor_data');
+      }
 
-            // By default, disable access.
-            $form_slots_day['#access'] = FALSE;
+      if (!empty($visitor_data) && $page === 'additional_visitor_details' && $page_trigger_is_next) {
+        // Assume it is valid.
+        $visitor_data_is_valid = TRUE;
 
-            $form_slots_day['#options'] = [];
+        // It's not valid if user decides not to remember it.
+        if ($visitor_data['additional_visitors_remember'] === 'No') {
+          $visitor_data_is_valid = FALSE;
+        }
+        // It's not valid if it's missing.
+        elseif (empty($visitor_data['visitor_1_id']) || empty($visitor_data['visitor_1_dob'])) {
+          $visitor_data_is_valid = FALSE;
+        }
+        // It's not valid if main visitor id and dob in the present booking
+        // differs from remembered values.  This indicates someone else
+        // is making a booking using the same device, and they should not
+        // see data belonging to another visitor.
+        elseif ($visitor_data['visitor_1_id'] !== $form_state->getValue('visitor_1_id') || $visitor_data['visitor_1_dob'] !== $form_state->getValue('visitor_1_dob')) {
+          $visitor_data_is_valid = FALSE;
+        }
 
-            // Create the bookable options and add to the form.
-            foreach ($available_slots as $available_slot) {
-              if ($available_slot->format('Y-m-d') === $form_slots_day_date->format('Y-m-d')) {
-                $form_slots_day['#options'][$available_slot->format(DATE_ATOM)] = $available_slot->format('g.i a');
+        if ($visitor_data_is_valid) {
+          // If we are not amending a booking, we just prepopulate
+          // additional visitor fields with the remembered data.
+          if (empty($amend_booking_data)) {
+
+            foreach ($visitor_data as $key => $value) {
+              if (empty($form_state->getValue($key))) {
+                $this->setFormElementValue($key, $value);
               }
             }
 
-            // Enable access to form slots if options to show.
-            if (!empty($form_slots_day['#options'])) {
-              $form_slots_day['#access'] = TRUE;
-              $form_slots_week['#access'] = TRUE;
-            }
+            // Show msg that existing visitor data found.
+            $elements['msg_existing_additional_visitors']['#access'] = TRUE;
+          }
+          // Else we are amending a booking. We can only set the value of
+          // the question "Do you want to remember additional visitors?.
+          // The data for additional visitors has already been
+          // pre-populated elsewhere.
+          else {
+            $this->setFormElementValue('additional_visitors_remember', $visitor_data['additional_visitors_remember']);
 
+            // Show msg for amending additional visitors.
+            $elements['msg_amend_additional_visitors']['#access'] = TRUE;
           }
         }
-      }
-      else {
-        // There are no slots available.
-        // Disable all slots.
-        $elements['slots']['#access'] = FALSE;
-
-        // Show a message.
-        $elements['msg_no_slots_available']['#access'] = TRUE;
-
-        // Prevent further progression.
-        $elements['wizard_prev']['#access'] = FALSE;
-        $elements['wizard_next']['#access'] = FALSE;
-        $elements['preview_next']['#access'] = FALSE;
-      }
-    }
-
-    // Deal with remembered additional visitors versus amending
-    // a booking containing additional visitors.
-
-    $elements['msg_existing_additional_visitors']['#access'] = FALSE;
-    $elements['msg_additional_visitors']['#access'] = FALSE;
-    $elements['msg_amend_additional_visitors']['#access'] = FALSE;
-
-    // Remembered additional visitors are stored in a private tempstore.
-    $temp_store = $this->tempStoreFactory->get('nidirect_webforms.prison_visit_booking');
-
-    // Retrieve visitor data, but not for virtual bookings.
-    $visitor_data = [];
-    if (!empty($this->bookingReference) && $this->bookingReference['visit_type'] !== 'virtual') {
-      $visitor_data = $temp_store->get('visitor_data');
-    }
-
-    if (!empty($visitor_data) && $page === 'additional_visitor_details' && $page_trigger_is_next) {
-      // Assume it is valid.
-      $visitor_data_is_valid = TRUE;
-
-      // It's not valid if user decides not to remember it.
-      if ($visitor_data['additional_visitors_remember'] === 'No') {
-        $visitor_data_is_valid = FALSE;
-      }
-      // It's not valid if it's missing.
-      elseif (empty($visitor_data['visitor_1_id']) || empty($visitor_data['visitor_1_dob'])) {
-        $visitor_data_is_valid = FALSE;
-      }
-      // It's not valid if main visitor id and dob in the present booking
-      // differs from remembered values.  This indicates someone else
-      // is making a booking using the same device, and they should not
-      // see data belonging to another visitor.
-      elseif ($visitor_data['visitor_1_id'] !== $form_state->getValue('visitor_1_id') || $visitor_data['visitor_1_dob'] !== $form_state->getValue('visitor_1_dob')) {
-        $visitor_data_is_valid = FALSE;
-      }
-
-      if ($visitor_data_is_valid) {
-        // If we are not amending a booking, we just prepopulate
-        // additional visitor fields with the remembered data.
-        if (empty($amend_booking_data)) {
-
-          foreach ($visitor_data as $key => $value) {
-            if (empty($form_state->getValue($key))) {
-              $this->setFormElementValue($key, $value);
-            }
-          }
-
-          // Show msg that existing visitor data found.
-          $elements['msg_existing_additional_visitors']['#access'] = TRUE;
-        }
-        // Else we are amending a booking. We can only set the value of
-        // the question "Do you want to remember additional visitors?.
-        // The data for additional visitors has already been
-        // pre-populated elsewhere.
         else {
-          $this->setFormElementValue('additional_visitors_remember', $visitor_data['additional_visitors_remember']);
 
-          // Show msg for amending additional visitors.
-          $elements['msg_amend_additional_visitors']['#access'] = TRUE;
+          // Remembered visitor data is not valid.
+          // Delete it.
+          $temp_store->delete('visitor_data');
+
+          // Reset form state for additional visitors.
+          foreach ($visitor_data as $key => $value) {
+            if (str_starts_with($key, 'additional_visitor')) {
+              $this->setFormElementValue($key);
+            }
+          }
+
+          // Show the standard additional visitor message.
+          $elements['msg_additional_visitors']['#access'] = TRUE;
         }
       }
+      elseif (!empty($amend_booking_data)) {
+        // No remembered data from a previous booking.
+        // Show msg amending additional visitors.
+        $elements['msg_amend_additional_visitors']['#access'] = TRUE;
+      }
       else {
-
-        // Remembered visitor data is not valid.
-        // Delete it.
-        $temp_store->delete('visitor_data');
-
-        // Reset form state for additional visitors.
-        foreach ($visitor_data as $key => $value) {
-          if (str_starts_with($key, 'additional_visitor')) {
-            $this->setFormElementValue($key);
-          }
-        }
-
+        // No remembered data from a previous booking, and we are not
+        // amending a booking...
         // Show the standard additional visitor message.
         $elements['msg_additional_visitors']['#access'] = TRUE;
       }
-    }
-    elseif (!empty($amend_booking_data)) {
-      // No remembered data from a previous booking.
-      // Show msg amending additional visitors.
-      $elements['msg_amend_additional_visitors']['#access'] = TRUE;
-    }
-    else {
-      // No remembered data from a previous booking, and we are not
-      // amending a booking...
-      // Show the standard additional visitor message.
-      $elements['msg_additional_visitors']['#access'] = TRUE;
-    }
 
-    // Alterations for webform confirmation step.
-    if ($page === 'webform_confirmation') {
+      // Alterations for webform confirmation step.
+      if ($page === 'webform_confirmation') {
 
-      // Default confirmation message.
-      $webform_confirmation_message = $webform->getElement('webform_confirmation_message_default')['#markup'];
+        // Default confirmation message.
+        $webform_confirmation_message = $webform->getElement('webform_confirmation_message_default')['#markup'];
 
-      // Alter it if we are keeping, cancelling or changing booking.
-      if ($form_state->getValue('amend_booking_options') === 'keep') {
-        $webform_confirmation_message = $webform->getElement('webform_confirmation_message_keep')['#markup'];
+        // Alter it if we are keeping, cancelling or changing booking.
+        if ($form_state->getValue('amend_booking_options') === 'keep') {
+          $webform_confirmation_message = $webform->getElement('webform_confirmation_message_keep')['#markup'];
+        }
+        elseif ($form_state->getValue('amend_booking_options') === 'cancel') {
+          $webform_confirmation_message = $webform->getElement('webform_confirmation_message_cancel')['#markup'];
+        }
+        elseif ($form_state->getValue('amend_booking_options') === 'change') {
+          $webform_confirmation_message = $webform->getElement('webform_confirmation_message_change')['#markup'];
+        }
+
+        $webform->setSetting('confirmation_message', $webform_confirmation_message);
       }
-      elseif ($form_state->getValue('amend_booking_options') === 'cancel') {
-        $webform_confirmation_message = $webform->getElement('webform_confirmation_message_cancel')['#markup'];
-      }
-      elseif ($form_state->getValue('amend_booking_options') === 'change') {
-        $webform_confirmation_message = $webform->getElement('webform_confirmation_message_change')['#markup'];
-      }
-
-      $webform->setSetting('confirmation_message', $webform_confirmation_message);
+    }
+    finally {
+      $this->elements = [];
+      unset($this->formState);
+      $this->webformSubmission = NULL;
     }
   }
 
@@ -794,27 +796,34 @@ class PrisonVisitBookingHandler extends WebformHandlerBase {
   public function validateForm(array &$form, FormStateInterface $form_state, WebformSubmissionInterface $webform_submission) {
 
     $page = $form_state->get('current_page');
-    $this->form = &$form;
     $this->formState = $form_state;
     $this->webformSubmission = $webform_submission;
-    $this->elements = WebformFormHelper::flattenElements($form);
 
-    if ($page === 'booking_reference_prisoner_reference') {
-      $this->validateVisitBookingReference($form, $form_state, $webform_submission);
+    try {
+      $this->elements = WebformFormHelper::flattenElements($form);
+
+      if ($page === 'booking_reference_prisoner_reference') {
+        $this->validateVisitBookingReference($form, $form_state, $webform_submission);
+      }
+
+      if ($page === 'additional_visitor_details') {
+        $this->validateUniqueVisitorIds($form, $form_state);
+        $this->validateMaxAdultVisitors($form, $form_state);
+      }
+
+      if ($page === 'visitor_special_requirements') {
+        $error_msg = $this->t('Details of special requirements must be plain text.');
+        $this->validatePlainText('visitor_special_requirements_details', $error_msg, $form, $form_state);
+      }
+
+      if ($page === 'visit_preferred_day_and_time') {
+        $this->validateSlotPicked($form, $form_state, $webform_submission);
+      }
     }
-
-    if ($page === 'additional_visitor_details') {
-      $this->validateUniqueVisitorIds($form, $form_state);
-      $this->validateMaxAdultVisitors($form, $form_state);
-    }
-
-    if ($page === 'visitor_special_requirements') {
-      $error_msg = $this->t('Details of special requirements must be plain text.');
-      $this->validatePlainText('visitor_special_requirements_details', $error_msg, $form, $form_state);
-    }
-
-    if ($page === 'visit_preferred_day_and_time') {
-      $this->validateSlotPicked($form, $form_state, $webform_submission);
+    finally {
+      $this->elements = [];
+      unset($this->formState);
+      $this->webformSubmission = NULL;
     }
   }
 
