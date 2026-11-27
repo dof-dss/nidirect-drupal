@@ -3,6 +3,15 @@ langcode: en
 status: true
 dependencies:
   config:
+    - block_content.type.accordion_menu
+    - block_content.type.banner_deep
+    - block_content.type.card_deck_plain
+    - block_content.type.card_plain
+    - block_content.type.card_standard
+    - block_content.type.card_wide
+    - block_content.type.text
+    - block_content.type.video
+    - block_content.type.video_and_caption
     - core.entity_view_display.node.landing_page.full
     - entity_browser.browser.location_browser
     - filter.format.basic_html
@@ -37,7 +46,7 @@ dependencies:
     - taxonomy.vocabulary.site_themes
     - workflows.workflow.nics_editorial_workflow
   module:
-    - block_content_permissions
+    - block_content
     - book
     - content_moderation
     - contextual
@@ -138,14 +147,20 @@ permissions:
   - 'delete all gp revisions'
   - 'delete all sitewide alert revisions'
   - 'delete any accordion_menu block content'
+  - 'delete any accordion_menu block content revisions'
   - 'delete any application content'
   - 'delete any article content'
   - 'delete any audio media'
   - 'delete any banner_deep block content'
+  - 'delete any banner_deep block content revisions'
   - 'delete any card_deck_plain block content'
+  - 'delete any card_deck_plain block content revisions'
   - 'delete any card_plain block content'
+  - 'delete any card_plain block content revisions'
   - 'delete any card_standard block content'
+  - 'delete any card_standard block content revisions'
   - 'delete any card_wide block content'
+  - 'delete any card_wide block content revisions'
   - 'delete any cold_weather_payment content'
   - 'delete any contact content'
   - 'delete any document media'
@@ -165,9 +180,12 @@ permissions:
   - 'delete any publication content'
   - 'delete any remote_video media'
   - 'delete any text block content'
+  - 'delete any text block content revisions'
   - 'delete any video block content'
+  - 'delete any video block content revisions'
   - 'delete any video media'
   - 'delete any video_and_caption block content'
+  - 'delete any video_and_caption block content revisions'
   - 'delete application revisions'
   - 'delete article revisions'
   - 'delete cold_weather_payment revisions'
@@ -203,9 +221,15 @@ permissions:
   - 'delete terms in hc_info_sources'
   - 'delete terms in hc_symptoms'
   - 'delete terms in site_themes'
+  - 'edit any accordion_menu block content'
   - 'edit any application content'
   - 'edit any article content'
   - 'edit any audio media'
+  - 'edit any banner_deep block content'
+  - 'edit any card_deck_plain block content'
+  - 'edit any card_plain block content'
+  - 'edit any card_standard block content'
+  - 'edit any card_wide block content'
   - 'edit any cold_weather_payment content'
   - 'edit any contact content'
   - 'edit any document media'
@@ -223,7 +247,10 @@ permissions:
   - 'edit any page content'
   - 'edit any publication content'
   - 'edit any remote_video media'
+  - 'edit any text block content'
+  - 'edit any video block content'
   - 'edit any video media'
+  - 'edit any video_and_caption block content'
   - 'edit basic meta tags'
   - 'edit gp entities'
   - 'edit own application content'
@@ -278,6 +305,15 @@ permissions:
   - 'reschedule scheduled transitions node news'
   - 'reschedule scheduled transitions node publication'
   - 'revert all sitewide alert revisions'
+  - 'revert any accordion_menu block content revisions'
+  - 'revert any banner_deep block content revisions'
+  - 'revert any card_deck_plain block content revisions'
+  - 'revert any card_plain block content revisions'
+  - 'revert any card_standard block content revisions'
+  - 'revert any card_wide block content revisions'
+  - 'revert any text block content revisions'
+  - 'revert any video block content revisions'
+  - 'revert any video_and_caption block content revisions'
   - 'revert application revisions'
   - 'revert article revisions'
   - 'revert cold_weather_payment revisions'
@@ -302,14 +338,6 @@ permissions:
   - 'unflag hide_content'
   - 'unflag promote_to_all_pages'
   - 'unflag show_listing'
-  - 'update any accordion_menu block content'
-  - 'update any banner_deep block content'
-  - 'update any card_plain block content'
-  - 'update any card_standard block content'
-  - 'update any card_wide block content'
-  - 'update any text block content'
-  - 'update any video block content'
-  - 'update any video_and_caption block content'
   - 'use moderation sidebar'
   - 'use nics_editorial_workflow transition archive'
   - 'use nics_editorial_workflow transition create_new_draft'
@@ -325,7 +353,16 @@ permissions:
   - 'view all gp revisions'
   - 'view all revisions'
   - 'view all sitewide alert revisions'
+  - 'view any accordion_menu block content history'
+  - 'view any banner_deep block content history'
+  - 'view any card_deck_plain block content history'
+  - 'view any card_plain block content history'
+  - 'view any card_standard block content history'
+  - 'view any card_wide block content history'
+  - 'view any text block content history'
   - 'view any unpublished content'
+  - 'view any video block content history'
+  - 'view any video_and_caption block content history'
   - 'view application revisions'
   - 'view article revisions'
   - 'view cold_weather_payment revisions'
